@@ -28,16 +28,10 @@ import kinugasa.game.GameOption;
 import kinugasa.game.GameTimeManager;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LockUtil;
-import kinugasa.game.field.FieldMapLoader;
-import kinugasa.game.field.MapChipAttributeSotrage;
-import kinugasa.game.field.MapChipSetStorage;
-import kinugasa.game.field.VehicleStorage;
 import kinugasa.game.input.GamePadStatusMonitor;
-import kinugasa.game.input.InputState;
-import kinugasa.game.ui.FPSLabel;
 
 /**
- *
+ * ゲームのテスト実装です.
  * @author shin211
  */
 public class Test extends GameManager {
@@ -53,13 +47,13 @@ public class Test extends GameManager {
 
     @Override
     protected void startUp() {
-		MapChipAttributeSotrage.getInstance().readFromXML("resource/field/data/attr/ChipAttributes.xml");
-		VehicleStorage.getInstance().readFromXML("resource/field/data/vehicle/01.xml");
-		VehicleStorage.getInstance().setCurrentVehicle("WALK");
-		MapChipSetStorage.getInstance().readFromXML("resource/6map/ChipSet.xml");
+		// テスト中
+//		MapChipAttributeSotrage.getInstance().readFromXML("resource/field/data/attr/ChipAttributes.xml");
+//		VehicleStorage.getInstance().readFromXML("resource/field/data/vehicle/01.xml");
+//		VehicleStorage.getInstance().setCurrentVehicle("WALK");
+//		MapChipSetStorage.getInstance().readFromXML("resource/6map/ChipSet.xml");
+//		
 		
-		
-		m = new GamePadStatusMonitor();
     }
 	private GamePadStatusMonitor m;
 
@@ -69,12 +63,10 @@ public class Test extends GameManager {
 
     @Override
     protected void update(GameTimeManager gtm) {
-		m.update(InputState.getInstance().getGamePadState());
     }
 
     @Override
     protected void draw(GraphicsContext gc) {
-		m.draw(gc);
     }
 
 }
