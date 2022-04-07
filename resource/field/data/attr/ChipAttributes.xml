@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!--
+The MIT License
+
+Copyright 2016 Dra.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+
+<kinugasaChipAttribute>
+    <!--フィールド用・共有-->
+    <attribute name="平地" />
+    <attribute name="草原" />
+    <attribute name="都市" />
+    <attribute name="町" />
+    <attribute name="村" />
+    <attribute name="小屋" />
+    <attribute name="砂漠" />
+    <attribute name="砂浜" />
+    <attribute name="藪" />
+    <attribute name="森林" />
+    <attribute name="密林" />
+    <attribute name="丘陵" />
+    <attribute name="山岳" />
+    <attribute name="高山" />
+    <attribute name="河川" />
+    <attribute name="橋" />
+    <attribute name="浅瀬" />
+    <attribute name="海" />
+    <attribute name="城" />
+    <attribute name="塔" />
+    <attribute name="洞窟" />
+    <attribute name="汎用イベント" />
+    <attribute name="道路" />
+    <attribute name="城壁" />
+    <attribute name="港" />
+    <attribute name="登山道" />
+    <attribute name="山小屋" />
+    <attribute name="崩壊橋" />
+    <attribute name="廃墟" />
+    <attribute name="岩礁" />
+    <attribute name="柵" />
+    <attribute name="岩" />
+    <attribute name="畑" />
+    <attribute name="崖" />
+    <attribute name="荒地" />
+    <attribute name="岩盤" />
+    
+    <!--内装・町用-->
+    <attribute name="枯木"/>
+    <attribute name="木"/>
+    <attribute name="丸太"/>
+    <attribute name="草"/>
+    <attribute name="花"/>
+    <attribute name="キノコ"/>
+    <attribute name="池"/>
+    <attribute name="凍結池"/>
+    <attribute name="毒の池"/>
+    <attribute name="深い池"/>
+    <attribute name="石ころ"/>
+    <attribute name="穴"/>
+    <attribute name="墓標"/>
+    <attribute name="焚火"/>
+    <attribute name="魔方陣"/>
+    <attribute name="はしご"/>
+    <attribute name="案山子"/>
+    <attribute name="苗"/>
+    <attribute name="作物"/>
+    <attribute name="井戸"/>
+    <attribute name="桶"/>
+    <attribute name="ポスト"/>
+    <attribute name="石階段"/>
+    <attribute name="木階段"/>
+    <attribute name="木橋"/>
+    <attribute name="石橋"/>
+    <attribute name="木床"/>
+    <attribute name="石床"/>
+    <attribute name="舗装道路"/>
+    <attribute name="絨毯"/>
+    <attribute name="窓"/>
+    <attribute name="木壁"/>
+    <attribute name="石壁"/>
+    <attribute name="鉄壁"/>
+    <attribute name="ドア"/>
+    <attribute name="屋根"/>
+    <attribute name="煙突"/>
+    <attribute name="看板"/>
+    <attribute name="入口"/>
+    <attribute name="杭"/>
+    <attribute name="壁画"/>
+    <attribute name="机"/>
+    <attribute name="椅子"/>
+    <attribute name="棚"/>
+    <attribute name="本棚"/>
+    <attribute name="ベッド"/>
+    <attribute name="ドレッサー"/>
+    <attribute name="宝箱"/>
+    <attribute name="間仕切り"/>
+    <attribute name="かまど"/>
+    <attribute name="流し台"/>
+    <attribute name="時計"/>
+    <attribute name="暖炉"/>
+    <attribute name="楽器"/>
+    <attribute name="壷"/>
+    <attribute name="樽"/>
+    <attribute name="箱"/>
+    <attribute name="薪"/>
+    <attribute name="藁"/>
+    <attribute name="籠"/>
+    <attribute name="袋"/>
+    <attribute name="柱"/>
+    <attribute name="彫像"/>
+    <attribute name="噴水"/>
+    <attribute name="石碑"/>
+    <attribute name="植木鉢"/>
+    <attribute name="本"/>
+    <attribute name="食器"/>
+    <attribute name="調理器具"/>
+    <attribute name="食べ物"/>
+    <attribute name="紙"/>
+    <attribute name="筆記具"/>
+    <attribute name="蝋燭"/>
+    <attribute name="瓶"/>
+    <attribute name="武器"/>
+    <attribute name="火器"/>
+    <attribute name="人形"/>
+    <attribute name="盾"/>
+    <attribute name="鎧"/>
+    <attribute name="兜"/>
+    <attribute name="水晶玉"/>
+    <attribute name="貨幣"/>
+    <attribute name="スイッチ"/>
+    <attribute name="レバー"/>
+    <attribute name="骨"/>
+    <attribute name="土砂"/>
+    <attribute name="機械"/>
+    <attribute name="松明"/>
+    
+    
+    
+</kinugasaChipAttribute>

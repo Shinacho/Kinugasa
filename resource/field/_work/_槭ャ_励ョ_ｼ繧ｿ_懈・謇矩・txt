@@ -1,0 +1,48 @@
+マップデータの作成手順
+
+データ入力にplatinum（http://www.vector.co.jp/soft/win95/game/se231004.html）を使います。
+しかし、KGFではちょっと扱いづらい形式なので、出力を変換してから使用します。
+
+チップセット画像はpng形式で用意します。しかし、platinumでは読み込めないので、データ入力の際には、bmp形式を使用します。
+この画像形式の変換にgimpがあると便利です。
+
+
+■ChipSetの作り方
+1.チップセット画像のpngをGIMPでbmpに変換する（platinumがbmpじゃないと読み込めないためそのために）
+2.bmpに変換するとアルファチャンネルが破棄されるので、素材の背景色をペイントかなにかのスポイトで抽出し、RGBを調べておく
+　これはplatinumでの背景色透過設定に使う。
+3.kinugasa.field.FieldMapResourceUtil#printImageIdでチップセット画像（png）を読み込ませて
+　IDを標準出力に出す。
+4.全IDを「ChipAttr作成用.xlsx」のA列の青い部分にテキストで貼る（6桁になるように文字列で貼る！！！）
+　IDの見方・・・前3桁＝列番号（0スタート）、後3桁＝行番号（0スタート）
+　platinumのパーツウインドウの右下のほうに出る「選択範囲」のXYと一致するが、行列が逆なので注意（【【【KGFではYYYXXX形式】】】）。
+5.B列の黄色の部分に、対応するChipAttributeを入力する
+6.E列の緑の部分をコピーし、ChipSetのXMLに貼り付け
+
+なお、チップセット画像が大きすぎるなどで、ChipSetの定義がめんどくさすぎる場合、MapDataで使っているものだけ定義しても動きます。
+（マップデータを変えた際に、未定義のChipが登場すると落ちるので注意。）
+
+■MapDataの作り方
+1.ppjファイルをplatinumでロード、編集　（データサイズは16ビットを選択）
+2.CSV Type1で出力
+3.kinugasa.field.FieldMapResourceUtil#platinumCsvType1ToKGCsvで変換
+4.MapData.xmlに貼り付け。csvの改行位置に/を挿入
+5.複数レイヤーを使う場合は、PLatinumの出力を空行で切って、それぞれ変換し、xmlにlayer属性を定義すること。
+
+
+■注意事項
+ChipSetのSpriteSheetに透明な画像が無い場合など、手動でチップセットを追加しなければならない場合があります。
+MapChip名未定義で落ちる場合、platinumの透過チップの名前が、チップセットに入っていないことが多いです。
+こんな感じで追加し、csvの透明にしたい座標をこの名前にすればOK。
+
+ChipSetStorage.getInstance().get("base.png").add(new MapChip("999999", new SerializableImage(ImageUtil.newImage(16, 16)), ChipAttributeStorage.getInstance().get("VOID")));
+ChipSetStorage.getInstance().get("base.png").add(new MapChip("999000", new SerializableImage(ImageUtil.newImage(16, 16)), ChipAttributeStorage.getInstance().get("CLOSE")));
+
+
+■おまけ
+①雲のパターンファイルはどうやって作るの？
+　gimpのプラズマソリッドを使います。そのままでは上下左右にループしたときに不自然になるので、
+　上下反転・左右反転で4枚つないで使用します。画像サイズが大きいほうが自然になります。
+　自力で描けるという雲パターン描画自信ニキは自分で描いてもOK。
+
+

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!--
+The MIT License
+
+Copyright 2016 Dra.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<kinugasaFieldMapData windowW="720" windowH="480">
+
+
+    <background image="resource/field/image/seaChip16.png" dir="s,e,w" frame="36" w="16" h="16" drawSize="32" />
+
+    <before image="resource/field/image/cloud.png" angle="123.1f" speed="0.5f" transparent="0.075f" drawMag="5" />	
+	
+	<text data="resource/field/data/text/text.xml" />
+	
+	<load>
+	</load>
+
+	<stepon>
+	</stepon>
+
+	<dispose>
+	</dispose>
+
+	<other>
+	</other>
+	
+	<npc image="resource/char/pipo-charachip007a.png" x="3" y="3" tid="001"/>
+	
+	
+	
+	<node name = "ND_03_0002" x="0" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0003" x="1" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0004" x="2" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0005" x="3" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0006" x="4" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0007" x="5" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0008" x="6" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0009" x="7" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0010" x="8" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0001" x="9" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0011" x="10" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0012" x="11" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0013" x="12" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0014" x="13" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0015" x="14" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	<node name = "ND_03_0016" x="15" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
+	
+	
+	<node name = "ND_03_EXIT" x="8" y="2" />
+	
+
+	<layer chipSet="base.png" mg="2" z="0" lineSeparator ="/">
+016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+021001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+021001,021001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+021001,021001,021001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+021001,021001,021001,021001,021001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+021001,021001,021001,021001,021001,021001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
+021001,021001,021001,021001,021001,021001,021001,021001,016001,016001,016001,016001,016001,016001,016001,016001/
+021001,021001,021001,021001,021001,021001,021001,021001,021001,016001,016001,016001,016001,016001,016001,016001/
+021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,016001,016001,016001,016001,016001/
+021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,016001,016001/
+021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,016001/
+	</layer>
+    
+    
+ 
+    
+</kinugasaFieldMapData>

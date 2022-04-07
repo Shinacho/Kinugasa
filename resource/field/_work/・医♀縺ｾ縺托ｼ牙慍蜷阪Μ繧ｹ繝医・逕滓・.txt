@@ -1,0 +1,73 @@
+21:08 2016/05/09
+@author : Dra
+
+実はこのゲームの地名は、ランダムに決められております。
+よい地名が思いつかなかったので、FC版DQ1で使われている「よく使うカタカナ」をランダムに結合して生成したのだ！
+
+
+生成コードのサンプル
+		String values[] = "イ カ キ コ シ ス タ ト ヘ ホ マ ミ ム メ ラ リ ル レ ロ ン ガ ギ ゴ ジ ズ ダ ド ベ ぺ ポ ー".split(" ");
+
+		//RandomはKGFのランダムクラス。d6やd8メソッドでも自然な感じになるぞ！
+		for (int i = 0; i < 64; i++) {
+			int length = Random.dice(1, 5) + 1;
+			StringBuilder str = new StringBuilder();
+			for (int l = 0; l < length; l++) {
+				String val = values[Math.abs(Random.randomInt()) % values.length];
+				while (l == 0 && ("ン".equals(val) || "ー".equals(val))) {
+					val = values[Math.abs(Random.randomInt()) % values.length];
+				}
+				while (str.toString().endsWith("ー") && "ー".equals(val)) {
+					val = values[Math.abs(Random.randomInt()) % values.length];
+				}
+				str.append(val);
+			}
+			System.out.println(str);
+		}
+
+↓生成結果からそれっぽいのを抽出したリスト
+==========================================================================================
+/ベルマ
+シトシ
+ルマベスぺラタ
+トスド
+キンロ
+ミリリカム
+ルジ
+ドラズ
+ミラマ
+ヘイムヘロ
+マシシカカミ
+スレガロ
+ミルカレラコ
+リカ
+レホレポスキ
+ルールダポ
+コルン
+ジイヘロ
+ムラドム
+ヘダシター
+ぺーメガ
+トルジルーポ
+ギヘムド
+ムラガラーリ
+タタンゴレリ
+レジマシーゴ
+ミベリ
+ガコラリトガ
+リーキダ
+コラヘキタ
+カシホダ
+レホカ
+ラレト
+ドーリ
+カダラ
+リベルリ
+マロイ
+ラカベリロ
+トラト
+ぺキマレララ
+ギぺスイルズ
+メターダ
+トージ
+
