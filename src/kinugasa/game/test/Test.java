@@ -32,7 +32,10 @@ import kinugasa.game.field4.D2Idx;
 import kinugasa.game.field4.FieldEventStorage;
 import kinugasa.game.field4.FieldEventStorageStorage;
 import kinugasa.game.field4.FieldMap;
+import kinugasa.game.field4.FieldMapCameraMode;
+import kinugasa.game.field4.FieldMapCharacter;
 import kinugasa.game.field4.FieldMapStorage;
+import kinugasa.game.field4.FourDirAnimation;
 import kinugasa.game.field4.MapChipAttributeStorage;
 import kinugasa.game.field4.MapChipSetStorage;
 import kinugasa.game.field4.VehicleStorage;
@@ -40,14 +43,21 @@ import kinugasa.game.input.GamePadButton;
 import kinugasa.game.input.InputState;
 import kinugasa.game.input.InputType;
 import kinugasa.game.input.Keys;
-import static kinugasa.game.input.Keys.ENTER;
 import kinugasa.game.ui.FPSLabel;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.game.ui.TextStorageStorage;
 import kinugasa.object.KVector;
+import kinugasa.graphics.Animation;
+import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.SpriteSheet;
+import kinugasa.object.FourDirection;
+import kinugasa.resource.KImage;
+import kinugasa.resource.sound.Sound;
+import kinugasa.resource.sound.SoundBuilder;
 import kinugasa.resource.sound.SoundLoader;
+import kinugasa.util.FrameTimeCounter;
 
 /**
  * ゲームのテスト実装です.
@@ -85,18 +95,39 @@ public class Test extends GameManager {
 		FieldMapStorage.getInstance().readFromXML("resource/field/data/mapBuilder/builder.xml");
 		int w = (int) ((float) (720 / 32 / 2) - 1);
 		int h = (int) ((float) (480 / 32 / 2) + 1);
-		FieldMap.setPlayerLocation(w, h);
 		fm = FieldMapStorage.getInstance().get("01").build();
-//		fm.setCurrentIdx(new D2Idx(20, 22));
-		fm.setCurrentIdx(new D2Idx(0, 0));
+		fm.setCurrentIdx(new D2Idx(21, 21));
+
+		fm.getCamera().setMode(FieldMapCameraMode.FREE);
 
 		FieldMap.setDebugMode(true);
-
+		// プレイヤーキャラクターの表示座標計算
+		int screenW = FieldMapStorage.getScreenWidth();
+		int screenH = FieldMapStorage.getScreenHeight();
+		float x = screenW / 2 - 16;
+		float y = screenH / 2 - 16;
+		c = new FieldMapCharacter(x, y, 32, 32, new D2Idx(21, 21),
+				new FourDirAnimation(
+						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/pipo-charachip007a.png").rows(0, 32, 32).images()),
+						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/pipo-charachip007a.png").rows(32, 32, 32).images()),
+						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/pipo-charachip007a.png").rows(64, 32, 32).images()),
+						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/pipo-charachip007a.png").rows(96, 32, 32).images())
+				),
+				FourDirection.NORTH
+		);
+		fm.setPlayerCharacter(c);
+		fm.getCamera().updateToCenter();
+		//
+		//----------------------------------------------------------------------
+		//
+		screenShot = new SoundBuilder("resource/se/screenShot.wav").builde().load();
 	}
 	FieldMap fm;
+	FieldMapCharacter c;
 	TextStorage ts;
 	MessageWindow mw;
 	FPSLabel fps = new FPSLabel(0, 12);
+	private Sound screenShot;
 
 	@Override
 	protected void dispose() {
@@ -133,10 +164,36 @@ public class Test extends GameManager {
 				mw.prevSelect();
 			}
 		}
+		if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
+			fm.getCamera().setMode(FieldMapCameraMode.FOLLOW_TO_CENTER);
+		}
+		if (is.isPressed(GamePadButton.RB, InputType.SINGLE)) {
+			fm.getCamera().setMode(FieldMapCameraMode.FREE);
+		}
 
+		//フィールドマップのカメラ移動
 		float speed = VehicleStorage.getInstance().getCurrentVehicle().getSpeed();
-		fm.setVector(new KVector(is.getGamePadState().sticks.LEFT.getLocation(speed)).reverse());
+		fm.setVector(new KVector(is.getGamePadState().sticks.LEFT.getLocation(speed)));
 		fm.move();
+		//プレイヤーキャラクターの向き更新
+		if (fm.getCamera().getMode() == FieldMapCameraMode.FOLLOW_TO_CENTER) {
+			if (is.getGamePadState().sticks.LEFT.is(FourDirection.EAST)) {
+				c.to(FourDirection.EAST);
+			} else if (is.getGamePadState().sticks.LEFT.is(FourDirection.WEST)) {
+				c.to(FourDirection.WEST);
+			}
+			if (is.getGamePadState().sticks.LEFT.is(FourDirection.NORTH)) {
+				c.to(FourDirection.NORTH);
+			} else if (is.getGamePadState().sticks.LEFT.is(FourDirection.SOUTH)) {
+				c.to(FourDirection.SOUTH);
+			}
+		}
+		//スクリーンショット系の処理
+		if (is.isPressed(Keys.M, InputType.SINGLE)) {
+			KImage image = fm.createMiniMap(0.25f, false, false, true);
+			ImageUtil.save("resource/test/miniMap.png", image.get());
+			screenShot.stopAndPlay();
+		}
 	}
 
 	@Override
