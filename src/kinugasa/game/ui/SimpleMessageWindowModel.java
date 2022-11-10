@@ -40,6 +40,9 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	private static String nextIcon = ">";
 	private static boolean iconVisible = false;
 
+	private static String selectIcon = ">";
+	private static boolean selectIconVisible = false;
+
 	public static void setNextIcon(String nextIcon) {
 		SimpleMessageWindowModel.nextIcon = nextIcon;
 	}
@@ -47,6 +50,15 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	public static String getNextIcon() {
 		return nextIcon;
 	}
+
+	public static String getSelectIcon() {
+		return selectIcon;
+	}
+
+	public static void setSelectIcon(String selectIcon) {
+		SimpleMessageWindowModel.selectIcon = selectIcon;
+	}
+
 	private static TimeCounter tc = new FrameTimeCounter(30);
 
 	private Color border1 = Color.WHITE;
@@ -125,6 +137,20 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 		for (String t : text) {
 			g2.drawString(t, x, y);
 			y += BORDER_SIZE * 2 + font.getFont().getSize2D();
+		}
+		y += BORDER_SIZE * 2 + font.getFont().getSize2D();
+		// オプションと選択の表示
+		if (mw.isAllVisible()) {
+			if (mw.getText() instanceof Choice) {
+				for (int i = 0; i < mw.getChoice().getOptions().size(); i++) {
+					if (i == mw.getSelect()) {
+						g2.drawString(selectIcon, x, y);
+					}
+					String optionVal = mw.getChoice().getOptions().get(i).getText();
+					g2.drawString(optionVal, x + (font.getFont().getSize2D() * 2), y);
+					y += BORDER_SIZE * 2 + font.getFont().getSize2D();
+				}
+			}
 		}
 
 		if (mw.isAllVisible()) {

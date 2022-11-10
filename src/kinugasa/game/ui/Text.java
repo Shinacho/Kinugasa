@@ -37,7 +37,7 @@ public class Text implements Nameable {
 
 	private final String name;
 	private final String text;
-	private FrameTimeCounter tc = new FrameTimeCounter(0);
+	private TimeCounter tc = new FrameTimeCounter(0);
 	private int visibleIdx = 0;
 	private String nextId;
 	private static int autoId = 0;
@@ -56,14 +56,14 @@ public class Text implements Nameable {
 		this.text = text;
 	}
 
-	public Text(String text, FrameTimeCounter tc) {
+	public Text(String text, TimeCounter tc) {
 		this.name = autoId++ + "";
 		this.text = text;
 		this.tc = tc;
 		visibleIdx = 0;
 	}
 
-	public Text(String name, String text, FrameTimeCounter tc, int visibleIdx) {
+	public Text(String name, String text, TimeCounter tc, int visibleIdx) {
 		this.name = name;
 		this.text = text;
 		this.tc = tc;
@@ -94,7 +94,7 @@ public class Text implements Nameable {
 		return visibleIdx >= text.length() ? text : text.substring(0, visibleIdx);
 	}
 
-	public FrameTimeCounter getTc() {
+	public TimeCounter getTc() {
 		return tc;
 	}
 

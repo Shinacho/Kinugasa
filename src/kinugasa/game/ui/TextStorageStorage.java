@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 hiroki.
+ * Copyright 2022 Dra.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,37 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.field6;
+package kinugasa.game.ui;
 
-import java.util.List;
-import kinugasa.game.field.FieldMapResourceUtil;
-import kinugasa.game.field.MapChipSet;
+import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
 import kinugasa.resource.text.FileNotFoundException;
 import kinugasa.resource.text.IllegalXMLFormatException;
+import kinugasa.resource.text.XMLElement;
+import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
 
 /**
+ * テキストストレージのパスを保管する唯一の場所です。
  *
- * @author hiroki
+ * @vesion 1.0.0 - 2022/11/08_21:29:42<br>
+ * @author Dra211<br>
  */
-public class HexFieldMap implements XMLFileSupport{
-    
-    private MapChipSet chipSet;
-	private List<HexFieldMapLayer> layer;
+public class TextStorageStorage extends Storage<TextStorage> implements XMLFileSupport {
 
-	public HexFieldMap() {
-		
+	private static final TextStorageStorage INSTANCE = new TextStorageStorage();
+
+	public static TextStorageStorage getInstance() {
+		return INSTANCE;
 	}
-	
-	public void load(){
-		layer.forEach(l->l.load());
+
+	private TextStorageStorage() {
 	}
-	
 
 	@Override
 	public void readFromXML(String filePath) throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
+		XMLFile data = new XMLFile(filePath);
+		if (!data.exists()) {
+			throw new FileNotFoundException(filePath + " is not found");
+		}
+		XMLElement root = data.load().getFirst();
+
+		for (XMLElement e : root.getElement("textFile")) {
+			super.add(new TextStorage(e.getAttributes().get("name").getValue(),
+					new XMLFile(e.getAttributes().get("data").getValue())));
+		}
+		data.dispose();
+
+		printAll(System.out);
+
 	}
-	
-    
+
 }

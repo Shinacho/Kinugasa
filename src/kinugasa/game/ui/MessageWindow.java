@@ -69,6 +69,10 @@ public class MessageWindow extends BasicSprite {
 		this.text = text;
 	}
 
+	public void setTextFromId(String id) {
+		setText(textStorage.get(id));
+	}
+
 	public boolean isAllVisible() {
 		return text.isAllVisible();
 	}
@@ -84,6 +88,7 @@ public class MessageWindow extends BasicSprite {
 
 	public void reset() {
 		text.reset();
+		this.select = 0;
 	}
 
 	public boolean hasNext() {
@@ -92,6 +97,46 @@ public class MessageWindow extends BasicSprite {
 
 	public void next() {
 		setText(textStorage.get(text.getNextId()));
+	}
+
+	public void choicesNext() {
+		setText(textStorage.get(getChoiceOption().getNextId()));
+	}
+
+	public boolean isChoice() {
+		return (getText() instanceof Choice);
+	}
+
+	public Choice getChoice() {
+		return (Choice) getText();
+	}
+
+	private int select = 0;
+
+	public int getSelect() {
+		return select;
+	}
+
+	public void setSelect(int select) {
+		this.select = select;
+	}
+
+	public void nextSelect() {
+		select++;
+		if (getChoice().getOptions().size() <= select) {
+			select = 0;
+		}
+	}
+
+	public void prevSelect() {
+		select--;
+		if (0 > select) {
+			select = getChoice().getOptions().size() - 1;
+		}
+	}
+
+	public Text getChoiceOption() {
+		return getChoice().getOptions().get(select);
 	}
 
 }

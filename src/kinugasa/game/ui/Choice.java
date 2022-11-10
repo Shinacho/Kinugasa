@@ -21,14 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package kinugasa.game.ui;
 
-package kinugasa.game.field6;
+import java.util.List;
+import kinugasa.resource.NameNotFoundException;
+import kinugasa.util.FrameTimeCounter;
 
 /**
  *
- * @vesion 1.0.0 - 2022/01/03_14:35:19<br>
+ * @vesion 1.0.0 - 2022/11/08_9:33:24<br>
  * @author Dra211<br>
  */
-public class HexFieldMapLoader {
+public class Choice extends Text {
+
+	private List<Text> options;
+
+	public Choice(List<Text> options, String name, String text, FrameTimeCounter tc, int visibleIdx) {
+		super(name, text, tc, visibleIdx);
+		this.options = options;
+	}
+
+	public List<Text> getOptions() {
+		return options;
+	}
+
+	public Text getOption(String name) throws NameNotFoundException {
+		for (Text t : options) {
+			if (t.getName().equals(name)) {
+				return t;
+			}
+		}
+		throw new NameNotFoundException(name + " is not found");
+	}
 
 }

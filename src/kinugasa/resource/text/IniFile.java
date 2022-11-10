@@ -191,6 +191,15 @@ public class IniFile implements Input<IniFile>, Output {
 			return Collections.EMPTY_LIST;
 
 		}
+		
+		public int[] asCsvInt(){
+			List<String> val  = asCsv();
+			int[] ar = new int[val.size()];
+			for(int i=0;i<val.size(); i ++ ){
+				ar[i] = Integer.parseInt(val.get(i));
+			}
+			return ar;
+		}
 
 		public Value asCsvOf(int i) {
 			return new Value(asCsv().get(i));

@@ -24,6 +24,8 @@
 package kinugasa.game.input;
 
 import java.awt.geom.Point2D;
+import kinugasa.object.FourDirection;
+import kinugasa.object.KVector;
 
 /**
  *
@@ -79,5 +81,20 @@ public class GamePadStick extends InputDeviceState {
 	@Override
 	public boolean isEmptyInput() {
 		return NOTHING.equals(new Point2D.Float(x, y));
+	}
+
+	public boolean is(FourDirection dir) {
+		KVector v = new KVector(new Point2D.Float(x, y));
+		switch (dir) {
+			case NORTH:
+				return v.checkRange(FourDirection.NORTH.getAngle(), 90);
+			case EAST:
+				return v.checkRange(FourDirection.EAST.getAngle(), 90);
+			case WEST:
+				return v.checkRange(FourDirection.WEST.getAngle(), 90);
+			case SOUTH:
+				return v.checkRange(FourDirection.SOUTH.getAngle(), 90);
+		}
+		throw new InternalError(dir + " is not found");
 	}
 }

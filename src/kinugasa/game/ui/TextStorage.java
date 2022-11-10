@@ -39,23 +39,34 @@ import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
 import kinugasa.util.FrameTimeCounter;
+import kinugasa.util.TimeCounter;
 
 /**
  *
  * @vesion 1.0.0 - 2021/11/25_13:56:40<br>
  * @author Dra211<br>
  */
-public class TextStorage extends Storage<Text> implements XMLFileSupport {
+public class TextStorage extends Storage<Text> implements Nameable {
+
+	private String name;
+	private XMLFile data;
+
+	public TextStorage(String name, XMLFile data) {
+		this.name = name;
+		this.data = data;
+	}
 
 	@Override
-	public void readFromXML(String filePath) throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
-		XMLFile file = new XMLFile(filePath);
-		if (!file.getFile().exists()) {
-			throw new FileNotFoundException(file + " is not found");
+	public String getName() {
+		return name;
+	}
+
+	public TextStorage build() throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
+		if (!data.getFile().exists()) {
+			throw new FileNotFoundException(data + " is not found");
 		}
 
-		XMLElement root = file.load().getFirst();
-		String lineSep = root.getAttributes().get("lSep").getValue();
+		XMLElement root = data.load().getFirst();
 		for (XMLElement e : root.getElement("text")) {
 			String id = e.getAttributes().get("id").getValue();
 			String value = e.getValue();
@@ -76,8 +87,38 @@ public class TextStorage extends Storage<Text> implements XMLFileSupport {
 			add(t);
 
 		}
+		for (XMLElement e : root.getElement("choice")) {
+			if (e.getAttributes().contains("next")) {
+				throw new IllegalXMLFormatException("Choice cannot have Next : " + e);
+			}
+			String id = e.getAttributes().get("id").getValue();
+			String value = e.getAttributes().get("text").getValue();
+			String tcs = e.getAttributes().get("tc").getValue();
+			List<Text> options = new ArrayList<>();
+			for (XMLElement option : e.getElement("option")) {
+				String oid = option.getAttributes().get("id").getValue();
+				String ov = option.getValue();
+				Text t = new Text(oid, ov, TimeCounter.TRUE, Integer.MAX_VALUE);
+				if (option.getAttributes().contains("next")) {
+					t.setNextId(option.getAttributes().get("next").getValue());
+				}
+				options.add(t);
+			}
+			List<Integer> tcvalues;
+			if (tcs.contains(",")) {
+				tcvalues = Arrays.stream(tcs.split(",")).map((s) -> Integer.parseInt(s)).collect(Collectors.toList());
+			} else {
+				tcvalues = Arrays.asList(Integer.parseInt(tcs));
+			}
+			FrameTimeCounter ftc = new FrameTimeCounter(tcvalues);
+			add(new Choice(options, id, value, ftc, 0));
+		}
+		data.dispose();
+
 		GameLog.printIfUsing(Level.ALL, getAll().toString());
 		printAll(System.out);
+		
+		return this;
 	}
 
 	public MessageWindow createWindow(float x, float y, float w, float h, String id) throws NameNotFoundException {
@@ -86,5 +127,11 @@ public class TextStorage extends Storage<Text> implements XMLFileSupport {
 
 	public MessageWindow createWindow(float x, float y, float w, float h, Text t) {
 		return new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), this, t);
+	}
+
+	public void resetAll() {
+		for (Text t : this) {
+			t.reset();
+		}
 	}
 }
