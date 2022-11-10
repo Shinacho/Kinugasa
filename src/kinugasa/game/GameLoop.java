@@ -116,6 +116,11 @@ public final class GameLoop implements Runnable {
 			if (ex instanceof Exception) {
 				((Exception) ex).printStackTrace();
 			}
+			Throwable t = ex;
+			while (t.getCause() != null) {
+				System.out.println(t.getCause());
+				t = t.getCause();
+			}
 			GameLog.print(Level.WARNING, ex);
 			System.exit(1);
 		}

@@ -35,12 +35,8 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -54,13 +50,20 @@ import kinugasa.resource.TempFileStorage;
 import kinugasa.util.MathUtil;
 
 /**
+ * ゲームのスーパークラスです.
  *
  * @vesion 1.0.0 - 2021/08/17_5:41:45<br>
  * @author Dra211<br>
  */
 public abstract class GameManager {
 
+	/**
+	 * 起動時設定.
+	 */
 	private GameOption option;
+	/**
+	 * ウインドウ.
+	 */
 	private AWTGameWindow window;
 	private GameLoop loop;
 	private GameTimeManager gameTimeManager;
@@ -75,7 +78,6 @@ public abstract class GameManager {
 	protected GameManager(GameOption option) throws IllegalStateException {
 		this.option = option;
 		updateOption();
-
 	}
 
 	protected final void updateOption() {
@@ -222,16 +224,34 @@ public abstract class GameManager {
 		System.exit(0);
 	}
 
+	/**
+	 * ゲームを開始する手順を記述します.
+	 */
 	protected abstract void startUp();
 
+	/**
+	 * ゲームを破棄する手順を記述します.
+	 */
 	protected abstract void dispose();
 
+	/**
+	 * ゲームワールドを更新する処理を記述します.
+	 *
+	 * @param gtm ゲームタイムマネージャーの唯一のインスタンス.
+	 */
 	protected abstract void update(GameTimeManager gtm);
 
+	/**
+	 * 画面を描画する処理を記述します.
+	 *
+	 * @param gc ウインドウの内部領域に対応するグラフィックスコンテキスト.
+	 */
 	protected abstract void draw(GraphicsContext gc);
 
+	/**
+	 * 画面をリペイントします. このメソッドは内部用です。呼び出さないでください。
+	 */
 	final void repaint() {
-
 		g = (Graphics2D) graphicsBuffer.getDrawGraphics();
 		g.setClip(clippingRectangle);
 		g.clearRect(clippingRectangle.x, clippingRectangle.y,

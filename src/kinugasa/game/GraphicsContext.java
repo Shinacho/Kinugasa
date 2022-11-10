@@ -42,7 +42,7 @@ public class GraphicsContext {
 
 	private Graphics2D g;
 
-	GraphicsContext(Graphics2D g) {
+	public GraphicsContext(Graphics2D g) {
 		this.g = g;
 	}
 
@@ -97,13 +97,22 @@ public class GraphicsContext {
 	}
 
 	public void fillRect(int i, int i0, int i1, int i2) {
+		//TODO;
+		System.out.println("–¢ŽÀ‘•");
 	}
 
 	public void drawRect(int i, int i0, int i1, int i2) {
+		//TODO;
+		System.out.println("–¢ŽÀ‘•");
 	}
 
 	public void clearRect(int i, int i0, int i1, int i2) {
+		//TODO;
+		System.out.println("–¢ŽÀ‘•");
 	}
 
+	public void dispose() {
+		g.dispose();
+	}
 
 }
