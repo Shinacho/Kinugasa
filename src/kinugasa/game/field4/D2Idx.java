@@ -23,6 +23,8 @@
  */
 package kinugasa.game.field4;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kinugasa.resource.Nameable;
 
 /**
@@ -31,7 +33,7 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/11/09_18:18:35<br>
  * @author Dra211<br>
  */
-public class D2Idx implements Nameable{
+public class D2Idx implements Nameable, Cloneable {
 
 	public int x;
 	public int y;
@@ -41,11 +43,14 @@ public class D2Idx implements Nameable{
 		this.y = y;
 	}
 
+	public D2Idx(D2Idx idx) {
+		this(idx.x, idx.y);
+	}
+
 	@Override
 	public final String getName() {
-		return x + ","+ y;
+		return x + "," + y;
 	}
-	
 
 	@Override
 	public String toString() {
@@ -79,6 +84,15 @@ public class D2Idx implements Nameable{
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	protected D2Idx clone() {
+		try {
+			return (D2Idx) super.clone();
+		} catch (CloneNotSupportedException ex) {
+			throw new InternalError(ex);
+		}
 	}
 
 }

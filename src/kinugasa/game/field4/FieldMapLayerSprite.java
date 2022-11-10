@@ -23,7 +23,9 @@
  */
 package kinugasa.game.field4;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import kinugasa.game.GraphicsContext;
 import kinugasa.graphics.ImageUtil;
@@ -67,6 +69,10 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 		g.dispose();
 	}
 
+	public BufferedImage getImage() {
+		return fieldMapImage;
+	}
+
 	public MapChip getChip(int x, int y) {
 		return data[y][x];
 	}
@@ -85,6 +91,15 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 			return;
 		}
 		g.drawImage(fieldMapImage, (int) getX(), (int) getY());
+	}
+
+	public void debugDraw(GraphicsContext g, D2Idx idx, Point2D.Float base, int chipW, int chipH) {
+		float drawX = base.x + (idx.x * chipW);
+		float drawY = base.y + (idx.y * chipH);
+		Graphics2D g2 = g.create();
+		g2.setColor(Color.CYAN);
+		g2.drawRect((int) drawX, (int) drawY, chipW, chipH);
+		g2.dispose();
 	}
 
 	public float getMg() {

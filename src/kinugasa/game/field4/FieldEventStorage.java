@@ -52,17 +52,17 @@ public class FieldEventStorage extends Storage<FieldEvent> implements Nameable, 
 		clear();
 	}
 
-	public Optional<FieldEvent> get(int x, int y) {
+	public FieldEvent get(int x, int y) {
 		return get(new D2Idx(x, y));
 	}
 
-	public Optional<FieldEvent> get(D2Idx p) {
+	public FieldEvent get(D2Idx p) {
 		for (FieldEvent e : this) {
 			if (e.getLocation().equals(p)) {
-				return Optional.of(e);
+				return e;
 			}
 		}
-		return Optional.empty();
+		return null;
 	}
 
 }

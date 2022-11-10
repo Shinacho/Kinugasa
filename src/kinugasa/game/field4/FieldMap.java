@@ -23,9 +23,9 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.object.FourDirection;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -37,11 +37,14 @@ import kinugasa.game.ui.TextStorageStorage;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.RenderingQuality;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.AnimationSprite;
 import kinugasa.object.BasicSprite;
+import kinugasa.object.Drawable;
 import kinugasa.object.KVector;
 import kinugasa.resource.Disposable;
+import kinugasa.resource.KImage;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
@@ -52,10 +55,7 @@ import kinugasa.util.FrameTimeCounter;
  * @vesion 1.0.0 - 2022/11/08_17:18:11<br>
  * @author Dra211<br>
  */
-public class FieldMap extends BasicSprite implements Nameable, Disposable {
-
-	private final String name;
-	private final XMLFile data;
+public class FieldMap implements Drawable, Nameable, Disposable {
 
 	public FieldMap(String name, XMLFile data) {
 		this.name = name;
@@ -67,40 +67,21 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 		return name;
 	}
 
-	/**
-	 * 画面に対するプレイヤーの表示位置＝中心のタイルの座標の下駄.
-	 */
-	private static int playerLocationX, playerLocationY;
-	/**
-	 * プレイヤー（＝中心）の現在インデックス.
-	 */
-	private D2Idx currentIdx;
-
-	public static int getPlayerLocationX() {
-		return playerLocationX;
+	public static void setDebugMode(boolean debugMode) {
+		FieldMap.debugMode = debugMode;
 	}
 
-	public static int getPlayerLocationY() {
-		return playerLocationY;
+	public static boolean isDebugMode() {
+		return debugMode;
 	}
 
-	public static void setPlayerLocationX(int playerLocationX) {
-		FieldMap.playerLocationX = playerLocationX;
-
-	}
-
-	public static void setPlayerLocationY(int playerLocationY) {
-		FieldMap.playerLocationY = playerLocationY;
-	}
-
-	public static void setPlayerLocation(int x, int y) {
-		setPlayerLocationX(x);
-		setPlayerLocationY(y);
-	}
-
+	private final String name;
+	private final XMLFile data;
+	//------------------------------------------------
 	private BackgroundLayerSprite backgroundLayerSprite; //nullable
 	private List<FieldMapLayerSprite> backlLayeres = new ArrayList<>();
-	private List<BasicSprite> character = new ArrayList<>();
+	private FieldMapCharacter playerCharacter;
+	private List<FieldMapCharacter> character = new ArrayList<>();
 	private List<FieldMapLayerSprite> frontlLayeres = new ArrayList<>();
 	private List<FieldAnimationSprite> frontAnimation = new ArrayList<>();
 	private List<BeforeLayerSprite> beforeLayerSprites = new ArrayList<>();
@@ -109,6 +90,83 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 	private FieldEventStorage fieldEventStorage;//nullable
 	private NodeStorage nodeStorage = new NodeStorage();
 	private TextStorage textStorage;//nullable
+	//------------------------------------------------
+	private FieldMapCamera camera;
+	//------------------------------------------------
+	private int chipW, chipH;//1タイルのサイズ
+	private D2Idx currentIdx;// 自キャラクタ表示データ座標
+	//------------------------------------------------
+	private static boolean debugMode = false;
+	//
+	private boolean visible = true;
+
+	public D2Idx getCurrentIdx() {
+		return currentIdx;
+	}
+
+	public BackgroundLayerSprite getBackgroundLayerSprite() {
+		return backgroundLayerSprite;
+	}
+
+	public List<FieldMapLayerSprite> getBacklLayeres() {
+		return backlLayeres;
+	}
+
+	public FieldMapLayerSprite getBaseLayer() {
+		return backlLayeres.get(0);
+	}
+
+	public List<FieldMapCharacter> getCharacter() {
+		return character;
+	}
+
+	public List<FieldMapLayerSprite> getFrontlLayeres() {
+		return frontlLayeres;
+	}
+
+	public List<FieldAnimationSprite> getFrontAnimation() {
+		return frontAnimation;
+	}
+
+	public List<BeforeLayerSprite> getBeforeLayerSprites() {
+		return beforeLayerSprites;
+	}
+
+	public NPCStorage getNpcStorage() {
+		return npcStorage;
+	}
+
+	public FieldEventStorage getFieldEventStorage() {
+		return fieldEventStorage;
+	}
+
+	public NodeStorage getNodeStorage() {
+		return nodeStorage;
+	}
+
+	public TextStorage getTextStorage() {
+		return textStorage;
+	}
+
+	public int getChipW() {
+		return chipW;
+	}
+
+	public int getChipH() {
+		return chipH;
+	}
+
+	public FieldMapCamera getCamera() {
+		return camera;
+	}
+
+	public FieldMapCharacter getPlayerCharacter() {
+		return playerCharacter;
+	}
+
+	public void setPlayerCharacter(FieldMapCharacter playerCharacter) {
+		this.playerCharacter = playerCharacter;
+	}
 
 	public FieldMap build() throws FieldMapDataException {
 		data.load();
@@ -161,7 +219,8 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 				String exitNodeName = e.getAttributes().get("exitNode").getValue();
 				String tooltip = e.getAttributes().get("tooltip").getValue();
 				NodeAccepter accepter = NodeAccepterStorage.getInstance().get(e.getAttributes().get("accepterName").getValue());
-				Node node = Node.ofInOutNode(name, tgtMapName, exitNodeName, x, y, tooltip, accepter);
+				FourDirection outDir = FourDirection.valueOf(e.getAttributes().get("outDir").getValue());
+				Node node = Node.ofInOutNode(name, tgtMapName, exitNodeName, x, y, tooltip, accepter, outDir);
 				nodeStorage.add(node);
 			}
 
@@ -172,7 +231,8 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 				String name = e.getAttributes().get("name").getValue();
 				int x = e.getAttributes().get("x").getIntValue();
 				int y = e.getAttributes().get("y").getIntValue();
-				Node node = Node.ofOutNode(name, x, y);
+				FourDirection outDir = FourDirection.valueOf(e.getAttributes().get("outDir").getValue());
+				Node node = Node.ofOutNode(name, x, y, outDir);
 				nodeStorage.add(node);
 			}
 
@@ -241,8 +301,8 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 
 		}
 		// チップサイズの取得
-		chipW = (int) (backlLayeres.get(0).getChip(0, 0).getImage().getWidth() * mg);
-		chipH = (int) (backlLayeres.get(0).getChip(0, 0).getImage().getHeight() * mg);
+		chipW = (int) (getBaseLayer().getChip(0, 0).getImage().getWidth() * mg);
+		chipH = (int) (getBaseLayer().getChip(0, 0).getImage().getHeight() * mg);
 
 		//アニメーション
 		{
@@ -258,8 +318,8 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 				images = ImageEditor.resizeAll(images, mg);
 				w *= mg;
 				h *= mg;
-				int locationX = (int) (x * (chipW * mg));
-				int locationY = (int) (y * (chipH * mg));
+				int locationX = (int) (x * (chipW));
+				int locationY = (int) (y * (chipH));
 				frontAnimation.add(new FieldAnimationSprite(new D2Idx(x, y), locationX, locationY, w, h, new Animation(tc, images)));
 			}
 
@@ -267,7 +327,7 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 		//NPC
 		{
 			//テキストストレージが空の場合フォーマットエラー
-
+			//NPCストレージの内容をキャラクタリストに全部入れること
 		}
 		//TODO
 
@@ -275,36 +335,48 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 		//TODO
 		data.dispose();
 
-		// プレイヤーロケーションの更新
-		currentIdx = new D2Idx(playerLocationX, playerLocationY);
+		// カメラ初期化
+		camera = new FieldMapCamera(this);
 
 		return this;
-	}
-	//1タイルのサイズ
-	private int chipW, chipH;
-
-	@Override
-	public void update() {
-
 	}
 
 	@Override
 	public void draw(GraphicsContext g) {
+		if (!visible) {
+			return;
+		}
 		if (backgroundLayerSprite != null) {
 			backgroundLayerSprite.draw(g);
 		}
 		backlLayeres.forEach(e -> e.draw(g));
+		if (debugMode) {
+			backlLayeres.forEach(e -> e.debugDraw(g, currentIdx, getBaseLayer().getLocation(), chipW, chipH));
+		}
 		character.forEach(e -> e.draw(g));
+		if (playerCharacter != null) {
+			playerCharacter.draw(g);
+		}
 		frontlLayeres.forEach(e -> e.draw(g));
+		if (debugMode) {
+			frontlLayeres.forEach(e -> e.debugDraw(g, currentIdx, getBaseLayer().getLocation(), chipW, chipH));
+		}
 		frontAnimation.forEach(e -> e.draw(g));
 		beforeLayerSprites.forEach(e -> e.draw(g));
 		if (debugMode) {
+			float centerX = FieldMapStorage.getScreenWidth() / 2;
+			float centerY = FieldMapStorage.getScreenHeight() / 2;
+			Point2D.Float p1 = new Point2D.Float(centerX - chipW, centerY - chipH);
+			Point2D.Float p2 = new Point2D.Float(centerX + chipW, centerY + chipH);
+			Point2D.Float p3 = new Point2D.Float(centerX - chipW, centerY + chipH);
+			Point2D.Float p4 = new Point2D.Float(centerX + chipW, centerY - chipH);
 			Graphics2D g2 = g.create();
-			g2.setColor(Color.WHITE);
-			g2.fillOval(FieldMapStorage.getScreenWidth() / 2 - 2, FieldMapStorage.getScreenHeight() / 2 - 2, 4, 4);
 			g2.setColor(Color.RED);
-			g2.fillOval(FieldMapStorage.getScreenWidth() / 2 - 1, FieldMapStorage.getScreenHeight() / 2 - 1, 2, 2);
+			g2.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
+			g2.drawLine((int) p3.x, (int) p3.y, (int) p4.x, (int) p4.y);
 			g2.dispose();
+			System.out.print("IDX : " + currentIdx);
+			System.out.println("  FM_LOCATION : " + getBaseLayer().getLocation());
 		}
 	}
 
@@ -316,6 +388,7 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 		backlLayeres = null;
 		character.clear();
 		character = null;
+		playerCharacter = null;
 		frontlLayeres.clear();
 		frontlLayeres = null;
 		frontAnimation.clear();
@@ -337,88 +410,44 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 		}
 	}
 
-	@Override
 	public void move() {
-		super.move(); //To change body of generated methods, choose Tools | Templates.
-		if (backgroundLayerSprite != null) {
-			backgroundLayerSprite.move();
-		}
-		backlLayeres.forEach(e -> e.move());
-		character.forEach(e -> e.move());
-		frontlLayeres.forEach(e -> e.move());
-		frontAnimation.forEach(e -> e.move());
-		//プレイヤーキャラクター（中心）IDX更新
-		final float fieldMapX = ((-getX() + getVector().reverse().getLocation().x)) / chipW;
-		final float fieldMapY = ((-getY() + getVector().reverse().getLocation().y)) / chipH;
-		// プレイヤーの座標と左上のチップ位置を合成
-		//       　　　↓画面上のキャラクタの座標
-		final int x = (int) (playerLocationX + fieldMapX);
-		final int y = (int) (playerLocationY + fieldMapY);
-		currentIdx.x = x;
-		currentIdx.y = y;
-		if (debugMode) {
-			System.out.println("IDX : " + currentIdx);
-			System.out.println("FM_LOCATION : " + getLocation());
-		}
-	}
-	private static boolean debugMode = false;
-
-	public static void setDebugMode(boolean debugMode) {
-		FieldMap.debugMode = debugMode;
+		camera.move();
 	}
 
-	public static boolean isDebugMode() {
-		return debugMode;
+	public void setVector(KVector vector) {
+		camera.setVector(vector.reverse());
 	}
 
-	@Override
-	public void setVector(KVector vector
-	) {
-		super.setVector(vector); //To change body of generated methods, choose Tools | Templates.
-		if (backgroundLayerSprite != null) {
-			backgroundLayerSprite.setVector(vector);
-		}
-		backlLayeres.forEach(e -> e.setVector(vector));
-		character.forEach(e -> e.setVector(vector));
-		frontlLayeres.forEach(e -> e.setVector(vector));
-		frontAnimation.forEach(e -> e.setVector(vector));
+	public void setSpeed(float speed) {
+		camera.setSpeed(speed);
 	}
 
-	@Override
+	public void setAngle(float angle) {
+		camera.setAngle(angle);
+	}
+
 	public void setLocation(Point2D.Float location) {
-		super.setLocation(location); //To change body of generated methods, choose Tools | Templates.
-		if (backgroundLayerSprite != null) {
-			backgroundLayerSprite.setLocation(location);
-		}
-		backlLayeres.forEach(e -> e.setLocation(location));
-		frontlLayeres.forEach(e -> e.setLocation(location));
-		character.forEach(e -> e.setLocation(location));
-		float fieldMapX = getX();
-		float fieldMapY = getY();
-		for (FieldAnimationSprite s : frontAnimation) {
-			float xx = fieldMapX + (s.getIdx().x * chipW);
-			float yy = fieldMapY + (s.getIdx().y * chipH);
-			s.setLocation(xx, yy);
-		}
+		camera.setLocation(location);
 	}
 
-	@Override
 	public void setLocation(float x, float y) {
-		super.setLocation(x, y); //To change body of generated methods, choose Tools | Templates.
-		if (backgroundLayerSprite != null) {
-			backgroundLayerSprite.setLocation(x, y);
-		}
-		backlLayeres.forEach(e -> e.setLocation(x, y));
-		frontlLayeres.forEach(e -> e.setLocation(x, y));
+		camera.setLocation(x, y);
+	}
 
-		character.forEach(e -> e.setLocation(x, y));
-		float fieldMapX = getX();
-		float fieldMapY = getY();
-		for (FieldAnimationSprite s : frontAnimation) {
-			float xx = fieldMapX + (s.getIdx().x * chipW);
-			float yy = fieldMapY + (s.getIdx().y * chipH);
-			s.setLocation(xx, yy);
-		}
+	public void setX(float x) {
+		camera.setX(x);
+	}
+
+	public void setY(float y) {
+		camera.setY(y);
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 	public FieldMapTile getTile(D2Idx idx) throws ArrayIndexOutOfBoundsException {
@@ -430,10 +459,10 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 			chip.add(s.getChip(idx.x, idx.y));
 		}
 		NPC npc = npcStorage.get(idx);
-		FieldEvent event = fieldEventStorage == null ? null : fieldEventStorage.get(idx).get();
+		FieldEvent event = fieldEventStorage == null ? null : fieldEventStorage.get(idx);
 		Node node = nodeStorage.get(idx);
 
-		return new FieldMapTile(chip, npc, event, node);
+		return new FieldMapTile(chip, npc, idx.equals(currentIdx) ? playerCharacter : null, event, node);
 	}
 
 	public FieldMapTile getCurrentCenterTile() {
@@ -442,23 +471,57 @@ public class FieldMap extends BasicSprite implements Nameable, Disposable {
 
 	/**
 	 * プレイヤーの座標を更新します。x,yが中心（プレイヤーロケーション）になるようにマップの表示座標を設定します。
-	 * このメソッドでは、移動可能かどうかの判定は行いません。
+	 * このメソッドでは、移動可能かどうかの判定は行いません。移動判定はgetTileから行ってください。
 	 *
 	 * @param idx マップデータのインデックス。
 	 */
 	public void setCurrentIdx(D2Idx idx) {
-		if (backlLayeres.get(0).getDataHeight() <= idx.y || backlLayeres.get(0).getDataWidth() <= idx.x) {
-			throw new IllegalArgumentException("idx is over the data : " + idx);
+		this.currentIdx = idx.clone();
+	}
+
+	/**
+	 * フィールドマップのキャラクタとビフォアレイヤー以外を描画した画像を生成します。
+	 * バックグラウンド及びフロントアニメーションは、現在の状態が使用されます。
+	 *
+	 * @param scale 拡大率。1で等倍、0.5で50%のサイズ。
+	 * @param animation フロントアニメーションを描画するかどうか。
+	 * @param playerChara プレイヤーキャラクタ?を描画するかどうか。
+	 * @param npc npcキャラクターを描画するかどうか。
+	 * @return 指定の拡大率で描画された画像。
+	 */
+	public KImage createMiniMap(float scale, boolean npc, boolean playerChara, boolean animation) {
+
+		float w = getBaseLayer().getDataWidth() * getBaseLayer().getChip(0, 0).getImage().getWidth() * getBaseLayer().getMg();
+		float h = getBaseLayer().getDataHeight() * getBaseLayer().getChip(0, 0).getImage().getHeight() * getBaseLayer().getMg();
+
+		BufferedImage image = ImageUtil.newImage((int) w, (int) h);
+		Graphics2D g = ImageUtil.createGraphics2D(image, RenderingQuality.QUALITY);
+		if (backgroundLayerSprite != null) {
+			g.drawImage(backgroundLayerSprite.getAWTImage(), 0, 0, null);
 		}
-		this.currentIdx = idx;
-		currentIdx.x -= playerLocationX;
-		currentIdx.y -= playerLocationY;
-
-		//表示位置の計算
-		float x = -idx.x * chipW;
-		float y = -idx.y * chipH;
-
-		setLocation(x, y);
+		for (FieldMapLayerSprite s : backlLayeres) {
+			g.drawImage(s.getImage(), 0, 0, null);
+		}
+		if (npc) {
+			for (FieldMapCharacter c : character) {
+				g.drawImage(c.getAWTImage(), 0, 0, null);
+			}
+		}
+		if (playerCharacter != null && playerChara) {
+			g.drawImage(playerCharacter.getAWTImage(), 0, 0, null);
+		}
+		for (FieldMapLayerSprite s : frontlLayeres) {
+			g.drawImage(s.getImage(), 0, 0, null);
+		}
+		if (animation) {
+			for (FieldAnimationSprite a : frontAnimation) {
+				float x = chipW * a.getIdx().x;
+				float y = chipH * a.getIdx().y;
+				g.drawImage(a.getAWTImage(), (int)x, (int)y, null);
+			}
+		}
+		g.dispose();
+		return new KImage(ImageEditor.resize(image, scale));
 	}
 
 }

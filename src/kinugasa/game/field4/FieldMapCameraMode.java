@@ -23,35 +23,23 @@
  */
 package kinugasa.game.field4;
 
-import java.awt.Point;
-import kinugasa.object.Model;
-import kinugasa.resource.Nameable;
-
 /**
  *
- * @vesion 1.0.0 - 2022/11/08_19:19:27<br>
+ * @vesion 1.0.0 - 2022/11/10_16:53:30<br>
  * @author Dra211<br>
  */
-public abstract class NPCMoveModel extends Model implements Nameable {
+public enum FieldMapCameraMode {
 
-	private String name;
-
-	public NPCMoveModel(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-	
-	public abstract D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map);
-	
-	public abstract int nextMoveFrameTime(NPC n, FieldMap map);
-
-	@Override
-	public NPCMoveModel clone() {
-		return (NPCMoveModel) super.clone();
-	}
-
+	/**
+	 * キャラ移動に合わせる（キャラを常に中心に表示する）。
+	 */
+	FOLLOW_TO_CENTER,
+	/**
+	 * 追従しない。
+	 */
+	FREE,
+//	/**
+//	 * 追従するが、フィールドマップデータの端の場合、停止する。
+//	 */
+//	STOP_IN_EDGE,;
 }

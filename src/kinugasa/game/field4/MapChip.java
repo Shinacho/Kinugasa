@@ -23,7 +23,6 @@
  */
 package kinugasa.game.field4;
 
-import kinugasa.game.field.*;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.KImage;
 

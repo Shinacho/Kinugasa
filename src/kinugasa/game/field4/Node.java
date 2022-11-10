@@ -23,9 +23,9 @@
  */
 package kinugasa.game.field4;
 
-import kinugasa.game.field.*;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
+import kinugasa.object.FourDirection;
 
 /**
  *
@@ -42,6 +42,7 @@ public class Node implements Nameable {
 	private String tooltip;
 	private Sound se = null;
 	private NodeAccepter accepter;
+	private FourDirection outDir;
 
 	public enum Mode {
 		INOUT,
@@ -51,7 +52,7 @@ public class Node implements Nameable {
 	private Node() {
 	}
 
-	public static Node ofInOutNode(String name, String exitFieldMapName, String exitNodeName, int x, int y, String tooltip, NodeAccepter accepter) {
+	public static Node ofInOutNode(String name, String exitFieldMapName, String exitNodeName, int x, int y, String tooltip, NodeAccepter accepter, FourDirection outDir) {
 		Node n = new Node();
 		n.name = name;
 		n.exitFieldMapName = exitFieldMapName;
@@ -64,8 +65,8 @@ public class Node implements Nameable {
 		return n;
 	}
 
-	public static Node ofOutNode(String name, int x, int y) {
-		Node n = ofInOutNode(name, null, null, x, y, null, null);
+	public static Node ofOutNode(String name, int x, int y, FourDirection outDir) {
+		Node n = ofInOutNode(name, null, null, x, y, null, null, outDir);
 		n.mode = Mode.OUT;
 		return n;
 	}
@@ -109,6 +110,10 @@ public class Node implements Nameable {
 
 	public NodeAccepter getAccepter() {
 		return accepter;
+	}
+
+	public FourDirection getOutDir() {
+		return outDir;
 	}
 
 	@Override

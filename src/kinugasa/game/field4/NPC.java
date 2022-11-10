@@ -37,30 +37,28 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/11/08_19:20:50<br>
  * @author Dra211<br>
  */
-public class NPC extends Sprite implements Nameable {
+public class NPC extends FieldMapCharacter implements Nameable {
 
-	private Point targetLocationOnMap;
-	private Point currentIDXonMapData;
+	private D2Idx targetLocationOnMap;
+	private D2Idx currentIDXonMapData;
 	private int nextMoveFrameTime;
-
+	//
 	private String name;
-	private Point initialLocationOnMap;
+	private D2Idx initialLocationOnMap;
 	private NPCMoveModel moveModel;
 	private Vehicle vehicle;
 	private FieldMap map;
 	private String textId;
 	private Animation anime;
+	//
 
-	public Point getInitialLocationOnMap() {
-		return initialLocationOnMap;
+	public NPC() {
+		super(0, 0, 0, 0, null, null, null);
 	}
 
+	//TODO:
 	public NPCMoveModel getMoveModel() {
 		return moveModel;
-	}
-
-	public void setInitialLocationOnMap(Point initialLocationOnMap) {
-		this.initialLocationOnMap = initialLocationOnMap;
 	}
 
 	public void setMoveModel(NPCMoveModel moveModel) {
@@ -71,10 +69,9 @@ public class NPC extends Sprite implements Nameable {
 		return vehicle;
 	}
 
-	public Point getCurrentIDXonMapData() {
+	public D2Idx getCurrentIDXonMapData() {
 		return currentIDXonMapData;
 	}
-	
 
 	@Override
 	public String getName() {
@@ -102,7 +99,8 @@ public class NPC extends Sprite implements Nameable {
 //		};
 	}
 
-	private void move() {
+	@Override
+	public void move() {
 		// Xï˚å¸Ç…à⁄ìÆÇ∑ÇÈïKóvÇ™Ç†ÇÈÇ©
 		//Xé≤ÇÃTGTÇ∆ÇÃç∑ï™
 

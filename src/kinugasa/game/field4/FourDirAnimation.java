@@ -23,35 +23,53 @@
  */
 package kinugasa.game.field4;
 
-import java.awt.Point;
-import kinugasa.object.Model;
-import kinugasa.resource.Nameable;
+import kinugasa.graphics.Animation;
+import kinugasa.object.FourDirection;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/08_19:19:27<br>
+ * @vesion 1.0.0 - 2022/11/10_21:24:35<br>
  * @author Dra211<br>
  */
-public abstract class NPCMoveModel extends Model implements Nameable {
+public class FourDirAnimation {
 
-	private String name;
+	private Animation south, west, east, north;
 
-	public NPCMoveModel(String name) {
-		this.name = name;
+	public FourDirAnimation(Animation south, Animation west, Animation east, Animation north) {
+		this.south = south;
+		this.west = west;
+		this.east = east;
+		this.north = north;
 	}
 
-	@Override
-	public String getName() {
-		return name;
+	public Animation getEast() {
+		return east;
 	}
-	
-	public abstract D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map);
-	
-	public abstract int nextMoveFrameTime(NPC n, FieldMap map);
 
-	@Override
-	public NPCMoveModel clone() {
-		return (NPCMoveModel) super.clone();
+	public Animation getNorth() {
+		return north;
+	}
+
+	public Animation getSouth() {
+		return south;
+	}
+
+	public Animation getWest() {
+		return west;
+	}
+
+	public Animation get(FourDirection d) {
+		switch (d) {
+			case EAST:
+				return east;
+			case WEST:
+				return west;
+			case NORTH:
+				return north;
+			case SOUTH:
+				return south;
+		}
+		throw new InternalError(d + " is not found");
 	}
 
 }

@@ -49,8 +49,8 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 	private NPCMoveModelStorage() {
 		add(new NPCMoveModel("NOT_MOVE") {
 			@Override
-			public Point getNextTargetLocationOnMap(NPC n, FieldMap map) {
-				return n.getInitialLocationOnMap();
+			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
+				return n.getInitialIdx();
 			}
 
 			@Override
@@ -62,8 +62,8 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 1;
 
 			@Override
-			public Point getNextTargetLocationOnMap(NPC n, FieldMap map) {
-				Point tgt = new Point((Point) n.getInitialLocationOnMap().clone());
+			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
+				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
 				do {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);
@@ -88,8 +88,8 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 3;
 
 			@Override
-			public Point getNextTargetLocationOnMap(NPC n, FieldMap map) {
-				Point tgt = new Point((Point) n.getInitialLocationOnMap().clone());
+			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
+				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
 				do {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);
@@ -114,8 +114,8 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 5;
 
 			@Override
-			public Point getNextTargetLocationOnMap(NPC n, FieldMap map) {
-				Point tgt = new Point((Point) n.getInitialLocationOnMap().clone());
+			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
+				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
 				do {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);
@@ -140,8 +140,8 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 7;
 
 			@Override
-			public Point getNextTargetLocationOnMap(NPC n, FieldMap map) {
-				Point tgt = new Point((Point) n.getInitialLocationOnMap().clone());
+			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
+				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
 				do {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);
@@ -166,8 +166,8 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 9;
 
 			@Override
-			public Point getNextTargetLocationOnMap(NPC n, FieldMap map) {
-				Point tgt = new Point((Point) n.getInitialLocationOnMap().clone());
+			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
+				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
 				do {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);

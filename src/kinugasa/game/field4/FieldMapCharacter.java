@@ -23,35 +23,48 @@
  */
 package kinugasa.game.field4;
 
-import java.awt.Point;
-import kinugasa.object.Model;
-import kinugasa.resource.Nameable;
+import kinugasa.game.GraphicsContext;
+import kinugasa.object.AnimationSprite;
+import kinugasa.graphics.Animation;
+import kinugasa.object.FourDirection;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/08_19:19:27<br>
+ * @vesion 1.0.0 - 2022/11/10_20:35:58<br>
  * @author Dra211<br>
  */
-public abstract class NPCMoveModel extends Model implements Nameable {
+public class FieldMapCharacter extends AnimationSprite {
 
-	private String name;
+	private final D2Idx initialIdx;
+	private FourDirection currentDir;
+	private FourDirAnimation fAnimation;
 
-	public NPCMoveModel(String name) {
-		this.name = name;
+	public FieldMapCharacter(float x, float y, float w, float h, D2Idx initialLocation, FourDirAnimation a, FourDirection initialDir) {
+		super(x, y, w, h, a.get(initialDir));
+		this.initialIdx = initialLocation;
+		this.fAnimation = a;
+		this.currentDir = initialDir;
+	}
+
+	public D2Idx getInitialIdx() {
+		return initialIdx;
+	}
+
+	public FourDirection getCurrentDir() {
+		return currentDir;
+	}
+
+	public FourDirAnimation getFourDirAnimation() {
+		return fAnimation;
+	}
+
+	public void to(FourDirection dir) {
+		setAnimation(fAnimation.get(dir));
 	}
 
 	@Override
-	public String getName() {
-		return name;
-	}
-	
-	public abstract D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map);
-	
-	public abstract int nextMoveFrameTime(NPC n, FieldMap map);
-
-	@Override
-	public NPCMoveModel clone() {
-		return (NPCMoveModel) super.clone();
+	public void draw(GraphicsContext g) {
+		super.draw(g); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
 	}
 
 }

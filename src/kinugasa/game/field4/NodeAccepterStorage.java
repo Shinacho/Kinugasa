@@ -23,7 +23,6 @@
  */
 package kinugasa.game.field4;
 
-import kinugasa.game.field.*;
 import java.util.Collection;
 import kinugasa.resource.Storage;
 

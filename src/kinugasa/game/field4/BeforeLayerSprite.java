@@ -70,6 +70,7 @@ public class BeforeLayerSprite extends ImageSprite implements Disposable {
 		g.drawImage(image, x + w, y);
 		g.drawImage(image, x, y + h);
 		g.drawImage(image, x + w, y + h);
+		
 
 		super.move();
 	}
