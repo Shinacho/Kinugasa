@@ -25,18 +25,18 @@ THE SOFTWARE.
 
 <kinugasaChipAttribute>
     <!--ƒtƒB[ƒ‹ƒh—pE‹¤—L-->
-    <attribute name="•½’n" encountBaseValue="1"/>
-    <attribute name="‘Œ´" encountBaseValue="1"/>
+    <attribute name="•½’n" />
+    <attribute name="‘Œ´" />
     <attribute name="“sŽs" />
     <attribute name="’¬" />
     <attribute name="‘º" />
     <attribute name="¬‰®" />
-    <attribute name="»”™" encountBaseValue="3"/>
-    <attribute name="»•l" encountBaseValue="3"/>
-    <attribute name="åM" encountBaseValue="8"/>
-    <attribute name="X—Ñ" encountBaseValue="8"/>
-    <attribute name="–§—Ñ" encountBaseValue="12"/>
-    <attribute name="‹u—Ë" encountBaseValue="6"/>
+    <attribute name="»”™" />
+    <attribute name="»•l" />
+    <attribute name="åM" />
+    <attribute name="X—Ñ" />
+    <attribute name="–§—Ñ" />
+    <attribute name="‹u—Ë" />
     <attribute name="ŽRŠx" />
     <attribute name="‚ŽR" />
     <attribute name="‰Íì" />

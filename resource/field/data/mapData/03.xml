@@ -22,15 +22,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<kinugasaFieldMapData textStorageName="001">
+<kinugasaFieldMapData windowW="720" windowH="480">
 
 
-    <background image="resource/field/image/seaChip16.png" dir="s,e,w" frame="36" w="16" h="16" mg="2">
+    <background image="resource/field/image/seaChip16.png" dir="s,e,w" frame="36" w="16" h="16" drawSize="32" />
 
     <before image="resource/field/image/cloud.png" angle="123.1f" speed="0.5f" transparent="0.075f" drawMag="5" />	
 	
 	<text data="resource/field/data/text/text.xml" />
 	
+	<load>
+	</load>
+
+	<stepon>
+	</stepon>
+
+	<dispose>
+	</dispose>
+
+	<other>
+	</other>
 	
 	<npc image="resource/char/pipo-charachip007a.png" x="3" y="3" tid="001"/>
 	
