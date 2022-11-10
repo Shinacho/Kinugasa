@@ -32,8 +32,20 @@ THE SOFTWARE.
 　　住んでていいなって思うのは、ズシ始発の電車が多いことくらいさ。/
 	</text>
 	
-	<text id="002" tc="0" >
+	<text id="002" tc="0" next="003"  >
 ＊「この辺にぃ、うまいラーメン屋の屋台、来てるらしいっすよ。/
 	</text>
+	
+	<choice id="003" tc="0" text="＊「三浦夜中腹減りませんか？">
+		<option id="003_1">腹減ったなぁ</option>
+		<option id="003_2">そうだよ</option>
+		<option id="003_3" next="004">未たけりゃ見せてやるよ</option>
+	</choice>
+	
+	<text id="004" tc="0" >
+いいよ！こいよ！
+	</text>
+		
+	
 	
 </kinugasaText>

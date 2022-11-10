@@ -23,13 +23,11 @@
  */
 package kinugasa.util;
 
-
 /**
  * 数学ユーティリティです.
  * <br>
  * <br>
- * 三角関数の値は0.5度刻みで計算されます。この値は
- * 最初の呼び出し時にキャッシュされます。<br>
+ * 三角関数の値は0.5度刻みで計算されます。この値は 最初の呼び出し時にキャッシュされます。<br>
  * 乱数ジェネレータはkinugasa.util.Randomクラスを使用してください。<br>
  * <br>
  *
@@ -47,13 +45,17 @@ public final class MathUtil {
 	 */
 	private MathUtil() {
 	}
-	/** sinの値がキャッシュされる配列です. */
+	/**
+	 * sinの値がキャッシュされる配列です.
+	 */
 	private static final float[] sinTable = new float[720];
-	/** cosの値がキャッシュされる配列です. */
+	/**
+	 * cosの値がキャッシュされる配列です.
+	 */
 	private static final float[] cosTable = new float[720];
 
-	public static void init(){
-		System.out.println("kinugasa.util.MathUtil.methodName()");
+	public static void init() {
+		System.out.println("kinugasa.util.MathUtil.init()");
 		for (int i = 0; i < sinTable.length; i++) {
 			sinTable[i] = (float) Math.sin(Math.toRadians((float) i / 2f));
 		}
@@ -64,8 +66,8 @@ public final class MathUtil {
 
 	/**
 	 * サイン波を格納した単精度配列を作成します.
-	 * 
-	 * @param fq  サイン波の周波数.<br>
+	 *
+	 * @param fq サイン波の周波数.<br>
 	 * @param mag 拡大倍率.<br>
 	 * @param max θの最大値.<br>
 	 *
@@ -81,10 +83,10 @@ public final class MathUtil {
 
 	/**
 	 * サイン波を格納した単精度配列を作成します.
-	 * 
-	 * @param fq      サイン波の周波数.<br>
-	 * @param mag     拡大倍率.<br>
-	 * @param max     θの最大値.<br>
+	 *
+	 * @param fq サイン波の周波数.<br>
+	 * @param mag 拡大倍率.<br>
+	 * @param max θの最大値.<br>
 	 * @param reverse trueを指定すると波形を逆順にソートします.<br>
 	 *
 	 * @return 指定した領域のサイン波を構築できる値が格納された配列.<br>
@@ -102,7 +104,7 @@ public final class MathUtil {
 
 	/**
 	 * サインを取得します.<br>
-	 * 
+	 *
 	 * @param angle 度数法の角度を送信します。<br>
 	 *
 	 * @return サインの値を返します。<br>
@@ -117,7 +119,7 @@ public final class MathUtil {
 
 	/**
 	 * コサインを取得します.
-	 * 
+	 *
 	 * @param angle 度数法の角度を送信します。<br>
 	 *
 	 * @return コサインの値を返します。<br>

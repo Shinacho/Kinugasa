@@ -56,7 +56,6 @@ import kinugasa.object.FourDirection;
 import kinugasa.resource.KImage;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundBuilder;
-import kinugasa.resource.sound.SoundLoader;
 import kinugasa.util.FrameTimeCounter;
 
 /**
@@ -81,7 +80,6 @@ public class Test extends GameManager {
 
 		TextStorageStorage.getInstance().readFromXML("resource/field/data/text/000.xml");
 		ts = TextStorageStorage.getInstance().get("001").build();
-
 		mw = new MessageWindow(0, 300, 600, 150, new SimpleMessageWindowModel(), ts, ts.get("001"));
 		mw.setVisible(true);
 		//--------------------------------------
@@ -99,7 +97,6 @@ public class Test extends GameManager {
 		fm.setCurrentIdx(new D2Idx(21, 21));
 
 		fm.getCamera().setMode(FieldMapCameraMode.FREE);
-
 		FieldMap.setDebugMode(true);
 		// プレイヤーキャラクターの表示座標計算
 		int screenW = FieldMapStorage.getScreenWidth();
@@ -121,6 +118,7 @@ public class Test extends GameManager {
 		//----------------------------------------------------------------------
 		//
 		screenShot = new SoundBuilder("resource/se/screenShot.wav").builde().load();
+
 	}
 	FieldMap fm;
 	FieldMapCharacter c;
@@ -143,7 +141,11 @@ public class Test extends GameManager {
 				if (!mw.isAllVisible()) {
 					mw.allText();
 				} else if (mw.isChoice()) {
-					mw.choicesNext();
+					if (mw.getChoiceOption().hasNext()) {
+						mw.choicesNext();
+					} else {
+						mw.setVisible(false);
+					}
 				} else if (mw.hasNext()) {
 					mw.next();
 				} else {

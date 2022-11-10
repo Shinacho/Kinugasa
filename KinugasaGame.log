@@ -1,7 +1,50 @@
-2022/11/11 00:52:03 INFO this is ./KinugasaGame.log
-2022/11/11 00:52:03 INFO translate\ja.ini
-2022/11/11 00:52:03 INFO ARE_YOU_SURE_EXIT=本当に終了しますか？
-2022/11/11 00:52:03 INFO CONFIRM=確認
-2022/11/11 00:52:03 INFO lockFile:.\KLOCK_15531938107977725168.lck is created
-2022/11/11 00:52:03 INFO MyGame is start
-2022/11/11 00:52:03 WARNING ERROR : kinugasa.resource.text.FileNotFoundException: resource/field/data/text/000.xml is not found
+2022/11/11 01:37:04 INFO this is ./KinugasaGame.log
+2022/11/11 01:37:04 INFO translate\ja.ini
+2022/11/11 01:37:04 INFO ARE_YOU_SURE_EXIT=本当に終了しますか？
+2022/11/11 01:37:04 INFO CONFIRM=確認
+2022/11/11 01:37:04 INFO lockFile:.\KLOCK_9794481066655452261.lck is created
+2022/11/11 01:37:04 INFO MyGame is start
+2022/11/11 01:37:04 INFO XMLFile [000.xml] is loaded
+2022/11/11 01:37:04 INFO XMLFile [text.xml] is loaded
+2022/11/11 01:37:04 INFO XMLFile [ChipAttributes.xml] is loaded
+2022/11/11 01:37:04 INFO XMLFile [01.xml] is loaded
+2022/11/11 01:37:05 INFO XMLFile [01.xml] is loaded
+2022/11/11 01:37:05 INFO ImageUtil loaded filePath=[resource/field/image/base.png](20.185 ms)
+2022/11/11 01:37:05 INFO XMLFile [02.xml] is loaded
+2022/11/11 01:37:05 INFO ImageUtil loaded filePath=[resource/field/image/outer16.png](1.7253 ms)
+2022/11/11 01:37:05 INFO default.ini
+2022/11/11 01:37:05 INFO LOCATION=0,0
+2022/11/11 01:37:05 INFO GAMEPAD=TRUE
+2022/11/11 01:37:05 INFO LOG=TRUE
+2022/11/11 01:37:05 INFO RENDERING_Q=SPEED
+2022/11/11 01:37:05 INFO SIZE=720,480
+2022/11/11 01:37:05 INFO MOUSE=TRUE
+2022/11/11 01:37:05 INFO LOCK=TRUE
+2022/11/11 01:37:05 INFO FPS=60
+2022/11/11 01:37:05 INFO LOG_PATH=./KinugasaGame.log
+2022/11/11 01:37:05 INFO LANG=ja
+2022/11/11 01:37:05 INFO BG_COLOR=1,133,116
+2022/11/11 01:37:05 INFO UPDATE_IF_NOT_ACTIVE=TRUE
+2022/11/11 01:37:05 INFO TITLE=MyGame
+2022/11/11 01:37:05 INFO KEY=TRUE
+2022/11/11 01:37:05 INFO XMLFile [builder.xml] is loaded
+2022/11/11 01:37:05 INFO XMLFile [01.xml] is loaded
+2022/11/11 01:37:05 INFO ImageUtil loaded filePath=[resource/field/image/seaChip16.png](0.691399 ms)
+2022/11/11 01:37:05 INFO SpriteSheetが切り出されました : size=[4]
+2022/11/11 01:37:05 INFO ImageUtil loaded filePath=[resource/field/image/cloud.png](5.538699 ms)
+2022/11/11 01:37:07 INFO ImageUtil loaded filePath=[resource/chipTest1.png](0.7296 ms)
+2022/11/11 01:37:07 INFO SpriteSheetが切り出されました : size=[4]
+2022/11/11 01:37:07 INFO ImageUtil cached filePath=[resource/chipTest1.png](0.0016 ms)
+2022/11/11 01:37:07 INFO SpriteSheetが切り出されました : size=[4]
+2022/11/11 01:37:07 INFO ImageUtil loaded filePath=[resource/char/pipo-charachip007a.png](0.7309 ms)
+2022/11/11 01:37:07 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/11 01:37:07 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](5.0E-4 ms)
+2022/11/11 01:37:07 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/11 01:37:07 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](6.0E-4 ms)
+2022/11/11 01:37:07 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/11 01:37:07 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](6.0E-4 ms)
+2022/11/11 01:37:07 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/11 01:37:07 INFO CachedSound is loaded name=[screenShot.wav](94.231 ms)
+2022/11/11 01:37:07 INFO gameStart is done.
+2022/11/11 01:37:11 INFO lockFile:.\KLOCK_9794481066655452261.lck is deleted
+2022/11/11 01:37:11 INFO TempFileStorage : all temp file is deleted
