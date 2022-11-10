@@ -77,7 +77,7 @@ public class Test extends GameManager {
 
 	@Override
 	protected void startUp() {
-		SoundLoader.fileOf("resource/bgm/bgmMap.csv");
+		//SoundLoader.fileOf("resource/bgm/bgmMap.csv");
 
 		TextStorageStorage.getInstance().readFromXML("resource/field/data/text/000.xml");
 		ts = TextStorageStorage.getInstance().get("001").build();

@@ -1,0 +1,7 @@
+2022/11/11 00:52:03 INFO this is ./KinugasaGame.log
+2022/11/11 00:52:03 INFO translate\ja.ini
+2022/11/11 00:52:03 INFO ARE_YOU_SURE_EXIT=本当に終了しますか？
+2022/11/11 00:52:03 INFO CONFIRM=確認
+2022/11/11 00:52:03 INFO lockFile:.\KLOCK_15531938107977725168.lck is created
+2022/11/11 00:52:03 INFO MyGame is start
+2022/11/11 00:52:03 WARNING ERROR : kinugasa.resource.text.FileNotFoundException: resource/field/data/text/000.xml is not found

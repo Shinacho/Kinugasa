@@ -58,11 +58,10 @@ import kinugasa.resource.Nameable;
  * @version 8.4.0 - 2013/04/28_21:54<br>
  * @version 8.5.0 - 2015/01/05_21:14<br>
  * @version 8.6.0 - 2015/03/29_16:26<br>
- * @version 8.7.0 - 2022/11/10_19:08<br>
  * @author Dra0211<br>
  */
 public abstract class Sprite
-		implements Drawable, Shapeable, Cloneable, Comparable<Sprite> {
+		implements Drawable, Shapeable, Cloneable, Comparable<Sprite>, Nameable {
 
 	/**
 	 * 領域.
@@ -88,6 +87,11 @@ public abstract class Sprite
 	 * 生存状態.
 	 */
 	private boolean exist = true;
+
+	/**
+	 * 名前（任意）.
+	 */
+	private String name;
 
 	/**
 	 * 中心座標のキャッシュを作成します.
@@ -482,6 +486,15 @@ public abstract class Sprite
 	 */
 	public void setZ(float z) {
 		this.z = z;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**

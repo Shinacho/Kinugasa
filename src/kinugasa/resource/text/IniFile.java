@@ -189,16 +189,14 @@ public class IniFile implements Input<IniFile>, Output {
 				return Arrays.asList(value.split(","));
 			}
 			return Collections.EMPTY_LIST;
-
 		}
-		
-		public int[] asCsvInt(){
-			List<String> val  = asCsv();
-			int[] ar = new int[val.size()];
-			for(int i=0;i<val.size(); i ++ ){
-				ar[i] = Integer.parseInt(val.get(i));
+
+		public int[] asCsvInt() {
+			if (value.contains(",")) {
+				List<String> csv = asCsv();
+				return csv.stream().mapToInt(i -> Integer.parseInt(i)).toArray();
 			}
-			return ar;
+			return new int[0];
 		}
 
 		public Value asCsvOf(int i) {

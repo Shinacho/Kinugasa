@@ -32,6 +32,15 @@ public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 	/** このサウンドマップの名前です.
 	 * たとえば、「町A」や「ダンジョン5」のようなわかりやすい名前を付けることができます。 */
 	private String name;
+	/** サウンドマップのインスタンス数のカウンタです. */
+	private static int counter;
+
+	/**
+	 * 適当な名前を指定して新しいサウンドマップを作成します.
+	 */
+	public SoundMap() {
+		this("SoundMap_" + (counter++));
+	}
 
 	/**
 	 * 名前と初期データを指定して、サウンドマップを作成します.
@@ -51,7 +60,6 @@ public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 	 */
 	public SoundMap(String name) {
 		this.name = name;
-		SoundStorage.getInstance().add(this);
 	}
 
 

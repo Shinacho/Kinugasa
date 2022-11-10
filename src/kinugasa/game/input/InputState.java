@@ -82,7 +82,7 @@ public final class InputState extends InputDeviceState {
 	}
 
 	/**
-	 * インスタンスを取得します. このメソッドを呼び出すと、現在の入力状態が検査されます。したがって、ゲームの1ループ中1回だけコールしてください。<br>
+	 * インスタンスを取得します. このメソッドを呼び出すと、現在の入力状態が検査されます。<br>
 	 *
 	 * @return InputStateのインスタンスを返します。<br>
 	 */
