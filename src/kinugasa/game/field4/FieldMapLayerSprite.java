@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.util.List;
 import kinugasa.game.GraphicsContext;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.graphics.RenderingQuality;
@@ -73,7 +74,7 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 		return fieldMapImage;
 	}
 
-	public MapChip getChip(int x, int y) {
+	public MapChip getChip(int x, int y) throws ArrayIndexOutOfBoundsException{
 		return data[y][x];
 	}
 
@@ -102,6 +103,19 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 		g2.dispose();
 	}
 
+	public void debugDrawNPC(GraphicsContext g, List<NPC> npc, Point2D.Float base, int chipW, int chipH) {
+		Graphics2D g2 = g.create();
+		for (NPC n : npc) {
+			D2Idx idx = n.getCurrentIDXonMapData();
+			float drawX = base.x + (idx.x * chipW);
+			float drawY = base.y + (idx.y * chipH);
+			g2.setColor(Color.GREEN);
+			g2.drawRect((int) drawX, (int) drawY, chipW, chipH);
+		}
+		g2.dispose();
+
+	}
+
 	public float getMg() {
 		return mg;
 	}
@@ -110,6 +124,13 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 	public void dispose() {
 		data = null;
 		fieldMapImage = null;
+	}
+
+	public boolean include(D2Idx idx) {
+		if (idx.x < 0 || idx.y < 0) {
+			return false;
+		}
+		return idx.x < getDataWidth() && idx.y < getDataHeight();
 	}
 
 }

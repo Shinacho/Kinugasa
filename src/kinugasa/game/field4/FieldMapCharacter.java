@@ -23,9 +23,10 @@
  */
 package kinugasa.game.field4;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import kinugasa.game.GraphicsContext;
 import kinugasa.object.AnimationSprite;
-import kinugasa.graphics.Animation;
 import kinugasa.object.FourDirection;
 
 /**
@@ -65,6 +66,11 @@ public class FieldMapCharacter extends AnimationSprite {
 	@Override
 	public void draw(GraphicsContext g) {
 		super.draw(g); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+		Graphics2D g2 = g.create();
+		g2.setColor(SHADOW);
+		g2.fillOval((int) (getX() + getWidth() / 8), (int) (getY() + getHeight() - getHeight() / 16), (int) (getWidth() - getWidth() / 4), (int) (getHeight() / 8));
+		g2.dispose();
 	}
+	private static final Color SHADOW = new Color(0, 0, 0, 128);
 
 }

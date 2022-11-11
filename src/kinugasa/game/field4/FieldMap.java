@@ -30,7 +30,10 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.game.ui.TextStorageStorage;
@@ -44,11 +47,11 @@ import kinugasa.object.KVector;
 import kinugasa.resource.Disposable;
 import kinugasa.resource.KImage;
 import kinugasa.resource.Nameable;
-import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundStorage;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.util.FrameTimeCounter;
+import kinugasa.object.BasicSprite;
 
 /**
  *
@@ -89,7 +92,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private BackgroundLayerSprite backgroundLayerSprite; //nullable
 	private List<FieldMapLayerSprite> backlLayeres = new ArrayList<>();
 	private static FieldMapCharacter playerCharacter;
-	private List<FieldMapCharacter> character = new ArrayList<>();
 	private List<FieldMapLayerSprite> frontlLayeres = new ArrayList<>();
 	private List<FieldAnimationSprite> frontAnimation = new ArrayList<>();
 	private List<BeforeLayerSprite> beforeLayerSprites = new ArrayList<>();
@@ -133,10 +135,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 	public FieldMapLayerSprite getBaseLayer() {
 		return backlLayeres.get(0);
-	}
-
-	public List<FieldMapCharacter> getCharacter() {
-		return character;
 	}
 
 	public List<FieldMapLayerSprite> getFrontlLayeres() {
@@ -343,13 +341,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 
 		}
-		//NPC
-		{
-			//テキストストレージが空の場合フォーマットエラー
-			//NPCストレージの内容をキャラクタリストに全部入れること
-		}
-		//TODO
-
 		//イベント
 		{
 			for (XMLElement e : root.getElement("event")) {
@@ -361,11 +352,62 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 		}
 
-		//TODO
 		data.dispose();
 
 		// カメラ初期化
 		camera = new FieldMapCamera(this);
+
+		//NPC
+		{
+			if (!root.getElement("npc").isEmpty() && textStorage.isEmpty()) {
+				throw new FieldMapDataException("npc is not empty, but text is empty");
+			}
+			for (XMLElement e : root.getElement("npc")) {
+				String name = e.getAttributes().get("name").getValue();
+				String initialIdxStr = e.getAttributes().get("initialIdx").getValue();
+				D2Idx idx = new D2Idx(Integer.parseInt(initialIdxStr.split(",")[0]), Integer.parseInt(initialIdxStr.split(",")[1]));
+				// 領域のチェック
+				if (!getBaseLayer().include(idx)) {
+					throw new FieldMapDataException("npc : " + name + " is out of bounds");
+				}
+				NPCMoveModel moveModel = NPCMoveModelStorage.getInstance().get(e.getAttributes().get("NPCMoveModel").getValue());
+				Vehicle v = VehicleStorage.getInstance().get(e.getAttributes().get("vehicle").getValue());
+				String textID = e.getAttributes().get("textID").getValue();
+				int frame = e.getAttributes().get("frame").getIntValue();
+				BufferedImage image = ImageUtil.load(e.getAttributes().get("image").getValue());
+				int sx, sw, sh;
+				int ex, ew, eh;
+				int wx, ww, wh;
+				int nx, nw, nh;
+				String[] cs = e.getAttributes().get("s").getValue().split(",");
+				String[] ce = e.getAttributes().get("e").getValue().split(",");
+				String[] cw = e.getAttributes().get("w").getValue().split(",");
+				String[] cn = e.getAttributes().get("n").getValue().split(",");
+				sx = Integer.parseInt(cs[0]);
+				sw = Integer.parseInt(cs[1]);
+				sh = Integer.parseInt(cs[2]);
+				ex = Integer.parseInt(ce[0]);
+				ew = Integer.parseInt(ce[1]);
+				eh = Integer.parseInt(ce[2]);
+				wx = Integer.parseInt(cw[0]);
+				ww = Integer.parseInt(cw[1]);
+				wh = Integer.parseInt(cw[2]);
+				nx = Integer.parseInt(cn[0]);
+				nw = Integer.parseInt(cn[1]);
+				nh = Integer.parseInt(cn[2]);
+				Animation south = new Animation(new FrameTimeCounter(frame), new SpriteSheet(image).rows(sx, sw, sh).images());
+				Animation west = new Animation(new FrameTimeCounter(frame), new SpriteSheet(image).rows(wx, ww, wh).images());
+				Animation east = new Animation(new FrameTimeCounter(frame), new SpriteSheet(image).rows(ex, ew, eh).images());
+				Animation north = new Animation(new FrameTimeCounter(frame), new SpriteSheet(image).rows(nx, nw, nh).images());
+				FourDirAnimation anime = new FourDirAnimation(south, west, east, north);
+				FourDirection initialDir = FourDirection.valueOf(e.getAttributes().get("initialDir").getValue());
+				int w = sw;
+				int h = sh;
+				float x = getBaseLayer().getX() + idx.x * chipW;
+				float y = getBaseLayer().getY() + idx.y * chipH;
+				npcStorage.add(new NPC(name, currentIdx, moveModel, v, this, textID, x, y, w, h, idx, anime, initialDir));
+			}
+		}
 
 		//BGMの処理
 		{
@@ -393,6 +435,14 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		return this;
 	}
 
+	private static final Comparator<FieldMapCharacter> Y_COMPARATOR = new Comparator<>() {
+		@Override
+		public int compare(FieldMapCharacter o1, FieldMapCharacter o2) {
+			return (int)o1.getY() - (int)o2.getY();
+		}
+
+	};
+
 	@Override
 	public void draw(GraphicsContext g) {
 		if (!visible) {
@@ -404,14 +454,22 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		backlLayeres.forEach(e -> e.draw(g));
 		if (debugMode) {
 			backlLayeres.forEach(e -> e.debugDraw(g, currentIdx, getBaseLayer().getLocation(), chipW, chipH));
+			backlLayeres.forEach(e -> e.debugDrawNPC(g, npcStorage.asList(), getBaseLayer().getLocation(), chipW, chipH));
 		}
-		character.forEach(e -> e.draw(g));
+
 		if (playerCharacter != null) {
-			playerCharacter.draw(g);
+			List<FieldMapCharacter> list = npcStorage.asList().stream().map(c -> c).collect(Collectors.toList());
+			list.add(playerCharacter);
+			Collections.sort(list, Y_COMPARATOR);
+			list.forEach(v -> v.draw(g));
+		} else {
+			npcStorage.forEach(e -> e.draw(g));
 		}
+
 		frontlLayeres.forEach(e -> e.draw(g));
 		if (debugMode) {
 			frontlLayeres.forEach(e -> e.debugDraw(g, currentIdx, getBaseLayer().getLocation(), chipW, chipH));
+			frontlLayeres.forEach(e -> e.debugDrawNPC(g, npcStorage.asList(), getBaseLayer().getLocation(), chipW, chipH));
 		}
 		frontAnimation.forEach(e -> e.draw(g));
 		beforeLayerSprites.forEach(e -> e.draw(g));
@@ -433,8 +491,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			g2.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
 			g2.drawLine((int) p3.x, (int) p3.y, (int) p4.x, (int) p4.y);
 			g2.dispose();
-			System.out.print("IDX : " + currentIdx);
-			System.out.println("  FM_LOCATION : " + getBaseLayer().getLocation());
+//			System.out.print("IDX : " + currentIdx);
+//			System.out.println("  FM_LOCATION : " + getBaseLayer().getLocation());
 		}
 	}
 
@@ -444,7 +502,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			backgroundLayerSprite.dispose();
 		}
 		backlLayeres.clear();
-		character.clear();
 		frontlLayeres.clear();
 		frontAnimation.clear();
 		beforeLayerSprites.clear();
@@ -458,6 +515,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (textStorage != null) {
 			textStorage.clear();
 		}
+	}
+
+	public void updateNPC() {
+		npcStorage.forEach(c -> c.update());
 	}
 
 	public void move() {
@@ -560,7 +621,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			g.drawImage(s.getImage(), 0, 0, null);
 		}
 		if (npc) {
-			for (FieldMapCharacter c : character) {
+			for (FieldMapCharacter c : npcStorage) {
 				g.drawImage(c.getAWTImage(), 0, 0, null);
 			}
 		}

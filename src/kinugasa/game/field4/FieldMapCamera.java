@@ -84,6 +84,11 @@ public class FieldMapCamera {
 				return;
 			}
 
+			//NPC衝突判定
+			if (map.getNpcStorage().get(new D2Idx(x, y)) != null) {
+				return;
+			}
+
 			//乗れるチップかの判定
 			if (!VehicleStorage.getInstance().getCurrentVehicle().isStepOn(map.getTile(new D2Idx(x, y)).getChip())) {
 				return;
@@ -98,16 +103,22 @@ public class FieldMapCamera {
 			//追従モードじゃない場合は同じベクトルで移動
 			FieldMap.getPlayerCharacter().move();
 		}
-		map.getCharacter().forEach(e -> e.move());
+		map.getNpcStorage().forEach(e -> e.move());
 		map.getFrontlLayeres().forEach(e -> e.move());
 		map.getFrontAnimation().forEach(e -> e.move());
 		//移動後の座標再計算
+		//NPCの位置更新
+		int chipW = map.getChipW();
+		int chipH = map.getChipH();
+//		for (NPC n : map.getNpcStorage()) {
+//			float nx = map.getBaseLayer().getX() + n.getCurrentIDXonMapData().x * chipW;
+//			float ny = map.getBaseLayer().getY() + n.getCurrentIDXonMapData().y * chipH;
+//			n.setLocation(nx, ny);
+//		}
 		switch (mode) {
 			case FOLLOW_TO_CENTER:
 				//追従モードの場合、キャラクタの座標を再計算する
 				//プレイヤーキャラクター（中心）IDX更新
-				int chipW = map.getChipW();
-				int chipH = map.getChipH();
 				BasicSprite base = map.getBaseLayer();
 				float fieldMapX = ((-base.getX() + (chipW / 2) - (chipW / 4) + base.getVector().reverse().getLocation().x)) / chipW;
 				float fieldMapY = ((-base.getY() + (chipH / 2) + base.getVector().reverse().getLocation().y)) / chipH;
@@ -120,6 +131,11 @@ public class FieldMapCamera {
 				if (map.getBaseLayer().getDataWidth() <= x + 1 || map.getBaseLayer().getDataHeight() <= y + 1) {
 					return;
 				}
+				//NPC衝突判定
+				if (map.getNpcStorage().get(new D2Idx(x, y)) != null) {
+					return;
+				}
+
 				//乗れるチップかの判定
 				if (!VehicleStorage.getInstance().getCurrentVehicle().isStepOn(map.getTile(new D2Idx(x, y)).getChip())) {
 					return;
@@ -137,7 +153,7 @@ public class FieldMapCamera {
 			map.getBackgroundLayerSprite().setSpeed(speed);
 		}
 		map.getBacklLayeres().forEach(e -> e.setSpeed(speed));
-		map.getCharacter().forEach(e -> e.setSpeed(speed));
+		map.getNpcStorage().forEach(e -> e.setSpeed(speed));
 		FieldMap.getPlayerCharacter().setSpeed(speed);
 		map.getFrontlLayeres().forEach(e -> e.setSpeed(speed));
 		map.getFrontAnimation().forEach(e -> e.setSpeed(speed));
@@ -148,7 +164,7 @@ public class FieldMapCamera {
 			map.getBackgroundLayerSprite().setAngle(angle);
 		}
 		map.getBacklLayeres().forEach(e -> e.setAngle(angle));
-		map.getCharacter().forEach(e -> e.setAngle(angle));
+		map.getNpcStorage().forEach(e -> e.setAngle(angle));
 		FieldMap.getPlayerCharacter().setAngle(angle);
 		map.getFrontlLayeres().forEach(e -> e.setAngle(angle));
 		map.getFrontAnimation().forEach(e -> e.setAngle(angle));
@@ -171,7 +187,7 @@ public class FieldMapCamera {
 			map.getBackgroundLayerSprite().setLocation(p);
 		}
 		map.getBacklLayeres().forEach(e -> e.setLocation(p));
-		map.getCharacter().forEach(e -> e.setLocation(p));
+		map.getNpcStorage().forEach(e -> e.setLocation(p));
 		FieldMap.getPlayerCharacter().setLocation(p);
 		map.getFrontlLayeres().forEach(e -> e.setLocation(p));
 		float fieldMapX = map.getBaseLayer().getX();
@@ -190,7 +206,7 @@ public class FieldMapCamera {
 			map.getBackgroundLayerSprite().setX(x);
 		}
 		map.getBacklLayeres().forEach(e -> e.setX(x));
-		map.getCharacter().forEach(e -> e.setX(x));
+		map.getNpcStorage().forEach(e -> e.setX(x));
 		FieldMap.getPlayerCharacter().setX(x);
 		map.getFrontlLayeres().forEach(e -> e.setX(x));
 		float fieldMapX = map.getBaseLayer().getX();
@@ -207,7 +223,7 @@ public class FieldMapCamera {
 			map.getBackgroundLayerSprite().setY(y);
 		}
 		map.getBacklLayeres().forEach(e -> e.setY(y));
-		map.getCharacter().forEach(e -> e.setY(y));
+		map.getNpcStorage().forEach(e -> e.setY(y));
 		FieldMap.getPlayerCharacter().setY(y);
 		map.getFrontlLayeres().forEach(e -> e.setY(y));
 		float fieldMapY = map.getBaseLayer().getY();
@@ -234,11 +250,18 @@ public class FieldMapCamera {
 		setLocation(-x, -y);
 		//キャラクタの位置修正
 		int charaW = FieldMap.getPlayerCharacter().getImageWidth();
-		int charaH =  FieldMap.getPlayerCharacter().getImageHeight();
+		int charaH = FieldMap.getPlayerCharacter().getImageHeight();
 
 		float cx = screenW / 2 - (charaW / 2);
 		float cy = screenH / 2 - (charaH / 2);
-		 FieldMap.getPlayerCharacter().setLocation(cx, cy);
+		FieldMap.getPlayerCharacter().setLocation(cx, cy);
+
+		//NPCの位置更新
+		for (NPC n : map.getNpcStorage()) {
+			float nx = map.getBaseLayer().getX() + n.getCurrentIDXonMapData().x * chipW;
+			float ny = map.getBaseLayer().getY() + n.getCurrentIDXonMapData().y * chipH;
+			n.setLocation(nx, ny);
+		}
 	}
 
 }

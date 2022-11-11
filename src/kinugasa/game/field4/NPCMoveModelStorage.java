@@ -59,12 +59,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 		});
 		add(new NPCMoveModel("ROUND_1") {
-			private static final int VALUE = 1;
+			private static final int VALUE = 2;
 
 			@Override
 			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
-				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
-				do {
+				D2Idx tgt = new D2Idx(n.getInitialIdx());
+				while (true) {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);
 					} else {
@@ -75,7 +75,19 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					} else {
 						tgt.y += Random.randomAbsInt(VALUE);
 					}
-				} while (n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip()));
+					if (tgt.x < 0 || tgt.y < 0) {
+						continue;
+					}
+					if (tgt.x >= map.getBaseLayer().getDataWidth() || tgt.y >= map.getBaseLayer().getDataHeight()) {
+						continue;
+					}
+					if (!n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip())) {
+						continue;
+					}
+					assert map.getBaseLayer().include(tgt) : "NPC targetIDX is " + tgt;
+					break;
+				}
+				System.out.println(tgt);
 				return tgt;
 			}
 
@@ -85,12 +97,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 		});
 		add(new NPCMoveModel("ROUND_3") {
-			private static final int VALUE = 3;
+			private static final int VALUE = 4;
 
 			@Override
 			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
 				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
-				do {
+				while (true) {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);
 					} else {
@@ -101,7 +113,17 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					} else {
 						tgt.y += Random.randomAbsInt(VALUE);
 					}
-				} while (n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip()));
+					if (tgt.x < 0 || tgt.y < 0) {
+						continue;
+					}
+					if (tgt.x >= map.getBaseLayer().getDataWidth() || tgt.y >= map.getBaseLayer().getDataHeight()) {
+						continue;
+					}
+					if (!n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip())) {
+						continue;
+					}
+					break;
+				}
 				return tgt;
 			}
 
@@ -111,12 +133,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 		});
 		add(new NPCMoveModel("ROUND_5") {
-			private static final int VALUE = 5;
+			private static final int VALUE = 6;
 
 			@Override
 			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
 				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
-				do {
+				while (true) {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);
 					} else {
@@ -127,7 +149,17 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					} else {
 						tgt.y += Random.randomAbsInt(VALUE);
 					}
-				} while (n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip()));
+					if (tgt.x < 0 || tgt.y < 0) {
+						continue;
+					}
+					if (tgt.x >= map.getBaseLayer().getDataWidth() || tgt.y >= map.getBaseLayer().getDataHeight()) {
+						continue;
+					}
+					if (!n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip())) {
+						continue;
+					}
+					break;
+				}
 				return tgt;
 			}
 
@@ -137,12 +169,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 		});
 		add(new NPCMoveModel("ROUND_7") {
-			private static final int VALUE = 7;
+			private static final int VALUE = 8;
 
 			@Override
 			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
 				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
-				do {
+				while (true) {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);
 					} else {
@@ -153,7 +185,17 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					} else {
 						tgt.y += Random.randomAbsInt(VALUE);
 					}
-				} while (n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip()));
+					if (tgt.x < 0 || tgt.y < 0) {
+						continue;
+					}
+					if (tgt.x >= map.getBaseLayer().getDataWidth() || tgt.y >= map.getBaseLayer().getDataHeight()) {
+						continue;
+					}
+					if (!n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip())) {
+						continue;
+					}
+					break;
+				}
 				return tgt;
 			}
 
@@ -163,12 +205,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 		});
 		add(new NPCMoveModel("ROUND_9") {
-			private static final int VALUE = 9;
+			private static final int VALUE = 10;
 
 			@Override
 			public D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map) {
 				D2Idx tgt = new D2Idx(n.getInitialIdx().clone());
-				do {
+				while (true) {
 					if (Random.randomBool()) {
 						tgt.x -= Random.randomAbsInt(VALUE);
 					} else {
@@ -179,7 +221,17 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					} else {
 						tgt.y += Random.randomAbsInt(VALUE);
 					}
-				} while (n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip()));
+					if (tgt.x < 0 || tgt.y < 0) {
+						continue;
+					}
+					if (tgt.x >= map.getBaseLayer().getDataWidth() || tgt.y >= map.getBaseLayer().getDataHeight()) {
+						continue;
+					}
+					if (!n.getVehicle().isStepOn(map.getTile(new D2Idx(tgt.x, tgt.y)).getChip())) {
+						continue;
+					}
+					break;
+				}
 				return tgt;
 			}
 
