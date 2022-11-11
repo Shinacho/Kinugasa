@@ -22,53 +22,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<kinugasaFieldMapData windowW="720" windowH="480">
+<kinugasaFieldMapData textStorageName="002" eventStorageName="002" mg="2">
 
+	<bgm mapName="BGM" soundName="フィールド５.wav" mode="STOP_AND_PLAY" />
 
-    <background image="resource/field/image/seaChip16.png" dir="s,e,w" frame="36" w="16" h="16" drawSize="32" />
-
-    <before image="resource/field/image/cloud.png" angle="123.1f" speed="0.5f" transparent="0.075f" drawMag="5" />	
-	
-	<text data="resource/field/data/text/text.xml" />
-	
-	<load>
-	</load>
-
-	<stepon>
-	</stepon>
-
-	<dispose>
-	</dispose>
-
-	<other>
-	</other>
-	
-	<npc image="resource/char/pipo-charachip007a.png" x="3" y="3" tid="001"/>
-	
-	
-	
-	<node name = "ND_03_0002" x="0" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0003" x="1" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0004" x="2" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0005" x="3" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0006" x="4" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0007" x="5" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0008" x="6" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0009" x="7" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0010" x="8" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0001" x="9" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0011" x="10" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0012" x="11" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0013" x="12" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0014" x="13" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0015" x="14" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	<node name = "ND_03_0016" x="15" y="0" tgtMap="01" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" />
-	
-	
-	<node name = "ND_03_EXIT" x="8" y="2" />
+  <before image="resource/field/image/cloud.png" angle="123.1f" speed="0.5f" tp="0.075f" mg="5" />	
 	
 
-	<layer chipSet="base.png" mg="2" z="0" lineSeparator ="/">
+	
+	
+	<inOutNode name = "ND_03_0002" x="0" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0003" x="1" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0004" x="2" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0005" x="3" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0006" x="4" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0007" x="5" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0008" x="6" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0009" x="7" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0010" x="8" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0001" x="9" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0011" x="10" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0012" x="11" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0013" x="12" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0014" x="13" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0015" x="14" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name = "ND_03_0016" x="15" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="ショウナン" accepterName="TRUE" outDir="NORTH"/>
+	
+	
+	<outNode name = "ND_03_EXIT" x="8" y="2"/>
+	
+
+	<backLayer chipSet="base.png" lineSeparator ="/">
 016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
 016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
 016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001,016001/
@@ -85,9 +69,9 @@ THE SOFTWARE.
 021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,016001,016001,016001,016001,016001/
 021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,016001,016001/
 021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,021001,016001/
-	</layer>
-    
-    
+	</backLayer>
+  
+  
  
-    
+  
 </kinugasaFieldMapData>

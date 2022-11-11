@@ -35,7 +35,7 @@ public enum BGMMode {
 	/** Œ»Ý‚ÌBGMÄ¶ó‹µ‚É‘Î‚µ‚Ä‰½‚à‚µ‚Ü‚¹‚ñ. */
 	NOTHING,
 	/** ‚·‚×‚Ä‚ÌBGM‚ð’âŽ~‚µ‚Ü‚·. */
-	STOP,
+	STOP_ALL,
 	;
 	
 	

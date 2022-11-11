@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package kinugasa.resource.sound;
 
 import java.util.Arrays;
@@ -31,47 +30,55 @@ import kinugasa.resource.text.CSVFile;
 import kinugasa.resource.text.FileNotFoundException;
 
 /**
- * BGMをフォルダからサウンドマップに一括設定するクラスです。.
- * 指定したファイルに記載されているBGMを一括設定します。
+ * BGMをフォルダからサウンドマップに一括設定するクラスです。. 指定したファイルに記載されているBGMを一括設定します。
  * ファイル形式は、CSVで、ファイル名、マスターゲイン、ループポイントFROM、TOの順で1レコード1件の形式です。
  * サウンドマップの名前は「BGM」になります。<br>
  * 作成されたサウンドマップはサウンドストレージに追加されます。<br>
+ *
  * @vesion 1.0.0 - 2022/11/07_10:06:46<br>
  * @author Dra211<br>
  */
 public class SoundLoader {
-	public static final String MAP_NAME = "BGM";
-	
-	private SoundLoader(){}
-	private CSVFile file;
-	
-	public static SoundMap fileOf(String fileName)throws FileNotFoundException{
-		return fileOf(new CSVFile(fileName));
-	}
-	public static SoundMap fileOf(CSVFile file ) throws FileNotFoundException{
-		if(!file.exists())
-			throw new FileNotFoundException(file + " is not exists");
 
-		SoundMap map = new SoundMap("BGM");
+	public static final String MAP_NAME = "BGM";
+
+	private SoundLoader() {
+	}
+	private CSVFile file;
+
+	public static SoundMap loadList(String fileName) throws FileNotFoundException {
+		return loadList(new CSVFile(fileName));
+	}
+
+	public static SoundMap loadList(CSVFile file) throws FileNotFoundException {
+		if (!file.exists()) {
+			throw new FileNotFoundException(file + " is not exists");
+		}
+
+		SoundMap map = new SoundMap(file.getName().split("[.]")[0]);
 		file.load().getData().stream().map(line -> {
-			if( line.length != 4 ) throw new ContentsIOException(Arrays.toString(line) + " length is not 4");
+			if (line.length != 4 && line.length != 2) {
+				throw new ContentsIOException(Arrays.toString(line) + " length is not 4 or 2");
+			}
 			return line;
 		}).forEachOrdered(line -> {
 			String name = file.getFile().getParent() + "/" + line[0];
 			float mg = Float.parseFloat(line[1]);
-			int from = line[2].equals("EOF") ? -1 : Integer.parseInt(line[2]);
-			int to = line[3].equals("START") ? 0 : Integer.parseInt(line[3]);
-			LoopPoint p = new LoopPoint(from, to);
-			
-			map.createCachedSound(new SoundBuilder(name).setMasterGain(mg).setLoopPoint(p));
+			if (line.length == 4) {
+				int from = line[2].equals("EOF") ? -1 : Integer.parseInt(line[2]);
+				int to = line[3].equals("START") ? 0 : Integer.parseInt(line[3]);
+				LoopPoint p = new LoopPoint(from, to);
+				map.createCachedSound(new SoundBuilder(name).setMasterGain(mg).setLoopPoint(p));
+			} else {
+				map.createCachedSound(new SoundBuilder(name).setMasterGain(mg));
+			}
 		});
-		
-		
+
 		map.printAll(System.out);
 		GameLog.printInfo(map.toString());
-		
+
+		SoundStorage.getInstance().add(map);
 		return map;
 	}
-	
-	
+
 }

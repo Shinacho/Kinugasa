@@ -84,7 +84,9 @@ public class TextStorage extends Storage<Text> implements Nameable {
 			if (e.getAttributes().contains("next")) {
 				t.setNextId(e.getAttributes().get("next").getValue());
 			}
-			add(t);
+			if (!contains(t)) {
+				add(t);
+			}
 
 		}
 		for (XMLElement e : root.getElement("choice")) {
@@ -111,13 +113,16 @@ public class TextStorage extends Storage<Text> implements Nameable {
 				tcvalues = Arrays.asList(Integer.parseInt(tcs));
 			}
 			FrameTimeCounter ftc = new FrameTimeCounter(tcvalues);
-			add(new Choice(options, id, value, ftc, 0));
+			Choice c = new Choice(options, id, value, ftc, 0);
+			if (!contains(c)) {
+				add(c);
+			}
 		}
 		data.dispose();
 
 		GameLog.printIfUsing(Level.ALL, getAll().toString());
 		printAll(System.out);
-		
+
 		return this;
 	}
 

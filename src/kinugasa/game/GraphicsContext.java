@@ -97,18 +97,15 @@ public class GraphicsContext {
 	}
 
 	public void fillRect(int i, int i0, int i1, int i2) {
-		//TODO;
-		System.out.println("–¢ŽÀ‘•");
+		g.fillRect(i, i0, i1, i2);
 	}
 
 	public void drawRect(int i, int i0, int i1, int i2) {
-		//TODO;
-		System.out.println("–¢ŽÀ‘•");
+		g.drawRect(i, i0, i1, i2);
 	}
 
 	public void clearRect(int i, int i0, int i1, int i2) {
-		//TODO;
-		System.out.println("–¢ŽÀ‘•");
+		g.clearRect(i, i0, i1, i2);
 	}
 
 	public void dispose() {

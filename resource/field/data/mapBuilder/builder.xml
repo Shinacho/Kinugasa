@@ -24,50 +24,9 @@ THE SOFTWARE.
 -->
 
 <kinugasaFieldMapBuilder>
-	<!-- 書き方
-	■fieldMapタグは、マップの一意の名前とそのデータファイルのパスを指定します。 
-	-name:（必須）一意の名前。すべてのBuilder間で一意であること。
-	-data:（必須）マップデータファイルのパス
-
-	定義例
-	<fieldMap name="01" data="resource/field/data/mapData/01.xml" >
+    <fieldMap name="ワールドマップ" data="resource/field/data/mapData/01.xml"/>
 	
-	■bgmタグはfieldMapタグ内に0または1つ設置できます。
-	-name:（必須）このマップがロードされたときに再生するBGMの、SoundMapの名前とサウンド自体の名前を「サウンドマップ名/サウンドの名前」で指定します。
-
-	定義例
-	<bgm name="BGM_MAP/BGM_01" />
-	
-	■eventDataタグはfieldMapタグ内に0または1つ設置できます。
-	-data:（必須）ｲﾍﾞﾝﾄデータファイルのパス。
-	
-	定義例
-	<eventData data="resource/field/data/event/event02.xml" />
-
-	■nodeタグはマップ同士の「出入り口」を定義します。すべてのノードは、出口であり、入口でもあります。このタグはfieldMapタグ内に0個以上設置できます。
-	　Nodeによるマップ切り替えは、手動判定が多く必要な点に注意してください。この機能は少なからずゲームデザインに影響されるため、FWとして自動実行される機能は多くありません。
-	-name:（必須）このノードの一意の名前。フィールドマップ内で一意である必要がある。
-	-auto:（任意）このノードを踏んだとき、マップを自動遷移するかどうか。この判定は移動後のみ行い、マップ遷移後の足元のノード判定ではスキップすることを推奨します（ループしちゃうので）この機能は階段やワープポイントに使うことを想定しています。
-	-x:（必須）このノードが設置されるこのフィールドマップ内の座標
-	-y:（必須）このノードが設置されるこのフィールドマップ内の座標
-	-map:（必須）出口のフィールドマップ名（fieldMapタグのname）
-	-exitNode:（必須）出口のノード名（fieldMapタグ内のnodeタグのname）
-	-face:（任意）このノードを入口として使用したとき、キャラクタが向いている方向。null/SOUTH/NORTH/EAST/WEST　から指定。指定しない場合null。
-	-tooltip:（任意）このノードの説明。「へ スカイリム」や「ガルディア城」のような。nullを許可。指定しない場合null。
-	-accepter:（任意）このノードによって移動できるかどうかを判定するロジックの名前を指定します。キーアイテムを持っていないと起動しないワープポイントなど。名前/TRUE（常に有効）/FALSE（常に無効）/から指定。指定しない場合TRUE。NodeAccepterStorageから取得。
-	-bgmStop:（任意）別のマップからこのノードへ移動してきたときに前のマップで再生されていたBGMを停止するかどうかを決めます。(TRUE/FALSE)指定しない場合、TRUEとなり、BGMは停止・メモリ開放されます。
-	-seName:（任意）このノードに入ったときに再生するサウンドエフェクトの名前。「サウンドマップ名/サウンドの名前」で指定します。
-
-	定義例
-	<node name="ND_02_0001" auto="FALSE" x="3" y="3" map="01" exitNode="ND_01_0001" face="NORTH" tooltip="へ スカイリム" accepter="TRUE" bgmStop="FALSE"/>
-
-	書き方ここまで -->
-	
-	<!-- WM -->
-    <fieldMap name="01" data="resource/field/data/mapData/01.xml"/>
-	
-	<!-- 逗子 -->
-    <fieldMap name="03" data="resource/field/data/mapData/03.xml"/>
+    <fieldMap name="ズシ" data="resource/field/data/mapData/03.xml"/>
 
 
 	

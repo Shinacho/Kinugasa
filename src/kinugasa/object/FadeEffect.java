@@ -49,7 +49,6 @@ public class FadeEffect extends ScreenEffect {
 		this.initialColor = color.clone();
 	}
 
-	;
 	@Override
 	public void draw(GraphicsContext g) {
 		if (!isVisible() || !isExist()) {

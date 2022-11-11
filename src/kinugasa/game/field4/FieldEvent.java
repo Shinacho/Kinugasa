@@ -37,8 +37,9 @@ public abstract class FieldEvent extends Model implements Nameable {
 	private String name;
 	private D2Idx location;
 
-	public FieldEvent(String name) {
+	public FieldEvent(String name, D2Idx location) {
 		this.name = name;
+		this.location = location;
 	}
 
 	public D2Idx getLocation() {
@@ -50,6 +51,11 @@ public abstract class FieldEvent extends Model implements Nameable {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public String toString() {
+		return "FieldEvent{" + "name=" + name + ", location=" + location + '}';
 	}
 
 }

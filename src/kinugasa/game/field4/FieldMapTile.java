@@ -36,10 +36,10 @@ public class FieldMapTile {
 	private List<MapChip> chip;
 	private NPC npc;
 	private FieldMapCharacter playerCharacter;
-	private FieldEvent event;
+	private List<FieldEvent> event;
 	private Node node;
 
-	public FieldMapTile(List<MapChip> chip, NPC npc, FieldMapCharacter playerCharacter, FieldEvent event, Node node) {
+	public FieldMapTile(List<MapChip> chip, NPC npc, FieldMapCharacter playerCharacter, List<FieldEvent> event, Node node) {
 		this.chip = chip;
 		this.npc = npc;
 		this.playerCharacter = playerCharacter;
@@ -47,7 +47,7 @@ public class FieldMapTile {
 		this.node = node;
 	}
 
-	public FieldEvent getEvent() {
+	public List<FieldEvent> getEvent() {
 		return event;
 	}
 
@@ -73,6 +73,14 @@ public class FieldMapTile {
 
 	public FieldMapCharacter getPlayerCharacter() {
 		return playerCharacter;
+	}
+
+	public boolean hasNode() {
+		return node != null;
+	}
+
+	public boolean hasInNode() {
+		return node != null && node.getMode() == Node.Mode.INOUT;
 	}
 
 }

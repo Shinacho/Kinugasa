@@ -32,7 +32,10 @@ THE SOFTWARE.
 	<animation image="resource/chipTest1.png" x="1" y="2" frame="12" w="16" h="16"/>
 	
 
-	<inOutNode name = "ND_01_0002" x="21" y="21" tgtMap="03" exitNode="ND_03_EXIT" tooltip="ズシ" accepterName="TRUE" outDir="NORTH"/>
+	<inOutNode name="ND_01_0002" x="21" y="21" tgtMap="ズシ" exitNode="ND_03_EXIT" tooltip="ズシ" accepterName="TRUE" outDir="SOUTH"/>
+	
+	
+	<event name="E_01" x="11" y="8" script="resource/field/data/event/01.xml" />
 	
 	
     <backLayer chipSet="outer16.png" lineSeparator ="/">

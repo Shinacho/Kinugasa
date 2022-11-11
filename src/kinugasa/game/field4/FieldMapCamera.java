@@ -77,10 +77,10 @@ public class FieldMapCamera {
 			int y = (int) (playerLocation.y + fieldMapY);
 
 			//領域外の判定
-			if (x < 0 || y < 0) {
+			if (x < 1 || y < 1) {
 				return;
 			}
-			if (map.getBaseLayer().getDataWidth() <= x || map.getBaseLayer().getDataHeight() <= y) {
+			if (map.getBaseLayer().getDataWidth() <= x + 1 || map.getBaseLayer().getDataHeight() <= y + 1) {
 				return;
 			}
 
@@ -96,7 +96,7 @@ public class FieldMapCamera {
 		map.getBacklLayeres().forEach(e -> e.move());
 		if (mode != FieldMapCameraMode.FOLLOW_TO_CENTER) {
 			//追従モードじゃない場合は同じベクトルで移動
-			map.getPlayerCharacter().move();
+			FieldMap.getPlayerCharacter().move();
 		}
 		map.getCharacter().forEach(e -> e.move());
 		map.getFrontlLayeres().forEach(e -> e.move());
@@ -114,10 +114,10 @@ public class FieldMapCamera {
 				int x = (int) (playerLocation.x + fieldMapX);
 				int y = (int) (playerLocation.y + fieldMapY);
 				//領域外の判定
-				if (x < 0 || y < 0) {
+				if (x < 1 || y < 1) {
 					return;
 				}
-				if (map.getBaseLayer().getDataWidth() <= x || map.getBaseLayer().getDataHeight() <= y) {
+				if (map.getBaseLayer().getDataWidth() <= x + 1 || map.getBaseLayer().getDataHeight() <= y + 1) {
 					return;
 				}
 				//乗れるチップかの判定
@@ -138,7 +138,7 @@ public class FieldMapCamera {
 		}
 		map.getBacklLayeres().forEach(e -> e.setSpeed(speed));
 		map.getCharacter().forEach(e -> e.setSpeed(speed));
-		map.getPlayerCharacter().setSpeed(speed);
+		FieldMap.getPlayerCharacter().setSpeed(speed);
 		map.getFrontlLayeres().forEach(e -> e.setSpeed(speed));
 		map.getFrontAnimation().forEach(e -> e.setSpeed(speed));
 	}
@@ -149,7 +149,7 @@ public class FieldMapCamera {
 		}
 		map.getBacklLayeres().forEach(e -> e.setAngle(angle));
 		map.getCharacter().forEach(e -> e.setAngle(angle));
-		map.getPlayerCharacter().setAngle(angle);
+		FieldMap.getPlayerCharacter().setAngle(angle);
 		map.getFrontlLayeres().forEach(e -> e.setAngle(angle));
 		map.getFrontAnimation().forEach(e -> e.setAngle(angle));
 	}
@@ -172,7 +172,7 @@ public class FieldMapCamera {
 		}
 		map.getBacklLayeres().forEach(e -> e.setLocation(p));
 		map.getCharacter().forEach(e -> e.setLocation(p));
-		map.getPlayerCharacter().setLocation(p);
+		FieldMap.getPlayerCharacter().setLocation(p);
 		map.getFrontlLayeres().forEach(e -> e.setLocation(p));
 		float fieldMapX = map.getBaseLayer().getX();
 		float fieldMapY = map.getBaseLayer().getY();
@@ -191,7 +191,7 @@ public class FieldMapCamera {
 		}
 		map.getBacklLayeres().forEach(e -> e.setX(x));
 		map.getCharacter().forEach(e -> e.setX(x));
-		map.getPlayerCharacter().setX(x);
+		FieldMap.getPlayerCharacter().setX(x);
 		map.getFrontlLayeres().forEach(e -> e.setX(x));
 		float fieldMapX = map.getBaseLayer().getX();
 		for (FieldAnimationSprite s : map.getFrontAnimation()) {
@@ -208,7 +208,7 @@ public class FieldMapCamera {
 		}
 		map.getBacklLayeres().forEach(e -> e.setY(y));
 		map.getCharacter().forEach(e -> e.setY(y));
-		map.getPlayerCharacter().setY(y);
+		FieldMap.getPlayerCharacter().setY(y);
 		map.getFrontlLayeres().forEach(e -> e.setY(y));
 		float fieldMapY = map.getBaseLayer().getY();
 		for (FieldAnimationSprite s : map.getFrontAnimation()) {
@@ -233,12 +233,12 @@ public class FieldMapCamera {
 		y += chipH / 2;
 		setLocation(-x, -y);
 		//キャラクタの位置修正
-		int charaW = map.getPlayerCharacter().getImageWidth();
-		int charaH = map.getPlayerCharacter().getImageHeight();
+		int charaW = FieldMap.getPlayerCharacter().getImageWidth();
+		int charaH =  FieldMap.getPlayerCharacter().getImageHeight();
 
 		float cx = screenW / 2 - (charaW / 2);
 		float cy = screenH / 2 - (charaH / 2);
-		map.getPlayerCharacter().setLocation(cx, cy);
+		 FieldMap.getPlayerCharacter().setLocation(cx, cy);
 	}
 
 }

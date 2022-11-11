@@ -23,8 +23,8 @@
  */
 package kinugasa.game.field4;
 
-import java.awt.Point;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import kinugasa.resource.Disposable;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Storage;
@@ -52,17 +52,18 @@ public class FieldEventStorage extends Storage<FieldEvent> implements Nameable, 
 		clear();
 	}
 
-	public FieldEvent get(int x, int y) {
+	public List<FieldEvent> get(int x, int y) {
 		return get(new D2Idx(x, y));
 	}
 
-	public FieldEvent get(D2Idx p) {
+	public List<FieldEvent> get(D2Idx p) {
+		List<FieldEvent> result = new ArrayList<>();
 		for (FieldEvent e : this) {
 			if (e.getLocation().equals(p)) {
-				return e;
+				result.add(e);
 			}
 		}
-		return null;
+		return result;
 	}
 
 }

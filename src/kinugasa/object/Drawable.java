@@ -23,6 +23,7 @@
  */
 package kinugasa.object;
 
+import java.awt.Graphics2D;
 import kinugasa.game.GraphicsContext;
 
 /**
@@ -38,4 +39,8 @@ import kinugasa.game.GraphicsContext;
 public interface Drawable {
 
 	public void draw(GraphicsContext g);
+
+	public default void draw(Graphics2D g2) {
+		this.draw(new GraphicsContext(g2));
+	}
 }

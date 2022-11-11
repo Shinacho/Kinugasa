@@ -62,11 +62,12 @@ public class Node implements Nameable {
 		n.tooltip = tooltip;
 		n.accepter = accepter;
 		n.mode = Mode.INOUT;
+		n.outDir = outDir;
 		return n;
 	}
 
-	public static Node ofOutNode(String name, int x, int y, FourDirection outDir) {
-		Node n = ofInOutNode(name, null, null, x, y, null, null, outDir);
+	public static Node ofOutNode(String name, int x, int y) {
+		Node n = ofInOutNode(name, null, null, x, y, null, null, null);
 		n.mode = Mode.OUT;
 		return n;
 	}
@@ -102,6 +103,10 @@ public class Node implements Nameable {
 
 	public int getY() {
 		return y;
+	}
+
+	public D2Idx getIdx() {
+		return new D2Idx(x, y);
 	}
 
 	public String getTooltip() {

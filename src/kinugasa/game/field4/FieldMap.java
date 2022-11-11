@@ -39,13 +39,13 @@ import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.graphics.RenderingQuality;
 import kinugasa.graphics.SpriteSheet;
-import kinugasa.object.AnimationSprite;
-import kinugasa.object.BasicSprite;
 import kinugasa.object.Drawable;
 import kinugasa.object.KVector;
 import kinugasa.resource.Disposable;
 import kinugasa.resource.KImage;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.sound.Sound;
+import kinugasa.resource.sound.SoundStorage;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.util.FrameTimeCounter;
@@ -75,12 +75,20 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		return debugMode;
 	}
 
+	public static FieldMapCharacter getPlayerCharacter() {
+		return playerCharacter;
+	}
+
+	public static void setPlayerCharacter(FieldMapCharacter playerCharacter) {
+		FieldMap.playerCharacter = playerCharacter;
+	}
+
 	private final String name;
 	private final XMLFile data;
 	//------------------------------------------------
 	private BackgroundLayerSprite backgroundLayerSprite; //nullable
 	private List<FieldMapLayerSprite> backlLayeres = new ArrayList<>();
-	private FieldMapCharacter playerCharacter;
+	private static FieldMapCharacter playerCharacter;
 	private List<FieldMapCharacter> character = new ArrayList<>();
 	private List<FieldMapLayerSprite> frontlLayeres = new ArrayList<>();
 	private List<FieldAnimationSprite> frontAnimation = new ArrayList<>();
@@ -99,9 +107,20 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private static boolean debugMode = false;
 	//
 	private boolean visible = true;
+	//
+	private TooltipModel tooltipModel = new SimpleTooltipModel();
+	private MapNameModel mapNameModel = new SimpleMapNameModel();
 
 	public D2Idx getCurrentIdx() {
 		return currentIdx;
+	}
+
+	public TooltipModel getTooltipModel() {
+		return tooltipModel;
+	}
+
+	public void setTooltipModel(TooltipModel tooltipModel) {
+		this.tooltipModel = tooltipModel;
 	}
 
 	public BackgroundLayerSprite getBackgroundLayerSprite() {
@@ -160,12 +179,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		return camera;
 	}
 
-	public FieldMapCharacter getPlayerCharacter() {
-		return playerCharacter;
+	public MapNameModel getMapNameModel() {
+		return mapNameModel;
 	}
 
-	public void setPlayerCharacter(FieldMapCharacter playerCharacter) {
-		this.playerCharacter = playerCharacter;
+	public void setMapNameModel(MapNameModel mapNameModel) {
+		this.mapNameModel = mapNameModel;
 	}
 
 	public FieldMap build() throws FieldMapDataException {
@@ -176,13 +195,14 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		//テキストのないマップの場合、ロードしないことを許可する
 		if (root.getAttributes().contains("textStorageName")) {
 			String textStorageName = root.getAttributes().get("textStorageName").getValue();
-			textStorage = TextStorageStorage.getInstance().get(textStorageName);
+			textStorage = TextStorageStorage.getInstance().get(textStorageName).build();
 		}
-		//事前に別設定されたフィールドイベントストレージの取得
-		//イベントのないマップの場合、ロードしないことを許可する
+		//フィールドイベントストレージの作成
 		if (root.getAttributes().contains("eventStorageName")) {
 			String fieldEventStorageName = root.getAttributes().get("eventStorageName").getValue();
-			fieldEventStorage = FieldEventStorageStorage.getInstance().get(fieldEventStorageName);
+			fieldEventStorage = FieldEventStorageStorage.getInstance().contains("fieldEventStorageName")
+					? FieldEventStorageStorage.getInstance().get("fieldEventStorageName")
+					: new FieldEventStorage(fieldEventStorageName);
 		}
 		// 表示倍率・・・ない場合は1倍とする
 		float mg = root.getAttributes().contains("mg") ? root.getAttributes().get("mg").getFloatValue() : 1;
@@ -231,8 +251,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				String name = e.getAttributes().get("name").getValue();
 				int x = e.getAttributes().get("x").getIntValue();
 				int y = e.getAttributes().get("y").getIntValue();
-				FourDirection outDir = FourDirection.valueOf(e.getAttributes().get("outDir").getValue());
-				Node node = Node.ofOutNode(name, x, y, outDir);
+				Node node = Node.ofOutNode(name, x, y);
 				nodeStorage.add(node);
 			}
 
@@ -332,11 +351,44 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		//TODO
 
 		//イベント
+		{
+			for (XMLElement e : root.getElement("event")) {
+				int x = e.getAttributes().get("x").getIntValue();
+				int y = e.getAttributes().get("y").getIntValue();
+				String name = e.getAttributes().get("name").getValue();
+				String script = e.getAttributes().get("script").getValue();
+				fieldEventStorage.add(new FieldEventParser(name, new D2Idx(x, y), new XMLFile(script)).parse());
+			}
+		}
+
 		//TODO
 		data.dispose();
 
 		// カメラ初期化
 		camera = new FieldMapCamera(this);
+
+		//BGMの処理
+		{
+			if (root.getElement("bgm").size() >= 2) {
+				throw new FieldMapDataException("bgm must be 0 or 1 : " + data);
+			}
+			if (root.hasElement("bgm")) {
+				XMLElement e = root.getElement("bgm").get(0);
+				BGMMode mode = BGMMode.valueOf(e.getAttributes().get("mode").getValue());
+				if (mode != BGMMode.NOTHING) {
+					String mapName = e.getAttributes().get("mapName").getValue();
+					String soundName = e.getAttributes().get("soundName").getValue();
+					if (mode == BGMMode.STOP_ALL || mode == BGMMode.STOP_ALL) {
+						SoundStorage.getInstance().get(mapName).stopAll();
+					}
+					if (mode == BGMMode.STOP_AND_PLAY) {
+						SoundStorage.getInstance().get(mapName).get(soundName).load().play();
+					}
+				}
+
+			}
+		}
+		mapNameModel.reset();
 
 		return this;
 	}
@@ -363,6 +415,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		frontAnimation.forEach(e -> e.draw(g));
 		beforeLayerSprites.forEach(e -> e.draw(g));
+		if (mapNameModel != null) {
+			mapNameModel.drawMapName(this, g);
+		}
+		if (tooltipModel != null) {
+			tooltipModel.drawTooltip(this, g);
+		}
 		if (debugMode) {
 			float centerX = FieldMapStorage.getScreenWidth() / 2;
 			float centerY = FieldMapStorage.getScreenHeight() / 2;
@@ -382,31 +440,23 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 	@Override
 	public void dispose() {
-		backgroundLayerSprite.dispose();
-		backgroundLayerSprite = null;
+		if (backgroundLayerSprite != null) {
+			backgroundLayerSprite.dispose();
+		}
 		backlLayeres.clear();
-		backlLayeres = null;
 		character.clear();
-		character = null;
-		playerCharacter = null;
 		frontlLayeres.clear();
-		frontlLayeres = null;
 		frontAnimation.clear();
-		frontAnimation = null;
 		beforeLayerSprites.clear();
-		beforeLayerSprites = null;
 
 		npcStorage.clear();
-		npcStorage = null;
 		if (fieldEventStorage != null) {
 			fieldEventStorage.dispose();
 			fieldEventStorage = null;
 		}
 		nodeStorage.clear();
-		nodeStorage = null;
 		if (textStorage != null) {
 			textStorage.clear();
-			textStorage = null;
 		}
 	}
 
@@ -459,7 +509,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			chip.add(s.getChip(idx.x, idx.y));
 		}
 		NPC npc = npcStorage.get(idx);
-		FieldEvent event = fieldEventStorage == null ? null : fieldEventStorage.get(idx);
+		List<FieldEvent> event = fieldEventStorage == null ? null : fieldEventStorage.get(idx);
 		Node node = nodeStorage.get(idx);
 
 		return new FieldMapTile(chip, npc, idx.equals(currentIdx) ? playerCharacter : null, event, node);
@@ -476,6 +526,13 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 * @param idx マップデータのインデックス。
 	 */
 	public void setCurrentIdx(D2Idx idx) {
+		if (!idx.equals(currentIdx)) {
+			//イベントの実行
+			List<FieldEvent> e = fieldEventStorage.get(idx);
+			e.forEach(v -> v.exec(this));
+		}
+		//ノードの処理
+
 		this.currentIdx = idx.clone();
 	}
 
@@ -517,7 +574,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			for (FieldAnimationSprite a : frontAnimation) {
 				float x = chipW * a.getIdx().x;
 				float y = chipH * a.getIdx().y;
-				g.drawImage(a.getAWTImage(), (int)x, (int)y, null);
+				g.drawImage(a.getAWTImage(), (int) x, (int) y, null);
 			}
 		}
 		g.dispose();
