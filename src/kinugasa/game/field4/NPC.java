@@ -24,10 +24,10 @@
 package kinugasa.game.field4;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import kinugasa.game.ui.Text;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.object.FourDirection;
-import kinugasa.object.KVector;
 import kinugasa.resource.Nameable;
 import kinugasa.util.FrameTimeCounter;
 
@@ -39,8 +39,8 @@ import kinugasa.util.FrameTimeCounter;
  */
 public class NPC extends FieldMapCharacter implements Nameable {
 
-	private D2Idx targetLocationOnMap = null;
-	private D2Idx currentIDXonMapData = null;
+	private D2Idx targetIdx = null;
+	private D2Idx currentIdx = null;
 	private FrameTimeCounter nextMoveFrameTime;
 	//
 	private String name;
@@ -50,14 +50,14 @@ public class NPC extends FieldMapCharacter implements Nameable {
 	private String textId;
 	//
 
-	public NPC(String name, D2Idx initialLocationOnMap, NPCMoveModel moveModel, Vehicle vehicle, FieldMap map, String textId, float x, float y, float w, float h, D2Idx initialLocation, FourDirAnimation a, FourDirection initialDir) {
-		super(x, y, w, h, initialLocation, a, initialDir);
+	public NPC(String name, D2Idx initialLocationOnMap, NPCMoveModel moveModel, Vehicle vehicle, FieldMap map, String textId, float x, float y, float w, float h, D2Idx initialIdx, FourDirAnimation a, FourDirection initialDir) {
+		super(x, y, w, h, initialIdx, a, initialDir);
 		this.name = name;
 		this.moveModel = moveModel;
 		this.vehicle = vehicle;
 		this.map = map;
 		this.textId = textId;
-		this.currentIDXonMapData = initialLocation;
+		this.currentIdx = initialIdx.clone();
 		setSpeed(vehicle.getSpeed());
 		to(initialDir);
 	}
@@ -74,8 +74,20 @@ public class NPC extends FieldMapCharacter implements Nameable {
 		return vehicle;
 	}
 
-	public D2Idx getCurrentIDXonMapData() {
-		return currentIDXonMapData;
+	public D2Idx getCurrentIdx() {
+		return currentIdx;
+	}
+
+	public void setCurrentIdx(D2Idx currentIDXonMapData) {
+		this.currentIdx = currentIDXonMapData;
+	}
+
+	public D2Idx getTargetIdx() {
+		return targetIdx;
+	}
+
+	public FrameTimeCounter getNextMoveFrameTime() {
+		return nextMoveFrameTime;
 	}
 
 	@Override
@@ -83,6 +95,7 @@ public class NPC extends FieldMapCharacter implements Nameable {
 		return name;
 	}
 	private int stage = 0;
+	private int lx, ly;
 
 	@Override
 	public void update() {
@@ -91,7 +104,7 @@ public class NPC extends FieldMapCharacter implements Nameable {
 			case 0:
 				//初期化
 				nextMoveFrameTime = new FrameTimeCounter(moveModel.nextMoveFrameTime(this, map));
-				targetLocationOnMap = moveModel.getNextTargetLocationOnMap(this, map);
+				targetIdx = moveModel.getNextTargetIdx(this, map);
 				nextStage();
 				break;
 			case 1:
@@ -99,36 +112,101 @@ public class NPC extends FieldMapCharacter implements Nameable {
 				if (!nextMoveFrameTime.isReaching()) {
 					return;
 				}
-				nextMoveFrameTime = new FrameTimeCounter(moveModel.nextMoveFrameTime(this, map));
 				nextStage();
 				break;
 			case 2:
 				//移動実行
-				//目的地までの角度算出
-				float tgtX = map.getBaseLayer().getX() + targetLocationOnMap.x * getWidth();
-				float tgtY = map.getBaseLayer().getY() + targetLocationOnMap.y * getHeight();
-				KVector v = new KVector();
-				v.setAngle(getLocation(), new Point2D.Float(tgtX, tgtY));
-				v.setSpeed(vehicle.getSpeed());
-				move();
-
-				//カレントインデックスの更新
-				//目的地に近づいたら再設定
-				if (currentIDXonMapData.equals(targetLocationOnMap)) {
+				if (getTargetIdx().equals(map.getCurrentIdx())) {
+					stage = 0;
+				}
+				float speed = vehicle.getSpeed() / 2;
+				Point2D.Float p = (Point2D.Float) getLocation().clone();
+				if (getCurrentIdx().x > getTargetIdx().x) {
+					p.x -= speed;
+					to(FourDirection.WEST);
+					lx--;
+				} else if (getCurrentIdx().x < getTargetIdx().x) {
+					p.x += speed;
+					to(FourDirection.EAST);
+					lx++;
+				}
+				if (getCurrentIdx().y > getTargetIdx().y) {
+					p.y -= speed;
+					to(FourDirection.NORTH);
+					ly--;
+				} else if (getCurrentIdx().y < getTargetIdx().y) {
+					p.y += speed;
+					to(FourDirection.SOUTH);
+					ly++;
+				}
+				Point2D.Float prevLocation = (Point2D.Float) getLocation().clone();
+				setLocation(p);
+				D2Idx prev = currentIdx.clone();
+				if (lx >= map.getChipW()) {
+					lx = 0;
+					currentIdx.x++;
+				} else if (lx <= -map.getChipW()) {
+					lx = 0;
+					currentIdx.x--;
+				}
+				if (ly >= map.getChipH()) {
+					ly = 0;
+					currentIdx.y++;
+				} else if (ly <= -map.getChipH()) {
+					ly = 0;
+					currentIdx.y--;
+				}
+				if (!prev.equals(currentIdx)) {
+					if (map.getNpcStorage().get(currentIdx) != null && map.getNpcStorage().get(currentIdx) != this) {
+						setLocation(prevLocation);
+						return;
+					}
+				}
+				if (currentIdx.equals(targetIdx)) {
 					nextStage();
 				}
+				//目的地に近づいたら再設定
+				if (new Rectangle2D.Float(targetIdx.x * getWidth(), targetIdx.y * getHeight(), map.getChipW(), map.getChipH()).contains(getLocation())) {
+					nextStage();
+				}
+				break;
+			case 3:
+				//NPCの位置更新
+				lx = ly = 0;
+				float nx = map.getBaseLayer().getX() + getCurrentIdx().x * map.getChipW();
+				float ny = map.getBaseLayer().getY() + getCurrentIdx().y * map.getChipH();
+				setLocation(nx, ny);
+				nextStage();
+				break;
+			case 4:
+				//移動停止中の処理
 				break;
 			default:
 				throw new AssertionError("undefined NPCs stage : " + this);
 		}
 	}
 
-	private void nextStage() {
-		if (FieldMap.isDebugMode()) {
-			System.out.println("NPC " + getName() + " s stage : " + stage + " -> " + (stage + 1) + " " + this);
-		}
+	public void setStage(int stage) {
+		this.stage = stage;
+	}
+
+	private int prevStage;
+
+	public void notMove() {
+		prevStage = stage;
+		setStage(4);
+	}
+
+	public void canMove() {
+		stage = prevStage;
+	}
+
+	void nextStage() {
+//		if (FieldMap.isDebugMode()) {
+//			System.out.println("NPC " + getName() + " s stage : " + stage + " -> " + (stage + 1) + " " + this);
+//		}
 		stage++;
-		if (stage >= 3) {
+		if (stage >= 4) {
 			stage = 0;
 		}
 	}
@@ -138,13 +216,13 @@ public class NPC extends FieldMapCharacter implements Nameable {
 		super.move();
 	}
 
-	public Text getText(TextStorage ts) {
-		return ts.get(textId);
+	public String getTextID() {
+		return textId;
 	}
 
 	@Override
 	public String toString() {
-		return "NPC{" + "targetLocationOnMap=" + targetLocationOnMap + ", currentIDXonMapData=" + currentIDXonMapData + ", nextMoveFrameTime=" + nextMoveFrameTime + ", name=" + name + ", vehicle=" + vehicle + ", textId=" + textId + ", stage=" + stage + '}';
+		return "NPC{" + "targetIdx=" + targetIdx + ", currentIdx=" + currentIdx + ", nextMoveFrameTime=" + nextMoveFrameTime + ", name=" + name + ", vehicle=" + vehicle + ", textId=" + textId + ", stage=" + stage + ", lx=" + lx + ", ly=" + ly + '}';
 	}
 
 }

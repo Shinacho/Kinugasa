@@ -176,7 +176,7 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	public void setVector(KVector vector) {
 		this.vector = vector;
 	}
-
+	
 	/**
 	 * ˆÚ“®ƒ‚ƒfƒ‹‚ðŽæ“¾‚µ‚Ü‚·.
 	 * 

@@ -23,7 +23,6 @@
  */
 package kinugasa.object;
 
-
 /**
  * .
  * <br>
@@ -47,5 +46,19 @@ public enum FourDirection {
 
 	public float getAngle() {
 		return angle;
+	}
+
+	public FourDirection reverse() {
+		switch (this) {
+			case EAST:
+				return WEST;
+			case WEST:
+				return EAST;
+			case NORTH:
+				return SOUTH;
+			case SOUTH:
+				return NORTH;
+		}
+		throw new InternalError("dir " + this + " is not found");
 	}
 }

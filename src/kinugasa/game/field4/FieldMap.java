@@ -35,6 +35,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.I18N;
+import kinugasa.game.ui.MessageWindow;
+import kinugasa.game.ui.SimpleMessageWindowModel;
+import kinugasa.game.ui.Text;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.game.ui.TextStorageStorage;
 import kinugasa.graphics.Animation;
@@ -51,7 +55,6 @@ import kinugasa.resource.sound.SoundStorage;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.util.FrameTimeCounter;
-import kinugasa.object.BasicSprite;
 
 /**
  *
@@ -438,7 +441,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private static final Comparator<FieldMapCharacter> Y_COMPARATOR = new Comparator<>() {
 		@Override
 		public int compare(FieldMapCharacter o1, FieldMapCharacter o2) {
-			return (int)o1.getY() - (int)o2.getY();
+			return (int) o1.getY() - (int) o2.getY();
 		}
 
 	};
@@ -453,7 +456,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		backlLayeres.forEach(e -> e.draw(g));
 		if (debugMode) {
-			backlLayeres.forEach(e -> e.debugDraw(g, currentIdx, getBaseLayer().getLocation(), chipW, chipH));
+			backlLayeres.forEach(e -> e.debugDrawPC(g, currentIdx, playerDirIdx(), getBaseLayer().getLocation(), chipW, chipH));
 			backlLayeres.forEach(e -> e.debugDrawNPC(g, npcStorage.asList(), getBaseLayer().getLocation(), chipW, chipH));
 		}
 
@@ -468,7 +471,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 		frontlLayeres.forEach(e -> e.draw(g));
 		if (debugMode) {
-			frontlLayeres.forEach(e -> e.debugDraw(g, currentIdx, getBaseLayer().getLocation(), chipW, chipH));
+			frontlLayeres.forEach(e -> e.debugDrawPC(g, currentIdx, playerDirIdx(), getBaseLayer().getLocation(), chipW, chipH));
 			frontlLayeres.forEach(e -> e.debugDrawNPC(g, npcStorage.asList(), getBaseLayer().getLocation(), chipW, chipH));
 		}
 		frontAnimation.forEach(e -> e.draw(g));
@@ -491,7 +494,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			g2.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
 			g2.drawLine((int) p3.x, (int) p3.y, (int) p4.x, (int) p4.y);
 			g2.dispose();
-//			System.out.print("IDX : " + currentIdx);
+//			System.out.print("IDX : " + idx);
 //			System.out.println("  FM_LOCATION : " + getBaseLayer().getLocation());
 		}
 	}
@@ -517,8 +520,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 	}
 
-	public void updateNPC() {
+	public void update() {
 		npcStorage.forEach(c -> c.update());
+		if (mw != null) {
+			mw.update();
+		}
 	}
 
 	public void move() {
@@ -640,6 +646,105 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		g.dispose();
 		return new KImage(ImageEditor.resize(image, scale));
+	}
+
+	public boolean canTalk() {
+		D2Idx idx = playerDirIdx();
+		// 範囲外のチェック
+		if (idx.x < 0 || idx.y < 0) {
+			return false;
+		}
+		if (idx.x >= getBaseLayer().getDataWidth() || idx.y > getBaseLayer().getDataHeight()) {
+			return false;
+		}
+
+		//NPCがいるかどうかを返す
+		return getTile(idx).getNpc() != null;
+	}
+
+	public D2Idx playerDirIdx() {
+		D2Idx idx = this.currentIdx.clone();
+		FourDirection currentDir = playerCharacter.getCurrentDir();
+
+		switch (currentDir) {
+			case EAST:
+				idx.x += 1;
+				break;
+			case WEST:
+				idx.x -= 1;
+				break;
+			case NORTH:
+				idx.y -= 1;
+				break;
+			case SOUTH:
+				idx.y += 1;
+				break;
+		}
+		return idx;
+	}
+
+	private static String noNPCMessage;
+
+	static {
+		noNPCMessage = I18N.translate("NO_NPC");
+	}
+
+	public static String getNoNPCMessage() {
+		return noNPCMessage;
+	}
+
+	public static void setNoNPCMessage(String noNPCMessage) {
+		FieldMap.noNPCMessage = noNPCMessage;
+	}
+	private MessageWindow mw;
+
+	/**
+	 * プレイヤーキャラクタの向いている方向にいるNPCに対して、いい感じの位置にメッセ?ウインドウを表示します。
+	 * メッセージウインドウのモデルはSimpleMessageWindowModelが使用されます。
+	 *
+	 * @return
+	 * メッセージウインドウ。NPCがいない場合はnoNPCMessageを表示します。ただし、これは例外処置的なもので、この制御は、ゲームマネージャ側で行うべきです。
+	 */
+	public MessageWindow talk() {
+		D2Idx idx = playerDirIdx();
+		NPC n = getTile(idx).getNpc();
+		if (n != null) {
+			n.notMove();
+		}
+		//NPCが画面下半分にいる場合はメッセージウインドウを上に表示。上半分にいる場合は下に表示。
+		float buffer = 24;
+		float x = buffer;
+		float y = n == null || n.getCenterY() < FieldMapStorage.getScreenHeight() / 2 ? FieldMapStorage.getScreenHeight() / 2 + buffer : buffer;
+		float w = FieldMapStorage.getScreenWidth() - (buffer * 2);
+		float h = FieldMapStorage.getScreenHeight() / 3;
+		Text t = n == null ? new Text(noNPCMessage) : textStorage.get(n.getTextID());
+		if (n != null) {
+			n.to(playerCharacter.getCurrentDir().reverse());
+		}
+		t.reset();
+
+		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), textStorage, t);
+
+		return mw;
+	}
+
+	/**
+	 * メッセージウインドウを閉じます。ついでにNPCの移動を解除します。
+	 */
+	public void closeMessagWindow() {
+		mw.setVisible(false);
+		if (mw != null) {
+			mw = null;
+		}
+		npcStorage.forEach(c -> c.canMove());
+	}
+
+	public void NPCMoveStop() {
+		npcStorage.forEach(c -> c.notMove());
+	}
+
+	public void NPCMoveStart() {
+		npcStorage.forEach(c -> c.canMove());
 	}
 
 }

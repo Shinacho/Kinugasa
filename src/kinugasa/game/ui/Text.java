@@ -24,7 +24,6 @@
 package kinugasa.game.ui;
 
 import kinugasa.resource.Nameable;
-import kinugasa.resource.sound.Sound;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.TimeCounter;
 

@@ -34,7 +34,7 @@ public class NPCStorage extends Storage<NPC> {
 
 	public NPC get(D2Idx idx) {
 		for (NPC n : this) {
-			if (n.getCurrentIDXonMapData().equals(idx)) {
+			if (n.getCurrentIdx().equals(idx)) {
 				return n;
 			}
 		}

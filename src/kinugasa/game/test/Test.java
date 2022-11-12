@@ -123,8 +123,6 @@ public class Test extends GameManager {
 		screenShot = new SoundBuilder("resource/se/screenShot.wav").builde().load();
 		//
 		ts = fm.getTextStorage();
-		mw = new MessageWindow(0, 300, 600, 150, new SimpleMessageWindowModel(), ts, ts.get("001"));
-		mw.setVisible(true);
 
 	}
 	FieldMap fm;
@@ -146,8 +144,6 @@ public class Test extends GameManager {
 		InputState is = InputState.getInstance();
 		switch (stage) {
 			case 0:
-				mw.update();
-				//ノード処理
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
 					FieldMapTile t = fm.getCurrentCenterTile();
 					if (t.hasInNode()) {
@@ -158,33 +154,33 @@ public class Test extends GameManager {
 										ColorTransitionModel.valueOf(0),
 										new FadeCounter(0, +6)
 								));
+						mw.setVisible(false);
 						nextStage();
 					}
 				}
-				// メッセージウインドウのテスト
-				if (is.isPressed(GamePadButton.X, InputType.SINGLE)) {
-					if (mw.isVisible()) {
+				//MW処理
+				//会話開始
+				// 会話送り、選択の処理
+				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
+					if (mw != null && mw.isVisible()) {
 						if (!mw.isAllVisible()) {
 							mw.allText();
 						} else if (mw.isChoice()) {
 							if (mw.getChoiceOption().hasNext()) {
 								mw.choicesNext();
 							} else {
-								mw.setVisible(false);
+								fm.closeMessagWindow();
 							}
 						} else if (mw.hasNext()) {
 							mw.next();
 						} else {
-							mw.setVisible(false);
+							fm.closeMessagWindow();
 						}
-					} else {
-						mw.setTextFromId("001");
-						mw.reset();
-						mw.getTextStorage().resetAll();
-						mw.setVisible(true);
+					} else if (fm.canTalk()) {
+						mw = fm.talk();
 					}
 				}
-				if (mw.isChoice()) {
+				if (mw != null && mw.isChoice()) {
 					if (is.isPressed(GamePadButton.POV_DOWN, InputType.SINGLE)) {
 						mw.nextSelect();
 					}
@@ -192,6 +188,7 @@ public class Test extends GameManager {
 						mw.prevSelect();
 					}
 				}
+				//テスト用カメラ処理
 				if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
 					fm.getCamera().setMode(FieldMapCameraMode.FOLLOW_TO_CENTER);
 				}
@@ -199,22 +196,28 @@ public class Test extends GameManager {
 					fm.getCamera().setMode(FieldMapCameraMode.FREE);
 				}
 
-				//フィールドマップのカメラ移動
-				float speed = VehicleStorage.getInstance().getCurrentVehicle().getSpeed();
-				fm.setVector(new KVector(is.getGamePadState().sticks.LEFT.getLocation(speed)));
-				fm.move();
+				//フィールドマップのカメラ移動・・・メッセージウインドウが表示されている間は移動不可とする
+				if (mw == null || !mw.isVisible()) {
+					float speed = VehicleStorage.getInstance().getCurrentVehicle().getSpeed();
+					fm.setVector(new KVector(is.getGamePadState().sticks.LEFT.getLocation(speed)));
+					fm.move();
+				}
+				//NPC/MW更新
+				fm.update();
 				//プレイヤーキャラクターの向き更新
-				if (fm.getCamera().getMode() == FieldMapCameraMode.FOLLOW_TO_CENTER) {
-					if (!is.getGamePadState().sticks.LEFT.getLocation().equals(GamePadStick.NOTHING)) {
-						if (is.getGamePadState().sticks.LEFT.is(FourDirection.EAST)) {
-							c.to(FourDirection.EAST);
-						} else if (is.getGamePadState().sticks.LEFT.is(FourDirection.WEST)) {
-							c.to(FourDirection.WEST);
-						}
-						if (is.getGamePadState().sticks.LEFT.is(FourDirection.NORTH)) {
-							c.to(FourDirection.NORTH);
-						} else if (is.getGamePadState().sticks.LEFT.is(FourDirection.SOUTH)) {
-							c.to(FourDirection.SOUTH);
+				if (mw == null || !mw.isVisible()) {
+					if (fm.getCamera().getMode() == FieldMapCameraMode.FOLLOW_TO_CENTER) {
+						if (!is.getGamePadState().sticks.LEFT.getLocation().equals(GamePadStick.NOTHING)) {
+							if (is.getGamePadState().sticks.LEFT.is(FourDirection.EAST)) {
+								c.to(FourDirection.EAST);
+							} else if (is.getGamePadState().sticks.LEFT.is(FourDirection.WEST)) {
+								c.to(FourDirection.WEST);
+							}
+							if (is.getGamePadState().sticks.LEFT.is(FourDirection.NORTH)) {
+								c.to(FourDirection.NORTH);
+							} else if (is.getGamePadState().sticks.LEFT.is(FourDirection.SOUTH)) {
+								c.to(FourDirection.SOUTH);
+							}
 						}
 					}
 				}
@@ -276,7 +279,7 @@ public class Test extends GameManager {
 	}
 
 	private void nextStage() {
-		System.out.println("STAGE : " + stage + " -> " + (stage + 1));
+		System.out.println("MAIN STAGE : " + stage + " -> " + (stage + 1));
 		stage++;
 		if (stage == 5) {
 			stage = 0;
@@ -286,7 +289,9 @@ public class Test extends GameManager {
 	@Override
 	protected void draw(GraphicsContext gc) {
 		fm.draw(gc);
-		mw.draw(gc);
+		if (mw != null) {
+			mw.draw(gc);
+		}
 		if (effect != null) {
 			effect.draw(gc);
 		}

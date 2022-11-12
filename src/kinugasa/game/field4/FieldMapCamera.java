@@ -111,8 +111,8 @@ public class FieldMapCamera {
 		int chipW = map.getChipW();
 		int chipH = map.getChipH();
 //		for (NPC n : map.getNpcStorage()) {
-//			float nx = map.getBaseLayer().getX() + n.getCurrentIDXonMapData().x * chipW;
-//			float ny = map.getBaseLayer().getY() + n.getCurrentIDXonMapData().y * chipH;
+//			float nx = map.getBaseLayer().getX() + n.getCurrentIdx().x * chipW;
+//			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;
 //			n.setLocation(nx, ny);
 //		}
 		switch (mode) {
@@ -258,8 +258,8 @@ public class FieldMapCamera {
 
 		//NPCÇÃà íuçXêV
 		for (NPC n : map.getNpcStorage()) {
-			float nx = map.getBaseLayer().getX() + n.getCurrentIDXonMapData().x * chipW;
-			float ny = map.getBaseLayer().getY() + n.getCurrentIDXonMapData().y * chipH;
+			float nx = map.getBaseLayer().getX() + n.getCurrentIdx().x * chipW;
+			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;
 			n.setLocation(nx, ny);
 		}
 	}

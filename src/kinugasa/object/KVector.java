@@ -101,7 +101,6 @@ public class KVector implements Cloneable {
 		this(new Point2D.Float(location.x, location.y));
 	}
 
-
 	public void clamp() {
 		while (angle >= 360.0f) {
 			angle -= 360.0f;
@@ -312,4 +311,19 @@ public class KVector implements Cloneable {
 		}
 		return deg;
 	}
+
+	public FourDirection round() {
+		if (checkRange(FourDirection.NORTH.getAngle(), 90)) {
+			return FourDirection.NORTH;
+		}
+		if (checkRange(FourDirection.SOUTH.getAngle(), 90)) {
+			return FourDirection.SOUTH;
+		}
+		if (checkRange(FourDirection.EAST.getAngle(), 90)) {
+			return FourDirection.EAST;
+		}
+		return FourDirection.WEST;
+
+	}
+
 }

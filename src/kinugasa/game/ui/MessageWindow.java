@@ -97,10 +97,12 @@ public class MessageWindow extends BasicSprite {
 
 	public void next() {
 		setText(textStorage.get(text.getNextId()));
+		getText().reset();
 	}
 
 	public void choicesNext() {
 		setText(textStorage.get(getChoiceOption().getNextId()));
+		getText().reset();
 	}
 
 	public boolean isChoice() {

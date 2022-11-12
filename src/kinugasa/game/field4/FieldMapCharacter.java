@@ -48,7 +48,7 @@ public class FieldMapCharacter extends AnimationSprite {
 	}
 
 	public D2Idx getInitialIdx() {
-		return initialIdx;
+		return initialIdx.clone();
 	}
 
 	public FourDirection getCurrentDir() {
@@ -61,6 +61,7 @@ public class FieldMapCharacter extends AnimationSprite {
 
 	public void to(FourDirection dir) {
 		setAnimation(fAnimation.get(dir));
+		currentDir = dir;
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public abstract class NPCMoveModel extends Model implements Nameable {
 		return name;
 	}
 	
-	public abstract D2Idx getNextTargetLocationOnMap(NPC n, FieldMap map);
+	public abstract D2Idx getNextTargetIdx(NPC n, FieldMap map);
 	
 	public abstract int nextMoveFrameTime(NPC n, FieldMap map);
 
