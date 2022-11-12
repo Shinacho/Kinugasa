@@ -145,7 +145,7 @@ public class Test extends GameManager {
 		switch (stage) {
 			case 0:
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
-					FieldMapTile t = fm.getCurrentCenterTile();
+					FieldMapTile t = fm.getCurrentTile();
 					if (t.hasInNode()) {
 						effect = new FadeEffect(FieldMapStorage.getScreenWidth(), FieldMapStorage.getScreenHeight(),
 								new ColorChanger(
@@ -231,6 +231,11 @@ public class Test extends GameManager {
 					ImageUtil.screenShot("resource/test/screenShot.png", getWindow().getBounds());
 					screenShot.stopAndPlay();
 				}
+				//エンカウント処理
+				if(fm.isEncount()){
+					fm.resetEncountCounter();
+					SoundStorage.getInstance().get("SE").get("効果音＿戦闘開始.wav").load().stopAndPlay();
+				}
 				break;
 			case 1:
 				effect.update();
@@ -246,7 +251,7 @@ public class Test extends GameManager {
 				}
 				break;
 			case 2:
-				FieldMapTile t = fm.getCurrentCenterTile();
+				FieldMapTile t = fm.getCurrentTile();
 				Node n = t.getNode();
 				fm.dispose();
 				fm = FieldMapStorage.getInstance().get(n.getExitFieldMapName()).build();

@@ -1,58 +1,59 @@
-2022/11/12 13:25:37 INFO this is ./KinugasaGame.log
-2022/11/12 13:25:37 INFO translate\ja.ini
-2022/11/12 13:25:37 INFO ARE_YOU_SURE_EXIT=本当に終了しますか？
-2022/11/12 13:25:37 INFO CONFIRM=確認
-2022/11/12 13:25:37 INFO NO_NPC=その方向にはダレモイナイ
-2022/11/12 13:25:37 INFO lockFile:.\KLOCK_11550955916031830933.lck is created
-2022/11/12 13:25:37 INFO MyGame is start
-2022/11/12 13:25:37 INFO Storage{map={フィールド５.wav=CachedSound{name=フィールド５.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}}}
-2022/11/12 13:25:37 INFO Storage{map={足音.wav=CachedSound{name=足音.wav, lp=null, run=NOT_LOADED}, Choice1.wav=CachedSound{name=Choice1.wav, lp=null, run=NOT_LOADED}}}
-2022/11/12 13:25:37 INFO XMLFile [000.xml] is loaded
-2022/11/12 13:25:37 INFO XMLFile [ChipAttributes.xml] is loaded
-2022/11/12 13:25:37 INFO XMLFile [01.xml] is loaded
-2022/11/12 13:25:37 INFO XMLFile [01.xml] is loaded
-2022/11/12 13:25:37 INFO ImageUtil loaded filePath=[resource/field/image/base.png](14.1687 ms)
-2022/11/12 13:25:38 INFO XMLFile [02.xml] is loaded
-2022/11/12 13:25:38 INFO ImageUtil loaded filePath=[resource/field/image/outer16.png](1.7811 ms)
-2022/11/12 13:25:38 INFO default.ini
-2022/11/12 13:25:38 INFO LOCATION=0,0
-2022/11/12 13:25:38 INFO GAMEPAD=TRUE
-2022/11/12 13:25:38 INFO LOG=TRUE
-2022/11/12 13:25:38 INFO RENDERING_Q=SPEED
-2022/11/12 13:25:38 INFO SIZE=720,480
-2022/11/12 13:25:38 INFO MOUSE=TRUE
-2022/11/12 13:25:38 INFO LOCK=TRUE
-2022/11/12 13:25:38 INFO FPS=60
-2022/11/12 13:25:38 INFO LOG_PATH=./KinugasaGame.log
-2022/11/12 13:25:38 INFO LANG=ja
-2022/11/12 13:25:38 INFO BG_COLOR=1,133,116
-2022/11/12 13:25:38 INFO UPDATE_IF_NOT_ACTIVE=TRUE
-2022/11/12 13:25:38 INFO TITLE=MyGame
-2022/11/12 13:25:38 INFO KEY=TRUE
-2022/11/12 13:25:38 INFO XMLFile [builder.xml] is loaded
-2022/11/12 13:25:38 INFO XMLFile [03.xml] is loaded
-2022/11/12 13:25:38 INFO XMLFile [text02.xml] is loaded
-2022/11/12 13:25:38 INFO ImageUtil loaded filePath=[resource/field/image/cloud.png](5.4824 ms)
-2022/11/12 13:25:39 INFO ImageUtil loaded filePath=[resource/char/pipo-charachip007a.png](0.741 ms)
-2022/11/12 13:25:39 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:39 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:39 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:39 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:39 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](0.0016 ms)
-2022/11/12 13:25:39 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:39 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:39 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:39 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:40 INFO CachedSound is loaded name=[フィールド５.wav](134.0775 ms)
-2022/11/12 13:25:40 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](0.0013 ms)
-2022/11/12 13:25:40 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:40 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](7.0E-4 ms)
-2022/11/12 13:25:40 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:40 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](7.0E-4 ms)
-2022/11/12 13:25:40 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:40 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](6.0E-4 ms)
-2022/11/12 13:25:40 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/12 13:25:40 INFO CachedSound is loaded name=[screenShot.wav](3.3735 ms)
-2022/11/12 13:25:40 INFO gameStart is done.
-2022/11/12 13:26:45 INFO lockFile:.\KLOCK_11550955916031830933.lck is deleted
-2022/11/12 13:26:45 INFO TempFileStorage : all temp file is deleted
+2022/11/12 14:54:00 INFO this is ./KinugasaGame.log
+2022/11/12 14:54:00 INFO translate\ja.ini
+2022/11/12 14:54:00 INFO ARE_YOU_SURE_EXIT=本当に終了しますか？
+2022/11/12 14:54:00 INFO CONFIRM=確認
+2022/11/12 14:54:00 INFO NO_NPC=その方向にはダレモイナイ
+2022/11/12 14:54:00 INFO lockFile:.\KLOCK_13550157510719397889.lck is created
+2022/11/12 14:54:00 INFO MyGame is start
+2022/11/12 14:54:00 INFO Storage{map={フィールド５.wav=CachedSound{name=フィールド５.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}}}
+2022/11/12 14:54:00 INFO Storage{map={足音.wav=CachedSound{name=足音.wav, lp=null, run=NOT_LOADED}, Choice1.wav=CachedSound{name=Choice1.wav, lp=null, run=NOT_LOADED}, 効果音＿戦闘開始.wav=CachedSound{name=効果音＿戦闘開始.wav, lp=null, run=NOT_LOADED}}}
+2022/11/12 14:54:01 INFO XMLFile [000.xml] is loaded
+2022/11/12 14:54:01 INFO XMLFile [ChipAttributes.xml] is loaded
+2022/11/12 14:54:01 INFO XMLFile [01.xml] is loaded
+2022/11/12 14:54:01 INFO XMLFile [01.xml] is loaded
+2022/11/12 14:54:01 INFO ImageUtil loaded filePath=[resource/field/image/base.png](15.6798 ms)
+2022/11/12 14:54:01 INFO XMLFile [02.xml] is loaded
+2022/11/12 14:54:01 INFO ImageUtil loaded filePath=[resource/field/image/outer16.png](1.7119 ms)
+2022/11/12 14:54:01 INFO default.ini
+2022/11/12 14:54:01 INFO LOCATION=0,0
+2022/11/12 14:54:01 INFO GAMEPAD=TRUE
+2022/11/12 14:54:01 INFO LOG=TRUE
+2022/11/12 14:54:01 INFO RENDERING_Q=SPEED
+2022/11/12 14:54:01 INFO SIZE=720,480
+2022/11/12 14:54:01 INFO MOUSE=TRUE
+2022/11/12 14:54:01 INFO LOCK=TRUE
+2022/11/12 14:54:01 INFO FPS=60
+2022/11/12 14:54:01 INFO LOG_PATH=./KinugasaGame.log
+2022/11/12 14:54:01 INFO LANG=ja
+2022/11/12 14:54:01 INFO BG_COLOR=1,133,116
+2022/11/12 14:54:01 INFO UPDATE_IF_NOT_ACTIVE=TRUE
+2022/11/12 14:54:01 INFO TITLE=MyGame
+2022/11/12 14:54:01 INFO KEY=TRUE
+2022/11/12 14:54:01 INFO XMLFile [builder.xml] is loaded
+2022/11/12 14:54:01 INFO XMLFile [03.xml] is loaded
+2022/11/12 14:54:01 INFO XMLFile [text02.xml] is loaded
+2022/11/12 14:54:01 INFO ImageUtil loaded filePath=[resource/field/image/cloud.png](6.53 ms)
+2022/11/12 14:54:03 INFO ImageUtil loaded filePath=[resource/char/pipo-charachip007a.png](0.8423 ms)
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](0.0019 ms)
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO CachedSound is loaded name=[フィールド５.wav](136.2329 ms)
+2022/11/12 14:54:03 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](0.0012 ms)
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](7.0E-4 ms)
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](6.0E-4 ms)
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](6.0E-4 ms)
+2022/11/12 14:54:03 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/12 14:54:03 INFO CachedSound is loaded name=[screenShot.wav](4.4993 ms)
+2022/11/12 14:54:03 INFO gameStart is done.
+2022/11/12 14:54:26 INFO CachedSound is loaded name=[効果音＿戦闘開始.wav](6.4332 ms)
+2022/11/12 14:54:33 INFO lockFile:.\KLOCK_13550157510719397889.lck is deleted
+2022/11/12 14:54:33 INFO TempFileStorage : all temp file is deleted

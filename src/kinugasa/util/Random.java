@@ -160,6 +160,17 @@ public final class Random implements Serializable {
 	}
 
 	/**
+	 * FROMからTOまでのランダムなintを返します.
+	 *
+	 * @param from 開始数値.
+	 * @param to 終了数値.
+	 * @return FROM?TOまでのランダムな値。TOは含まない。
+	 */
+	public static int randomAbsInt(int from, int to) {
+		return from + (to - from);
+	}
+
+	/**
 	 * ランダムなbooleanを返します.
 	 *
 	 * @return true又はfalseを返します。<br>

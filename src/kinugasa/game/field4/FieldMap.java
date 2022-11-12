@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
@@ -55,6 +56,8 @@ import kinugasa.resource.sound.SoundStorage;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.util.FrameTimeCounter;
+import kinugasa.util.ManualTimeCounter;
+import kinugasa.util.Random;
 
 /**
  *
@@ -207,6 +210,13 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		// 表示倍率・・・ない場合は1倍とする
 		float mg = root.getAttributes().contains("mg") ? root.getAttributes().get("mg").getFloatValue() : 1;
+
+		//エンカウントカウンターの処理
+		//定義されていない場合はエンカウントしない
+		this.encountCounter = encountCounter = root.getAttributes().contains("encountCounterDefault") ? new ManualTimeCounter(root.getAttributes().get("encountCounterDefault").getIntValue()) : ManualTimeCounter.FALSE;
+		int r = encountCounter.getCurrentTime();
+		r = Random.randomAbsInt(r - r / 2, r + r / 2);
+		encountCounter.setCurrentTime(r);
 
 		// バックグラウンドレイヤー
 		{
@@ -527,8 +537,47 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 	}
 
+	private ManualTimeCounter encountCounter;
+
+	public ManualTimeCounter getEncountCounter() {
+		return encountCounter;
+	}
+
+	public void setEncountCounter(ManualTimeCounter encountCounter) {
+		this.encountCounter = encountCounter;
+	}
+
 	public void move() {
+		D2Idx prevIdx = currentIdx.clone();
 		camera.move();
+		if (!prevIdx.equals(currentIdx)) {
+			//新しいチップに乗った場合、エンカウントカウンターの処理
+			int x = 0;
+			for (MapChip c : getCurrentTile().getChip()) {
+				x += c.getAttr().getEncountBaseValue();
+			}
+			encountCounter.sub(x);
+			if (debugMode) {
+				System.out.println("FM MOVE " + currentIdx + " / EC=" + encountCounter.getCurrentTime());
+			}
+		}
+	}
+
+	public boolean isEncount() {
+		boolean r = encountCounter.isReaching();
+		if (debugMode && r) {
+			System.out.println("ENCOUNT!");
+		}
+		if (r) {
+			resetEncountCounter();
+		}
+		return r;
+	}
+
+	public void resetEncountCounter() {
+		int r = encountCounter.getInitialTime();
+		r = Random.randomAbsInt(r - r / 2, r + r / 2);
+		encountCounter.setCurrentTime(r);
 	}
 
 	public void setVector(KVector vector) {
@@ -582,7 +631,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		return new FieldMapTile(chip, npc, idx.equals(currentIdx) ? playerCharacter : null, event, node);
 	}
 
-	public FieldMapTile getCurrentCenterTile() {
+	public FieldMapTile getCurrentTile() {
 		return getTile(currentIdx);
 	}
 
@@ -739,10 +788,16 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		npcStorage.forEach(c -> c.canMove());
 	}
 
+	/**
+	 * NPCの移動を一括停止します。
+	 */
 	public void NPCMoveStop() {
 		npcStorage.forEach(c -> c.notMove());
 	}
 
+	/**
+	 * NPCの移動停止を一括解除します。
+	 */
 	public void NPCMoveStart() {
 		npcStorage.forEach(c -> c.canMove());
 	}

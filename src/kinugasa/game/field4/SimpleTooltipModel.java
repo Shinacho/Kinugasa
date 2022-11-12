@@ -43,7 +43,7 @@ public class SimpleTooltipModel extends TooltipModel {
 
 	@Override
 	public void drawTooltip(FieldMap fm, GraphicsContext g) {
-		FieldMapTile t = fm.getCurrentCenterTile();
+		FieldMapTile t = fm.getCurrentTile();
 		if (t.getNode() == null) {
 			label.setVisible(false);
 			return;
