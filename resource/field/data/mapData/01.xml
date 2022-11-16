@@ -32,9 +32,8 @@ THE SOFTWARE.
 	<animation image="resource/chipTest1.png" x="1" y="0" frame="12" w="16" h="16"/>
 	
 
-	<inOutNode name="ND_01_0002" x="21" y="21" tgtMap="ズシ" exitNode="ND_03_EXIT" tooltip="(A)ズシ" accepterName="TRUE" outDir="SOUTH"/>
-	
-	
+	<inOutNode name="ND_01_0002" x="21" y="21" tgtMap="ズシ" exitNode="ND_03_EXIT" tooltip="(A)ズシ" accepterName="TRUE" outDir="SOUTH" se="SE/足音.wav"/>
+
 	<event name="E_01" x="11" y="8" script="resource/field/data/event/01.xml" />
 	
 	
@@ -72,8 +71,6 @@ THE SOFTWARE.
 017008,017008,017008,017008,017008,003004,000002,003005,010011,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008/
 017008,017008,017008,017008,017008,017008,010011,010011,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008,017008/
 	</backLayer>
-    
-    
- 
+
     
 </kinugasaFieldMapData>

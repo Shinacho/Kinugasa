@@ -44,7 +44,7 @@ import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import kinugasa.game.GameLog;
 import kinugasa.resource.ContentsIOException;
-import kinugasa.resource.text.FileNotFoundException;
+import kinugasa.resource.FileNotFoundException;
 import kinugasa.util.StopWatch;
 
 /**

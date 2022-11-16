@@ -57,10 +57,6 @@ public interface Sound extends Input<Sound>, Nameable {
 	public void play() throws NotYetLoadedException;
 
 	public void stopAndPlay();
-	/**
-	 * サウンドを最初まで巻き戻してから再度再生します. 通常はstopを呼び出した後にplayを呼び出します.<br>
-	 */
-	public void again();
 
 	/**
 	 * サウンドの現在のフレーム位置を返します.
@@ -88,6 +84,8 @@ public interface Sound extends Input<Sound>, Nameable {
 
 	@Override
 	public InputStatus getStatus();
+	
+	public boolean isPlaying();
 	
 	/**
 	 * サウンドの音量を設定します.

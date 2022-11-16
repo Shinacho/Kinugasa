@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!--
+The MIT License
+
+Copyright 2016 Dra.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<KinugasaItemList>
+	<item name="やくそう" desc="けがに効く草だ" action="回復(30),破棄(100%)" />
+	<item name="そば団子" desc="そば粉で作った団子だ" action="回復(60),破棄(100%)"/>
+	<item name="百名丸" desc="けがによく効く薬だ" action="回復(90),破棄(100%)"/>
+	<item name="賢者の石" desc="聖なるパワーに満ちた石だ" action="回復(60)_全体,SAN回復(1)"/>	
+	
+	<item name="祝福の杖" desc="聖なるパワーに満ちた杖だ" action="回復(60),SAN回復(1)" slot="腕" wmt="杖"  >
+		<eqStatus tgt="ATK" value="30" />
+		<eqAttr_in tgt="IMPACT" value="-0.05"/>
+	</item>
+	
+	<item name="鋼の剣" desc="鋼でできた丈夫な両刃の剣だ" slot="腕" wmt="剣" >
+		<eqStatus tgt="ATK" value="45" />
+	</item>
+	
+	<item name="鉄の剣" desc="鉄でできた一般的な両刃の剣だ" slot="腕" wmt="剣">
+		<eqStatus tgt="ATK" value="30" />
+	</item>
+	
+	<item name="石ころ" desc="何の変哲もない石ころだが、投げると痛そうだ" />
+	
+</KinugasaItemList>

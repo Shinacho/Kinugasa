@@ -117,4 +117,30 @@ public abstract class TimeCounter extends Model implements Statable {
 		public void reset() {
 		}
 	};
+	
+	public static TimeCounter oneCounter(){
+		return new TimeCounter() {
+			private int v = 0;
+			@Override
+			public boolean isReaching() {
+				v--;
+				return v < 0;
+			}
+
+			@Override
+			public boolean isEnded() {
+				return v < 0;
+			}
+
+			@Override
+			public boolean isRunning() {
+				return true;
+			}
+
+			@Override
+			public void reset() {
+				v = 1;
+			}
+		};
+	}
 }

@@ -40,7 +40,7 @@ import kinugasa.object.movemodel.BasicMoving;
 import kinugasa.object.movemodel.CompositeMove;
 import kinugasa.object.movemodel.SpeedChange;
 import kinugasa.resource.text.FileIOException;
-import kinugasa.resource.text.FileNotFoundException;
+import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.text.IllegalXMLFormatException;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;

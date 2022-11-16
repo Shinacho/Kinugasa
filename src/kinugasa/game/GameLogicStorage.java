@@ -46,14 +46,23 @@ public class GameLogicStorage extends Storage<GameLogic> {
 	private GameLogic current;
 	private GameLogic prev;
 
-	public void setCurrent(String name) {
-		System.out.println("kinugasa.game.GameLogicStorage.setCurrent():" + name);
+	public void changeTo(String name) {
+		changeTo(name, true);
+	}
+
+	public void changeTo(String name, boolean load) {
+		System.out.println("kinugasa.game.GameLogicStorage.changeTo():" + name);
+		if (!contains(name)) {
+			throw new NameNotFoundException("logic " + name + " is not found");
+		}
 		if (current != null) {
 			current.dispose();
 		}
 		prev = current;
 		this.current = get(name);
-		current.load();
+		if (load) {
+			current.load();
+		}
 	}
 
 	public GameLogic getCurrent() {

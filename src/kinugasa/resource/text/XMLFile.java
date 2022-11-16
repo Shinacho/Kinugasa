@@ -41,6 +41,7 @@ import kinugasa.resource.InputStatus;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Output;
 import kinugasa.resource.OutputResult;
+import kinugasa.resource.FileNotFoundException;
 
 /**
  * XMLファイルの展開とデータの管理を行います.
@@ -49,7 +50,7 @@ import kinugasa.resource.OutputResult;
  * <br>
  *
  * @version 1.0.0 - 2013/03/15_11:48:01.<br>
- * @author dra0211 
+ * @author dra0211
  * <a href="mailto:d0211@live.jp">d0211@live.jp</a>&nbsp;).<br>
  * <br>
  */
@@ -154,7 +155,10 @@ public final class XMLFile implements Input<XMLFile>, Output, Nameable, Iterable
 	}
 
 	public XMLElement getFirst() {
-		return getStatus() == InputStatus.LOADED ? data.get(0) : null;
+		if (getStatus() != InputStatus.LOADED) {
+			throw new IllegalStateException("this file is not loaded : " + getName());
+		}
+		return data.get(0);
 	}
 
 	@Override

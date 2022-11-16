@@ -24,26 +24,31 @@
 package kinugasa.resource.text;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import kinugasa.resource.Nameable;
 
 /**
  * XMLにおける"属性"を表すクラスです.
  * <br>
  * 属性は要素に0個以上設定できるキーと値のペアです。<br>
- * たとえば、&lt;hoge fuga=piyo&gt;では、
- * fugaという名前でpiyoという値の属性が構築されます。<br>
+ * たとえば、&lt;hoge fuga=piyo&gt;では、 fugaという名前でpiyoという値の属性が構築されます。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/03/15_7:10:56.<br>
- * @author dra0211 ( <a href="mailto:d0211@live.jp">d0211@live.jp</a>&nbsp;).<br>
+ * @author dra0211 (
+ * <a href="mailto:d0211@live.jp">d0211@live.jp</a>&nbsp;).<br>
  * <br>
  */
 public class XMLAttribute implements Nameable, Serializable {
 
 	private static final long serialVersionUID = -2192715007477514049L;
-	/** この属性の名前です. */
+	/**
+	 * この属性の名前です.
+	 */
 	private String name;
-	/** この属性の値です. */
+	/**
+	 * この属性の値です.
+	 */
 	private String value;
 
 	/**
@@ -55,6 +60,7 @@ public class XMLAttribute implements Nameable, Serializable {
 
 	/**
 	 * 名前と値を指定して、新しい属性を作成します.
+	 *
 	 * @param name
 	 * @param value
 	 */
@@ -70,6 +76,7 @@ public class XMLAttribute implements Nameable, Serializable {
 
 	/**
 	 * 値を整数として取得します.
+	 *
 	 * @return 値をInteger.parseIntを使用して整数に変換して返します。<br>
 	 * @throws NumberFormatException 値が変換できない場合に投げられます。<br>
 	 */
@@ -79,6 +86,7 @@ public class XMLAttribute implements Nameable, Serializable {
 
 	/**
 	 * 値が整数であるかを検査します.
+	 *
 	 * @return getIntValueが使用できる場合trueを返します。<br>
 	 */
 	public boolean isIntValue() {
@@ -92,6 +100,7 @@ public class XMLAttribute implements Nameable, Serializable {
 
 	/**
 	 * 値を実数として取得します.
+	 *
 	 * @return 値をFloat.parseFloatを使用して実数に変換して返します。<br>
 	 * @throws NumberFormatException 値が変換できない場合に投げられます。<br>
 	 */
@@ -101,6 +110,7 @@ public class XMLAttribute implements Nameable, Serializable {
 
 	/**
 	 * 値がfloatであるかを検査します.
+	 *
 	 * @return getFloatValueが使用できる場合にtrueを返します。<br>
 	 */
 	public boolean isFloatValue() {
@@ -114,16 +124,21 @@ public class XMLAttribute implements Nameable, Serializable {
 
 	/**
 	 * 値を論理値として取得します.
+	 *
 	 * @return 値をBoolean.parseBooleanを使用して論理値に変換して返します。<br>
 	 */
 	public boolean getBool() {
 		return Boolean.parseBoolean(value);
 	}
 
+	public int[] parse(String separator) {
+		String[] data = value.split(separator);
+		return Arrays.stream(data).mapToInt(s -> Integer.parseInt(s)).toArray();
+	}
+
 	/**
-	 * この属性の名前を変更します.
-	 * 名前は、XMLAttriobuteStorageから参照されるため、
-	 * 重複が許可されない場合があります。<br>
+	 * この属性の名前を変更します. 名前は、XMLAttriobuteStorageから参照されるため、 重複が許可されない場合があります。<br>
+	 *
 	 * @param name 新しい名前を指定します。<br>
 	 */
 	public void setName(String name) {
@@ -132,6 +147,7 @@ public class XMLAttribute implements Nameable, Serializable {
 
 	/**
 	 * この属性の値を変更します.
+	 *
 	 * @param value 新しい値を指定します。<br>
 	 */
 	public void setValue(String value) {
@@ -140,6 +156,7 @@ public class XMLAttribute implements Nameable, Serializable {
 
 	/**
 	 * この属性の値を取得します.
+	 *
 	 * @return 値を返します。<br>
 	 */
 	public String getValue() {

@@ -278,7 +278,7 @@ public class Stage2Logic extends GameLogic {
 		// “G‚Æ‚¶‚«‚Ì“–‚½‚è”»’è
 		for (BasicSprite t : tekiList) {
 			if (t.contains(ship.getCenter())) {
-				gls.setCurrent("GAMEOVER");
+				gls.changeTo("GAMEOVER");
 				first = true;
 			}
 		}
@@ -287,7 +287,7 @@ public class Stage2Logic extends GameLogic {
 		if(last != null && !last.isExist()){
 			text1.setVisible(true);
 			if(clearCounter.isReaching()){
-				gls.setCurrent("TITLE");
+				gls.changeTo("TITLE");
 			}
 		}
 

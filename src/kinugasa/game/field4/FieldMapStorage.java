@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import kinugasa.game.GameLog;
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
-import kinugasa.resource.text.FileNotFoundException;
+import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.text.IllegalXMLFormatException;
 import kinugasa.resource.text.IniFile;
 import kinugasa.resource.text.XMLElement;

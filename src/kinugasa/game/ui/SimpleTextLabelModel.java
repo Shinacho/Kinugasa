@@ -36,10 +36,13 @@ import kinugasa.game.GraphicsContext;
  * <br>
  */
 public class SimpleTextLabelModel extends TextLabelModel {
+
 	private static int c = 0;
+
 	public SimpleTextLabelModel(String name, FontModel font) {
 		super(name, font);
 	}
+
 	public SimpleTextLabelModel(FontModel font) {
 		super("LABELMODEL_" + c++, font);
 	}

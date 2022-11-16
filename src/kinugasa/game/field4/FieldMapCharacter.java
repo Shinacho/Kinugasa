@@ -28,6 +28,8 @@ import java.awt.Graphics2D;
 import kinugasa.game.GraphicsContext;
 import kinugasa.object.AnimationSprite;
 import kinugasa.object.FourDirection;
+import kinugasa.game.system.*;
+
 
 /**
  *
@@ -39,6 +41,7 @@ public class FieldMapCharacter extends AnimationSprite {
 	private final D2Idx initialIdx;
 	private FourDirection currentDir;
 	private FourDirAnimation fAnimation;
+	private Status status;
 
 	public FieldMapCharacter(float x, float y, float w, float h, D2Idx initialLocation, FourDirAnimation a, FourDirection initialDir) {
 		super(x, y, w, h, a.get(initialDir));
@@ -62,6 +65,15 @@ public class FieldMapCharacter extends AnimationSprite {
 	public void to(FourDirection dir) {
 		setAnimation(fAnimation.get(dir));
 		currentDir = dir;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public FieldMapCharacter setStatus(Status status) {
+		this.status = status;
+		return this;
 	}
 
 	@Override

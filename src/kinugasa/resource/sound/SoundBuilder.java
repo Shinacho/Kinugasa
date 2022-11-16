@@ -26,7 +26,7 @@ package kinugasa.resource.sound;
 import java.io.File;
 import java.io.Serializable;
 import kinugasa.resource.Nameable;
-import kinugasa.resource.text.FileNotFoundException;
+import kinugasa.resource.FileNotFoundException;
 
 /**
  * キャッシュつきサウンドのインスタンスを作成するためのビルダです.

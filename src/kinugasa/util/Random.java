@@ -167,8 +167,9 @@ public final class Random implements Serializable {
 	 * @return FROM?TOまでのランダムな値。TOは含まない。
 	 */
 	public static int randomAbsInt(int from, int to) {
-		return from + (to - from);
+		return from + randomAbsInt(to - from);
 	}
+
 
 	/**
 	 * ランダムなbooleanを返します.

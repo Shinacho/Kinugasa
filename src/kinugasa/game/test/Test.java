@@ -27,6 +27,7 @@ import kinugasa.game.GameManager;
 import kinugasa.game.GameOption;
 import kinugasa.game.GameTimeManager;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.I18N;
 import kinugasa.game.LockUtil;
 import kinugasa.game.field4.D2Idx;
 import kinugasa.game.field4.FieldMap;
@@ -45,8 +46,11 @@ import kinugasa.game.input.InputState;
 import kinugasa.game.input.InputType;
 import kinugasa.game.input.Keys;
 import kinugasa.game.ui.FPSLabel;
+import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
+import kinugasa.game.ui.SimpleTextLabelModel;
+import kinugasa.game.ui.TextLabelSprite;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.game.ui.TextStorageStorage;
 import kinugasa.object.KVector;
@@ -80,6 +84,7 @@ public class Test extends GameManager {
 	private Test() {
 		super(GameOption.defaultOption().setUseGamePad(true).setCenterOfScreen());
 	}
+	private TextLabelSprite operation;
 
 	@Override
 	protected void startUp() {
@@ -108,10 +113,10 @@ public class Test extends GameManager {
 		float y = screenH / 2 - 16;
 		c = new FieldMapCharacter(x, y, 32, 32, new D2Idx(21, 21),
 				new FourDirAnimation(
-						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/pipo-charachip007a.png").rows(0, 32, 32).images()),
-						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/pipo-charachip007a.png").rows(32, 32, 32).images()),
-						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/pipo-charachip007a.png").rows(64, 32, 32).images()),
-						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/pipo-charachip007a.png").rows(96, 32, 32).images())
+						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/chara2.png").rows(0, 32, 32).images()),
+						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/chara2.png").rows(32, 32, 32).images()),
+						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/chara2.png").rows(64, 32, 32).images()),
+						new Animation(new FrameTimeCounter(12), new SpriteSheet("resource/char/chara2.png").rows(96, 32, 32).images())
 				),
 				FourDirection.NORTH
 		);
@@ -121,6 +126,8 @@ public class Test extends GameManager {
 		//----------------------------------------------------------------------
 		//
 		screenShot = new SoundBuilder("resource/se/screenShot.wav").builde().load();
+		String operaionText = "(LS) " + I18N.translate("MOVE");
+		operation = new TextLabelSprite(operaionText, new SimpleTextLabelModel(FontModel.DEFAULT.clone()), 420, 450);
 		//
 		ts = fm.getTextStorage();
 
@@ -154,13 +161,22 @@ public class Test extends GameManager {
 										ColorTransitionModel.valueOf(0),
 										new FadeCounter(0, +6)
 								));
-						mw.setVisible(false);
+						if (mw != null) {
+							mw.setVisible(false);
+						}
 						nextStage();
 					}
 				}
 				//MW処理
 				//会話開始
 				// 会話送り、選択の処理
+				if (fm.canTalk()) {
+					String operaionText = "(A)" + I18N.translate("TALK") + " / " + "(LS)" + I18N.translate("MOVE");
+					operation.setText(operaionText);
+				} else {
+					String operaionText = "(LS)" + I18N.translate("MOVE");
+					operation.setText(operaionText);
+				}
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
 					if (mw != null && mw.isVisible()) {
 						if (!mw.isAllVisible()) {
@@ -232,8 +248,7 @@ public class Test extends GameManager {
 					screenShot.stopAndPlay();
 				}
 				//エンカウント処理
-				if(fm.isEncount()){
-					fm.resetEncountCounter();
+				if (fm.isEncount()) {
 					SoundStorage.getInstance().get("SE").get("効果音＿戦闘開始.wav").load().stopAndPlay();
 				}
 				break;
@@ -251,15 +266,7 @@ public class Test extends GameManager {
 				}
 				break;
 			case 2:
-				FieldMapTile t = fm.getCurrentTile();
-				Node n = t.getNode();
-				fm.dispose();
-				fm = FieldMapStorage.getInstance().get(n.getExitFieldMapName()).build();
-				fm.setCurrentIdx(fm.getNodeStorage().get(n.getExitNodeName()).getIdx());
-				fm.getCamera().updateToCenter();
-				FieldMap.getPlayerCharacter().to(n.getOutDir());
-				SoundStorage.getInstance().get("SE").get("足音.wav").load().stopAndPlay();
-				mw.setTextStorage(fm.getTextStorage());
+				fm = fm.changeMap(fm.getCurrentTile().getNode());
 				nextStage();
 				break;
 			case 3:
@@ -297,6 +304,7 @@ public class Test extends GameManager {
 		if (mw != null) {
 			mw.draw(gc);
 		}
+		operation.draw(gc);
 		if (effect != null) {
 			effect.draw(gc);
 		}

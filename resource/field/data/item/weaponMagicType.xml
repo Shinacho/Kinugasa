@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!--
+The MIT License
+
+Copyright 2016 Dra.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<KinugasaWeaponMagicType>
+	<weapon name="剣" desc="両刃の剣"/>
+	<weapon name="短剣" desc="短剣・ダガー・小刀"/>
+	<weapon name="大剣" desc="剣というにはあまりにも大きすぎる剣"/>
+	<weapon name="刺突剣" desc="レイピア"/>
+	<weapon name="刀" desc="片刃の剣"/>
+	<weapon name="槍" desc="棒状の武器"/>
+	<weapon name="盾" desc="盾"/>
+	<weapon name="メイス" desc="メイス、こん棒、ハンマー、ピッケル"/>
+	<weapon name="フレイル" desc=""/>
+	<weapon name="弓" desc=""/>
+	<weapon name="銃" desc=""/>
+	<weapon name="鞭" desc=""/>
+	<weapon name="杖" desc=""/>
+	<weapon name="鎌" desc=""/>
+	
+	<magic name="生命" desc="主に生命の回復や死を司る魔法領域"/>
+	<magic name="破壊" desc=""/>
+	<magic name="精神" desc=""/>
+	<magic name="時空" desc=""/>
+	<magic name="空気" desc=""/>
+	<magic name="神秘" desc=""/>
+	<magic name="雷" desc=""/>
+	<magic name="大地" desc=""/>
+	<magic name="水" desc=""/>
+	<magic name="冷気" desc=""/>
+	<magic name="炎" desc=""/>
+	<magic name="光" desc=""/>
+	<magic name="闇" desc=""/>
+	<magic name="神聖" desc=""/>
+
+</KinugasaWeaponMagicType>

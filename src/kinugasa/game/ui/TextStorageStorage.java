@@ -25,7 +25,7 @@ package kinugasa.game.ui;
 
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
-import kinugasa.resource.text.FileNotFoundException;
+import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.text.IllegalXMLFormatException;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;

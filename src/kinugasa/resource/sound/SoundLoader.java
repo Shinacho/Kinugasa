@@ -27,7 +27,7 @@ import java.util.Arrays;
 import kinugasa.game.GameLog;
 import kinugasa.resource.ContentsIOException;
 import kinugasa.resource.text.CSVFile;
-import kinugasa.resource.text.FileNotFoundException;
+import kinugasa.resource.FileNotFoundException;
 
 /**
  * BGMをフォルダからサウンドマップに一括設定するクラスです。. 指定したファイルに記載されているBGMを一括設定します。

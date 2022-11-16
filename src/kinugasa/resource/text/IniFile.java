@@ -39,6 +39,7 @@ import kinugasa.resource.Input;
 import kinugasa.resource.InputStatus;
 import kinugasa.resource.Output;
 import kinugasa.resource.OutputResult;
+import kinugasa.resource.FileNotFoundException;
 
 /**
  *

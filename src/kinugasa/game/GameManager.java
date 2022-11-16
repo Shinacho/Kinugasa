@@ -202,7 +202,7 @@ public abstract class GameManager {
 		GameLog.printInfoIfUsing(getWindow().getTitle() + " is start");
 	}
 
-	protected final void gameExit() throws IllegalStateException {
+	public final void gameExit() throws IllegalStateException {
 		if (!started) {
 			throw new IllegalStateException("game is not started");
 		}

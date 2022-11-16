@@ -58,24 +58,100 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			public int nextMoveFrameTime(NPC n, FieldMap map) {
 				return Integer.MAX_VALUE;//MAX_VALUEå„ÇÃÉtÉåÅ[ÉÄÇ≈Ç‡à⁄ìÆÇ∑ÇÈÇ±Ç∆ÇÕÇ»Ç¢ÅB
 			}
+
+			@Override
+			public D2Idx getMax(NPC n) {
+				return n.getInitialIdx().clone();
+			}
+
+			@Override
+			public D2Idx getMin(NPC n) {
+				return n.getInitialIdx().clone();
+			}
+
 		});
 		add(new NPCMoveModel("ROUND_1") {
+			private static final int VALUE = 1;
+
+			@Override
+			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+				D2Idx tgt = null;
+				for (int i = 0; i < 600; i++) {
+					tgt = new D2Idx(n.getCurrentIdx());
+					if (Random.randomBool()) {
+						tgt.x -= Random.randomAbsInt(2);
+					} else {
+						tgt.x += Random.randomAbsInt(2);
+					}
+					if (Random.randomBool()) {
+						tgt.y -= Random.randomAbsInt(2);
+					} else {
+						tgt.y += Random.randomAbsInt(2);
+					}
+					if (tgt.x <= 0 || tgt.y <= 0) {
+						tgt = new D2Idx(n.getInitialIdx());
+						continue;
+					}
+					if (tgt.x >= map.getBaseLayer().getDataWidth() - 1 || tgt.y >= map.getBaseLayer().getDataHeight() - 1) {
+						continue;
+					}
+					if (!n.getVehicle().isStepOn(map.getTile(tgt).getChip())) {
+						continue;
+					}
+					if (map.getCurrentIdx().equals(tgt)) {
+						continue;
+					}
+					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
+						continue;
+					}
+					if (tgt.x > n.getInitialIdx().x + VALUE || tgt.y > n.getInitialIdx().y + VALUE) {
+						continue;
+					}
+					assert map.getBaseLayer().include(tgt) : "NPC targetIDX is " + tgt;
+					break;
+				}
+				return tgt == null ? n.getInitialIdx() : tgt;
+			}
+
+			@Override
+			public int nextMoveFrameTime(NPC n, FieldMap map) {
+				return 60 + Random.randomAbsInt(541);
+			}
+
+			@Override
+			public D2Idx getMax(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x += VALUE;
+				idx.y += VALUE;
+				return idx;
+			}
+
+			@Override
+			public D2Idx getMin(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x -= VALUE;
+				idx.y -= VALUE;
+				return idx;
+			}
+
+		});
+		add(new NPCMoveModel("ROUND_2") {
 			private static final int VALUE = 2;
 
 			@Override
 			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
-					tgt = new D2Idx(n.getInitialIdx());
+					tgt = new D2Idx(n.getCurrentIdx());
 					if (Random.randomBool()) {
-						tgt.x -= Random.randomAbsInt(VALUE);
+						tgt.x -= Random.randomAbsInt(2);
 					} else {
-						tgt.x += Random.randomAbsInt(VALUE);
+						tgt.x += Random.randomAbsInt(2);
 					}
 					if (Random.randomBool()) {
-						tgt.y -= Random.randomAbsInt(VALUE);
+						tgt.y -= Random.randomAbsInt(2);
 					} else {
-						tgt.y += Random.randomAbsInt(VALUE);
+						tgt.y += Random.randomAbsInt(2);
 					}
 					if (tgt.x <= 0 || tgt.y <= 0) {
 						tgt = new D2Idx(n.getInitialIdx());
@@ -90,6 +166,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					if (map.getCurrentIdx().equals(tgt)) {
 						continue;
 					}
+					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
+						continue;
+					}
+					if (tgt.x > n.getInitialIdx().x + VALUE || tgt.y > n.getInitialIdx().y + VALUE) {
+						continue;
+					}
 					assert map.getBaseLayer().include(tgt) : "NPC targetIDX is " + tgt;
 					break;
 				}
@@ -100,24 +182,40 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			public int nextMoveFrameTime(NPC n, FieldMap map) {
 				return 60 + Random.randomAbsInt(541);
 			}
+
+			@Override
+			public D2Idx getMax(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x += VALUE;
+				idx.y += VALUE;
+				return idx;
+			}
+
+			@Override
+			public D2Idx getMin(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x -= VALUE;
+				idx.y -= VALUE;
+				return idx;
+			}
 		});
-		add(new NPCMoveModel("ROUND_2") {
+		add(new NPCMoveModel("ROUND_3") {
 			private static final int VALUE = 3;
 
 			@Override
 			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
-					tgt = new D2Idx(n.getInitialIdx());
+					tgt = new D2Idx(n.getCurrentIdx());
 					if (Random.randomBool()) {
-						tgt.x -= Random.randomAbsInt(VALUE);
+						tgt.x -= Random.randomAbsInt(2);
 					} else {
-						tgt.x += Random.randomAbsInt(VALUE);
+						tgt.x += Random.randomAbsInt(2);
 					}
 					if (Random.randomBool()) {
-						tgt.y -= Random.randomAbsInt(VALUE);
+						tgt.y -= Random.randomAbsInt(2);
 					} else {
-						tgt.y += Random.randomAbsInt(VALUE);
+						tgt.y += Random.randomAbsInt(2);
 					}
 					if (tgt.x <= 0 || tgt.y <= 0) {
 						tgt = new D2Idx(n.getInitialIdx());
@@ -132,6 +230,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					if (map.getCurrentIdx().equals(tgt)) {
 						continue;
 					}
+					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
+						continue;
+					}
+					if (tgt.x > n.getInitialIdx().x + VALUE || tgt.y > n.getInitialIdx().y + VALUE) {
+						continue;
+					}
 					assert map.getBaseLayer().include(tgt) : "NPC targetIDX is " + tgt;
 					break;
 				}
@@ -142,65 +246,40 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			public int nextMoveFrameTime(NPC n, FieldMap map) {
 				return 60 + Random.randomAbsInt(541);
 			}
-		});
-		add(new NPCMoveModel("ROUND_3") {
-			private static final int VALUE = 4;
 
 			@Override
-			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
-				D2Idx tgt = new D2Idx(n.getInitialIdx());
-				for (int i = 0; i < 600; i++) {
-					tgt = new D2Idx(n.getInitialIdx());
-					if (Random.randomBool()) {
-						tgt.x -= Random.randomAbsInt(VALUE);
-					} else {
-						tgt.x += Random.randomAbsInt(VALUE);
-					}
-					if (Random.randomBool()) {
-						tgt.y -= Random.randomAbsInt(VALUE);
-					} else {
-						tgt.y += Random.randomAbsInt(VALUE);
-					}
-					if (tgt.x <= 0 || tgt.y <= 0) {
-						continue;
-					}
-					if (tgt.x >= map.getBaseLayer().getDataWidth() - 1 || tgt.y >= map.getBaseLayer().getDataHeight() - 1) {
-						continue;
-					}
-					if (!n.getVehicle().isStepOn(map.getTile(tgt).getChip())) {
-						continue;
-					}
-					if (map.getCurrentIdx().equals(tgt)) {
-						continue;
-					}
-					assert map.getBaseLayer().include(tgt) : "NPC targetIDX is " + tgt;
-					break;
-				}
-				return tgt;
+			public D2Idx getMax(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x += VALUE;
+				idx.y += VALUE;
+				return idx;
 			}
 
 			@Override
-			public int nextMoveFrameTime(NPC n, FieldMap map) {
-				return 60 + Random.randomAbsInt(541);
+			public D2Idx getMin(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x -= VALUE;
+				idx.y -= VALUE;
+				return idx;
 			}
 		});
 		add(new NPCMoveModel("ROUND_4") {
-			private static final int VALUE = 5;
+			private static final int VALUE = 4;
 
 			@Override
 			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
-					tgt = new D2Idx(n.getInitialIdx());
+					tgt = new D2Idx(n.getCurrentIdx());
 					if (Random.randomBool()) {
-						tgt.x -= Random.randomAbsInt(VALUE);
+						tgt.x -= Random.randomAbsInt(2);
 					} else {
-						tgt.x += Random.randomAbsInt(VALUE);
+						tgt.x += Random.randomAbsInt(2);
 					}
 					if (Random.randomBool()) {
-						tgt.y -= Random.randomAbsInt(VALUE);
+						tgt.y -= Random.randomAbsInt(2);
 					} else {
-						tgt.y += Random.randomAbsInt(VALUE);
+						tgt.y += Random.randomAbsInt(2);
 					}
 					if (tgt.x <= 0 || tgt.y <= 0) {
 						tgt = new D2Idx(n.getInitialIdx());
@@ -215,6 +294,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					if (map.getCurrentIdx().equals(tgt)) {
 						continue;
 					}
+					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
+						continue;
+					}
+					if (tgt.x > n.getInitialIdx().x + VALUE || tgt.y > n.getInitialIdx().y + VALUE) {
+						continue;
+					}
 					assert map.getBaseLayer().include(tgt) : "NPC targetIDX is " + tgt;
 					break;
 				}
@@ -224,6 +309,22 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			@Override
 			public int nextMoveFrameTime(NPC n, FieldMap map) {
 				return 60 + Random.randomAbsInt(541);
+			}
+
+			@Override
+			public D2Idx getMax(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x += VALUE;
+				idx.y += VALUE;
+				return idx;
+			}
+
+			@Override
+			public D2Idx getMin(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x -= VALUE;
+				idx.y -= VALUE;
+				return idx;
 			}
 		});
 		add(new NPCMoveModel("ROUND_5") {
@@ -233,16 +334,16 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
-					tgt = new D2Idx(n.getInitialIdx());
+					tgt = new D2Idx(n.getCurrentIdx());
 					if (Random.randomBool()) {
-						tgt.x -= Random.randomAbsInt(VALUE);
+						tgt.x -= Random.randomAbsInt(2);
 					} else {
-						tgt.x += Random.randomAbsInt(VALUE);
+						tgt.x += Random.randomAbsInt(2);
 					}
 					if (Random.randomBool()) {
-						tgt.y -= Random.randomAbsInt(VALUE);
+						tgt.y -= Random.randomAbsInt(2);
 					} else {
-						tgt.y += Random.randomAbsInt(VALUE);
+						tgt.y += Random.randomAbsInt(2);
 					}
 					if (tgt.x <= 0 || tgt.y <= 0) {
 						tgt = new D2Idx(n.getInitialIdx());
@@ -255,6 +356,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 						continue;
 					}
 					if (map.getCurrentIdx().equals(tgt)) {
+						continue;
+					}
+					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
+						continue;
+					}
+					if (tgt.x > n.getInitialIdx().x + VALUE || tgt.y > n.getInitialIdx().y + VALUE) {
 						continue;
 					}
 					assert map.getBaseLayer().include(tgt) : "NPC targetIDX is " + tgt;
@@ -267,31 +374,43 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			public int nextMoveFrameTime(NPC n, FieldMap map) {
 				return 60 + Random.randomAbsInt(541);
 			}
-		});
 
+			@Override
+			public D2Idx getMax(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x += VALUE;
+				idx.y += VALUE;
+				return idx;
+			}
+
+			@Override
+			public D2Idx getMin(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x -= VALUE;
+				idx.y -= VALUE;
+				return idx;
+			}
+		});
 	}
 
-	public void addRoundMove(String name, int round, int minTime, int maxTime) throws DuplicateNameException {
-		if (super.contains(name)) {
-			throw new DuplicateNameException("NPC move moedl name " + name + " is already exist");
-		}
-		NPCMoveModel m = new NPCMoveModel(name) {
-			private final int VALUE = round;
+	public static NPCMoveModel createRoundMoveModel(String name, int size, int minTime, int maxTime) {
+		NPCMoveModel n = new NPCMoveModel(name) {
+			private final int VALUE = size;
 
 			@Override
 			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
-					tgt = new D2Idx(n.getInitialIdx());
+					tgt = new D2Idx(n.getCurrentIdx());
 					if (Random.randomBool()) {
-						tgt.x -= Random.randomAbsInt(VALUE);
+						tgt.x -= Random.randomAbsInt(2);
 					} else {
-						tgt.x += Random.randomAbsInt(VALUE);
+						tgt.x += Random.randomAbsInt(2);
 					}
 					if (Random.randomBool()) {
-						tgt.y -= Random.randomAbsInt(VALUE);
+						tgt.y -= Random.randomAbsInt(2);
 					} else {
-						tgt.y += Random.randomAbsInt(VALUE);
+						tgt.y += Random.randomAbsInt(2);
 					}
 					if (tgt.x <= 0 || tgt.y <= 0) {
 						tgt = new D2Idx(n.getInitialIdx());
@@ -306,6 +425,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					if (map.getCurrentIdx().equals(tgt)) {
 						continue;
 					}
+					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
+						continue;
+					}
+					if (tgt.x > n.getInitialIdx().x + VALUE || tgt.y > n.getInitialIdx().y + VALUE) {
+						continue;
+					}
 					assert map.getBaseLayer().include(tgt) : "NPC targetIDX is " + tgt;
 					break;
 				}
@@ -314,9 +439,27 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 
 			@Override
 			public int nextMoveFrameTime(NPC n, FieldMap map) {
-				return minTime + Random.randomAbsInt(maxTime + 1);
+				return minTime + Random.randomAbsInt(maxTime + 1 - minTime);
+			}
+
+			@Override
+			public D2Idx getMax(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x += VALUE;
+				idx.y += VALUE;
+				return idx;
+			}
+
+			@Override
+			public D2Idx getMin(NPC n) {
+				D2Idx idx = n.getInitialIdx();
+				idx.x -= VALUE;
+				idx.y -= VALUE;
+				return idx;
 			}
 		};
+		getInstance().add(n);
+		return n;
 	}
 
 	public static NPCMoveModelStorage getInstance() {

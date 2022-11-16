@@ -48,7 +48,7 @@ public enum Versions {
 	/**
 	 * íòçÏå†ÇÃï\ãLÇ≈Ç∑.
 	 */
-	public static final String COPY_RIGHT = "Copyright (c) 2011-2021 " + AUTHOR + " All rights reserved.";
+	public static final String COPY_RIGHT = "Copyright (c) 2011-2023 " + AUTHOR + " All rights reserved.";
 
 	private final String value;
 

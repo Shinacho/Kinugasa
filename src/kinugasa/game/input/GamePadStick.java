@@ -26,6 +26,7 @@ package kinugasa.game.input;
 import java.awt.geom.Point2D;
 import kinugasa.object.FourDirection;
 import kinugasa.object.KVector;
+import kinugasa.util.ManualTimeCounter;
 
 /**
  *
@@ -97,4 +98,5 @@ public class GamePadStick extends InputDeviceState {
 		}
 		throw new InternalError(dir + " is not found");
 	}
+
 }

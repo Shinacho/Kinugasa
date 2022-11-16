@@ -252,6 +252,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				NodeAccepter accepter = NodeAccepterStorage.getInstance().get(e.getAttributes().get("accepterName").getValue());
 				FourDirection outDir = FourDirection.valueOf(e.getAttributes().get("outDir").getValue());
 				Node node = Node.ofInOutNode(name, tgtMapName, exitNodeName, x, y, tooltip, accepter, outDir);
+				if (e.getAttributes().contains("se")) {
+					String soundMapName = e.getAttributes().get("se").getValue().split("/")[0];
+					String soundName = e.getAttributes().get("se").getValue().split("/")[1];
+					node.setSe(SoundStorage.getInstance().get(soundMapName).get(soundName));
+				}
 				nodeStorage.add(node);
 			}
 
@@ -514,7 +519,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (backgroundLayerSprite != null) {
 			backgroundLayerSprite.dispose();
 		}
+		backlLayeres.forEach(e -> e.dispose());
 		backlLayeres.clear();
+		frontlLayeres.forEach(e -> e.dispose());
 		frontlLayeres.clear();
 		frontAnimation.clear();
 		beforeLayerSprites.clear();
@@ -703,7 +710,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (idx.x < 0 || idx.y < 0) {
 			return false;
 		}
-		if (idx.x >= getBaseLayer().getDataWidth() || idx.y > getBaseLayer().getDataHeight()) {
+		if (idx.x >= getBaseLayer().getDataWidth() || idx.y >= getBaseLayer().getDataHeight()) {
 			return false;
 		}
 
@@ -800,6 +807,26 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 */
 	public void NPCMoveStart() {
 		npcStorage.forEach(c -> c.canMove());
+	}
+
+	public FieldMap changeMap() {
+		return changeMap(getCurrentTile().getNode());
+	}
+
+	public FieldMap changeMap(Node n) {
+		for (Node o : getNodeStorage()) {
+			if (o.getSe() != null) {
+				o.getSe().dispose();
+			}
+		}
+		dispose();
+		FieldMap fm = FieldMapStorage.getInstance().get(n.getExitFieldMapName()).build();
+		fm.setCurrentIdx(fm.getNodeStorage().get(n.getExitNodeName()).getIdx());
+		fm.getCamera().updateToCenter();
+		FieldMap.getPlayerCharacter().to(n.getOutDir());
+		n.getSe().load().play();
+		System.out.println("CHANGE_MAP IN: " + n + " OUT:" + fm.getNodeStorage().get(n.getExitNodeName()));
+		return fm;
 	}
 
 }

@@ -27,6 +27,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -87,7 +89,7 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 */
 	public T get(String key) throws NameNotFoundException {
 		if (!contains(key)) {
-			throw new NameNotFoundException("! > Storage("+getClass()+") : get : not found : key=[" + key.toString() + "]");
+			throw new NameNotFoundException("! > Storage(" + getClass() + ") : get : not found : key=[" + key.toString() + "]");
 		}
 		return map.get(key);
 	}
@@ -104,9 +106,11 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * このストレージに追加されているオブジェクトをすべて取得します. このメソッドの戻り値は参照ではありません。新しく作成されたコレクションです。<br>
+	 * このストレージに追加されているオブジェクトをすべて取得します.
+	 * このメソッドの戻り値は参照ではありません。新しく作成されたコレクションです。<br>
 	 *
-	 * @return 保管されているすべてのオブジェクトのコレクションを返します。コレクションに格納される順番は ストレージに追加された順番と一致しません。<br>
+	 * @return 保管されているすべてのオブジェクトのコレクションを返します。コレクションに格納される順番は
+	 * ストレージに追加された順番と一致しません。<br>
 	 */
 	public Collection<T> getAll() {
 		return map.values();
@@ -334,7 +338,8 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * 指定した名前を持つオブジェクトを新しいマップに格納して返します. 存在しない名前を指定した場合は、その名前は無視されます。戻り値の マップには、存在が確認されたオブジェクトだけが格納されます。<br>
+	 * 指定した名前を持つオブジェクトを新しいマップに格納して返します. 存在しない名前を指定した場合は、その名前は無視されます。戻り値の
+	 * マップには、存在が確認されたオブジェクトだけが格納されます。<br>
 	 *
 	 * @param names 戻り値に追加するオブジェクトの名前を指定します。<br>
 	 *
@@ -355,7 +360,8 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * 全ての要素を参照できるイテレータを返します. 要素の順番は、HashSetに依存します。並び順を設定する必要がある場合は asListを使用してください。<br>
+	 * 全ての要素を参照できるイテレータを返します. 要素の順番は、HashSetに依存します。並び順を設定する必要がある場合は
+	 * asListを使用してください。<br>
 	 *
 	 * @return このストレージの要素を参照するイテレータを返します。<br>
 	 */
@@ -363,9 +369,15 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	public Iterator<T> iterator() {
 		return map.values().iterator();
 	}
-	
+
+	public List<T> sort(Comparator<? super T> c) {
+		List<T> list = new ArrayList<>(asList());
+		Collections.sort(list, c);
+		return list;
+	}
+
 	@Override
-	public void forEach(Consumer<? super T> c){
+	public void forEach(Consumer<? super T> c) {
 		asList().forEach(c);
 	}
 

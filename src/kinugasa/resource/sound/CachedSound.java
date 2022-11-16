@@ -141,6 +141,8 @@ public class CachedSound implements Sound {
 		control.setValue((float) Math.log10(vol) * 20);
 	}
 
+	private boolean playing = false;
+
 	@Override
 	public void play() throws NotYetLoadedException {
 		if (!(getStatus() == InputStatus.LOADED)) {
@@ -150,13 +152,8 @@ public class CachedSound implements Sound {
 			clip.loop(Clip.LOOP_CONTINUOUSLY);
 		} else {
 			clip.start();
+			playing = true;
 		}
-	}
-
-	@Override
-	public void again() {
-		stop();
-		play();
 	}
 
 	@Override
@@ -174,7 +171,19 @@ public class CachedSound implements Sound {
 		if (clip != null) {
 			clip.stop();
 			clip.setFramePosition(0);
+			playing = false;
 		}
+	}
+
+	@Override
+	public boolean isPlaying() {
+		if (clip == null) {
+			return false;
+		}
+		if (clip.getFramePosition() <= 0 || clip.getFramePosition() > clip.getFrameLength()) {
+			return false;
+		}
+		return playing;
 	}
 
 	@Override

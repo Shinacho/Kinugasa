@@ -23,6 +23,7 @@
  */
 package kinugasa.resource.text;
 
+import kinugasa.resource.FileNotFoundException;
 
 /**
  * このインターフェースを実装したクラスは、

@@ -38,13 +38,18 @@ public class I18N {
 
 	private static IniFile ini;
 
-	static void init(String lang) {
+	/**
+	 * I18Nマップを初期化します。gameStart時に自動で実行されるため、通常は呼び出す必要はありません。
+	 *
+	 * @param lang ロケールの言語。
+	 */
+	public static void init(String lang) {
 		ini = new IniFile("translate/" + lang + ".ini").load();
 
 		checkKey();
 	}
 
-	public I18N  add(String lang, File dir) throws IllegalArgumentException {
+	public I18N add(String lang, File dir) throws IllegalArgumentException {
 		if (!dir.isDirectory() || !dir.exists()) {
 			throw new IllegalArgumentException(dir + " is not directry");
 		}

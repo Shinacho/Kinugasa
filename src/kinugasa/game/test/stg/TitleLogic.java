@@ -63,7 +63,7 @@ public class TitleLogic extends GameLogic {
 	@Override
 	public void update(GameTimeManager gtm) {
 		if(InputState.getInstance().getKeyState().isAnyButtonInput()){
-			GameLogicStorage.getInstance().setCurrent("STAGE1");
+			GameLogicStorage.getInstance().changeTo("STAGE1");
 		}
 	}
 

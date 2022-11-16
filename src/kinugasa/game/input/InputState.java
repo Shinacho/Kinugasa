@@ -24,6 +24,7 @@
 package kinugasa.game.input;
 
 import kinugasa.game.PlayerConstants;
+import kinugasa.object.FourDirection;
 
 /**
  * 入力デバイスの状態を格納します.
@@ -116,7 +117,7 @@ public final class InputState extends InputDeviceState {
 		if (PlayerConstants.getInstance().isUsingMouse()) {
 			result |= mouseState.isAnyInput();
 		}
-		if(PlayerConstants.getInstance().isUsingGamePad()){
+		if (PlayerConstants.getInstance().isUsingGamePad()) {
 			result |= gpState.isAnyInput();
 		}
 		return result | keyState.isAnyInput();
@@ -128,7 +129,7 @@ public final class InputState extends InputDeviceState {
 		if (PlayerConstants.getInstance().isUsingMouse()) {
 			result |= mouseState.isAnyButtonInput();
 		}
-		if(PlayerConstants.getInstance().isUsingGamePad()){
+		if (PlayerConstants.getInstance().isUsingGamePad()) {
 			result |= gpState.isAnyInput();
 		}
 		return result | keyState.isAnyButtonInput();
@@ -140,7 +141,7 @@ public final class InputState extends InputDeviceState {
 		if (PlayerConstants.getInstance().isUsingMouse()) {
 			result &= mouseState.isEmptyInput();
 		}
-		if(PlayerConstants.getInstance().isUsingGamePad()){
+		if (PlayerConstants.getInstance().isUsingGamePad()) {
 			result &= gpState.isEmptyInput();
 		}
 		return result & keyState.isEmptyInput();
@@ -240,6 +241,24 @@ public final class InputState extends InputDeviceState {
 		return type == InputType.CONTINUE
 				? gpState.buttons.isPressed(button)
 				: gpState.buttons.isPressed(button) && !prevGpState.buttons.isPressed(button);
+	}
+
+	public boolean gamePadStickLeftIs(FourDirection dir, InputType type) {
+		if (!PlayerConstants.getInstance().isUsingMouse()) {
+			return false;
+		}
+		return type == InputType.CONTINUE
+				? gpState.sticks.LEFT.is(dir)
+				: gpState.sticks.LEFT.is(dir) && !prevGpState.sticks.LEFT.is(dir);
+	}
+
+	public boolean gamePadStickRightIs(FourDirection dir, InputType type) {
+		if (!PlayerConstants.getInstance().isUsingMouse()) {
+			return false;
+		}
+		return type == InputType.CONTINUE
+				? gpState.sticks.RIGHT.is(dir)
+				: gpState.sticks.RIGHT.is(dir) && !prevGpState.sticks.LEFT.is(dir);
 	}
 
 	@Override

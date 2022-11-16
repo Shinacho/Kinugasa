@@ -54,7 +54,7 @@ public class STG_GM extends GameManager {
 		GameLogicStorage.getInstance().add(new Stage2Logic("STAGE2", this));
 		GameLogicStorage.getInstance().add(new GameoverLogic("GAMEOVER", this));
 		
-		GameLogicStorage.getInstance().setCurrent("TITLE");
+		GameLogicStorage.getInstance().changeTo("TITLE");
 	}
 
 	@Override

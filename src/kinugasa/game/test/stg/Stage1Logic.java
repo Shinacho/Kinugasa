@@ -277,7 +277,7 @@ public class Stage1Logic extends GameLogic {
 		// “G‚Æ‚¶‚«‚Ì“–‚½‚è”»’è
 		for (BasicSprite t : tekiList) {
 			if (t.contains(ship.getCenter())) {
-				gls.setCurrent("GAMEOVER");
+				gls.changeTo("GAMEOVER");
 				first = true;
 			}
 		}
@@ -286,7 +286,7 @@ public class Stage1Logic extends GameLogic {
 		if(last != null && !last.isExist()){
 			text1.setVisible(true);
 			if(clearCounter.isReaching()){
-				gls.setCurrent("STAGE2");
+				gls.changeTo("STAGE2");
 			}
 		}
 
@@ -350,7 +350,7 @@ class Tama extends ImageSprite {
 
 	@Override
 	public void move() {
-		super.move(); //To change body of generated methods, choose Tools | Templates.
+		super.move(); //To changeTo body of generated methods, choose Tools | Templates.
 		if (getY() < -10) {
 			setExist(false);
 		}
@@ -358,7 +358,7 @@ class Tama extends ImageSprite {
 
 	@Override
 	public Tama clone() {
-		return (Tama) super.clone(); //To change body of generated methods, choose Tools | Templates.
+		return (Tama) super.clone(); //To changeTo body of generated methods, choose Tools | Templates.
 	}
 
 }

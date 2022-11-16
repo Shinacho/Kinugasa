@@ -44,10 +44,14 @@ public abstract class NPCMoveModel extends Model implements Nameable {
 	public String getName() {
 		return name;
 	}
-	
+
 	public abstract D2Idx getNextTargetIdx(NPC n, FieldMap map);
-	
+
 	public abstract int nextMoveFrameTime(NPC n, FieldMap map);
+
+	public abstract D2Idx getMin(NPC n);
+
+	public abstract D2Idx getMax(NPC n);
 
 	@Override
 	public NPCMoveModel clone() {
