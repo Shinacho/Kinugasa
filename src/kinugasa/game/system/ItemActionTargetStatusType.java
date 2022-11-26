@@ -32,5 +32,7 @@ package kinugasa.game.system;
 public enum ItemActionTargetStatusType {
 	STATUS,
 	ATTR_IN,
+	ADD_CONDITION,
+	REMOVE_CONDITION,
 	DROP_THIS_ITEM,
 }

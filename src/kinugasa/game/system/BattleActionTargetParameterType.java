@@ -32,18 +32,44 @@ public enum BattleActionTargetParameterType {
 	/**
 	 * ステータスの変更を行うアクションタイプです。
 	 */
-	STATUS,
+	STATUS(3),
 	/**
 	 * 属性耐性の変更を行うアクションタイプです。
 	 */
-	ATTR_IN,
+	ATTR_IN(4),
 	/**
 	 * valueの名前のアイテムを破棄するタイプです。
 	 */
-	ITEM_LOST,
+	ITEM_LOST(1),
 	/**
 	 * 何も行わないアクションタイプです。
 	 */
-	NONE,
+	NONE(999),
+	/**
+	 * 移動アクションです。
+	 */
+	MOVE(10),
+	/**
+	 * 状態異常を付与するアクションです。
+	 */
+	ADD_CONDITION(5),
+	REMOVE_CONDITION(6),
+	/**
+	 * アイテムを使用するアクションです。
+	 */
+	USE_ITEM(2),
+	/**
+	 * ステータスを閲覧するアクションです。
+	 */
+	SHOW_STATUS(9),;
+	private int value;
+
+	private BattleActionTargetParameterType(int value) {
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
 
 }

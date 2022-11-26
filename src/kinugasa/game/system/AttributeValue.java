@@ -62,6 +62,10 @@ public class AttributeValue implements Nameable, Cloneable {
 		return value;
 	}
 
+	public void setValue(float value) {
+		this.value = value;
+	}
+
 	public void set(float value) {
 		this.value = value;
 		if (getMin() > value) {

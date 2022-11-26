@@ -27,8 +27,7 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.graphics.Animation;
 
 /**
- * 画像配列をアニメーションとして表示するための
- * ImageSpriteの拡張です.
+ * 画像配列をアニメーションとして表示するための ImageSpriteの拡張です.
  * <br>
  * imageUpdateフラグがONのとき、drawメソッド内で自動的にアニメーションを更新します。<Br>
  * この操作が不要な場合は、imageUpdateをfalseに設定し、AnimationSpriteのupdateメソッドを
@@ -53,9 +52,12 @@ public class AnimationSprite extends ImageSprite {
 		//image is null
 	}
 
+	public AnimationSprite(Animation animation) {
+		this.animation = animation;
+	}
+
 	/**
-	 * 新しいアニメーションスプライトを作成します.
-	 * このコンストラクタでは、画像がnullに、
+	 * 新しいアニメーションスプライトを作成します. このコンストラクタでは、画像がnullに、
 	 * 描画モデルがIMAGE_BOUNDS_XYに設定されます。<br>
 	 *
 	 * @param x スプライトのX座標を指定します。<br>
@@ -68,9 +70,7 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * 新しいアニメーションスプライトを作成します.
-	 * このコンストラクタでは、
-	 * 描画モデルはIMAGE_BOUNDS_XYに設定されます。<br>
+	 * 新しいアニメーションスプライトを作成します. このコンストラクタでは、 描画モデルはIMAGE_BOUNDS_XYに設定されます。<br>
 	 *
 	 * @param x スプライトのX座標を指定します。<br>
 	 * @param y スプライトのY座標を指定します。<br>
@@ -117,8 +117,7 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * 新しいアニメーションスプライトを作成します.
-	 * このコンストラクタはクローニング用のマスタデータを作成する場合に有用です。<br>
+	 * 新しいアニメーションスプライトを作成します. このコンストラクタはクローニング用のマスタデータを作成する場合に有用です。<br>
 	 *
 	 * @param w スプライトの幅を指定します。<br>
 	 * @param h スプライトの高さを指定します。<br>
@@ -134,10 +133,8 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * 新しいアニメーションスプライトを作成します.
-	 * このコンストラクタはクローニング用のマスタデータを作成する場合に有用です。<br>
-	 * 特にメッセージウインドウのアイコンなど座標を後から設定し、その後移動することのない
-	 * スプライトに効果的です。<br>
+	 * 新しいアニメーションスプライトを作成します. このコンストラクタはクローニング用のマスタデータを作成する場合に有用です。<br>
+	 * 特にメッセージウインドウのアイコンなど座標を後から設定し、その後移動することのない スプライトに効果的です。<br>
 	 *
 	 * @param w スプライトの幅を指定します。<br>
 	 * @param h スプライトの高さを指定します。<br>
@@ -166,8 +163,7 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * アニメーションを更新し、最新の画像を適用します.
-	 * このメソッドは、drawメソッドによる描画の完了後、自動的にコールされます。<br>
+	 * アニメーションを更新し、最新の画像を適用します. このメソッドは、drawメソッドによる描画の完了後、自動的にコールされます。<br>
 	 * 設定されているアニメーションがnullの場合は何も行いません。<br>
 	 */
 	@Override

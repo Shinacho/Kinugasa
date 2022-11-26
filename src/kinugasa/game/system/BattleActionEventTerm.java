@@ -57,8 +57,8 @@ public class BattleActionEventTerm implements Nameable {
 		return value;
 	}
 
-	public boolean canDoThis(GameSystem gs, Status user) {
-		return type.canDoThis(gs, value, user);
+	public boolean canDoThis(Status user) {
+		return type.canDoThis(value, user);
 	}
 
 }

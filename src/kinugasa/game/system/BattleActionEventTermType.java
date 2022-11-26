@@ -38,7 +38,7 @@ public enum BattleActionEventTermType {
 	 */
 	EQ_ITEM {
 		@Override
-		public boolean canDoThis(GameSystem gs, String value, Status user) {
+		public boolean canDoThis(String value, Status user) {
 			Item i = ItemStorage.getInstance().get(value);
 			Set<Item> eqItems = new HashSet<>(user.getEqipment().values());
 			return eqItems.contains(i);
@@ -49,7 +49,7 @@ public enum BattleActionEventTermType {
 	 */
 	HAS_ITEM {
 		@Override
-		public boolean canDoThis(GameSystem gs, String value, Status user) {
+		public boolean canDoThis(String value, Status user) {
 			return user.getItemBag().contains(value);
 		}
 	},
@@ -58,7 +58,7 @@ public enum BattleActionEventTermType {
 	 */
 	NO_EQ_ITEM {
 		@Override
-		public boolean canDoThis(GameSystem gs, String value, Status user) {
+		public boolean canDoThis(String value, Status user) {
 			ItemEqipmentSlot slot = ItemEqipmentSlotStorage.getInstance().get(value);
 			return !user.getEqipment().containsKey(slot);
 		}
@@ -68,7 +68,7 @@ public enum BattleActionEventTermType {
 	 */
 	EQ_ANY_ITEM {
 		@Override
-		public boolean canDoThis(GameSystem gs, String value, Status user) {
+		public boolean canDoThis(String value, Status user) {
 			ItemEqipmentSlot slot = ItemEqipmentSlotStorage.getInstance().get(value);
 			return user.getEqipment().containsKey(slot);
 		}
@@ -78,17 +78,30 @@ public enum BattleActionEventTermType {
 	 */
 	EQ_WEAPON_TYPE {
 		@Override
-		public boolean canDoThis(GameSystem gs, String value, Status user) {
+		public boolean canDoThis(String value, Status user) {
 			Collection<Item> eq = user.getEqipment().values();
 			for (Item i : eq) {
+				if (i == null) {
+					continue;
+				}
+				if (i.getWeaponMagicType() == null) {
+					continue;
+				}
 				if (i.getWeaponMagicType().equals(WeaponMagicTypeStorage.getInstance().get(value))) {
 					return true;
 				}
 			}
 			return false;
 		}
-	},;
+	},
+	HAS_BOOK {
+		@Override
+		public boolean canDoThis(String value, Status user) {
+			return user.getBookBag().contains(BookStorage.getInstance().get(value));
+		}
 
-	public abstract boolean canDoThis(GameSystem gs, String value, Status user);
+	};
+
+	public abstract boolean canDoThis(String value, Status user);
 
 }

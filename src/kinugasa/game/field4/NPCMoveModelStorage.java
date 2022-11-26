@@ -24,6 +24,8 @@
 package kinugasa.game.field4;
 
 import java.awt.Point;
+import java.util.Collections;
+import java.util.stream.Collectors;
 import kinugasa.resource.DuplicateNameException;
 import kinugasa.resource.Storage;
 import kinugasa.util.Random;
@@ -101,6 +103,9 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					if (map.getCurrentIdx().equals(tgt)) {
 						continue;
 					}
+					if (map.getPlayerCharacter().stream().map(v -> v.getCurrentIdx()).collect(Collectors.toList()).contains(tgt)) {
+						continue;
+					}
 					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
 						continue;
 					}
@@ -164,6 +169,9 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 						continue;
 					}
 					if (map.getCurrentIdx().equals(tgt)) {
+						continue;
+					}
+					if (map.getPlayerCharacter().stream().map(v -> v.getCurrentIdx()).collect(Collectors.toList()).contains(tgt)) {
 						continue;
 					}
 					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
@@ -230,6 +238,9 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					if (map.getCurrentIdx().equals(tgt)) {
 						continue;
 					}
+					if (map.getPlayerCharacter().stream().map(v -> v.getCurrentIdx()).collect(Collectors.toList()).contains(tgt)) {
+						continue;
+					}
 					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
 						continue;
 					}
@@ -294,6 +305,9 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					if (map.getCurrentIdx().equals(tgt)) {
 						continue;
 					}
+					if (map.getPlayerCharacter().stream().map(v -> v.getCurrentIdx()).collect(Collectors.toList()).contains(tgt)) {
+						continue;
+					}
 					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
 						continue;
 					}
@@ -356,6 +370,9 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 						continue;
 					}
 					if (map.getCurrentIdx().equals(tgt)) {
+						continue;
+					}
+					if (map.getPlayerCharacter().stream().map(v -> v.getCurrentIdx()).collect(Collectors.toList()).contains(tgt)) {
 						continue;
 					}
 					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {
@@ -423,6 +440,9 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 						continue;
 					}
 					if (map.getCurrentIdx().equals(tgt)) {
+						continue;
+					}
+					if (map.getPlayerCharacter().stream().map(v -> v.getCurrentIdx()).collect(Collectors.toList()).contains(tgt)) {
 						continue;
 					}
 					if (tgt.x < n.getInitialIdx().x - VALUE || tgt.y < n.getInitialIdx().y - VALUE) {

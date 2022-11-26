@@ -23,7 +23,6 @@
  */
 package kinugasa.util;
 
-
 /**
  * システム時計の経過時間によって待機時間を評価するTimeCounterの実装です.
  * <br>
@@ -36,11 +35,17 @@ package kinugasa.util;
 public class SystemTimeCounter extends TimeCounter {
 
 	private static final long serialVersionUID = -4734476685297706601L;
-	/** 待機が終了する時刻です. */
+	/**
+	 * 待機が終了する時刻です.
+	 */
 	private long endTime;
-	/** 待機する時間（ミリ秒）です. */
+	/**
+	 * 待機する時間（ミリ秒）です.
+	 */
 	private long waitTime;
-	/** 最初の呼び出しを検知するフラグです. */
+	/**
+	 * 最初の呼び出しを検知するフラグです.
+	 */
 	private boolean running = false;
 
 	public SystemTimeCounter(long milliSec) {
@@ -84,6 +89,11 @@ public class SystemTimeCounter extends TimeCounter {
 	@Override
 	public void reset() {
 		this.endTime = System.currentTimeMillis() + waitTime;
+	}
+
+	@Override
+	public int getCurrentTime() {
+		return (int) (System.currentTimeMillis() - endTime);
 	}
 
 	@Override

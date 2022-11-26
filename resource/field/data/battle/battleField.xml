@@ -22,12 +22,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<KinugasaEncountMap>
-	<battleSet id="01" backAttack="0.005" p="0.25">
-		<enemy name="01"/>
-		<enemy name="02"/>
-		<enemy name="03"/>
-	</battleSet>
+<KinugasaBF>
+
+	<!-- サイズは画像のサイズ。自動的にMG倍にされる -->
+	<obstacle name="木" image="resource/field/image/木.png" w="32" h="32" mg="2"/>
+	<obstacle name="石" image="resource/field/image/石.png" w="16" h="16" mg="2"/>
 	
 	
-</KinugasaEncountMap>
+	<bf chipAttrName="平地" image="resource/field/image/bf1.png" default="true" obstacleMax="8" obstacleName="石,木"/>
+	<bf chipAttrName="砂浜" image="resource/field/image/bf2.png"                obstacleMax="8" obstacleName="石,木"/>
+	
+	
+	
+	
+</KinugasaBF>

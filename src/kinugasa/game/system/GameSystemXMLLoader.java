@@ -26,17 +26,8 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import kinugasa.game.field4.D2Idx;
-import kinugasa.game.field4.FieldMapStorage;
-import kinugasa.game.field4.MapChipAttributeStorage;
-import kinugasa.game.field4.MapChipSetStorage;
-import kinugasa.game.field4.VehicleStorage;
-import kinugasa.game.field4.FieldMap;
 import kinugasa.resource.text.*;
-import kinugasa.game.ui.TextStorageStorage;
 import kinugasa.resource.FileNotFoundException;
-import kinugasa.resource.sound.SoundLoader;
-import kinugasa.game.I18N;
 
 /**
  *
@@ -56,6 +47,11 @@ public class GameSystemXMLLoader {
 	private List<String> itemStorage = new ArrayList<>();
 	private List<String> raceStorage = new ArrayList<>();
 	private List<String> battleActionStorage = new ArrayList<>();
+	private List<String> battleField = new ArrayList<>();
+	private List<String> enemyList = new ArrayList<>();
+	private List<String> ess = new ArrayList<>();
+	private List<String> bookList = new ArrayList<>();
+	private String enemyProgressBarKey;
 	private boolean debugMode = false;
 
 	public GameSystemXMLLoader addWeaponMagicTypeStorage(String fileName) {
@@ -113,8 +109,41 @@ public class GameSystemXMLLoader {
 		return this;
 	}
 
+	public GameSystemXMLLoader addBattleField(String fileName) {
+		battleField.add(fileName);
+		return this;
+	}
+
+	public GameSystemXMLLoader addEnemyList(String fileName) {
+		this.enemyList.add(fileName);
+		return this;
+	}
+
+	public GameSystemXMLLoader addEnemySet(String fileName) {
+		this.ess.add(fileName);
+		return this;
+	}
+
+	public GameSystemXMLLoader setEnemyProgressBarKey(String key) {
+		this.enemyProgressBarKey = key;
+		return this;
+	}
+
+	public GameSystemXMLLoader addBookList(String name) {
+		bookList.add(name);
+		return this;
+	}
+
+	public String getEnemyProgressBarKey() {
+		return enemyProgressBarKey;
+	}
+
 	public boolean isDebugMode() {
 		return debugMode;
+	}
+
+	public List<String> getEnemySetList() {
+		return ess;
 	}
 
 	public List<String> getWeaponMagicTypeStorage() {
@@ -151,6 +180,18 @@ public class GameSystemXMLLoader {
 
 	public List<String> getBattleActionStorage() {
 		return battleActionStorage;
+	}
+
+	public List<String> getBattleField() {
+		return battleField;
+	}
+
+	public List<String> getEnemyList() {
+		return enemyList;
+	}
+
+	public List<String> getBookList() {
+		return bookList;
 	}
 
 	public void load() throws IllegalStateException {
@@ -199,6 +240,30 @@ public class GameSystemXMLLoader {
 			throw new IllegalStateException("battleActionStorage is empty");
 		}
 		battleActionStorage.forEach(v -> BattleActionStorage.getInstance().readFromXML(v));
+
+		if (battleField.isEmpty()) {
+			throw new IllegalStateException("battleField is empty");
+		}
+		battleField.forEach(f -> BattleFieldSystem.getInstance().readFromXML(f));
+
+		if (enemyList.isEmpty()) {
+			throw new IllegalStateException("enemyList is empty");
+		}
+		enemyList.forEach(f -> EnemyStorage.getInstance().readFromXML(f));
+
+		if (ess.isEmpty()) {
+			throw new IllegalStateException("enemySet is empty");
+		}
+		ess.forEach(f -> EnemySetStorageStorage.getInstance().readFromXML(f));
+
+		if (enemyProgressBarKey != null && !enemyProgressBarKey.isEmpty()) {
+			Enemy.setProgressBarKey(enemyProgressBarKey);
+		}
+
+		if (bookList.isEmpty()) {
+			throw new IllegalStateException("bookList is empty");
+		}
+		bookList.forEach(v -> BookStorage.getInstance().readFromXML(v));
 	}
 
 	private void readStatusMaster(String filePath) throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
@@ -284,8 +349,8 @@ public class GameSystemXMLLoader {
 				String time = ee.getAttributes().get("time").getValue();
 				int min = 0, max = 0;
 				if (time.contains("/")) {
-					min = ee.getAttributes().get("time").parse("/")[0];
-					max = ee.getAttributes().get("time").parse("/")[1];
+					min = ee.getAttributes().get("time").parseInt("/")[0];
+					max = ee.getAttributes().get("time").parseInt("/")[1];
 				} else if (time.equals("INFINITY")) {
 					min = Integer.MAX_VALUE;
 					max = Integer.MAX_VALUE;
@@ -346,8 +411,8 @@ public class GameSystemXMLLoader {
 				String time = ee.getAttributes().get("time").getValue();
 				int min = 0, max = 0;
 				if (time.contains("/")) {
-					min = ee.getAttributes().get("time").parse("/")[0];
-					max = ee.getAttributes().get("time").parse("/")[1];
+					min = ee.getAttributes().get("time").parseInt("/")[0];
+					max = ee.getAttributes().get("time").parseInt("/")[1];
 				} else if (time.equals("INFINITY")) {
 					min = Integer.MAX_VALUE;
 					max = Integer.MAX_VALUE;

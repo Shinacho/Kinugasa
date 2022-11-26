@@ -25,6 +25,7 @@ package kinugasa.game.field4;
 
 import java.util.logging.Level;
 import kinugasa.game.GameLog;
+import kinugasa.game.GameOption;
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
 import kinugasa.resource.FileNotFoundException;
@@ -53,11 +54,8 @@ public class FieldMapStorage extends Storage<FieldMap> implements XMLFileSupport
 	private static int screenWidth, screenHeight;
 
 	private static void init() {
-		IniFile ini = new IniFile("default.ini").load();
-		int[] ar = ini.get("SIZE").get().asCsvInt();
-		screenWidth = ar[0];
-		screenHeight = ar[1];
-		ini.dispose();
+		screenWidth = GameOption.getInstance().getWindowSize().width;
+		screenHeight = GameOption.getInstance().getWindowSize().height;
 	}
 
 	public static int getScreenHeight() {

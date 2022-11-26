@@ -184,6 +184,10 @@ public class ImageSprite extends BasicSprite {
 		this.painter = dm;
 	}
 
+	public ImageSprite(float w, float h, BufferedImage image) {
+		this(0, 0, w, h, image);
+	}
+
 	/**
 	 * 新しい画像スプライトを作成します. このコンストラクタはクローニング用のマスタデータを作成する場合に有用です。<br>
 	 *
@@ -215,8 +219,8 @@ public class ImageSprite extends BasicSprite {
 	public KImage getImage() {
 		return image;
 	}
-	
-	public Image getAWTImage(){
+
+	public Image getAWTImage() {
 		return image.get();
 	}
 

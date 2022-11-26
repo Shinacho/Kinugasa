@@ -24,8 +24,10 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.util.*;
 import kinugasa.resource.*;
@@ -41,44 +43,147 @@ public class Status {
 	//名前
 	private String name;
 	//ステータス本体
-	private final StatusValueSet status = new StatusValueSet();
+	private StatusValueSet status = new StatusValueSet();
+	private StatusValueSet prevStatus = new StatusValueSet();
 	// 属性と状態異常に対する耐性
-	private final AttributeValueSet attrIn = new AttributeValueSet();
+	private AttributeValueSet attrIn = new AttributeValueSet();
 	//発生中の効果
 	private final CharacterConditionValueSet condition = new CharacterConditionValueSet();
 	// エフェクトの効果時間
-	private final HashMap<ConditionKey, TimeCounter> effectTimes = new HashMap<>();
+	private final HashMap<ConditionKey, TimeCounter> conditionTimes = new HashMap<>();
 	// 人種
 	private final Race race;
 	//持っているアイテム
-	private final ItemBag itemBag = new ItemBag();
+	private ItemBag itemBag = new ItemBag();
+	//持っている魔術書
+	private BookBag bookBag = new BookBag();
 	//装備品
 	private final HashMap<ItemEqipmentSlot, Item> eqipment = new HashMap<>();
 	//取れる行動
 	private final Storage<BattleAction> battleActions = new Storage<>();
+	//前衛・後衛
+	private PartyLocation partyLocation = PartyLocation.FRONT;
 
 	public Status(String name, Race race) {
 		this.name = name;
 		this.race = race;
 		itemBag.setMax(race.getItemBagSize());
+		for (ItemEqipmentSlot slot : race.getEqipSlot()) {
+			eqipment.put(slot, null);
+		}
+	}
+
+	public void setPartyLocation(PartyLocation partyLocation) {
+		this.partyLocation = partyLocation;
+	}
+
+	public PartyLocation getPartyLocation() {
+		return partyLocation;
+	}
+
+	public int maxAtkArea() {
+		int r = getWeaponArea();
+		int max = 0;
+		for (BattleAction a : battleActions) {
+			if (a.getArea() > max) {
+				max = a.getArea();
+			}
+		}
+		return r + max;
+	}
+
+	public void setBaseAttrIn(AttributeValueSet attrIn) {
+		this.attrIn = attrIn;
+	}
+
+	public void setBaseStatus(StatusValueSet status) {
+		prevStatus = this.status;
+		this.status = status;
+	}
+
+	public void setItemBag(ItemBag itemBag) {
+		this.itemBag = itemBag;
+	}
+
+	public void setBookBag(BookBag bookBag) {
+		this.bookBag = bookBag;
+	}
+
+	public BookBag getBookBag() {
+		return bookBag;
+	}
+
+	public boolean hasCondition(String name) {
+		return conditionTimes.containsKey(ConditionValueStorage.getInstance().get(name).getKey());
+	}
+
+	public boolean hasConditions(boolean all, List<String> name) {
+		boolean result = all;
+		for (String n : name) {
+			if (all) {
+				result &= conditionTimes.containsKey(ConditionValueStorage.getInstance().get(n).getKey());
+			} else {
+				result |= conditionTimes.containsKey(ConditionValueStorage.getInstance().get(n).getKey());
+				if (result) {
+					return true;
+				}
+			}
+		}
+		return result;
+	}
+
+	public boolean hasConditions(boolean all, String... name) {
+		return hasConditions(all, Arrays.asList(name));
+	}
+
+	public List<BattleAction> getAction(BattleActionType type) {
+		return battleActions.asList().stream().filter(p -> p.getBattleActionType() == type).collect(Collectors.toList());
 	}
 
 	public String getName() {
 		return name;
 	}
 
+	public int getWeaponArea() {
+		int r = 0;
+		for (Item i : eqipment.values()) {
+			if (i != null) {
+				r += i.getArea();
+			}
+		}
+		return r;
+	}
+
 	public Storage<BattleAction> getBattleActions() {
 		return battleActions;
 	}
 
+	public int getBattleActionArea(String name) {
+		int r = 0;
+		for (Item i : eqipment.values()) {
+			if (i != null) {
+				r += i.getArea();
+			}
+		}
+		if (getBattleActions().contains(name)) {
+			BattleAction a = getBattleActions().get(name);
+			r += a.getArea();
+		}
+		return r;
+	}
+
 	//基礎ステータスを取得します。通常、レベルアップ等以外ではこの値は変わりません。
 	public StatusValueSet getBaseStatus() {
+		prevStatus = this.status.clone();
 		return status;
 	}
 
 	public void addEqip(Item i) {
 		if (!itemBag.contains(i)) {
 			throw new GameSystemException(name + " is not have " + i);
+		}
+		if (!i.canEqip()) {
+			throw new GameSystemException(i + " is can not eqip");
 		}
 		ItemEqipmentSlot slot = i.getEqipmentSlot();
 		if (eqipment.containsKey(slot)) {
@@ -87,8 +192,19 @@ public class Status {
 		eqipment.put(slot, i);
 	}
 
+	public void passItem(Status tgt, Item i) {
+		if (!itemBag.contains(i)) {
+			throw new GameSystemException(name + " is not have " + i);
+		}
+		itemBag.drop(i);
+		tgt.itemBag.add(i);
+	}
+
 	public void clearEqip() {
 		eqipment.clear();
+		for (ItemEqipmentSlot slot : race.getEqipSlot()) {
+			eqipment.put(slot, null);
+		}
 	}
 
 	public void removeEqip(Item i) {
@@ -111,9 +227,9 @@ public class Status {
 	}
 
 	// 発生中の効果に基づいて、このターン行動できるかを判定します
-	public boolean canMoveThiTurn() {
+	public boolean canMoveThisTurn() {
 		if (condition.isEmpty()) {
-			assert effectTimes.isEmpty() : "conditionとeffectTimesの同期が取れていません";
+			assert conditionTimes.isEmpty() : "conditionとeffectTimesの同期が取れていません";
 			return true;
 		}
 		for (ConditionValue v : condition) {
@@ -133,7 +249,7 @@ public class Status {
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
 		// すでに発生している効果の場合、何もしない
 		if (condition.contains(name)) {
-			assert effectTimes.containsKey(v.getKey()) : "conditionとeffectTimesの同期が取れていません";
+			assert conditionTimes.containsKey(v.getKey()) : "conditionとeffectTimesの同期が取れていません";
 			return;
 		}
 		//優先度計算
@@ -141,7 +257,7 @@ public class Status {
 		int pri = v.getKey().getPriority();
 		if (!condition.asList().stream().filter(s -> s.getKey().getPriority() == pri).collect(Collectors.toList()).isEmpty()) {
 			condition.remove(name);
-			effectTimes.remove(new ConditionKey(name, "", 0));
+			conditionTimes.remove(new ConditionKey(name, "", 0));
 		}
 		List<EffectMaster> effects = v.getEffects();
 		//タイム算出
@@ -149,7 +265,7 @@ public class Status {
 		TimeCounter tc = continueEffect.isEmpty() ? TimeCounter.oneCounter() : continueEffect.get(0).createTimeCounter();
 		//発生中の効果とエフェクト効果時間に追加
 		condition.add(v);
-		effectTimes.put(v.getKey(), tc);
+		conditionTimes.put(v.getKey(), tc);
 	}
 
 	//状態異常を追加します
@@ -161,15 +277,51 @@ public class Status {
 	//終了したエフェクトは、エフェクトタイムとコンディションから取り除く。
 	public void update() {
 		List<ConditionKey> deleteList = new ArrayList<>();
-		for (ConditionKey key : effectTimes.keySet()) {
-			if (effectTimes.get(key).isReaching()) {
+		for (ConditionKey key : conditionTimes.keySet()) {
+			if (conditionTimes.get(key).isReaching()) {
 				deleteList.add(key);
 			}
 		}
 		for (ConditionKey k : deleteList) {
-			effectTimes.remove(k);
+			conditionTimes.remove(k);
 			condition.remove(k.getName());
 		}
+	}
+
+	// すべての状態異常を取り除きます
+	public void clearCondition() {
+		condition.clear();
+		conditionTimes.clear();
+	}
+
+	// 状態異常を強制的に取り除きます
+	public void removeCondition(String name) {
+		ConditionValue v = ConditionValueStorage.getInstance().get(name);
+		condition.remove(v);
+		conditionTimes.remove(v.getKey());
+	}
+
+	// 状態異常の効果時間を上書きします。状態異常が付与されていない場合はセットします。
+	public void setConditionTime(String name, int time) {
+		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
+		ConditionValue v = ConditionValueStorage.getInstance().get(name);
+		if (condition.contains(v)) {
+			removeCondition(name);
+		}
+		condition.put(v);
+		conditionTimes.put(key, new FrameTimeCounter(time));
+	}
+
+	// 状態異常の効果時間を追加します。状態異常が付与されていない場合はセットします。
+	public void addConditionTime(String name, int time) {
+		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
+		ConditionValue v = ConditionValueStorage.getInstance().get(name);
+		if (condition.contains(v)) {
+			removeCondition(name);
+		}
+		time += conditionTimes.get(key).getCurrentTime();
+		condition.put(v);
+		conditionTimes.put(key, new FrameTimeCounter(time));
 	}
 
 	// コンディションによるコンディション発生を設定する
@@ -183,7 +335,7 @@ public class Status {
 					if (Random.percent(e.getP())) {
 						if (!condition.contains(e.getTargetName())) {
 							addList.add(ConditionValueStorage.getInstance().get(e.getTargetName()));
-							effectTimes.put(e.getKey(), e.createTimeCounter());
+							conditionTimes.put(e.getKey(), e.createTimeCounter());
 						}
 					}
 				}
@@ -222,6 +374,14 @@ public class Status {
 				}
 			}
 		}
+		for (ItemEqipmentSlot slot : eqipment.keySet()) {
+			Item eqipItem = eqipment.get(slot);
+			if (eqipItem != null) {
+				for (StatusValue v : eqipItem.getEqStatus()) {
+					r.get(v.getName()).add(v.getValue());
+				}
+			}
+		}
 
 		return r;
 	}
@@ -256,7 +416,34 @@ public class Status {
 				}
 			}
 		}
+		for (ItemEqipmentSlot slot : eqipment.keySet()) {
+			Item eqipItem = eqipment.get(slot);
+			if (eqipItem != null) {
+				for (AttributeValue v : eqipItem.getEqAttr()) {
+					r.get(v.getName()).add(v.getValue());
+				}
+			}
+		}
+
 		return r;
+	}
+
+	public Map<StatusKey, Integer> calcDamage() {
+		Map<StatusKey, Integer> result = new HashMap<>();
+
+		for (StatusValue v : prevStatus) {
+			float val = v.getValue() - status.get(v.getKey().getName()).getValue();
+			if (val != 0) {
+				result.put(v.getKey(), (int) val);
+			}
+		}
+
+		prevStatus = this.status;
+		return result;
+	}
+
+	public HashMap<ConditionKey, TimeCounter> getConditionTimes() {
+		return conditionTimes;
 	}
 
 	public AttributeValueSet getBaseAttrIn() {
@@ -269,6 +456,23 @@ public class Status {
 
 	public ItemBag getItemBag() {
 		return itemBag;
+	}
+
+	public void eqip(Item i) {
+		if (!itemBag.contains(i)) {
+			throw new GameSystemException(name + " is not have this item " + i);
+		}
+		if (!i.canEqip()) {
+			throw new GameSystemException(i + " is can not eqip");
+		}
+		if (!race.getEqipSlot().contains(i.getEqipmentSlot())) {
+			throw new GameSystemException(name + " is can not eqip this item " + i);
+		}
+		eqipment.put(i.getEqipmentSlot(), i);
+	}
+
+	public void eqip(String name) {
+		eqip(ItemStorage.getInstance().get(name));
 	}
 
 	public HashMap<ItemEqipmentSlot, Item> getEqipment() {
@@ -289,7 +493,7 @@ public class Status {
 
 	@Override
 	public String toString() {
-		return "Status{" + "name=" + name + ", status=" + status + ", attrIn=" + attrIn + ", condition=" + condition + ", effectTimes=" + effectTimes + ", race=" + race + ", itemBag=" + itemBag + ", eqipment=" + eqipment + ", battleActions=" + battleActions + '}';
+		return "Status{" + "name=" + name + '}';
 	}
 
 }

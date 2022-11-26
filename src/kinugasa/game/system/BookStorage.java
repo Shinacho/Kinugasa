@@ -21,14 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package kinugasa.game.system;
+
+import kinugasa.resource.FileNotFoundException;
+import kinugasa.resource.Storage;
+import kinugasa.resource.text.FileIOException;
+import kinugasa.resource.text.IllegalXMLFormatException;
+import kinugasa.resource.text.XMLElement;
+import kinugasa.resource.text.XMLFile;
+import kinugasa.resource.text.XMLFileSupport;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/16_11:33:42<br>
+ * @vesion 1.0.0 - 2022/11/23_18:56:31<br>
  * @author Dra211<br>
  */
-public class SkillValueStorage {
+public class BookStorage extends Storage<Book> implements XMLFileSupport {
+
+	private static final BookStorage INSTANCE = new BookStorage();
+
+	private BookStorage() {
+	}
+
+	public static BookStorage getInstance() {
+		return INSTANCE;
+	}
+
+	@Override
+	public void readFromXML(String filePath) throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
+		XMLFile file = new XMLFile(filePath);
+		if (!file.exists()) {
+			throw new FileNotFoundException(file.getFile());
+		}
+
+		XMLElement root = file.load().getFirst();
+		for (XMLElement e : root.getElement("book")) {
+			String name = e.getAttributes().get("name").getValue();
+			String desc = e.getAttributes().get("desc").getValue();
+			getInstance().add(new Book(name, desc));
+		}
+		file.dispose();
+	}
 
 }

@@ -120,6 +120,10 @@ public class XMLElement implements Nameable {
 		return attributes;
 	}
 
+	public boolean hasAttribute(String key) {
+		return attributes.contains(key);
+	}
+
 	/**
 	 * ‚±‚Ì—v‘f‚ª‚Âq‚Ì—v‘f‚ğæ“¾‚µ‚Ü‚·.
 	 *

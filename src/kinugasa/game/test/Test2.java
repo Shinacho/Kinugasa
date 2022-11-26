@@ -21,14 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package kinugasa.game.test;
 
-package kinugasa.game.system;
+import kinugasa.game.GameManager;
+import kinugasa.game.GameOption;
+import kinugasa.game.GameTimeManager;
+import kinugasa.game.GraphicsContext;
+import kinugasa.game.LockUtil;
+import kinugasa.game.test.rpg.GM;
+import kinugasa.game.ui.ProgressBarSprite;
+import kinugasa.util.FrameTimeCounter;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/16_11:33:04<br>
+ * @vesion 1.0.0 - 2022/11/22_5:31:16<br>
  * @author Dra211<br>
  */
-public class SkillValue {
+public class Test2 extends GameManager {
+
+	public static void main(String[] args) {
+		LockUtil.deleteAllLockFile();
+		new Test2().gameStart(args);
+	}
+
+	Test2() {
+		super(GameOption.defaultOption());
+	}
+	
+	ProgressBarSprite s = new ProgressBarSprite(24, 24, 128, 24, 0, 0, 50);
+	FrameTimeCounter tc = new FrameTimeCounter(2);
+
+	@Override
+	protected void startUp() {
+	}
+
+	@Override
+	protected void dispose() {
+	}
+
+	@Override
+	protected void update(GameTimeManager gtm) {
+		if(tc.isReaching()){
+			tc.reset();
+			s.add();
+		}
+	}
+
+	@Override
+	protected void draw(GraphicsContext gc) {
+		s.draw(gc);
+	}
 
 }

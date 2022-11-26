@@ -23,43 +23,20 @@
  */
 package kinugasa.game.system;
 
-import java.util.List;
-import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.Status;
-import kinugasa.resource.Storage;
+import kinugasa.game.I18N;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_21:31:55<br>
+ * @vesion 1.0.0 - 2022/11/20_15:14:04<br>
  * @author Dra211<br>
  */
-public class DamageCalcModelStorage extends Storage<DamageCalcModel> {
+public enum BattleActionType {
+	ATTACK,
+	SPECIAL_ATTACK,
+	MAGIC,
+	OTHER,;
 
-	private static final DamageCalcModelStorage INSTANCE = new DamageCalcModelStorage();
-
-	private DamageCalcModelStorage() {
-		add(new DamageCalcModel("DUMMY") {
-			@Override
-			public void exec(GameSystem gs, Status user, BattleAction ba, BattleActionEvent e) {
-
-				// TODO;アイテムロストイベントの処理もここで行う。BattleActionTargetParameterTypeを最初に判定すること。
-				System.out.println("ダミー。攻撃が発動した：" + ba.getName());
-			}
-		});
-		setCurrent("DUMMY");
+	public String displayName() {
+		return I18N.translate(this.toString());
 	}
-
-	public static DamageCalcModelStorage getInstance() {
-		return INSTANCE;
-	}
-	private DamageCalcModel current;
-
-	public void setCurrent(String name) {
-		this.current = get(name);
-	}
-
-	public DamageCalcModel getCurrent() {
-		return current;
-	}
-
 }

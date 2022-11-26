@@ -39,18 +39,20 @@ public class AttributeValueSet extends Storage<AttributeValue> implements Clonea
 
 	}
 
+	public void setAll(float val) {
+		for (AttributeValue v : this) {
+			v.set(val);
+		}
+	}
+
 	@Override
 	public AttributeValueSet clone() {
-		try {
-			AttributeValueSet r = (AttributeValueSet) super.clone();
-			for (AttributeValue v : r) {
-				r.remove(v);
-				r.add(v.clone());
-			}
-			return r;
-		} catch (CloneNotSupportedException ex) {
-			throw new InternalError(ex);
+		AttributeValueSet r = new AttributeValueSet();
+		r.clear();
+		for (AttributeValue v : this) {
+			r.add(v.clone());
 		}
+		return r;
 	}
 
 }

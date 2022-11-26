@@ -35,16 +35,18 @@ import kinugasa.resource.Nameable;
 public class StatusValue implements Nameable, Cloneable {
 
 	private StatusKey key;
-	private float value, initial;
+	private float value, initial, min, max;
 
-	public StatusValue(StatusKey key, float value, float initial) {
+	public StatusValue(StatusKey key, float value, float initial, float min, float max) {
 		this.key = key;
 		this.value = value;
 		this.initial = initial;
+		this.min = min;
+		this.max = max;
 	}
 
 	public StatusValue(StatusValue v) {
-		this(v.getKey(), v.value, v.initial);
+		this(v.getKey(), v.value, v.initial, v.min, v.max);
 	}
 
 	public StatusKey getKey() {
@@ -57,6 +59,26 @@ public class StatusValue implements Nameable, Cloneable {
 
 	public float getValue() {
 		return value;
+	}
+
+	public float getMin() {
+		return min;
+	}
+
+	public float getMax() {
+		return max;
+	}
+
+	public void setMax(float max) {
+		this.max = max;
+	}
+
+	public void setMin(float min) {
+		this.min = min;
+	}
+
+	public void setValue(float value) {
+		this.value = value;
 	}
 
 	public void set(float value) {

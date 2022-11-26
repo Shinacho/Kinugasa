@@ -23,21 +23,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <KinugasaItemList>
-	<item name="‚â‚­‚»‚¤" desc="‚¯‚ª‚ÉŒø‚­‘‚¾" action="‰ñ•œ(30),”jŠü(100%)" />
-	<item name="‚»‚Î’cŽq" desc="‚»‚Î•²‚Åì‚Á‚½’cŽq‚¾" action="‰ñ•œ(60),”jŠü(100%)"/>
-	<item name="•S–¼ŠÛ" desc="‚¯‚ª‚É‚æ‚­Œø‚­–ò‚¾" action="‰ñ•œ(90),”jŠü(100%)"/>
-	<item name="Œ«ŽÒ‚ÌÎ" desc="¹‚È‚éƒpƒ[‚É–ž‚¿‚½Î‚¾" action="‰ñ•œ(60)_‘S‘Ì,SAN‰ñ•œ(1)"/>	
-	
-	<item name="j•Ÿ‚Ìñ" desc="¹‚È‚éƒpƒ[‚É–ž‚¿‚½ñ‚¾" action="‰ñ•œ(60),SAN‰ñ•œ(1)" slot="˜r" wmt="ñ"  >
+	<item name="‚â‚­‚»‚¤" desc="‚¯‚ª‚ÉŒø‚­‘‚¾" fieldAction="‰ñ•œ(30),”jŠü(100%)" battleAction="‰ñ•œ(30),”jŠü(100%)" />
+	<item name="‚»‚Î’cŽq" desc="‚»‚Î•²‚Åì‚Á‚½’cŽq‚¾" fieldAction="‰ñ•œ(60),”jŠü(100%)" battleAction="‰ñ•œ(60),”jŠü(100%)"/>
+	<item name="•S–¼ŠÛ" desc="‚¯‚ª‚É‚æ‚­Œø‚­–ò‚¾" fieldAction="‰ñ•œ(90),”jŠü(100%)" battleAction="‰ñ•œ(90),”jŠü(100%)"/>
+	<item name="Œ«ŽÒ‚ÌÎ" desc="¹‚È‚éƒpƒ[‚É–ž‚¿‚½Î‚¾" battleAction="‰ñ•œ(60)_‘S‘Ì,SAN‰ñ•œ(1)"/>	
+	<item name="“Å‚¯‚µ‘" desc="“Å‚ðŽ¡‚·‘‚¾" fieldAction="“Å‚¯‚µ1" battleAction="“Å‚¯‚µ1"/>	
+		
+	<item name="j•Ÿ‚Ìñ" desc="¹‚È‚éƒpƒ[‚É–ž‚¿‚½ñ‚¾" battleAction="‰ñ•œ(60),SAN‰ñ•œ(1)" slot="˜r" wmt="ñ"  >
 		<eqStatus tgt="ATK" value="30" />
-		<eqAttr_in tgt="IMPACT" value="-0.05"/>
+		<eqAttr tgt="IMPACT" value="-0.05"/>
 	</item>
 	
-	<item name="|‚ÌŒ•" desc="|‚Å‚Å‚«‚½ä•v‚È—¼n‚ÌŒ•‚¾" slot="˜r" wmt="Œ•" >
+	<item name="|‚ÌŒ•" desc="|‚Å‚Å‚«‚½ä•v‚È—¼n‚ÌŒ•‚¾" slot="˜r" wmt="Œ•" area="48">
 		<eqStatus tgt="ATK" value="45" />
-	</item>
+	</item>	
 	
-	<item name="“S‚ÌŒ•" desc="“S‚Å‚Å‚«‚½ˆê”Ê“I‚È—¼n‚ÌŒ•‚¾" slot="˜r" wmt="Œ•">
+	<item name="“S‚ÌŒ•" desc="“S‚Å‚Å‚«‚½ˆê”Ê“I‚È—¼n‚ÌŒ•‚¾" slot="˜r" wmt="Œ•" area="48">
 		<eqStatus tgt="ATK" value="30" />
 	</item>
 	

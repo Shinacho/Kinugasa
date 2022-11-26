@@ -38,9 +38,9 @@ import kinugasa.game.GraphicsContext;
 @FunctionalInterface
 public interface Drawable {
 
-	public void draw(GraphicsContext g);
+	void draw(GraphicsContext g);
 
-	public default void draw(Graphics2D g2) {
+	default void draw(Graphics2D g2) {
 		this.draw(new GraphicsContext(g2));
 	}
 }

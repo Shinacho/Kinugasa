@@ -23,6 +23,7 @@
  */
 package kinugasa.object;
 
+import java.awt.Dimension;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import kinugasa.game.GraphicsContext;
@@ -42,7 +43,9 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 
 	private KVector vector;
 	//
-	/** 移動アルゴリズム. */
+	/**
+	 * 移動アルゴリズム.
+	 */
 	private MovingModel moving;
 	//
 
@@ -98,9 +101,23 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 		updateCenter();
 	}
 
+	//移動をシミュレートして、次の移動で移動後の座標を返します。
+	public Point2D.Float simulateMove() {
+		BasicSprite s = clone();
+		s.move();
+		return s.getLocation();
+	}
+
+	public Point2D.Float simulateMove(KVector v) {
+		BasicSprite s = clone();
+		s.setVector(v);
+		s.move();
+		return s.getLocation();
+	}
+
 	/**
 	 * 指定のアルゴリズムを使用して移動します.
-	 * 
+	 *
 	 * @param m 移動方法.<br>
 	 */
 	public void move(MovingModel m) {
@@ -133,9 +150,8 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	/**
-	 * スプライトを描画します.
-	 * visibleまたはexistがfalseのとき、描画してはなりません.<br>
-	 * 
+	 * スプライトを描画します. visibleまたはexistがfalseのとき、描画してはなりません.<br>
+	 *
 	 * @param g グラフィックスコンテキスト.<br>
 	 */
 	@Override
@@ -145,7 +161,7 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	 * このスプライトが現在の設定で次に移動した時の中心の座標を返します.
 	 * <br>
 	 * このメソッドは、移動モデルによる移動手段を考慮しません。<br>
-	 * 
+	 *
 	 * @return 次の中心座標.<br>
 	 */
 	public Point2D.Float getNextCenter() {
@@ -159,7 +175,7 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	 * このスプライトが現在の設定で次に移動した時の左上の座標を返します.
 	 * <br>
 	 * このメソッドは、移動モデルによる移動手段を考慮しません。<br>
-	 * 
+	 *
 	 * @return 次の座標.<br>
 	 */
 	public Point2D.Float getNextLocation() {
@@ -176,10 +192,10 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	public void setVector(KVector vector) {
 		this.vector = vector;
 	}
-	
+
 	/**
 	 * 移動モデルを取得します.
-	 * 
+	 *
 	 * @return 移動モデル.<br>
 	 */
 	public MovingModel getMovingModel() {
@@ -211,7 +227,7 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 
 	/**
 	 * 移動モデルを設定します.
-	 * 
+	 *
 	 * @param movingModel 移動モデル.<br>
 	 */
 	public void setMovingModel(MovingModel movingModel) {
@@ -219,10 +235,9 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	/**
-	 * このスプライトの複製を作成します.
-	 * このメソッドでは、全てのフィールドをクローニングします.<br>
+	 * このスプライトの複製を作成します. このメソッドでは、全てのフィールドをクローニングします.<br>
 	 * このメソッドはサブクラスで適切にオーバーライドしてください.<br>
-	 * 
+	 *
 	 * @return このスプライトと同じ設定の新しいインスタンス.<br>
 	 */
 	@Override
@@ -236,7 +251,7 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	/**
 	 * スプライトの文字列表記を取得します.
 	 * 文字列にはスプライトのフィールド情報が含まれています.これらの値はすべてアクセサを通して取得可能です.<br>
-	 * 
+	 *
 	 * @return スプライトの情報.<br>
 	 */
 	@Override

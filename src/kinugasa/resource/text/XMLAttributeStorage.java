@@ -25,6 +25,7 @@ package kinugasa.resource.text;
 
 import java.io.Serializable;
 import java.util.Collection;
+import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Storage;
 
 /**
@@ -34,7 +35,8 @@ import kinugasa.resource.Storage;
  * <br>
  *
  * @version 1.0.0 - 2013/03/15_17:53:23.<br>
- * @author dra0211 ( <a href="mailto:d0211@live.jp">d0211@live.jp</a>&nbsp;).<br>
+ * @author dra0211 (
+ * <a href="mailto:d0211@live.jp">d0211@live.jp</a>&nbsp;).<br>
  * <br>
  */
 public class XMLAttributeStorage extends Storage<XMLAttribute> implements Serializable {
@@ -49,6 +51,7 @@ public class XMLAttributeStorage extends Storage<XMLAttribute> implements Serial
 
 	/**
 	 * 容量の初期値を指定して、新しいXMLAttributeStorageを作成します.
+	 *
 	 * @param initialSize Strageの初期容量を指定します。<br>
 	 */
 	public XMLAttributeStorage(int initialSize) {
@@ -57,7 +60,8 @@ public class XMLAttributeStorage extends Storage<XMLAttribute> implements Serial
 
 	/**
 	 * XMLAttributeのコレクションを全て追加したStrageを作成します.
-	 * @param attributes 
+	 *
+	 * @param attributes
 	 */
 	public XMLAttributeStorage(Collection<XMLAttribute> attributes) {
 		this(attributes.size());
@@ -66,6 +70,7 @@ public class XMLAttributeStorage extends Storage<XMLAttribute> implements Serial
 
 	/**
 	 * 全ての属性をスペースで区切って並べた文字列を返します.
+	 *
 	 * @return 属性をkey=valueの形式で、スペースで区切って並べた文字列を返します。<br>
 	 */
 	@Override
@@ -77,4 +82,16 @@ public class XMLAttributeStorage extends Storage<XMLAttribute> implements Serial
 		}
 		return result.toString();
 	}
+
+	@Override
+	public XMLAttribute get(String key) throws NameNotFoundException {
+		try {
+			return super.get(key); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+		} catch (NameNotFoundException ex) {
+			System.out.println("XML ATTR KEY NOT FOUND");
+			printAll(System.out);
+			throw ex;
+		}
+	}
+
 }

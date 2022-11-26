@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<kinugasaFieldMapData textStorageName="001" eventStorageName="001" mg="2">
+<kinugasaFieldMapData textStorageName="001" eventStorageName="001" mg="2" encountCounterDefault="16" esName="01">
 
     <background image="resource/field/image/seaChip16.png" frame="36" w="16" h="16" drawSize="32" />
 

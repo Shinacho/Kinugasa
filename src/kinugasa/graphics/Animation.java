@@ -43,16 +43,22 @@ import kinugasa.util.TimeCounter;
  */
 public class Animation implements Iterable<KImage>, Cloneable {
 
-	/** アニメーションの1つの要素が表示される時間間隔を指定するタイムカウンタです. */
+	/**
+	 * アニメーションの1つの要素が表示される時間間隔を指定するタイムカウンタです.
+	 */
 	private TimeCounter visibleTime;
-	/** アニメーションの遷移条件を指定するための配列インデックスです. */
+	/**
+	 * アニメーションの遷移条件を指定するための配列インデックスです.
+	 */
 	private ArrayIndexModel index;
-	/** アニメーションとして再生される画像の配列です. */
+	/**
+	 * アニメーションとして再生される画像の配列です.
+	 */
 	private KImage[] images;
+	private boolean repeat = true;
 
 	/**
-	 * 新しいアニメーションを構築します.
-	 * このコンストラクタでは、配列インデックスは＋方向へループするシーケンシャルなモデルになります。<br>
+	 * 新しいアニメーションを構築します. このコンストラクタでは、配列インデックスは＋方向へループするシーケンシャルなモデルになります。<br>
 	 *
 	 * @param visibleTime アニメーションの1枚の画像の表示時間を定義するタイムカウンタです。<br>
 	 * @param images 表示する画像を1つ以上送信します。<br>
@@ -62,8 +68,7 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	}
 
 	/**
-	 * 新しいアニメーションを構築します.
-	 * このコンストラクタでは、配列インデックスは＋方向へループするシーケンシャルなモデルになります。<br>
+	 * 新しいアニメーションを構築します. このコンストラクタでは、配列インデックスは＋方向へループするシーケンシャルなモデルになります。<br>
 	 *
 	 * @param visibleTime アニメーションの1枚の画像の表示時間を定義するタイムカウンタです。<br>
 	 * @param images 表示する画像を1つ以上送信します。<br>
@@ -116,8 +121,7 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	 *
 	 * @param index インデックスを指定します。<br>
 	 *
-	 * @return 指定したインデックス位置のアニメーション要素となる画像を返します。
-	 * 画像が設定されていない場合nullを返します。<br>
+	 * @return 指定したインデックス位置のアニメーション要素となる画像を返します。 画像が設定されていない場合nullを返します。<br>
 	 *
 	 * @throws ArrayIndexOutOfBoundsException 不正なインデックスを送信した場合に投げられます。<br>
 	 */
@@ -185,8 +189,7 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	/**
 	 * このアニメーションに設定されている配列のインデックスを取得します.
 	 * このメソッドは、設定されているインデックスモデルをArrayIndexModelとして返します。<br>
-	 * このメソッドを頻繁に使う場合は、キャストしたインデックスを返せるよう
-	 * サブクラスを作成することができます。<br>
+	 * このメソッドを頻繁に使う場合は、キャストしたインデックスを返せるよう サブクラスを作成することができます。<br>
 	 *
 	 * @return このアニメーションに設定されているインデックスモデルを返します。<br>
 	 */
@@ -206,8 +209,7 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	/**
 	 * このアニメーションに設定されている表示時間カウンタを取得します.
 	 * このメソッドは、設定されているタイムカウンタをTimeCounterとして返します。<br>
-	 * このメソッドを頻繁に使う場合は、キャストしたカウンタを返せるよう
-	 * サブクラスを作成することができます。<br>
+	 * このメソッドを頻繁に使う場合は、キャストしたカウンタを返せるよう サブクラスを作成することができます。<br>
 	 *
 	 * @return このアニメーションに設定されているタイムカウンタを返します。<br>
 	 */
@@ -216,14 +218,32 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	}
 
 	/**
-	 * 表示時間の判定を行います.
-	 * 現在表示中の要素の表示時間が経過した場合には、
-	 * インデックスを更新し、描画すべき画像を変更します。<br>
+	 * 表示時間の判定を行います. 現在表示中の要素の表示時間が経過した場合には、 インデックスを更新し、描画すべき画像を変更します。<br>
 	 */
 	public void update() {
 		if (visibleTime.isReaching()) {
-			index.index(images == null ? 0 : images.length);
+			if (index.getIndex() != images.length - 1 || repeat) {
+				index.index(images == null ? 0 : images.length);
+			}
 		}
+	}
+
+	public boolean isRepeat() {
+		return repeat;
+	}
+
+	public void setRepeat(boolean repeat) {
+		this.repeat = repeat;
+	}
+
+	public boolean isEnded() {
+		if (repeat) {
+			return false;
+		}
+		if (images == null) {
+			return false;
+		}
+		return index.getIndex() >= images.length - 1;
 	}
 
 	/**

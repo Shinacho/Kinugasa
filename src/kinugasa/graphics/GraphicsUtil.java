@@ -24,6 +24,7 @@
 package kinugasa.graphics;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +46,7 @@ public class GraphicsUtil {
 		int r = Integer.parseInt(rgba.get(0));
 		int g = Integer.parseInt(rgba.get(1));
 		int b = Integer.parseInt(rgba.get(2));
-		int a = rgba.size() <=3 ? 255 : Integer.parseInt(rgba.get(3));
+		int a = rgba.size() <= 3 ? 255 : Integer.parseInt(rgba.get(3));
 		return new Color(r, g, b, a);
 	}
 
@@ -53,8 +54,8 @@ public class GraphicsUtil {
 		return createColor(Arrays.asList(rgba));
 
 	}
-	
-	public static Color randomColor(){
+
+	public static Color randomColor() {
 		int r = Random.randomAbsInt(256);
 		int g = Random.randomAbsInt(256);
 		int b = Random.randomAbsInt(256);
@@ -69,12 +70,11 @@ public class GraphicsUtil {
 	}
 
 	/**
-	 * Java2DのOpenGLパイプラインを有効化します.
-	 * 環境によっては、描画パフォーマンスが向上する場合があります。<br>
+	 * Java2DのOpenGLパイプラインを有効化します. 環境によっては、描画パフォーマンスが向上する場合があります。<br>
 	 */
 	public static void useOpenGL() {
 		System.setProperty("sun.java2d.opengl", "true");
-		GameLog.printInfoIfUsing( "> opengl state : [" + System.getProperty("sun.java2d.opengl") + "]");
+		GameLog.printInfoIfUsing("> opengl state : [" + System.getProperty("sun.java2d.opengl") + "]");
 	}
 
 	/**
@@ -103,6 +103,16 @@ public class GraphicsUtil {
 	 * @param r 描画範囲となるRectangle2Dインスタンスを指定します。<br>
 	 */
 	public static void drawRect(GraphicsContext g, Rectangle2D r) {
+		g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+	}
+
+	/**
+	 * Rectangle2Dインスタンスを使用して、drawRectを実行します.
+	 *
+	 * @param g 書き込むグラフィックスコンテキストを指定します。<br>
+	 * @param r 描画範囲となるRectangle2Dインスタンスを指定します。<br>
+	 */
+	public static void drawRect(Graphics2D g, Rectangle2D r) {
 		g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 

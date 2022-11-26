@@ -26,6 +26,9 @@ package kinugasa.game.test.rpg;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kinugasa.game.GameLogic;
 import kinugasa.game.GameManager;
 import kinugasa.game.GameTimeManager;
@@ -34,6 +37,8 @@ import kinugasa.game.I18N;
 import kinugasa.game.input.GamePadButton;
 import kinugasa.game.input.InputState;
 import kinugasa.game.input.InputType;
+import kinugasa.game.ui.Dialog;
+import kinugasa.game.ui.DialogIcon;
 import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.MusicRoom;
 import kinugasa.game.ui.SimpleTextLabelModel;
@@ -60,8 +65,8 @@ public class MusicRoomLogic extends GameLogic {
 	@Override
 	public void load() {
 		mr = new MusicRoom("BGM", Const.Screen.WIDTH, Const.Screen.HEIGHT);
-		String operaionText = "(A)" + I18N.translate("SUBMIT") + " / " + "Å™Å´Å®Å©" + I18N.translate("MOVE") + " / " + "(B)" + I18N.translate("RETURN");
-		operation = new TextLabelSprite(operaionText, new SimpleTextLabelModel(FontModel.DEFAULT.clone()), 420, 450);
+		String operaionText = "(A)" + I18N.translate("SUBMIT") + " / " + "Å™Å´Å®Å©" + I18N.translate("MOVE") + " / " + "(X) " + I18N.translate("OPEN") + " / " + "(B) " + I18N.translate("RETURN");
+		operation = new TextLabelSprite(operaionText, new SimpleTextLabelModel(FontModel.DEFAULT.clone()), 280, 450);
 	}
 
 	@Override
@@ -94,6 +99,13 @@ public class MusicRoomLogic extends GameLogic {
 		}
 		if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
 			gls.changeTo(Const.LogicName.TITLE_LOGIC);
+		}
+		if (is.isPressed(GamePadButton.X, InputType.SINGLE)) {
+			try {
+				Runtime.getRuntime().exec("cmd /C start .\\resource\\bgm");
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
 		}
 
 	}

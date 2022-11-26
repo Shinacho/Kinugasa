@@ -37,7 +37,7 @@ import kinugasa.util.FrameTimeCounter;
  * @vesion 1.0.0 - 2022/11/08_19:20:50<br>
  * @author Dra211<br>
  */
-public class NPC extends FieldMapCharacter implements Nameable {
+public class NPC extends PlayerCharacterSprite implements Nameable {
 
 	private D2Idx targetIdx = null;
 	private D2Idx currentIdx = null;

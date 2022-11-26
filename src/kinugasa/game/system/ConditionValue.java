@@ -26,6 +26,8 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import kinugasa.resource.Nameable;
 
@@ -62,16 +64,28 @@ public class ConditionValue implements Nameable {
 		return key;
 	}
 
-	public void setKey(ConditionKey key) {
-		this.key = key;
-	}
-
 	public List<EffectMaster> getEffects() {
 		return effects;
 	}
 
 	public void setEffects(List<EffectMaster> effects) {
 		this.effects = effects;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+	}
+
+	@Override
+	public ConditionValue clone() {
+		try {
+			ConditionValue c = (ConditionValue) super.clone();
+			c.effects = (List<EffectMaster>) ((ArrayList<EffectMaster>) effects).clone();
+			return c;
+		} catch (CloneNotSupportedException ex) {
+			throw new InternalError(ex);
+		}
 	}
 
 }

@@ -26,12 +26,10 @@ package kinugasa.util;
 import kinugasa.object.Model;
 import kinugasa.object.Statable;
 
-
 /**
  * 経過時間を計測し、条件判定をするための機能を定義します.
  * <br>
- * ほとんどのカウンタの実装では、isReachingがtrueを返す場合、resetを自動的にコールすることで、
- * 次の呼び出しに備えます。<br>
+ * ほとんどのカウンタの実装では、isReachingがtrueを返す場合、resetを自動的にコールすることで、 次の呼び出しに備えます。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/11_17:07:17.<br>
@@ -59,15 +57,14 @@ public abstract class TimeCounter extends Model implements Statable {
 	@Override
 	public abstract boolean isRunning();
 
+	public abstract int getCurrentTime();
+
 	/**
-	 * 検査の状態を初期化します.
-	 * このメソッドを呼び出すことで、最初に設定された時間や状態を
-	 * 復元し、再度検査可能にします。<br>
+	 * 検査の状態を初期化します. このメソッドを呼び出すことで、最初に設定された時間や状態を 復元し、再度検査可能にします。<br>
 	 */
 	public abstract void reset();
 	/**
-	 * このモデルは、常に"true"を返します.
-	 * このモデルをクローニングする意味はありません。<br>
+	 * このモデルは、常に"true"を返します. このモデルをクローニングする意味はありません。<br>
 	 */
 	public static final TimeCounter TRUE = new TimeCounter() {
 		private static final long serialVersionUID = -8736923481731071986L;
@@ -90,10 +87,15 @@ public abstract class TimeCounter extends Model implements Statable {
 		@Override
 		public void reset() {
 		}
+
+		@Override
+		public int getCurrentTime() {
+			return 0;
+		}
+
 	};
 	/**
-	 * このモデルは、常に"false"を返します.
-	 * このモデルをクローニングする意味はありません。<br>
+	 * このモデルは、常に"false"を返します. このモデルをクローニングする意味はありません。<br>
 	 */
 	public static final TimeCounter FALSE = new TimeCounter() {
 		private static final long serialVersionUID = -8736923481731071986L;
@@ -116,11 +118,18 @@ public abstract class TimeCounter extends Model implements Statable {
 		@Override
 		public void reset() {
 		}
+
+		@Override
+		public int getCurrentTime() {
+			return Integer.MAX_VALUE;
+		}
+
 	};
-	
-	public static TimeCounter oneCounter(){
+
+	public static TimeCounter oneCounter() {
 		return new TimeCounter() {
 			private int v = 0;
+
 			@Override
 			public boolean isReaching() {
 				v--;
@@ -141,6 +150,12 @@ public abstract class TimeCounter extends Model implements Statable {
 			public void reset() {
 				v = 1;
 			}
+
+			@Override
+			public int getCurrentTime() {
+				return v;
+			}
+			
 		};
 	}
 }

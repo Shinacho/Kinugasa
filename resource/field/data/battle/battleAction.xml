@@ -32,50 +32,83 @@ THE SOFTWARE.
 	<term name="˜r–¢‘•”õ" baett="NO_EQ_ITEM" value="˜r" />
 	<term name="“ª–¢‘•”õ" baett="NO_EQ_ITEM" value="“ª" />
 	<term name="Î‚±‚ë•Û—L" baett="HAS_ITEM" value="Î‚±‚ë" />
+	<term name="‰Î‰Š‚Ì‘•Û—L" baett="HAS_BOOK" value="‰Î‰Š‚Ì‘" />
 
+	<!-- ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì’è‹` -->
+	<animation name="’ÊíUŒ‚" spriteSheet="resource/field/image/fieldChip16.png" w="16" h="16" tc="20" mg="2"/>
+	
+	
+	<!-- ƒTƒEƒ“ƒh -->
+	<sound name="’ÊíUŒ‚" file="resource/se/choice3.wav" />
 	
 
 	<!--’ÊíUŒ‚ -->
-	<attack name="Ø‚è‚©‚©‚é" desc="•Ší‚É‚æ‚é’ÊíUŒ‚" term="Œ•‘•”õ" >
-		<event batt="ONE" batpt="STATUS" tgtName="HP" attr="CHOP" value="-10" p="0.90" dct="DIRECT"/>
+	<attack name="Ø‚è‚©‚©‚é" desc="•Ší‚É‚æ‚é’ÊíUŒ‚" term="Œ•‘•”õ" area="70" waitTime="60" sound="’ÊíUŒ‚" >
+		<event batt="ONE_ENEMY" batpt="STATUS" tgtName="HP" attr="CHOP" value="-10" p="0.90" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
 	</attack>
-	<attack name="‚±‚Ô‚µ" desc="‰£‚è‚©‚©‚é" term="˜r–¢‘•”õ">
-		<event batt="ONE" batpt="STATUS" tgtName="HP" attr="IMPACT" value="-5" p="0.75" dct="DIRECT"/>
+	<attack name="‚±‚Ô‚µ" desc="‰£‚è‚©‚©‚é" term="˜r–¢‘•”õ" area="40" waitTime="60" sound="’ÊíUŒ‚" >
+		<event batt="ONE_ENEMY" batpt="STATUS" tgtName="HP" attr="IMPACT" value="-5" p="0.75" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
 	</attack>
-	<attack name="Î‚±‚ë“Š±" desc="Î‚±‚ë‚ð“Š‚°‚é" term="Î‚±‚ë•Û—L">
-		<event batt="ONE" batpt="STATUS" tgtName="HP" attr="IMPACT" value="-5" p="0.5" dct="DIRECT"/>
-		<event batt="ONE" batpt="ITEM_LOST" tgtName="Î‚±‚ë" value="1" p="1" dct="DIRECT"/>
+	<attack name="Î‚±‚ë“Š±" desc="Î‚±‚ë‚ð“Š‚°‚é" term="Î‚±‚ë•Û—L" area="128" waitTime="60" sound="’ÊíUŒ‚" >
+		<event batt="ONE_ENEMY" batpt="STATUS" tgtName="HP" attr="IMPACT" value="-5" p="0.5" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
+		<event batt="ONE_ENEMY" batpt="ITEM_LOST" tgtName="Î‚±‚ë" value="1" p="1" dct="DIRECT"/>
 	</attack>
 		
 	<!-- “Á‹Z -->
-	<spAttack name="‰ñ“]Ø‚è" desc="‘å‰ñ“]‚µ‚ÄØ‚è•t‚¯‚é" term="Œ•‘•”õ" >
-		<event batt="TEAM" batpt="STATUS" tgtName="HP" attr="CHOP" value="-8" p="1" dct="DIRECT"/>
+	<spAttack name="‰ñ“]Ø‚è" desc="‘å‰ñ“]‚µ‚ÄØ‚è•t‚¯‚é" term="Œ•‘•”õ" area="15" waitTime="120" sound="’ÊíUŒ‚" >
+		<event batt="TEAM_ENEMY" batpt="STATUS" tgtName="HP" attr="CHOP" value="-8" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
 	</spAttack>
-	<spAttack name="‹øŽh‚µ" desc="—¼n‚ÌŒ•‚ðŽh‚·" term="|‚ÌŒ•‘•”õ,“S‚ÌŒ•‘•”õ" >
-		<event batt="ONE" batpt="STATUS" tgtName="HP" attr="STAB" value="-8" p="1" dct="DIRECT"/>
+	<spAttack name="‹øŽh‚µ" desc="—¼n‚ÌŒ•‚ðŽh‚·" term="|‚ÌŒ•‘•”õ,“S‚ÌŒ•‘•”õ" area="8" waitTime="120" sound="’ÊíUŒ‚">
+		<event batt="ONE_ENEMY" batpt="STATUS" tgtName="HP" attr="STAB" value="-8" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
 	</spAttack>
 
 	<!-- –‚–@Ží—Þ -->
-	<magic name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg" desc="‰Š–‚–@‚ÌŠî‘b“I‚ÈpŽ®‚¾">
-		<event batt="ONE" batpt="STATUS" tgtName="HP" value="-30" attr="FLAME" p="1" dct="DIRECT"/>
-		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-3" p="1" dct="DIRECT"/>
+	<magic name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg" desc="‰Š–‚–@‚ÌŠî‘b“I‚ÈpŽ®‚¾" area="128" term="‰Î‰Š‚Ì‘•Û—L" waitTime="140" sound="’ÊíUŒ‚">
+		<event batt="ONE_ENEMY" batpt="STATUS" tgtName="HP" value="-30" attr="FLAME" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
+		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-3" attr="NONE" p="1" dct="DIRECT" />
 	</magic>
 
-	<magic name="“V’n—‹–Â" desc="‹CÛ–‚–@‚É•ª—Þ‚³‚ê‚é‚à‚Ì‚ÅAâ‘å‚È—‹‚ðŒÄ‚Ñ‹N‚±‚·">
-		<event batt="ONE" batpt="STATUS" tgtName="HP" value="-60" attr="THNDER" p="1" dct="DIRECT"/>
-		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-0.3" p="1" dct="PERCENT_OF_NOW"/>
+	<magic name="“V’n—‹–Â" desc="‹CÛ–‚–@‚É•ª—Þ‚³‚ê‚é‚à‚Ì‚ÅAâ‘å‚È—‹‚ðŒÄ‚Ñ‹N‚±‚·" spellTime="3" area="256" term="‰Î‰Š‚Ì‘•Û—L" waitTime="140" sound="’ÊíUŒ‚">
+		<event batt="ALL" batpt="STATUS" tgtName="HP" value="-60" attr="THNDER" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TEAM_AREA"/>
+		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-0.3" attr="NONE" p="1" dct="PERCENT_OF_NOW"/>
 	</magic>
 
-	<magic name="¶–½‰ñ•œ" desc="¶–½‚Ì_”é‚É‚æ‚è‘Ì—Í‚ð‰ñ•œ‚·‚é">
-		<event batt="ONE" batpt="STATUS" tgtName="HP" value="+15" attr="MYSTERY" p="1" dct="DIRECT"/>
-		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-30" p="1" dct="DIRECT"/>
+	<magic name="¶–½‰ñ•œ" desc="¶–½‚Ì_”é‚É‚æ‚è‘Ì—Í‚ð‰ñ•œ‚·‚é" fieldUse="true" spellTime="3" area="128" term="‰Î‰Š‚Ì‘•Û—L" waitTime="140" sound="’ÊíUŒ‚">
+		<event batt="ONE_PARTY" batpt="STATUS" tgtName="HP" value="+15" attr="MYSTERY" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
+		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-30" attr="NONE" p="1" dct="DIRECT" />
 	</magic>
 
- 	<magic name="ƒGƒAƒXƒ‰ƒbƒVƒ…" desc="‚·‚é‚Ç‚¢^‹ó”g‚É‚æ‚è“G‚ðØ‚è—ô‚­">
-		<event batt="ONE" batpt="STATUS" tgtName="HP" value="-15" attr="CHOP" p="1" dct="DIRECT"/>
-		<event batt="ONE" batpt="STATUS" tgtName="HP" value="-15" attr="AIR" p="1" dct="DIRECT"/>
-		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-24" p="1" dct="DIRECT"/>
+ 	<magic name="ƒGƒAƒXƒ‰ƒbƒVƒ…" desc="‚·‚é‚Ç‚¢^‹ó”g‚É‚æ‚è“G‚ðØ‚è—ô‚­" spellTime="5" area="128" waitTime="140" sound="’ÊíUŒ‚">
+		<event batt="TEAM_ENEMY" batpt="STATUS" tgtName="HP" value="-15" attr="CHOP" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
+		<event batt="TEAM_ENEMY" batpt="STATUS" tgtName="HP" value="-15" attr="AIR" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
+		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-24" attr="NONE" p="1" dct="DIRECT" />
 	</magic>
 
+ 	<magic name="ƒeƒŒƒ|[ƒg" desc="íê‚©‚ç“¦‘–‚·‚é" spellTime="3"  term="‰Î‰Š‚Ì‘•Û—L" waitTime="140" sound="’ÊíUŒ‚">
+		<event batt="TEAM_PARTY" batpt="ADD_CONDITION" tgtName="ESCAPE" p="0.75" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
+	</magic>
+
+	<!--‚»‚Ì‘¼-->
+	<other name="“¦‚°‚é" desc="“¦‘–‚·‚é" sort="6">
+		<event batt="SELF" batpt="ADD_CONDITION" tgtName="ESCAPE" p="1"/>
+	</other>
+	<other name="ƒXƒLƒbƒv" desc="s“®‚ð”ò‚Î‚·" sort="5">
+		<event batt="SELF" batpt="NONE" p="1"/>
+	</other>
+	<other name="ó‘Ô" desc="ƒXƒe[ƒ^ƒXŠm”F" sort="4">
+		<event batt="SELF" batpt="SHOW_STATUS" p="1"/>
+	</other>
+	<other name="ƒAƒCƒeƒ€" desc="ƒAƒCƒeƒ€‚ðŽg—p‚·‚é" sort="1">
+		<event batt="SELF" batpt="USE_ITEM" p="1"/>
+	</other>
+	<other name="–hŒä" desc="–hŒä‚·‚é"  sort="2">
+		<event batt="SELF" batpt="ADD_CONDITION" tgtName="DEFENCE" p="1"/>
+	</other>
+	<other name="‰ñ”ð" desc="‰ñ”ð‚·‚é"  sort="3">
+		<event batt="SELF" batpt="ADD_CONDITION" tgtName="AVOIDANCE" p="1"/>
+	</other>
+	<other name="ˆÚ“®" desc="ˆÚ“®‚·‚é"  sort="0">
+		<event batt="SELF" batpt="MOVE" p="1"/>
+	</other>
 	
 </KinugasaBattleActionMaster>

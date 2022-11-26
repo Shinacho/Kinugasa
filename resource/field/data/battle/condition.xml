@@ -24,9 +24,28 @@ THE SOFTWARE.
 -->
 <KinugasaBattleConfig>
 
+
+	<!-- コンディションマネージャの定義 -->
+	
+	
+	
+
 	<!-- 状態異常のマスタ定、魔法、スキル、装備による効果も同じストレージに追加することができる	-->
 	<cCondition name="NOMAL" desc="健康だ" pri="0">
 		<effect ect="NONE" />
+	</cCondition>
+	
+	
+	<cCondition name="DEFENCE" desc="守りに徹している" pri="1" >
+		<effect ect="ONECE" time="1" ett="STATUS" est="ADD_PERCENT_OF_MAX" tgt="DEF" value="+0.33" p="1" />
+	</cCondition>
+
+	<cCondition name="AVOIDANCE" desc="避けに徹している" pri="1" >
+		<effect ect="ONECE" time="1" ett="STATUS" est="ADD_PERCENT_OF_MAX" tgt="AVO" value="0.33" p="1" />
+	</cCondition>
+	
+	<cCondition name="ESCAPE" desc="逃げようとしている" pri="1" >
+		<effect ect="ONECE" time="1" ett="STATUS" est="ADD_PERCENT_OF_MAX" tgt="AVO" value="-0.33" p="1" />
 	</cCondition>
 
 	<cCondition name="REGENE" desc="徐々に回復している" pri="2" >

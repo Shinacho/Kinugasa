@@ -58,37 +58,54 @@ public class ItemStorage extends Storage<Item> implements XMLFileSupport {
 			String name = e.getAttributes().get("name").getValue();
 			String desc = e.getAttributes().get("desc").getValue();
 
-			List<ItemAction> actions = new ArrayList<>();
-			if (e.getAttributes().contains("action")) {
-				String actioName = e.getAttributes().get("action").getValue();
-				if (actioName.contains(",")) {
-					for (String v : actioName.split(",")) {
-						actions.add(ItemActionStorage.getInstance().get(v));
+			List<ItemAction> fieldModeActions = new ArrayList<>();
+			if (e.getAttributes().contains("fieldAction")) {
+				String actionName = e.getAttributes().get("fieldAction").getValue();
+				if (actionName.contains(",")) {
+					for (String v : actionName.split(",")) {
+						fieldModeActions.add(ItemActionStorage.getInstance().get(v));
 					}
 				} else {
-					actions.add(ItemActionStorage.getInstance().get(actioName));
+					fieldModeActions.add(ItemActionStorage.getInstance().get(actionName));
+				}
+			}
+			List<ItemAction> battleModeActions = new ArrayList<>();
+			if (e.getAttributes().contains("battleAction")) {
+				String actionName = e.getAttributes().get("battleAction").getValue();
+				if (actionName.contains(",")) {
+					for (String v : actionName.split(",")) {
+						battleModeActions.add(ItemActionStorage.getInstance().get(v));
+					}
+				} else {
+					battleModeActions.add(ItemActionStorage.getInstance().get(actionName));
 				}
 			}
 			if (e.getAttributes().contains("slot")) {
 				//装備スロットありのアイテム
 				ItemEqipmentSlot slot = ItemEqipmentSlotStorage.getInstance().get(e.getAttributes().get("slot").getValue());
 				AttributeValueSet attr = new AttributeValueSet();
+				attr.setAll(0);
 				for (XMLElement ee : e.getElement("eqAttr")) {
 					String tgtName = ee.getAttributes().get("tgt").getValue();
 					float value = ee.getAttributes().get("value").getFloatValue();
 					attr.put(new AttributeValue(AttributeKeyStorage.getInstance().get(tgtName), value, value, value, value));
 				}
 				StatusValueSet status = new StatusValueSet();
+				status.setAll(0);
 				for (XMLElement ee : e.getElement("eqStatus")) {
 					String tgtName = ee.getAttributes().get("tgt").getValue();
 					float value = ee.getAttributes().get("value").getFloatValue();
-					status.put(new StatusValue(StatusKeyStorage.getInstance().get(tgtName), value, value));
+					status.put(new StatusValue(StatusKeyStorage.getInstance().get(tgtName), value, value, 0, value));
+				}
+				int area = 0;
+				if (e.getAttributes().contains("area")) {
+					area = e.getAttributes().get("area").getIntValue();
 				}
 				WeaponMagicType wmt = WeaponMagicTypeStorage.getInstance().get(e.getAttributes().get("wmt").getValue());
-				getInstance().add(new Item(name, desc, actions, attr, status, slot, wmt));
+				getInstance().add(new Item(name, desc, fieldModeActions, battleModeActions, attr, status, slot, wmt, area));
 			} else {
 				//装備スロットなしのアイテム
-				getInstance().add(new Item(name, desc, actions, null, null, null, null));
+				getInstance().add(new Item(name, desc, fieldModeActions, battleModeActions, null, null, null, null, 0));
 			}
 		}
 

@@ -50,6 +50,10 @@ public class Text implements Nameable {
 		return lineSep;
 	}
 
+	public Text() {
+		this("");
+	}
+
 	public Text(String text) {
 		this.name = autoId++ + "";
 		this.text = text;

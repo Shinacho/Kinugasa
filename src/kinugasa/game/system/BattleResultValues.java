@@ -24,28 +24,46 @@
 package kinugasa.game.system;
 
 import java.util.List;
-import kinugasa.object.Model;
-import kinugasa.resource.*;
-import kinugasa.game.system.*;
+import java.util.Map;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_21:31:43<br>
+ * @vesion 1.0.0 - 2022/11/26_17:23:40<br>
  * @author Dra211<br>
  */
-public abstract class DamageCalcModel extends Model implements Nameable {
+public class BattleResultValues {
 
-	private String name;
+	private BattleResult battleResult;
+	private int exp;
+	private List<Item> dropItems;
+	private String nextLogicName;
 
-	public DamageCalcModel(String name) {
-		this.name = name;
+	public BattleResultValues(BattleResult battleResult, int exp, List<Item> dropItems, String nextLogicName) {
+		this.battleResult = battleResult;
+		this.exp = exp;
+		this.dropItems = dropItems;
+		this.nextLogicName = nextLogicName;
 	}
 
-	public abstract void exec(GameSystem gs, Status user, BattleAction ba, BattleActionEvent e);
+	public String getNextLogicName() {
+		return nextLogicName;
+	}
+
+	public List<Item> getDropItems() {
+		return dropItems;
+	}
+
+	public int getExp() {
+		return exp;
+	}
+
+	public BattleResult getBattleResult() {
+		return battleResult;
+	}
 
 	@Override
-	public String getName() {
-		return name;
+	public String toString() {
+		return "BattleResultValues{" + "battleResult=" + battleResult + ", exp=" + exp + ", dropItems=" + dropItems + ", nextLogicName=" + nextLogicName + '}';
 	}
 
 }

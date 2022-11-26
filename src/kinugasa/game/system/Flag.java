@@ -34,9 +34,24 @@ public class Flag implements Nameable {
 
 	private String name;
 	private FlagStatus status;
+	private int value;
 
 	public Flag(String name) {
 		this.name = name;
+	}
+
+	public Flag(String name, FlagStatus status, int value) {
+		this.name = name;
+		this.status = status;
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 	@Override

@@ -40,4 +40,9 @@ public class ConditionValueStorage extends Storage<ConditionValue> {
 	public static ConditionValueStorage getInstance() {
 		return INSTANCE;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+	}
 }

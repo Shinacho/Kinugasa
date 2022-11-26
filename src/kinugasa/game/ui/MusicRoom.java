@@ -25,6 +25,7 @@ package kinugasa.game.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import kinugasa.object.Sprite;
 import kinugasa.resource.sound.Sound;
@@ -57,7 +58,9 @@ public class MusicRoom extends ActionTextSpriteGroup {
 	private void create(String mapName) {
 		SoundMap map = SoundStorage.getInstance().get(mapName);
 		List<ActionTextSprite> list = new ArrayList<>();
-		for (Sound s : map) {
+		List<Sound> soundList = map.asList();
+		Collections.sort(soundList, (Sound o1, Sound o2) -> o1.getName().compareTo(o2.getName()));
+		for (Sound s : soundList) {
 			list.add(new ActionTextSprite(s.getName().split("[.]")[0], new SimpleTextLabelModel(FontModel.DEFAULT.clone().setFontSize(14)), 0, 0, 200, 14, new PlaySoundAction(map, s)));
 		};
 		setList(list);

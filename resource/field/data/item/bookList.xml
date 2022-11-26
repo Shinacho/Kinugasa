@@ -22,21 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<KinugasaEnemyMap>
-	<enemy name="01" visibleName="‚·‚²‚¢‰ö•¨" image="resource/M1.png"/>
-		<stdStatus>
-		
-		</stdStatus>
-		<base_in>
-			
-		</base_in>
-		<base_out>
-			
-		</base_out>
-		<condition>
-		
-		</condition>
-	</enemy>
+<KinugasaBookList>
+	<book name="‰Î‰Š‚Ì‘" desc="‰Î–‚–@‚ÌŠî‘b“I‚ÈpŽ®‚ª‹LÚ‚³‚ê‚Ä‚¢‚é"/>
 	
-	
-</KinugasaEnemyMap>
+</KinugasaBookList>

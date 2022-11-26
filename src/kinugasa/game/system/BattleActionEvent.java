@@ -32,54 +32,89 @@ import kinugasa.util.*;
  * @vesion 1.0.0 - 2022/11/16_8:22:38<br>
  * @author Dra211<br>
  */
-public class BattleActionEvent {
+public class BattleActionEvent implements Comparable<BattleActionEvent> {
 
 	//対象者を特定するキー
-	private BattleActionTargetType targetType;
+	private final BattleActionTargetType batt;
 	// 対象のパラメタを特定するキー
-	private BattleActionTargetParameterType targetParameterType;
+	private final BattleActionTargetParameterType batpt;
 	// 対象のパラメタ名称（HP,ATK、アイテムロストの場合はアイテム名等）
 	private String targetName;
 	//基礎値・・・実際にはATTR＿OUTやSTATUSから計算される
-	private float baseValue;
+	private float baseValue = 0;
 	// この攻撃の属性
 	private AttributeKey atkAttr;
 	//このアクションが成功する確率・・・実際にはATTR＿OUTやSTATUSからも計算される
-	private float baseP;
+	private float baseP = 1;
 	// ダメージ計算の方式（割合、固定、等）
-	private DamageCalcType dct;
+	private StatusDamageCalcType dct;
+	//このイベントが成功したときのアニメーション
+	private BattleActionAnimation animation;
 
-	public BattleActionEvent(BattleActionTargetType targetType, BattleActionTargetParameterType targetParameterType, String targetName, float baseValue, AttributeKey atkAttr, float baseP, DamageCalcType dct) {
-		this.targetType = targetType;
-		this.targetParameterType = targetParameterType;
-		this.targetName = targetName;
-		this.baseValue = baseValue;
-		this.atkAttr = atkAttr;
-		this.baseP = baseP;
-		this.dct = dct;
+	public BattleActionEvent(BattleActionTargetType batt, BattleActionTargetParameterType batpt) {
+		this.batt = batt;
+		this.batpt = batpt;
 	}
 
-	public void exec(GameSystem gs, BattleAction ba, Status user) {
-		if (!Random.percent(baseP)) {
-			if (GameSystem.isDebugMode()) {
-				System.out.println(user.getName() + " による " + ba.getName() + " は発生しなかった。");
-			}
-			return;
-		}
-		DamageCalcModel dcm = DamageCalcModelStorage.getInstance().getCurrent();
-		dcm.exec(gs, user, ba, this);
+	public BattleActionEvent setTargetName(String name) {
+		this.targetName = name;
+		return this;
 	}
 
-	public DamageCalcType getDamageCalcType() {
+	public BattleActionEvent setBaseValue(float v) {
+		this.baseValue = v;
+		return this;
+	}
+
+	public BattleActionEvent setAttribute(AttributeKey k) {
+		this.atkAttr = k;
+		return this;
+	}
+
+	public BattleActionEvent setBaseP(float p) {
+		this.baseP = p;
+		return this;
+	}
+
+	public BattleActionEvent setDamageCalcType(StatusDamageCalcType t) {
+		this.dct = t;
+		return this;
+	}
+
+	public BattleActionEvent setAnimation(BattleActionAnimation a) {
+		this.animation = a.clone();
+		return this;
+	}
+
+	public StatusDamageCalcType getDamageCalcType() {
 		return dct;
 	}
 
-	public BattleActionTargetParameterType getTargetParameterType() {
-		return targetParameterType;
+	public BattleActionTargetType getBatt() {
+		return batt;
 	}
 
-	public BattleActionTargetType getTargetType() {
-		return targetType;
+	public BattleActionTargetParameterType getBatpt() {
+		return batpt;
+	}
+
+	/**
+	 * このイベントのアニメーションを取得します。
+	 *
+	 * @return　アニメーション。
+	 * @deprecated このメソッドから返されるアニメーションは、クローンされません。
+	 */
+	@Deprecated
+	public BattleActionAnimation getAnimation() {
+		return animation;
+	}
+
+	public BattleActionAnimation getAnimationClone() {
+		return animation.clone();
+	}
+
+	public float getBaseP() {
+		return baseP;
 	}
 
 	public String getTargetName() {
@@ -92,6 +127,11 @@ public class BattleActionEvent {
 
 	public AttributeKey getAtkAttr() {
 		return atkAttr;
+	}
+
+	@Override
+	public int compareTo(BattleActionEvent o) {
+		return batpt.getValue() - o.getBatpt().getValue();
 	}
 
 }

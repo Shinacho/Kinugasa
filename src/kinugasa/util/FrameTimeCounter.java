@@ -38,18 +38,29 @@ import java.util.List;
 public class FrameTimeCounter extends TimeCounter {
 
 	private static final long serialVersionUID = 8128288858943550667L;
-	/** 現在のインデックスの待ち時間のカウンタです.
-	 * この値が実際に計算されます。 */
+	/**
+	 * 現在のインデックスの待ち時間のカウンタです. この値が実際に計算されます。
+	 */
 	private int timeCount;
-	/** カウンタから引く値です. */
+	/**
+	 * カウンタから引く値です.
+	 */
 	private int speed;
-	/** 遷移するインデックスのモデルです. */
+	/**
+	 * 遷移するインデックスのモデルです.
+	 */
 	private ArrayIndexModel index;
-	/** 最初に設定されていた状態のインデックスのモデルです. */
+	/**
+	 * 最初に設定されていた状態のインデックスのモデルです.
+	 */
 	private ArrayIndexModel initialIndex;
-	/** 待ち時間を格納する配列です. */
+	/**
+	 * 待ち時間を格納する配列です.
+	 */
 	private int[] waitTime;
-	/** 実行中であるかを判定するフラグです. */
+	/**
+	 * 実行中であるかを判定するフラグです.
+	 */
 	private boolean running;
 
 	/**
@@ -62,10 +73,12 @@ public class FrameTimeCounter extends TimeCounter {
 	public FrameTimeCounter(int... waitTime) {
 		this(1, (waitTime.length == 0 ? new int[]{0} : waitTime));
 	}
-	
-	public FrameTimeCounter(List<? extends Number> l){
+
+	public FrameTimeCounter(List<? extends Number> l) {
 		int[] values = new int[l.size()];
-		for( int i= 0; i < l.size(); i ++ ) values[i] = l.get(i).intValue();
+		for (int i = 0; i < l.size(); i++) {
+			values[i] = l.get(i).intValue();
+		}
 		this.speed = 1;
 		this.index = new SimpleIndex();
 		this.waitTime = values;
@@ -87,8 +100,7 @@ public class FrameTimeCounter extends TimeCounter {
 	}
 
 	/**
-	 * インデックスモデルと待ち時間を指定して、新しいカウンタを作成します.
-	 * このコンストラクタでは、速度は1が設定されます。<br>
+	 * インデックスモデルと待ち時間を指定して、新しいカウンタを作成します. このコンストラクタでは、速度は1が設定されます。<br>
 	 *
 	 * @param index 待ち時間の配列に対するインデックスの遷移モデルを指定します。<br>
 	 * @param waitTime 待機時間を指定します。0を指定すると、常にtrueを返すモデルが、1を指定すると、2回目の呼び出しから交互に
@@ -135,6 +147,11 @@ public class FrameTimeCounter extends TimeCounter {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int getCurrentTime() {
+		return timeCount;
 	}
 
 	public void initCount() {

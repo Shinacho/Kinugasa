@@ -38,7 +38,7 @@ import kinugasa.resource.Nameable;
  */
 public class FontModel extends Model implements Nameable {
 
-	public static final FontModel DEFAULT = new FontModel("DEFAULT", Color.WHITE, new Font("MONOSPACED", Font.PLAIN, 18));
+	public static final FontModel DEFAULT = new FontModel("DEFAULT", Color.WHITE, new Font("MONOSPACED", Font.PLAIN, 16));
 	private Color color;
 	private Font font;
 	private String name;

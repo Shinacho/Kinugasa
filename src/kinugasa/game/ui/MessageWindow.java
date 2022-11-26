@@ -37,6 +37,18 @@ public class MessageWindow extends BasicSprite {
 	private TextStorage textStorage;
 	private Text text;
 
+	public MessageWindow(float x, float y, float w, float h, MessageWindowModel model) {
+		this(x, y, w, h, model, new TextStorage(), new Text(""));
+	}
+
+	public MessageWindow(float x, float y, float w, float h) {
+		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage(), new Text(""));
+	}
+
+	public MessageWindow(float x, float y, float w, float h, Text text) {
+		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage(), text);
+	}
+
 	public MessageWindow(float x, float y, float w, float h, MessageWindowModel model, TextStorage ts, Text text) {
 		super(x, y, w, h);
 		this.model = model;
@@ -53,6 +65,14 @@ public class MessageWindow extends BasicSprite {
 		text.isReaching();
 	}
 
+	public void setModel(MessageWindowModel model) {
+		this.model = model;
+	}
+
+	public MessageWindowModel getModel() {
+		return model;
+	}
+
 	public TextStorage getTextStorage() {
 		return textStorage;
 	}
@@ -67,6 +87,10 @@ public class MessageWindow extends BasicSprite {
 
 	public void setText(Text text) {
 		this.text = text;
+	}
+
+	public void clearText() {
+		setText(new Text());
 	}
 
 	public void setTextFromId(String id) {

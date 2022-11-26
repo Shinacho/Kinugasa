@@ -39,6 +39,10 @@ THE SOFTWARE.
 	<aAttribute name="HOLY" desc="神聖属性"/>
 	<aAttribute name="MYSTERY" desc="神秘属性"/>
 	<aAttribute name="EVIL" desc="悪意属性"/>
+	<!-- 無属性はMPを減らす処理などのダイレクトダメージに使用される -->
+	<aAttribute name="NONE" desc="無属性"/> 
+	
+	
 	<dAttribute name="C_POISON" desc="毒耐性" />
 	<dAttribute name="C_FLAME" desc="炎上耐性" />
 	<dAttribute name="C_FROZEN" desc="凍結耐性" />

@@ -36,22 +36,29 @@ public class StatusValueSet extends Storage<StatusValue> implements Cloneable {
 
 	public StatusValueSet() {
 		for (StatusKey k : StatusKeyStorage.getInstance()) {
-			add(new StatusValue(k, 0, 0));
+			add(new StatusValue(k, 0, 0, 0, 0));
+		}
+	}
+
+	public void setAll(float val) {
+		for (StatusValue v : this) {
+			v.set(val);
 		}
 	}
 
 	@Override
 	public StatusValueSet clone() {
-		try {
-			StatusValueSet r = (StatusValueSet) super.clone();
-			for (StatusValue v : r) {
-				r.remove(v);
-				r.add(v.clone());
-			}
-			return r;
-		} catch (CloneNotSupportedException ex) {
-			throw new InternalError(ex);
+		StatusValueSet r = new StatusValueSet();
+		r.clear();
+		for (StatusValue v : this) {
+			r.add(v.clone());
 		}
+		return r;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
 	}
 
 }

@@ -61,7 +61,7 @@ import kinugasa.resource.Nameable;
  * @author Dra0211<br>
  */
 public abstract class Sprite
-		implements Drawable, Shapeable, Cloneable, Comparable<Sprite>, Nameable {
+		implements Drawable, Shapeable, Cloneable, Comparable<Sprite> {
 
 	/**
 	 * 領域.
@@ -87,11 +87,6 @@ public abstract class Sprite
 	 * 生存状態.
 	 */
 	private boolean exist = true;
-
-	/**
-	 * 名前（任意）.
-	 */
-	private String name;
 
 	/**
 	 * 中心座標のキャッシュを作成します.
@@ -240,6 +235,18 @@ public abstract class Sprite
 		return bounds.contains(point);
 	}
 
+	public boolean contains(Sprite s) {
+		return bounds.contains(s.bounds);
+	}
+
+	public boolean hit(Sprite s) {
+		return hit(s.getBounds());
+	}
+
+	public boolean hit(Rectangle2D r) {
+		return getBounds().intersects(r);
+	}
+
 	/**
 	 * スプライトの左上の位置を取得します. このメソッドは新しいインスタンスを返します.<br>
 	 *
@@ -259,6 +266,15 @@ public abstract class Sprite
 	}
 
 	/**
+	 * スプライトと同じ座標に配置します。
+	 *
+	 * @param s 対象のスプライト。
+	 */
+	public void setLocation(Sprite s) {
+		setLocation(s.getLocation());
+	}
+
+	/**
 	 * スプライトの左上の位置を設定します.
 	 *
 	 * @param x X座標.<br>
@@ -267,6 +283,13 @@ public abstract class Sprite
 	public void setLocation(float x, float y) {
 		setX(x);
 		setY(y);
+	}
+
+	//pがcenterになるように位置を設定
+	public void setLocationByCenter(Point2D.Float p) {
+		float x = p.x - getWidth() / 2;
+		float y = p.y - getHeight() / 2;
+		setLocation(x, y);
 	}
 
 	/**
@@ -392,6 +415,10 @@ public abstract class Sprite
 		this.visible = visible;
 	}
 
+	public void switchVisible() {
+		setVisible(!isVisible());
+	}
+
 	/**
 	 * このスプライトの左上のX座標を取得します.<br>
 	 *
@@ -486,15 +513,6 @@ public abstract class Sprite
 	 */
 	public void setZ(float z) {
 		this.z = z;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**

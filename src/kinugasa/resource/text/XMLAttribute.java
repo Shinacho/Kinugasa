@@ -131,7 +131,7 @@ public class XMLAttribute implements Nameable, Serializable {
 		return Boolean.parseBoolean(value);
 	}
 
-	public int[] parse(String separator) {
+	public int[] parseInt(String separator) {
 		String[] data = value.split(separator);
 		return Arrays.stream(data).mapToInt(s -> Integer.parseInt(s)).toArray();
 	}
@@ -161,6 +161,13 @@ public class XMLAttribute implements Nameable, Serializable {
 	 */
 	public String getValue() {
 		return value;
+	}
+
+	public String[] safeSplit(String split) {
+		if (value.contains(split)) {
+			return value.split(split);
+		}
+		return new String[]{value};
 	}
 
 	@Override

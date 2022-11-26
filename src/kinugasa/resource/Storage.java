@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * アルゴリズムなどの命名可能なオブジェクトを格納するマップです.
@@ -137,6 +138,20 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
+	 * ランダムな要素を返します。
+	 *
+	 * @return ランダムに選択された要素。要素がない場合はnullを返す。
+	 */
+	public T random() {
+		if (isEmpty()) {
+			return null;
+		}
+		List<T> list = asList();
+		Collections.shuffle(list);
+		return list.get(0);
+	}
+
+	/**
 	 * 指定した名前を持つオブジェクトが、すべて格納されているかを調べます.
 	 *
 	 * @param keys 検索するオブジェクトの名前を指定します。<br>
@@ -186,6 +201,10 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 */
 	public void addAll(T... values) throws DuplicateNameException {
 		addAll(Arrays.asList(values));
+	}
+
+	public void addAll(Storage<? extends T> s) throws DuplicateNameException {
+		addAll(s.asList());
 	}
 
 	/**
@@ -379,6 +398,10 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	@Override
 	public void forEach(Consumer<? super T> c) {
 		asList().forEach(c);
+	}
+
+	public Stream<T> stream() {
+		return asList().stream();
 	}
 
 	@Override

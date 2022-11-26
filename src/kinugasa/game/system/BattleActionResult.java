@@ -21,25 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package kinugasa.game.system;
 
+import kinugasa.game.I18N;
+
 /**
- * ダメージ計算に使用するタイプです。
  *
- * @vesion 1.0.0 - 2022/11/16_17:54:58<br>
+ * @vesion 1.0.0 - 2022/11/24_11:52:16<br>
  * @author Dra211<br>
  */
-public enum DamageCalcType {
-	/**
-	 * 最大値のvalue%のダメージ。
-	 */
-	PERCENT_OF_MAX,
-	/**
-	 * 現在値のvalue%のダメージ。
-	 */
-	PERCENT_OF_NOW,
-	/**
-	 * valueを直接加算します。既定の方式です。
-	 */
-	DIRECT
+public enum BattleActionResult {
+	MISS,
+	STOPED,
+	SUCCESS,
+	ADD_CONDITION_FIELD,
+	ADD_CONDITION_TGT,
+	REMOVE_CONDITION_TGT,
+	ATTR_IN,
+	MOVE,
+	NONE,
+	USE_ITEM,
+	ITEM_LOST,;
+	
+	;
+	
+	public String visibleString(){
+		return I18N.translate(toString());
+	}
+	
 }

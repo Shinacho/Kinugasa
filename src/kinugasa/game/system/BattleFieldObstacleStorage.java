@@ -23,20 +23,33 @@
  */
 package kinugasa.game.system;
 
-import java.util.HashMap;
-import kinugasa.util.TimeCounter;
+import java.util.ArrayList;
+import java.util.List;
+import kinugasa.resource.Storage;
+import kinugasa.util.Random;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_21:32:23<br>
+ * @vesion 1.0.0 - 2022/11/23_12:01:11<br>
  * @author Dra211<br>
  */
-public class BattleField {
+public class BattleFieldObstacleStorage extends Storage<BattleFieldObstacle> {
 
-	private FieldConditionValueSet condition = new FieldConditionValueSet();
-	private final HashMap<ConditionKey, TimeCounter> effectTimes = new HashMap<>();
+	private static final BattleFieldObstacleStorage INSTANCE = new BattleFieldObstacleStorage();
 
-	public BattleField() {
+	private BattleFieldObstacleStorage() {
+	}
+
+	public static BattleFieldObstacleStorage getInstance() {
+		return INSTANCE;
+	}
+
+	public List<BattleFieldObstacle> createN(int n, String... name) {
+		List<BattleFieldObstacle> result = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			result.add(get(Random.random(name)).clone());
+		}
+		return result;
 	}
 
 }

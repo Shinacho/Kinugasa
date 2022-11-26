@@ -61,4 +61,9 @@ public class Race implements Nameable {
 		return name;
 	}
 
+	@Override
+	public String toString() {
+		return "Race{" + "name=" + name + ", eqipSlot=" + eqipSlot + '}';
+	}
+
 }

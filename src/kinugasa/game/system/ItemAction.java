@@ -23,6 +23,7 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
 import java.util.List;
 import kinugasa.resource.*;
 import kinugasa.util.*;
@@ -59,6 +60,69 @@ public class ItemAction implements Nameable {
 		this.value = value;
 		this.spread = spread;
 		this.p = p;
+	}
+
+	public void exec(BattleCharacter user, List<BattleCharacter> selectedTarget) {
+		if (!Random.percent(p)) {
+			if (GameSystem.isDebugMode()) {
+				System.out.println("ƒAƒCƒeƒ€‚ÌŒø‰Ê" + name + "‚ÍŽ¸”s‚µ‚½(P)");
+			}
+			return;
+		}
+		List<BattleCharacter> target = new ArrayList<>();
+		switch (targetType) {
+			case ENEMY_ALL:
+				target.addAll(GameSystem.getInstance().getBattleSystem().getEnemies());
+				break;
+			case ENEMY_ONE:
+				assert selectedTarget.size() == 1 : name + " s target is not 1";
+				target.add(selectedTarget.get(0));
+				break;
+			case PARTY_ALL:
+				target.addAll(GameSystem.getInstance().getParty());
+				break;
+			case PARTY_ONE:
+				assert selectedTarget.size() == 1 : name + " s target is not 1";
+				target.add(selectedTarget.get(0));
+				break;
+			case SELF:
+				target.add(user);
+				break;
+			case FIELD:
+				switch (statusType) {
+					case ADD_CONDITION:
+						GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().addCondition(ConditionValueStorage.getInstance().get(tgtName).getKey());
+						break;
+					case REMOVE_CONDITION:
+						GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().removeCondition(tgtName);
+					default:
+						throw new GameSystemException("item action" + name + " is FIELD but not ADD_CONDITION");
+				}
+				return;
+			default:
+				throw new AssertionError();
+		}
+		float val = spread == 0 ? value : Random.percent(value, spread);
+		switch (statusType) {
+			case ADD_CONDITION:
+				target.forEach(v -> v.getStatus().addCondition(tgtName));
+				break;
+			case REMOVE_CONDITION:
+				target.forEach(v -> v.getStatus().removeCondition(tgtName));
+				break;
+			case ATTR_IN:
+				target.forEach(v -> v.getStatus().getBaseAttrIn().get(tgtName).add(val));
+				break;
+			case DROP_THIS_ITEM:
+				target.forEach(v -> v.getStatus().getItemBag().drop(tgtName));
+				break;
+			case STATUS:
+				target.forEach(v -> v.getStatus().getBaseStatus().get(tgtName).add(val));
+				break;
+			default:
+				throw new AssertionError();
+		}
+
 	}
 
 	@Override
@@ -103,19 +167,6 @@ public class ItemAction implements Nameable {
 
 	public float getP() {
 		return p;
-	}
-
-	public void exec(ItemBag bag, Item i, GameSystem gs) {
-		if (p != 1) {
-			if (!Random.percent(p)) {
-				return;
-			}
-		}
-		if (statusType == ItemActionTargetStatusType.DROP_THIS_ITEM) {
-			bag.drop(i);
-			return;
-		}
-
 	}
 
 }

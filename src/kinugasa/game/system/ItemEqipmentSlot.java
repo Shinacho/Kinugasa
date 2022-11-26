@@ -66,4 +66,9 @@ public class ItemEqipmentSlot implements Nameable {
 		return Objects.equals(this.name, other.name);
 	}
 
+	@Override
+	public String toString() {
+		return "ItemEqipmentSlot{" + "name=" + name + '}';
+	}
+
 }

@@ -24,7 +24,10 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * キャラクタ一人のアイテムを定義するクラスです。
@@ -32,7 +35,7 @@ import java.util.List;
  * @vesion 1.0.0 - 2022/11/16_11:59:31<br>
  * @author Dra211<br>
  */
-public class ItemBag {
+public class ItemBag implements Cloneable, Iterable<Item> {
 
 	private int max = 8;
 	private List<Item> items = new ArrayList<>();
@@ -42,6 +45,11 @@ public class ItemBag {
 
 	public ItemBag(int max) {
 		this.max = max;
+	}
+
+	@Override
+	public Iterator<Item> iterator() {
+		return items.iterator();
 	}
 
 	public List<Item> getItems() {
@@ -57,7 +65,7 @@ public class ItemBag {
 	}
 
 	public boolean isMax() {
-		return items.size() == max;
+		return items.size() == max - 1;
 	}
 
 	public void add(Item i) {
@@ -65,20 +73,36 @@ public class ItemBag {
 	}
 
 	public void drop(Item i) {
-		items.remove(i);
+		if (items.contains(i)) {
+			items.remove(i);
+		}
+	}
+
+	public void drop(String name) {
+		drop(ItemStorage.getInstance().get(name));
 	}
 
 	public boolean contains(Item i) {
-		return contains(i.getName());
+		return items.contains(i);
 	}
 
 	public boolean contains(String name) {
-		for (Item i : items) {
-			if (name.equals(i.getName())) {
-				return true;
-			}
+		return contains(ItemStorage.getInstance().get(name));
+	}
+
+	@Override
+	public String toString() {
+		return "ItemBag{" + "max=" + max + ", items=" + items + '}';
+	}
+
+	@Override
+	public ItemBag clone() {
+		try {
+			ItemBag i = (ItemBag) super.clone();
+			return i;
+		} catch (CloneNotSupportedException ex) {
+			throw new InternalError(ex);
 		}
-		return false;
 	}
 
 }

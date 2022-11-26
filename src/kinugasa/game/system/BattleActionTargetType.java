@@ -35,13 +35,15 @@ public enum BattleActionTargetType {
 	 */
 	SELF,
 	/**
-	 * 対象一人。
+	 * 対象一人。。
 	 */
-	ONE,
+	ONE_ENEMY,
+	ONE_PARTY,
 	/**
 	 * 敵全体または味方全体。
 	 */
-	TEAM,
+	TEAM_PARTY,
+	TEAM_ENEMY,
 	/**
 	 * 敵味方全体。
 	 */
@@ -50,5 +52,17 @@ public enum BattleActionTargetType {
 	 * フィールド。特殊な作用です。
 	 */
 	FIELD,
+	/**
+	 * ランダムな標的（味方含む。
+	 */
+	RANDOM_ONE,
+	/**
+	 * ランダムな標的（敵のみ。これを複数定義することで数体への攻撃が実装できるだろう
+	 */
+	RANDOM_ONE_ENEMY,
+	/**
+	 * ランダムなパーティメンバー
+	 */
+	RANDOM_ONE_PARTY,;
 
 }

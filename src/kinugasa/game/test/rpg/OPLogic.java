@@ -28,27 +28,12 @@ import kinugasa.game.GameManager;
 import kinugasa.game.GameTimeManager;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import kinugasa.game.ui.FontModel;
-import kinugasa.game.ui.SimpleTextLabelModel;
-import kinugasa.game.ui.TextLabelSprite;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import kinugasa.game.GameLogic;
-import kinugasa.game.GameManager;
-import kinugasa.game.GameTimeManager;
-import kinugasa.game.GraphicsContext;
-import kinugasa.game.I18N;
 import kinugasa.game.input.GamePadButton;
 import kinugasa.game.input.InputState;
 import kinugasa.game.input.InputType;
 import kinugasa.game.ui.FontModel;
-import kinugasa.game.ui.MusicRoom;
 import kinugasa.game.ui.SimpleTextLabelModel;
 import kinugasa.game.ui.TextLabelSprite;
-import kinugasa.object.FourDirection;
-import kinugasa.resource.sound.SoundStorage;
-import kinugasa.util.FrameTimeCounter;
 /**
  *
  * @vesion 1.0.0 - 2022/11/13_14:58:58<br>

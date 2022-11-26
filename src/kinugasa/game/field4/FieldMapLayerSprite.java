@@ -94,7 +94,7 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 		g.drawImage(fieldMapImage, (int) getX(), (int) getY());
 	}
 
-	public void debugDrawPC(GraphicsContext g, D2Idx idx, D2Idx plDir, Point2D.Float base, int chipW, int chipH) {
+	public void debugDrawPC(GraphicsContext g, List<PlayerCharacterSprite> pcList, D2Idx idx, D2Idx plDir, Point2D.Float base, int chipW, int chipH) {
 		float drawX = base.x + (idx.x * chipW);
 		float drawY = base.y + (idx.y * chipH);
 		Graphics2D g2 = g.create();
@@ -106,6 +106,18 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 		drawY = base.y + (plDir.y * chipH);
 		g2.setColor(Color.LIGHT_GRAY);
 		g2.drawRect((int) drawX, (int) drawY, chipW, chipH);
+
+		int i = 1;
+		for (PlayerCharacterSprite c : pcList) {
+			g2.setColor(Color.BLUE);
+			D2Idx tgt = c.getTargetIdx();
+			if (tgt != null) {
+				drawX = base.x + (c.getTargetIdx().x * chipW);
+				drawY = base.y + (c.getTargetIdx().y * chipH);
+				g2.drawRect((int) drawX, (int) drawY, chipW, chipH);
+				g2.drawString("PC" + i++, (int) drawX, (int) drawY);
+			}
+		}
 
 		g2.dispose();
 	}
@@ -149,7 +161,7 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 			float drawX2, drawY2;
 			idx = n.getMoveModel().getMax(n);
 			drawX2 = ((idx.x - idx2.x) * chipW) + chipW;
-			drawY2 = ((idx.y - idx2.y)* chipH) + chipH;
+			drawY2 = ((idx.y - idx2.y) * chipH) + chipH;
 			g2.drawRect((int) drawX, (int) drawY, (int) drawX2, (int) drawY2);
 			g2.drawString(n.getName() + "_MAX", (int) drawX, (int) drawY);
 

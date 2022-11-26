@@ -41,6 +41,7 @@ import kinugasa.game.ui.DialogIcon;
 import kinugasa.game.ui.DialogOption;
 
 /**
+ * ゲーム起動時の画面サイズなどの設定です。ゲーム起動後にこのクラスを変更しても、反映されません。
  *
  * @vesion 1.0.0 - 2021/08/17_5:42:55<br>
  * @author Dra211<br>
@@ -124,6 +125,12 @@ public class GameOption {
 
 	protected GameOption(String name) {
 		this.title = name;
+		INSTANCE = this;
+	}
+	private static GameOption INSTANCE;
+
+	public static GameOption getInstance() {
+		return INSTANCE;
 	}
 
 	public GameOption setTitle(String title) {
@@ -199,7 +206,6 @@ public class GameOption {
 		return this;
 	}
 
-
 	public GameOption setLang(Locale l) {
 		this.lang = l.getLanguage();
 		return this;
@@ -267,7 +273,6 @@ public class GameOption {
 		return rq;
 	}
 
-
 	public String getLang() {
 		return lang;
 	}
@@ -294,5 +299,3 @@ public class GameOption {
 	}
 
 }
-
-

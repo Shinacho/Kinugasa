@@ -23,8 +23,9 @@
  */
 package kinugasa.util;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
-import java.util.AbstractList;
 
 /**
  * 乱数とダイスのエミュレートを提供します.
@@ -170,7 +171,6 @@ public final class Random implements Serializable {
 		return from + randomAbsInt(to - from);
 	}
 
-
 	/**
 	 * ランダムなbooleanを返します.
 	 *
@@ -198,6 +198,37 @@ public final class Random implements Serializable {
 			return true;
 		}
 		return randomFloat() < p;
+	}
+
+	// spread%上下した値を返します。
+	public static float percent(float num, float spread) {
+		if (spread >= 1) {
+			return num * spread;
+		}
+		if (spread <= 0) {
+			return 0;
+		}
+		float from = num * (1 - randomFloat(spread));
+		float to = num * (1 + randomFloat(spread));
+		if (randomBool()) {
+			return from;
+		}
+		return to;
+	}
+
+	public static <T> T random(T... t) {
+		int i = randomAbsInt(t.length);
+		return t[i];
+	}
+
+	public static Point2D.Float randomLocation(Rectangle2D r) {
+		return randomLocation(r, 1, 1);
+	}
+
+	public static Point2D.Float randomLocation(Rectangle2D r, float w, float h) {
+		float x = (float) (r.getX() + randomAbsInt((int) (r.getWidth() - w)));
+		float y = (float) (r.getY() + randomAbsInt((int) (r.getHeight() - h)));
+		return new Point2D.Float(x, y);
 	}
 
 	/**

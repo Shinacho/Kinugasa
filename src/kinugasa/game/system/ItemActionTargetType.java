@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package kinugasa.game.system;
 
 /**
@@ -35,5 +34,9 @@ public enum ItemActionTargetType {
 	PARTY_ALL,
 	ENEMY_ONE,
 	ENEMY_ALL,
+	/**
+	 * その他アイテムイベントターゲットは、キーアイテム等の特別な効果を持つもの用に用意されています。
+	 */
 	OTHER,
+	FIELD,;
 }

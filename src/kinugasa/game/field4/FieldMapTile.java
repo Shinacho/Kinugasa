@@ -35,11 +35,11 @@ public class FieldMapTile {
 
 	private List<MapChip> chip;
 	private NPC npc;
-	private FieldMapCharacter playerCharacter;
+	private PlayerCharacterSprite playerCharacter;
 	private List<FieldEvent> event;
 	private Node node;
 
-	public FieldMapTile(List<MapChip> chip, NPC npc, FieldMapCharacter playerCharacter, List<FieldEvent> event, Node node) {
+	public FieldMapTile(List<MapChip> chip, NPC npc, PlayerCharacterSprite playerCharacter, List<FieldEvent> event, Node node) {
 		this.chip = chip;
 		this.npc = npc;
 		this.playerCharacter = playerCharacter;
@@ -71,7 +71,7 @@ public class FieldMapTile {
 		return VehicleStorage.getInstance().getCurrentVehicle().isStepOn(chip);
 	}
 
-	public FieldMapCharacter getPlayerCharacter() {
+	public PlayerCharacterSprite getPlayerCharacter() {
 		return playerCharacter;
 	}
 
@@ -81,6 +81,10 @@ public class FieldMapTile {
 
 	public boolean hasInNode() {
 		return node != null && node.getMode() == Node.Mode.INOUT;
+	}
+	
+	public MapChipAttribute get0Attr(){
+		return chip.get(0).getAttr();
 	}
 
 }

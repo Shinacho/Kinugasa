@@ -24,9 +24,12 @@
 package kinugasa.game.ui;
 
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import javax.swing.Painter;
 import kinugasa.game.GraphicsContext;
-import kinugasa.game.ui.FontModel;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.TimeCounter;
 
@@ -37,17 +40,18 @@ import kinugasa.util.TimeCounter;
  */
 public class SimpleMessageWindowModel extends MessageWindowModel {
 
-	private static String nextIcon = ">";
-	private static boolean iconVisible = false;
+	private String nextIcon = ">";
+	private boolean iconVisible = false;
 
 	private static String selectIcon = ">";
 	private static boolean selectIconVisible = false;
 
-	public static void setNextIcon(String nextIcon) {
-		SimpleMessageWindowModel.nextIcon = nextIcon;
+	public SimpleMessageWindowModel setNextIcon(String nextIcon) {
+		this.nextIcon = nextIcon;
+		return this;
 	}
 
-	public static String getNextIcon() {
+	public String getNextIcon() {
 		return nextIcon;
 	}
 
@@ -63,7 +67,8 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 
 	private Color border1 = Color.WHITE;
 	private Color border2 = Color.BLACK;
-	private Color inner = new Color(0, 0, 136);
+	private Color inner1 = new Color(0, 0, 136);
+	private Color inner2 = new Color(44, 44, 196);
 	private FontModel font = FontModel.DEFAULT.clone();
 	private final static int BORDER_SIZE = 2;
 	private Color cColor = Color.WHITE;
@@ -91,14 +96,14 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	public void setBorder2(Color border2) {
 		this.border2 = border2;
 	}
-
-	public Color getInner() {
-		return inner;
-	}
-
-	public void setInner(Color inner) {
-		this.inner = inner;
-	}
+//
+//	public Color getInner() {
+//		return inner;
+//	}
+//
+//	public void setInner(Color inner) {
+//		this.inner = inner;
+//	}
 
 	public FontModel getFont() {
 		return font;
@@ -124,19 +129,24 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 		g2.fillRect(x + BORDER_SIZE, y + BORDER_SIZE, w - BORDER_SIZE * 2, h - BORDER_SIZE * 2);
 		g2.setColor(border1);
 		g2.fillRect(x + BORDER_SIZE * 2, y + BORDER_SIZE * 2, w - BORDER_SIZE * 4, h - BORDER_SIZE * 4);
-		g2.setColor(inner);
+
+		GradientPaint paint = new GradientPaint(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, inner1, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6, inner2);
+		Paint p = g2.getPaint();
+		g2.clip(new Rectangle(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6));
+		g2.setPaint(paint);
 		g2.fillRect(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6);
+		g2.setPaint(p);
 
 		g2.setColor(cColor);
-		x += BORDER_SIZE * 6;
-		y += BORDER_SIZE * 6 + font.getFont().getSize2D();
+		x += BORDER_SIZE * 3;
+		y += BORDER_SIZE * 3 + font.getFont().getSize2D();
 
 		String visibleText = mw.getVisibleText();
 		String[] text = visibleText.contains(Text.getLineSep()) ? visibleText.split(Text.getLineSep()) : new String[]{visibleText};
 
 		for (String t : text) {
 			g2.drawString(t, x, y);
-			y += BORDER_SIZE * 2 + font.getFont().getSize2D();
+			y += font.getFont().getSize2D();
 		}
 		y += BORDER_SIZE * 2 + font.getFont().getSize2D();
 		// オプションと選択の表示

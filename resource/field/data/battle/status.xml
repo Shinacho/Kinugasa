@@ -40,6 +40,8 @@ THE SOFTWARE.
 	<status name="LCK" min="0" max="99" desc="‰^‚Ì—Ç‚³" when0="MADNESS"/>
 	<status name="CHR" min="0" max="99" desc="ŽÐŒð«" when0="MADNESS"/>
 	<status name="SAN" min="0" max="99" desc="³‹C“x" when0="TRUE_MADNESS"/>
+	<status name="MOV" min="0" max="99" desc="s“®—Í"/>
+	<status name="EXP" min="0" max="99" desc="ŒoŒ±’l"/>
 
 	<status name="ATK" min="0" max="9999" desc="•Ší–h‹ï‚ð‰Á–¡‚µ‚½‘‡UŒ‚—Í"/>
 	<status name="DEF" min="0" max="9999" desc="•Ší–h‹ï‚ð‰Á–¡‚µ‚½‘‡–hŒä—Í"/>

@@ -23,13 +23,18 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import kinugasa.game.I18N;
 import kinugasa.game.field4.*;
-import kinugasa.game.ui.TextStorageStorage;
-import kinugasa.resource.sound.SoundLoader;
+import kinugasa.game.ui.SimpleMessageWindowModel;
+import kinugasa.object.Sprite;
+import kinugasa.util.Random;
 
 /**
+ * ステータス管理系のマスターです。
  *
  * @vesion 1.0.0 - 2022/11/16_15:45:53<br>
  * @author Dra211<br>
@@ -49,72 +54,71 @@ public class GameSystem {
 	private static final GameSystem INSTANCE = new GameSystem();
 
 	private GameSystem() {
+		moneySystem = MoneySystem.getInstance();
+		battleSystem = BattleSystem.getInstance();
 	}
 
 	public static GameSystem getInstance() {
 		return INSTANCE;
 	}
 
-	private List<Status> party;
-	private List<Status> enemy;
-	private BattleField bf = new BattleField();
-
-	public BattleField getBf() {
-		return bf;
+	public MoneySystem getMoneySystem() {
+		return moneySystem;
 	}
 
-	public List<Status> getEnemy() {
-		return enemy;
+	public BattleSystem getBattleSystem() {
+		return battleSystem;
 	}
 
-	public List<Status> getParty() {
+	//
+	//--------------------------------------------------------------------------
+	//
+	private List<PlayerCharacter> party = new ArrayList();
+
+	private final MoneySystem moneySystem;
+	;
+	private final BattleSystem battleSystem;
+	private GameMode mode = GameMode.FIELD;
+
+	public void initBattleSystem(List<PlayerCharacter> chara) {
+		party = new ArrayList<>(chara);
+	}
+
+	public void initFieldSystem(List<PlayerCharacter> chara) {
+		FieldMap.setPlayerCharacter(chara.stream().map(v -> v.getSprite()).collect(Collectors.toList()));
+	}
+
+	public List<PlayerCharacter> getParty() {
 		return party;
 	}
 
-	public void setParty(List<Status> party) {
-		this.party = party;
+	public List<PlayerCharacterSprite> getPartySprite() {
+		return party.stream().map(v -> v.getSprite()).collect(Collectors.toList());
 	}
 
-	public void setEnemy(List<Status> enemy) {
-		this.enemy = enemy;
+	public List<Status> getPartyStatus() {
+		return party.stream().map(v -> v.getStatus()).collect(Collectors.toList());
 	}
 
-	public void setBf(BattleField bf) {
-		this.bf = bf;
+	public GameMode getMode() {
+		return mode;
 	}
 
-	public static void main(String[] args) {
-		I18N.init("ja");
+	private void setMode(GameMode mode) {
+		this.mode = mode;
+	}
 
-		//--------------------------------------
-		new GameSystemXMLLoader()
-				.addWeaponMagicTypeStorage("resource/field/data/item/weaponMagicType.xml")
-				.addStatusKeyStorage("resource/field/data/battle/status.xml")
-				.addAttrKeyStorage("resource/field/data/battle/attribute.xml")
-				.addConditionValueStorage("resource/field/data/battle/condition.xml")
-				.addItemActionStorage("resource/field/data/item/itemAction.xml")
-				.addItemEqipmentSlotStorage("resource/field/data/item/itemSlotList.xml")
-				.addItemStorage("resource/field/data/item/itemList.xml")
-				.addRaceStorage("resource/field/data/race/raceList.xml")
-				.addBattleActionStorage("resource/field/data/battle/battleAction.xml")
-				.load();
+	private String icon;
 
-		new GameSystemXMLLoader().testStatus("人間");
+	public void battleStart(EncountInfo enc) {
+		setMode(GameMode.BATTLE);
+		battleSystem.encountInit(enc);
+	}
 
-		//--------------------------------------
-		new FieldMapXMLLoader()
-				.addSound("resource/bgm/BGM.csv")
-				.addSound("resource/se/SE.csv")
-				.addTextStorage("resource/field/data/text/000.xml")
-				.addMapChipAttr("resource/field/data/attr/ChipAttributes.xml")
-				.addVehicle("resource/field/data/vehicle/01.xml")
-				.setInitialVehicleName("WALK")
-				.addMapChipSet("resource/field/data/chipSet/01.xml")
-				.addMapChipSet("resource/field/data/chipSet/02.xml")
-				.addFieldMapStorage("resource/field/data/mapBuilder/builder.xml")
-				.setInitialFieldMapName("ズシ")
-				.setInitialLocation(new D2Idx(9, 9))
-				.load();
+	public BattleResultValues battleEnd() {
+		setMode(GameMode.FIELD);
+		battleSystem.endBattle();
+		return battleSystem.getBattleResultValue();
 	}
 
 }

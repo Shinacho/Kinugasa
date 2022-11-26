@@ -23,10 +23,8 @@
  */
 package kinugasa.util;
 
-
 /**
- * 最初の検査だけ指定された値を返し、それ以降は
- * 最初の検査とは逆の値を返すタイムカウンタの実装です.
+ * 最初の検査だけ指定された値を返し、それ以降は 最初の検査とは逆の値を返すタイムカウンタの実装です.
  * <br>
  * resetをコールすると、「最初の呼び出し」前の状態に戻すことが出来ます。<br>
  * <br>
@@ -37,13 +35,18 @@ package kinugasa.util;
 public class OnlyFirstTimeCounter extends TimeCounter {
 
 	private static final long serialVersionUID = -1074690399355994082L;
-	/** 最初に返す値です. */
+	/**
+	 * 最初に返す値です.
+	 */
 	private boolean firstValue;
-	/** 最初の呼び出しを検知するためのフラグです. */
+	/**
+	 * 最初の呼び出しを検知するためのフラグです.
+	 */
 	private boolean running = false;
 
 	/**
 	 * 最初に返す値を指定した、タイムカウンタを作成します.
+	 *
 	 * @param firstValue 最初に返す値です.2回目の呼び出しからは、resetされるまで!firstValueを返します。<br>
 	 */
 	public OnlyFirstTimeCounter(boolean firstValue) {
@@ -57,6 +60,11 @@ public class OnlyFirstTimeCounter extends TimeCounter {
 		}
 		running = true;
 		return firstValue;
+	}
+
+	@Override
+	public int getCurrentTime() {
+		return running ? 0 : 1;
 	}
 
 	@Override
