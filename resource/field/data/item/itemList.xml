@@ -34,11 +34,11 @@ THE SOFTWARE.
 		<eqAttr tgt="IMPACT" value="-0.05"/>
 	</item>
 	
-	<item name="|‚ÌŒ•" desc="|‚Å‚Å‚«‚½ä•v‚È—¼n‚ÌŒ•‚¾" slot="˜r" wmt="Œ•" area="48">
+	<item name="|‚ÌŒ•" desc="|‚Å‚Å‚«‚½ä•v‚È—¼n‚ÌŒ•‚¾" slot="˜r" wmt="Œ•" area="28">
 		<eqStatus tgt="ATK" value="45" />
 	</item>	
 	
-	<item name="“S‚ÌŒ•" desc="“S‚Å‚Å‚«‚½ˆê”Ê“I‚È—¼n‚ÌŒ•‚¾" slot="˜r" wmt="Œ•" area="48">
+	<item name="“S‚ÌŒ•" desc="“S‚Å‚Å‚«‚½ˆê”Ê“I‚È—¼n‚ÌŒ•‚¾" slot="˜r" wmt="Œ•" area="28">
 		<eqStatus tgt="ATK" value="30" />
 	</item>
 	

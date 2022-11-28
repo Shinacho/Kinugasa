@@ -68,9 +68,9 @@ public class SoundLoader {
 				int from = line[2].equals("EOF") ? -1 : Integer.parseInt(line[2]);
 				int to = line[3].equals("START") ? 0 : Integer.parseInt(line[3]);
 				LoopPoint p = new LoopPoint(from, to);
-				map.createCachedSound(new SoundBuilder(name).setMasterGain(mg).setLoopPoint(p));
+				map.createCachedSound(new SoundBuilder(name).setMasterGain(mg).setVolume(mg).setLoopPoint(p));
 			} else {
-				map.createCachedSound(new SoundBuilder(name).setMasterGain(mg));
+				map.createCachedSound(new SoundBuilder(name).setMasterGain(mg).setVolume(mg));
 			}
 		});
 

@@ -114,6 +114,13 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 		s.move();
 		return s.getLocation();
 	}
+	
+	public Point2D.Float simulateMoveCenterLocation(KVector v) {
+		BasicSprite s = clone();
+		s.setVector(v);
+		s.move();
+		return s.getCenter();
+	}
 
 	/**
 	 * 指定のアルゴリズムを使用して移動します.

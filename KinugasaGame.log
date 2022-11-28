@@ -1,115 +1,127 @@
-2022/11/26 21:49:20 INFO this is ./KinugasaGame.log
-2022/11/26 21:49:20 INFO translate\ja.ini
-2022/11/26 21:49:20 INFO WHATDO=どうする
-2022/11/26 21:49:20 INFO ADD_FIELD_CONDTION=フィールドに効果を与える
-2022/11/26 21:49:20 INFO TALK=話す
-2022/11/26 21:49:20 INFO SPECIAL_ATTACK=特技
-2022/11/26 21:49:20 INFO RETURN=戻る
-2022/11/26 21:49:20 INFO S=の
-2022/11/26 21:49:20 INFO ARE_YOU_SURE_EXIT=本当に終了しますか？
-2022/11/26 21:49:20 INFO MAGIC=魔術
-2022/11/26 21:49:20 INFO NO_TARGET=効果範囲内に対象がいない
-2022/11/26 21:49:20 INFO SKIP=スキップ
-2022/11/26 21:49:20 INFO TURN=ターン
-2022/11/26 21:49:20 INFO CONFIRM=確認
-2022/11/26 21:49:20 INFO NO_NPC=その方向にはダレモイナイ
-2022/11/26 21:49:20 INFO ISFAILED=は失敗した！！
-2022/11/26 21:49:20 INFO IS=は
-2022/11/26 21:49:20 INFO DAMAGE=のダメージ！！
-2022/11/26 21:49:20 INFO OPEN=開く
-2022/11/26 21:49:20 INFO OTHER=行動
-2022/11/26 21:49:20 INFO MOVE=移動
-2022/11/26 21:49:20 INFO HEALDAMAGE=回復した！！
-2022/11/26 21:49:20 INFO SUBMIT=決定
-2022/11/26 21:49:20 INFO SPELLTIME=詠唱時間
-2022/11/26 21:49:20 INFO ATTACK=攻撃
-2022/11/26 21:49:20 INFO TO=に
-2022/11/26 21:49:20 INFO ISMOVE=は移動した！
-2022/11/26 21:49:20 INFO lockFile:.\KLOCK_14252513773963485696.lck is created
-2022/11/26 21:49:20 INFO MyGame is start
-2022/11/26 21:49:20 INFO Storage{map={気怠い探偵.wav=CachedSound{name=気怠い探偵.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 灼熱の地獄.wav=CachedSound{name=灼熱の地獄.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 作戦会議.wav=CachedSound{name=作戦会議.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 氷のダンジョン.wav=CachedSound{name=氷のダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 妖精の森.wav=CachedSound{name=妖精の森.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル1（リメイク）＿古.wav=CachedSound{name=バトル1（リメイク）＿古.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 普通な感じの街.wav=CachedSound{name=普通な感じの街.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, とてものどかな村.wav=CachedSound{name=とてものどかな村.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, さわやかな冒険.wav=CachedSound{name=さわやかな冒険.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル１（新）.wav=CachedSound{name=バトル１（新）.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル２（新）.wav=CachedSound{name=バトル２（新）.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, のどかな村.wav=CachedSound{name=のどかな村.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 夢の世界.wav=CachedSound{name=夢の世界.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 廃れた都市.wav=CachedSound{name=廃れた都市.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 大ボス.wav=CachedSound{name=大ボス.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 神殿.wav=CachedSound{name=神殿.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル1（リメイク）.wav=CachedSound{name=バトル1（リメイク）.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, ラストダンジョン.wav=CachedSound{name=ラストダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 変質者のテーマ.wav=CachedSound{name=変質者のテーマ.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 世界の真相.wav=CachedSound{name=世界の真相.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 睨み合い.wav=CachedSound{name=睨み合い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 静寂空間.wav=CachedSound{name=静寂空間.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 決意.wav=CachedSound{name=決意.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 残酷な運命.wav=CachedSound{name=残酷な運命.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 工業都市.wav=CachedSound{name=工業都市.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 静かなる決意.wav=CachedSound{name=静かなる決意.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 不気味なダンジョン.wav=CachedSound{name=不気味なダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 探検.wav=CachedSound{name=探検.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, まあいいか.wav=CachedSound{name=まあいいか.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, デジタル空間.wav=CachedSound{name=デジタル空間.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 不思議な森.wav=CachedSound{name=不思議な森.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 洞窟.wav=CachedSound{name=洞窟.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, シューティング・ステージ３.wav=CachedSound{name=シューティング・ステージ３.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 風の魔法使いのテーマ.wav=CachedSound{name=風の魔法使いのテーマ.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 愉快または間抜け.wav=CachedSound{name=愉快または間抜け.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, ボーナスゲーム.wav=CachedSound{name=ボーナスゲーム.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, フィールド２.wav=CachedSound{name=フィールド２.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, シューティング・ステージ１.wav=CachedSound{name=シューティング・ステージ１.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 小ボス.wav=CachedSound{name=小ボス.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 異形のものとの戦い.wav=CachedSound{name=異形のものとの戦い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 厳かなダンジョン.wav=CachedSound{name=厳かなダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, エスニック・プレース.wav=CachedSound{name=エスニック・プレース.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, シューティング・ステージ２.wav=CachedSound{name=シューティング・ステージ２.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル１（旧）.wav=CachedSound{name=バトル１（旧）.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 怪しい取引.wav=CachedSound{name=怪しい取引.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 明るいダンジョン.wav=CachedSound{name=明るいダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 明るい街.wav=CachedSound{name=明るい街.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 歴史ある街.wav=CachedSound{name=歴史ある街.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 刻一刻.wav=CachedSound{name=刻一刻.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 変な村.wav=CachedSound{name=変な村.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 風の魔法使いの戦い.wav=CachedSound{name=風の魔法使いの戦い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, おぞましい真実.wav=CachedSound{name=おぞましい真実.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 悪の軍団.wav=CachedSound{name=悪の軍団.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, フィールド３.wav=CachedSound{name=フィールド３.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 眠らない大都会.wav=CachedSound{name=眠らない大都会.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, エンディング.wav=CachedSound{name=エンディング.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 大ボス_古.wav=CachedSound{name=大ボス_古.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 天空の魔法都市.wav=CachedSound{name=天空の魔法都市.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 師匠とのイベント戦.wav=CachedSound{name=師匠とのイベント戦.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 結末.wav=CachedSound{name=結末.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 王都.wav=CachedSound{name=王都.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, お祭りの町.wav=CachedSound{name=お祭りの町.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 奇襲攻撃！.wav=CachedSound{name=奇襲攻撃！.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 軍事作戦.wav=CachedSound{name=軍事作戦.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, ユニークな街.wav=CachedSound{name=ユニークな街.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, フィールド.wav=CachedSound{name=フィールド.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 変質者との戦い.wav=CachedSound{name=変質者との戦い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 中ボス.wav=CachedSound{name=中ボス.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 知的探求.wav=CachedSound{name=知的探求.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 魔力の間.wav=CachedSound{name=魔力の間.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, フィールド５.wav=CachedSound{name=フィールド５.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, シューティング・ステージ４.wav=CachedSound{name=シューティング・ステージ４.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 疑い.wav=CachedSound{name=疑い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 軍事作戦２.wav=CachedSound{name=軍事作戦２.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}}}
-2022/11/26 21:49:20 INFO Storage{map={効果音＿バトルターン開始.wav=CachedSound{name=効果音＿バトルターン開始.wav, lp=null, run=NOT_LOADED}, choice3.wav=CachedSound{name=choice3.wav, lp=null, run=NOT_LOADED}, 足音.wav=CachedSound{name=足音.wav, lp=null, run=NOT_LOADED}, Choice1.wav=CachedSound{name=Choice1.wav, lp=null, run=NOT_LOADED}, 効果音＿戦闘開始.wav=CachedSound{name=効果音＿戦闘開始.wav, lp=null, run=NOT_LOADED}}}
-2022/11/26 21:49:20 INFO XMLFile [000.xml] is loaded
-2022/11/26 21:49:20 INFO XMLFile [ChipAttributes.xml] is loaded
-2022/11/26 21:49:20 INFO XMLFile [01.xml] is loaded
-2022/11/26 21:49:20 INFO XMLFile [01.xml] is loaded
-2022/11/26 21:49:20 INFO ImageUtil loaded filePath=[resource/field/image/base.png](14.2907 ms)
-2022/11/26 21:49:20 INFO XMLFile [02.xml] is loaded
-2022/11/26 21:49:20 INFO ImageUtil loaded filePath=[resource/field/image/outer16.png](2.245 ms)
-2022/11/26 21:49:20 INFO XMLFile [builder.xml] is loaded
-2022/11/26 21:49:20 INFO XMLFile [03.xml] is loaded
-2022/11/26 21:49:20 INFO XMLFile [text02.xml] is loaded
-2022/11/26 21:49:20 INFO ImageUtil loaded filePath=[resource/field/image/cloud.png](5.2732 ms)
-2022/11/26 21:49:22 INFO ImageUtil loaded filePath=[resource/char/pipo-charachip007a.png](0.7159 ms)
-2022/11/26 21:49:22 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:22 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:22 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:22 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:22 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](0.0018 ms)
-2022/11/26 21:49:22 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:22 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:22 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:22 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:22 INFO CachedSound is loaded name=[フィールド５.wav](111.9301 ms)
-2022/11/26 21:49:22 INFO XMLFile [weaponMagicType.xml] is loaded
-2022/11/26 21:49:22 INFO XMLFile [status.xml] is loaded
-2022/11/26 21:49:22 INFO XMLFile [attribute.xml] is loaded
-2022/11/26 21:49:22 INFO XMLFile [condition.xml] is loaded
-2022/11/26 21:49:22 INFO XMLFile [itemAction.xml] is loaded
-2022/11/26 21:49:22 INFO XMLFile [itemSlotList.xml] is loaded
-2022/11/26 21:49:22 INFO XMLFile [itemList.xml] is loaded
-2022/11/26 21:49:22 INFO XMLFile [raceList.xml] is loaded
-2022/11/26 21:49:22 INFO XMLFile [battleAction.xml] is loaded
-2022/11/26 21:49:22 INFO ImageUtil loaded filePath=[resource/field/image/fieldChip16.png](1.08 ms)
-2022/11/26 21:49:22 INFO SpriteSheetが切り出されました : size=[4]
-2022/11/26 21:49:23 INFO XMLFile [battleField.xml] is loaded
-2022/11/26 21:49:23 INFO ImageUtil loaded filePath=[resource/field/image/木.png](0.9718 ms)
-2022/11/26 21:49:23 INFO ImageUtil loaded filePath=[resource/field/image/石.png](0.6789 ms)
-2022/11/26 21:49:23 INFO ImageUtil loaded filePath=[resource/field/image/bf1.png](9.5899 ms)
-2022/11/26 21:49:23 INFO ImageUtil loaded filePath=[resource/field/image/bf2.png](6.8341 ms)
-2022/11/26 21:49:23 INFO XMLFile [enemyList.xml] is loaded
-2022/11/26 21:49:23 INFO ImageUtil loaded filePath=[resource/M1.png](0.5819 ms)
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/M1.png](7.0E-4 ms)
-2022/11/26 21:49:23 INFO ImageUtil loaded filePath=[resource/M2.png](0.5468 ms)
-2022/11/26 21:49:23 INFO ImageUtil loaded filePath=[resource/M3.png](0.5324 ms)
-2022/11/26 21:49:23 INFO XMLFile [enemySet.xml] is loaded
-2022/11/26 21:49:23 INFO XMLFile [bookList.xml] is loaded
-2022/11/26 21:49:23 INFO ImageUtil loaded filePath=[resource/char/chara2.png](0.6421 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](7.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
-2022/11/26 21:49:23 INFO SpriteSheetが切り出されました : size=[3]
-2022/11/26 21:49:23 INFO CachedSound is loaded name=[screenShot.wav](1.179 ms)
-2022/11/26 21:49:23 INFO gameStart is done.
-2022/11/26 21:49:24 INFO CachedSound is loaded name=[効果音＿戦闘開始.wav](1.9954 ms)
-2022/11/26 21:49:25 INFO XMLFile [enemySet001.xml] is loaded
-2022/11/26 21:49:25 INFO CachedSound is loaded name=[バトル1（リメイク）.wav](35.1486 ms)
-2022/11/26 21:49:47 INFO lockFile:.\KLOCK_14252513773963485696.lck is deleted
-2022/11/26 21:49:47 INFO TempFileStorage : all temp file is deleted
+2022/11/28 20:54:37 INFO this is ./KinugasaGame.log
+2022/11/28 20:54:37 INFO translate\ja.ini
+2022/11/28 20:54:37 INFO WHATDO=どうする
+2022/11/28 20:54:37 INFO ADD_FIELD_CONDTION=フィールドに効果を与える
+2022/11/28 20:54:37 INFO WAS=が
+2022/11/28 20:54:37 INFO TALK=話す
+2022/11/28 20:54:37 INFO SPECIAL_ATTACK=特技
+2022/11/28 20:54:37 INFO OF_WHAT=により
+2022/11/28 20:54:37 INFO RETURN=戻る
+2022/11/28 20:54:37 INFO S=の
+2022/11/28 20:54:37 INFO ARE_YOU_SURE_EXIT=本当に終了しますか？
+2022/11/28 20:54:37 INFO MAGIC=魔術
+2022/11/28 20:54:37 INFO NO_TARGET=効果範囲内に対象がいない
+2022/11/28 20:54:37 INFO SPELL_START=の詠唱を開始した！！
+2022/11/28 20:54:37 INFO SKIP=スキップ
+2022/11/28 20:54:37 INFO NODAMAGE=ダメージを受けなかった！！
+2022/11/28 20:54:37 INFO TURN=ターン
+2022/11/28 20:54:37 INFO CONFIRM=確認
+2022/11/28 20:54:37 INFO NO_NPC=その方向にはダレモイナイ
+2022/11/28 20:54:37 INFO ISFAILED=は失敗した！！
+2022/11/28 20:54:37 INFO APPEARANCE=体現れた！！
+2022/11/28 20:54:37 INFO IS=は
+2022/11/28 20:54:37 INFO DAMAGE=のダメージ！！
+2022/11/28 20:54:37 INFO OPEN=開く
+2022/11/28 20:54:37 INFO OTHER=行動
+2022/11/28 20:54:37 INFO MOVE=移動
+2022/11/28 20:54:37 INFO HEALDAMAGE=回復した！！
+2022/11/28 20:54:37 INFO SUBMIT=決定
+2022/11/28 20:54:37 INFO SPELLTIME=詠唱時間
+2022/11/28 20:54:37 INFO ATTACK=攻撃
+2022/11/28 20:54:37 INFO TO=に
+2022/11/28 20:54:37 INFO ISMOVE=は移動した！
+2022/11/28 20:54:37 INFO CANT_MOVE=動けなかった！！
+2022/11/28 20:54:37 INFO lockFile:.\KLOCK_6103548042948206893.lck is created
+2022/11/28 20:54:37 INFO MyGame is start
+2022/11/28 20:54:37 INFO Storage{map={気怠い探偵.wav=CachedSound{name=気怠い探偵.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 灼熱の地獄.wav=CachedSound{name=灼熱の地獄.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 作戦会議.wav=CachedSound{name=作戦会議.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 氷のダンジョン.wav=CachedSound{name=氷のダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 妖精の森.wav=CachedSound{name=妖精の森.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル1（リメイク）＿古.wav=CachedSound{name=バトル1（リメイク）＿古.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 普通な感じの街.wav=CachedSound{name=普通な感じの街.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, とてものどかな村.wav=CachedSound{name=とてものどかな村.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, さわやかな冒険.wav=CachedSound{name=さわやかな冒険.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル１（新）.wav=CachedSound{name=バトル１（新）.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル２（新）.wav=CachedSound{name=バトル２（新）.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, のどかな村.wav=CachedSound{name=のどかな村.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 夢の世界.wav=CachedSound{name=夢の世界.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 廃れた都市.wav=CachedSound{name=廃れた都市.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 大ボス.wav=CachedSound{name=大ボス.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 神殿.wav=CachedSound{name=神殿.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル1（リメイク）.wav=CachedSound{name=バトル1（リメイク）.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, ラストダンジョン.wav=CachedSound{name=ラストダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 変質者のテーマ.wav=CachedSound{name=変質者のテーマ.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 世界の真相.wav=CachedSound{name=世界の真相.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 睨み合い.wav=CachedSound{name=睨み合い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 静寂空間.wav=CachedSound{name=静寂空間.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 決意.wav=CachedSound{name=決意.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 残酷な運命.wav=CachedSound{name=残酷な運命.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 工業都市.wav=CachedSound{name=工業都市.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 静かなる決意.wav=CachedSound{name=静かなる決意.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 不気味なダンジョン.wav=CachedSound{name=不気味なダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 探検.wav=CachedSound{name=探検.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, まあいいか.wav=CachedSound{name=まあいいか.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, デジタル空間.wav=CachedSound{name=デジタル空間.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 不思議な森.wav=CachedSound{name=不思議な森.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 洞窟.wav=CachedSound{name=洞窟.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, シューティング・ステージ３.wav=CachedSound{name=シューティング・ステージ３.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 風の魔法使いのテーマ.wav=CachedSound{name=風の魔法使いのテーマ.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 愉快または間抜け.wav=CachedSound{name=愉快または間抜け.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, ボーナスゲーム.wav=CachedSound{name=ボーナスゲーム.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, フィールド２.wav=CachedSound{name=フィールド２.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, シューティング・ステージ１.wav=CachedSound{name=シューティング・ステージ１.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 小ボス.wav=CachedSound{name=小ボス.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 異形のものとの戦い.wav=CachedSound{name=異形のものとの戦い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 厳かなダンジョン.wav=CachedSound{name=厳かなダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, エスニック・プレース.wav=CachedSound{name=エスニック・プレース.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, シューティング・ステージ２.wav=CachedSound{name=シューティング・ステージ２.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, バトル１（旧）.wav=CachedSound{name=バトル１（旧）.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 怪しい取引.wav=CachedSound{name=怪しい取引.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 明るいダンジョン.wav=CachedSound{name=明るいダンジョン.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 明るい街.wav=CachedSound{name=明るい街.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 歴史ある街.wav=CachedSound{name=歴史ある街.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 刻一刻.wav=CachedSound{name=刻一刻.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 変な村.wav=CachedSound{name=変な村.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 風の魔法使いの戦い.wav=CachedSound{name=風の魔法使いの戦い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, おぞましい真実.wav=CachedSound{name=おぞましい真実.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 悪の軍団.wav=CachedSound{name=悪の軍団.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, フィールド３.wav=CachedSound{name=フィールド３.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 眠らない大都会.wav=CachedSound{name=眠らない大都会.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, エンディング.wav=CachedSound{name=エンディング.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 大ボス_古.wav=CachedSound{name=大ボス_古.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 天空の魔法都市.wav=CachedSound{name=天空の魔法都市.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 師匠とのイベント戦.wav=CachedSound{name=師匠とのイベント戦.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 結末.wav=CachedSound{name=結末.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 王都.wav=CachedSound{name=王都.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, お祭りの町.wav=CachedSound{name=お祭りの町.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 奇襲攻撃！.wav=CachedSound{name=奇襲攻撃！.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 軍事作戦.wav=CachedSound{name=軍事作戦.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, ユニークな街.wav=CachedSound{name=ユニークな街.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, フィールド.wav=CachedSound{name=フィールド.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 変質者との戦い.wav=CachedSound{name=変質者との戦い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 中ボス.wav=CachedSound{name=中ボス.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 知的探求.wav=CachedSound{name=知的探求.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 魔力の間.wav=CachedSound{name=魔力の間.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, フィールド５.wav=CachedSound{name=フィールド５.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, シューティング・ステージ４.wav=CachedSound{name=シューティング・ステージ４.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 疑い.wav=CachedSound{name=疑い.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}, 軍事作戦２.wav=CachedSound{name=軍事作戦２.wav, lp=LoopPoint{from=-1, to=0}, run=NOT_LOADED}}}
+2022/11/28 20:54:37 INFO Storage{map={効果音＿バトルターン開始.wav=CachedSound{name=効果音＿バトルターン開始.wav, lp=null, run=NOT_LOADED}, choice3.wav=CachedSound{name=choice3.wav, lp=null, run=NOT_LOADED}, 足音.wav=CachedSound{name=足音.wav, lp=null, run=NOT_LOADED}, Choice1.wav=CachedSound{name=Choice1.wav, lp=null, run=NOT_LOADED}, 効果音＿戦闘開始.wav=CachedSound{name=効果音＿戦闘開始.wav, lp=null, run=NOT_LOADED}}}
+2022/11/28 20:54:37 INFO XMLFile [000.xml] is loaded
+2022/11/28 20:54:37 INFO XMLFile [ChipAttributes.xml] is loaded
+2022/11/28 20:54:37 INFO XMLFile [01.xml] is loaded
+2022/11/28 20:54:38 INFO XMLFile [01.xml] is loaded
+2022/11/28 20:54:38 INFO ImageUtil loaded filePath=[resource/field/image/base.png](17.2387 ms)
+2022/11/28 20:54:38 INFO XMLFile [02.xml] is loaded
+2022/11/28 20:54:38 INFO ImageUtil loaded filePath=[resource/field/image/outer16.png](2.903 ms)
+2022/11/28 20:54:38 INFO XMLFile [builder.xml] is loaded
+2022/11/28 20:54:38 INFO XMLFile [03.xml] is loaded
+2022/11/28 20:54:38 INFO XMLFile [text02.xml] is loaded
+2022/11/28 20:54:38 INFO ImageUtil loaded filePath=[resource/field/image/cloud.png](5.9037 ms)
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/char/pipo-charachip007a.png](0.7496 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/pipo-charachip007a.png](0.0018 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ! > CachedSound : [フィールド５.wav] : UN SUPPORTED CONTROL : Type=[Volume]
+2022/11/28 20:54:40 INFO CachedSound is loaded name=[フィールド５.wav](111.57649 ms)
+2022/11/28 20:54:40 INFO XMLFile [weaponMagicType.xml] is loaded
+2022/11/28 20:54:40 INFO XMLFile [status.xml] is loaded
+2022/11/28 20:54:40 INFO XMLFile [attribute.xml] is loaded
+2022/11/28 20:54:40 INFO XMLFile [condition.xml] is loaded
+2022/11/28 20:54:40 INFO XMLFile [itemAction.xml] is loaded
+2022/11/28 20:54:40 INFO XMLFile [itemSlotList.xml] is loaded
+2022/11/28 20:54:40 INFO XMLFile [itemList.xml] is loaded
+2022/11/28 20:54:40 INFO XMLFile [raceList.xml] is loaded
+2022/11/28 20:54:40 INFO XMLFile [battleAction.xml] is loaded
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/field/image/fieldChip16.png](0.8964 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[4]
+2022/11/28 20:54:40 INFO XMLFile [battleField.xml] is loaded
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/field/image/木.png](0.8997 ms)
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/field/image/石.png](0.7239 ms)
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/field/image/bf1.png](8.7944 ms)
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/field/image/bf2.png](6.602 ms)
+2022/11/28 20:54:40 INFO XMLFile [enemyList.xml] is loaded
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/M1.png](0.7703 ms)
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/M1.png](6.0E-4 ms)
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/M1.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/M2.png](0.5682 ms)
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/M3.png](0.5444 ms)
+2022/11/28 20:54:40 INFO XMLFile [enemySet.xml] is loaded
+2022/11/28 20:54:40 INFO XMLFile [bookList.xml] is loaded
+2022/11/28 20:54:40 INFO ImageUtil loaded filePath=[resource/char/chara2.png](0.6363 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](4.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO ImageUtil cached filePath=[resource/char/chara2.png](5.0E-4 ms)
+2022/11/28 20:54:40 INFO SpriteSheetが切り出されました : size=[3]
+2022/11/28 20:54:40 INFO CachedSound is loaded name=[screenShot.wav](1.0787 ms)
+2022/11/28 20:54:40 INFO gameStart is done.
+2022/11/28 20:54:41 INFO CachedSound is loaded name=[効果音＿戦闘開始.wav](1.8248 ms)
+2022/11/28 20:54:42 INFO XMLFile [enemySet001.xml] is loaded
+2022/11/28 20:54:42 INFO ! > CachedSound : [バトル1（リメイク）.wav] : UN SUPPORTED CONTROL : Type=[Volume]
+2022/11/28 20:54:42 INFO CachedSound is loaded name=[バトル1（リメイク）.wav](33.9443 ms)
+2022/11/28 20:54:42 INFO CachedSound is loaded name=[効果音＿選択1.wav](1.487 ms)
+2022/11/28 20:54:42 INFO CachedSound is loaded name=[効果音＿選択2.wav](1.6684 ms)
+2022/11/28 20:54:42 INFO CachedSound is loaded name=[効果音＿バトルターン開始.wav](1.3126 ms)
+2022/11/28 20:55:37 INFO lockFile:.\KLOCK_6103548042948206893.lck is deleted
+2022/11/28 20:55:37 INFO TempFileStorage : all temp file is deleted

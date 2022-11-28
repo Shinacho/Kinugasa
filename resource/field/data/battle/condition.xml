@@ -107,6 +107,10 @@ THE SOFTWARE.
 		<effect ect="CONTINUE" time="10/50" ett="STOP" p="1" />
 	</cCondition>
 	
+	<cCondition name="SPELLING" desc="–‚–@‚ð‰r¥‚µ‚Ä‚¢‚é" pri="50">
+		<effect ect="CONTINUE" time="INFINITY" ett="STOP" p="1" />
+	</cCondition>
+	
 	<cCondition name="PARALYS" desc="–ƒáƒ‚µ‚Ä‚¢‚é" pri="60">
 		<effect ect="CONTINUE" time="10/50" ett="STOP" p="0.25" />
 		<effect ect="ONECE" time="1" ett="STATUS" est="ADD_PERCENT_OF_MAX" tgt="DEX" value="-0.75" p="0.5" />

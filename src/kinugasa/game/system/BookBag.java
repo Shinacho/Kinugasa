@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class BookBag implements Cloneable, Iterable<Book> {
 
-	private int max = 8;
+	private int max = 6;
 	private List<Book> books = new ArrayList<>();
 
 	public BookBag() {

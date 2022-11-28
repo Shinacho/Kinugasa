@@ -39,6 +39,7 @@ public class BattleConfig {
 	public static String moveStatusKey = "MOV";
 	public static String initialPCMoveVehicleKey = "WALK";
 	public static String expStatisKey = "EXP";
+	public static String spellingConditionName = "SPELLING";
 
 	private static List<BattleWinLoseLogic> winLoseLogic = new ArrayList<>();
 

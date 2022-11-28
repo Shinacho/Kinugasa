@@ -336,8 +336,23 @@ public class GameSystemXMLLoader {
 				EffectTargetType targetType = EffectTargetType.valueOf(ee.getAttributes().get("ett").getValue());
 				float p = ee.getAttributes().get("p").getFloatValue();
 				//ETTがSTOP、CONFU、ADD＿CONDITIONの場合、一部パラメタを省略して追加し、次
+				int min = 0, max = 0;
+				if (ee.hasAttribute("time")) {
+					String time = ee.getAttributes().get("time").getValue();
+					if (time.contains("/")) {
+						min = ee.getAttributes().get("time").parseInt("/")[0];
+						max = ee.getAttributes().get("time").parseInt("/")[1];
+					} else if (time.equals("INFINITY")) {
+						min = Integer.MAX_VALUE;
+						max = Integer.MAX_VALUE;
+					} else if (time.equals("1")) {
+						min = max = 1;
+					} else {
+						throw new IllegalXMLFormatException("nCondition " + e + " s time is error");
+					}
+				}
 				if (targetType == EffectTargetType.STOP) {
-					list.add(new EffectMaster(key, ect, targetType, p));
+					list.add(new EffectMaster(key, ect, targetType, p, min, max));
 					continue;
 				}
 				if (targetType == EffectTargetType.ADD_CONDITION) {
@@ -346,19 +361,7 @@ public class GameSystemXMLLoader {
 					continue;
 				}
 				// NONEでもSTOPでもない場合、各要素を取得
-				String time = ee.getAttributes().get("time").getValue();
-				int min = 0, max = 0;
-				if (time.contains("/")) {
-					min = ee.getAttributes().get("time").parseInt("/")[0];
-					max = ee.getAttributes().get("time").parseInt("/")[1];
-				} else if (time.equals("INFINITY")) {
-					min = Integer.MAX_VALUE;
-					max = Integer.MAX_VALUE;
-				} else if (time.equals("1")) {
-					min = max = 1;
-				} else {
-					throw new IllegalXMLFormatException("nCondition " + e + " s time is error");
-				}
+
 				if (targetType == EffectTargetType.CONFU) {
 					list.add(new EffectMaster(key, ect, targetType, min, max, p));
 					continue;
@@ -373,7 +376,7 @@ public class GameSystemXMLLoader {
 			if (!continueEffect.isEmpty()) {
 				for (int i = 0, min = continueEffect.get(0).getMinTime(), max = continueEffect.get(0).getMaxTime(); i > continueEffect.size(); i++) {
 					if (min != continueEffect.get(i).getMinTime() || max != continueEffect.get(i).getMaxTime()) {
-						throw new IllegalXMLFormatException("nCondition " + e + " s time is error");
+						throw new IllegalXMLFormatException("nCondition " + e + " s time is error, missmatch");
 					}
 				}
 			}
@@ -398,8 +401,23 @@ public class GameSystemXMLLoader {
 				EffectTargetType targetType = EffectTargetType.valueOf(ee.getAttributes().get("ett").getValue());
 				float p = ee.getAttributes().get("p").getFloatValue();
 				//ETTがSTOP、CONFU、ADD＿CONDITIONの場合、一部パラメタを省略して追加し、次
+				int min = 0, max = 0;
+				if (ee.hasAttribute("time")) {
+					String time = ee.getAttributes().get("time").getValue();
+					if (time.contains("/")) {
+						min = ee.getAttributes().get("time").parseInt("/")[0];
+						max = ee.getAttributes().get("time").parseInt("/")[1];
+					} else if (time.equals("INFINITY")) {
+						min = Integer.MAX_VALUE;
+						max = Integer.MAX_VALUE;
+					} else if (time.equals("1")) {
+						min = max = 1;
+					} else {
+						throw new IllegalXMLFormatException("nCondition " + e + " s time is error");
+					}
+				}
 				if (targetType == EffectTargetType.STOP) {
-					list.add(new EffectMaster(key, ect, targetType, p));
+					list.add(new EffectMaster(key, ect, targetType, p, min, max));
 					continue;
 				}
 				if (targetType == EffectTargetType.ADD_CONDITION) {
@@ -408,19 +426,6 @@ public class GameSystemXMLLoader {
 					continue;
 				}
 				// NONEでもSTOPでもない場合、各要素を取得
-				String time = ee.getAttributes().get("time").getValue();
-				int min = 0, max = 0;
-				if (time.contains("/")) {
-					min = ee.getAttributes().get("time").parseInt("/")[0];
-					max = ee.getAttributes().get("time").parseInt("/")[1];
-				} else if (time.equals("INFINITY")) {
-					min = Integer.MAX_VALUE;
-					max = Integer.MAX_VALUE;
-				} else if (time.equals("1")) {
-					min = max = 1;
-				} else {
-					throw new IllegalXMLFormatException("nCondition " + e + " s time is error");
-				}
 				if (targetType == EffectTargetType.CONFU) {
 					list.add(new EffectMaster(key, ect, targetType, min, max, p));
 					continue;

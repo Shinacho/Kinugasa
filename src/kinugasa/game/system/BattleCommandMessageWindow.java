@@ -68,6 +68,17 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		BattleCommandMessageWindow.statusKey = statusKey;
 	}
 
+	public void resetSelect() {
+		setType(BattleActionType.OTHER);
+	}
+
+	public void setType(BattleActionType t) {
+		typeIdx = t.ordinal();
+		type = BattleActionType.values()[typeIdx];
+		actionIdx = 0;
+		updateText();
+	}
+
 	public void nextType() {
 		typeIdx++;
 		if (typeIdx >= BattleActionType.values().length) {
@@ -79,7 +90,6 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
-		updateArea();
 	}
 
 	public void prevType() {
@@ -93,12 +103,15 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
-		updateArea();
 	}
 
 	public BattleAction getSelected() {
 		assert cmd != null : "BAMWs CMD is null";
 		return selected;
+	}
+	
+	public boolean isSelected(String name){
+		return selected.getName().equals(name);
 	}
 
 	@Override
@@ -106,22 +119,6 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		super.setVisible(visible);
 	}
 
-	private int area;
-
-	public void updateArea() {
-		if (selected == null) {
-			area = 0;
-		}
-		if (selected.getName().equals(moveActionName)) {
-			area = (int) cmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue();
-		}
-		if (type == BattleActionType.OTHER) {
-			area = 0;
-		}
-		area = cmd.getUser().getStatus().getBattleActionArea(selected.getName());
-
-		GameSystem.getInstance().getBattleSystem().setBattleAction(getSelected(), area);
-	}
 
 	public BattleCommand getCmd() {
 		return cmd;
@@ -197,7 +194,6 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
-		updateArea();
 	}
 
 	public void prevAction() {
@@ -209,7 +205,6 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
-		updateArea();
 	}
 
 }

@@ -38,8 +38,6 @@ THE SOFTWARE.
 		<enemy name="山賊" />
 		<enemy name="山賊" />
 		<enemy name="山賊" />
-		<enemy name="山賊" />
-		<enemy name="山賊" />
 		<enemy name="悪漢" />
 		<enemy name="悪漢" />
 	</set>
@@ -47,32 +45,16 @@ THE SOFTWARE.
 		<enemy name="野盗" />
 		<enemy name="野盗" />
 		<enemy name="野盗" />
-		<enemy name="野盗" />
-		<enemy name="野盗" />
-		<enemy name="野盗" />
-		<enemy name="野盗" />
-		<enemy name="野盗" />
-		<enemy name="野盗" />
-		<enemy name="野盗" />
-		<enemy name="野盗" />
+		<enemy name="山賊" />
+		<enemy name="魔術師" />
+		<enemy name="魔術師" />
+		<enemy name="魔術師" />
 		<enemy name="山賊" />
 		<enemy name="山賊" />
-		<enemy name="山賊" />
-		<enemy name="山賊" />
-		<enemy name="山賊" />
-		<enemy name="山賊" />
-		<enemy name="山賊" />
-		<enemy name="山賊" />
-		<enemy name="悪漢" />
-		<enemy name="悪漢" />
-		<enemy name="悪漢" />
-		<enemy name="悪漢" />
 		<enemy name="悪漢" />
 		<enemy name="悪漢" />
 	</set>
 	<set name="05" p="0.66" BGM="BGM/バトル1（リメイク）.wav" win="FIELD" lose="GAME_OVER">
-		<enemy name="動かない野盗" />
-		<enemy name="動かない野盗" />
 		<enemy name="動かない野盗" />
 		<enemy name="動かない野盗" />
 		<enemy name="山賊" />

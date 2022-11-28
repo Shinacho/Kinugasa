@@ -21,53 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test;
-
-import kinugasa.game.GameManager;
-import kinugasa.game.GameOption;
-import kinugasa.game.GameTimeManager;
-import kinugasa.game.GraphicsContext;
-import kinugasa.game.LockUtil;
-import kinugasa.game.test.rpg.GM;
-import kinugasa.game.ui.MessageWindow;
-import kinugasa.game.ui.ProgressBarSprite;
-import kinugasa.game.ui.Text;
-import kinugasa.util.FrameTimeCounter;
+package kinugasa.game.system;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/22_5:31:16<br>
+ * @vesion 1.0.0 - 2022/11/27_16:13:40<br>
  * @author Dra211<br>
  */
-public class Test2 extends GameManager {
+public class MagicSpell {
 
-	public static void main(String[] args) {
-		LockUtil.deleteAllLockFile();
-		new Test2().gameStart(args);
+	private BattleCommand.Mode mode;
+	private BattleCharacter user;
+	private BattleAction magic;
+
+	public MagicSpell(BattleCommand.Mode mode, BattleCharacter user, BattleAction magic) {
+		this.mode = mode;
+		this.user = user;
+		this.magic = magic;
 	}
 
-	Test2() {
-		super(GameOption.defaultOption());
-	}
-	MessageWindow mw;
-
-	@Override
-	protected void startUp() {
-		
+	public BattleCommand.Mode getMode() {
+		return mode;
 	}
 
-	@Override
-	protected void dispose() {
+	public BattleAction getMagic() {
+		return magic;
 	}
 
-	@Override
-	protected void update(GameTimeManager gtm) {
-		mw.update();
-	}
-
-	@Override
-	protected void draw(GraphicsContext gc) {
-		mw.draw(gc);
+	public BattleCharacter getUser() {
+		return user;
 	}
 
 }

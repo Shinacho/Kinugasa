@@ -21,53 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test;
+package kinugasa.game.system;
 
-import kinugasa.game.GameManager;
-import kinugasa.game.GameOption;
-import kinugasa.game.GameTimeManager;
-import kinugasa.game.GraphicsContext;
-import kinugasa.game.LockUtil;
-import kinugasa.game.test.rpg.GM;
-import kinugasa.game.ui.MessageWindow;
-import kinugasa.game.ui.ProgressBarSprite;
-import kinugasa.game.ui.Text;
-import kinugasa.util.FrameTimeCounter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/22_5:31:16<br>
+ * @vesion 1.0.0 - 2022/11/27_16:33:12<br>
  * @author Dra211<br>
  */
-public class Test2 extends GameManager {
+public class MagicBattleCommand extends BattleCommand {
 
-	public static void main(String[] args) {
-		LockUtil.deleteAllLockFile();
-		new Test2().gameStart(args);
+	private MagicSpell magicSpell;
+
+	public MagicBattleCommand(MagicSpell ms, BattleAction ba) {
+		super(ms.getMode(), ms.getUser());
+		setBattleAction(Arrays.asList(ba));
+		this.magicSpell = ms;
 	}
 
-	Test2() {
-		super(GameOption.defaultOption());
-	}
-	MessageWindow mw;
-
-	@Override
-	protected void startUp() {
-		
-	}
-
-	@Override
-	protected void dispose() {
-	}
-
-	@Override
-	protected void update(GameTimeManager gtm) {
-		mw.update();
-	}
-
-	@Override
-	protected void draw(GraphicsContext gc) {
-		mw.draw(gc);
+	public MagicSpell getMagicSpell() {
+		return magicSpell;
 	}
 
 }

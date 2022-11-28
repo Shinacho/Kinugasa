@@ -46,6 +46,10 @@ public class BattleCommand {
 	//éÊÇÍÇÈçsìÆ
 	private List<BattleAction> ba;
 
+	protected void setBattleAction(List<BattleAction> ba) {
+		this.ba = ba;
+	}
+
 	public BattleCommand(Mode mode, BattleCharacter user) {
 		this.mode = mode;
 		this.user = user;
@@ -64,6 +68,14 @@ public class BattleCommand {
 	public BattleAction random() {
 		int i = Random.randomAbsInt(ba.size());
 		return ba.get(i);
+	}
+
+	public List<BattleAction> getBattleActions() {
+		return ba;
+	}
+
+	public BattleAction getFirstBattleAction() {
+		return getBattleActions().get(0);
 	}
 
 	public EnemyBattleAction getNPCAction() {
@@ -96,7 +108,7 @@ public class BattleCommand {
 		if (mode == Mode.PC) {
 			throw new GameSystemException("enemyBattleAction Requested, but its PC");
 		}
-		assert ba!= null && !ba.isEmpty() : user.getStatus().getName() + "s BA is empty or null";
+		assert ba != null && !ba.isEmpty() : user.getStatus().getName() + "s BA is empty or null";
 		List<EnemyBattleAction> ebaList = ba.stream().map(v -> (EnemyBattleAction) v).collect(Collectors.toList());
 		assert !ebaList.isEmpty() : user.getStatus().getName() + "s EBA is empty";
 		Collections.sort(ebaList);
@@ -110,6 +122,61 @@ public class BattleCommand {
 					throw new GameSystemException("getNPCActionExMove is infinity looping");
 				}
 				i++;
+				if (i >= ebaList.size()) {
+					i = 0;
+				}
+				continue;
+			}
+			if (Random.percent(eba.getP())) {
+				return eba;
+			}
+			i++;
+			lp++;
+			if (lp > 1000) {
+				throw new GameSystemException("getNPCActionExMove is infinity looping");
+			}
+			if (i >= ebaList.size()) {
+				i = 0;
+			}
+		}
+	}
+
+	public EnemyBattleAction getNPCActionOf(BattleActionType type) {
+		if (mode == Mode.PC) {
+			throw new GameSystemException("enemyBattleAction Requested, but its PC");
+		}
+		assert ba != null && !ba.isEmpty() : user.getStatus().getName() + "s BA is empty or null";
+		List<EnemyBattleAction> ebaList = ba.stream().map(v -> (EnemyBattleAction) v).collect(Collectors.toList());
+		assert !ebaList.isEmpty() : user.getStatus().getName() + "s EBA is empty";
+		if (ebaList.stream().allMatch(p -> p.getBattleActionType() != type)) {
+			//éùÇ¡ÇƒÇ¢Ç»Ç¢èÍçá
+			return null;
+		}
+		Collections.sort(ebaList);
+		int i = 0;
+		int lp = 0;
+		while (true) {
+			EnemyBattleAction eba = ebaList.get(i);
+			if (eba.getBattleActionType() != type) {
+				lp++;
+				if (lp > 1000) {
+					throw new GameSystemException("getNPCActionExMove is infinity looping, ");
+				}
+				i++;
+				if (i >= ebaList.size()) {
+					i = 0;
+				}
+				continue;
+			}
+			if (eba.getEvents().stream().allMatch(p -> p.getBatpt() == BattleActionTargetParameterType.MOVE)) {
+				lp++;
+				if (lp > 1000) {
+					throw new GameSystemException("getNPCActionExMove is infinity looping");
+				}
+				i++;
+				if (i >= ebaList.size()) {
+					i = 0;
+				}
 				continue;
 			}
 			if (Random.percent(eba.getP())) {

@@ -54,6 +54,7 @@ import kinugasa.util.Random;
  */
 public class Enemy implements Nameable, Drawable, BattleCharacter {
 
+	private String id;
 	private Status status;
 	private ArrayList<DropItem> dropItem;
 	private ImageSprite sprite;
@@ -71,7 +72,12 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 
 	}
 
-	Enemy(Status status, ArrayList<DropItem> dropItem, ImageSprite sprite, Vehicle v) {
+	public String getId() {
+		return id;
+	}
+
+	Enemy(String id, Status status, ArrayList<DropItem> dropItem, ImageSprite sprite, Vehicle v) {
+		this.id = id;
 		this.status = status;
 		this.dropItem = dropItem;
 		this.sprite = sprite;

@@ -211,6 +211,22 @@ public class BattleAction implements Nameable, Comparable<BattleAction> {
 		return a;
 	}
 
+	public boolean isOnlyBatt(BattleActionTargetType t) {
+		boolean result = true;
+		for (BattleActionEvent e : getEvents()) {
+			result &= e.getBatt() == t;
+		}
+		return result;
+	}
+
+	public boolean isOnlyBatpt(BattleActionTargetParameterType t) {
+		boolean result = true;
+		for (BattleActionEvent e : getEvents()) {
+			result &= e.getBatpt() == t;
+		}
+		return result;
+	}
+
 	public boolean isMoveOnly() {
 		boolean result = true;
 		for (BattleActionEvent e : getEvents()) {
@@ -233,10 +249,10 @@ public class BattleAction implements Nameable, Comparable<BattleAction> {
 			return result;
 		}
 		if (sound != null) {
-			sound.load().play();
+			sound.load().stopAndPlay();
 		}
 		//SELFでターゲットが入っている場合、例外
-		if (getEvents().stream().allMatch(p -> p.getBatt() == BattleActionTargetType.SELF) && (selectedTarget != null || selectedTarget.size() != 0)) {
+		if (isOnlyBatt(BattleActionTargetType.SELF) && (selectedTarget != null || selectedTarget.size() != 0)) {
 			throw new GameSystemException("this actin is SELF, but target is exsist:" + getName());
 		}
 		for (BattleActionEvent e : getEvents()) {
@@ -267,11 +283,7 @@ public class BattleAction implements Nameable, Comparable<BattleAction> {
 					result.add(BattleActionResult.ADD_CONDITION_FIELD);
 					break;
 				case SELF:
-					if (selectedTarget == null && selectedTarget.size() <= 0) {
-						tgt.add(user);
-					} else {
-						throw new GameSystemException("this event is SELF, but target is exsist");
-					}
+					tgt.add(user);
 					break;
 				case ALL:
 				case TEAM_PARTY:

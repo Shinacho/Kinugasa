@@ -48,8 +48,8 @@ public class EffectMaster implements Nameable {
 		this(key, EffectContinueType.NONE, null, null, null, 0, 0, 0, 0);
 	}
 
-	public EffectMaster(ConditionKey key, EffectContinueType continueType, EffectTargetType targetType, float p) {
-		this(key, continueType, targetType, null, null, 0, p, 0, 0);
+	public EffectMaster(ConditionKey key, EffectContinueType continueType, EffectTargetType targetType, float p, int min, int max) {
+		this(key, continueType, targetType, null, null, 0, p, min, max);
 	}
 
 	public EffectMaster(ConditionKey key, EffectContinueType continueType, EffectTargetType targetType, int min, int max, float p) {
@@ -74,8 +74,17 @@ public class EffectMaster implements Nameable {
 
 	// エフェクトが複数ある場合で、どれもが同じタイムで稼働する場合、最初の1回だけ実行する必要がある
 	public TimeCounter createTimeCounter() {
+		if (minTime == 0 || maxTime == 0) {
+			throw new GameSystemException("effect time is 0 : " + this);
+		}
 		if (minTime == 1 && maxTime == 1) {
 			return TimeCounter.oneCounter();
+		}
+		if (minTime >= Integer.MAX_VALUE || maxTime >= Integer.MAX_VALUE) {
+			return TimeCounter.FALSE;
+		}
+		if (minTime == maxTime) {
+			return new FrameTimeCounter(minTime);
 		}
 		int val = Random.randomAbsInt(minTime, maxTime);
 		return new FrameTimeCounter(val);
@@ -144,6 +153,11 @@ public class EffectMaster implements Nameable {
 
 	public int getMinTime() {
 		return minTime;
+	}
+
+	@Override
+	public String toString() {
+		return "EffectMaster{" + "key=" + key + ", value=" + value + ", minTime=" + minTime + ", maxTime=" + maxTime + '}';
 	}
 
 }

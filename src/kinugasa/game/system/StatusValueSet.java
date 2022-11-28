@@ -49,9 +49,8 @@ public class StatusValueSet extends Storage<StatusValue> implements Cloneable {
 	@Override
 	public StatusValueSet clone() {
 		StatusValueSet r = new StatusValueSet();
-		r.clear();
 		for (StatusValue v : this) {
-			r.add(v.clone());
+			r.put(v.clone());
 		}
 		return r;
 	}

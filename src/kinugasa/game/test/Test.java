@@ -196,7 +196,8 @@ public class Test extends GameManager {
 		//テスト用にすべてのアクションを追加
 		for (BattleCharacter pc : GameSystem.getInstance().getParty()) {
 			pc.getStatus().getBattleActions().clear();
-			pc.getStatus().getBattleActions().addAll(BattleActionStorage.getInstance());
+			//確定アクションをのぞく
+			pc.getStatus().getBattleActions().addAll(BattleActionStorage.getInstance().stream().filter(p -> !p.getName().equals("確定")).collect(Collectors.toList()));
 		}
 
 		//

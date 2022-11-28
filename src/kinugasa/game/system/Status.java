@@ -44,7 +44,7 @@ public class Status {
 	private String name;
 	//ステータス本体
 	private StatusValueSet status = new StatusValueSet();
-	private StatusValueSet prevStatus = new StatusValueSet();
+	private StatusValueSet prevStatus;
 	// 属性と状態異常に対する耐性
 	private AttributeValueSet attrIn = new AttributeValueSet();
 	//発生中の効果
@@ -158,6 +158,10 @@ public class Status {
 		return battleActions;
 	}
 
+	public int getBattleActionArea(BattleAction ba) {
+		return getBattleActionArea(ba.getName());
+	}
+
 	public int getBattleActionArea(String name) {
 		int r = 0;
 		for (Item i : eqipment.values()) {
@@ -226,6 +230,15 @@ public class Status {
 		return false;
 	}
 
+	private EffectMaster moveStopDesc;
+
+	public EffectMaster moveStopDesc() {
+		if (moveStopDesc == null) {
+			return null;
+		}
+		return moveStopDesc;
+	}
+
 	// 発生中の効果に基づいて、このターン行動できるかを判定します
 	public boolean canMoveThisTurn() {
 		if (condition.isEmpty()) {
@@ -236,11 +249,13 @@ public class Status {
 			for (EffectMaster e : v.getEffects()) {
 				if (e.getTargetType() == EffectTargetType.STOP) {
 					if (Random.percent(e.getP())) {
+						moveStopDesc = e;
 						return false;
 					}
 				}
 			}
 		}
+		moveStopDesc = null;
 		return true;
 	}
 
@@ -429,6 +444,10 @@ public class Status {
 	}
 
 	public Map<StatusKey, Integer> calcDamage() {
+		if (prevStatus == null) {
+			prevStatus = status.clone();
+		}
+
 		Map<StatusKey, Integer> result = new HashMap<>();
 
 		for (StatusValue v : prevStatus) {

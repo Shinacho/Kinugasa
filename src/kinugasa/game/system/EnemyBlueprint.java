@@ -131,6 +131,6 @@ public class EnemyBlueprint implements Nameable {
 		}
 		actions.forEach(v -> s.getBattleActions().add(v));
 
-		return new Enemy(s, (ArrayList<DropItem>) dropItems.clone(), sprite.clone(), vehicle);
+		return new Enemy(id, s, (ArrayList<DropItem>) dropItems.clone(), sprite.clone(), vehicle);
 	}
 }

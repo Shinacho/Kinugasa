@@ -21,53 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test;
+package kinugasa.game.system;
 
-import kinugasa.game.GameManager;
-import kinugasa.game.GameOption;
-import kinugasa.game.GameTimeManager;
-import kinugasa.game.GraphicsContext;
-import kinugasa.game.LockUtil;
-import kinugasa.game.test.rpg.GM;
-import kinugasa.game.ui.MessageWindow;
-import kinugasa.game.ui.ProgressBarSprite;
-import kinugasa.game.ui.Text;
-import kinugasa.util.FrameTimeCounter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/22_5:31:16<br>
+ * @vesion 1.0.0 - 2022/11/27_10:10:49<br>
  * @author Dra211<br>
  */
-public class Test2 extends GameManager {
+public class BattleTarget {
 
-	public static void main(String[] args) {
-		LockUtil.deleteAllLockFile();
-		new Test2().gameStart(args);
+	private BattleActionTargetType targetType;
+	private List<BattleCharacter> target;
+
+	public BattleTarget(BattleActionTargetType targetType) {
+		this(targetType, Collections.emptyList());
 	}
 
-	Test2() {
-		super(GameOption.defaultOption());
+	public BattleTarget(BattleActionTargetType targetType, BattleCharacter target) {
+		this(targetType, Arrays.asList(target));
 	}
-	MessageWindow mw;
+
+	public BattleTarget(BattleActionTargetType targetType, List<BattleCharacter> target) {
+		this.targetType = targetType;
+		this.target = target;
+	}
+
+	public List<BattleCharacter> getTarget() {
+		return target;
+	}
+
+	public BattleActionTargetType getTargetType() {
+		return targetType;
+	}
 
 	@Override
-	protected void startUp() {
-		
-	}
-
-	@Override
-	protected void dispose() {
-	}
-
-	@Override
-	protected void update(GameTimeManager gtm) {
-		mw.update();
-	}
-
-	@Override
-	protected void draw(GraphicsContext gc) {
-		mw.draw(gc);
+	public String toString() {
+		return "BattleTarget{" + "targetType=" + targetType + ", target=" + target + '}';
 	}
 
 }
