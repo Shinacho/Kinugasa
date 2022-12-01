@@ -27,39 +27,37 @@ THE SOFTWARE.
 
 	<set name="01" p="0.25" BGM="BGM/ƒoƒgƒ‹1iƒŠƒƒCƒNj.wav" win="FIELD" lose="GAME_OVER">
 		<enemy name="–ì“" />
-		<enemy name="–ì“" />
-		<enemy name="–ì“" />
+		<enemy name="–‚pŽt" />
+		<enemy name="“®‚­–‚pŽt" />
+		<enemy name="ŽR‘¯" />
+		<enemy name="ˆ«Š¿" />
 	</set>
 	<set name="02" p="0.25" BGM="BGM/ƒoƒgƒ‹1iƒŠƒƒCƒNj.wav" win="FIELD" lose="GAME_OVER">
 		<enemy name="–ì“" />
+		<enemy name="–‚pŽt" />
+		<enemy name="“®‚­–‚pŽt" />
+		<enemy name="ŽR‘¯" />
+		<enemy name="ˆ«Š¿" />
 	</set>
 	<set name="03" p="0.25" BGM="BGM/ƒoƒgƒ‹1iƒŠƒƒCƒNj.wav" win="FIELD" lose="GAME_OVER">
 		<enemy name="–ì“" />
+		<enemy name="–‚pŽt" />
+		<enemy name="“®‚­–‚pŽt" />
 		<enemy name="ŽR‘¯" />
-		<enemy name="ŽR‘¯" />
-		<enemy name="ŽR‘¯" />
-		<enemy name="ˆ«Š¿" />
 		<enemy name="ˆ«Š¿" />
 	</set>
 	<set name="04" p="0.25" BGM="BGM/ƒoƒgƒ‹1iƒŠƒƒCƒNj.wav" win="FIELD" lose="GAME_OVER" >
 		<enemy name="–ì“" />
-		<enemy name="–ì“" />
-		<enemy name="–ì“" />
-		<enemy name="ŽR‘¯" />
 		<enemy name="–‚pŽt" />
-		<enemy name="–‚pŽt" />
-		<enemy name="–‚pŽt" />
+		<enemy name="“®‚­–‚pŽt" />
 		<enemy name="ŽR‘¯" />
-		<enemy name="ŽR‘¯" />
-		<enemy name="ˆ«Š¿" />
 		<enemy name="ˆ«Š¿" />
 	</set>
 	<set name="05" p="0.66" BGM="BGM/ƒoƒgƒ‹1iƒŠƒƒCƒNj.wav" win="FIELD" lose="GAME_OVER">
-		<enemy name="“®‚©‚È‚¢–ì“" />
-		<enemy name="“®‚©‚È‚¢–ì“" />
+		<enemy name="–ì“" />
+		<enemy name="–‚pŽt" />
+		<enemy name="“®‚­–‚pŽt" />
 		<enemy name="ŽR‘¯" />
-		<enemy name="ŽR‘¯" />
-		<enemy name="ˆ«Š¿" />
 		<enemy name="ˆ«Š¿" />
 	</set>
 </KinugasaEnemySet>

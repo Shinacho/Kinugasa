@@ -157,7 +157,7 @@ public class Test extends GameManager {
 		Status s2 = new Status("ƒƒ“ƒo‚Q", RaceStorage.getInstance().get("lŠÔ"));
 		Status s3 = new Status("ƒƒ“ƒo‚R", RaceStorage.getInstance().get("lŠÔ"));
 		Status s4 = new Status("ƒƒ“ƒo‚S", RaceStorage.getInstance().get("lŠÔ"));
-		s2.setPartyLocation(PartyLocation.BACK);
+		s1.setPartyLocation(PartyLocation.BACK);
 		s4.setPartyLocation(PartyLocation.BACK);
 		pcList.add(new PlayerCharacter(s1, c1));
 		pcList.add(new PlayerCharacter(s2, c2));
@@ -169,6 +169,38 @@ public class Test extends GameManager {
 		s2.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
 		s3.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
 		s4.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
 		s1.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
 		s2.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
 		s3.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
@@ -189,6 +221,7 @@ public class Test extends GameManager {
 		s2.getBaseStatus().get("SAN").set(67);
 		s3.getBaseStatus().get("SAN").set(67);
 		s4.getBaseStatus().get("SAN").set(67);
+		s4.getBaseStatus().get("SPD").set(999);
 		s1.getBaseStatus().get("MOV").set(Random.randomAbsInt(128) + 98);
 		s2.getBaseStatus().get("MOV").set(Random.randomAbsInt(128) + 98);
 		s3.getBaseStatus().get("MOV").set(Random.randomAbsInt(128) + 98);
@@ -208,8 +241,18 @@ public class Test extends GameManager {
 		BattleConfig.outputLogStatusKey = "HP";
 		BattleConfig.moveStatusKey = "MOV";
 		BattleConfig.expStatisKey = "EXP";
+
+		BattleConfig.ActionName.avoidance = "‰ñ”ğ";
+		BattleConfig.ActionName.escape = "“¦‚°‚é";
+		BattleConfig.ActionName.itemUse = "ƒAƒCƒeƒ€";
+		BattleConfig.ActionName.defence = "–hŒä";
+		BattleConfig.ActionName.move = "ˆÚ“®";
+		BattleConfig.ActionName.commit = "Šm’è";
+		BattleConfig.ActionName.status = "ó‘Ô";
+
 		BattleConfig.addUntargetConditionNames("DEAD");
 		BattleConfig.addUntargetConditionNames("DESTROY");
+		BattleConfig.addUntargetConditionNames("ESCAPED");
 		BattleConfig.undeadDebugMode = true;
 		BattleConfig.addWinLoseLogic((List<Status> party, List<Status> enemy) -> {
 			// ƒp[ƒeƒB‚ÌƒRƒ“ƒfƒBƒVƒ‡ƒ“‚ğŠm”F

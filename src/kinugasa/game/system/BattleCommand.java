@@ -41,10 +41,17 @@ public class BattleCommand {
 		PC,;
 
 	}
+	//CPUまたはPC
 	private Mode mode;
+	//このコマンドのユーザ
 	private BattleCharacter user;
 	//取れる行動
 	private List<BattleAction> ba;
+	//状態異常関連
+	private boolean stop = false;
+	private boolean confu = false;
+	//ユーザオペレーション要否フラグ
+	private boolean userOperation = false;
 
 	protected void setBattleAction(List<BattleAction> ba) {
 		this.ba = ba;
@@ -55,6 +62,30 @@ public class BattleCommand {
 		this.user = user;
 		this.ba = user.getStatus().getBattleActions().asList();
 		assert !ba.isEmpty() : user.getStatus().getName() + " s BA is EMPTY";
+	}
+
+	public boolean isUserOperation() {
+		return userOperation;
+	}
+
+	public void setUserOperation(boolean userOperation) {
+		this.userOperation = userOperation;
+	}
+
+	public boolean isStop() {
+		return stop;
+	}
+
+	public void setStop(boolean stop) {
+		this.stop = stop;
+	}
+
+	public boolean isConfu() {
+		return confu;
+	}
+
+	public void setConfu(boolean confu) {
+		this.confu = confu;
 	}
 
 	public Mode getMode() {
@@ -78,6 +109,11 @@ public class BattleCommand {
 		return getBattleActions().get(0);
 	}
 
+	public BattleAction getRandom() {
+		int idx = Random.randomAbsInt(getBattleActions().size());
+		return getBattleActions().get(idx);
+	}
+
 	public EnemyBattleAction getNPCAction() {
 		if (mode == Mode.PC) {
 			throw new GameSystemException("enemyBattleAction Requested, but its PC");
@@ -95,7 +131,7 @@ public class BattleCommand {
 			i++;
 			lp++;
 			if (lp > 1000) {
-				throw new GameSystemException("getNPCActionExMove is infinity looping");
+				throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
 			}
 			if (i >= eba.size()) {
 				i = 0;
@@ -114,12 +150,26 @@ public class BattleCommand {
 		Collections.sort(ebaList);
 		int i = 0;
 		int lp = 0;
+		L1:
 		while (true) {
 			EnemyBattleAction eba = ebaList.get(i);
+			for (BattleActionEventTerm t : eba.getTerm()) {
+				if (!t.canDoThis(user.getStatus())) {
+					lp++;
+					if (lp > 1000) {
+						throw new GameSystemException("getNPCActionExMove is infinity looping, " + this);
+					}
+					i++;
+					if (i >= ebaList.size()) {
+						i = 0;
+					}
+					continue L1;
+				}
+			}
 			if (eba.getEvents().stream().allMatch(p -> p.getBatpt() == BattleActionTargetParameterType.MOVE)) {
 				lp++;
 				if (lp > 1000) {
-					throw new GameSystemException("getNPCActionExMove is infinity looping");
+					throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
 				}
 				i++;
 				if (i >= ebaList.size()) {
@@ -133,7 +183,7 @@ public class BattleCommand {
 			i++;
 			lp++;
 			if (lp > 1000) {
-				throw new GameSystemException("getNPCActionExMove is infinity looping");
+				throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
 			}
 			if (i >= ebaList.size()) {
 				i = 0;
@@ -155,12 +205,27 @@ public class BattleCommand {
 		Collections.sort(ebaList);
 		int i = 0;
 		int lp = 0;
+		L1:
 		while (true) {
 			EnemyBattleAction eba = ebaList.get(i);
+			for (BattleActionEventTerm t : eba.getTerm()) {
+				if (!t.canDoThis(user.getStatus())) {
+					lp++;
+					if (lp > 1000) {
+						throw new GameSystemException("getNPCActionExMove is infinity looping, " + this);
+					}
+					i++;
+					if (i >= ebaList.size()) {
+						i = 0;
+					}
+					continue L1;
+				}
+			}
+
 			if (eba.getBattleActionType() != type) {
 				lp++;
 				if (lp > 1000) {
-					throw new GameSystemException("getNPCActionExMove is infinity looping, ");
+					throw new GameSystemException("getNPCActionExMove is infinity looping, " + this);
 				}
 				i++;
 				if (i >= ebaList.size()) {
@@ -171,7 +236,7 @@ public class BattleCommand {
 			if (eba.getEvents().stream().allMatch(p -> p.getBatpt() == BattleActionTargetParameterType.MOVE)) {
 				lp++;
 				if (lp > 1000) {
-					throw new GameSystemException("getNPCActionExMove is infinity looping");
+					throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
 				}
 				i++;
 				if (i >= ebaList.size()) {
@@ -185,7 +250,7 @@ public class BattleCommand {
 			i++;
 			lp++;
 			if (lp > 1000) {
-				throw new GameSystemException("getNPCActionExMove is infinity looping");
+				throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
 			}
 			if (i >= ebaList.size()) {
 				i = 0;

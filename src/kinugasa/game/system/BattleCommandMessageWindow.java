@@ -37,7 +37,7 @@ import kinugasa.game.ui.TextStorage;
  * @vesion 1.0.0 - 2022/11/23_15:37:41<br>
  * @author Dra211<br>
  */
-public class BattleCommandMessageWindow extends MessageWindow {
+public class BattleCommandMessageWindow extends MessageWindow implements CommandWindow {
 
 	private BattleCommand cmd;
 
@@ -90,6 +90,7 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
+		setSelected();
 	}
 
 	public void prevType() {
@@ -103,14 +104,20 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
+		setSelected();
 	}
 
+	private void setSelected() {
+		GameSystem.getInstance().getBattleSystem().getTargetSystem().updatePCsTarget(selected);
+	}
+
+	@Override
 	public BattleAction getSelected() {
 		assert cmd != null : "BAMWs CMD is null";
 		return selected;
 	}
-	
-	public boolean isSelected(String name){
+
+	public boolean isSelected(String name) {
 		return selected.getName().equals(name);
 	}
 
@@ -118,7 +125,6 @@ public class BattleCommandMessageWindow extends MessageWindow {
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 	}
-
 
 	public BattleCommand getCmd() {
 		return cmd;
@@ -194,6 +200,7 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
+		setSelected();
 	}
 
 	public void prevAction() {
@@ -205,6 +212,7 @@ public class BattleCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
+		setSelected();
 	}
 
 }

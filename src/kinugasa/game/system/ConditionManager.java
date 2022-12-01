@@ -44,7 +44,7 @@ public class ConditionManager {
 	}
 
 	public void setCondition(List<Status> target) {
-		if(BattleConfig.undeadDebugMode){
+		if (BattleConfig.undeadDebugMode) {
 			return;
 		}
 		for (Status s : target) {
@@ -58,6 +58,9 @@ public class ConditionManager {
 						throw new GameSystemException("when 0 condition " + condName + " is not found.");
 					}
 					s.addCondition(condName);
+					if (s.hasConditions(false, BattleConfig.getUntargetConditionNames())) {
+						s.setExists(false);
+					}
 				}
 			}
 		}

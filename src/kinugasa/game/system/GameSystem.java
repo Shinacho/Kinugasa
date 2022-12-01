@@ -82,6 +82,9 @@ public class GameSystem {
 
 	public void initBattleSystem(List<PlayerCharacter> chara) {
 		party = new ArrayList<>(chara);
+		for (int i = 0; i < chara.size(); i++) {
+			chara.get(i).setOrder(i);
+		}
 	}
 
 	public void initFieldSystem(List<PlayerCharacter> chara) {

@@ -72,6 +72,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -274,6 +275,9 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 
 	@Override
 	public void draw(GraphicsContext g) {
+		if(!sprite.isVisible() || !sprite.isExist()){
+			return;
+		}
 		sprite.draw(g);
 		if (progressBarKey != null && progressBarSprite != null) {
 			progressBarSprite.draw(g);

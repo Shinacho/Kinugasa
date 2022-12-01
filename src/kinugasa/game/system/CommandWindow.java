@@ -21,15 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package kinugasa.game.system;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/21_8:59:30<br>
+ * @vesion 1.0.0 - 2022/11/30_20:02:35<br>
  * @author Dra211<br>
  */
-public enum EnemyActionSelectMode {
-	RANDOM,
-	LIST
+public interface CommandWindow {
+
+	public BattleAction getSelected();
 }

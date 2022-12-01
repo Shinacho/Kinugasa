@@ -58,6 +58,10 @@ public class StatusWindows extends BasicSprite {
 		init();
 	}
 
+	List<MessageWindow> getMw() {
+		return mw;
+	}
+
 	public static float h = 65;
 
 	public void init() {

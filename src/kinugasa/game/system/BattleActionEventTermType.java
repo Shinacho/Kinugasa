@@ -60,7 +60,7 @@ public enum BattleActionEventTermType {
 		@Override
 		public boolean canDoThis(String value, Status user) {
 			ItemEqipmentSlot slot = ItemEqipmentSlotStorage.getInstance().get(value);
-			return !user.getEqipment().containsKey(slot);
+			return user.getEqipment().get(slot) == null;
 		}
 	},
 	/**

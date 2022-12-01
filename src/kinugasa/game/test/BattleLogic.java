@@ -25,8 +25,6 @@ package kinugasa.game.test;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.EnumSet;
 import kinugasa.game.GameLogic;
 import kinugasa.game.GameManager;
 import kinugasa.game.GameTimeManager;
@@ -35,24 +33,18 @@ import kinugasa.game.field4.VehicleStorage;
 import kinugasa.game.input.GamePadButton;
 import kinugasa.game.input.InputState;
 import kinugasa.game.input.InputType;
-import kinugasa.game.system.AfterMoveCommandMessageWindow;
-import kinugasa.game.system.BattleAction;
-import kinugasa.game.system.BattleActionStorage;
-import kinugasa.game.system.BattleActionTargetParameterType;
-import kinugasa.game.system.BattleActionTargetType;
-import kinugasa.game.system.BattleActionType;
+import kinugasa.game.system.ActionResult;
+import kinugasa.game.system.AfterMoveActionMessageWindow;
 import kinugasa.game.system.BattleCharacter;
 import kinugasa.game.system.BattleCommand;
 import kinugasa.game.system.BattleCommandMessageWindow;
-import kinugasa.game.system.BattleFieldSystem;
 import kinugasa.game.system.BattleResult;
 import kinugasa.game.system.BattleResultValues;
 import kinugasa.game.system.BattleSystem;
 import kinugasa.game.system.BattleTargetSystem;
 import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.MagicBattleCommand;
-import kinugasa.game.ui.Text;
-import kinugasa.object.FourDirection;
+import kinugasa.game.system.Item;
+import kinugasa.game.system.ItemWindow;
 import kinugasa.object.KVector;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundBuilder;
@@ -82,10 +74,11 @@ public class BattleLogic extends GameLogic {
 	}
 
 	private int stage = 0;
+	private int prev;
 	private BattleSystem battleSystem;
 	private Point2D.Float playerMoveInitialLocation;
 	private Sound c5, c6, turnStart;
-	private int remMovPoint;
+	private BattleCommand cmd;
 
 	@Override
 	public void update(GameTimeManager gtm) {
@@ -99,171 +92,217 @@ public class BattleLogic extends GameLogic {
 			System.out.println("戦闘強制終了：" + result);
 			gls.changeTo("FIELD");
 		}
+		//戦闘終了判定
+		if (battleSystem.stageIs(BattleSystem.Stage.BATLE_END)) {
+			BattleResultValues result = GameSystem.getInstance().battleEnd();
+			System.out.println("戦闘終了：" + result);
+			gls.changeTo("FIELD");
+		}
 
 		switch (stage) {
-			case -1:
-				//状態が待機かつINFOの表示が終わるまで待つ
-				if (!battleSystem.getMessageWindowSystem().isClosedInfoWindow()) {
-					break;
-				}
-				if (battleSystem.getStage() != BattleSystem.Stage.WAITING_USER_CMD) {
-					break;
-				}
-				stage = 5;
-				break;
 			case 0:
-				//状態が待機になるまで待つ
-				if (battleSystem.getStage() != BattleSystem.Stage.WAITING_USER_CMD) {
-					break;
+				//BSの処理が完了するまで待機
+				if (battleSystem.stageIs(BattleSystem.Stage.WAITING_USER_CMD)) {
+					stage = 1;
 				}
-				stage = 1;
 				break;
 			case 1:
-				//コマンド発生
-				BattleCommand bc = battleSystem.getNextCmdAndExecNPCCmd();
-				if (bc.getMode() == BattleCommand.Mode.PC) {
-					if (!battleSystem.isCantMove()) {
-						//魔法詠唱中等で動けなくない場合（＝動ける場合
-						turnStart.stopAndPlay();
-						battleSystem.getMessageWindowSystem().getCommandWindow().resetSelect();
-						BattleAction ba = battleSystem.getMessageWindowSystem().getCommandWindow().getSelected();
-						battleSystem.setBattleAction(ba, ba.getAreaWithEqip(battleSystem.getCurrentCmd().getUser().getStatus()));
-						battleSystem.getTargetSystem().unset();
-						stage = 2;
-						break;
-					}
-					if (bc instanceof MagicBattleCommand) {
-						stage = 0;
-					}
+				//コマンド選択（1回だけ
+				cmd = battleSystem.execCmd();
+				if (cmd.isUserOperation()) {
+					//コマンドウインドウ表示、コマンド選択
+					turnStart.load().stopAndPlay();
+					stage = 2;
+					break;
+				} else {
+					//NPCアクションが終わるまで待機
+					stage = 0;
+					break;
 				}
-				stage = 0;
-				break;
 			case 2:
-				//プレイヤー入力
-				if (!battleSystem.getMessageWindowSystem().isClosedInfoWindow()) {
+				//コマンドウインドウ表示、コマンド選択
+				//INFOが表示されている場合は操作不能
+				if (!battleSystem.stageIs(BattleSystem.Stage.WAITING_USER_CMD)) {
 					break;
 				}
 				BattleCommandMessageWindow mw = battleSystem.getMessageWindowSystem().getCommandWindow();
-				int baa = mw.isSelected("移動")
-						? (int) battleSystem.getCurrentCmd().getUser().getStatus().getEffectedStatus().get("MOV").getValue()
-						: mw.getSelected().getBattleActionType() == BattleActionType.OTHER
-						? 0
-						: battleSystem.calcArea(mw.getSelected());
-				battleSystem.setBattleAction(mw.getSelected(), baa);
-				//選択
+				if (!mw.isVisible()) {
+					mw.setVisible(true);
+				}
 				if (is.isPressed(GamePadButton.POV_LEFT, InputType.SINGLE)) {
-					c6.stopAndPlay();
+					c6.load().stopAndPlay();
 					mw.prevType();
 				} else if (is.isPressed(GamePadButton.POV_RIGHT, InputType.SINGLE)) {
-					c6.stopAndPlay();
+					c6.load().stopAndPlay();
 					mw.nextType();
 				}
 				if (is.isPressed(GamePadButton.POV_UP, InputType.SINGLE)) {
-					c6.stopAndPlay();
+					c6.load().stopAndPlay();
 					mw.prevAction();
 				} else if (is.isPressed(GamePadButton.POV_DOWN, InputType.SINGLE)) {
-					c6.stopAndPlay();
+					c6.load().stopAndPlay();
 					mw.nextAction();
 				}
+
 				//戦況図
-				if (is.isPressed(GamePadButton.LB, InputType.CONTINUE)) {
-					battleSystem.getMessageWindowSystem().getStatusWindows().setVisible(false);
-					battleSystem.getMessageWindowSystem().getCommandWindow().setVisible(false);
-				} else {
-					battleSystem.getMessageWindowSystem().getStatusWindows().setVisible(true);
-					battleSystem.getMessageWindowSystem().getCommandWindow().setVisible(true);
+				if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					battleSystem.getMessageWindowSystem().switchVisible();
 				}
 
 				//決定
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
-					//ターゲット選択または移動へ切替
-					c5.stopAndPlay();
-					battleSystem.toTargetSelectOrPCMoveMode();
-					stage = 3;
+					c6.load().stopAndPlay();
+					//ターゲット選択
+					ActionResult result = battleSystem.execPCAction();
+					switch (result) {
+						case MISS:
+						case NO_TARGET:
+							//何もしない（INFO表示）
+							break;
+						case SUCCESS:
+							stage = 0;
+							break;
+						//制御が戻るまで待つ
+						case MOVE:
+							playerMoveInitialLocation = cmd.getUser().getSprite().getLocation();
+							stage = 4;
+							break;
+						case SHOW_ITEM_WINDOW:
+							stage = 5;
+							break;
+						case ESCAPE:
+							stage = 0;
+							break;
+						case SHOW_STATUS:
+							break;
+						case TARGET_SELECT:
+							prev = 2;
+							stage = 3;
+							break;
+					}
+				}
+				//キャンセル（カーソルを戻す
+				if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					mw.resetSelect();
 				}
 
 				break;
 			case 3:
-				//ターゲット選択または移動または移動確定かを判定（1回だけ実行
-				BattleAction selected = battleSystem.getCurrentBA();
-				if (selected.isOnlyBatpt(BattleActionTargetParameterType.MOVE)) {
-					//移動の場合
-					playerMoveInitialLocation = battleSystem.getCurrentCmd().getUser().getSprite().getCenter();
-					stage = 4;
-				} else if (selected.isOnlyBatpt(BattleActionTargetParameterType.NONE)) {
-					//移動確定
-					stage = 1;
-				} else {
-					//範囲効果内に対象がいるか確認、いない場合はステージ2に戻る
-					if (!battleSystem.getTargetSystem().hasAnyTarget()) {
-						battleSystem.setNoTargetMessage();
-						if (battleSystem.getMessageWindowSystem().getAfterMoveCommandWindow().isVisible()) {
-							stage = 6;
-						} else {
-							stage = 2;
-						}
-					} else {
-						//敵がいる場合はターゲット選択へ
-//						battleSystem.getMessageWindowSystem().setActionMessage(selected.getName() + Text.getLineSep() + "  " + selected.getDesc());
-						stage = 5;
+				//ターゲットセレクト
+				BattleTargetSystem targetSystem = battleSystem.getTargetSystem();
+
+				if (!battleSystem.stageIs(BattleSystem.Stage.WAITING_USER_CMD)) {
+					break;
+				}
+				if (is.isPressed(GamePadButton.POV_LEFT, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					targetSystem.prev();
+				} else if (is.isPressed(GamePadButton.POV_RIGHT, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					targetSystem.next();
+				}
+				if (is.isPressed(GamePadButton.POV_UP, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					targetSystem.prev();
+				} else if (is.isPressed(GamePadButton.POV_DOWN, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					targetSystem.next();
+				}
+
+				//戦況図
+				if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					battleSystem.getMessageWindowSystem().switchVisible();
+				}
+
+				//決定
+				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					ActionResult result = targetSystem.collect(battleSystem.visibleCommand());
+					switch (result) {
+						case ESCAPE:
+						case MOVE:
+						case NO_TARGET:
+						case SHOW_STATUS:
+						case TARGET_SELECT:
+						case SHOW_ITEM_WINDOW:
+						case MISS:
+						case SUCCESS:
+							stage = 0;
+							break;
 					}
+				}
+				if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					stage = prev;
+					break;
 				}
 				break;
 			case 4:
-				//移動モード
+				//移動フェーズ
+				//INFOが表示されている場合は操作不能
+				if (!battleSystem.stageIs(BattleSystem.Stage.WAITING_USER_CMD)) {
+					break;
+				}
+				AfterMoveActionMessageWindow mw2 = battleSystem.getMessageWindowSystem().getAfterMoveCommandWindow();
 				assert playerMoveInitialLocation != null : "battle logic, player move initial location is null";
-				BattleCharacter playerChara = battleSystem.getCurrentCmd().getUser();
+
+				BattleCharacter playerChara = cmd.getUser();
 
 				//戦況図
-				if (is.isPressed(GamePadButton.LB, InputType.CONTINUE)) {
-					battleSystem.getMessageWindowSystem().getStatusWindows().setVisible(false);
-					battleSystem.getMessageWindowSystem().getCommandWindow().setVisible(false);
-					battleSystem.getMessageWindowSystem().getTooltipWindow().setVisible(false);
-				} else {
-					battleSystem.getMessageWindowSystem().getStatusWindows().setVisible(true);
-					battleSystem.getMessageWindowSystem().getCommandWindow().setVisible(true);
-					battleSystem.getMessageWindowSystem().getTooltipWindow().setVisible(true);
+				if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
+					battleSystem.getMessageWindowSystem().switchVisible();
 				}
 				//キャンセル
 				if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
 					c5.stopAndPlay();
-					battleSystem.getMessageWindowSystem().closeTooltipWindow();
-					battleSystem.setRemMovPoint(0);
-					playerChara.getSprite().setLocationByCenter(playerMoveInitialLocation);
-					battleSystem.getMessageWindowSystem().closeActionWindow();
-					playerChara.to(FourDirection.WEST);
+					battleSystem.cancelPCsMove();
 					stage = 2;
 					break;
 				}
-//				//確定
-//				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
-//					c5.stopAndPlay();
-//					battleSystem.getMessageWindowSystem().closeTooltipWindow();
-//					battleSystem.submitPlayerMove(true);
-//					playerChara.to(FourDirection.WEST);
-//					stage = 1;
-//					break;
-//				}
 
+				//決定
+				//確定の場合、次のコマンドへ、攻撃の場合、ターゲット選択に移動する
+				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					ActionResult res = battleSystem.execPCAction();
+					if (res == ActionResult.TARGET_SELECT) {
+						prev = 4;
+						stage = 3;
+						break;
+					}
+					if (res == ActionResult.SUCCESS) {
+						stage = 0;
+						break;
+					}
+					if (res == ActionResult.NO_TARGET) {
+						break;
+					}
+				}
 				//移動後攻撃の判定
-				remMovPoint = (int) (playerChara.getStatus().getEffectedStatus().get("MOV").getValue()
-						- playerMoveInitialLocation.distance(battleSystem.getCurrentCmd().getUser().getSprite().getCenter()));
-				battleSystem.setRemMovPoint(Math.min(remMovPoint, battleSystem.getCurrentBAArea()));
-				if (remMovPoint > 0) {
-					battleSystem.getMessageWindowSystem().setTolltipMessage("通常攻撃可能");
-				} else {
-					battleSystem.getMessageWindowSystem().setTolltipMessage("通常攻撃不可");
+				int remMovPoint = (int) (playerChara.getStatus().getEffectedStatus().get("MOV").getValue()
+						- playerMoveInitialLocation.distance(cmd.getUser().getSprite().getCenter()));
+				//残ポイントが最大値の半分以下の場合は攻撃できない
+				battleSystem.setAftedMoveAction(remMovPoint > playerChara.getStatus().getEffectedStatus().get("MOV").getValue() / 2);
+
+				//コマンド選択
+				if (is.isPressed(GamePadButton.POV_LEFT, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					mw2.prevAction();
+				} else if (is.isPressed(GamePadButton.POV_RIGHT, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					mw2.nextAction();
 				}
-				if (is.isPressed(GamePadButton.A, InputType.SINGLE) && remMovPoint != 0) {
-					//移動後攻撃選択へ遷移
-					battleSystem.getMessageWindowSystem().closeTooltipWindow();
-					battleSystem.getMessageWindowSystem().closeCommandWindow();
-					battleSystem.submitPlayerMove();
-					battleSystem.afterMoveAttackMode("確定", remMovPoint);
-					battleSystem.getCurrentCmd().getUser().to(FourDirection.WEST);
-					stage = 6;
-					break;
+				if (is.isPressed(GamePadButton.POV_UP, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					mw2.prevAction();
+				} else if (is.isPressed(GamePadButton.POV_DOWN, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					mw2.nextAction();
 				}
+
 				//シミュレートムーブ起動して次フレームの位置取得
 				KVector v = new KVector(is.getGamePadState().sticks.LEFT.getLocation(VehicleStorage.getInstance().get("WALK").getSpeed()));
 				if (v.getSpeed() <= 0) {
@@ -289,92 +328,50 @@ public class BattleLogic extends GameLogic {
 
 				break;
 			case 5:
-				//ターゲット選択モード
-				//ターゲット選択システムは、toTargetSelectOrPCMoveModeを実行した時点で、選択したアクションが設定されている
-				//ターゲット選択できるのは、ONE_ENEMY/ONE_PARTYイベントを持っている場合のみ
-				BattleTargetSystem targetSystem = battleSystem.getTargetSystem();
-				if (targetSystem.contains(BattleActionTargetType.ONE_ENEMY) || targetSystem.contains(BattleActionTargetType.ONE_PARTY)) {
-					//ターゲット選択
-					if (is.isPressed(GamePadButton.POV_LEFT, InputType.SINGLE)) {
-						c6.stopAndPlay();
-						targetSystem.prev();
-					} else if (is.isPressed(GamePadButton.POV_RIGHT, InputType.SINGLE)) {
-						c6.stopAndPlay();
-						targetSystem.next();
-					}
+				//アイテム選択
+				ItemWindow mw3 = battleSystem.getMessageWindowSystem().getItemWindow();
+				//コマンド
+				if (is.isPressed(GamePadButton.POV_UP, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					mw3.prevItem();
+				} else if (is.isPressed(GamePadButton.POV_DOWN, InputType.SINGLE)) {
+					c6.load().stopAndPlay();
+					mw3.nextItem();
 				}
-
-				//戦況図
-				if (is.isPressed(GamePadButton.LB, InputType.CONTINUE)) {
-					battleSystem.getMessageWindowSystem().getStatusWindows().setVisible(false);
-					battleSystem.getMessageWindowSystem().getCommandWindow().setVisible(false);
-				} else {
-					battleSystem.getMessageWindowSystem().getStatusWindows().setVisible(true);
-					battleSystem.getMessageWindowSystem().getCommandWindow().setVisible(true);
-				}
-
 				//キャンセル
 				if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
-					c5.stopAndPlay();
-					battleSystem.updatePlayerLocation();
-					battleSystem.getMessageWindowSystem().closeActionWindow();
 					stage = 2;
 					break;
 				}
 				//決定
-				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
-					c5.stopAndPlay();
-					battleSystem.execPCAction();
-					battleSystem.getMessageWindowSystem().getActionWindow().setVisible(true);
-					stage = 0;
-					break;
+				if(is.isPressed(GamePadButton.A, InputType.SINGLE)){
+					ActionResult res = battleSystem.useItem();
+					if(res == ActionResult.MISS || res == ActionResult.NO_TARGET){
+						//アイテム使用できなかった
+						//ミス：バトル効果なし
+						//ノーターゲット：範囲内に対象なし
+					}
+					if(res == ActionResult.SUCCESS){
+						//アイテム使用できた（全体、必ず発動、装備品等
+						stage = 0;
+						break;
+					}
+					if(res == ActionResult.TARGET_SELECT){
+						//アイテムターゲット選択に遷移
+						stage = 6;
+						break;
+					}
 				}
-				break;
 			case 6:
-				//移動後攻撃選択
+				//アイテムターゲット選択
+				//MOVの半分の値（行って戻ってくるという設定）で計算
+				
 
-				//コマンド選択
-				AfterMoveCommandMessageWindow mw2 = battleSystem.getMessageWindowSystem().getAfterMoveCommandWindow();
-				if (is.isPressed(GamePadButton.POV_UP, InputType.SINGLE)) {
-					c6.stopAndPlay();
-					mw2.prevAction();
-					if (mw2.getSelected().getName().equals("確定")) {
-						battleSystem.setBattleAction(mw2.getSelected(), 0);
-					} else {
-						int area = Math.min(mw2.getSelected().getAreaWithEqip(battleSystem.getCurrentCmd().getUser().getStatus()), remMovPoint);
-						battleSystem.setBattleAction(mw2.getSelected(), area);
-					}
-				} else if (is.isPressed(GamePadButton.POV_DOWN, InputType.SINGLE)) {
-					c6.stopAndPlay();
-					mw2.nextAction();
-					if (mw2.getSelected().getName().equals("確定")) {
-						battleSystem.setBattleAction(mw2.getSelected(), 0);
-					} else {
-						int area = Math.min(mw2.getSelected().getAreaWithEqip(battleSystem.getCurrentCmd().getUser().getStatus()), remMovPoint);
-						battleSystem.setBattleAction(mw2.getSelected(), area);
-					}
-				}
-				//戦況図
-				if (is.isPressed(GamePadButton.LB, InputType.CONTINUE)) {
-					battleSystem.getMessageWindowSystem().getStatusWindows().setVisible(false);
-					battleSystem.getMessageWindowSystem().getAfterMoveCommandWindow().setVisible(false);
-				} else {
-					battleSystem.getMessageWindowSystem().getStatusWindows().setVisible(true);
-					battleSystem.getMessageWindowSystem().getAfterMoveCommandWindow().setVisible(true);
-				}
-
-				//決定
-				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
-					//ターゲット選択または次のキャラの移動へ
-					c5.stopAndPlay();
-					battleSystem.toTargetSelectOrPCMoveEnd();
-					stage = 3;
-				}
 				break;
-
 			default:
-				throw new AssertionError("undefined battle logic stage");
+				throw new AssertionError("undefined Test2.BattleLogic s stage");
 		}
+
 	}
 
 	@Override

@@ -23,16 +23,15 @@
  */
 package kinugasa.game.test;
 
+import java.util.ArrayList;
+import java.util.List;
 import kinugasa.game.GameManager;
 import kinugasa.game.GameOption;
 import kinugasa.game.GameTimeManager;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LockUtil;
-import kinugasa.game.test.rpg.GM;
+import static kinugasa.game.system.BattleConfig.messageWindowY;
 import kinugasa.game.ui.MessageWindow;
-import kinugasa.game.ui.ProgressBarSprite;
-import kinugasa.game.ui.Text;
-import kinugasa.util.FrameTimeCounter;
 
 /**
  *
@@ -42,6 +41,7 @@ import kinugasa.util.FrameTimeCounter;
 public class Test2 extends GameManager {
 
 	public static void main(String[] args) {
+	
 		LockUtil.deleteAllLockFile();
 		new Test2().gameStart(args);
 	}
@@ -53,7 +53,11 @@ public class Test2 extends GameManager {
 
 	@Override
 	protected void startUp() {
-		
+		float w = GameOption.getInstance().getWindowSize().width - 6;
+		float h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
+		mw = new MessageWindow(3, messageWindowY, w, h);
+		mw.setText("‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O");
+		mw.allText();
 	}
 
 	@Override

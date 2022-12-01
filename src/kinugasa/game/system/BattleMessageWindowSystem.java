@@ -50,11 +50,32 @@ public class BattleMessageWindowSystem implements Drawable {
 		return INSTANCE;
 	}
 
+	//コマンドを表示するメッセージウインドウ
+	private BattleCommandMessageWindow commandWindow;
+	//行動を表示するメッセージウインドウ
+	private MessageWindow actionWindow;
+	private FrameTimeCounter actionWindowVisibleTC;
+	//行動できないなどの警告メッセージを出すウインドウ
+	private MessageWindow infoWindow;
+	//攻撃可能とかの小情報を出すウインドウ
+	private MessageWindow tooltipWindow;
+	//INFOの表示時間のマスタ
+	private int infoWindowVisibleTime = 60;
+	//INFOの表示時間カウンタ
+	private FrameTimeCounter infoWindowVisibleTC;
+	//ステータスペイン
+	private StatusWindows statusWindows;
+	//移動後行動用のウインドウ
+	private AfterMoveActionMessageWindow afterMoveCommandWindow;
+	//アイテムウインドウ
+	private ItemWindow itemWindow;
+
 	void init(List<Status> statusList) {
 		float w = GameOption.getInstance().getWindowSize().width - 6;
 		float h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
 		commandWindow = new BattleCommandMessageWindow(3, messageWindowY, w, h);
-		afterMoveCommandWindow = new AfterMoveCommandMessageWindow(3, messageWindowY, w, h);
+		afterMoveCommandWindow = new AfterMoveActionMessageWindow(3, messageWindowY, w, h);
+		itemWindow = new ItemWindow(3, messageWindowY, w, h);
 		w = GameOption.getInstance().getWindowSize().width - 6;
 		h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
 		actionWindow = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
@@ -72,19 +93,27 @@ public class BattleMessageWindowSystem implements Drawable {
 		infoWindow.setVisible(false);
 		actionWindow.setVisible(true);
 		tooltipWindow.setVisible(false);
+		itemWindow.setVisible(false);
 
 	}
 
-	void setCommand(BattleCommand cmd) {
-		if (cmd.getMode() == BattleCommand.Mode.CPU) {
-			throw new GameSystemException("BattleActionMessageWindow s cmd is NPCs CMD");
-		}
-		commandWindow.setCmd(cmd);
-		commandWindow.setVisible(true);
-		commandWindow.allText();
+	public ItemWindow getItemWindow() {
+		return itemWindow;
 	}
 
-	public void setActionMessage(String msg) {
+	public void closeItemWindow() {
+		itemWindow.clearText();;
+		itemWindow.setVisible(false);
+	}
+
+	void setAfterMoveCommand(List<BattleAction> list) {
+		afterMoveCommandWindow.setActions(list);
+		afterMoveCommandWindow.allText();
+		afterMoveCommandWindow.setVisible(true);
+	}
+
+	void setActionMessage(String msg, int actionTime) {
+		actionWindowVisibleTC = new FrameTimeCounter(actionTime);
 		actionWindow.setText(new Text(msg.replaceAll("\\r\\n", Text.getLineSep())));
 		actionWindow.setVisible(true);
 		actionWindow.allText();
@@ -97,6 +126,32 @@ public class BattleMessageWindowSystem implements Drawable {
 		infoWindow.setVisible(true);
 	}
 
+	void setTolltipMessage(String text) {
+		tooltipWindow.setText(new Text(text));
+		tooltipWindow.setVisible(true);
+		tooltipWindow.allText();
+	}
+
+	boolean isVisibleCommand() {
+		return commandWindow.isVisible();
+	}
+
+	boolean isVisibleAfterMoveCommand() {
+		return afterMoveCommandWindow.isVisible();
+	}
+
+	boolean isVisibleActionMessage() {
+		return actionWindow.isVisible();
+	}
+
+	boolean isVisibleInfoMessage() {
+		return infoWindow.isVisible();
+	}
+
+	boolean isVisibleTolltipMessage() {
+		return tooltipWindow.isVisible();
+	}
+
 	public void closeCommandWindow() {
 		commandWindow.clearText();
 		commandWindow.setVisible(false);
@@ -105,19 +160,13 @@ public class BattleMessageWindowSystem implements Drawable {
 	public void closeActionWindow() {
 		actionWindow.clearText();
 		actionWindow.setVisible(false);
+		actionWindowVisibleTC = null;
 	}
 
 	public void closeInfoWindow() {
 		infoWindow.clearText();
 		infoWindow.setVisible(false);
-	}
-
-	public boolean isClosedInfoWindow() {
-		return !infoWindow.isVisible();
-	}
-
-	public MessageWindow getTooltipWindow() {
-		return tooltipWindow;
+		infoWindowVisibleTC = null;
 	}
 
 	public void closeTooltipWindow() {
@@ -125,49 +174,40 @@ public class BattleMessageWindowSystem implements Drawable {
 		tooltipWindow.setVisible(false);
 	}
 
-	public void setTolltipMessage(String text) {
-		tooltipWindow.setText(new Text(text));
-		tooltipWindow.setVisible(true);
-		tooltipWindow.allText();
+	public void closeStatusWindow() {
+		statusWindows.setVisible(false);
 	}
 
-	//コマンドを表示するメッセージウインドウ
-	private BattleCommandMessageWindow commandWindow;
-	//行動を表示するメッセージウインドウ
-	private MessageWindow actionWindow;
-	//行動できないなどの警告メッセージを出すウインドウ
-	private MessageWindow infoWindow;
-	//攻撃可能とかの小情報を出すウインドウ
-	private MessageWindow tooltipWindow;
-	//警告MSGの表示時間のマスタ
-	private int infoWindowVisibleTime = 60;
-	//INFOの表示時間カウンタ
-	private FrameTimeCounter infoWindowVisibleTC;
-	//ステータスペイン
-	private StatusWindows statusWindows;
-	//移動後行動用のウインドウ
-	private AfterMoveCommandMessageWindow afterMoveCommandWindow;
+	public void closeAfterMoveCommandWindow() {
+		afterMoveCommandWindow.clearText();
+		afterMoveCommandWindow.setVisible(false);
+	}
 
 	void update() {
+		if (closeAll) {
+			return;
+		}
 		//infoウインドウの表示時間判定
 		if (infoWindowVisibleTC != null) {
 			//info表示中
 			infoWindow.update();
 			if (infoWindowVisibleTC.isReaching()) {
 				//表示終了
-				infoWindow.setVisible(false);
-				infoWindow.clearText();
-				infoWindowVisibleTC = null;
+				closeInfoWindow();
+			}
+		}
+		if (actionWindowVisibleTC != null) {
+			//action表示中
+			actionWindow.update();
+			if (actionWindowVisibleTC.isReaching()) {
+				//表示終了
+				closeActionWindow();
 			}
 		}
 
 		//コマンドウインドウの処理
 		//内容の変更はBattleSystemから実行される
 		commandWindow.update();
-
-		//アクションウインドウの処理
-		//内容の変更はBattleSystemから実行される
-		actionWindow.update();
 
 		//ステータスウインドウの処理
 		//内容は自動的に変更される
@@ -177,52 +217,66 @@ public class BattleMessageWindowSystem implements Drawable {
 		tooltipWindow.update();
 
 		afterMoveCommandWindow.update();
+
+		itemWindow.update();
 	}
 
 	@Override
 	public void draw(GraphicsContext g) {
+		if (closeAll) {
+			return;
+		}
 		statusWindows.draw(g);
 		commandWindow.draw(g);
 		afterMoveCommandWindow.draw(g);
 		actionWindow.draw(g);
 		infoWindow.draw(g);
 		tooltipWindow.draw(g);
-	}
-
-	public MessageWindow getActionWindow() {
-		return actionWindow;
-	}
-
-	public BattleCommandMessageWindow getCommandWindow() {
-		return commandWindow;
-	}
-
-	public MessageWindow getInfoWindow() {
-		return infoWindow;
-	}
-
-	public StatusWindows getStatusWindows() {
-		return statusWindows;
+		itemWindow.draw(g);
 	}
 
 	public void setInfoWindowVisibleTime(int infoWindowVisibleTime) {
 		this.infoWindowVisibleTime = infoWindowVisibleTime;
 	}
 
-	public int getInfoWindowVisibleTime() {
-		return infoWindowVisibleTime;
+	public BattleCommandMessageWindow getCommandWindow() {
+		return commandWindow;
 	}
 
-	public AfterMoveCommandMessageWindow getAfterMoveCommandWindow() {
+	MessageWindow getActionWindow() {
+		return actionWindow;
+	}
+
+	MessageWindow getInfoWindow() {
+		return infoWindow;
+	}
+
+	MessageWindow getTooltipWindow() {
+		return tooltipWindow;
+	}
+
+	StatusWindows getStatusWindows() {
+		return statusWindows;
+	}
+
+	public AfterMoveActionMessageWindow getAfterMoveCommandWindow() {
 		return afterMoveCommandWindow;
 	}
 
-	public void showAfterMoveCommandMessageWindow() {
-		afterMoveCommandWindow.setVisible(true);
+	//一時的にすべてのウインドウをクローズする。
+	private boolean closeAll = false;
+
+	public void closeAll() {
+		closeAll = true;
 	}
 
-	public void closeAfterMoveCommandMessageWindow() {
-		afterMoveCommandWindow.setVisible(false);
+	//一時的にクローズしたウインドウをオープンする
+	public void reOpenAll() {
+		closeAll = false;
+	}
+
+	public void switchVisible() {
+		closeAll = !closeAll;
 	}
 
 }

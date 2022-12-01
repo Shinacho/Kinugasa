@@ -69,6 +69,9 @@ public class PlayerCharacterSprite extends AnimationSprite {
 
 	@Override
 	public void draw(GraphicsContext g) {
+		if (!isVisible() || !isExist()) {
+			return;
+		}
 		super.draw(g);
 		Graphics2D g2 = g.create();
 		g2.setColor(SHADOW);
@@ -115,14 +118,14 @@ public class PlayerCharacterSprite extends AnimationSprite {
 				}
 				float nx = map.getBaseLayer().getX() + targetIdx.x * map.getChipW();
 				float ny = map.getBaseLayer().getY() + targetIdx.y * map.getChipH();
-				Point2D.Float tgtL = new Point2D.Float(nx,ny);
-				
+				Point2D.Float tgtL = new Point2D.Float(nx, ny);
+
 				KVector v = new KVector();
 				v.setAngle(getLocation(), tgtL);
 				setAngle(v.angle);
 				to(getVector().round());
 				move();
-				if(tgtL.distance(getLocation()) < getSpeed() || tgtL.equals(getLocation())){
+				if (tgtL.distance(getLocation()) < getSpeed() || tgtL.equals(getLocation())) {
 					setLocation(nx, ny);
 					nextStage();
 				}

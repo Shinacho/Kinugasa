@@ -63,29 +63,25 @@ THE SOFTWARE.
 	</spAttack>
 
 	<!-- –‚–@Ží—Þ -->
-	<magic name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg" desc="‰Š–‚–@‚ÌŠî‘b“I‚ÈpŽ®‚¾" area="128" term="‰Î‰Š‚Ì‘•Û—L" waitTime="140" sound="’ÊíUŒ‚">
+	<magic name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg" desc="‰Š–‚–@‚ÌŠî‘b“I‚ÈpŽ®‚¾" area="128" term="‰Î‰Š‚Ì‘•Û—L" waitTime="70" sound="’ÊíUŒ‚">
 		<event batt="ONE_ENEMY" batpt="STATUS" tgtName="HP" value="-30" attr="FLAME" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
 		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-3" attr="NONE" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="SELF"/>
 	</magic>
 
-	<magic name="“V’n—‹–Â" desc="‹CÛ–‚–@‚É•ª—Þ‚³‚ê‚é‚à‚Ì‚ÅAâ‘å‚È—‹‚ðŒÄ‚Ñ‹N‚±‚·" spellTime="2" area="256" term="‰Î‰Š‚Ì‘•Û—L" waitTime="180" sound="’ÊíUŒ‚">
-		<event batt="ALL" batpt="STATUS" tgtName="HP" value="-60" attr="THNDER" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TEAM_AREA"/>
-		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-0.3" attr="NONE" p="1" dct="PERCENT_OF_NOW" animation="’ÊíUŒ‚" animationTgt="SELF"/>
+	<magic name="“V’n—‹–Â" desc="‹CÛ–‚–@‚É•ª—Þ‚³‚ê‚é‚à‚Ì‚ÅAâ‘å‚È—‹‚ðŒÄ‚Ñ‹N‚±‚·" spellTime="2" area="256" term="‰Î‰Š‚Ì‘•Û—L" waitTime="90" sound="’ÊíUŒ‚">
+		<event batt="TEAM_ENEMY" batpt="STATUS" tgtName="HP" value="-60" attr="THNDER" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TEAM_AREA"/>
+		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-15" attr="NONE" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="SELF"/>
 	</magic>
 
-	<magic name="¶–½‰ñ•œ" desc="¶–½‚Ì_”é‚É‚æ‚è‘Ì—Í‚ð‰ñ•œ‚·‚é" fieldUse="true" spellTime="3" area="128" term="‰Î‰Š‚Ì‘•Û—L" waitTime="140" sound="’ÊíUŒ‚">
+	<magic name="¶–½‰ñ•œ" desc="¶–½‚Ì_”é‚É‚æ‚è‘Ì—Í‚ð‰ñ•œ‚·‚é" fieldUse="true" spellTime="3" area="128" term="‰Î‰Š‚Ì‘•Û—L" waitTime="80" sound="’ÊíUŒ‚">
 		<event batt="ONE_PARTY" batpt="STATUS" tgtName="HP" value="+15" attr="MYSTERY" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
-		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-30" attr="NONE" p="1" dct="DIRECT"  animation="’ÊíUŒ‚" animationTgt="SELF"/>
+		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-15" attr="NONE" p="1" dct="DIRECT"  animation="’ÊíUŒ‚" animationTgt="SELF"/>
 	</magic>
 
- 	<magic name="ƒGƒAƒXƒ‰ƒbƒVƒ…" desc="‚·‚é‚Ç‚¢^‹ó”g‚É‚æ‚è“G‚ðØ‚è—ô‚­" spellTime="5" area="128" waitTime="140" sound="’ÊíUŒ‚">
+ 	<magic name="ƒGƒAƒXƒ‰ƒbƒVƒ…" desc="‚·‚é‚Ç‚¢^‹ó”g‚É‚æ‚è“G‚ðØ‚è—ô‚­" spellTime="5" area="128" waitTime="80" sound="’ÊíUŒ‚">
 		<event batt="TEAM_ENEMY" batpt="STATUS" tgtName="HP" value="-15" attr="CHOP" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
 		<event batt="TEAM_ENEMY" batpt="STATUS" tgtName="HP" value="-15" attr="AIR" p="1" dct="DIRECT" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
 		<event batt="SELF" batpt="STATUS" tgtName="MP" value="-24" attr="NONE" p="1" dct="DIRECT"  animation="’ÊíUŒ‚" animationTgt="SELF"/>
-	</magic>
-
- 	<magic name="ƒeƒŒƒ|[ƒg" desc="íê‚©‚ç“¦‘–‚·‚é" spellTime="3"  term="‰Î‰Š‚Ì‘•Û—L" waitTime="140" sound="’ÊíUŒ‚">
-		<event batt="TEAM_PARTY" batpt="ADD_CONDITION" tgtName="ESCAPE" p="0.75" animation="’ÊíUŒ‚" animationTgt="TARGET"/>
 	</magic>
 
 	<!--‚»‚Ì‘¼-->

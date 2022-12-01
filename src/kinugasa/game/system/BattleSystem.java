@@ -24,7 +24,6 @@
 package kinugasa.game.system;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +38,8 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.field4.PlayerCharacterSprite;
 import kinugasa.game.field4.VehicleStorage;
+import static kinugasa.game.system.ActionResult.MISS;
+import static kinugasa.game.system.ActionResult.SUCCESS;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
 import kinugasa.object.Drawable;
@@ -85,34 +86,23 @@ public class BattleSystem implements Drawable {
 	private LinkedHashMap<Integer, List<MagicSpell>> magics = new LinkedHashMap<>();
 	//表示中バトルアクション・アニメーション
 	private List<BattleActionAnimation> animation = new ArrayList<>();
-	//実行中バトルアクションから生成された待機時間
+	//実行中バトルアクションから生成されたアクション待機時間
 	private FrameTimeCounter currentBAWaitTime;
-	//実行中バトルアクション
-	private BattleAction currentBA;
-	//実行中バトルアクションのエリア
-	private int currentBAArea;
-	//残移動ポイント
-	private int remMovPoint = 0;
 	//行動中コマンド
 	private BattleCommand currentCmd;
-	private boolean cantMove;
-	//行動中エネミーの残行動力
-	private int enemyMovPoint;
-	//PCの行動範囲／攻撃範囲の点滅制御
-	private FrameTimeCounter playerAreaBlinkCounter = new FrameTimeCounter(5);
-	private boolean playerAreaVisible = false;
-	private Point2D.Float playerCharaCenter;
-	//魔法の詠唱を開始した！の表示時間
+	//ActionMessage表示時間
 	private int messageWaitTime = 66;
 
 	//updateメソッドステージ
 	public enum Stage {
 		STARTUP,
 		INITIAL_MOVE,
+		ESCAPING,
 		WAITING_USER_CMD,
 		PLAYER_MOVE,
 		TARGET_SELECT,
 		EXECUTING_ACTION,
+		SHOW_ACTION_MESSAGE,
 		EXECUTING_MOVE,
 		BATLE_END,
 		SHOW_INFO_MSG
@@ -129,6 +119,8 @@ public class BattleSystem implements Drawable {
 	private ConditionManager conditionManager;
 	//戦闘結果
 	private BattleResultValues battleResultValue = null;
+	//カレントBAのNPC残移動ポイント
+	private int remMovePoint;
 
 	//デバッグ用
 	@Deprecated
@@ -172,24 +164,20 @@ public class BattleSystem implements Drawable {
 		//出現MSG設定用マップ
 		Map<String, Long> enemyNum
 				= enemies.stream().collect(Collectors.groupingBy(Enemy::getId, Collectors.counting()));
-
 		//出現MSG設定
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, Long> e : enemyNum.entrySet()) {
 			sb.append(e.getKey()).append(I18N.translate("WAS")).append(e.getValue()).append(I18N.translate("APPEARANCE")).append(Text.getLineSep());
 		}
-		getMessageWindowSystem().setActionMessage(sb.toString());
+		messageWindowSystem.setActionMessage(sb.toString(), Integer.MAX_VALUE);
 
 		//リセット
 		currentCmd = null;
-		currentBA = null;
 		currentBAWaitTime = null;
-		currentBAArea = 0;
 		commandsOfThisTurn.clear();
 		turn = 0;
 		animation.clear();
-		playerAreaBlinkCounter.reset();
-		playerAreaVisible = false;
+		targetSystem.unsetPCsTarget();
 
 		//敵の配置
 		putEnemy();
@@ -288,7 +276,6 @@ public class BattleSystem implements Drawable {
 					//魔法実行イベントをランダムな位置に割り込ませる
 					BattleCommand bc = new MagicBattleCommand(s, s.getMagic());
 					int idx = Random.randomAbsInt(commandsOfThisTurn.size());
-					commandsOfThisTurn.add(idx, bc);
 					//割り込ませたユーザの通常アクションを破棄する
 					BattleCommand remove = null;
 					for (BattleCommand c : commandsOfThisTurn) {
@@ -299,15 +286,47 @@ public class BattleSystem implements Drawable {
 					if (remove != null) {
 						commandsOfThisTurn.remove(remove);
 					}
+					//削除してから割り込み実行
+					commandsOfThisTurn.add(idx, bc);
 				}
+				//詠唱中リストからこのターンのイベントを削除
 				magics.remove(turn);
 			}
 		}
+		updateCondition();
+
 		//状態異常の効果時間を引く
 		enemies.stream().map(p -> p.getStatus()).forEach(p -> p.update());
 		GameSystem.getInstance().getPartyStatus().forEach(p -> p.update());
 
+		//このターン行動可否をコマンドに設定
+		for (BattleCommand cmd : commandsOfThisTurn) {
+			if (cmd.getUser().getStatus().isConfu()) {
+				cmd.setConfu(true);
+			}
+			if (!cmd.getUser().getStatus().canMoveThisTurn()) {
+				cmd.setStop(true);
+			}
+		}
+
 		setStage(Stage.INITIAL_MOVE, "TURN_START");
+	}
+
+	private void updateCondition() {
+		//HPが0になったときなどの状態異常を付与する
+		conditionManager.setCondition(GameSystem.getInstance().getPartyStatus());
+		conditionManager.setCondition(enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList()));
+		//スプライトの非表示化処理
+		//アンターゲットコンディション発生中のユーザによるコマンドを除去
+		List<BattleCommand> remove = new ArrayList<>();
+		for (BattleCommand cmd : commandsOfThisTurn) {
+			if (cmd.getUser().getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
+				remove.add(cmd);
+				cmd.getUser().getSprite().setVisible(false);
+			}
+		}
+		commandsOfThisTurn.removeAll(remove);
+
 	}
 
 	//
@@ -324,6 +343,15 @@ public class BattleSystem implements Drawable {
 		}
 		//敵番号の初期化
 		EnemyBlueprint.initEnemyNoMap();
+		//逃げたコンディションで非表示になっている場合表示する
+		for (PlayerCharacter pc : GameSystem.getInstance().getParty()) {
+			//逃げた後死亡、死亡した後逃げるはできないので、これで問題ないはず
+			if (pc.getStatus().hasCondition(BattleConfig.escapedConditionName)) {
+				pc.getSprite().setVisible(true);
+				//逃げたコンディションを外す
+				pc.getStatus().removeCondition(BattleConfig.escapedConditionName);
+			}
+		}
 		end = true;
 	}
 
@@ -340,18 +368,35 @@ public class BattleSystem implements Drawable {
 		return battleResultValue;
 	}
 
-	//次のコマンドを取得。NPCまたはPC。
-	public BattleCommand getNextCmdAndExecNPCCmd() {
+	//次のコマンドを取得。NPCまたはPC。NPCの場合は自動実行。魔法詠唱イベントも自動実行。
+	public BattleCommand execCmd() {
+		//すべてのコマンドを実行したら次のターンを開始
 		if (commandsOfThisTurn.isEmpty()) {
 			turnStart();
 		}
 		currentCmd = commandsOfThisTurn.getFirst();
 		commandsOfThisTurn.removeFirst();
-		cantMove = false;
 
-		if (GameSystem.isDebugMode()) {
-			System.out.println("getNextCmdAndExecNPCCmd : " + currentCmd);
+		//ターゲットシステム初期化
+		targetSystem.unsetPCsTarget();
+		currentBAWaitTime = null;
+
+		BattleCharacter user = currentCmd.getUser();
+		//アンターゲット状態異常の場合、メッセージ出さずに次に送る
+		if (user.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
+			if (GameSystem.isDebugMode()) {
+				System.out.println(user.getStatus().getName() + " is bad condition");
+			}
+			return execCmd();
 		}
+		//防御または回避中の場合、そのフラグを外す
+		if (user.getStatus().hasCondition(BattleConfig.defenceConditionName)) {
+			user.getStatus().removeCondition(BattleConfig.defenceConditionName);
+		}
+		if (user.getStatus().hasCondition(BattleConfig.avoidanceConditionName)) {
+			user.getStatus().removeCondition(BattleConfig.avoidanceConditionName);
+		}
+
 		//魔法詠唱完了イベントの場合、PCでもNPCでも自動実行、（詠唱中コンディションを外す
 		if (currentCmd instanceof MagicBattleCommand) {
 			BattleAction ba = currentCmd.getFirstBattleAction();
@@ -362,448 +407,692 @@ public class BattleSystem implements Drawable {
 				//フィールドイベントの場合、ターゲットが入っていないが、詠唱成功させる
 				if (!ba.isOnlyBatt(BattleActionTargetType.FIELD)) {
 					//アニメーションは追加しないが、詠唱中フラグは外す
-					addMessage(ba, target, Arrays.asList(BattleActionResult.MISS));
+					List<BattleActionResult> result = ba.exec(GameSystem.getInstance(), currentCmd.getUser(), target);
+					setActionMessage(user, ba, target, result);
+					setActionAnimation(user, ba, target, result);
 					currentCmd.getUser().getStatus().removeCondition(BattleConfig.spellingConditionName);
 					currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
-					setStage(Stage.EXECUTING_ACTION, "getNextCmdAndExecNPCCmd");
+					setStage(Stage.ESCAPING, "getNextCmdAndExecNPCCmd");
 					return currentCmd;
 				}
 				//ターゲット不在
-				if (GameSystem.isDebugMode()) {
-					System.out.println("non target");
-				}
+				//アニメーションは追加しないが、詠唱中フラグは外す
+				StringBuilder s = new StringBuilder();
+				s.append(currentCmd.getUser().getStatus().getName());
+				s.append(I18N.translate("S"));
+				s.append(currentCmd.getFirstBattleAction().getName());
+				s.append(I18N.translate("ISFAILED"));
+				messageWindowSystem.setActionMessage(s.toString(), messageWaitTime);
+				currentCmd.getUser().getStatus().removeCondition(BattleConfig.spellingConditionName);
+				setStage(Stage.ESCAPING, "getNextCmdAndExecNPCCmd");
+				return currentCmd;
 			}
-			//詠唱成功
+			//現状のMPで詠唱できるか確認
+			//対価が支払えない場合、空振りさせる
+			Map<StatusKey, Integer> damage = ba.selfDamage(user.getStatus());
+			//ダメージを合算
+			StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
+			//ダメージがあって、0の項目がある場合、対価を支払えないため空振り
+			//この魔法の消費項目を取得
+			List<StatusKey> shortageKey = new ArrayList<>();
+			for (BattleActionEvent e : ba.getEvents().stream().filter(p -> p.getBatt() == BattleActionTargetType.SELF).collect(Collectors.toList())) {
+				shortageKey.add(StatusKeyStorage.getInstance().get(e.getTargetName()));
+			}
+			if (!damage.isEmpty() && simulateDamage.isZero(false, shortageKey)) {
+				//対象項目で1つでも0の項目があったら空振り
+				StringBuilder s = new StringBuilder();
+				s.append(user.getStatus().getName());
+				s.append(I18N.translate("IS"));
+				s.append(ba.getName());
+				s.append(I18N.translate("SPELL_END"));
+				s.append(Text.getLineSep());
+				s.append(I18N.translate("BUT"));
+				s.append(simulateDamage.getZeroStatus().stream().filter(p -> damage.containsKey(p)).collect(Collectors.toList()).toString());
+				s.append(I18N.translate("WAS"));
+				s.append(I18N.translate("SHORTAGE"));
+				messageWindowSystem.setInfoMessage(s.toString());
+				messageWindowSystem.closeAfterMoveCommandWindow();
+				messageWindowSystem.closeActionWindow();
+				messageWindowSystem.closeTooltipWindow();
+				setStage(Stage.SHOW_INFO_MSG, "execAction");
+				return currentCmd;
+			}
+			//詠唱成功したらアニメーションを追加してEXEC_ACTIONに入る
 			List<BattleActionResult> result = ba.exec(GameSystem.getInstance(), currentCmd.getUser(), target);
-			addMessage(ba, target, result);
-			addAnimation(ba, target, result);
+			setActionMessage(user, ba, target, result);
+			setActionAnimation(user, ba, target, result);
 			currentCmd.getUser().getStatus().removeCondition(BattleConfig.spellingConditionName);
 			currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
+			messageWindowSystem.closeTooltipWindow();
+			messageWindowSystem.closeAfterMoveCommandWindow();
+			messageWindowSystem.closeCommandWindow();
 			setStage(Stage.EXECUTING_ACTION, "getNextCmdAndExecNPCCmd");
 			return currentCmd;
 		}
 
-		//ターゲットシステム初期化
-		targetSystem.unset();
-
 		//状態異常で動けないときスキップ（メッセージは出す
-		if (!currentCmd.getUser().getStatus().canMoveThisTurn()) {
+		if (currentCmd.isStop()) {
+			currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
 			StringBuilder s = new StringBuilder();
 			s.append(currentCmd.getUser().getStatus().getName());
 			s.append(I18N.translate("IS"));
 			s.append(currentCmd.getUser().getStatus().moveStopDesc().getKey().getDesc());
-			currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
-			messageWindowSystem.setActionMessage(s.toString());
+			messageWindowSystem.setActionMessage(s.toString(), messageWaitTime);
 			setStage(Stage.EXECUTING_ACTION, "getNextCmdAndExecNPCCmd");
-			cantMove = true;
 			return currentCmd;
 		}
+
+		//混乱で動けないときは、停止またはバトルアクションを適当に取得して自動実行する
+		if (currentCmd.isConfu()) {
+			if (Random.percent(BattleConfig.conguStopP)) {
+				//動けない
+				currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
+				StringBuilder s = new StringBuilder();
+				s.append(currentCmd.getUser().getStatus().getName());
+				s.append(I18N.translate("IS"));
+				s.append(I18N.translate("CONFU_STOP"));
+				messageWindowSystem.setActionMessage(s.toString(), messageWaitTime);
+				setStage(Stage.EXECUTING_ACTION, "getNextCmdAndExecNPCCmd");
+				return currentCmd;
+			} else {
+				//動けるが混乱
+				BattleAction ba = currentCmd.getRandom();
+				currentBAWaitTime = ba.createWaitTime();
+				execAction(ba, false);
+				setStage(Stage.EXECUTING_ACTION, "getNextCmdAndExecNPCCmd");
+				return currentCmd;
+			}
+		}
+
 		//NPC
 		if (currentCmd.getMode() == BattleCommand.Mode.CPU) {
 			//NPCアクションを実行、この中でステージも変わる
-			execNPCAction();
 			messageWindowSystem.closeCommandWindow();
+			execAction(currentCmd.getNPCActionExMove(), false);
 			return currentCmd;
 		}
-		//PC
-		//カレント更新コマンド内容をメッセージウインドウに表示
-		messageWindowSystem.setCommand(currentCmd);
-		currentBA = messageWindowSystem.getCommandWindow().getSelected();//初期選択を取得
-		messageWindowSystem.setActionMessage("");
+		//PCの行動可能
+		//カレントコマンド内容をコマンドウインドウに表示、その他ウインドウは閉じる
+		messageWindowSystem.getCommandWindow().setCmd(currentCmd);
+		messageWindowSystem.getCommandWindow().resetSelect();
+		messageWindowSystem.getCommandWindow().setVisible(true);
 		messageWindowSystem.closeActionWindow();
-		assert currentBA != null : "PCs battle action is null, BAMWs initial is missmatch";
+		messageWindowSystem.closeAfterMoveCommandWindow();
+		messageWindowSystem.closeInfoWindow();
+		messageWindowSystem.closeTooltipWindow();
 
-		if (currentBA.isMoveOnly()) {
-			currentBAArea = (int) currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue();
-		} else {
-			currentBAArea = currentBA.getAreaWithEqip(currentCmd.getUser().getStatus());
-		}
-		remMovPoint = 0;
+		//ターゲットシステムを初期選択で初期化
+		targetSystem.setPCsTarget(messageWindowSystem.getCommandWindow().getSelected(), currentCmd.getUser());
 
-		currentBAWaitTime = null;
-
-		playerAreaBlinkCounter.reset();
-		playerAreaVisible = true;
-		playerCharaCenter = currentCmd.getUser().getSprite().getCenter();
+		//ユーザオペレーション要否フラグをONに設定
+		currentCmd.setUserOperation(true);
 
 		if (GameSystem.isDebugMode()) {
 			System.out.println("getNextCmdAndExecNPCCmd : return PC_CMD" + currentCmd);
 		}
 		setStage(Stage.WAITING_USER_CMD, "getNextCmdAndExecNPCCmd");
 		return currentCmd;
-
 	}
 
-	public boolean nextCmdIsNpc() {
-		return !commandsOfThisTurn.getFirst().getUser().isPlayer();
+	public ActionResult execPCAction() {
+		//コマンドウインドウまたは移動後攻撃ウインドウからアクションを取得
+		if (messageWindowSystem.isVisibleCommand()) {
+			BattleAction ba = messageWindowSystem.getCommandWindow().getSelected();
+			return execAction(ba, false);
+		}
+		BattleAction ba = messageWindowSystem.getAfterMoveCommandWindow().getSelected();
+		return execAction(ba, false);
 	}
 
-	public void updatePlayerLocation() {
-		playerAreaVisible = true;
-		playerCharaCenter = currentCmd.getUser().getSprite().getCenter();
+	public void cancelPCsMove() {
+		currentCmd.getUser().getSprite().setLocation(pcMoveInitialLocation);
+		currentCmd.getUser().unsetTarget();
+		currentCmd.getUser().to(FourDirection.WEST);
+		messageWindowSystem.getAfterMoveCommandWindow().setVisible(false);
+		messageWindowSystem.getCommandWindow().setVisible(true);
+		messageWindowSystem.getCommandWindow().setCmd(currentCmd);
 	}
 
-	public void execPCAction() {
-		playerAreaVisible = false;
-		BattleAction ba = null;
-		if (messageWindowSystem.getCommandWindow().isVisible()) {
-			ba = messageWindowSystem.getCommandWindow().getSelected();
-		} else if (messageWindowSystem.getAfterMoveCommandWindow().isVisible()) {
-			ba = messageWindowSystem.getAfterMoveCommandWindow().getSelected();
-		}
-		assert ba != null : "ba is null, MesageWindowSystem is missmatch";
-		
-		List<BattleTarget> target = targetSystem.getSelected();
-		List<BattleCharacter> tgtChara = target.stream().flatMap(f -> f.getTarget().stream()).collect(Collectors.toList());
-
-		//魔法の場合で詠唱時間が0でない場合は、実行せずに詠唱中リストに追加する。この時、詠唱中の状態異常を付与する
-		if (ba.getBattleActionType() == BattleActionType.MAGIC) {
-			if (ba.getSpellTime() > 0) {
-				addSpelling(currentCmd.getUser(), ba);
-				addMessage(ba, tgtChara, Collections.nCopies(currentBA.getEvents().size(), BattleActionResult.SUCCESS));
-				currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
-				currentCmd.getUser().getStatus().addCondition(BattleConfig.spellingConditionName);
-				targetSystem.unset();
-				currentBAArea = 0;
-				setStage(Stage.EXECUTING_ACTION, "execNPCAction");
-				return;
-			}
-		}
-
-		List<BattleActionResult> result = ba.exec(GameSystem.getInstance(), currentCmd.getUser(), tgtChara);
-
-		addMessage(ba, tgtChara, result);
-		addAnimation(ba, tgtChara, result);
-		currentBAWaitTime = ba.createWaitTime();
-		setStage(Stage.EXECUTING_ACTION, "execPCAction");
+	public void submitePCsMove(boolean aftedMoveAction) {
+		currentCmd.getUser().to(FourDirection.WEST);
+		currentCmd.getUser().unsetTarget();
+		messageWindowSystem.getAfterMoveCommandWindow().setVisible(false);
+		messageWindowSystem.getCommandWindow().setVisible(true);
+		messageWindowSystem.getCommandWindow().setCmd(currentCmd);
 	}
 
-	private void execNPCAction() {
-		//アサーション
-		//そもそもカレントが入っていること
-		assert currentCmd != null : "execNPCAction but currentCmd is null";
+	private boolean prevAttackOK = false;
 
-		//カレントコマンドがNPCであること
-		if (currentCmd.getMode() == BattleCommand.Mode.PC) {
-			throw new GameSystemException("execNpcAction but cmd is PC");
+	public void setAftedMoveAction(boolean attackOK) {
+		if (!messageWindowSystem.isVisibleAfterMoveCommand()) {
+			throw new GameSystemException("after move window is not visible");
 		}
-		//実行中バトルアクションとそのエリアを設定
-		EnemyBattleAction eba = currentCmd.getNPCActionExMove();
-		currentBAArea = currentCmd.getAreaWithEqip(eba.getName());
-		currentBA = eba;
-		enemyMovPoint = (int) currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue();
-		if (GameSystem.isDebugMode()) {
-			System.out.println("execNPCAction : selected=" + eba);
-		}
-
-		//SELFアクションのみ場合は即時実行して終了
-		if (eba.getTargetTypeList().stream().allMatch(p -> p == BattleActionTargetType.SELF)) {
-			currentBAWaitTime = eba.createWaitTime();
-			List<BattleActionResult> result = eba.exec(GameSystem.getInstance(), currentCmd.getUser());
-			//メッセージ表示
-			addMessage(eba, Arrays.asList(currentCmd.getUser()), result);
-			//アニメーション追加
-			addAnimation(eba, Arrays.asList(currentCmd.getUser()), result);
-			setStage(Stage.EXECUTING_ACTION, "execNPCAction");
+		if (prevAttackOK == attackOK) {
 			return;
 		}
-		// SELFのみでないアクションの場合は攻撃範囲内に対象者がいるか確認
-		List<BattleCharacter> targetList = getTargetOfCurrentCmd(eba);
-
-		//いない場合で、行動アクションを持っている場合は行動を実行
-		if (targetList.isEmpty() && currentCmd.hasMoveAction()) {
-			//移動モードにして終了
-			//一番近い敵を検索
-			BattleCharacter nearTarget = targetSystem.nearPlayer(currentCmd.getUser().getSprite().getCenter());
-			//ターゲット座標設定
-			currentCmd.getUser().setTargetLocation(nearTarget.getSprite().getCenter(), currentBAArea);
-			//メッセージ表示
-			addMoveMessage();
-			//アニメーションはない
-			setStage(Stage.EXECUTING_MOVE, "execNPCAction");
-			return;
+		prevAttackOK = attackOK;
+		List<BattleAction> afterMoveActions = new ArrayList<>();
+		if (attackOK) {
+			afterMoveActions.addAll(currentCmd.getBattleActions().stream().filter(p -> p.getBattleActionType() == BattleActionType.ATTACK).collect(Collectors.toList()));
 		}
-		//ターゲットがいない場合で、移動アクションを持っていない場合は何もしない
-		if (targetList.isEmpty()) {
-			setStage(Stage.EXECUTING_MOVE, "execNPCAction");
-			return;
-		}
-		//ターゲットがいる場合、アクションを実行
-		currentBAWaitTime = eba.createWaitTime();
-		//魔法の場合、詠唱中リストに追加
-		if (eba.getBattleActionType() == BattleActionType.MAGIC) {
-			if (eba.getSpellTime() > 0) {
-				addSpelling(currentCmd.getUser(), eba);
-				addMessage(eba, targetList, null);
-				currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
-				currentCmd.getUser().getStatus().addCondition(BattleConfig.spellingConditionName);
-				setStage(Stage.EXECUTING_ACTION, "execNPCAction");
-				return;
-			}
-		}
-
-		List<BattleActionResult> result = eba.exec(GameSystem.getInstance(), currentCmd.getUser(), targetList);
-		//メッセージ表示
-		addMessage(eba, targetList, result);
-		//アニメーション追加
-		addAnimation(eba, targetList, result);
-		setStage(Stage.EXECUTING_ACTION, "execNPCAction");
-	}
-
-	private void addSpelling(BattleCharacter user, BattleAction ba) {
-		//BAのスペルタイムターン経過後に魔法詠唱完了イベントを追加する
-		int t = ba.getSpellTime() + turn;
-		if (magics.containsKey(t)) {
-			magics.get(t).add(new MagicSpell(user.isPlayer() ? BattleCommand.Mode.PC : BattleCommand.Mode.CPU, user, ba));
+		afterMoveActions.add(BattleActionStorage.getInstance().get(BattleConfig.ActionName.commit));
+		Collections.sort(afterMoveActions);
+		if (!attackOK) {
+			targetSystem.getAfterMoveActionArea().setVisible(false);
+			targetSystem.getAfterMoveActionArea().setArea(0);
 		} else {
-			List<MagicSpell> list = new ArrayList<>();
-			list.add(new MagicSpell(user.isPlayer() ? BattleCommand.Mode.PC : BattleCommand.Mode.CPU, user, ba));
-			magics.put(t, list);
+			targetSystem.getAfterMoveActionArea().setVisible(true);
 		}
-		if (GameSystem.isDebugMode()) {
-			System.out.println(user.getStatus().getName() + "s magic added");
+
+		messageWindowSystem.getAfterMoveCommandWindow().setActions(afterMoveActions);
+	}
+	private Point2D.Float pcMoveInitialLocation;
+
+	void setAfterMoveArea(BattleAction ba) {
+		if (ba.getBattleActionType() != BattleActionType.ATTACK) {
+			targetSystem.getAfterMoveActionArea().setVisible(false);
+			return;
+		}
+		int a = currentCmd.getAreaWithEqip(ba.getName());
+		targetSystem.setAfterMoveActionArea(currentCmd.getUser().getSprite().getCenter(), a);
+		targetSystem.updatePCsTarget(ba);
+	}
+
+	ActionResult execAction(BattleAction ba, boolean targetSystemCalled) {
+		//PC,NPC問わず選択されたアクションを実行する。
+
+		//メッセージウインドウやアニメーションの処理も行う
+		BattleCharacter user = currentCmd.getUser();
+		//ターゲットシステムからターゲットを取得
+		List<BattleCharacter> target;
+		if (currentCmd instanceof MagicBattleCommand) {
+			//挿入された魔法イベントの場合は自動で対象を取得
+			target = targetSystem.getMagicTarget(((MagicBattleCommand) currentCmd).getMagicSpell());
+		} else {
+			if (currentCmd.getMode() == BattleCommand.Mode.PC) {
+				target = targetSystem.getSelected();
+			} else {
+				target = targetSystem.getNPCTarget(ba, user);
+			}
+		}
+		messageWindowSystem.closeTooltipWindow();
+		messageWindowSystem.closeItemWindow();
+		user.unsetTarget();
+		//PCの場合は特殊なアクションに入る
+		if (currentCmd.isUserOperation() & !targetSystemCalled) {
+			//確定
+			if (ba.getName().equals(BattleConfig.ActionName.commit)) {
+				user.unsetTarget();
+				return SUCCESS;
+			}
+			//移動
+			if (ba.getName().equals(BattleConfig.ActionName.move)) {
+				messageWindowSystem.closeActionWindow();
+				messageWindowSystem.closeCommandWindow();
+				messageWindowSystem.closeInfoWindow();
+				messageWindowSystem.closeTooltipWindow();
+				List<BattleAction> afterMoveActions = currentCmd.getBattleActions().stream().filter(p -> p.getBattleActionType() == BattleActionType.ATTACK).collect(Collectors.toList());
+				afterMoveActions.add(BattleActionStorage.getInstance().get(BattleConfig.ActionName.commit));
+				Collections.sort(afterMoveActions);
+				messageWindowSystem.setAfterMoveCommand(afterMoveActions);
+				pcMoveInitialLocation = user.getSprite().getLocation();
+				setAfterMoveArea(messageWindowSystem.getAfterMoveCommandWindow().getSelected());
+				return ActionResult.MOVE;
+			}
+			//アイテム使用
+			if (ba.getName().equals(BattleConfig.ActionName.itemUse)) {
+				//アイテムバッグが空のときはメッセージ出して終了
+				if (user.getStatus().getItemBag().isEmpty()) {
+					messageWindowSystem.setInfoMessage(I18N.translate("NO_ITEM"));
+					setStage(Stage.SHOW_INFO_MSG, "execAction");
+					return ActionResult.MISS;
+				}
+				messageWindowSystem.getItemWindow().setBag(user.getStatus());
+				messageWindowSystem.getItemWindow().setVisible(true);
+				messageWindowSystem.closeActionWindow();
+				messageWindowSystem.closeCommandWindow();
+				messageWindowSystem.closeAfterMoveCommandWindow();
+				messageWindowSystem.closeInfoWindow();
+				messageWindowSystem.closeTooltipWindow();
+				return ActionResult.SHOW_ITEM_WINDOW;
+			}
+			//防御
+			if (ba.getName().equals(BattleConfig.ActionName.defence)) {
+				StringBuilder s = new StringBuilder();
+				s.append(user.getStatus().getName());
+				s.append(I18N.translate("IS"));
+				s.append(ba.getName());
+				s.append(I18N.translate("DEFENCE"));
+				messageWindowSystem.setActionMessage(s.toString(), messageWaitTime);
+				messageWindowSystem.closeCommandWindow();
+				messageWindowSystem.closeAfterMoveCommandWindow();
+				messageWindowSystem.closeInfoWindow();
+				user.getStatus().addCondition(BattleConfig.defenceConditionName);
+				setStage(Stage.SHOW_ACTION_MESSAGE, "execAction");
+				return ActionResult.SUCCESS;
+			}
+			//回避
+			if (ba.getName().equals(BattleConfig.ActionName.avoidance)) {
+				StringBuilder s = new StringBuilder();
+				s.append(user.getStatus().getName());
+				s.append(I18N.translate("IS"));
+				s.append(ba.getName());
+				s.append(I18N.translate("AVOIDANCE"));
+				messageWindowSystem.setActionMessage(s.toString(), messageWaitTime);
+				messageWindowSystem.closeCommandWindow();
+				messageWindowSystem.closeAfterMoveCommandWindow();
+				messageWindowSystem.closeInfoWindow();
+				user.getStatus().addCondition(BattleConfig.avoidanceConditionName);
+				setStage(Stage.SHOW_ACTION_MESSAGE, "execAction");
+				return ActionResult.SUCCESS;
+			}
+			//状態
+			if (ba.getName().equals(BattleConfig.ActionName.status)) {
+				return ActionResult.SHOW_STATUS;
+			}
+			//逃げる
+			if (ba.getName().equals(BattleConfig.ActionName.escape)) {
+				//逃げるコマンドの成否判定
+				//前提として、移動ポイント内に境界ななければならない
+				Point2D.Float w, e;
+				int movPoint = (int) user.getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue();
+				e = (Point2D.Float) user.getSprite().getCenter().clone();
+				e.x += movPoint;
+				w = (Point2D.Float) user.getSprite().getCenter().clone();
+				w.x -= movPoint;
+				if (!battleFieldSystem.getBattleFieldAllArea().contains(e)) {
+					//逃走成功（→）
+					user.getStatus().addCondition(ConditionValueStorage.getInstance().get(BattleConfig.escapedConditionName).getKey());
+					user.setTargetLocation(e, 0);
+					user.to(FourDirection.EAST);
+					messageWindowSystem.closeCommandWindow();
+					messageWindowSystem.closeInfoWindow();
+					messageWindowSystem.closeAfterMoveCommandWindow();
+					messageWindowSystem.setActionMessage(user.getStatus().getName() + I18N.translate("ISESCAPE"), messageWaitTime);
+					messageWindowSystem.getStatusWindows().getMw().get(((PlayerCharacter) user).getOrder()).setVisible(false);
+					setStage(Stage.ESCAPING, "execAction");
+					return ActionResult.ESCAPE;
+				}
+				if (!battleFieldSystem.getBattleFieldAllArea().contains(w)) {
+					//逃走成功（←）
+					user.getStatus().addCondition(ConditionValueStorage.getInstance().get(BattleConfig.escapedConditionName).getKey());
+					user.setTargetLocation(w, 0);
+					user.to(FourDirection.WEST);
+					messageWindowSystem.closeCommandWindow();
+					messageWindowSystem.closeInfoWindow();
+					messageWindowSystem.closeAfterMoveCommandWindow();
+					messageWindowSystem.setActionMessage(user.getStatus().getName() + I18N.translate("ISESCAPE"), messageWaitTime);
+					messageWindowSystem.getStatusWindows().getMw().get(((PlayerCharacter) user).getOrder()).setVisible(false);
+					setStage(Stage.ESCAPING, "execAction");
+					return ActionResult.ESCAPE;
+				}
+				//逃げられない
+				messageWindowSystem.setInfoMessage(I18N.translate("CANT_ESCAPE"));
+				setStage(Stage.SHOW_INFO_MSG, "execAction");
+				return ActionResult.MISS;
+			}
+			//攻撃と特殊攻撃と魔法・・・ターゲットがいればターゲット選択に入る
+			if (ba.getBattleActionType() == BattleActionType.ATTACK
+					|| ba.getBattleActionType() == BattleActionType.SPECIAL_ATTACK
+					|| ba.getBattleActionType() == BattleActionType.MAGIC) {
+				if (target.isEmpty() || (target.size() == 1 && target.get(0) == user)) {
+					//ターゲットなし				
+					messageWindowSystem.setInfoMessage(I18N.translate("NO_TARGET"));
+					messageWindowSystem.closeActionWindow();
+					messageWindowSystem.closeTooltipWindow();
+					setStage(Stage.SHOW_INFO_MSG, "execAction");
+					return ActionResult.NO_TARGET;
+				}
+				targetSystem.getAfterMoveActionArea().setVisible(false);
+				messageWindowSystem.setTolltipMessage(I18N.translate("TARGET_SELECT"));
+				return ActionResult.TARGET_SELECT;
+			}
+			//その他行動は実装エラー
+			if (ba.getBattleActionType() != BattleActionType.MAGIC) {
+				throw new GameSystemException("undefined PCs action : " + ba);
+			}
+		}
+
+		//魔法詠唱の場合は魔法詠唱中リストに追加してメッセージを出して終了
+		if (ba.getBattleActionType() == BattleActionType.MAGIC) {
+			//対価が支払えない場合、空振りさせる
+			Map<StatusKey, Integer> damage = ba.selfDamage(user.getStatus());
+			//ダメージを合算
+			StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
+			//ダメージがあって、0の項目がある場合、対価を支払えないため空振り
+			//この魔法の消費項目を取得
+			List<StatusKey> shortageKey = new ArrayList<>();
+			for (BattleActionEvent e : ba.getEvents().stream().filter(p -> p.getBatt() == BattleActionTargetType.SELF).collect(Collectors.toList())) {
+				shortageKey.add(StatusKeyStorage.getInstance().get(e.getTargetName()));
+			}
+			if (!damage.isEmpty() && simulateDamage.isZero(false, shortageKey)) {
+				//対象項目で1つでも0の項目があったら空振り
+				StringBuilder s = new StringBuilder();
+				s.append(user.getStatus().getName());
+				s.append(I18N.translate("IS"));
+				s.append(ba.getName());
+				s.append(I18N.translate("SPELL_START"));
+				s.append(Text.getLineSep());
+				s.append(I18N.translate("BUT"));
+				s.append(simulateDamage.getZeroStatus().stream().filter(p -> damage.containsKey(p)).collect(Collectors.toList()).toString());
+				s.append(I18N.translate("WAS"));
+				s.append(I18N.translate("SHORTAGE"));
+				messageWindowSystem.setInfoMessage(s.toString());
+				messageWindowSystem.closeAfterMoveCommandWindow();
+				messageWindowSystem.closeActionWindow();
+				messageWindowSystem.closeTooltipWindow();
+				setStage(Stage.SHOW_INFO_MSG, "execAction");
+				return ActionResult.NO_TARGET;
+			}
+			//SELFのみアクションの場合は実行可能
+
+			//ターゲットがいない場合で、NPCで移動可能な場合は移動実行
+			if (!user.isPlayer() && (target.isEmpty() || (target.size() == 1 && target.get(0).equals(user)))) {
+				//移動アクションを持っている場合移動実行
+				if (user.getStatus().hasAction(BattleActionTargetParameterType.MOVE)) {
+					BattleCharacter targetChara = targetSystem.nearPlayer(user.getSprite().getCenter());
+					user.setTargetLocation(targetChara.getSprite().getCenter(), ba.getAreaWithEqip(user.getStatus()));
+					StringBuilder s = new StringBuilder();
+					s.append(user.getStatus().getName());
+					s.append(I18N.translate("ISMOVE"));
+					messageWindowSystem.setActionMessage(s.toString(), Integer.MAX_VALUE);
+					messageWindowSystem.closeCommandWindow();
+					messageWindowSystem.closeAfterMoveCommandWindow();
+					messageWindowSystem.closeInfoWindow();
+					messageWindowSystem.closeTooltipWindow();
+					remMovePoint = (int) user.getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue();
+					currentBAWaitTime = ba.createWaitTime();
+					setStage(Stage.EXECUTING_MOVE, winLogicName);
+					return ActionResult.SUCCESS;
+				} else {
+					//移動アクションを持っておらず、ターゲットもいない場合は何もしない
+					return ActionResult.SUCCESS;
+				}
+			}
+			//詠唱時間0ターンの場合でターゲットがいる場合は即時実行
+			if (ba.getSpellTime() == 0 && !target.isEmpty()) {
+				//ターゲット存在
+				List<BattleActionResult> result = ba.exec(GameSystem.getInstance(), user, target);
+				updateCondition();
+				//メッセージウインドウ設定
+				setActionMessage(user, ba, target, result);
+				//アニメーション設定
+				setActionAnimation(user, ba, target, result);
+				//アニメーション待ちに遷移
+				currentBAWaitTime = ba.createWaitTime();
+				messageWindowSystem.closeCommandWindow();
+				messageWindowSystem.closeAfterMoveCommandWindow();
+				messageWindowSystem.closeInfoWindow();
+				messageWindowSystem.closeTooltipWindow();
+				setStage(Stage.EXECUTING_ACTION, "execAction");
+				if (user.isPlayer() && !targetSystemCalled) {
+					messageWindowSystem.setTolltipMessage(I18N.translate("TARGET_SELECT"));
+					return ActionResult.SUCCESS;
+				}
+				return ActionResult.TARGET_SELECT;
+			}
+			//詠唱可能なので、ターゲット選択へ
+			int t = ba.getSpellTime() + turn;
+			addSpelling(user, ba, t);
+			//詠唱中コンディションを追加
+			user.getStatus().addCondition(BattleConfig.spellingConditionName);
+			//詠唱したメッセージを設定
+			StringBuilder s = new StringBuilder();
+			s.append(user.getStatus().getName());
+			s.append(I18N.translate("IS"));
+			s.append(ba.getName());
+			s.append(I18N.translate("SPELL_START"));
+			messageWindowSystem.setActionMessage(s.toString(), messageWaitTime);
+			messageWindowSystem.closeCommandWindow();
+			messageWindowSystem.closeAfterMoveCommandWindow();
+			messageWindowSystem.closeInfoWindow();
+			messageWindowSystem.closeTooltipWindow();
+			setStage(Stage.SHOW_ACTION_MESSAGE, "execAction");
+			return ActionResult.SUCCESS;
+		}
+		//※フィールドイベントの場合、ターゲットは空で帰ってくる
+
+		//ターゲット不在の判定
+		//NPCアクションでターゲット不在の場合
+		if (!user.isPlayer() && target.isEmpty() || (target.size() == 1 && target.get(0).equals(user))) {
+			//移動アクションを持っている場合移動実行
+			if (user.getStatus().hasAction(BattleActionTargetParameterType.MOVE)) {
+				BattleCharacter targetChara = targetSystem.nearPlayer(user.getSprite().getCenter());
+				user.setTargetLocation(targetChara.getSprite().getCenter(), ba.getAreaWithEqip(user.getStatus()));
+				StringBuilder s = new StringBuilder();
+				s.append(user.getStatus().getName());
+				s.append(I18N.translate("ISMOVE"));
+				messageWindowSystem.setActionMessage(s.toString(), Integer.MAX_VALUE);
+				messageWindowSystem.closeCommandWindow();
+				messageWindowSystem.closeAfterMoveCommandWindow();
+				messageWindowSystem.closeInfoWindow();
+				messageWindowSystem.closeTooltipWindow();
+				remMovePoint = (int) user.getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue();
+				currentBAWaitTime = ba.createWaitTime();
+				setStage(Stage.EXECUTING_MOVE, winLogicName);
+				return ActionResult.SUCCESS;
+			}
+			//移動アクションを持っていない場合は何もせず終了
+			return ActionResult.NO_TARGET;
+		}
+
+		if (target.isEmpty() || (target.size() == 1 && target.get(0).equals(user))) {
+			//ターゲット不在で空振り
+			//フィールドイベントを含んでいる場合はターゲット不在でもOK
+			if (!ba.hasBatt(BattleActionTargetType.FIELD)) {
+				messageWindowSystem.setInfoMessage(I18N.translate("NO_TARGET"));
+				messageWindowSystem.closeAfterMoveCommandWindow();
+				messageWindowSystem.closeActionWindow();
+				messageWindowSystem.closeTooltipWindow();
+				setStage(Stage.SHOW_INFO_MSG, "execAction");
+				return ActionResult.NO_TARGET;
+			}
+		}
+		//ターゲット存在
+		List<BattleActionResult> result = ba.exec(GameSystem.getInstance(), user, target);
+		updateCondition();
+		//メッセージウインドウ設定
+		setActionMessage(user, ba, target, result);
+		//アニメーション設定
+		setActionAnimation(user, ba, target, result);
+		//アニメーション待ちに遷移
+		currentBAWaitTime = ba.createWaitTime();
+		messageWindowSystem.closeCommandWindow();
+		messageWindowSystem.closeAfterMoveCommandWindow();
+		messageWindowSystem.closeInfoWindow();
+		messageWindowSystem.closeTooltipWindow();
+		setStage(Stage.EXECUTING_ACTION, "execAction");
+		return ActionResult.SUCCESS;
+	}
+	
+	private Item selectedItem;
+	public ActionResult useItem(){
+		selectedItem = messageWindowSystem.getItemWindow().getSelected();
+		
+		return null;
+		
+	}
+
+	public CommandWindow visibleCommand() {
+		return messageWindowSystem.isVisibleCommand() ? messageWindowSystem.getCommandWindow() : messageWindowSystem.getAfterMoveCommandWindow();
+	}
+
+	private void addSpelling(BattleCharacter user, BattleAction ba, int turn) {
+		if (magics.containsKey(turn)) {
+			magics.get(turn).add(new MagicSpell(user.isPlayer() ? BattleCommand.Mode.PC : BattleCommand.Mode.CPU, user, ba));
+		} else {
+			List<MagicSpell> list = new ArrayList();
+			list.add(new MagicSpell(user.isPlayer() ? BattleCommand.Mode.PC : BattleCommand.Mode.CPU, user, ba));
+			magics.put(turn, list);
 		}
 	}
 
-	private void addAnimation(BattleAction ba, List<BattleCharacter> target, List<BattleActionResult> result) {
-		assert ba.getEvents().size() == result.size() : "battle action event size is mismatch";
-		for (int i = 0; i < ba.getEvents().size(); i++) {
-			BattleActionEvent e = ba.getEvents().get(i);
-			BattleActionResult r = result.get(i);
+	//resultに基づくメッセージをアクションウインドウに設定する
+	private void setActionMessage(BattleCharacter user, BattleAction action, List<BattleCharacter> target, List<BattleActionResult> result) {
+		messageWindowSystem.closeTooltipWindow();
+		StringBuilder s = new StringBuilder();
+		final int LF = BattleConfig.actionWindowLF;
+		final int LINE = 7;
 
-			if (r == BattleActionResult.MISS || r == BattleActionResult.NONE || r == BattleActionResult.STOPED || r == BattleActionResult.MOVE) {
-				if (GameSystem.isDebugMode()) {
-					System.out.println("addAnimatio, but result is " + r);
-				}
-				continue;
+		s.append(user.getStatus().getName());
+		s.append(I18N.translate("S"));
+		s.append("[ ");
+		s.append(action.getName());
+		s.append(" ] ! !");
+		s.append(Text.getLineSep());
+
+		//魔法で、SELFのみじゃないのにターゲットSELFのみの場合、ターゲットなしを表示
+		if (action.getBattleActionType() == BattleActionType.MAGIC) {
+			boolean isSelf = action.isOnlyBatt(BattleActionTargetType.SELF);
+			boolean targetIsOnlySelf = target.size() == 1 && user.equals(target.get(0));
+			if (isSelf && targetIsOnlySelf) {
+				s.append(I18N.translate("BUT"));
+				s.append(I18N.translate("NO_TARGET"));
+				messageWindowSystem.setActionMessage(s.toString(), action.createWaitTime().getCurrentTime());
+				return;
 			}
-			//ターゲットにアニメーションの複製を配置、フィールドの場合、targetは無視される
-			if (e.getBatt() == BattleActionTargetType.FIELD) {
-				BattleActionAnimation a = e.getAnimationClone();
-				switch (a.getAnimationTargetType()) {
-					case BATTLE_FIELD_AREA:
-						//フィールド全体を対象とする
-						a.getAnimationSprite().setLocation(battleFieldSystem.getBattleFieldAllArea());
-						animation.add(a);
+		}
+
+		for (int k = 0; k < action.getEvents().size(); k++) {
+			BattleActionEvent e = action.getEvents().get(k);
+			BattleActionResult res = result.get(k);
+
+			if (e.getBatt() == BattleActionTargetType.SELF) {
+
+				continue;
+			} else if (e.getBatt() == BattleActionTargetType.FIELD) {
+				//フィールドの場合、フィールドに効果を与えた旨を表示
+				switch (res) {
+					case SUCCESS:
+						s.append(I18N.translate("FIELD"));
+						s.append(I18N.translate("IS"));
+						ConditionValue val = FieldConditionValueStorage.getInstance().get(e.getTargetName());
+						assert val != null : "field condition name is missmatch : " + e.getTargetName();
+						s.append(val.getKey().getDesc());
+						s.append(Text.getLineSep());
+					case MISS:
+						s.append(I18N.translate("OTHER"));
+						s.append(I18N.translate("ISFAILED"));
+						s.append(Text.getLineSep());
+					default:
+						System.out.println("kinugasa.game.system.BattleSystem.setActionMessage() default message");
 						break;
-					case TEAM_AREA:
-						if (ba instanceof EnemyBattleAction) {
-							//敵のコマンドなので、味方の領域に設定
-							float x = battleFieldSystem.getEnemytArea().x;
-							float y = battleFieldSystem.getEnemytArea().y;
-							a.getAnimationSprite().setLocation(x, y);
-							animation.add(a);
-						} else {
-							//味方のコマンドなので敵の領域に設定
-							float x = battleFieldSystem.getPartyArea().x;
-							float y = battleFieldSystem.getPartyArea().y;
-							a.getAnimationSprite().setLocation(x, y);
-							animation.add(a);
+				}
+			} else {
+				//それ以外の場合はメッセージを設定
+				for (int i = 0, j = 0, line = 0; i < target.size(); i++, j++) {
+					if (target.get(i).equals(currentCmd.getUser())) {
+						//SELFは表示しない
+						continue;
+					}
+					String tgtName = target.get(i).getStatus().getName();
+					Map<StatusKey, Integer> damageMap = target.get(i).getStatus().calcDamage();
+					int damage = 0;
+					if (damageMap.containsKey(StatusKeyStorage.getInstance().get(BattleConfig.outputLogStatusKey))) {
+						damage = damageMap.get(StatusKeyStorage.getInstance().get(BattleConfig.outputLogStatusKey));
+					}
+					switch (res) {
+						case SUCCESS:
+							s.append(tgtName);
+							if (damage > 0) {
+								s.append(I18N.translate("TO"));
+								s.append(damage);
+								s.append(I18N.translate("DAMAGE"));
+							} else {
+								s.append(I18N.translate("IS"));
+								s.append(I18N.translate("NODAMAGE"));
+							}
+							break;
+						case MISS:
+							s.append(tgtName);
+							s.append(I18N.translate("IS"));
+							s.append(I18N.translate("NODAMAGE"));
+							break;
+						default:
+							System.out.println("kinugasa.game.system.BattleSystem.setActionMessage() default message");
+							break;
+
+					}
+					if (i == target.size() - 1) {
+						s.append("  ");
+					} else {
+						s.append(", ");
+					}
+					if (j >= LF) {
+						s.append(Text.getLineSep());
+						line++;
+						if (line > LINE) {
+							break;
 						}
+					}
+				}
+			}
+		}
+		messageWindowSystem.setActionMessage(s.toString(), action.createWaitTime().getCurrentTime());
+
+	}
+
+	//resultに基づくアニメーションをthisに追加する
+	private void setActionAnimation(BattleCharacter user, BattleAction action, List<BattleCharacter> target, List<BattleActionResult> result) {
+		for (int i = 0; i < action.getEvents().size(); i++) {
+			BattleActionEvent e = action.getEvents().get(i);
+			BattleActionResult res = result.get(i);
+			BattleActionAnimation anime = e.getAnimationClone();
+
+			if (e.getBatt() == BattleActionTargetType.FIELD) {
+				switch (res) {
+					case ADD_CONDITION_FIELD:
+					case SUCCESS:
+					case ADD_CONDITION_TGT:
+					case ATTR_IN:
+					case REMOVE_CONDITION_TGT:
+					case USE_ITEM:
+						Sprite tgt = battleFieldSystem.getBattleFieldAllArea();
+						anime.getAnimationSprite().setLocationByCenter(tgt.getCenter());
+						animation.add(anime);
+						break;
+					case ITEM_LOST:
+					case MISS:
+					case MOVE:
+					case NONE:
+					case STOPED:
+						//アイテム追加しない
 						break;
 					default:
-						throw new GameSystemException("FIELD ANIMATION, but targetType is " + a.getAnimationTargetType());
-				}
-				continue;
-			}
-//			if (e.getBatt() == BattleActionTargetType.SELF) {
-//				//SELFイベントなので、対象者は自分自身とする
-//				BattleActionAnimation a = e.getAnimationClone();
-//				a.getAnimationSprite().setLocation(currentCmd.getUser().getSprite());
-//				animation.add(a);
-//				continue;
-//			}
-			// ターゲットありのアニメーション
-			if (target != null && !target.isEmpty()) {
-				BattleActionAnimation a = e.getAnimationClone();
-				for (BattleCharacter bc : target) {
-					BattleActionAnimation ani = a.clone();
-					ani.getAnimationSprite().setLocation(bc.getSprite());
-					animation.add(ani);
-				}
-			}
-		}
-	}
-
-	//カレントのキャラが移動した旨をアクションメッセージウインドウに表示
-	private void addMoveMessage() {
-		String text = currentCmd.getUser().getStatus().getName();
-		text += I18N.translate("ISMOVE");
-		getMessageWindowSystem().setActionMessage(text);
-	}
-
-	// アクションに基づく行動結果をアクションメッセージウインドウに設定
-	private void addMessage(BattleAction ba, List<BattleCharacter> target, List<BattleActionResult> result) {
-		//N人ずつ改行
-		int lfN = 3;
-		StringBuilder s = new StringBuilder();
-		//BAが魔法の場合
-		if (ba.getBattleActionType() == BattleActionType.MAGIC) {
-			if (currentCmd instanceof MagicBattleCommand) {
-				//reulstにMISSが入っている場合、詠唱したが対象がいない
-				if (result != null && result.get(0) == BattleActionResult.MISS) {
-					//魔法詠唱したが対象がいないメッセージ出す
-					s.append(currentCmd.getUser().getStatus().getName());
-					s.append(I18N.translate("S"));
-					s.append(I18N.translate(ba.getBattleActionType().toString()));
-					s.append(I18N.translate("ISFAILED"));
-					messageWindowSystem.setActionMessage(s.toString());
-					return;
+						throw new AssertionError();
 				}
 			} else {
-				//魔法詠唱開始のメッセージ出す
-				s.append(currentCmd.getUser().getStatus().getName());
-				s.append(I18N.translate("IS"));
-				s.append(I18N.translate(ba.getBattleActionType().toString()));
-				s.append(I18N.translate("SPELL_START"));
-				messageWindowSystem.setActionMessage(s.toString());
-				return;
-			}
-		}
-
-		//イベントに対する成否をまとめる
-		assert ba.getEvents().size() == result.size() : "action event size is mismatch";
-		Map<BattleActionEvent, BattleActionResult> actionResult = new HashMap<>();
-		List<BattleActionEvent> events = ba.getEvents();
-		for (int i = 0; i < result.size(); i++) {
-			actionResult.put(events.get(i), result.get(i));
-		}
-
-		//行動
-		s.append(currentCmd.getUser().getStatus().getName());
-		s.append(I18N.translate("S"));
-		s.append(I18N.translate(ba.getBattleActionType().toString()));
-		s.append("「");
-		s.append(ba.getName());
-		s.append("」");
-		//失敗時
-		if (actionResult.values().stream().allMatch(p -> p == BattleActionResult.MISS)) {
-			s.append(I18N.translate("ISFAILED"));
-			messageWindowSystem.setActionMessage(s.toString());
-			return;
-		}
-		if (actionResult.values().stream().allMatch(p -> p == BattleActionResult.STOPED)) {
-			throw new GameSystemException("battle action result is STOPED");
-		}
-		if (actionResult.values().stream().allMatch(p -> p == BattleActionResult.NONE)) {
-			throw new GameSystemException("battle action result is NONE");
-		}
-		s.append(Text.getLineSep());
-		//ターゲットがないイベントの場合終了
-		if (target == null || target.isEmpty()) {
-			messageWindowSystem.setActionMessage(s.toString());
-		}
-
-		//ダメージ
-		int i = 0;
-		for (BattleCharacter c : target) {
-			Map<StatusKey, Integer> damage = c.getStatus().calcDamage();
-			//outputLogStatusKeyへのダメージがない場合
-			if (!damage.containsKey(StatusKeyStorage.getInstance().get(BattleConfig.outputLogStatusKey))) {
-				s.append(c.getStatus().getName());
-				s.append(I18N.translate("IS")).append(I18N.translate("NODAMAGE"));
-				i++;
-				if (i >= lfN) {
-					s.append(Text.getLineSep());
-					i = 0;
+				for (BattleCharacter c : target) {
+					//SELFは表示しない
+					if (c.equals(user)) {
+						continue;
+					}
+					//resによりアニメーションを追加
+					switch (res) {
+						case ADD_CONDITION_FIELD:
+						case SUCCESS:
+						case ADD_CONDITION_TGT:
+						case ATTR_IN:
+						case REMOVE_CONDITION_TGT:
+						case USE_ITEM:
+							anime.getAnimationSprite().setLocationByCenter(c.getSprite().getLocation());
+							animation.add(anime);
+							break;
+						case ITEM_LOST:
+						case MISS:
+						case MOVE:
+						case NONE:
+						case STOPED:
+							//アイテム追加しない
+							break;
+						default:
+							throw new AssertionError();
+					}
 				}
-				continue;
 			}
-			int value = damage.get(StatusKeyStorage.getInstance().get(BattleConfig.outputLogStatusKey));
-			value = Math.abs(value);
-			boolean isPlus = value >= 0;
-			if (isPlus) {
-				s.append(c.getStatus().getName());
-				s.append(I18N.translate("IS")).append(value).append(I18N.translate("HEALDAMAGE"));
-			} else {
-				s.append(c.getStatus().getName());
-				s.append(I18N.translate("TO")).append(value).append(I18N.translate("DAMAGE"));
-			}
-			s.append("  ");
 
-			i++;
-			if (i >= lfN) {
-				s.append(Text.getLineSep());
-				i = 0;
-			}
 		}
 
-		messageWindowSystem.setActionMessage(s.toString());
-	}
-
-	public void toTargetSelectOrPCMoveEnd() {
-		//ターゲット選択または移動完了する。
-		
-		//移動後ウインドウからアクションを取得
-		currentBA = messageWindowSystem.getAfterMoveCommandWindow().getSelected();
-		//カレントコマンドがNONE属性なら移動完了
-		if (currentBA.isOnlyBatpt(BattleActionTargetParameterType.NONE)) {
-			//移動完了
-			messageWindowSystem.closeActionWindow();
-			messageWindowSystem.closeAfterMoveCommandMessageWindow();
-			messageWindowSystem.getCommandWindow().setCmd(currentCmd);
-			setStage(Stage.WAITING_USER_CMD, "toTargetSelectOrPCMoveEnd");
-			return;
-		}
-		currentBAArea = currentCmd.getUser().getStatus().getBattleActionArea(currentBA);
-		targetSystem.setTarget(currentBA, currentCmd.getSpriteCenter(), currentBAArea);
-		//効果範囲内に敵がいるかで遷移先を変える
-		if (targetSystem.hasAnyTarget()) {
-			setStage(Stage.TARGET_SELECT, "toTargetSelectOrPCMoveMode");
-		} else {
-			setNoTargetMessage();
-		}
-	}
-
-	public void toTargetSelectOrPCMoveMode() {
-		//移動モードまたはターゲット選択に入る
-		currentBA = messageWindowSystem.getCommandWindow().getSelected();
-
-		//移動モード
-		if (currentBA.isMoveOnly()) {;
-			currentBAArea = (int) currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue();
-			setStage(Stage.PLAYER_MOVE, "toTargetSelectOrPCMoveMode");
-			return;
-		}
-		currentBAArea = currentCmd.getUser().getStatus().getBattleActionArea(currentBA);
-		//TODO:防御などの特殊アクションここ。CONFIGにキーを追加しなければならない
-		//ターゲットモード
-		//ターゲットセレクトシステムを、現在のアクションに合わせて初期設定する
-		targetSystem.setTarget(currentBA, currentCmd.getSpriteCenter(), currentBAArea);
-		//効果範囲内に敵がいるかで遷移先を変える
-		if (targetSystem.hasAnyTarget()) {
-			setStage(Stage.TARGET_SELECT, "toTargetSelectOrPCMoveMode");
-		} else {
-			setNoTargetMessage();
-		}
-	}
-
-	public void setNoTargetMessage() {
-		setInfoMessage(I18N.translate("NO_TARGET"));
-		setStage(Stage.SHOW_INFO_MSG, "setNoTargetMessage");
-	}
-
-	public void submitPlayerMove() {
-		if (GameSystem.isDebugMode()) {
-			System.out.println(currentCmd.getUser().getStatus().getName() + " is move end");
-		}
-		playerAreaVisible = false;
-		setStage(Stage.WAITING_USER_CMD, "submitPlayerMove");;
-	}
-
-	public void afterMoveAttackMode(String commitName, int area) {
-		getMessageWindowSystem().getAfterMoveCommandWindow().clear();
-		getMessageWindowSystem().getAfterMoveCommandWindow().add(currentCmd.getUser().getStatus().getAction(BattleActionType.ATTACK));
-		getMessageWindowSystem().getAfterMoveCommandWindow().add(BattleActionStorage.getInstance().get(commitName));
-		BattleAction ba = getMessageWindowSystem().getAfterMoveCommandWindow().getSelected();
-		area = Math.min(ba.getAreaWithEqip(currentCmd.getUser().getStatus()), area);
-		playerCharaCenter = currentCmd.getSpriteCenter();
-		getTargetSystem().unset();
-		getTargetSystem().setArea(area);
-		getMessageWindowSystem().showAfterMoveCommandMessageWindow();
-		currentBA = getMessageWindowSystem().getAfterMoveCommandWindow().getSelected();
-		currentBAArea = 0;
-		playerAreaVisible = true;
 	}
 
 	public void update() {
@@ -812,16 +1101,12 @@ public class BattleSystem implements Drawable {
 		targetSystem.update();
 		enemies.forEach(v -> v.update());
 
-		GameSystem gs = GameSystem.getInstance();
-
-		if (playerAreaBlinkCounter.isReaching()) {
-			playerAreaBlinkCounter.reset();
-			playerAreaVisible = !playerAreaVisible;
+		if (targetSystem.getAfterMoveActionArea().isVisible()) {
+			targetSystem.getAfterMoveActionArea().setLocationByCenter(currentCmd.getSpriteCenter());
 		}
 
-		//ステータス変更による状態異常の付与
-		conditionManager.setCondition(GameSystem.getInstance().getPartyStatus());
-		conditionManager.setCondition(enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList()));
+		GameSystem gs = GameSystem.getInstance();
+
 		//勝敗判定
 		List<BattleWinLoseLogic> winLoseLogic = BattleConfig.getWinLoseLogic();
 		if (winLoseLogic.isEmpty()) {
@@ -841,7 +1126,7 @@ public class BattleSystem implements Drawable {
 			for (Enemy e : enemies) {
 				List<DropItem> items = e.getDropItem();
 				for (DropItem i : items) {
-					//確率判定
+					//ドロップアイテムの確率判定
 					if (Random.percent(i.getP())) {
 						dropItems.addAll(i.cloneN());
 					}
@@ -857,13 +1142,19 @@ public class BattleSystem implements Drawable {
 
 		//効果の終わったアニメーションを取り除く
 		//アニメーションはアクションの待機時間より長く表示することも可能なためstage外で実施
-		removeEndAnimation();
+		List<BattleActionAnimation> removeList = new ArrayList<>();
+		for (BattleActionAnimation a : animation) {
+			if (a.isEnded() || !a.getAnimationSprite().isVisible() || !a.getAnimationSprite().isVisible()) {
+				removeList.add(a);
+			}
+		}
+		animation.removeAll(removeList);
 
 		switch (stage) {
 			case STARTUP:
 				throw new GameSystemException("update call before start");
 			case INITIAL_MOVE:
-				//プレイヤーキャラクターが目標の座標に近づくまで移動を実行、目的地に近づいたらステージを変える
+				//プレイヤーキャラクターが目標の座標に近づくまで移動を実行、目的地に近づいたらステージWAITに変える
 				gs.getPartySprite().forEach(v -> v.move());
 				//移動終了判定
 				boolean initialMoveEnd = true;
@@ -875,6 +1166,27 @@ public class BattleSystem implements Drawable {
 					}
 				}
 				if (initialMoveEnd) {
+					messageWindowSystem.closeActionWindow();
+					setStage(Stage.WAITING_USER_CMD, "UPDATE");
+				}
+				break;
+			case ESCAPING:
+				//プレイヤーキャラクターが目標の座標に近づくまで移動を実行、目的地に近づいたらステージWAITに変える
+				currentCmd.getUser().moveToTgt();
+
+				if (!currentCmd.getUser().isMoving()) {
+					//全員逃げ判定、全員逃げた場合、戦闘終了
+					if (party.stream().allMatch(p -> p.hasCondition(BattleConfig.escapedConditionName))) {
+						//全員逃げた
+						battleResultValue = new BattleResultValues(BattleResult.ESCAPE, 0, new ArrayList<>(), winLogicName);
+
+						if (GameSystem.isDebugMode()) {
+							System.out.println("this battle is ended");
+						}
+						setStage(Stage.BATLE_END, "update");
+						break;
+					}
+					messageWindowSystem.closeActionWindow();
 					setStage(Stage.WAITING_USER_CMD, "UPDATE");
 				}
 				break;
@@ -883,12 +1195,14 @@ public class BattleSystem implements Drawable {
 				//コマンドウインドウ等から処理を実行される
 				//次にバトルコマンドを取得したとき、NPCならNPCの行動のステージに入る。
 				break;
-			case PLAYER_MOVE:
-				//何もしない（決定されるまで待つ）
-				break;
-			case TARGET_SELECT:
+			case SHOW_ACTION_MESSAGE:
+				//アクションウインドウが閉じられるまで待つ
+				if (!messageWindowSystem.isVisibleActionMessage()) {
+					setStage(Stage.WAITING_USER_CMD, "UPDATE");
+				}
 				break;
 			case EXECUTING_ACTION:
+				//カレントBATimeが切れるまで待つ
 				assert currentBAWaitTime != null : "EXECITING_ACTION buf tc is null";
 				if (currentBAWaitTime.isReaching()) {
 					messageWindowSystem.closeActionWindow();
@@ -897,16 +1211,20 @@ public class BattleSystem implements Drawable {
 				}
 				break;
 			case EXECUTING_MOVE:
-				//移動実行
+				//NPCの移動実行、！！！！！！！！移動かんりょぅしたらメッセージウインドウ閉じる
 				currentCmd.getUser().moveToTgt();
-				enemyMovPoint--;
+				remMovePoint--;
 				//移動ポイントが切れた場合、移動終了してユーザコマンド待ちに移行
-				if (enemyMovPoint <= 0 || !currentCmd.getUser().isMoving()) {
+				if (remMovePoint <= 0 || !currentCmd.getUser().isMoving()) {
 					currentCmd.getUser().unsetTarget();
 					setStage(Stage.WAITING_USER_CMD, "UPDATE");
 					return;
 				}
-				//移動ポイントが切れていない場合、対象がいるか判定
+				//移動ポイントが切れていない場合で、移動ポイントが半分以上残っている場合は攻撃可能
+				//半分以下の場合は行動終了
+				if (remMovePoint < currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue()) {
+					return;
+				}
 				//アクションを抽選
 				EnemyBattleAction eba = currentCmd.getNPCActionOf(BattleActionType.ATTACK);
 				if (eba == null) {
@@ -919,11 +1237,12 @@ public class BattleSystem implements Drawable {
 				if (eba.getEvents().stream().allMatch(p -> p.getBatt() == BattleActionTargetType.FIELD)) {
 					//即時実行
 					List<BattleActionResult> result = eba.exec(gs, currentCmd.getUser());
+					updateCondition();
 					currentBAWaitTime = eba.createWaitTime();
 					//メッセージ表示
-					addMessage(eba, Collections.emptyList(), result);
+					setActionMessage(currentCmd.getUser(), eba, Collections.emptyList(), result);
 					//アニメーション追加
-					addAnimation(eba, Collections.emptyList(), result);
+					setActionAnimation(currentCmd.getUser(), eba, Collections.emptyList(), result);
 					setStage(Stage.EXECUTING_ACTION, "UPDATE");
 					return;
 				}
@@ -931,11 +1250,12 @@ public class BattleSystem implements Drawable {
 				if (eba.getEvents().stream().allMatch(p -> p.getBatt() == BattleActionTargetType.SELF)) {
 					//即時実行
 					List<BattleActionResult> result = eba.exec(gs, currentCmd.getUser());
+					updateCondition();
 					currentBAWaitTime = eba.createWaitTime();
 					//メッセージ表示
-					addMessage(currentBA, Arrays.asList(currentCmd.getUser()), result);
+					setActionMessage(currentCmd.getUser(), eba, Arrays.asList(currentCmd.getUser()), result);
 					//アニメーション追加
-					addAnimation(currentBA, Arrays.asList(currentCmd.getUser()), result);
+					setActionAnimation(currentCmd.getUser(), eba, Arrays.asList(currentCmd.getUser()), result);
 					setStage(Stage.EXECUTING_ACTION, "UPDATE");
 					return;
 				}
@@ -947,16 +1267,16 @@ public class BattleSystem implements Drawable {
 				}
 				//攻撃実行
 				List<BattleActionResult> result = eba.exec(gs, currentCmd.getUser(), target);
+				updateCondition();
 				currentBAWaitTime = eba.createWaitTime();
 				//メッセージ表示
-				addMessage(currentBA, target, result);
+				setActionMessage(currentCmd.getUser(), eba, target, result);
 				//アニメーション追加
-				addAnimation(currentBA, target, result);
+				setActionAnimation(currentCmd.getUser(), eba, target, result);
 				setStage(Stage.EXECUTING_ACTION, "UPDATE");
-
 				break;
 			case SHOW_INFO_MSG:
-				if (messageWindowSystem.isClosedInfoWindow()) {
+				if (!messageWindowSystem.isVisibleInfoMessage()) {
 					setStage(Stage.WAITING_USER_CMD, "UPDATE");
 				}
 				break;
@@ -965,50 +1285,53 @@ public class BattleSystem implements Drawable {
 				break;
 			default:
 				throw new AssertionError("UNDEFINED STAGE");
+
 		}
 	}
 
 	private List<BattleCharacter> getTargetOfCurrentCmd(EnemyBattleAction eba) {
 		List<BattleCharacter> target = new ArrayList<>();
+		//エリアは選択されたアクションか移動ポイントの小さいほう
+		int area = Math.min(eba.getAreaWithEqip(currentCmd.getUser().getStatus()), remMovePoint);
 		for (BattleActionEvent e : eba.getEvents()) {
 			switch (e.getBatt()) {
 				case ALL:
-					target.addAll(targetSystem.getAllTarget(currentCmd.getSpriteCenter(), enemyMovPoint));
+					target.addAll(targetSystem.getAllTarget(currentCmd.getSpriteCenter(), area));
 					break;
 				case ONE_ENEMY:
-					List<BattleCharacter> l1 = targetSystem.nearPlayer(currentCmd.getSpriteCenter(), enemyMovPoint);
+					List<BattleCharacter> l1 = targetSystem.nearPlayer(currentCmd.getSpriteCenter(), area);
 					if (!l1.isEmpty()) {
 						target.add(l1.get(0));
 					}
 					break;
 				case ONE_PARTY:
-					List<BattleCharacter> l2 = targetSystem.nearEnemy(currentCmd.getSpriteCenter(), enemyMovPoint);
+					List<BattleCharacter> l2 = targetSystem.nearEnemy(currentCmd.getSpriteCenter(), area);
 					if (!l2.isEmpty()) {
 						target.add(l2.get(0));
 					}
 					break;
 				case TEAM_ENEMY:
-					target.addAll(targetSystem.nearPlayer(currentCmd.getSpriteCenter(), enemyMovPoint));
+					target.addAll(targetSystem.nearPlayer(currentCmd.getSpriteCenter(), area));
 					break;
 				case TEAM_PARTY:
-					target.addAll(targetSystem.nearEnemy(currentCmd.getSpriteCenter(), enemyMovPoint));
+					target.addAll(targetSystem.nearEnemy(currentCmd.getSpriteCenter(), area));
 					break;
 				case RANDOM_ONE:
-					List<BattleCharacter> l3 = targetSystem.getAllTarget(currentCmd.getSpriteCenter(), enemyMovPoint);
+					List<BattleCharacter> l3 = targetSystem.getAllTarget(currentCmd.getSpriteCenter(), area);
 					if (!l3.isEmpty()) {
 						Collections.shuffle(l3);
 						target.add(l3.get(0));
 					}
 					break;
 				case RANDOM_ONE_ENEMY:
-					List<BattleCharacter> l4 = targetSystem.nearPlayer(currentCmd.getSpriteCenter(), enemyMovPoint);
+					List<BattleCharacter> l4 = targetSystem.nearPlayer(currentCmd.getSpriteCenter(), area);
 					if (!l4.isEmpty()) {
 						Collections.shuffle(l4);
 						target.add(l4.get(0));
 					}
 					break;
 				case RANDOM_ONE_PARTY:
-					List<BattleCharacter> l5 = targetSystem.nearEnemy(currentCmd.getSpriteCenter(), enemyMovPoint);
+					List<BattleCharacter> l5 = targetSystem.nearEnemy(currentCmd.getSpriteCenter(), area);
 					if (!l5.isEmpty()) {
 						Collections.shuffle(l5);
 						target.add(l5.get(0));
@@ -1024,39 +1347,9 @@ public class BattleSystem implements Drawable {
 		return target;
 	}
 
-	private void removeEndAnimation() {
-		List<BattleActionAnimation> removeList = new ArrayList<>();
-		removeList.addAll(animation.stream().filter(p -> p.isEnded()).collect(Collectors.toList()));
-		animation.removeAll(removeList);
-	}
-
 	@Override
 	public void draw(GraphicsContext g) {
 		battleFieldSystem.draw(g);
-		//プレイヤーキャラクタの行動エリアを表示
-		if (currentCmd != null) {
-			if (currentCmd.getMode() == BattleCommand.Mode.PC) {
-				if (playerAreaVisible) {
-					if (currentBAArea > 0) {
-						Graphics2D g2 = g.create();
-						g2.setColor(Color.GREEN);
-						int x = (int) playerCharaCenter.x - currentBAArea;
-						int y = (int) playerCharaCenter.y - currentBAArea;
-						g2.drawOval(x, y, currentBAArea * 2, currentBAArea * 2);
-						g2.dispose();
-					}
-					if (remMovPoint > 0) {
-						Graphics2D g2 = g.create();
-						g2.setColor(Color.BLUE);
-						Point2D.Float center = currentCmd.getSpriteCenter();
-						int x = (int) center.x - Math.min(remMovPoint, currentBAArea);
-						int y = (int) center.y - Math.min(remMovPoint, currentBAArea);
-						g2.drawOval(x, y, Math.min(remMovPoint, currentBAArea) * 2, Math.min(remMovPoint, currentBAArea) * 2);
-						g2.dispose();
-					}
-				}
-			}
-		}
 		enemies.forEach(v -> v.draw(g));
 		GameSystem.getInstance().getPartySprite().forEach(v -> v.draw(g));
 		animation.forEach(v -> v.draw(g));
@@ -1065,57 +1358,12 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.draw(g);
 	}
 
-	public void setRemMovPoint(int remMovPoint) {
-		this.remMovPoint = remMovPoint;
-	}
-
-	public void setBattleAction(BattleAction ba, int area) {
-		currentBA = ba;
-		currentBAArea = area;
-	}
-
-	public Stage getStage() {
-		return stage;
-	}
-
-	public BattleTargetSystem getTargetSystem() {
-		return targetSystem;
-	}
-
 	public BattleMessageWindowSystem getMessageWindowSystem() {
 		return messageWindowSystem;
 	}
 
-	public String getWinLogicName() {
-		return winLogicName;
-	}
-
-	public String getLoseLogicName() {
-		return loseLogicName;
-	}
-
-	public BattleCommand getCurrentCmd() {
-		return currentCmd;
-	}
-
-	public FrameTimeCounter getCurrentBAWaitTime() {
-		return currentBAWaitTime;
-	}
-
-	public int getCurrentBAArea() {
-		return currentBAArea;
-	}
-
-	public BattleAction getCurrentBA() {
-		return currentBA;
-	}
-
-	public LinkedList<BattleCommand> getCommandsOfThisTurn() {
-		return commandsOfThisTurn;
-	}
-
-	public List<BattleActionAnimation> getAnimation() {
-		return animation;
+	public BattleTargetSystem getTargetSystem() {
+		return targetSystem;
 	}
 
 	public BattleFieldSystem getBattleFieldSystem() {
@@ -1126,21 +1374,12 @@ public class BattleSystem implements Drawable {
 		return enemies;
 	}
 
-	public ConditionManager getConditionManager() {
-		return conditionManager;
+	public boolean stageIs(Stage s) {
+		return stage == s;
 	}
 
-	public void setInfoMessage(String msg) {
-		messageWindowSystem.setInfoMessage(msg);
-		setStage(Stage.SHOW_INFO_MSG, "setInfoMessage");
-	}
-
-	public int calcArea(BattleAction ba) {
-		return currentCmd.getAreaWithEqip(ba.getName());
-	}
-
-	public boolean isCantMove() {
-		return cantMove;
+	BattleCommand getCurrentCmd() {
+		return currentCmd;
 	}
 
 }

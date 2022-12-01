@@ -231,6 +231,11 @@ public class GameSystemXMLLoader {
 		}
 		itemStorage.forEach(v -> ItemStorage.getInstance().readFromXML(v));
 
+		if (bookList.isEmpty()) {
+			throw new IllegalStateException("bookList is empty");
+		}
+		bookList.forEach(v -> BookStorage.getInstance().readFromXML(v));
+		
 		if (raceStorage.isEmpty()) {
 			throw new IllegalStateException("raceStorage is empty");
 		}
@@ -259,11 +264,6 @@ public class GameSystemXMLLoader {
 		if (enemyProgressBarKey != null && !enemyProgressBarKey.isEmpty()) {
 			Enemy.setProgressBarKey(enemyProgressBarKey);
 		}
-
-		if (bookList.isEmpty()) {
-			throw new IllegalStateException("bookList is empty");
-		}
-		bookList.forEach(v -> BookStorage.getInstance().readFromXML(v));
 	}
 
 	private void readStatusMaster(String filePath) throws IllegalXMLFormatException, FileNotFoundException, FileIOException {

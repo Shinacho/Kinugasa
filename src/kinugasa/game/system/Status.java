@@ -26,8 +26,10 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import kinugasa.util.*;
 import kinugasa.resource.*;
@@ -63,6 +65,8 @@ public class Status {
 	private final Storage<BattleAction> battleActions = new Storage<>();
 	//前衛・後衛
 	private PartyLocation partyLocation = PartyLocation.FRONT;
+	//生存状態
+	private boolean exists = true;
 
 	public Status(String name, Race race) {
 		this.name = name;
@@ -71,6 +75,14 @@ public class Status {
 		for (ItemEqipmentSlot slot : race.getEqipSlot()) {
 			eqipment.put(slot, null);
 		}
+	}
+
+	public boolean isExists() {
+		return exists;
+	}
+
+	public void setExists(boolean exists) {
+		this.exists = exists;
 	}
 
 	public void setPartyLocation(PartyLocation partyLocation) {
@@ -152,6 +164,17 @@ public class Status {
 			}
 		}
 		return r;
+	}
+
+	public boolean hasAction(BattleActionTargetParameterType batpt) {
+		for (BattleAction ba : battleActions) {
+			for (BattleActionEvent e : ba.getEvents()) {
+				if (e.getBatpt() == batpt) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public Storage<BattleAction> getBattleActions() {
@@ -290,7 +313,22 @@ public class Status {
 
 	//エフェクトの効果時間を引く
 	//終了したエフェクトは、エフェクトタイムとコンディションから取り除く。
+	private Set<EffectMaster> execEffect = new HashSet<>();
+
 	public void update() {
+		//状態異常による効果の実行
+		List<EffectMaster> addList = new ArrayList<>();
+		for (int i = 0; i < condition.size(); i++) {
+			ConditionValue v = condition.asList().get(i);
+			for (EffectMaster e : v.getEffects()) {
+				if (e.getContinueType() == EffectContinueType.ONECE) {
+					addList.add(e);
+				}
+				e.exec(this);
+			}
+		}
+		execEffect.addAll(addList);
+
 		List<ConditionKey> deleteList = new ArrayList<>();
 		for (ConditionKey key : conditionTimes.keySet()) {
 			if (conditionTimes.get(key).isReaching()) {
@@ -300,7 +338,15 @@ public class Status {
 		for (ConditionKey k : deleteList) {
 			conditionTimes.remove(k);
 			condition.remove(k.getName());
+			//効果が終了したエフェクトのONCE実行済みフラグを除去する
+			ConditionValue v = ConditionValueStorage.getInstance().get(k.getName());
+			for (EffectMaster e : v.getEffects()) {
+				if (execEffect.contains(e)) {
+					execEffect.remove(e);
+				}
+			}
 		}
+
 	}
 
 	// すべての状態異常を取り除きます
@@ -337,26 +383,6 @@ public class Status {
 		time += conditionTimes.get(key).getCurrentTime();
 		condition.put(v);
 		conditionTimes.put(key, new FrameTimeCounter(time));
-	}
-
-	// コンディションによるコンディション発生を設定する
-	//Pの判定を行っているので、毎回違う結果になる可能性がある。
-	// すでに発生している状態異常は付与しない。効果時間のリセットは別途作成すること
-	public void updateCondition() {
-		List<ConditionValue> addList = new ArrayList<>();
-		for (ConditionValue v : condition) {
-			for (EffectMaster e : v.getEffects()) {
-				if (e.getTargetType() == EffectTargetType.ADD_CONDITION) {
-					if (Random.percent(e.getP())) {
-						if (!condition.contains(e.getTargetName())) {
-							addList.add(ConditionValueStorage.getInstance().get(e.getTargetName()));
-							conditionTimes.put(e.getKey(), e.createTimeCounter());
-						}
-					}
-				}
-			}
-		}
-		condition.addAll(addList);
 	}
 
 	// conditionValueSetによる効果を適用させた値を返却
@@ -513,6 +539,16 @@ public class Status {
 	@Override
 	public String toString() {
 		return "Status{" + "name=" + name + '}';
+	}
+
+	public StatusValueSet simulateDamage(Map<StatusKey, Integer> damage) {
+		StatusValueSet result = getEffectedStatus();
+
+		for (Map.Entry<StatusKey, Integer> e : damage.entrySet()) {
+			result.get(e.getKey().getName()).add(e.getValue());
+		}
+
+		return result;
 	}
 
 }

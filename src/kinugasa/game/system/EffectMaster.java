@@ -90,6 +90,47 @@ public class EffectMaster implements Nameable {
 		return new FrameTimeCounter(val);
 	}
 
+	public void exec(Status s) {
+		//この状態異常効果をSに発生させる。対象はADD＿CONDITION、ATTRIN、STATUS。
+		switch (targetType) {
+			case ADD_CONDITION:
+				s.addCondition(targetName);
+				break;
+			case ATTRIBUTE_IN:
+				switch (setType) {
+					case ADD_PERCENT_OF_MAX:
+						float val = s.getBaseAttrIn().get(targetName).getMax() * value;
+						s.getBaseAttrIn().get(targetName).set(value);
+						break;
+					case ADD_VALUE:
+						s.getBaseAttrIn().get(targetName).add(value);
+						break;
+					case TO:
+						s.getBaseAttrIn().get(targetName).set(value);
+						break;
+				}
+			case STATUS:
+				switch (setType) {
+					case ADD_PERCENT_OF_MAX:
+						float val = s.getBaseStatus().get(targetName).getMax() * value;
+						s.getBaseStatus().get(targetName).set(val);
+						break;
+					case ADD_VALUE:
+						s.getBaseStatus().get(targetName).add(value);
+						break;
+					case TO:
+						s.getBaseStatus().get(targetName).set(value);
+						break;
+				}
+			case CONFU:
+			case STOP:
+				//CONFUとSTOPはStatusからやるので、操作なし
+				break;
+			default:
+				throw new AssertionError();
+		}
+	}
+
 	@Override
 	public String getName() {
 		return key.getName();

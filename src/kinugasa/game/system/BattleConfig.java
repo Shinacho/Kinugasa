@@ -39,7 +39,27 @@ public class BattleConfig {
 	public static String moveStatusKey = "MOV";
 	public static String initialPCMoveVehicleKey = "WALK";
 	public static String expStatisKey = "EXP";
+	
+	
 	public static String spellingConditionName = "SPELLING";
+	public static String escapedConditionName = "ESCAPED";
+	public static String defenceConditionName = "DEFENCE";
+	public static String avoidanceConditionName = "AVOIDANCE";
+	
+	//
+	public static class ActionName {
+
+		public static String move = "MOVE";
+		public static String itemUse = "ITEM";
+		public static String defence = "DEFENCE";
+		public static String avoidance = "AVOID";
+		public static String status = "STATUS";
+		public static String escape = "ESCAPE";
+		public static String commit = "COMMIT";
+	}
+	//
+	public static float conguStopP = 0.5f;
+	public static int actionWindowLF = 56;
 
 	private static List<BattleWinLoseLogic> winLoseLogic = new ArrayList<>();
 
@@ -78,7 +98,7 @@ public class BattleConfig {
 			}
 		}
 	}
-	
+
 	public static boolean undeadDebugMode = false;
 
 }

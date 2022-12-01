@@ -37,9 +37,9 @@ import kinugasa.game.ui.TextStorage;
  * @vesion 1.0.0 - 2022/11/27_21:08:16<br>
  * @author Dra211<br>
  */
-public class AfterMoveCommandMessageWindow extends MessageWindow {
+public class AfterMoveActionMessageWindow extends MessageWindow implements CommandWindow {
 
-	public AfterMoveCommandMessageWindow(float x, float y, float w, float h) {
+	public AfterMoveActionMessageWindow(float x, float y, float w, float h) {
 		super(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""), new TextStorage(), new Text());
 	}
 	private List<BattleAction> actions = new ArrayList();
@@ -50,6 +50,7 @@ public class AfterMoveCommandMessageWindow extends MessageWindow {
 
 	private int selected = 0;
 
+	@Override
 	public BattleAction getSelected() {
 		return actions.get(selected);
 	}
@@ -70,8 +71,8 @@ public class AfterMoveCommandMessageWindow extends MessageWindow {
 
 	public void setActions(List<BattleAction> actions) {
 		this.actions = actions;
-		selected = 0;
 		Collections.sort(actions);
+		selected = 0;
 		updateText();
 	}
 
@@ -111,6 +112,7 @@ public class AfterMoveCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
+		GameSystem.getInstance().getBattleSystem().setAfterMoveArea(getSelected());
 	}
 
 	public void prevAction() {
@@ -122,5 +124,6 @@ public class AfterMoveCommandMessageWindow extends MessageWindow {
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
+		GameSystem.getInstance().getBattleSystem().setAfterMoveArea(getSelected());
 	}
 }

@@ -41,7 +41,7 @@ public abstract class StatusDamageCalcModel extends Model implements Nameable {
 		this.name = name;
 	}
 
-	public abstract void exec(GameSystem gs, BattleCharacter user, BattleAction ba, BattleActionEvent e, StatusDamageCalcType calcType, AttributeKey atkAttr, String tgtStatusKey, List<BattleCharacter> target);
+	public abstract BattleActionResult exec(GameSystem gs, BattleCharacter user, BattleAction ba, BattleActionEvent e, StatusDamageCalcType calcType, AttributeKey atkAttr, String tgtStatusKey, List<BattleCharacter> target);
 
 	@Override
 	public String getName() {

@@ -24,12 +24,11 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import kinugasa.game.GraphicsContext;
-import kinugasa.object.Drawable;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
 import kinugasa.util.FrameTimeCounter;
@@ -203,6 +202,9 @@ public class BattleAction implements Nameable, Comparable<BattleAction> {
 
 	public int getAreaWithEqip(Status s) {
 		int a = area;
+		if (this.getBattleActionType() == BattleActionType.MAGIC) {
+			return a;
+		}
 		for (Item i : s.getEqipment().values()) {
 			if (i != null) {
 				a += i.getArea();
@@ -235,6 +237,15 @@ public class BattleAction implements Nameable, Comparable<BattleAction> {
 		return result;
 	}
 
+	public boolean hasBatt(BattleActionTargetType batt) {
+		for (BattleActionEvent e : getEvents()) {
+			if (e.getBatt() == batt) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public List<BattleActionResult> exec(GameSystem gs, BattleCharacter user) {
 		return exec(gs, user, Collections.emptyList());
 	}
@@ -253,7 +264,7 @@ public class BattleAction implements Nameable, Comparable<BattleAction> {
 		}
 		//SELFでターゲットが入っている場合、例外
 		if (isOnlyBatt(BattleActionTargetType.SELF) && (selectedTarget != null || selectedTarget.size() != 0)) {
-			throw new GameSystemException("this actin is SELF, but target is exsist:" + getName());
+			throw new GameSystemException("this actin is SELF, but target is exsist : this is " + getName());
 		}
 		for (BattleActionEvent e : getEvents()) {
 			if (!Random.percent(e.getBaseP())) {
@@ -288,118 +299,113 @@ public class BattleAction implements Nameable, Comparable<BattleAction> {
 				case ALL:
 				case TEAM_PARTY:
 				case TEAM_ENEMY:
-					tgt.addAll(selectedTarget);
-					break;
 				case ONE_ENEMY:
 				case ONE_PARTY:
 				case RANDOM_ONE:
 				case RANDOM_ONE_ENEMY:
 				case RANDOM_ONE_PARTY:
-					if (selectedTarget.size() != 1) {
-						throw new GameSystemException("this event target is 1, but target size is not 1:" + name + " / " + selectedTarget);
-					}
 					tgt.addAll(selectedTarget);
 					break;
 				default:
 					throw new AssertionError();
 			}
-			BattleActionTargetParameterType batpt;
-			switch (batpt = e.getBatpt()) {
-				case ADD_CONDITION:
-					String tgtName = e.getTargetName();
-					if (tgtName == null) {
-						throw new GameSystemException("batt=" + batt + " batpt=ADD_CONDITION, but tgtName is null：" + user.getStatus().getName() + " / " + name);
-					}
-					gs.getBattleSystem().getBattleFieldSystem().addCondition(ConditionValueStorage.getInstance().get(tgtName).getKey());
-					result.add(BattleActionResult.ADD_CONDITION_TGT);
-					break;
-				case REMOVE_CONDITION:
-					String tgtName2 = e.getTargetName();
-					if (tgtName2 == null) {
-						throw new GameSystemException("batt=" + batt + " batpt=REMOVE_CONDITION, but tgtName is null：" + user.getStatus().getName() + " / " + name);
-					}
-					gs.getBattleSystem().getBattleFieldSystem().removeCondition(tgtName2);
-					result.add(BattleActionResult.REMOVE_CONDITION_TGT);
-					break;
-				case ATTR_IN:
-					float value = e.getValue();
-					String tgtAttrName = e.getTargetName();
-					if (tgtAttrName == null) {
-						throw new GameSystemException("ATTR_IN, but tgtName is null：" + user.getStatus().getName() + " / " + name);
-					}
-					switch (e.getDamageCalcType()) {
-						case DIRECT:
-							for (BattleCharacter t : tgt) {
-								t.getStatus().getBaseAttrIn().get(tgtAttrName).set(value);
-							}
-							break;
-						case PERCENT_OF_MAX:
-							for (BattleCharacter t : tgt) {
-								value *= t.getStatus().getBaseAttrIn().get(tgtAttrName).getMax();
-								t.getStatus().getBaseAttrIn().get(tgtAttrName).set(value);
-							}
-							break;
-						case PERCENT_OF_NOW:
-							for (BattleCharacter t : tgt) {
-								value *= t.getStatus().getBaseAttrIn().get(tgtAttrName).getValue();
-								t.getStatus().getBaseAttrIn().get(tgtAttrName).set(value);
-							}
-							break;
-						default:
-							throw new AssertionError();
-					}
-					result.add(BattleActionResult.ATTR_IN);
-					break;
-				case ITEM_LOST:
-					String tgtItemName = e.getTargetName();
-					if (tgtItemName == null) {
-						throw new GameSystemException("ITEM_LOST, but tgtName is null：" + user.getStatus().getName() + " / " + name);
-					}
-					for (BattleCharacter s : tgt) {
-						s.getStatus().getItemBag().drop(tgtItemName);
-					}
-					result.add(BattleActionResult.ITEM_LOST);
-					break;
-				case MOVE:
-					//MOVEイベントは特に何もしない（移動はプレイヤーの入力によるため
-					result.add(BattleActionResult.MOVE);
-					break;
-				case NONE:
-					//NONEイベントは特に何もしない
-					result.add(BattleActionResult.NONE);
-					break;
-				case USE_ITEM:
-					String tgtItemName2 = e.getTargetName();
-					Item item = ItemStorage.getInstance().get(tgtItemName2);
-					if (!user.getStatus().getItemBag().contains(item)) {
-						throw new GameSystemException(name + " use " + item + " but dont have it.");
-					}
-					for (ItemAction a : item.getBattleAction()) {
-						a.exec(user, selectedTarget);
-					}
-					result.add(BattleActionResult.USE_ITEM);
-					break;
-				case STATUS:
-					String tgtStatusName = e.getTargetName();
-					if (tgtStatusName == null) {
-						throw new GameSystemException("STATUS, but tgtName is null：" + user.getStatus().getName() + " / " + name);
-					}
-					StatusDamageCalcType calcType = e.getDamageCalcType();
-					if (calcType == null) {
-						throw new GameSystemException("STATUS, but StatusDamageCalcType(dct) is null：" + user.getStatus().getName() + " / " + name);
-					}
-					AttributeKey attrKey = e.getAtkAttr();
-					if (attrKey == null) {
-						throw new GameSystemException("STATUS, but AttributeKey is null：" + user.getStatus().getName() + " / " + name);
-					}
-					StatusDamageCalcModelStorage.getInstance().getCurrent().exec(gs, user, this, e, calcType, attrKey, tgtStatusName, tgt);
-					result.add(BattleActionResult.SUCCESS);
-					break;
-				default:
-					throw new AssertionError();
+			if (batt != BattleActionTargetType.FIELD) {
+				BattleActionTargetParameterType batpt;
+				switch (batpt = e.getBatpt()) {
+					case ADD_CONDITION:
+						String tgtName = e.getTargetName();
+						if (tgtName == null) {
+							throw new GameSystemException("batt=" + batt + " batpt=ADD_CONDITION, but tgtName is null：" + user.getStatus().getName() + " / " + name);
+						}
+						gs.getBattleSystem().getBattleFieldSystem().addCondition(ConditionValueStorage.getInstance().get(tgtName).getKey());
+						result.add(BattleActionResult.ADD_CONDITION_TGT);
+						break;
+					case REMOVE_CONDITION:
+						String tgtName2 = e.getTargetName();
+						if (tgtName2 == null) {
+							throw new GameSystemException("batt=" + batt + " batpt=REMOVE_CONDITION, but tgtName is null：" + user.getStatus().getName() + " / " + name);
+						}
+						gs.getBattleSystem().getBattleFieldSystem().removeCondition(tgtName2);
+						result.add(BattleActionResult.REMOVE_CONDITION_TGT);
+						break;
+					case ATTR_IN:
+						float value = e.getValue();
+						String tgtAttrName = e.getTargetName();
+						if (tgtAttrName == null) {
+							throw new GameSystemException("ATTR_IN, but tgtName is null：" + user.getStatus().getName() + " / " + name);
+						}
+						switch (e.getDamageCalcType()) {
+							case DIRECT:
+								for (BattleCharacter t : tgt) {
+									t.getStatus().getBaseAttrIn().get(tgtAttrName).set(value);
+								}
+								break;
+							case PERCENT_OF_MAX:
+								for (BattleCharacter t : tgt) {
+									value *= t.getStatus().getBaseAttrIn().get(tgtAttrName).getMax();
+									t.getStatus().getBaseAttrIn().get(tgtAttrName).set(value);
+								}
+								break;
+							case PERCENT_OF_NOW:
+								for (BattleCharacter t : tgt) {
+									value *= t.getStatus().getBaseAttrIn().get(tgtAttrName).getValue();
+									t.getStatus().getBaseAttrIn().get(tgtAttrName).set(value);
+								}
+								break;
+							default:
+								throw new AssertionError();
+						}
+						result.add(BattleActionResult.ATTR_IN);
+						break;
+					case ITEM_LOST:
+						String tgtItemName = e.getTargetName();
+						if (tgtItemName == null) {
+							throw new GameSystemException("ITEM_LOST, but tgtName is null：" + user.getStatus().getName() + " / " + name);
+						}
+						for (BattleCharacter s : tgt) {
+							s.getStatus().getItemBag().drop(tgtItemName);
+						}
+						result.add(BattleActionResult.ITEM_LOST);
+						break;
+					case MOVE:
+						//MOVEイベントは特に何もしない（移動はプレイヤーの入力によるため
+						result.add(BattleActionResult.MOVE);
+						break;
+					case NONE:
+						//NONEイベントは特に何もしない
+						result.add(BattleActionResult.NONE);
+						break;
+					case USE_ITEM:
+						String tgtItemName2 = e.getTargetName();
+						Item item = ItemStorage.getInstance().get(tgtItemName2);
+						if (!user.getStatus().getItemBag().contains(item)) {
+							throw new GameSystemException(name + " use " + item + " but dont have it.");
+						}
+						for (ItemAction a : item.getBattleAction()) {
+							a.exec(user, selectedTarget);
+						}
+						result.add(BattleActionResult.USE_ITEM);
+						break;
+					case STATUS:
+						String tgtStatusName = e.getTargetName();
+						if (tgtStatusName == null) {
+							throw new GameSystemException("STATUS, but tgtName is null：" + user.getStatus().getName() + " / " + name);
+						}
+						StatusDamageCalcType calcType = e.getDamageCalcType();
+						if (calcType == null) {
+							throw new GameSystemException("STATUS, but StatusDamageCalcType(dct) is null：" + user.getStatus().getName() + " / " + name);
+						}
+						AttributeKey attrKey = e.getAtkAttr();
+						if (attrKey == null) {
+							throw new GameSystemException("STATUS, but AttributeKey is null：" + user.getStatus().getName() + " / " + name);
+						}
+						result.add(StatusDamageCalcModelStorage.getInstance().getCurrent().exec(gs, user, this, e, calcType, attrKey, tgtStatusName, tgt));
+						break;
+					default:
+						throw new AssertionError();
+				}
 			}
 		}
-		assert getEvents().size() == result.size() : "battle action event result size is mismatch";
 		return result;
 	}
 
@@ -434,6 +440,43 @@ public class BattleAction implements Nameable, Comparable<BattleAction> {
 			}
 		}
 		return r;
+	}
+
+	//実行時に減る量を返す。減った後の値ではない。
+	public Map<StatusKey, Integer> selfDamage(Status user) {
+		Map<StatusKey, Integer> result = new HashMap<>();
+		for (BattleActionEvent e : getEvents()) {
+			if (e.getBatt() != BattleActionTargetType.SELF) {
+				continue;
+			}
+			//SELFダメージは乱数かけない。
+			StatusKey key = StatusKeyStorage.getInstance().get(e.getTargetName());
+			float value = e.getValue();
+			switch (e.getBatpt()) {
+				case STATUS:
+					switch (e.getDamageCalcType()) {
+						case DIRECT:
+							break;
+						case PERCENT_OF_MAX:
+							value *= user.getEffectedStatus().get(key.getName()).getMax();
+							break;
+						case PERCENT_OF_NOW:
+							value *= user.getEffectedStatus().get(key.getName()).getValue();
+							break;
+					}
+					break;
+				default:
+					break;
+			}
+			if (result.containsKey(key)) {
+				float v = result.get(key);
+				v += value;
+				result.put(key, (int) value);
+			} else {
+				result.put(key, (int) value);
+			}
+		}
+		return result;
 	}
 
 	@Override

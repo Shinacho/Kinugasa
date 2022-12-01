@@ -78,6 +78,14 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 		}
 	}
 
+	public int size() {
+		return items.size();
+	}
+
+	public Item get(int idx) {
+		return items.get(idx);
+	}
+
 	public void drop(String name) {
 		drop(ItemStorage.getInstance().get(name));
 	}
@@ -88,6 +96,10 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 
 	public boolean contains(String name) {
 		return contains(ItemStorage.getInstance().get(name));
+	}
+
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 
 	@Override

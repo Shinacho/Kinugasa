@@ -40,10 +40,11 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 	private StatusDamageCalcModelStorage() {
 		add(new StatusDamageCalcModel("DUMMY") {
 			@Override
-			public void exec(GameSystem gs, BattleCharacter user, BattleAction ba, BattleActionEvent e, StatusDamageCalcType calcType, AttributeKey atkAttr, String tgtStatusKey, List<BattleCharacter> target) {
+			public BattleActionResult exec(GameSystem gs, BattleCharacter user, BattleAction ba, BattleActionEvent e, StatusDamageCalcType calcType, AttributeKey atkAttr, String tgtStatusKey, List<BattleCharacter> target) {
 				System.out.println("ダメージ計算が実行された");
+				return BattleActionResult.SUCCESS;
 			}
-			
+
 		});
 		//TODO DCT=DIRECTかつATTR=noneAttrKeyの場合耐性を無視してダメージを与える
 		setCurrent("DUMMY");

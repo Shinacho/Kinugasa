@@ -69,7 +69,8 @@ public class StatusKey implements Nameable {
 
 	@Override
 	public String toString() {
-		return "StatusKey{" + "name=" + name + ", desc=" + desc + ", min=" + min + ", max=" + max + ", when0ConditionName=" + when0ConditionName + '}';
+		return getName();
 	}
+
 
 }

@@ -44,8 +44,8 @@ THE SOFTWARE.
 		<effect ect="ONECE" time="1" ett="STATUS" est="ADD_PERCENT_OF_MAX" tgt="AVO" value="0.33" p="1" />
 	</cCondition>
 	
-	<cCondition name="ESCAPE" desc="“¦‚°‚æ‚¤‚Æ‚µ‚Ä‚¢‚é" pri="1" >
-		<effect ect="ONECE" time="1" ett="STATUS" est="ADD_PERCENT_OF_MAX" tgt="AVO" value="-0.33" p="1" />
+	<cCondition name="ESCAPED" desc="“¦‚°o‚µ‚½" pri="1" >
+		<effect ect="CONTINUE" time="INFINITY" ett="STOP" p="1" />
 	</cCondition>
 
 	<cCondition name="REGENE" desc="™X‚É‰ñ•œ‚µ‚Ä‚¢‚é" pri="2" >

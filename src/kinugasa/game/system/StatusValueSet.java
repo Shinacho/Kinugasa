@@ -23,8 +23,8 @@
  */
 package kinugasa.game.system;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 import kinugasa.resource.Storage;
 
 /**
@@ -53,6 +53,43 @@ public class StatusValueSet extends Storage<StatusValue> implements Cloneable {
 			r.put(v.clone());
 		}
 		return r;
+	}
+
+	public boolean isZero(String name) {
+		return get(name).getValue() <= 0;
+	}
+
+	public boolean hasZero() {
+		for (StatusValue v : this) {
+			if (v.getValue() <= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isZero(boolean and, List<StatusKey> key) {
+		boolean result = and;
+		for (StatusValue v : this) {
+			if (key.contains(v.getKey())) {
+				if (and) {
+					result &= v.isZero();
+				} else {
+					result |= v.isZero();
+				}
+			}
+		}
+		return result;
+	}
+
+	public List<StatusKey> getZeroStatus() {
+		List<StatusKey> result = new ArrayList<>();
+		for (StatusValue v : this) {
+			if (v.getValue() <= 0) {
+				result.add(v.getKey());
+			}
+		}
+		return result;
 	}
 
 	@Override

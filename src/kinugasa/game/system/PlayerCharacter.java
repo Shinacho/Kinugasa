@@ -38,10 +38,24 @@ public class PlayerCharacter implements BattleCharacter {
 
 	private Status status;
 	private PlayerCharacterSprite sprite;
+	private int order = 0;
 
 	public PlayerCharacter(Status status, PlayerCharacterSprite sprite) {
 		this.status = status;
 		this.sprite = sprite;
+	}
+
+	void setOrder(int order) {
+		this.order = order;
+	}
+
+	int getOrder() {
+		return order;
+	}
+
+	@Override
+	public String getId() {
+		return status.getName();
 	}
 
 	@Override
@@ -101,6 +115,7 @@ public class PlayerCharacter implements BattleCharacter {
 	public void unsetTarget() {
 		tgt = null;
 		moving = false;
+		sprite.setVector(new KVector(0, 0));
 	}
 
 	@Override

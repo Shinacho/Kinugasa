@@ -23,44 +23,59 @@
  */
 package kinugasa.game.system;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import kinugasa.game.GraphicsContext;
+import kinugasa.object.BasicSprite;
+import kinugasa.object.Sprite;
+import kinugasa.util.TimeCounter;
 
 /**
+ * バトルアクションエリアスプライトは、ターゲットシステムで使用される、中心点から距離分離れたサークルを定義するクラスです。
+ * このスプライトは、スプライトの機能をつかうためだけにSpriteのサブクラスになっています。座標及びサイズは無視されます。
  *
- * @vesion 1.0.0 - 2022/11/27_10:10:49<br>
+ * @vesion 1.0.0 - 2022/11/28_21:36:31<br>
  * @author Dra211<br>
  */
-public class BattleTarget {
+public class BattleActionAreaSprite extends BasicSprite {
 
-	private BattleActionTargetType targetType;
-	private List<BattleCharacter> target;
+	private int area = 0;
+	private Color color;
 
-	public BattleTarget(BattleActionTargetType targetType) {
-		this(targetType, Collections.emptyList());
+	public BattleActionAreaSprite(Color color) {
+		this.color = color;
 	}
 
-	public BattleTarget(BattleActionTargetType targetType, BattleCharacter target) {
-		this(targetType, Arrays.asList(target));
+	public void setArea(int area) {
+		this.area = area;
 	}
 
-	public BattleTarget(BattleActionTargetType targetType, List<BattleCharacter> target) {
-		this.targetType = targetType;
-		this.target = target;
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
-	public List<BattleCharacter> getTarget() {
-		return target;
+	public int getArea() {
+		return area;
 	}
 
-	public BattleActionTargetType getTargetType() {
-		return targetType;
+	public Color getColor() {
+		return color;
 	}
 
 	@Override
-	public String toString() {
-		return "BattleTarget{" + "targetType=" + targetType + ", target=" + target + '}';
+	public void draw(GraphicsContext g) {
+		if (!isVisible() || !isExist()) {
+			return;
+		}
+		if (area == 0) {
+			return;
+		}
+		Graphics2D g2 = g.create();
+		g2.setColor(color);
+		int x = (int) (getCenterX() - area);
+		int y = (int) (getCenterY() - area);
+		g2.drawOval(x, y, area * 2, area * 2);
+		g2.dispose();
 	}
 
 }

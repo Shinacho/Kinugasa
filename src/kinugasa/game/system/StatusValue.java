@@ -57,6 +57,10 @@ public class StatusValue implements Nameable, Cloneable {
 		this.key = key;
 	}
 
+	public boolean isZero() {
+		return value <= 0;
+	}
+
 	public float getValue() {
 		return value;
 	}
@@ -90,7 +94,10 @@ public class StatusValue implements Nameable, Cloneable {
 
 	public void add(float value) {
 		this.value += value;
-		if (key.getMin() > value) {
+		if (key.getMax() < this.value) {
+			this.value = key.getMax();
+		}
+		if (key.getMin() > this.value) {
 			this.value = key.getMin();
 		}
 	}

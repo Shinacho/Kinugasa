@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <KinugasaEnemyMap>
-	<enemy name="野盗" visibleName="野盗" image="resource/M1.png" race="人間" actionSelectMode="RANDOM" vehicle="WALK">
+	<enemy name="野盗" visibleName="野盗" image="resource/M1.png" race="人間"  vehicle="WALK">
 		<status name="HP" value="80" min="0" max="80"/>
 		<status name="MOV" value="70" min="0" max="75" />
 		<status name="EXP" value="100"  min="0" max="200"/>
@@ -33,7 +33,7 @@ THE SOFTWARE.
 		<action name="移動" p="1"/>
 	</enemy>
 
-	<enemy name="動かない野盗" visibleName="動かない野盗" image="resource/M1.png" race="人間" actionSelectMode="RANDOM" vehicle="WALK">
+	<enemy name="動かない野盗" visibleName="動かない野盗" image="resource/M1.png" race="人間"  vehicle="WALK">
 		<status name="HP" value="80" min="0" max="80"/>
 		<status name="MOV" value="80" min="0" max="75" />
 		<status name="EXP" value="120" min="0" max="200"/>
@@ -43,19 +43,34 @@ THE SOFTWARE.
 		<action name="防御" p="1" />
 	</enemy>
 	
-	<enemy name="魔術師" visibleName="魔術師" image="resource/M1.png" race="人間" actionSelectMode="RANDOM" vehicle="WALK">
+	<enemy name="魔術師" visibleName="魔術師" image="resource/M1.png" race="人間"  vehicle="WALK">
 		<status name="HP" value="80" min="0" max="80"/>
+		<status name="MP" value="80" min="0" max="80"/>
 		<status name="MOV" value="40" min="0" max="75" />
+		<status name="SAN" value="40" min="0" max="75" />
 		<status name="EXP" value="120" min="0" max="200"/>
-		<action name="こぶし" p="1" />
-		<action name="天地雷鳴" p="1" />
-		<action name="ファイアボルト" p="1" />
+		<action name="こぶし" p="0.5" />
+		<action name="天地雷鳴" p="0.75" />
+		<action name="ファイアボルト" p="0.75" />
+		<book name="火炎の書" />
+	</enemy>
 		
+	<enemy name="動く魔術師" visibleName="動く魔術師" image="resource/M1.png" race="人間"  vehicle="WALK">
+		<status name="HP" value="80" min="0" max="80"/>
+		<status name="MP" value="80" min="0" max="80"/>
+		<status name="MOV" value="40" min="0" max="75" />
+		<status name="SAN" value="40" min="0" max="75" />
+		<status name="EXP" value="120" min="0" max="200"/>
+		<action name="こぶし" p="0.5" />
+		<action name="天地雷鳴" p="0.75" />
+		<action name="ファイアボルト" p="0.75" />
+		<book name="火炎の書" />
+		<action name="移動" p="1"/>
 	</enemy>
 	
 	
 	
-	<enemy name="山賊" visibleName="山賊" image="resource/M2.png" race="人間" actionSelectMode="RANDOM" vehicle="WALK">
+	<enemy name="山賊" visibleName="山賊" image="resource/M2.png" race="人間"  vehicle="WALK">
 		<status name="HP" value="200" min="0" max="200"/>
 		<status name="MOV" value="80" min="0" max="95" />
 		<status name="EXP" value="150"  min="0" max="200"/>
@@ -65,7 +80,7 @@ THE SOFTWARE.
 		<action name="移動"  p="1"/>
 	</enemy>
 
-	<enemy name="悪漢" visibleName="悪漢" image="resource/M3.png" race="人間" actionSelectMode="RANDOM" vehicle="WALK">
+	<enemy name="悪漢" visibleName="悪漢" image="resource/M3.png" race="人間"  vehicle="WALK">
 		<status name="HP" value="250" min="0" max="250"/>
 		<status name="MOV" value="110" min="0" max="110" />
 		<status name="EXP" value="200"  min="0" max="200"/>

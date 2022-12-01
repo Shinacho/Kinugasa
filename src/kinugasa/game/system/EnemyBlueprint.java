@@ -79,11 +79,11 @@ public class EnemyBlueprint implements Nameable {
 	private List<ConditionKey> conditionList;
 	private Race race;
 	private ItemBag itemBag;
+	private BookBag bookBag;
 	private Map<ItemEqipmentSlot, Item> equipment;
 	private ArrayList<DropItem> dropItems;
 	private ImageSprite sprite;
 	private List<EnemyBattleAction> actions;
-	private EnemyActionSelectMode actionSelectMode;
 	private Vehicle vehicle;
 
 	public EnemyBlueprint(String id,
@@ -93,11 +93,11 @@ public class EnemyBlueprint implements Nameable {
 			List<ConditionKey> conditionList,
 			Race race,
 			ItemBag itemBag,
+			BookBag bookBag,
 			Map<ItemEqipmentSlot, Item> equipment,
 			ArrayList<DropItem> dropItems,
 			ImageSprite sprite,
 			List<EnemyBattleAction> actions,
-			EnemyActionSelectMode actionSelectMode,
 			Vehicle vehicle) {
 		this.id = id;
 		this.visibleName = visibleName;
@@ -106,11 +106,11 @@ public class EnemyBlueprint implements Nameable {
 		this.conditionList = conditionList;
 		this.race = race;
 		this.itemBag = itemBag;
+		this.bookBag = bookBag;
 		this.equipment = equipment;
 		this.dropItems = dropItems;
 		this.sprite = sprite;
 		this.actions = actions;
-		this.actionSelectMode = actionSelectMode;
 		this.vehicle = vehicle;
 	}
 
@@ -126,6 +126,7 @@ public class EnemyBlueprint implements Nameable {
 		for (Item i : equipment.values()) {
 			s.addEqip(i);
 		}
+		s.setBookBag(bookBag);
 		if (actions.isEmpty()) {
 			throw new GameSystemException(enemyName + " s action is empty");
 		}

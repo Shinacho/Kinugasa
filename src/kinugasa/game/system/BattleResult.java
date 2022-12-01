@@ -31,5 +31,6 @@ package kinugasa.game.system;
 public enum BattleResult {
 	NOT_YET,
 	WIN,
-	LOSE,;
+	LOSE,
+	ESCAPE;
 }

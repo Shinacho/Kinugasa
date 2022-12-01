@@ -89,6 +89,10 @@ public class MessageWindow extends BasicSprite {
 		this.text = text;
 	}
 
+	public void setText(String text) {
+		setText(new Text(text));
+	}
+
 	public void clearText() {
 		setText(new Text());
 	}

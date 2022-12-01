@@ -23,35 +23,19 @@
  */
 package kinugasa.game.system;
 
-import java.awt.geom.Point2D;
-import kinugasa.object.BasicSprite;
-import kinugasa.object.FourDirection;
-
 /**
  *
- * @vesion 1.0.0 - 2022/11/23_13:08:50<br>
+ * @vesion 1.0.0 - 2022/11/29_21:31:59<br>
  * @author Dra211<br>
  */
-public interface BattleCharacter {
-
-	public BasicSprite getSprite();
-
-	public Status getStatus();
-
-	public void setTargetLocation(Point2D.Float p, int area);
-	
-	public void unsetTarget();
-
-	public boolean isMoving();
-
-	public void moveToTgt();
-
-	public void move();
-
-	public void to(FourDirection dir);
-
-	public boolean isPlayer();
-	
-	public String getId();
+public enum ActionResult {
+	SUCCESS,
+	TARGET_SELECT,
+	NO_TARGET,
+	MOVE,
+	SHOW_ITEM_WINDOW,
+	SHOW_STATUS,
+	ESCAPE,
+	MISS,
 
 }

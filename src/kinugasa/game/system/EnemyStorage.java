@@ -81,7 +81,6 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 			String visibleName = e.getAttributes().get("visibleName").getValue();
 			BufferedImage image = ImageUtil.load(e.getAttributes().get("image").getValue());
 			Race race = RaceStorage.getInstance().get(e.getAttributes().get("race").getValue());
-			EnemyActionSelectMode actionSelectMode = EnemyActionSelectMode.valueOf(e.getAttributes().get("actionSelectMode").getValue());
 			Vehicle vehicle = VehicleStorage.getInstance().get(e.getAttributes().get("vehicle").getValue());
 			StatusValueSet statusValueSet = new StatusValueSet();
 			statusValueSet.setAll(1);
@@ -136,6 +135,18 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 				eqip.put(i.getEqipmentSlot(), i);
 				itemBag.add(i);
 			}
+			for (XMLElement ie : e.getElement("item")) {
+				String name = ie.getAttributes().get("name").getValue();
+				Item i = ItemStorage.getInstance().get(name);
+				itemBag.add(i);
+			}
+			//
+			BookBag books = new BookBag();
+			for (XMLElement be : e.getElement("book")) {
+				String name = be.getAttributes().get("name").getValue();
+				Book b = BookStorage.getInstance().get(name);
+				books.add(b);
+			}
 
 			EnemyBlueprint b = new EnemyBlueprint(
 					id,
@@ -145,11 +156,11 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 					condition,
 					race,
 					itemBag,
+					books,
 					eqip,
 					dropItems,
 					new ImageSprite(0, 0, image.getWidth(), image.getHeight(), image),
 					actionList,
-					actionSelectMode,
 					vehicle
 			);
 			add(b);
