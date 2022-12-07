@@ -23,7 +23,6 @@
  */
 package kinugasa.game.field4;
 
-import java.awt.Point;
 import kinugasa.object.Model;
 import kinugasa.resource.Nameable;
 
