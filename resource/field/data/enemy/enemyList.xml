@@ -28,9 +28,9 @@ THE SOFTWARE.
 		<status name="MOV" value="70" min="0" max="75" />
 		<status name="EXP" value="100"  min="0" max="200"/>
 		<attrIn name="STAB" value="0.5"/>
-		<dropItem name="Î‚±‚ë" n="1" p="1" />
-		<action name="‚±‚Ô‚µ" p="1" />
-		<action name="ˆÚ“®" p="1"/>
+		<dropItem name="Î‚±‚ë" n="1" p="1"/>
+		<action name="‚±‚Ô‚µ" />
+		<action name="ˆÚ“®"/>
 	</enemy>
 
 	<enemy name="“®‚©‚È‚¢–ì“" visibleName="“®‚©‚È‚¢–ì“" image="resource/M1.png" race="lŠÔ"  vehicle="WALK">
@@ -38,34 +38,45 @@ THE SOFTWARE.
 		<status name="MOV" value="80" min="0" max="75" />
 		<status name="EXP" value="120" min="0" max="200"/>
 		<attrIn name="STAB" value="0.5"/>
-		<dropItem name="Î‚±‚ë" n="1" p="1" />
-		<action name="‚±‚Ô‚µ" p="1" />
-		<action name="–hŒä" p="1" />
+		<dropItem name="Î‚±‚ë" n="1" p="1"/>
+		<action name="‚±‚Ô‚µ" />
+		<action name="–hŒä" />
 	</enemy>
 	
-	<enemy name="–‚pŽt" visibleName="–‚pŽt" image="resource/M1.png" race="lŠÔ"  vehicle="WALK">
+	<enemy name="“®‚©‚È‚¢–‚pŽt" visibleName="“®‚©‚È‚¢–‚pŽt" image="resource/M1.png" race="lŠÔ"  vehicle="WALK">
 		<status name="HP" value="80" min="0" max="80"/>
 		<status name="MP" value="80" min="0" max="80"/>
 		<status name="MOV" value="40" min="0" max="75" />
 		<status name="SAN" value="40" min="0" max="75" />
 		<status name="EXP" value="120" min="0" max="200"/>
-		<action name="‚±‚Ô‚µ" p="0.5" />
-		<action name="“V’n—‹–Â" p="0.75" />
-		<action name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg" p="0.75" />
+		<action name="‚±‚Ô‚µ"/>
+		<action name="“V’n—‹–Â"/>
+		<action name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg"/>
 		<book name="‰Î‰Š‚Ì‘" />
 	</enemy>
-		
+	
+	<enemy name="MP‚ª‘«‚è‚È‚¢–‚pŽt" visibleName="MP‚ª‘«‚è‚È‚¢–‚pŽt" image="resource/M1.png" race="lŠÔ"  vehicle="WALK">
+		<status name="HP" value="80" min="0" max="80"/>
+		<status name="MP" value="2" min="0" max="2"/>
+		<status name="MOV" value="40" min="0" max="75" />
+		<status name="SAN" value="40" min="0" max="75" />
+		<status name="EXP" value="120" min="0" max="200"/>
+		<action name="‚±‚Ô‚µ"/>
+		<action name="“V’n—‹–Â"/>
+		<action name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg"/>
+		<book name="‰Î‰Š‚Ì‘" />
+	</enemy>	
 	<enemy name="“®‚­–‚pŽt" visibleName="“®‚­–‚pŽt" image="resource/M1.png" race="lŠÔ"  vehicle="WALK">
 		<status name="HP" value="80" min="0" max="80"/>
 		<status name="MP" value="80" min="0" max="80"/>
 		<status name="MOV" value="40" min="0" max="75" />
 		<status name="SAN" value="40" min="0" max="75" />
 		<status name="EXP" value="120" min="0" max="200"/>
-		<action name="‚±‚Ô‚µ" p="0.5" />
-		<action name="“V’n—‹–Â" p="0.75" />
-		<action name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg" p="0.75" />
+		<action name="‚±‚Ô‚µ"/>
+		<action name="“V’n—‹–Â"/>
+		<action name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg"/>
 		<book name="‰Î‰Š‚Ì‘" />
-		<action name="ˆÚ“®" p="1"/>
+		<action name="ˆÚ“®"/>
 	</enemy>
 	
 	
@@ -75,9 +86,9 @@ THE SOFTWARE.
 		<status name="MOV" value="80" min="0" max="95" />
 		<status name="EXP" value="150"  min="0" max="200"/>
 		<attrIn name="STAB" value="0.5"/>
-		<dropItem name="Î‚±‚ë" n="1" p="1" />
-		<action name="‚±‚Ô‚µ" p="1"/>
-		<action name="ˆÚ“®"  p="1"/>
+		<dropItem name="Î‚±‚ë" n="1" p="1"/>
+		<action name="‚±‚Ô‚µ"/>
+		<action name="ˆÚ“®" />
 	</enemy>
 
 	<enemy name="ˆ«Š¿" visibleName="ˆ«Š¿" image="resource/M3.png" race="lŠÔ"  vehicle="WALK">
@@ -85,11 +96,11 @@ THE SOFTWARE.
 		<status name="MOV" value="110" min="0" max="110" />
 		<status name="EXP" value="200"  min="0" max="200"/>
 		<attrIn name="STAB" value="0.5"/>
-		<dropItem name="Î‚±‚ë" n="1" p="1" />
+		<dropItem name="Î‚±‚ë" n="1" p="1"/>
 		<eqip name="|‚ÌŒ•" />
-		<action name="ŒU¾Ø‚è" p="0.75" />
-		<action name="‰ñ“]Ø‚è" p="0.25" />
-		<action name="ˆÚ“®"  p="1"/>
+		<action name="ŒU¾Ø‚è"/>
+		<action name="‰ñ“]Ø‚è" />
+		<action name="ˆÚ“®" />
 	</enemy>
 	
 </KinugasaEnemyMap>

@@ -38,7 +38,8 @@ import kinugasa.game.field4.PlayerCharacterSprite;
 import kinugasa.game.field4.FieldMapStorage;
 import kinugasa.game.field4.FieldMapXMLLoader;
 import kinugasa.game.field4.FourDirAnimation;
-import kinugasa.game.system.BattleActionStorage;
+import kinugasa.game.system.ActionStorage;
+import kinugasa.game.system.ActionType;
 import kinugasa.game.system.BattleCharacter;
 import kinugasa.game.system.BattleCommandMessageWindow;
 import kinugasa.game.system.BattleConfig;
@@ -58,6 +59,7 @@ import kinugasa.game.system.Status;
 import kinugasa.game.system.StatusWindows;
 import kinugasa.game.ui.FPSLabel;
 import kinugasa.graphics.Animation;
+import kinugasa.graphics.RenderingQuality;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.FourDirection;
 import kinugasa.util.FrameTimeCounter;
@@ -72,11 +74,12 @@ public class Test extends GameManager {
 
 	public static void main(String... args) {
 		LockUtil.deleteAllLockFile();
-		new Test().gameStart(args);
+		new Test().gameStart();
 	}
 
 	private Test() {
-		super(GameOption.defaultOption().setUseGamePad(true).setCenterOfScreen());
+//		super(GameOption.defaultOption().setUseGamePad(true).setCenterOfScreen());
+		super(GameOption.fromGUI());
 	}
 
 	@Override
@@ -100,19 +103,17 @@ public class Test extends GameManager {
 				.addStatusKeyStorage("resource/field/data/battle/status.xml")
 				.addAttrKeyStorage("resource/field/data/battle/attribute.xml")
 				.addConditionValueStorage("resource/field/data/battle/condition.xml")
-				.addItemActionStorage("resource/field/data/item/itemAction.xml")
 				.addItemEqipmentSlotStorage("resource/field/data/item/itemSlotList.xml")
-				.addItemStorage("resource/field/data/item/itemList.xml")
 				.addRaceStorage("resource/field/data/race/raceList.xml")
-				.addBattleActionStorage("resource/field/data/battle/battleAction.xml")
+				.addBattleActionStorage("resource/field/data/battle/action.xml")
 				.addBattleField("resource/field/data/battle/battleField.xml")
 				.addEnemyList("resource/field/data/enemy/enemyList.xml")
 				.addEnemySet("resource/field/data/enemy/enemySet.xml")
 				.addBookList("resource/field/data/item/bookList.xml")
 				.load();
 		// ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[‚Ì•\Ž¦À•WŒvŽZ
-		int screenW = FieldMapStorage.getScreenWidth();
-		int screenH = FieldMapStorage.getScreenHeight();
+		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
+		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
 		float x = screenW / 2 - 16;
 		float y = screenH / 2 - 16;
 		PlayerCharacterSprite c1 = new PlayerCharacterSprite(x, y, 32, 32, new D2Idx(21, 21),
@@ -169,6 +170,10 @@ public class Test extends GameManager {
 		s2.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
 		s3.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
 		s4.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("”jŽ×‚ÌŒ•"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("”jŽ×‚ÌŒ•"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("”jŽ×‚ÌŒ•"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("”jŽ×‚ÌŒ•"));
 		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
 		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
 		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
@@ -193,14 +198,10 @@ public class Test extends GameManager {
 		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
 		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
 		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cŽq"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("•S–¼ŠÛ"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("•S–¼ŠÛ"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("•S–¼ŠÛ"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("•S–¼ŠÛ"));
 		s1.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
 		s2.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
 		s3.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
@@ -228,9 +229,9 @@ public class Test extends GameManager {
 		s4.getBaseStatus().get("MOV").set(Random.randomAbsInt(128) + 98);
 		//ƒeƒXƒg—p‚É‚·‚×‚Ä‚ÌƒAƒNƒVƒ‡ƒ“‚ð’Ç‰Á
 		for (BattleCharacter pc : GameSystem.getInstance().getParty()) {
-			pc.getStatus().getBattleActions().clear();
 			//Šm’èƒAƒNƒVƒ‡ƒ“‚ð‚Ì‚¼‚­
-			pc.getStatus().getBattleActions().addAll(BattleActionStorage.getInstance().stream().filter(p -> !p.getName().equals("Šm’è")).collect(Collectors.toList()));
+			pc.getStatus().getActions().addAll(ActionStorage.getInstance().stream().filter(p -> !p.getName().equals("Šm’è")).collect(Collectors.toList()));
+
 		}
 
 		//
@@ -238,13 +239,12 @@ public class Test extends GameManager {
 		//
 		SpeedCalcModelStorage.getInstance().setCurrent("SPD_20%");
 		Enemy.setProgressBarKey("HP");
-		BattleConfig.outputLogStatusKey = "HP";
-		BattleConfig.moveStatusKey = "MOV";
-		BattleConfig.expStatisKey = "EXP";
+		BattleConfig.StatusKey.hp = "HP";
+		BattleConfig.StatusKey.move = "MOV";
+		BattleConfig.StatusKey.exp = "EXP";
 
 		BattleConfig.ActionName.avoidance = "‰ñ”ð";
 		BattleConfig.ActionName.escape = "“¦‚°‚é";
-		BattleConfig.ActionName.itemUse = "ƒAƒCƒeƒ€";
 		BattleConfig.ActionName.defence = "–hŒä";
 		BattleConfig.ActionName.move = "ˆÚ“®";
 		BattleConfig.ActionName.commit = "Šm’è";
@@ -272,15 +272,15 @@ public class Test extends GameManager {
 			}
 			return BattleResult.NOT_YET;
 		});
-		BattleCommandMessageWindow.setStatusKey(Arrays.asList("MP", "SAN"));
-		StatusWindows.setVisibleStatus(Arrays.asList("HP ", "MP ", "SAN"));
+		BattleConfig.setMagicVisibleStatusKey(Arrays.asList("MP", "SAN"));
+		BattleConfig.setVisibleStatus(Arrays.asList("HP ", "MP ", "SAN"));
 
-		GameSystem.setDebugMode(true);
 
 		gls.add(new FieldLogic(this));
 		gls.add(new BattleLogic(this));
 
 		gls.changeTo("FIELD");
+
 	}
 	GameLogicStorage gls = GameLogicStorage.getInstance();
 	FPSLabel fps = new FPSLabel(0, 12);

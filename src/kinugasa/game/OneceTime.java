@@ -21,55 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
+package kinugasa.game;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/16_10:53:21<br>
+ * @vesion 1.0.0 - 2022/12/01_23:49:11<br>
  * @author Dra211<br>
  */
-public enum BattleActionTargetParameterType {
-	/**
-	 * ステータスの変更を行うアクションタイプです。
-	 */
-	STATUS(3),
-	/**
-	 * 属性耐性の変更を行うアクションタイプです。
-	 */
-	ATTR_IN(4),
-	/**
-	 * valueの名前のアイテムを破棄するタイプです。
-	 */
-	ITEM_LOST(1),
-	/**
-	 * 何も行わないアクションタイプです。
-	 */
-	NONE(999),
-	/**
-	 * 移動アクションです。
-	 */
-	MOVE(10),
-	/**
-	 * 状態異常を付与するアクションです。
-	 */
-	ADD_CONDITION(5),
-	REMOVE_CONDITION(6),
-	/**
-	 * アイテムを使用するアクションです。
-	 */
-	USE_ITEM(2),
-	/**
-	 * ステータスを閲覧するアクションです。
-	 */
-	SHOW_STATUS(9),;
-	private int value;
-
-	private BattleActionTargetParameterType(int value) {
-		this.value = value;
-	}
-
-	public int getValue() {
-		return value;
-	}
+@Target(ElementType.METHOD)
+public @interface OneceTime {
 
 }

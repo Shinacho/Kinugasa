@@ -24,7 +24,7 @@ THE SOFTWARE.
 -->
 <kinugasaFieldMapData textStorageName="001" eventStorageName="001" mg="2" encountCounterDefault="16" esName="01">
 
-    <background image="resource/field/image/seaChip16.png" frame="36" w="16" h="16" drawSize="32" />
+    <background image="resource/field/image/seaChip16.png" frame="36" w="16" h="16" />
 
     <before image="resource/field/image/cloud.png" angle="123.1f" speed="0.5f" tp="0.075f" mg="5" />	
 	

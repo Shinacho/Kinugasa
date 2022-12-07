@@ -24,8 +24,12 @@
 package kinugasa.game.system;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.util.Random;
 
@@ -46,22 +50,35 @@ public class BattleCommand {
 	//このコマンドのユーザ
 	private BattleCharacter user;
 	//取れる行動
-	private List<BattleAction> ba;
+	private List<CmdAction> ba;
 	//状態異常関連
 	private boolean stop = false;
 	private boolean confu = false;
 	//ユーザオペレーション要否フラグ
 	private boolean userOperation = false;
 
-	protected void setBattleAction(List<BattleAction> ba) {
-		this.ba = ba;
-	}
+	//詠唱完了イベントのフラグ
+	private boolean magicSpell = false;
 
 	public BattleCommand(Mode mode, BattleCharacter user) {
 		this.mode = mode;
 		this.user = user;
-		this.ba = user.getStatus().getBattleActions().asList();
+		this.ba = user.getStatus().getActions();
 		assert !ba.isEmpty() : user.getStatus().getName() + " s BA is EMPTY";
+	}
+
+	BattleCommand setAction(List<CmdAction> ba) {
+		this.ba = ba;
+		return this;
+	}
+
+	public boolean isMagicSpell() {
+		return magicSpell;
+	}
+
+	BattleCommand setMagicSpell(boolean magicSpell) {
+		this.magicSpell = magicSpell;
+		return this;
 	}
 
 	public boolean isUserOperation() {
@@ -96,182 +113,72 @@ public class BattleCommand {
 		return user;
 	}
 
-	public BattleAction random() {
+	public CmdAction randomAction() {
 		int i = Random.randomAbsInt(ba.size());
 		return ba.get(i);
 	}
 
-	public List<BattleAction> getBattleActions() {
+	public List<CmdAction> getBattleActions() {
 		return ba;
 	}
 
-	public BattleAction getFirstBattleAction() {
+	public CmdAction getFirstBattleAction() {
 		return getBattleActions().get(0);
 	}
 
-	public BattleAction getRandom() {
-		int idx = Random.randomAbsInt(getBattleActions().size());
-		return getBattleActions().get(idx);
+	public CmdAction getBattleAction(EnemyAI mode) {
+		return mode.getNext(user, getBattleActions());
 	}
 
-	public EnemyBattleAction getNPCAction() {
-		if (mode == Mode.PC) {
-			throw new GameSystemException("enemyBattleAction Requested, but its PC");
-		}
-		assert !ba.isEmpty() : user.getStatus().getName() + "s BA is empty";
-		List<EnemyBattleAction> eba = ba.stream().map(v -> (EnemyBattleAction) v).collect(Collectors.toList());
-		assert !eba.isEmpty() : user.getStatus().getName() + "s EBA is empty";
-		Collections.sort(eba);
-		int i = 0;
-		int lp = 0;
-		while (true) {
-			if (Random.percent(eba.get(i).getP())) {
-				return eba.get(i);
-			}
-			i++;
-			lp++;
-			if (lp > 1000) {
-				throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
-			}
-			if (i >= eba.size()) {
-				i = 0;
-			}
-		}
+	public CmdAction getBattleActionEx(EnemyAI mode, ActionType at) {
+		List<CmdAction> a = getBattleActions().stream().filter(p -> p.getType() != at).collect(Collectors.toList());
+		return mode.getNext(user, a);
 	}
 
-	//行動以外のアクションを抽選
-	public EnemyBattleAction getNPCActionExMove() {
-		if (mode == Mode.PC) {
-			throw new GameSystemException("enemyBattleAction Requested, but its PC");
-		}
-		assert ba != null && !ba.isEmpty() : user.getStatus().getName() + "s BA is empty or null";
-		List<EnemyBattleAction> ebaList = ba.stream().map(v -> (EnemyBattleAction) v).collect(Collectors.toList());
-		assert !ebaList.isEmpty() : user.getStatus().getName() + "s EBA is empty";
-		Collections.sort(ebaList);
-		int i = 0;
-		int lp = 0;
-		L1:
-		while (true) {
-			EnemyBattleAction eba = ebaList.get(i);
-			for (BattleActionEventTerm t : eba.getTerm()) {
-				if (!t.canDoThis(user.getStatus())) {
-					lp++;
-					if (lp > 1000) {
-						throw new GameSystemException("getNPCActionExMove is infinity looping, " + this);
-					}
-					i++;
-					if (i >= ebaList.size()) {
-						i = 0;
-					}
-					continue L1;
-				}
-			}
-			if (eba.getEvents().stream().allMatch(p -> p.getBatpt() == BattleActionTargetParameterType.MOVE)) {
-				lp++;
-				if (lp > 1000) {
-					throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
-				}
-				i++;
-				if (i >= ebaList.size()) {
-					i = 0;
-				}
-				continue;
-			}
-			if (Random.percent(eba.getP())) {
-				return eba;
-			}
-			i++;
-			lp++;
-			if (lp > 1000) {
-				throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
-			}
-			if (i >= ebaList.size()) {
-				i = 0;
-			}
-		}
+	public CmdAction getBattleActionEx(EnemyAI mode, ActionType... at) {
+		List<CmdAction> a = getBattleActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
+		return mode.getNext(user, a);
 	}
 
-	public EnemyBattleAction getNPCActionOf(BattleActionType type) {
-		if (mode == Mode.PC) {
-			throw new GameSystemException("enemyBattleAction Requested, but its PC");
-		}
-		assert ba != null && !ba.isEmpty() : user.getStatus().getName() + "s BA is empty or null";
-		List<EnemyBattleAction> ebaList = ba.stream().map(v -> (EnemyBattleAction) v).collect(Collectors.toList());
-		assert !ebaList.isEmpty() : user.getStatus().getName() + "s EBA is empty";
-		if (ebaList.stream().allMatch(p -> p.getBattleActionType() != type)) {
-			//持っていない場合
-			return null;
-		}
-		Collections.sort(ebaList);
-		int i = 0;
-		int lp = 0;
-		L1:
-		while (true) {
-			EnemyBattleAction eba = ebaList.get(i);
-			for (BattleActionEventTerm t : eba.getTerm()) {
-				if (!t.canDoThis(user.getStatus())) {
-					lp++;
-					if (lp > 1000) {
-						throw new GameSystemException("getNPCActionExMove is infinity looping, " + this);
-					}
-					i++;
-					if (i >= ebaList.size()) {
-						i = 0;
-					}
-					continue L1;
-				}
-			}
-
-			if (eba.getBattleActionType() != type) {
-				lp++;
-				if (lp > 1000) {
-					throw new GameSystemException("getNPCActionExMove is infinity looping, " + this);
-				}
-				i++;
-				if (i >= ebaList.size()) {
-					i = 0;
-				}
-				continue;
-			}
-			if (eba.getEvents().stream().allMatch(p -> p.getBatpt() == BattleActionTargetParameterType.MOVE)) {
-				lp++;
-				if (lp > 1000) {
-					throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
-				}
-				i++;
-				if (i >= ebaList.size()) {
-					i = 0;
-				}
-				continue;
-			}
-			if (Random.percent(eba.getP())) {
-				return eba;
-			}
-			i++;
-			lp++;
-			if (lp > 1000) {
-				throw new GameSystemException("getNPCActionExMove is infinity looping" + this);
-			}
-			if (i >= ebaList.size()) {
-				i = 0;
-			}
-		}
+	public CmdAction getBattleActionOf(EnemyAI mode, ActionType at) {
+		List<CmdAction> a = getBattleActions().stream().filter(p -> p.getType() == at).collect(Collectors.toList());
+		return mode.getNext(user, a);
 	}
 
-	public int getAreaWithEqip(String actionName) {
-		return user.getStatus().getBattleActionArea(actionName);
+	public CmdAction getBattleActionOf(EnemyAI mode, ActionType... at) {
+		List<CmdAction> a = getBattleActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
+		return mode.getNext(user, a);
 	}
 
-	public List<BattleAction> getAll(BattleActionType type, Status user) {
-		return ba.stream().filter(p -> p.getBattleActionType() == type).filter(p -> p.canDoThis(user)).collect(Collectors.toList());
+	public List<CmdAction> getBattleActionEx(ActionType at) {
+		return getBattleActions().stream().filter(p -> p.getType() != at).collect(Collectors.toList());
+	}
+
+	public List<CmdAction> getBattleActionEx(ActionType... at) {
+		return getBattleActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
+	}
+
+	public List<CmdAction> getBattleActionOf(ActionType at) {
+		return getBattleActions().stream().filter(p -> p.getType() == at).collect(Collectors.toList());
+	}
+
+	public List<CmdAction> getBattleActionOf(ActionType... at) {
+		return getBattleActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
+	}
+
+	public boolean hasAction(String name) {
+		for (CmdAction a : ba) {
+			if (a.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean hasMoveAction() {
-		for (BattleAction a : ba) {
-			for (BattleActionEvent e : a.getEvents()) {
-				if (e.getBatpt() == BattleActionTargetParameterType.MOVE) {
-					return true;
-				}
+		for (CmdAction a : ba) {
+			if (a.getName().equals(BattleConfig.ActionName.move)) {
+				return true;
 			}
 		}
 		return false;

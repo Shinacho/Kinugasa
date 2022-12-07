@@ -82,12 +82,17 @@ public class GamePadState extends InputDeviceState {
 
 	@Override
 	public boolean isEmptyInput() {
-		return !(buttons.isAnyInput() && triggeres.isAnyInput() );
+		return !(buttons.isAnyInput() && triggeres.isAnyInput());
 	}
 
 	@Override
 	public GamePadState clone() {
 		return (GamePadState) super.clone();
+	}
+
+	@Override
+	public String toString() {
+		return "GamePadState{" + "buttons=" + buttons + ", triggeres=" + triggeres + ", sticks=" + sticks + '}';
 	}
 
 }

@@ -21,22 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
-
-import kinugasa.game.I18N;
+package kinugasa.game;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/20_15:14:04<br>
+ * @vesion 1.0.0 - 2022/12/06_5:08:26<br>
  * @author Dra211<br>
  */
-public enum BattleActionType {
-	ATTACK,
-	SPECIAL_ATTACK,
-	MAGIC,
-	OTHER,;
+public class CMDargs {
 
-	public String displayName() {
-		return I18N.translate(this.toString());
+	private String[] args;
+
+	static void init(String[] args) {
+		getInstance().args = args;
 	}
+	private static final CMDargs INSTANCE = new CMDargs();
+
+	private CMDargs() {
+	}
+
+	public static CMDargs getInstance() {
+		return INSTANCE;
+	}
+
+	public String[] getArgs() {
+		return args;
+	}
+
 }

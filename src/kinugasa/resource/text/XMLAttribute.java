@@ -163,6 +163,16 @@ public class XMLAttribute implements Nameable, Serializable {
 		return value;
 	}
 
+	public <T extends Enum<T>> T of(Class<T> c) {
+		T[] values = c.getEnumConstants();
+		for (T t : values) {
+			if (t.toString().equals(value)) {
+				return t;
+			}
+		}
+		throw new AssertionError("not found " + value);
+	}
+
 	public String[] safeSplit(String split) {
 		if (value.contains(split)) {
 			return value.split(split);

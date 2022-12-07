@@ -26,6 +26,7 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GameOption;
+import kinugasa.game.I18N;
 
 /**
  *
@@ -34,23 +35,29 @@ import kinugasa.game.GameOption;
  */
 public class BattleConfig {
 
-	public static float messageWindowY = GameOption.getInstance().getWindowSize().height - 135;
-	public static String outputLogStatusKey = "HP";
-	public static String moveStatusKey = "MOV";
+	public static float messageWindowY = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 135;
+
 	public static String initialPCMoveVehicleKey = "WALK";
-	public static String expStatisKey = "EXP";
-	
-	
-	public static String spellingConditionName = "SPELLING";
-	public static String escapedConditionName = "ESCAPED";
-	public static String defenceConditionName = "DEFENCE";
-	public static String avoidanceConditionName = "AVOIDANCE";
-	
+
+	public static class StatusKey {
+
+		public static String hp = "HP";
+		public static String move = "MOV";
+		public static String exp = "EXP";
+	}
+
+	public static class ConditionName {
+
+		public static String spelling = "SPELLING";
+		public static String escaped = "ESCAPED";
+		public static String defence = "DEFENCE";
+		public static String avoidance = "AVOIDANCE";
+	}
+
 	//
 	public static class ActionName {
 
 		public static String move = "MOVE";
-		public static String itemUse = "ITEM";
 		public static String defence = "DEFENCE";
 		public static String avoidance = "AVOID";
 		public static String status = "STATUS";
@@ -59,7 +66,7 @@ public class BattleConfig {
 	}
 	//
 	public static float conguStopP = 0.5f;
-	public static int actionWindowLF = 56;
+	public static int actionWindowLF = 48;
 
 	private static List<BattleWinLoseLogic> winLoseLogic = new ArrayList<>();
 
@@ -101,4 +108,27 @@ public class BattleConfig {
 
 	public static boolean undeadDebugMode = false;
 
+	private static List<String> visibleStatus = new ArrayList<>();
+
+	public static void setVisibleStatus(List<String> visibleStatus) {
+		BattleConfig.visibleStatus = visibleStatus;
+	}
+
+	public static List<String> getVisibleStatus() {
+		return visibleStatus;
+	}
+	private static List<String> magicVisibleStatusKey = new ArrayList<>();
+
+	public static List<String> getMagicVisibleStatusKey() {
+		return magicVisibleStatusKey;
+	}
+
+	public static void setMagicVisibleStatusKey(List<String> statusKey) {
+		BattleConfig.magicVisibleStatusKey = statusKey;
+	}
+
+	public static class AttributeKey {
+
+		public static String defaultAttrName = "";
+	}
 }

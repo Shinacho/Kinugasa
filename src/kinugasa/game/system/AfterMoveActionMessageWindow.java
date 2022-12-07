@@ -42,34 +42,34 @@ public class AfterMoveActionMessageWindow extends MessageWindow implements Comma
 	public AfterMoveActionMessageWindow(float x, float y, float w, float h) {
 		super(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""), new TextStorage(), new Text());
 	}
-	private List<BattleAction> actions = new ArrayList();
+	private List<CmdAction> actions = new ArrayList();
 
-	public List<BattleAction> getActions() {
+	public List<CmdAction> getActions() {
 		return actions;
 	}
 
 	private int selected = 0;
 
 	@Override
-	public BattleAction getSelected() {
+	public CmdAction getSelected() {
 		return actions.get(selected);
 	}
 
-	public void add(BattleAction... ba) {
+	public void add(CmdAction... ba) {
 		actions.addAll(Arrays.asList(ba));
 		Collections.sort(actions);
 		selected = 0;
 		updateText();
 	}
 
-	public void add(List<BattleAction> ba) {
+	public void add(List<CmdAction> ba) {
 		actions.addAll(ba);
 		Collections.sort(actions);
 		selected = 0;
 		updateText();
 	}
 
-	public void setActions(List<BattleAction> actions) {
+	public void setActions(List<CmdAction> actions) {
 		this.actions = actions;
 		Collections.sort(actions);
 		selected = 0;
@@ -112,7 +112,7 @@ public class AfterMoveActionMessageWindow extends MessageWindow implements Comma
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
-		GameSystem.getInstance().getBattleSystem().setAfterMoveArea(getSelected());
+		GameSystem.getInstance().getBattleSystem().getTargetSystem().setCurrent(this);
 	}
 
 	public void prevAction() {
@@ -124,6 +124,6 @@ public class AfterMoveActionMessageWindow extends MessageWindow implements Comma
 		if (GameSystem.isDebugMode()) {
 			System.out.println("SELECT:" + selected);
 		}
-		GameSystem.getInstance().getBattleSystem().setAfterMoveArea(getSelected());
+		GameSystem.getInstance().getBattleSystem().getTargetSystem().setCurrent(this);
 	}
 }

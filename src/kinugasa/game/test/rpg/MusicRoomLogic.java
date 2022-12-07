@@ -66,12 +66,13 @@ public class MusicRoomLogic extends GameLogic {
 	public void load() {
 		mr = new MusicRoom("BGM", Const.Screen.WIDTH, Const.Screen.HEIGHT);
 		String operaionText = "(A)" + I18N.translate("SUBMIT") + " / " + "Å™Å´Å®Å©" + I18N.translate("MOVE") + " / " + "(X) " + I18N.translate("OPEN") + " / " + "(B) " + I18N.translate("RETURN");
-		operation = new TextLabelSprite(operaionText, new SimpleTextLabelModel(FontModel.DEFAULT.clone()), 280, 450);
+		operation = new TextLabelSprite(operaionText, new SimpleTextLabelModel(FontModel.DEFAULT.clone()), 340, 450);
 	}
 
 	@Override
 	public void dispose() {
 		SoundStorage.getInstance().get("BGM").stopAll();
+		SoundStorage.getInstance().get("BGM").dispose();
 	}
 
 	@Override

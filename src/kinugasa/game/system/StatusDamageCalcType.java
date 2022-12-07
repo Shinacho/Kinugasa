@@ -39,7 +39,11 @@ public enum StatusDamageCalcType {
 	 */
 	PERCENT_OF_NOW,
 	/**
-	 * valueを直接加算します。既定の方式です。
+	 * valueを直接加算します。
 	 */
-	DIRECT
+	DIRECT,
+	/**
+	 * ダメージ計算式を使用して計算します。
+	 */
+	USE_DAMAGE_CALC,
 }

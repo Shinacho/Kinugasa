@@ -1,3 +1,5 @@
+package kinugasa.game.system;
+
 /*
  * The MIT License
  *
@@ -21,22 +23,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
+
 
 /**
- *
- * @vesion 1.0.0 - 2022/11/16_12:09:43<br>
+ * 条件タイプは、アクションの発動条件を定義する列挙です。
+ * @vesion 1.0.0 - 2022/12/01_21:52:25<br>
  * @author Dra211<br>
  */
-public enum ItemActionTargetType {
-	SELF,
-	PARTY_ONE,
-	PARTY_ALL,
-	ENEMY_ONE,
-	ENEMY_ALL,
-	/**
-	 * その他アイテムイベントターゲットは、キーアイテム等の特別な効果を持つもの用に用意されています。
-	 */
-	OTHER,
-	FIELD,;
+public enum TermType {
+	EQ_WEAPON_TYPE,
+	EQ_ITEM,
+	NO_EQ_WEAPON_TYPE,
+	NO_EQ_ITEM,
+	EQ_ANY_ITEM,
+	NO_EQ_ANY_ITEM,
+	HAS_ITEM,
+	HAS_BOOK,
+	HAS_CONDITION,
+	NO_CONDITION,
+	NONE;
 }

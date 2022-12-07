@@ -43,15 +43,6 @@ public class StatusWindows extends BasicSprite {
 
 	private List<MessageWindow> mw = new ArrayList<>();
 	private List<Status> status;
-	private static List<String> visibleStatus = new ArrayList<>();
-
-	public static void setVisibleStatus(List<String> visibleStatus) {
-		StatusWindows.visibleStatus = visibleStatus;
-	}
-
-	public static List<String> getVisibleStatus() {
-		return visibleStatus;
-	}
 
 	StatusWindows(List<Status> s) {
 		status = s;
@@ -67,13 +58,13 @@ public class StatusWindows extends BasicSprite {
 	public void init() {
 		float x = 3;
 		float y = 3;
-		float w = (GameOption.getInstance().getWindowSize().width - 6) / status.size();
+		float w = (GameOption.getInstance().getWindowSize().width - 6) / status.size() / GameOption.getInstance().getDrawSize();
 		for (Status s : status) {
 			//•\Ž¦•¶Žš—ñ‚Ì¶¬
 			String text = s.getName() + "   | ";
 			StatusValueSet es = s.getEffectedStatus();
 			int j = 0;
-			for (String vs : visibleStatus) {
+			for (String vs : BattleConfig.getVisibleStatus()) {
 				if (j > 0) {
 					text += "                   ";
 				}
@@ -97,7 +88,7 @@ public class StatusWindows extends BasicSprite {
 			String text = s.getName() + "   | ";
 			StatusValueSet es = s.getEffectedStatus();
 			int j = 0;
-			for (String vs : visibleStatus) {
+			for (String vs : BattleConfig.getVisibleStatus()) {
 				if (j > 0) {
 					text += "                    ";
 				}

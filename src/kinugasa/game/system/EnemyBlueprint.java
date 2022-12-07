@@ -83,7 +83,7 @@ public class EnemyBlueprint implements Nameable {
 	private Map<ItemEqipmentSlot, Item> equipment;
 	private ArrayList<DropItem> dropItems;
 	private ImageSprite sprite;
-	private List<EnemyBattleAction> actions;
+	private List<CmdAction> actions;
 	private Vehicle vehicle;
 
 	public EnemyBlueprint(String id,
@@ -97,7 +97,7 @@ public class EnemyBlueprint implements Nameable {
 			Map<ItemEqipmentSlot, Item> equipment,
 			ArrayList<DropItem> dropItems,
 			ImageSprite sprite,
-			List<EnemyBattleAction> actions,
+			List<CmdAction> actions,
 			Vehicle vehicle) {
 		this.id = id;
 		this.visibleName = visibleName;
@@ -130,7 +130,7 @@ public class EnemyBlueprint implements Nameable {
 		if (actions.isEmpty()) {
 			throw new GameSystemException(enemyName + " s action is empty");
 		}
-		actions.forEach(v -> s.getBattleActions().add(v));
+		actions.forEach(v -> s.getActions().add(v));
 
 		return new Enemy(id, s, (ArrayList<DropItem>) dropItems.clone(), sprite.clone(), vehicle);
 	}

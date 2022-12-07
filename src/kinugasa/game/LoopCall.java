@@ -21,18 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package kinugasa.game;
 
-package kinugasa.game.system;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
 /**
+ * このアノテーションが付けられたメソッドは、ゲームループ中毎回呼ぶことが想定されます。
  *
- * @vesion 1.0.0 - 2022/11/16_12:19:53<br>
- * @author Dra211<br>
+ * @author owner
  */
-public enum ItemActionTargetStatusType {
-	STATUS,
-	ATTR_IN,
-	ADD_CONDITION,
-	REMOVE_CONDITION,
-	DROP_THIS_ITEM,
+@Target(ElementType.METHOD)
+public @interface LoopCall {
+
 }

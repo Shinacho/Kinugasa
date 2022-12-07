@@ -40,7 +40,7 @@ public class STG_GM extends GameManager {
 
 	public static void main(String[] args) {
 		LockUtil.deleteAllLockFile();
-		new STG_GM().gameStart(args);
+		new STG_GM().gameStart();
 	}
 
 	private STG_GM() {

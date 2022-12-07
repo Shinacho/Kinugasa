@@ -55,6 +55,8 @@ public interface Sound extends Input<Sound>, Nameable {
 	 * @throws NotYetLoadedException サウンドがロードされていない場合に投げることができます。<br>
 	 */
 	public void play() throws NotYetLoadedException;
+	
+	public void nonLoopPlay();
 
 	public void stopAndPlay();
 
@@ -82,11 +84,19 @@ public interface Sound extends Input<Sound>, Nameable {
 	 */
 	public void pause();
 
+	public default void switchPause() {
+		if (isPlaying()) {
+			pause();
+		} else {
+			play();
+		}
+	}
+
 	@Override
 	public InputStatus getStatus();
-	
+
 	public boolean isPlaying();
-	
+
 	/**
 	 * サウンドの音量を設定します.
 	 *

@@ -21,14 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
+package kinugasa.game;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/30_20:02:35<br>
- * @author Dra211<br>
+ * @author owner
  */
-public interface CommandWindow {
+@Target(ElementType.METHOD)
+public @interface NoLoopCall {
 
-	public CmdAction getSelected();
 }

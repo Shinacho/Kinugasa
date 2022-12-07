@@ -27,6 +27,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import kinugasa.game.GraphicsContext;
 import kinugasa.graphics.Animation;
+import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.graphics.RenderingQuality;
 import kinugasa.object.AnimationSprite;
@@ -46,20 +47,25 @@ import kinugasa.util.TimeCounter;
  */
 public class BackgroundLayerSprite extends AnimationSprite implements Disposable {
 
-	public BackgroundLayerSprite(float w, float h) {
+	private float mg;
+
+	public BackgroundLayerSprite(float w, float h, float mg) {
 		super(0, 0, w, h);
+		this.mg = mg;
 	}
 
-	public void build(float mg, TimeCounter tc, BufferedImage... images) {
+	public void build(TimeCounter tc, BufferedImage... images) {
 		//画面サイズまでタイリングした画像を生成
 		BufferedImage[] images2 = new BufferedImage[images.length];
 		for (int i = 0; i < images2.length; i++) {
 			images2[i] = ImageUtil.tiling(images[i], null,
 					(int) (getWidth() / images[i].getWidth()),
 					(int) (getHeight() / images[i].getHeight()),
-					(int) (images[i].getWidth() * mg),
-					(int) (images[i].getHeight() * mg));
+					(int) (images[i].getWidth()),
+					(int) (images[i].getHeight()));
 		}
+		images2 = ImageEditor.resizeAll(images2, mg);
+
 		setAnimation(new Animation(tc, images2));
 	}
 

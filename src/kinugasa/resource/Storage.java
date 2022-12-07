@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -93,6 +95,18 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 			throw new NameNotFoundException("! > Storage(" + getClass() + ") : get : not found : key=[" + key.toString() + "]");
 		}
 		return map.get(key);
+	}
+
+	public List<T> filter(Predicate<? super T> p) {
+		return stream().filter(p).collect(Collectors.toList());
+	}
+
+	public T first(Predicate<? super T> p) {
+		return stream().filter(p).collect(Collectors.toList()).get(0);
+	}
+
+	public T first() {
+		return asList().get(0);
 	}
 
 	/**
@@ -186,8 +200,11 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 * @throws DuplicateNameException valの名前が既に使用されているときに投げられます。<br>
 	 */
 	public void add(T val) throws DuplicateNameException {
+		if (val.getName() == null) {
+			throw new NameNotFoundException("null key : " + this);
+		}
 		if (contains(val.getName())) {
-			throw new DuplicateNameException("! > Storage : add : duplicate name : name=[" + val.getName() + "]");
+			throw new DuplicateNameException("! > Storage : add : duplicate name : name=[" + val.getName() + "] : " + this);
 		}
 		map.put(val.getName(), val);
 	}

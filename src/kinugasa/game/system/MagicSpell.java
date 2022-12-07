@@ -25,27 +25,27 @@ package kinugasa.game.system;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/27_16:13:40<br>
+ * @vesion 1.0.0 - 2022/12/02_15:05:29<br>
  * @author Dra211<br>
  */
 public class MagicSpell {
 
-	private BattleCommand.Mode mode;
 	private BattleCharacter user;
-	private BattleAction magic;
+	private CmdAction action;
+	private boolean player;
 
-	public MagicSpell(BattleCommand.Mode mode, BattleCharacter user, BattleAction magic) {
-		this.mode = mode;
+	public MagicSpell(BattleCharacter user, CmdAction action, boolean player) {
 		this.user = user;
-		this.magic = magic;
+		this.action = action;
+		this.player = player;
 	}
 
-	public BattleCommand.Mode getMode() {
-		return mode;
+	public boolean isPlayer() {
+		return player;
 	}
 
-	public BattleAction getMagic() {
-		return magic;
+	public CmdAction getAction() {
+		return action;
 	}
 
 	public BattleCharacter getUser() {

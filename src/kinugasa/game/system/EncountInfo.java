@@ -24,6 +24,7 @@
 package kinugasa.game.system;
 
 import kinugasa.game.field4.MapChipAttribute;
+import kinugasa.resource.sound.Sound;
 
 /**
  * エンカウントした際の、敵セット、障害物情報、乗っているチップの情報を持つクラスです。
@@ -33,10 +34,12 @@ import kinugasa.game.field4.MapChipAttribute;
  */
 public class EncountInfo {
 
+	private Sound currentBGM;
 	private EnemySetStorage enemySetStorage;
 	private MapChipAttribute chipAttribute;
 
-	public EncountInfo(EnemySetStorage enemySetStorage, MapChipAttribute chipAttribute) {
+	public EncountInfo(Sound currentBGM, EnemySetStorage enemySetStorage, MapChipAttribute chipAttribute) {
+		this.currentBGM = currentBGM;
 		this.enemySetStorage = enemySetStorage;
 		this.chipAttribute = chipAttribute;
 		assert enemySetStorage != null;
@@ -49,6 +52,10 @@ public class EncountInfo {
 
 	public EnemySetStorage getEnemySetStorage() {
 		return enemySetStorage;
+	}
+
+	public Sound getPrevBGM() {
+		return currentBGM;
 	}
 
 }

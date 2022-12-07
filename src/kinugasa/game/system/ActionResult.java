@@ -1,3 +1,5 @@
+package kinugasa.game.system;
+
 /*
  * The MIT License
  *
@@ -21,21 +23,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
+import java.util.List;
+import kinugasa.game.system.ActionResultType;
+import kinugasa.object.AnimationSprite;
+import kinugasa.util.FrameTimeCounter;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/29_21:31:59<br>
+ * @vesion 1.0.0 - 2022/12/01_21:41:03<br>
  * @author Dra211<br>
  */
-public enum ActionResult {
-	SUCCESS,
-	TARGET_SELECT,
-	NO_TARGET,
-	MOVE,
-	SHOW_ITEM_WINDOW,
-	SHOW_STATUS,
-	ESCAPE,
-	MISS,
+public class ActionResult {
+
+	private BattleActionTarget target;
+	private List<List<ActionResultType>> resultType;
+
+	private FrameTimeCounter waitTime;
+	private List<AnimationSprite> animation;
+
+	public ActionResult(BattleActionTarget target, List<List<ActionResultType>> resultType, FrameTimeCounter waitTime, List<AnimationSprite> animation) {
+		this.target = target;
+		this.resultType = resultType;
+		this.waitTime = waitTime;
+		this.animation = animation;
+	}
+
+	public BattleActionTarget getTarget() {
+		return target;
+	}
+
+	public List<List<ActionResultType>> getResultType() {
+		return resultType;
+	}
+
+	public FrameTimeCounter getWaitTime() {
+		return waitTime;
+	}
+
+	public List<AnimationSprite> getAnimation() {
+		return animation;
+	}
+
+	public boolean hasAnimation() {
+		return animation != null && !animation.isEmpty();
+	}
+
+	public boolean only(ActionResultType type) {
+		return resultType.stream().flatMap(p -> p.stream()).allMatch(p -> p == type);
+	}
+
+	@Override
+	public String toString() {
+		return "ActionResult{" + "target=" + target + ", resultType=" + resultType + ", waitTime=" + waitTime + ", animation=" + animation + '}';
+	}
 
 }

@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import kinugasa.game.NoLoopCall;
 import kinugasa.util.*;
 import kinugasa.resource.*;
 
@@ -62,7 +63,7 @@ public class Status {
 	//装備品
 	private final HashMap<ItemEqipmentSlot, Item> eqipment = new HashMap<>();
 	//取れる行動
-	private final Storage<BattleAction> battleActions = new Storage<>();
+	private final List<CmdAction> actions = new ArrayList<>();
 	//前衛・後衛
 	private PartyLocation partyLocation = PartyLocation.FRONT;
 	//生存状態
@@ -72,6 +73,7 @@ public class Status {
 		this.name = name;
 		this.race = race;
 		itemBag.setMax(race.getItemBagSize());
+		actions.addAll(itemBag.getItems());
 		for (ItemEqipmentSlot slot : race.getEqipSlot()) {
 			eqipment.put(slot, null);
 		}
@@ -93,17 +95,6 @@ public class Status {
 		return partyLocation;
 	}
 
-	public int maxAtkArea() {
-		int r = getWeaponArea();
-		int max = 0;
-		for (BattleAction a : battleActions) {
-			if (a.getArea() > max) {
-				max = a.getArea();
-			}
-		}
-		return r + max;
-	}
-
 	public void setBaseAttrIn(AttributeValueSet attrIn) {
 		this.attrIn = attrIn;
 	}
@@ -114,7 +105,9 @@ public class Status {
 	}
 
 	public void setItemBag(ItemBag itemBag) {
+		actions.removeAll(this.itemBag.getItems());
 		this.itemBag = itemBag;
+		actions.addAll(this.itemBag.getItems());
 	}
 
 	public void setBookBag(BookBag bookBag) {
@@ -148,8 +141,8 @@ public class Status {
 		return hasConditions(all, Arrays.asList(name));
 	}
 
-	public List<BattleAction> getAction(BattleActionType type) {
-		return battleActions.asList().stream().filter(p -> p.getBattleActionType() == type).collect(Collectors.toList());
+	public List<CmdAction> getActions(ActionType type) {
+		return actions.stream().filter(p -> p.getType() == type).collect(Collectors.toList());
 	}
 
 	public String getName() {
@@ -166,10 +159,10 @@ public class Status {
 		return r;
 	}
 
-	public boolean hasAction(BattleActionTargetParameterType batpt) {
-		for (BattleAction ba : battleActions) {
-			for (BattleActionEvent e : ba.getEvents()) {
-				if (e.getBatpt() == batpt) {
+	public boolean hasAction(ParameterType batpt) {
+		for (CmdAction ba : actions) {
+			for (ActionEvent e : ba.getBattleEvent()) {
+				if (e.getParameterType() == batpt) {
 					return true;
 				}
 			}
@@ -177,26 +170,12 @@ public class Status {
 		return false;
 	}
 
-	public Storage<BattleAction> getBattleActions() {
-		return battleActions;
+	public List<CmdAction> getActions() {
+		return actions;
 	}
 
-	public int getBattleActionArea(BattleAction ba) {
-		return getBattleActionArea(ba.getName());
-	}
-
-	public int getBattleActionArea(String name) {
-		int r = 0;
-		for (Item i : eqipment.values()) {
-			if (i != null) {
-				r += i.getArea();
-			}
-		}
-		if (getBattleActions().contains(name)) {
-			BattleAction a = getBattleActions().get(name);
-			r += a.getArea();
-		}
-		return r;
+	public boolean hasAction(String name) {
+		return actions.stream().anyMatch(p -> p.getName().equals(name));
 	}
 
 	//基礎ステータスを取得します。通常、レベルアップ等以外ではこの値は変わりません。
@@ -224,7 +203,16 @@ public class Status {
 			throw new GameSystemException(name + " is not have " + i);
 		}
 		itemBag.drop(i);
+		actions.remove(i);
 		tgt.itemBag.add(i);
+		actions.add(i);
+	}
+
+	void updateItemAction() {
+		//持っているアイテム使用アクションをいったんすべて消して、ITEMBAGから再導入する
+		List<CmdAction> removeList = getActions().stream().filter(p -> p.getType() == ActionType.ITEM_USE).collect(Collectors.toList());
+		getActions().removeAll(removeList);
+		getActions().addAll(getItemBag().getItems());
 	}
 
 	public void clearEqip() {
@@ -239,6 +227,46 @@ public class Status {
 		if (eqipment.containsKey(slot)) {
 			eqipment.remove(slot);
 		}
+	}
+
+	public void removeEqip(ItemEqipmentSlot slot) {
+		if (eqipment.containsKey(slot)) {
+			eqipment.put(slot, null);
+		}
+	}
+
+	public boolean isEqip(String itemName) {
+		if (eqipment.values() == null) {
+			return false;
+		}
+		for (Item i : eqipment.values()) {
+			if (i == null) {
+				continue;
+			}
+			if (i.getName().equals(itemName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isEqip(ItemEqipmentSlot slot) {
+		return eqipment.get(slot) != null;
+	}
+
+	public boolean isEqipWMType(String typeName) {
+		if (eqipment.values() == null) {
+			return false;
+		}
+		for (Item i : eqipment.values()) {
+			if (i == null) {
+				continue;
+			}
+			if (i.getWeaponMagicType() == WeaponMagicTypeStorage.getInstance().get(typeName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//混乱の状態異常が付与されているかを検査します
@@ -315,16 +343,19 @@ public class Status {
 	//終了したエフェクトは、エフェクトタイムとコンディションから取り除く。
 	private Set<EffectMaster> execEffect = new HashSet<>();
 
+	@NoLoopCall
 	public void update() {
 		//状態異常による効果の実行
 		List<EffectMaster> addList = new ArrayList<>();
 		for (int i = 0; i < condition.size(); i++) {
 			ConditionValue v = condition.asList().get(i);
 			for (EffectMaster e : v.getEffects()) {
-				if (e.getContinueType() == EffectContinueType.ONECE) {
-					addList.add(e);
+				if (e.getTargetType() == EffectTargetType.ADD_CONDITION) {
+					e.exec(this);
+					if (e.getContinueType() == EffectContinueType.ONECE) {
+						addList.add(e);
+					}
 				}
-				e.exec(this);
 			}
 		}
 		execEffect.addAll(addList);
@@ -469,6 +500,12 @@ public class Status {
 		return r;
 	}
 
+	//calcDamageのPREVを更新する
+	public void setDamageCalcPoint() {
+		prevStatus = status.clone();
+	}
+
+	//前回検査時からの差分を自動算出する
 	public Map<StatusKey, Integer> calcDamage() {
 		if (prevStatus == null) {
 			prevStatus = status.clone();
@@ -526,14 +563,6 @@ public class Status {
 
 	public Race getRace() {
 		return race;
-	}
-
-	// 指定のバトルアクションを実行した際の、指定のステータス項目の増減を計算します。
-	public int calcSelfStatusDamage(String battleActionName, String statusName) {
-		if (!battleActions.contains(battleActionName)) {
-			throw new NameNotFoundException(battleActionName + " is not fond");
-		}
-		return battleActions.get(battleActionName).calcSelfStatusDamage(this, statusName);
 	}
 
 	@Override

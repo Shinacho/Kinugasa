@@ -24,45 +24,36 @@
 package kinugasa.game.system;
 
 /**
- * バトルアクションの効果対象です。
  *
- * @vesion 1.0.0 - 2022/11/16_10:48:45<br>
+ * @vesion 1.0.0 - 2022/11/29_21:31:59<br>
  * @author Dra211<br>
  */
-public enum BattleActionTargetType {
+public enum OperationResult {
 	/**
-	 * 自身のみ。
+	 * 行動が実行され、正常終了したことを表します。次の手番に送りますが、INFOまたはACTIONメッセージが表示されている間は待機してください。
 	 */
-	SELF,
+	SUCCESS,
 	/**
-	 * 対象一人。。
+	 * 行動はキャンセルされました。再度コマンドを選択できます。
 	 */
-	ONE_ENEMY,
-	ONE_PARTY,
+	CANCEL,
 	/**
-	 * 敵全体または味方全体。
+	 * 移動が要求されました。そのロジックに切り替えてください。
+	 * afterウインドウが表示されている。
+	 * 移動中に攻撃する場合は、execPCActionを実行する。
 	 */
-	TEAM_PARTY,
-	TEAM_ENEMY,
+	MOVE,
 	/**
-	 * 敵味方全体。
+	 * ステータス画面の表示が要求されました。そのロジックに切り替えてください。
 	 */
-	ALL,
+	SHOW_STATUS,
 	/**
-	 * フィールド。特殊な作用です。
+	 * 行動は実行されましたが失敗しました。次の手番に送りますが、INFOまたはACTIONメッセージが表示されている間は待機してください。
 	 */
-	FIELD,
+	MISS,
 	/**
-	 * ランダムな標的（味方含む。
+	 * ターゲット選択が要求されました。そのロジックに切り替えてください。
 	 */
-	RANDOM_ONE,
-	/**
-	 * ランダムな標的（敵のみ。これを複数定義することで数体への攻撃が実装できるだろう
-	 */
-	RANDOM_ONE_ENEMY,
-	/**
-	 * ランダムなパーティメンバー
-	 */
-	RANDOM_ONE_PARTY,;
+	TO_TARGET_SELECT,;
 
 }

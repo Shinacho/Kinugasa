@@ -23,27 +23,16 @@
  */
 package kinugasa.game.system;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import kinugasa.resource.Nameable;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/27_16:33:12<br>
+ * @vesion 1.0.0 - 2022/12/02_16:47:42<br>
  * @author Dra211<br>
  */
-public class MagicBattleCommand extends BattleCommand {
+public interface EnemyAI extends Nameable{
 
-	private MagicSpell magicSpell;
-
-	public MagicBattleCommand(MagicSpell ms, BattleAction ba) {
-		super(ms.getMode(), ms.getUser());
-		setBattleAction(Arrays.asList(ba));
-		this.magicSpell = ms;
-	}
-
-	public MagicSpell getMagicSpell() {
-		return magicSpell;
-	}
+	CmdAction getNext(BattleCharacter user, List<CmdAction> list);
 
 }

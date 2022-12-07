@@ -33,10 +33,12 @@ import kinugasa.object.FourDirection;
  * このクラスを使用することで、入力状態を簡単に検査できます。<br>
  * <br>
  * 入力状態の更新には、それなりの時間的コストがかかります。<br>
- * getInstanceの使用は、1ループ中1回にとどめてください。<br>
+ * また、getInstanceが実行されたときに、入力状態がリフレッシュされます。
+ * getInstanceの使用は、1ループ中1回にとどめてください。複数回実行すると、「前回の入力状態」が不正になり、正しく判定できません。<br>
  * <br>
  * <br>
- * ゲーム起動時の設定によって、使用しないデバイスがある場合、 そのデバイスの状態は常にnullです。<br>
+ * ゲーム起動時の設定によって、使用しないデバイスがある場合、
+ * そのデバイスの状態は常にnullです。したがって、例えばゲームパッドが接続されていない状態でゲームパッドの検査を呼び出すとNPEになります。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_14:55:04<br>
@@ -160,6 +162,22 @@ public final class InputState extends InputDeviceState {
 				: keyState.isPressed(key) && !prevKeyState.isPressed(key);
 	}
 
+	/**
+	 * ゲームパッドまたはキーボードの入力があるか検査します。
+	 * このメソッドは、ゲームパッドがない環境でもゲームパッドが接続されているかの検査を省略することができます。
+	 *
+	 * @param b ゲームパッドのボタン。
+	 * @param k キーボードのキー。
+	 * @param t インプットタイプ。
+	 * @return bまたはkが押されている場合TRUEを返します。
+	 */
+	public boolean isPressed(GamePadButton b, Keys k, InputType t) {
+		if (gpState == null) {
+			return isPressed(k, t);
+		}
+		return isPressed(b, t);
+	}
+
 	public boolean isPressedOr(InputType type, Keys... keys) {
 		boolean result = false;
 		for (Keys key : keys) {
@@ -235,7 +253,7 @@ public final class InputState extends InputDeviceState {
 	}
 
 	public boolean isPressed(GamePadButton button, InputType type) {
-		if (!PlayerConstants.getInstance().isUsingMouse()) {
+		if (!PlayerConstants.getInstance().isUsingGamePad()) {
 			return false;
 		}
 		return type == InputType.CONTINUE

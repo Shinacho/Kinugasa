@@ -43,7 +43,7 @@ public class Const {
 
 	public class Screen {
 
-		public static final int WIDTH = 720;
-		public static final int HEIGHT = 480;
+		public static final int WIDTH = 1440;
+		public static final int HEIGHT = 960;
 	}
 }

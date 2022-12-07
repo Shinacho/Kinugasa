@@ -89,11 +89,6 @@ public class FieldLogic extends GameLogic {
 
 	@Override
 	public void load() {
-		// プレイヤーキャラクターの表示座標計算
-		int screenW = FieldMapStorage.getScreenWidth();
-		int screenH = FieldMapStorage.getScreenHeight();
-		float x = screenW / 2 - 16;
-		float y = screenH / 2 - 16;
 		fm = FieldMapStorage.getInstance().get("ズシ");
 		c = FieldMap.getPlayerCharacter().get(0);
 		fm.getCamera().updateToCenter();
@@ -106,11 +101,10 @@ public class FieldLogic extends GameLogic {
 		//
 		ts = fm.getTextStorage();
 		battle = false;
-		GameSystem.setDebugMode(true);
-		if (!fm.getBgm().isPlaying()) {
-			SoundStorage.getInstance().get("BGM").stopAll();
-			fm.getBgm().load().play();
-		}
+//		if (!fm.getBgm().isPlaying()) {
+//			SoundStorage.getInstance().get("BGM").stopAll();
+//			fm.getBgm().load().play();
+//		}
 	}
 	FieldMap fm;
 	PlayerCharacterSprite c;
@@ -133,7 +127,7 @@ public class FieldLogic extends GameLogic {
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
 					FieldMapTile t = fm.getCurrentTile();
 					if (t.hasInNode()) {
-						effect = new FadeEffect(FieldMapStorage.getScreenWidth(), FieldMapStorage.getScreenHeight(),
+						effect = new FadeEffect(gm.getWindow().getInternalBounds().width, gm.getWindow().getInternalBounds().height,
 								new ColorChanger(
 										ColorTransitionModel.valueOf(0),
 										ColorTransitionModel.valueOf(0),
@@ -235,7 +229,7 @@ public class FieldLogic extends GameLogic {
 				if (fm.isEncount()) {
 					SoundStorage.getInstance().get("SE").get("効果音＿戦闘開始.wav").load().stopAndPlay();
 					battle = true;
-					effect = new FadeEffect(FieldMapStorage.getScreenWidth(), FieldMapStorage.getScreenHeight(),
+					effect = new FadeEffect(gm.getWindow().getInternalBounds().width, gm.getWindow().getInternalBounds().height,
 							new ColorChanger(
 									ColorTransitionModel.valueOf(0),
 									ColorTransitionModel.valueOf(0),
@@ -248,7 +242,7 @@ public class FieldLogic extends GameLogic {
 			case 1:
 				effect.update();
 				if (effect.isEnded()) {
-					effect = new FadeEffect(FieldMapStorage.getScreenWidth(), FieldMapStorage.getScreenHeight(),
+					effect = new FadeEffect(gm.getWindow().getInternalBounds().width, gm.getWindow().getInternalBounds().height,
 							new ColorChanger(
 									ColorTransitionModel.valueOf(0),
 									ColorTransitionModel.valueOf(0),
@@ -268,7 +262,7 @@ public class FieldLogic extends GameLogic {
 				nextStage();
 				break;
 			case 3:
-				effect = new FadeEffect(FieldMapStorage.getScreenWidth(), FieldMapStorage.getScreenHeight(),
+				effect = new FadeEffect(gm.getWindow().getInternalBounds().width, gm.getWindow().getInternalBounds().height,
 						new ColorChanger(
 								ColorTransitionModel.valueOf(0),
 								ColorTransitionModel.valueOf(0),

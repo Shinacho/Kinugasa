@@ -45,7 +45,6 @@ import kinugasa.object.ImageSprite;
 import kinugasa.object.KVector;
 import kinugasa.object.Sprite;
 import kinugasa.resource.Nameable;
-import kinugasa.util.Random;
 
 /**
  *
@@ -59,9 +58,10 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 	private ArrayList<DropItem> dropItem;
 	private ImageSprite sprite;
 	private ProgressBarSprite progressBarSprite;
-	private static String progressBarKey;
+	private static String progressBarKey = BattleConfig.StatusKey.hp;
 	private List<BattleCharacter> currentTgt;
 	private Vehicle vehicle;
+	private EnemyAI ai = StandardEnemyAI.RANDOM;
 
 	public static String getProgressBarKey() {
 		return progressBarKey;
@@ -70,6 +70,14 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 	public static void setProgressBarKey(String progressBarKey) {
 		Enemy.progressBarKey = progressBarKey;
 
+	}
+
+	public EnemyAI getAI() {
+		return ai;
+	}
+
+	public void setAI(EnemyAI ai) {
+		this.ai = ai;
 	}
 
 	@Override
@@ -83,7 +91,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 		this.dropItem = dropItem;
 		this.sprite = sprite;
 		this.vehicle = v;
-		if (status.getBattleActions().isEmpty()) {
+		if (status.getActions().isEmpty()) {
 			throw new GameSystemException(status.getName() + " s action is empty");
 		}
 	}
@@ -208,13 +216,13 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 			distance = 0;
 			return;
 		}
-		if (distance > getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue()) {
+		if (distance > getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue()) {
 			sprite.setSpeed(0);
 			moving = false;
 			distance = 0;
 			return;
 		}
-		if (prev.distance(getSprite().getCenter()) >= getStatus().getEffectedStatus().get(BattleConfig.moveStatusKey).getValue()) {
+		if (prev.distance(getSprite().getCenter()) >= getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue()) {
 			sprite.setSpeed(0);
 			moving = false;
 			distance = 0;
@@ -275,7 +283,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 
 	@Override
 	public void draw(GraphicsContext g) {
-		if(!sprite.isVisible() || !sprite.isExist()){
+		if (!sprite.isVisible() || !sprite.isExist()) {
 			return;
 		}
 		sprite.draw(g);
@@ -284,8 +292,9 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 		}
 		Graphics2D g2 = g.create();
 		g2.setColor(Color.RED);
-		g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.BOLD).setFontSize(10).getFont());
-		g2.drawString(status.getName(), sprite.getX() - getName().length() / 2, sprite.getY() - 4);
+		g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.BOLD).setFontSize(12).getFont());
+		g2.drawString(status.getName(), sprite.getX() - getName().length(), sprite.getY() - 4);
+
 		g2.setColor(SHADOW);
 		g2.fillOval(
 				(int) (getSprite().getX() + getSprite().getWidth() / 8),
@@ -334,11 +343,6 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 
 	public void setSprite(AnimationSprite sprite) {
 		this.sprite = sprite;
-	}
-
-	// 定義ファイルから作成している場合はキャスト失敗しない
-	public List<EnemyBattleAction> getAction(BattleActionType type) {
-		return status.getBattleActions().asList().stream().map(e -> (EnemyBattleAction) e).filter(p -> p.getBattleActionType() == type).collect(Collectors.toList());
 	}
 
 	@Override

@@ -45,7 +45,10 @@ import java.util.logging.Logger;
 import kinugasa.game.input.GamePadConnection;
 import kinugasa.game.input.KeyConnection;
 import kinugasa.game.input.MouseConnection;
+import kinugasa.game.system.GameSystem;
+import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.RenderingQuality;
 import kinugasa.resource.TempFileStorage;
 import kinugasa.util.MathUtil;
 
@@ -74,12 +77,14 @@ public abstract class GameManager {
 	private Rectangle clippingRectangle;
 	private RenderingHints renderingHints;
 	private int fps;
+	private float drawSize = 0;
 
 	protected GameManager(GameOption option) throws IllegalStateException {
 		this.option = option;
 		updateOption();
 	}
 
+	@OneceTime
 	protected final void updateOption() {
 		MathUtil.init();
 		if (option.isUseLog()) {
@@ -112,6 +117,7 @@ public abstract class GameManager {
 			}
 			GameLog.printInfo("this is " + option.getLogPath());
 		}
+		CMDargs.init(option.getArgs());
 		I18N.init(option.getLang());
 
 		if (option.isLock()) {
@@ -142,6 +148,7 @@ public abstract class GameManager {
 
 		this.fps = option.getFps();
 		this.updateIfNotActive = option.isUpdateIfNotActive();
+		this.drawSize = option.getDrawSize();
 
 		PlayerConstants playerConstants = PlayerConstants.getInstance();
 
@@ -163,6 +170,8 @@ public abstract class GameManager {
 			GamePadConnection.init();
 		}
 
+		GameSystem.setDebugMode(option.isDebugMode());
+
 	}
 
 	public GameWindow getWindow() {
@@ -175,14 +184,14 @@ public abstract class GameManager {
 
 	private boolean started = false;
 
-	protected final void gameStart(String... args) throws IllegalStateException {
+	@OneceTime
+	public final void gameStart() throws IllegalStateException {
 		if (option == null) {
 			throw new IllegalStateException("game option is null");
 		}
 		if (started) {
 			throw new IllegalStateException("game is alredy started");
 		}
-//		CMDArgs.getInstance().setArgs(args);
 		loop = new GameLoop(this, gameTimeManager = new GameTimeManager(fps), updateIfNotActive);
 		EventQueue.invokeLater(() -> {
 			try {
@@ -192,16 +201,20 @@ public abstract class GameManager {
 				System.exit(1);
 			}
 			window.setVisible(true);
-			window.createBufferStrategy(2);
+			window.createBufferStrategy(drawSize == 1 ? 1 : 2);
 			graphicsBuffer = window.getBufferStrategy();
 			clippingRectangle = window.getInternalBounds();
 			started = true;
 			GameLog.printInfo("gameStart is done.");
 			loop.start();
+			if (drawSize != 1) {
+				image = ImageUtil.newImage((int) (window.getInternalBounds().getWidth() / drawSize), (int) (window.getInternalBounds().getHeight() / drawSize));
+			}
 		});
 		GameLog.printInfoIfUsing(getWindow().getTitle() + " is start");
 	}
 
+	@OneceTime
 	public final void gameExit() throws IllegalStateException {
 		if (!started) {
 			throw new IllegalStateException("game is not started");
@@ -227,11 +240,13 @@ public abstract class GameManager {
 	/**
 	 * ゲームを開始する手順を記述します.
 	 */
+	@OneceTime
 	protected abstract void startUp();
 
 	/**
 	 * ゲームを破棄する手順を記述します.
 	 */
+	@OneceTime
 	protected abstract void dispose();
 
 	/**
@@ -239,6 +254,7 @@ public abstract class GameManager {
 	 *
 	 * @param gtm ゲームタイムマネージャーの唯一のインスタンス.
 	 */
+	@LoopCall
 	protected abstract void update(GameTimeManager gtm);
 
 	/**
@@ -246,25 +262,50 @@ public abstract class GameManager {
 	 *
 	 * @param gc ウインドウの内部領域に対応するグラフィックスコンテキスト.
 	 */
+	@LoopCall
 	protected abstract void draw(GraphicsContext gc);
+	private BufferedImage image;
 
 	/**
 	 * 画面をリペイントします. このメソッドは内部用です。呼び出さないでください。
 	 */
+	@LoopCall
 	final void repaint() {
-		g = (Graphics2D) graphicsBuffer.getDrawGraphics();
-		g.setClip(clippingRectangle);
-		g.clearRect(clippingRectangle.x, clippingRectangle.y,
-				clippingRectangle.width, clippingRectangle.height);
-		g.setRenderingHints(renderingHints);
-		draw(new GraphicsContext(g));
-		g.dispose();
-		if (graphicsBuffer.contentsRestored()) {
-			repaint();
-		}
-		graphicsBuffer.show();
-		if (graphicsBuffer.contentsLost()) {
-			repaint();
+		if (drawSize == 1) {
+			g = (Graphics2D) graphicsBuffer.getDrawGraphics();
+			g.setClip(clippingRectangle);
+			g.clearRect(clippingRectangle.x, clippingRectangle.y,
+					clippingRectangle.width, clippingRectangle.height);
+			g.setRenderingHints(renderingHints);
+			draw(new GraphicsContext(g));
+			g.dispose();
+			if (graphicsBuffer.contentsRestored()) {
+				repaint();
+			}
+			graphicsBuffer.show();
+			if (graphicsBuffer.contentsLost()) {
+				repaint();
+			}
+		} else {
+			g = ImageUtil.createGraphics2D(image, RenderingQuality.NOT_USE);
+			g.setBackground(window.getBackground());
+			g.setClip(clippingRectangle);
+			g.clearRect(clippingRectangle.x, clippingRectangle.y,
+					clippingRectangle.width, clippingRectangle.height);
+			g.setRenderingHints(renderingHints);
+			draw(new GraphicsContext(g));
+			g.dispose();
+			Graphics2D g2 = (Graphics2D) graphicsBuffer.getDrawGraphics();
+			g2.drawImage(image, 0, 0, image.getWidth() * 2, image.getHeight() * 2, null);
+			g2.dispose();
+
+			if (graphicsBuffer.contentsRestored()) {
+				repaint();
+			}
+			graphicsBuffer.show();
+			if (graphicsBuffer.contentsLost()) {
+				repaint();
+			}
 		}
 	}
 }

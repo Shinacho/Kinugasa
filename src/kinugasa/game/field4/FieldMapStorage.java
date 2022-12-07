@@ -49,21 +49,6 @@ public class FieldMapStorage extends Storage<FieldMap> implements XMLFileSupport
 	}
 
 	private FieldMapStorage() {
-		init();
-	}
-	private static int screenWidth, screenHeight;
-
-	private static void init() {
-		screenWidth = GameOption.getInstance().getWindowSize().width;
-		screenHeight = GameOption.getInstance().getWindowSize().height;
-	}
-
-	public static int getScreenHeight() {
-		return screenHeight;
-	}
-
-	public static int getScreenWidth() {
-		return screenWidth;
 	}
 
 	@Override
@@ -87,5 +72,5 @@ public class FieldMapStorage extends Storage<FieldMap> implements XMLFileSupport
 		GameLog.printIfUsing(Level.ALL, getAll().toString());
 		printAll(System.out);
 	}
-	
+
 }

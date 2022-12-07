@@ -25,6 +25,7 @@ package kinugasa.game.field4;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.SimpleTextLabelModel;
@@ -52,7 +53,7 @@ public class SimpleMapNameModel extends MapNameModel {
 				g2.setColor(backColor());
 				g2.fillRect((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
 				g2.dispose();
-				super.draw(g); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+				super.draw(g);
 			}
 		};
 	}
@@ -68,7 +69,7 @@ public class SimpleMapNameModel extends MapNameModel {
 		switch (stage) {
 			case 0:
 				label.setText(fm.getName());
-				float x = FieldMapStorage.getScreenWidth() - 24 - label.getText().length() * label.getLabelModel().getFontSize();
+				float x = (float) (GameOption.getInstance().getWindowSize().getWidth() / GameOption.getInstance().getDrawSize() - 24 - label.getText().length() * label.getLabelModel().getFontSize());
 				label.setX(x);
 				labelFont = FadeCounter.fadeOut(-1);
 				back = FadeCounter.fadeOut(-1);

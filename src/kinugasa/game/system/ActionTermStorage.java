@@ -21,33 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package kinugasa.game.system;
 
-import kinugasa.game.I18N;
+import kinugasa.resource.Storage;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/24_11:52:16<br>
+ * @vesion 1.0.0 - 2022/12/02_11:08:05<br>
  * @author Dra211<br>
  */
-public enum BattleActionResult {
-	MISS,
-	STOPED,
-	SUCCESS,
-	ADD_CONDITION_FIELD,
-	ADD_CONDITION_TGT,
-	REMOVE_CONDITION_TGT,
-	ATTR_IN,
-	MOVE,
-	NONE,
-	USE_ITEM,
-	ITEM_LOST,;
-	
-	;
-	
-	public String visibleString(){
-		return I18N.translate(toString());
+public class ActionTermStorage extends Storage<ActionTerm> {
+
+	private static final ActionTermStorage INSTANCE = new ActionTermStorage();
+
+	private ActionTermStorage() {
 	}
-	
+
+	public static ActionTermStorage getInstance() {
+		return INSTANCE;
+	}
+
 }

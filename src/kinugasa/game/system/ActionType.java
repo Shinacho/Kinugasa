@@ -23,12 +23,21 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.game.I18N;
+
 /**
  *
- * @vesion 1.0.0 - 2022/11/30_20:02:35<br>
+ * @vesion 1.0.0 - 2022/11/20_15:14:04<br>
  * @author Dra211<br>
  */
-public interface CommandWindow {
+public enum ActionType {
+	ATTACK,
+	SPECIAL_ATTACK,
+	MAGIC,
+	ITEM_USE,
+	OTHER,;
 
-	public CmdAction getSelected();
+	public String displayName() {
+		return I18N.translate(this.toString());
+	}
 }

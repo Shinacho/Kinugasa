@@ -67,23 +67,16 @@ public class BattleMessageWindowSystem implements Drawable {
 	private StatusWindows statusWindows;
 	//移動後行動用のウインドウ
 	private AfterMoveActionMessageWindow afterMoveCommandWindow;
-	//アイテムウインドウ
-	private ItemWindow itemWindow;
+
+	;
 
 	void init(List<Status> statusList) {
-		float w = GameOption.getInstance().getWindowSize().width - 6;
-		float h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
+		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - 6;
+		float h = (float) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3.66f);
 		commandWindow = new BattleCommandMessageWindow(3, messageWindowY, w, h);
 		afterMoveCommandWindow = new AfterMoveActionMessageWindow(3, messageWindowY, w, h);
-		itemWindow = new ItemWindow(3, messageWindowY, w, h);
-		w = GameOption.getInstance().getWindowSize().width - 6;
-		h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
 		actionWindow = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
-		w = GameOption.getInstance().getWindowSize().width - 6;
-		h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
 		infoWindow = new MessageWindow(48, messageWindowY, w - 48 * 2, h, new SimpleMessageWindowModel().setNextIcon(""));
-		w = GameOption.getInstance().getWindowSize().width - 6 - 48 * 2;
-		h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
 		tooltipWindow = new MessageWindow(48 * 4, messageWindowY, w - 48 * 2, h, new SimpleMessageWindowModel().setNextIcon(""));
 
 		statusWindows = new StatusWindows(statusList);
@@ -93,20 +86,10 @@ public class BattleMessageWindowSystem implements Drawable {
 		infoWindow.setVisible(false);
 		actionWindow.setVisible(true);
 		tooltipWindow.setVisible(false);
-		itemWindow.setVisible(false);
 
 	}
 
-	public ItemWindow getItemWindow() {
-		return itemWindow;
-	}
-
-	public void closeItemWindow() {
-		itemWindow.clearText();;
-		itemWindow.setVisible(false);
-	}
-
-	void setAfterMoveCommand(List<BattleAction> list) {
+	void setAfterMoveCommand(List<CmdAction> list) {
 		afterMoveCommandWindow.setActions(list);
 		afterMoveCommandWindow.allText();
 		afterMoveCommandWindow.setVisible(true);
@@ -218,7 +201,6 @@ public class BattleMessageWindowSystem implements Drawable {
 
 		afterMoveCommandWindow.update();
 
-		itemWindow.update();
 	}
 
 	@Override
@@ -232,7 +214,6 @@ public class BattleMessageWindowSystem implements Drawable {
 		actionWindow.draw(g);
 		infoWindow.draw(g);
 		tooltipWindow.draw(g);
-		itemWindow.draw(g);
 	}
 
 	public void setInfoWindowVisibleTime(int infoWindowVisibleTime) {

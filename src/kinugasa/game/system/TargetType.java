@@ -23,22 +23,46 @@
  */
 package kinugasa.game.system;
 
-import kinugasa.resource.*;
-
 /**
+ * バトルアクションの効果対象です。
  *
- * @vesion 1.0.0 - 2022/11/16_16:13:30<br>
+ * @vesion 1.0.0 - 2022/11/16_10:48:45<br>
  * @author Dra211<br>
  */
-public class BattleActionEventTermStorage extends Storage<BattleActionEventTerm> {
-
-	private static final BattleActionEventTermStorage INSTANCE = new BattleActionEventTermStorage();
-
-	private BattleActionEventTermStorage() {
-	}
-
-	public static BattleActionEventTermStorage getInstance() {
-		return INSTANCE;
-	}
+public enum TargetType {
+	/**
+	 * 自身のみ。
+	 */
+	SELF,
+	/**
+	 * 対象一人。。
+	 */
+	ONE_ENEMY,
+	ONE_PARTY,
+	/**
+	 * 敵全体または味方全体。
+	 */
+	TEAM_PARTY,
+	TEAM_ENEMY,
+	/**
+	 * 敵味方全体。
+	 */
+	ALL,
+	/**
+	 * フィールド。特殊な作用です。
+	 */
+	FIELD,
+	/**
+	 * ランダムな標的（味方含む。
+	 */
+	RANDOM_ONE,
+	/**
+	 * ランダムな標的（敵のみ。これを複数定義することで数体への攻撃が実装できるだろう
+	 */
+	RANDOM_ONE_ENEMY,
+	/**
+	 * ランダムなパーティメンバー
+	 */
+	RANDOM_ONE_PARTY,;
 
 }

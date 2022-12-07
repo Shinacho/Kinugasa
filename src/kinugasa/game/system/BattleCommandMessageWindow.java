@@ -26,6 +26,7 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import kinugasa.game.I18N;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
@@ -45,46 +46,28 @@ public class BattleCommandMessageWindow extends MessageWindow implements Command
 		super(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""), new TextStorage(), new Text());
 		updateText();
 	}
-	private BattleActionType type = BattleActionType.OTHER;
-	private int typeIdx = BattleActionType.values().length - 1;
+	private ActionType type = ActionType.OTHER;
+	private int typeIdx = ActionType.values().length - 1;
 	private int actionIdx;
-	private BattleAction selected;
-	private static List<String> statusKey = new ArrayList<>();
-	private static String moveActionName = I18N.translate("MOVE");
-
-	public static String getMoveActionName() {
-		return moveActionName;
-	}
-
-	public static void setMoveActionName(String moveActionName) {
-		BattleCommandMessageWindow.moveActionName = moveActionName;
-	}
-
-	public static List<String> getStatusKey() {
-		return statusKey;
-	}
-
-	public static void setStatusKey(List<String> statusKey) {
-		BattleCommandMessageWindow.statusKey = statusKey;
-	}
+	private CmdAction selected;
 
 	public void resetSelect() {
-		setType(BattleActionType.OTHER);
+		setType(ActionType.OTHER);
 	}
 
-	public void setType(BattleActionType t) {
+	public void setType(ActionType t) {
 		typeIdx = t.ordinal();
-		type = BattleActionType.values()[typeIdx];
+		type = ActionType.values()[typeIdx];
 		actionIdx = 0;
 		updateText();
 	}
 
 	public void nextType() {
 		typeIdx++;
-		if (typeIdx >= BattleActionType.values().length) {
+		if (typeIdx >= ActionType.values().length) {
 			typeIdx = 0;
 		}
-		type = BattleActionType.values()[typeIdx];
+		type = ActionType.values()[typeIdx];
 		actionIdx = 0;
 		updateText();
 		if (GameSystem.isDebugMode()) {
@@ -96,9 +79,9 @@ public class BattleCommandMessageWindow extends MessageWindow implements Command
 	public void prevType() {
 		typeIdx--;
 		if (typeIdx < 0) {
-			typeIdx = BattleActionType.values().length - 1;
+			typeIdx = ActionType.values().length - 1;
 		}
-		type = BattleActionType.values()[typeIdx];
+		type = ActionType.values()[typeIdx];
 		actionIdx = 0;
 		updateText();
 		if (GameSystem.isDebugMode()) {
@@ -108,11 +91,11 @@ public class BattleCommandMessageWindow extends MessageWindow implements Command
 	}
 
 	private void setSelected() {
-		GameSystem.getInstance().getBattleSystem().getTargetSystem().updatePCsTarget(selected);
+		GameSystem.getInstance().getBattleSystem().getTargetSystem().setCurrent(this);
 	}
 
 	@Override
-	public BattleAction getSelected() {
+	public CmdAction getSelected() {
 		assert cmd != null : "BAMWs CMD is null";
 		return selected;
 	}
@@ -150,9 +133,9 @@ public class BattleCommandMessageWindow extends MessageWindow implements Command
 		text += Text.getLineSep();
 		int i = 0;
 		int c = 0;
-		List<BattleAction> actionList = cmd.getAll(type, cmd.getUser().getStatus());
+		List<CmdAction> actionList = cmd.getBattleActionOf(type);
 		Collections.sort(actionList);
-		for (BattleAction b : actionList) {
+		for (CmdAction b : actionList) {
 			if (c > ACTION_LINE - 1) {
 				break;
 			}
@@ -166,17 +149,18 @@ public class BattleCommandMessageWindow extends MessageWindow implements Command
 			} else {
 				text += "     ";
 			}
-			if (type == BattleActionType.MAGIC || type == BattleActionType.SPECIAL_ATTACK) {
+			if (type == ActionType.MAGIC || type == ActionType.SPECIAL_ATTACK) {
 				String status = "";
-				for (String s : statusKey) {
-					int val = cmd.getUser().getStatus().calcSelfStatusDamage(b.getName(), s);
+				for (String s : BattleConfig.getMagicVisibleStatusKey()) {
+					Map<StatusKey, Integer> map = b.selfBattleDirectDamage();
+					int val = map.containsKey(StatusKeyStorage.getInstance().get(s)) ? map.get(StatusKeyStorage.getInstance().get(s)) : 0;
 					status += " " + s + ":" + val;
 				}
-				if (type == BattleActionType.MAGIC) {
+				if (type == ActionType.MAGIC) {
 					status += " (" + I18N.translate("SPELLTIME") + ":" + b.getSpellTime() + I18N.translate("TURN") + ")";
 				}
 				text += b.getName() + " : " + b.getDesc() + status + Text.getLineSep();
-			} else if (type == BattleActionType.OTHER) {
+			} else if (type == ActionType.OTHER || type == ActionType.ITEM_USE) {
 				text += b.getName() + Text.getLineSep();
 			} else {
 				text += b.getName() + " : " + b.getDesc() + Text.getLineSep();
@@ -193,7 +177,7 @@ public class BattleCommandMessageWindow extends MessageWindow implements Command
 
 	public void nextAction() {
 		actionIdx++;
-		if (actionIdx >= cmd.getAll(type, cmd.getUser().getStatus()).size()) {
+		if (actionIdx >= cmd.getBattleActionOf(type).size()) {
 			actionIdx = 0;
 		}
 		updateText();
@@ -206,7 +190,7 @@ public class BattleCommandMessageWindow extends MessageWindow implements Command
 	public void prevAction() {
 		actionIdx--;
 		if (actionIdx < 0) {
-			actionIdx = cmd.getAll(type, cmd.getUser().getStatus()).size() - 1;
+			actionIdx = cmd.getBattleActionOf(type).size() - 1;
 		}
 		updateText();
 		if (GameSystem.isDebugMode()) {

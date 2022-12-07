@@ -25,6 +25,7 @@ package kinugasa.game.system;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kinugasa.game.field4.BGMMode;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundStorage;
@@ -42,8 +43,10 @@ public class EnemySet implements Nameable, Comparable<EnemySet> {
 	private String bgmMapName;
 	private String bgmName;
 	private String winLogicName, loseLogicName;
+	private BGMMode bgmMode;
 
-	public EnemySet(String name, List<EnemyBlueprint> enemies, float p, String bgmMapName, String bgmName, String winLogicName, String loseLogicName) {
+	public EnemySet(String name, List<EnemyBlueprint> enemies, float p, String bgmMapName, String bgmName, BGMMode mode,
+			String winLogicName, String loseLogicName) {
 		this.name = name;
 		this.enemies = enemies;
 		this.p = p;
@@ -51,6 +54,11 @@ public class EnemySet implements Nameable, Comparable<EnemySet> {
 		this.bgmName = bgmName;
 		this.winLogicName = winLogicName;
 		this.loseLogicName = loseLogicName;
+		this.bgmMode = mode;
+	}
+
+	public BGMMode getPrevBgmMode() {
+		return bgmMode;
 	}
 
 	public String getLoseLogicName() {

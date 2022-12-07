@@ -49,7 +49,7 @@ public class MusicRoom extends ActionTextSpriteGroup {
 		this.w = w;
 		this.h = h;
 		this.mapName = mapName;
-		this.maxY = h - 12 - 38;
+		this.maxY = h - 12 - 38 - 24;
 		create(mapName);
 		updateLocation(40, 38);
 		updateSelectIcon();
@@ -122,8 +122,13 @@ public class MusicRoom extends ActionTextSpriteGroup {
 
 		@Override
 		public void exec() {
-			map.forEach(s -> s.dispose());
-			s.load().stopAndPlay();
+			map.forEach(p -> p.dispose());
+			s.load();
+			if (s.isPlaying()) {
+				s.stop();
+			} else {
+				s.load().stopAndPlay();;
+			}
 		}
 	}
 

@@ -23,10 +23,14 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.Status;
+import kinugasa.graphics.Animation;
+import kinugasa.graphics.SpriteSheet;
+import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Storage;
+import kinugasa.util.FrameTimeCounter;
 
 /**
  *
@@ -40,11 +44,11 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 	private StatusDamageCalcModelStorage() {
 		add(new StatusDamageCalcModel("DUMMY") {
 			@Override
-			public BattleActionResult exec(GameSystem gs, BattleCharacter user, BattleAction ba, BattleActionEvent e, StatusDamageCalcType calcType, AttributeKey atkAttr, String tgtStatusKey, List<BattleCharacter> target) {
+			public ActionEventResult exec(BattleCharacter user, ActionEvent ba, BattleCharacter tgt) {
 				System.out.println("ダメージ計算が実行された");
-				return BattleActionResult.SUCCESS;
+				//装備アイテムの属性、ダメージ計算に使うステータスキーを参照しなければならない。
+				return new ActionEventResult(ActionResultType.SUCCESS, new AnimationSprite(new Animation(new FrameTimeCounter(20), new SpriteSheet("resource/field/image/fieldChip16.png").rows(0, 16, 16).images())));
 			}
-
 		});
 		//TODO DCT=DIRECTかつATTR=noneAttrKeyの場合耐性を無視してダメージを与える
 		setCurrent("DUMMY");

@@ -24,6 +24,7 @@
 package kinugasa.game.field4;
 
 import java.awt.geom.Point2D;
+import kinugasa.game.GameOption;
 import kinugasa.object.KVector;
 import kinugasa.object.BasicSprite;
 
@@ -45,8 +46,8 @@ public class FieldMapCamera {
 		// 画面サイズとチップサイズからキャラクタ表示インデックスを計算
 		int chipW = map.getChipW();
 		int chipH = map.getChipH();
-		int screenW = FieldMapStorage.getScreenWidth();
-		int screenH = FieldMapStorage.getScreenHeight();
+		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
+		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
 		int x = (int) ((float) (screenW / 2 / chipW));
 		int y = (int) ((float) (screenH / 2 / chipH));
 		playerLocation = new D2Idx(x, y);
@@ -243,8 +244,8 @@ public class FieldMapCamera {
 		D2Idx currentIdx = map.getCurrentIdx();
 		int chipW = map.getChipW();
 		int chipH = map.getChipH();
-		int screenW = FieldMapStorage.getScreenWidth();
-		int screenH = FieldMapStorage.getScreenHeight();
+		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
+		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
 		//表示位置＝中心-画面サイズ
 		int x = currentIdx.x * chipW - (screenW / 2);
 		int y = currentIdx.y * chipH - (screenH / 2);

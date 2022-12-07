@@ -25,6 +25,7 @@ package kinugasa.object;
 
 import java.awt.Graphics2D;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.LoopCall;
 
 /**
  * このインターフェースを実装したクラスは、グラフィックスコンテキストに描画できるようになります.
@@ -38,6 +39,7 @@ import kinugasa.game.GraphicsContext;
 @FunctionalInterface
 public interface Drawable {
 
+	@LoopCall
 	void draw(GraphicsContext g);
 
 	default void draw(Graphics2D g2) {

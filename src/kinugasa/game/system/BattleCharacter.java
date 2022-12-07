@@ -39,7 +39,7 @@ public interface BattleCharacter {
 	public Status getStatus();
 
 	public void setTargetLocation(Point2D.Float p, int area);
-	
+
 	public void unsetTarget();
 
 	public boolean isMoving();
@@ -51,7 +51,15 @@ public interface BattleCharacter {
 	public void to(FourDirection dir);
 
 	public boolean isPlayer();
-	
+
 	public String getId();
+
+	public default Point2D.Float getCenter() {
+		return getSprite().getCenter();
+	}
+
+	public default String getName() {
+		return getStatus().getName();
+	}
 
 }

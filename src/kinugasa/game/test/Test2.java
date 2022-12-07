@@ -43,7 +43,7 @@ public class Test2 extends GameManager {
 	public static void main(String[] args) {
 	
 		LockUtil.deleteAllLockFile();
-		new Test2().gameStart(args);
+		new Test2().gameStart();
 	}
 
 	Test2() {

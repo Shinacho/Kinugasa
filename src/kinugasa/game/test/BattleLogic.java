@@ -33,7 +33,7 @@ import kinugasa.game.field4.VehicleStorage;
 import kinugasa.game.input.GamePadButton;
 import kinugasa.game.input.InputState;
 import kinugasa.game.input.InputType;
-import kinugasa.game.system.ActionResult;
+import kinugasa.game.system.OperationResult;
 import kinugasa.game.system.AfterMoveActionMessageWindow;
 import kinugasa.game.system.BattleCharacter;
 import kinugasa.game.system.BattleCommand;
@@ -43,8 +43,7 @@ import kinugasa.game.system.BattleResultValues;
 import kinugasa.game.system.BattleSystem;
 import kinugasa.game.system.BattleTargetSystem;
 import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.Item;
-import kinugasa.game.system.ItemWindow;
+import kinugasa.game.system.ItemStorage;
 import kinugasa.object.KVector;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundBuilder;
@@ -62,11 +61,13 @@ public class BattleLogic extends GameLogic {
 
 	@Override
 	public void load() {
+		
 		stage = 0;
 		battleSystem = GameSystem.getInstance().getBattleSystem();
 		c5 = new SoundBuilder("resource/se/効果音＿選択1.wav").builde().load();
 		c6 = new SoundBuilder("resource/se/効果音＿選択2.wav").builde().load();
 		turnStart = new SoundBuilder("resource/se/効果音＿バトルターン開始.wav").builde().load();
+
 	}
 
 	@Override
@@ -76,9 +77,10 @@ public class BattleLogic extends GameLogic {
 	private int stage = 0;
 	private int prev;
 	private BattleSystem battleSystem;
-	private Point2D.Float playerMoveInitialLocation;
 	private Sound c5, c6, turnStart;
 	private BattleCommand cmd;
+	private Point2D.Float playerMoveInitialLocation;
+	private int lp = 0;
 
 	@Override
 	public void update(GameTimeManager gtm) {
@@ -93,7 +95,7 @@ public class BattleLogic extends GameLogic {
 			gls.changeTo("FIELD");
 		}
 		//戦闘終了判定
-		if (battleSystem.stageIs(BattleSystem.Stage.BATLE_END)) {
+		if (battleSystem.isEnd()) {
 			BattleResultValues result = GameSystem.getInstance().battleEnd();
 			System.out.println("戦闘終了：" + result);
 			gls.changeTo("FIELD");
@@ -102,8 +104,13 @@ public class BattleLogic extends GameLogic {
 		switch (stage) {
 			case 0:
 				//BSの処理が完了するまで待機
-				if (battleSystem.stageIs(BattleSystem.Stage.WAITING_USER_CMD)) {
+				lp++;
+				if (battleSystem.waitAction()) {
 					stage = 1;
+					lp = 0;
+				}
+				if (lp > 60 * 5) {
+					System.out.println(battleSystem.getStage());
 				}
 				break;
 			case 1:
@@ -113,18 +120,13 @@ public class BattleLogic extends GameLogic {
 					//コマンドウインドウ表示、コマンド選択
 					turnStart.load().stopAndPlay();
 					stage = 2;
-					break;
 				} else {
 					//NPCアクションが終わるまで待機
 					stage = 0;
-					break;
 				}
+				break;
 			case 2:
 				//コマンドウインドウ表示、コマンド選択
-				//INFOが表示されている場合は操作不能
-				if (!battleSystem.stageIs(BattleSystem.Stage.WAITING_USER_CMD)) {
-					break;
-				}
 				BattleCommandMessageWindow mw = battleSystem.getMessageWindowSystem().getCommandWindow();
 				if (!mw.isVisible()) {
 					mw.setVisible(true);
@@ -154,29 +156,27 @@ public class BattleLogic extends GameLogic {
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
 					//ターゲット選択
-					ActionResult result = battleSystem.execPCAction();
+					OperationResult result = battleSystem.execPCAction();
 					switch (result) {
 						case MISS:
-						case NO_TARGET:
-							//何もしない（INFO表示）
+							//次のコマンドへ
+							stage = 0;
 							break;
 						case SUCCESS:
+							//次のコマンドへ
 							stage = 0;
 							break;
-						//制御が戻るまで待つ
 						case MOVE:
-							playerMoveInitialLocation = cmd.getUser().getSprite().getLocation();
+							playerMoveInitialLocation = cmd.getUser().getCenter();
 							stage = 4;
 							break;
-						case SHOW_ITEM_WINDOW:
-							stage = 5;
-							break;
-						case ESCAPE:
-							stage = 0;
+						case CANCEL:
+							//何もしない（再実行可能
 							break;
 						case SHOW_STATUS:
+							stage = 5;
 							break;
-						case TARGET_SELECT:
+						case TO_TARGET_SELECT:
 							prev = 2;
 							stage = 3;
 							break;
@@ -187,15 +187,11 @@ public class BattleLogic extends GameLogic {
 					c6.load().stopAndPlay();
 					mw.resetSelect();
 				}
-
 				break;
 			case 3:
 				//ターゲットセレクト
 				BattleTargetSystem targetSystem = battleSystem.getTargetSystem();
 
-				if (!battleSystem.stageIs(BattleSystem.Stage.WAITING_USER_CMD)) {
-					break;
-				}
 				if (is.isPressed(GamePadButton.POV_LEFT, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
 					targetSystem.prev();
@@ -220,34 +216,31 @@ public class BattleLogic extends GameLogic {
 				//決定
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
-					ActionResult result = targetSystem.collect(battleSystem.visibleCommand());
+					OperationResult result = battleSystem.execPCAction();
 					switch (result) {
-						case ESCAPE:
-						case MOVE:
-						case NO_TARGET:
+						case CANCEL:
+						case TO_TARGET_SELECT:
+							//再行動可能
+							break;
 						case SHOW_STATUS:
-						case TARGET_SELECT:
-						case SHOW_ITEM_WINDOW:
-						case MISS:
-						case SUCCESS:
+						case MOVE:
+							throw new AssertionError("不正な戻り値 : " + result);
+						default:
+							//再行動不可能
 							stage = 0;
 							break;
 					}
 				}
 				if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
+					battleSystem.cancelTargetSelect();
 					stage = prev;
 					break;
 				}
 				break;
 			case 4:
 				//移動フェーズ
-				//INFOが表示されている場合は操作不能
-				if (!battleSystem.stageIs(BattleSystem.Stage.WAITING_USER_CMD)) {
-					break;
-				}
 				AfterMoveActionMessageWindow mw2 = battleSystem.getMessageWindowSystem().getAfterMoveCommandWindow();
-				assert playerMoveInitialLocation != null : "battle logic, player move initial location is null";
 
 				BattleCharacter playerChara = cmd.getUser();
 
@@ -267,17 +260,17 @@ public class BattleLogic extends GameLogic {
 				//確定の場合、次のコマンドへ、攻撃の場合、ターゲット選択に移動する
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
-					ActionResult res = battleSystem.execPCAction();
-					if (res == ActionResult.TARGET_SELECT) {
+					OperationResult res = battleSystem.execPCAction();
+					if (res == OperationResult.TO_TARGET_SELECT) {
 						prev = 4;
 						stage = 3;
 						break;
 					}
-					if (res == ActionResult.SUCCESS) {
+					if (res == OperationResult.SUCCESS) {
 						stage = 0;
 						break;
 					}
-					if (res == ActionResult.NO_TARGET) {
+					if (res == OperationResult.MISS) {
 						break;
 					}
 				}
@@ -328,44 +321,13 @@ public class BattleLogic extends GameLogic {
 
 				break;
 			case 5:
-				//アイテム選択
-				ItemWindow mw3 = battleSystem.getMessageWindowSystem().getItemWindow();
-				//コマンド
-				if (is.isPressed(GamePadButton.POV_UP, InputType.SINGLE)) {
-					c6.load().stopAndPlay();
-					mw3.prevItem();
-				} else if (is.isPressed(GamePadButton.POV_DOWN, InputType.SINGLE)) {
-					c6.load().stopAndPlay();
-					mw3.nextItem();
-				}
-				//キャンセル
+				//ステータス参照
+				//閉じる以外特になし。
+
 				if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
 					stage = 2;
 					break;
 				}
-				//決定
-				if(is.isPressed(GamePadButton.A, InputType.SINGLE)){
-					ActionResult res = battleSystem.useItem();
-					if(res == ActionResult.MISS || res == ActionResult.NO_TARGET){
-						//アイテム使用できなかった
-						//ミス：バトル効果なし
-						//ノーターゲット：範囲内に対象なし
-					}
-					if(res == ActionResult.SUCCESS){
-						//アイテム使用できた（全体、必ず発動、装備品等
-						stage = 0;
-						break;
-					}
-					if(res == ActionResult.TARGET_SELECT){
-						//アイテムターゲット選択に遷移
-						stage = 6;
-						break;
-					}
-				}
-			case 6:
-				//アイテムターゲット選択
-				//MOVの半分の値（行って戻ってくるという設定）で計算
-				
 
 				break;
 			default:

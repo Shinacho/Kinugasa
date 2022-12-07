@@ -86,7 +86,7 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 		return items.get(idx);
 	}
 
-	public void drop(String name) {
+	void drop(String name) {
 		drop(ItemStorage.getInstance().get(name));
 	}
 

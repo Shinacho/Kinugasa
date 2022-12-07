@@ -35,6 +35,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.system.EncountInfo;
@@ -207,13 +208,15 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	}
 
 	public EncountInfo createEncountInfo() {
-		EncountInfo ei = new EncountInfo(EnemySetStorageStorage.getInstance().get(enemyStorageName), getCurrentTile().get0Attr());
+		EncountInfo ei = new EncountInfo(bgm, EnemySetStorageStorage.getInstance().get(enemyStorageName), getCurrentTile().get0Attr());
 		return ei;
 	}
 
 	public FieldMap build() throws FieldMapDataException {
 		data.load();
 		XMLElement root = data.getFirst();
+		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
+		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
 
 		//事前に別設定されたテキストストレージの取得
 		//テキストのないマップの場合、ロードしないことを許可する
@@ -228,8 +231,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 					? FieldEventStorageStorage.getInstance().get("fieldEventStorageName")
 					: new FieldEventStorage(fieldEventStorageName);
 		}
-		// 表示倍率・・・ない場合は1倍とする
-		float mg = root.getAttributes().contains("mg") ? root.getAttributes().get("mg").getFloatValue() : 1;
 
 		//エンカウントマップの名前
 		enemyStorageName = root.getAttributes().contains("esName") ? root.getAttributes().get("esName").getValue() : null;
@@ -243,6 +244,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			encountCounter.setCurrentTime(r);
 		} else {
 			this.encountCounter = ManualTimeCounter.FALSE;
+		}
+
+		//FM描画倍率を取得
+		float mg = 1;
+		if (root.hasAttribute("mg")) {
+			mg = root.getAttributes().get("mg").getFloatValue();
 		}
 
 		// バックグラウンドレイヤー
@@ -261,8 +268,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				int cutH = backgroundElement.getAttributes().get("h").getIntValue();
 
 				BufferedImage[] images = new SpriteSheet(imageName).split(cutW, cutH).images();
-				backgroundLayerSprite = new BackgroundLayerSprite(FieldMapStorage.getScreenWidth(), FieldMapStorage.getScreenWidth());
-				backgroundLayerSprite.build(mg, tc, images);
+				backgroundLayerSprite = new BackgroundLayerSprite(screenW, screenH, mg);
+				backgroundLayerSprite.build(tc, images);
 			}
 
 		}
@@ -317,10 +324,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 						data[y][x] = chipset.get(val[x]);
 					}
 				}
-				int w = (int) (data[0][0].getImage().getWidth() * mg);
-				int h = (int) (data[0][0].getImage().getWidth() * mg);
+				int w = (int) (data[0][0].getImage().getWidth());
+				int h = (int) (data[0][0].getImage().getWidth());
 
-				FieldMapLayerSprite layerSprite = new FieldMapLayerSprite(chipset, w, h, data, mg);
+				FieldMapLayerSprite layerSprite = new FieldMapLayerSprite(chipset, w, h, mg, data);
 				backlLayeres.add(layerSprite);
 			}
 
@@ -339,10 +346,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 						data[y][x] = chipset.get(val[x]);
 					}
 				}
-				int w = (int) (data[0][0].getImage().getWidth() * mg);
-				int h = (int) (data[0][0].getImage().getWidth() * mg);
+				int w = (int) (data[0][0].getImage().getWidth());
+				int h = (int) (data[0][0].getImage().getWidth());
 
-				FieldMapLayerSprite layerSprite = new FieldMapLayerSprite(chipset, w, h, data, mg);
+				FieldMapLayerSprite layerSprite = new FieldMapLayerSprite(chipset, w, h, mg, data);
 				backlLayeres.add(layerSprite);
 			}
 
@@ -377,9 +384,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				int w = e.getAttributes().get("w").getIntValue();
 				int h = e.getAttributes().get("h").getIntValue();
 				BufferedImage[] images = new SpriteSheet(image).split(w, h).images();
-				images = ImageEditor.resizeAll(images, mg);
-				w *= mg;
-				h *= mg;
 				int locationX = (int) (x * (chipW));
 				int locationY = (int) (y * (chipH));
 				frontAnimation.add(new FieldAnimationSprite(new D2Idx(x, y), locationX, locationY, w, h, new Animation(tc, images)));
@@ -465,12 +469,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				if (mode != BGMMode.NOTHING) {
 					String mapName = e.getAttributes().get("mapName").getValue();
 					String soundName = e.getAttributes().get("soundName").getValue();
-					if (mode == BGMMode.STOP_ALL || mode == BGMMode.STOP_ALL) {
+					if (mode == BGMMode.STOP || mode == BGMMode.STOP || mode == BGMMode.PAUSE) {
 						SoundStorage.getInstance().get(mapName).stopAll();
 					}
 					if (mode == BGMMode.STOP_AND_PLAY) {
 						bgm = SoundStorage.getInstance().get(mapName).get(soundName).load();
-						bgm.play();
+						bgm.stopAndPlay();
 					}
 				}
 
@@ -531,8 +535,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			tooltipModel.drawTooltip(this, g);
 		}
 		if (debugMode) {
-			float centerX = FieldMapStorage.getScreenWidth() / 2;
-			float centerY = FieldMapStorage.getScreenHeight() / 2;
+			float centerX = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 2;
+			float centerY = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 2;
 			Point2D.Float p1 = new Point2D.Float(centerX - chipW, centerY - chipH);
 			Point2D.Float p2 = new Point2D.Float(centerX + chipW, centerY + chipH);
 			Point2D.Float p3 = new Point2D.Float(centerX - chipW, centerY + chipH);
@@ -542,7 +546,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			g2.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
 			g2.drawLine((int) p3.x, (int) p3.y, (int) p4.x, (int) p4.y);
 			g2.dispose();
-//			System.out.print("IDX : " + idx);
+//			System.out.print("IDX : " + currentIdx);
 //			System.out.println("  FM_LOCATION : " + getBaseLayer().getLocation());
 		}
 	}
@@ -558,7 +562,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		frontlLayeres.clear();
 		frontAnimation.clear();
 		beforeLayerSprites.clear();
-
+		bgm.dispose();
 		npcStorage.clear();
 		if (fieldEventStorage != null) {
 			fieldEventStorage.dispose();
@@ -715,8 +719,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			List<FieldEvent> e = fieldEventStorage.get(idx);
 			e.forEach(v -> v.exec(this));
 		}
-		//ノードの処理
-
 		this.currentIdx = idx.clone();
 
 	}
@@ -731,8 +733,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 */
 	public KImage createMiniMap(float scale, boolean animation) {
 
-		float w = getBaseLayer().getDataWidth() * getBaseLayer().getChip(0, 0).getImage().getWidth() * getBaseLayer().getMg();
-		float h = getBaseLayer().getDataHeight() * getBaseLayer().getChip(0, 0).getImage().getHeight() * getBaseLayer().getMg();
+		float w = getBaseLayer().getDataWidth() * getBaseLayer().getChip(0, 0).getImage().getWidth();
+		float h = getBaseLayer().getDataHeight() * getBaseLayer().getChip(0, 0).getImage().getHeight();
 
 		BufferedImage image = ImageUtil.newImage((int) w, (int) h);
 		Graphics2D g = ImageUtil.createGraphics2D(image, RenderingQuality.QUALITY);
@@ -770,6 +772,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		return getTile(idx).getNpc() != null;
 	}
 
+	//プレイヤーの向いている方向のD2IDXを返します。
 	public D2Idx playerDirIdx() {
 		D2Idx idx = this.currentIdx.clone();
 		FourDirection currentDir = playerCharacter.get(0).getCurrentDir();
@@ -807,7 +810,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private MessageWindow mw;
 
 	/**
-	 * プレイヤーキャラクタの向いている方向にいるNPCに対して、いい感じの位置にメッセ?ウインドウを表示します。
+	 * プレイヤーキャラクタの向いている方向にいるNPCに対して、いい感じの位置にメッセ-ーウインドウを表示します。
 	 * メッセージウインドウのモデルはSimpleMessageWindowModelが使用されます。
 	 *
 	 * @return
@@ -822,9 +825,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		//NPCが画面下半分にいる場合はメッセージウインドウを上に表示。上半分にいる場合は下に表示。
 		float buffer = 24;
 		float x = buffer;
-		float y = n == null || n.getCenterY() < FieldMapStorage.getScreenHeight() / 2 ? FieldMapStorage.getScreenHeight() / 2 + buffer : buffer;
-		float w = FieldMapStorage.getScreenWidth() - (buffer * 2);
-		float h = FieldMapStorage.getScreenHeight() / 3;
+		float y = n == null || n.getCenterY() < GameOption.getInstance().getWindowSize().width / 2 ? GameOption.getInstance().getWindowSize().height / 2 + buffer : buffer;
+		float w = GameOption.getInstance().getWindowSize().width - (buffer * 2);
+		float h = GameOption.getInstance().getWindowSize().height / 3;
 		Text t = n == null ? new Text(noNPCMessage) : textStorage.get(n.getTextID());
 		if (n != null) {
 			n.to(playerCharacter.get(0).getCurrentDir().reverse());

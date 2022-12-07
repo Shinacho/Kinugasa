@@ -1,3 +1,5 @@
+package kinugasa.game.system;
+
 /*
  * The MIT License
  *
@@ -21,35 +23,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
-
+import java.util.ArrayList;
 import java.util.List;
+import kinugasa.object.AnimationSprite;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/21_9:02:04<br>
+ * @vesion 1.0.0 - 2022/12/01_22:29:56<br>
  * @author Dra211<br>
  */
-public class EnemyBattleAction extends BattleAction {
+public class ActionEventResult {
 
-	private float p;
+	private List<ActionResultType> resultTypePerTgt;
+	private List<AnimationSprite> animation;
 
-	public EnemyBattleAction(BattleAction a) {
-		super(a);
-		this.p = p;
+	public ActionEventResult() {
+		this(new ArrayList<>(), new ArrayList<>());
 	}
 
-	public void setP(float p) {
-		this.p = p;
+	public ActionEventResult(ActionResultType resultTypePerTgt, AnimationSprite animation) {
+		this(List.of(resultTypePerTgt), List.of(animation));
 	}
 
-	public float getP() {
-		return p;
+	public ActionEventResult(List<ActionResultType> resultTypePerTgt, List<AnimationSprite> animation) {
+		this.resultTypePerTgt = resultTypePerTgt;
+		this.animation = animation;
 	}
 
-	@Override
-	public String toString() {
-		return "EnemyBattleAction{" + getName() + ", " + "p=" + p + '}';
+	public ActionEventResult add(ActionEventResult a) {
+		animation.addAll(a.animation);
+		resultTypePerTgt.addAll(a.resultTypePerTgt);
+		return this;
+	}
+
+	public void addAnimation(AnimationSprite a) {
+		animation.add(a);
+	}
+
+	public void addResultTypePerTgt(ActionResultType t) {
+		resultTypePerTgt.add(t);
+	}
+
+	public List<AnimationSprite> getAnimation() {
+		return animation;
+	}
+
+	public List<ActionResultType> getResultTypePerTgt() {
+		return resultTypePerTgt;
 	}
 
 }

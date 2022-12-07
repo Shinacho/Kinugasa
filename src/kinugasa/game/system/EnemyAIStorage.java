@@ -23,27 +23,21 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.resource.Storage;
+
 /**
  *
- * @vesion 1.0.0 - 2022/11/22_18:14:28<br>
+ * @vesion 1.0.0 - 2022/12/02_16:51:01<br>
  * @author Dra211<br>
  */
-public enum BattleActionAnimationTargetType {
-	/**
-	 * アニメーションはフィールドエリアを対象にします。
-	 */
-	BATTLE_FIELD_AREA,
-	/**
-	 * アニメーションは、敵対するエリアを対象にします。
-	 */
-	TEAM_AREA,
-	/**
-	 * アニメーションは、選択された対象すべてに表示されます。
-	 */
-	TARGET,
-	/**
-	 * アニメーションは使用者に対して表示されます。
-	 */
-	SELF;
+public class EnemyAIStorage extends Storage<EnemyAI> {
+
+	private EnemyAIStorage() {
+	}
+	private static final EnemyAIStorage INSTANCE = new EnemyAIStorage();
+
+	public static EnemyAIStorage getInstance() {
+		return INSTANCE;
+	}
 
 }

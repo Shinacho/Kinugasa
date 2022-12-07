@@ -42,9 +42,7 @@ public class GameSystemXMLLoader {
 	private List<String> statusKeyStorage = new ArrayList<>();
 	private List<String> attrKeyStorage = new ArrayList<>();
 	private List<String> conditionValueStorage = new ArrayList<>();
-	private List<String> itemActionStorage = new ArrayList<>();
 	private List<String> itemEqipmentSlotStorage = new ArrayList<>();
-	private List<String> itemStorage = new ArrayList<>();
 	private List<String> raceStorage = new ArrayList<>();
 	private List<String> battleActionStorage = new ArrayList<>();
 	private List<String> battleField = new ArrayList<>();
@@ -52,7 +50,6 @@ public class GameSystemXMLLoader {
 	private List<String> ess = new ArrayList<>();
 	private List<String> bookList = new ArrayList<>();
 	private String enemyProgressBarKey;
-	private boolean debugMode = false;
 
 	public GameSystemXMLLoader addWeaponMagicTypeStorage(String fileName) {
 		weaponMagicTypeStorage.add(fileName);
@@ -79,18 +76,8 @@ public class GameSystemXMLLoader {
 		return this;
 	}
 
-	public GameSystemXMLLoader addItemActionStorage(String fileName) {
-		itemActionStorage.add(fileName);
-		return this;
-	}
-
 	public GameSystemXMLLoader addItemEqipmentSlotStorage(String fileName) {
 		itemEqipmentSlotStorage.add(fileName);
-		return this;
-	}
-
-	public GameSystemXMLLoader addItemStorage(String fileName) {
-		itemStorage.add(fileName);
 		return this;
 	}
 
@@ -101,11 +88,6 @@ public class GameSystemXMLLoader {
 
 	public GameSystemXMLLoader addBattleActionStorage(String fileName) {
 		battleActionStorage.add(fileName);
-		return this;
-	}
-
-	public GameSystemXMLLoader setDebugMode(boolean f) {
-		debugMode = f;
 		return this;
 	}
 
@@ -138,10 +120,6 @@ public class GameSystemXMLLoader {
 		return enemyProgressBarKey;
 	}
 
-	public boolean isDebugMode() {
-		return debugMode;
-	}
-
 	public List<String> getEnemySetList() {
 		return ess;
 	}
@@ -162,16 +140,8 @@ public class GameSystemXMLLoader {
 		return conditionValueStorage;
 	}
 
-	public List<String> getItemActionStorage() {
-		return itemActionStorage;
-	}
-
 	public List<String> getItemEqipmentSlotStorage() {
 		return itemEqipmentSlotStorage;
-	}
-
-	public List<String> getItemStorage() {
-		return itemStorage;
 	}
 
 	public List<String> getRaceStorage() {
@@ -195,7 +165,6 @@ public class GameSystemXMLLoader {
 	}
 
 	public void load() throws IllegalStateException {
-		GameSystem.setDebugMode(debugMode);
 		if (weaponMagicTypeStorage.isEmpty()) {
 			throw new IllegalStateException("weaponMagicType is empty");
 		}
@@ -216,26 +185,16 @@ public class GameSystemXMLLoader {
 		}
 		conditionValueStorage.forEach(v -> readConditionMaster(v));
 
-		if (itemActionStorage.isEmpty()) {
-			throw new IllegalStateException("itemActionStorage is empty");
-		}
-		itemActionStorage.forEach(v -> ItemActionStorage.getInstance().readFromXML(v));
-
 		if (itemEqipmentSlotStorage.isEmpty()) {
 			throw new IllegalStateException("itemEqipmentSlotStorage is empty");
 		}
 		itemEqipmentSlotStorage.forEach(v -> ItemEqipmentSlotStorage.getInstance().readFromXML(v));
 
-		if (itemStorage.isEmpty()) {
-			throw new IllegalStateException("itemStorage is empty");
-		}
-		itemStorage.forEach(v -> ItemStorage.getInstance().readFromXML(v));
-
 		if (bookList.isEmpty()) {
 			throw new IllegalStateException("bookList is empty");
 		}
 		bookList.forEach(v -> BookStorage.getInstance().readFromXML(v));
-		
+
 		if (raceStorage.isEmpty()) {
 			throw new IllegalStateException("raceStorage is empty");
 		}
@@ -244,7 +203,7 @@ public class GameSystemXMLLoader {
 		if (battleActionStorage.isEmpty()) {
 			throw new IllegalStateException("battleActionStorage is empty");
 		}
-		battleActionStorage.forEach(v -> BattleActionStorage.getInstance().readFromXML(v));
+		battleActionStorage.forEach(v -> ActionStorage.getInstance().readFromXML(v));
 
 		if (battleField.isEmpty()) {
 			throw new IllegalStateException("battleField is empty");

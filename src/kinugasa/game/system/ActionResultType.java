@@ -23,42 +23,13 @@
  */
 package kinugasa.game.system;
 
-import kinugasa.resource.*;
-
 /**
- * バトルアクションの値が実行できるかどうかを判断するクラスです。
- * 例えば、剣を持っていないと剣によるスキルが発動できない、等、アクションが追加されているかどうかよりも低いレベルでの判定を行います。
  *
- * @vesion 1.0.0 - 2022/11/16_16:00:49<br>
+ * @vesion 1.0.0 - 2022/11/29_21:31:59<br>
  * @author Dra211<br>
  */
-public class BattleActionEventTerm implements Nameable {
-
-	private String name;
-	private BattleActionEventTermType type;
-	private String value;
-
-	public BattleActionEventTerm(String name, BattleActionEventTermType type, String value) {
-		this.name = name;
-		this.type = type;
-		this.value = value;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public BattleActionEventTermType getType() {
-		return type;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public boolean canDoThis(Status user) {
-		return type.canDoThis(value, user);
-	}
+public enum ActionResultType {
+	SUCCESS,
+	MISS,
 
 }

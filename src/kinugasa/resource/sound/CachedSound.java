@@ -149,11 +149,30 @@ public class CachedSound implements Sound {
 			throw new NotYetLoadedException("sound " + this + " is not yet loaded.");
 		}
 		if (lp != LoopPoint.NO_USE) {
+			if (framePos > 0) {
+				clip.setFramePosition(framePos);
+				framePos = 0;
+			}
 			clip.loop(Clip.LOOP_CONTINUOUSLY);
 		} else {
-			clip.start();
-			playing = true;
+			if (framePos > 0) {
+				clip.setFramePosition(framePos);
+				framePos = 0;
+				clip.start();
+			} else {
+				clip.start();
+			}
 		}
+		playing = true;
+	}
+
+	@Override
+	public void nonLoopPlay() {
+		if (!(getStatus() == InputStatus.LOADED)) {
+			throw new NotYetLoadedException("sound " + this + " is not yet loaded.");
+		}
+		clip.start();
+		playing = true;
 	}
 
 	@Override
@@ -186,10 +205,14 @@ public class CachedSound implements Sound {
 		return playing;
 	}
 
+	private int framePos = 0;
+
 	@Override
 	public void pause() {
 		if (clip != null) {
+			framePos = clip.getFramePosition();
 			clip.stop();
+			playing = false;
 		}
 	}
 

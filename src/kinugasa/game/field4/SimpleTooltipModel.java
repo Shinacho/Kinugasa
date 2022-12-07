@@ -23,6 +23,7 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.SimpleTextLabelModel;
@@ -54,8 +55,8 @@ public class SimpleTooltipModel extends TooltipModel {
 		}
 		label.setText(t.getNode().getTooltip());
 		FontModel f = label.getLabelModel().getFontConfig();
-		float x = FieldMapStorage.getScreenWidth() / 2 - (f.getFont().getSize2D() * label.getText().length() / 2);
-		float y = FieldMapStorage.getScreenHeight() / 2 - FieldMapStorage.getScreenHeight() / 4;
+		float x = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 2 - (f.getFont().getSize2D() * label.getText().length() / 2);
+		float y = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 2 - GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 4;
 		label.setLocation(x, y);
 		label.setVisible(true);
 		g.draw(label);

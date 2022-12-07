@@ -48,7 +48,7 @@ public class GM extends GameManager {
 
 	public static void main(String[] args) {
 		LockUtil.deleteAllLockFile();
-		new GM().gameStart(args);
+		new GM().gameStart();
 	}
 
 	private GM() {

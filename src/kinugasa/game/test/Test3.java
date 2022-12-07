@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
+
+package kinugasa.game.test;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/30_20:02:35<br>
+ * @vesion 1.0.0 - 2022/12/05_14:47:10<br>
  * @author Dra211<br>
  */
-public interface CommandWindow {
+public class Test3 {
 
-	public CmdAction getSelected();
 }

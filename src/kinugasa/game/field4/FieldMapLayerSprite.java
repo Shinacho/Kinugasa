@@ -46,24 +46,25 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 	private BufferedImage fieldMapImage = null;
 	private float mg;
 
-	public FieldMapLayerSprite(MapChipSet chipSet, int w, int h, MapChip[][] data, float mg) {
+	public FieldMapLayerSprite(MapChipSet chipSet, int w, int h, float mg, MapChip[][] data) {
 		super(0, 0, w, h);
 		this.chipSet = chipSet;
 		this.data = data;
-		build(this.mg = mg);
+		this.mg = mg;
+		build();
 	}
 
-	private void build(float mg) {
+	private void build() {
 		fieldMapImage = ImageUtil.newImage(
-				(int) (mg * data[0].length * data[0][0].getImage().getWidth()),
-				(int) (mg * data.length * data[0][0].getImage().getHeight()));
+				(int) (data[0].length * data[0][0].getImage().getWidth() * mg),
+				(int) (data.length * data[0][0].getImage().getHeight() * mg));
 
-		Graphics2D g = ImageUtil.createGraphics2D(fieldMapImage, RenderingQuality.QUALITY);
+		Graphics2D g = ImageUtil.createGraphics2D(fieldMapImage, RenderingQuality.SPEED);
 		for (int y = 0; y < data.length; y++) {
 			for (int x = 0; x < data[y].length; x++) {
 				BufferedImage cellImage = data[y][x].getImage().get();
-				int lx = (int) (x * mg * data[y][x].getImage().getWidth());
-				int ly = (int) (y * mg * data[y][x].getImage().getHeight());
+				int lx = (int) (x * data[y][x].getImage().getWidth() * mg);
+				int ly = (int) (y * data[y][x].getImage().getHeight() * mg);
 				g.drawImage(cellImage, lx, ly, (int) (cellImage.getWidth() * mg), (int) (cellImage.getHeight() * mg), null);
 			}
 		}
@@ -168,10 +169,6 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 		}
 		g2.dispose();
 
-	}
-
-	public float getMg() {
-		return mg;
 	}
 
 	@Override

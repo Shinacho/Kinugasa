@@ -109,18 +109,10 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 				float p = ie.getAttributes().get("p").getFloatValue();
 				dropItems.add(new DropItem(ItemStorage.getInstance().get(itemKey), n, p));
 			}
-			List<EnemyBattleAction> actionList = new ArrayList<>();
+			List<CmdAction> actionList = new ArrayList<>();
 			for (XMLElement ae : e.getElement("action")) {
 				String name = ae.getAttributes().get("name").getValue();
-				BattleAction ba = BattleActionStorage.getInstance().get(name);
-				EnemyBattleAction a = new EnemyBattleAction(ba);
-				if (ae.hasAttribute("p")) {
-					float p = ae.getAttributes().get("p").getFloatValue();
-					a.setP(p);
-				} else {
-					a.setP(1);
-				}
-				actionList.add(a);
+				actionList.add(ActionStorage.getInstance().get(name));
 			}
 			List<ConditionKey> condition = new ArrayList<>();
 			for (XMLElement ae : e.getElement("condition")) {

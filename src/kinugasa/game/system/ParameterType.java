@@ -25,10 +25,47 @@ package kinugasa.game.system;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/30_20:02:35<br>
+ * @vesion 1.0.0 - 2022/11/16_10:53:21<br>
  * @author Dra211<br>
  */
-public interface CommandWindow {
+public enum ParameterType {
+	/**
+	 * ステータスの変更を行うアクションタイプです。
+	 */
+	STATUS(3),
+	/**
+	 * 属性耐性の変更を行うアクションタイプです。
+	 */
+	ATTR_IN(4),
+	/**
+	 * valueの名前のアイテムを破棄するタイプです。
+	 */
+	ITEM_LOST(1),
+	/**
+	 * valueの名前のアイテムを追加するタイプです。
+	 */
+	ITEM_ADD(2),
+	/**
+	 * 何も行わないアクションタイプです。
+	 */
+	NONE(999),
+	/**
+	 * 状態異常を付与するアクションです。
+	 */
+	ADD_CONDITION(5),
+	/**
+	 * 状態異常を削除するアクションです。
+	 */
+	REMOVE_CONDITION(6),
+	;
+	private int value;
 
-	public CmdAction getSelected();
+	private ParameterType(int value) {
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
 }

@@ -33,12 +33,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import kinugasa.graphics.GraphicsUtil;
 import kinugasa.resource.text.IniFile;
 import kinugasa.game.ui.Dialog;
 import kinugasa.game.ui.DialogIcon;
 import kinugasa.game.ui.DialogOption;
+import kinugasa.game.ui.GameLauncher;
 
 /**
  * ゲーム起動時の画面サイズなどの設定です。ゲーム起動後にこのクラスを変更しても、反映されません。
@@ -49,9 +52,10 @@ import kinugasa.game.ui.DialogOption;
 public class GameOption {
 
 	private String title;
-	private Color backColor;
+	private Color backColor = new Color(0, 132, 116);
 	private Dimension windowSize;
 	private Point windowLocation;
+	private float drawSize;
 	private boolean lock;
 	private boolean useMouse;
 	private boolean useKeyboard;
@@ -62,6 +66,8 @@ public class GameOption {
 	private RenderingQuality rq;
 	private String lang;
 	private boolean updateIfNotActive;
+	private String[] args = new String[]{};
+	private boolean debugMode = false;
 
 	private String logName = "log_" + new SimpleDateFormat("yyyyMMddHHmmssSSS") + ".log";
 	private ImageIcon icon = new ImageIcon(getClass().getResource("icon.png"));
@@ -74,6 +80,7 @@ public class GameOption {
 		public static final String BG_COLOR = "BG_COLOR";
 		public static final String SIZE = "SIZE";
 		public static final String LOCATION = "LOCATION";
+		public static final String DRAWSIZE = "DRAWSIZE";
 		public static final String LOCK = "LOCK";
 		public static final String MOUSE = "MOUSE";
 		public static final String KEY = "KEY";
@@ -102,6 +109,7 @@ public class GameOption {
 			int y = ini.get(Key.LOCATION).get().asCsvOf(1).asInt();
 			go.windowLocation = new Point(x, y);
 		}
+		go.drawSize = ini.get(Key.DRAWSIZE).get().asFloat();
 		go.lock = ini.get(Key.LOCK).get().isTrue();
 
 		go.useMouse = ini.get(Key.MOUSE).get().isTrue();
@@ -119,14 +127,68 @@ public class GameOption {
 		return go;
 	}
 
+	public static GameOption fromGUI() {
+		return fromGUI("MyGame");
+	}
+
+	public static GameOption fromGUI(String name) {
+
+		/* Set the Nimbus look and feel */
+		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+		/* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+		 */
+		try {
+			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					javax.swing.UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (ClassNotFoundException ex) {
+			java.util.logging.Logger.getLogger(GameLauncher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (InstantiationException ex) {
+			java.util.logging.Logger.getLogger(GameLauncher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (IllegalAccessException ex) {
+			java.util.logging.Logger.getLogger(GameLauncher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+			java.util.logging.Logger.getLogger(GameLauncher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		}
+		//</editor-fold>
+		//</editor-fold>
+		//</editor-fold>
+		//</editor-fold>
+
+		/* Create and display the form */
+		final GameLauncher gl = new GameLauncher(name);
+		java.awt.EventQueue.invokeLater(() -> {
+			gl.setVisible(true);
+		});
+		try {
+			Thread.sleep(300);
+		} catch (InterruptedException ex) {
+		}
+		//GL表示中はこのスレッドを止める
+		while (gl.isVisible()) {
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException ex) {
+			}
+		}
+		GameOption result = gl.getGameOption();
+		gl.dispose();
+		return result;
+	}
+
 	public static GameOption defaultOption() {
 		return fromIni("default.ini");
 	}
 
-	protected GameOption(String name) {
+	public GameOption(String name) {
 		this.title = name;
 		INSTANCE = this;
 	}
+
 	private static GameOption INSTANCE;
 
 	public static GameOption getInstance() {
@@ -138,9 +200,27 @@ public class GameOption {
 		return this;
 	}
 
+	public String[] getArgs() {
+		return args;
+	}
+
+	public GameOption setArgs(String[] args) {
+		this.args = args;
+		return this;
+	}
+
 	public GameOption setBackColor(Color backColor) {
 		this.backColor = backColor;
 		return this;
+	}
+
+	public GameOption setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
+		return this;
+	}
+
+	public boolean isDebugMode() {
+		return debugMode;
 	}
 
 	public GameOption setWindowSize(Dimension windowSize) {
@@ -150,6 +230,11 @@ public class GameOption {
 
 	public GameOption setWindowLocation(Point windowLocation) {
 		this.windowLocation = windowLocation;
+		return this;
+	}
+
+	public GameOption setDrawSize(float s) {
+		this.drawSize = s;
 		return this;
 	}
 
@@ -267,6 +352,10 @@ public class GameOption {
 
 	public int getFps() {
 		return fps;
+	}
+
+	public float getDrawSize() {
+		return drawSize;
 	}
 
 	public RenderingQuality getRenderingQuality() {

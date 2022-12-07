@@ -23,9 +23,8 @@
  */
 package kinugasa.game.system;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashSet;
+import java.util.Set;
 import kinugasa.resource.*;
 
 /**
@@ -34,40 +33,50 @@ import kinugasa.resource.*;
  * @vesion 1.0.0 - 2022/11/16_11:58:36<br>
  * @author Dra211<br>
  */
-public class Item implements Nameable, Cloneable {
+public class Item extends CmdAction implements Nameable, Cloneable {
 
-	private String name;
-	private String desc;
-	private List<ItemAction> fieldAction;
-	private List<ItemAction> battleAction;
-	private AttributeValueSet eqAttr;
 	private StatusValueSet eqStatus;
+	private AttributeValueSet eqAttr;
 	private ItemEqipmentSlot eqipmentSlot;
 	private WeaponMagicType weaponMagicType;
-	private int area;
+	private Set<StatusKey> damageCalcStatusKey = new HashSet<>();
 
-	public Item(String name, String desc, List<ItemAction> fieldAction, List<ItemAction> battleAction, AttributeValueSet eqAttr, StatusValueSet eqStatus, ItemEqipmentSlot eqipmentSlot, WeaponMagicType weaponMagicType, int area) {
-		this.name = name;
-		this.desc = desc;
-		this.fieldAction = fieldAction;
-		this.battleAction = battleAction;
-		this.eqAttr = eqAttr;
+	public Item(String name, String desc) {
+		super(ActionType.ITEM_USE, name, desc);
+	}
+
+	public Item setEqStatus(StatusValueSet eqStatus) {
 		this.eqStatus = eqStatus;
+		return this;
+	}
+
+	public Set<StatusKey> getDamageCalcStatusKey() {
+		return damageCalcStatusKey;
+	}
+
+	public Item setDamageCalcStatusKey(Set<StatusKey> damageCalcStatusKey) {
+		this.damageCalcStatusKey = damageCalcStatusKey;
+		return this;
+	}
+	
+
+	public Item setEqipmentSlot(ItemEqipmentSlot eqipmentSlot) {
 		this.eqipmentSlot = eqipmentSlot;
+		return this;
+	}
+
+	public AttributeValueSet getEqAttr() {
+		return eqAttr;
+	}
+
+	public Item setEqAttr(AttributeValueSet eqAttr) {
+		this.eqAttr = eqAttr;
+		return this;
+	}
+
+	public Item setWeaponMagicType(WeaponMagicType weaponMagicType) {
 		this.weaponMagicType = weaponMagicType;
-		this.area = area;
-	}
-
-	public int getArea() {
-		return area;
-	}
-
-	public List<ItemAction> getFieldAction() {
-		return fieldAction;
-	}
-
-	public List<ItemAction> getBattleAction() {
-		return battleAction;
+		return this;
 	}
 
 	public WeaponMagicType getWeaponMagicType() {
@@ -78,41 +87,12 @@ public class Item implements Nameable, Cloneable {
 		return eqipmentSlot != null;
 	}
 
-	public boolean canUse(GameMode mode) {
-		switch (mode) {
-			case BATTLE:
-				return battleAction != null && !battleAction.isEmpty();
-			case FIELD:
-				return fieldAction != null && !fieldAction.isEmpty();
-			default:
-				throw new AssertionError();
-		}
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public AttributeValueSet getEqAttr() {
-		return eqAttr;
-	}
-
 	public StatusValueSet getEqStatus() {
 		return eqStatus;
 	}
 
 	public ItemEqipmentSlot getEqipmentSlot() {
 		return eqipmentSlot;
-	}
-
-	@Override
-	public String toString() {
-		return "Item{" + "name=" + name + ", eqipmentSlot=" + eqipmentSlot + '}';
 	}
 
 	@Override
