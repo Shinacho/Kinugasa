@@ -292,8 +292,8 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 		}
 		Graphics2D g2 = g.create();
 		g2.setColor(Color.RED);
-		g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.BOLD).setFontSize(12).getFont());
-		g2.drawString(status.getName(), sprite.getX() - getName().length(), sprite.getY() - 4);
+		g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.BOLD).setFontSize(14).getFont());
+		g2.drawString(status.getName(), sprite.getX() - getName().length() * 3, sprite.getY() - 4);
 
 		g2.setColor(SHADOW);
 		g2.fillOval(

@@ -35,6 +35,8 @@ import kinugasa.object.BasicSprite;
 import kinugasa.resource.Disposable;
 
 /**
+ * フィールドマップのメインレイヤーの役割を持ったスプライトです。 このクラスはフィールドマップのレイヤですが、単品で使うこともできます。
+ * その場合、このレイヤーに使用するチップセットとその二次元配列データを用意する必要があります。データのインデックスは、[y][x]である点に注意してください。
  *
  * @vesion 1.0.0 - 2021/11/26_11:08:20<br>
  * @author Dra211<br>
@@ -45,6 +47,10 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 	private MapChip[][] data;
 	private BufferedImage fieldMapImage = null;
 	private float mg;
+
+	public FieldMapLayerSprite(MapChipSet chipSet, int w, int h, MapChip[][] data) {
+		this(chipSet, w, h, 1, data);
+	}
 
 	public FieldMapLayerSprite(MapChipSet chipSet, int w, int h, float mg, MapChip[][] data) {
 		super(0, 0, w, h);

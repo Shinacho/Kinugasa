@@ -132,9 +132,11 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 
 		GradientPaint paint = new GradientPaint(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, inner1, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6, inner2);
 		Paint p = g2.getPaint();
-		g2.clip(new Rectangle(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6));
+		//グラデーションでインナー描画
 		g2.setPaint(paint);
 		g2.fillRect(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6);
+		
+		//ペイントをもとに戻す
 		g2.setPaint(p);
 
 		g2.setColor(cColor);

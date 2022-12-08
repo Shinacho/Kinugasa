@@ -25,15 +25,8 @@ package kinugasa.game.system;
  */
 import java.util.ArrayList;
 import java.util.List;
-import kinugasa.game.system.ActionResultType;
-import kinugasa.game.system.BattleCharacter;
-import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.ParameterType;
-import kinugasa.game.system.StatusDamageCalcType;
-import kinugasa.game.system.TargetType;
 import kinugasa.graphics.Animation;
 import kinugasa.object.AnimationSprite;
-import kinugasa.object.Sprite;
 import kinugasa.util.Random;
 
 /**

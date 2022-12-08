@@ -74,6 +74,7 @@ public class StatusWindows extends BasicSprite {
 			Text t = new Text(text);
 			t.allText();
 			MessageWindow window = new MessageWindow(x, y, w, h, t);
+			window.allText();
 			window.setModel(new SimpleMessageWindowModel().setNextIcon(""));
 			mw.add(window);
 			x += w;

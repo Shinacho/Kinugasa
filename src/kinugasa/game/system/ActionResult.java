@@ -24,7 +24,6 @@ package kinugasa.game.system;
  * THE SOFTWARE.
  */
 import java.util.List;
-import kinugasa.game.system.ActionResultType;
 import kinugasa.object.AnimationSprite;
 import kinugasa.util.FrameTimeCounter;
 
