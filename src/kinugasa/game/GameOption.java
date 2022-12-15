@@ -128,10 +128,10 @@ public class GameOption {
 	}
 
 	public static GameOption fromGUI() {
-		return fromGUI("MyGame");
+		return fromGUI("MyGame", true, true, true);
 	}
 
-	public static GameOption fromGUI(String name) {
+	public static GameOption fromGUI(String name, boolean mouse, boolean keyboard, boolean gamepad) {
 
 		/* Set the Nimbus look and feel */
 		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -161,6 +161,9 @@ public class GameOption {
 
 		/* Create and display the form */
 		final GameLauncher gl = new GameLauncher(name);
+		gl.getMouse().setEnabled(mouse);
+		gl.getKeyboard().setEnabled(keyboard);
+		gl.getGamepad().setEnabled(gamepad);
 		java.awt.EventQueue.invokeLater(() -> {
 			gl.setVisible(true);
 		});

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.event;
+package kinugasa.game.event.fb;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

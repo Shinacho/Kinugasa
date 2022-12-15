@@ -21,36 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import kinugasa.game.ui.FontModel;
-import kinugasa.graphics.ImageUtil;
-import kinugasa.graphics.RenderingQuality;
+package kinugasa.game.system;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/08_16:24:43<br>
+ * @vesion 1.0.0 - 2022/12/11_16:56:25<br>
  * @author Dra211<br>
  */
-public class CreateIcon {
+public class QuestStage {
 
-	public static void main(String[] args) {
-		BufferedImage image = ImageUtil.newImage(48, 48);
-		Graphics2D g = ImageUtil.createGraphics2D(image, RenderingQuality.SPEED);
+	private int value;
 
-		g.setColor(new Color(255, 96, 96));
-		GradientPaint gp = new GradientPaint(0, 0, new Color(255,96,96), 48, 48, new Color(255, 48, 48));
-		g.setPaint(gp);
-		g.setFont(FontModel.DEFAULT.clone().setFontSize(48).setFontStyle(Font.BOLD).getFont());
-		
-		g.drawString("ˆß", 0, 42);
-
-		g.dispose();
-		ImageUtil.save("resource/test/icon.png", image);
+	public QuestStage() {
+		value = 0;
 	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	public void add(int v) {
+		value += v;
+	}
+
+	public boolean is(int a) {
+		return value == a;
+	}
+
+	@Override
+	public String toString() {
+		return "QuestStage{" + "value=" + value + '}';
+	}
+
 }

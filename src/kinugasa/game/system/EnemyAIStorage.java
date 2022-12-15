@@ -37,6 +37,7 @@ public class EnemyAIStorage extends Storage<EnemyAI> {
 	private static final EnemyAIStorage INSTANCE = new EnemyAIStorage();
 
 	public static EnemyAIStorage getInstance() {
+		StandardEnemyAI.values();//staticイニシャライザ起動
 		return INSTANCE;
 	}
 

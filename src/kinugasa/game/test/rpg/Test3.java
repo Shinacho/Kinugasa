@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Dra.
+ * Copyright 2022 Dra.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,33 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.event;
 
-import java.util.function.Supplier;
-import kinugasa.resource.Nameable;
+package kinugasa.game.test.rpg;
 
 /**
  *
- * @vesion 1.0.0 - 2021/11/24_8:13:39<br>
+ * @vesion 1.0.0 - 2022/12/05_14:47:10<br>
  * @author Dra211<br>
  */
-public class CreateEvent<T> extends FrameTimeEvent {
-
-	private Supplier<T> supplier;
-
-	public CreateEvent(long frame, Supplier<T> supplier) {
-		super(frame);
-		this.supplier = supplier;
-	}
-
-	@Override
-	public T exec() {
-		return supplier.get();
-	}
-
-	@Override
-	public String toString() {
-		return "CreateEvent{" + "supplier=" + supplier + '}';
-	}
+public class Test3 {
 
 }

@@ -87,6 +87,9 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 		if (e.hasAttribute("animation")) {
 			event.setAnimation(animationMap.get(e.getAttributes().get("animation").getValue()));
 		}
+		if (e.hasAttribute("animationMoveType")) {
+			event.setAnimationMoveType(e.getAttributes().get("amt").of(AnimationMoveType.class));
+		}
 		return event;
 	}
 

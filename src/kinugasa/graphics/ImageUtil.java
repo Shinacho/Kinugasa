@@ -187,9 +187,12 @@ public final class ImageUtil {
 	 * @throws ContentsIOException ファイルが書き込めない場合に投げられる。<br>
 	 */
 	public static void save(String filePath, BufferedImage image) throws ContentsIOException {
-		File file = new File(filePath);
+		save(new File(filePath), image);
+	}
+
+	public static void save(File f, BufferedImage image) throws ContentsIOException {
 		try {
-			ImageIO.write(image, "PNG", file);
+			ImageIO.write(image, "PNG", f);
 		} catch (IOException ex) {
 			throw new ContentsIOException(ex);
 		}

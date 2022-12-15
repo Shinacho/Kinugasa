@@ -24,6 +24,7 @@
 package kinugasa.game.field4;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import kinugasa.resource.Disposable;
 import kinugasa.resource.Nameable;
@@ -63,6 +64,7 @@ public class FieldEventStorage extends Storage<FieldEvent> implements Nameable, 
 				result.add(e);
 			}
 		}
+		Collections.sort(result);
 		return result;
 	}
 

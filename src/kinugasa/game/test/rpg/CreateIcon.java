@@ -23,52 +23,34 @@
  */
 package kinugasa.game.test.rpg;
 
-import kinugasa.game.GameLogic;
-import kinugasa.game.GameManager;
-import kinugasa.game.GameTimeManager;
-import kinugasa.game.GraphicsContext;
-import kinugasa.game.I18N;
-import kinugasa.game.input.GamePadButton;
-import kinugasa.game.input.InputState;
-import kinugasa.game.input.InputType;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import kinugasa.game.ui.FontModel;
-import kinugasa.game.ui.SimpleTextLabelModel;
-import kinugasa.game.ui.TextLabelSprite;
+import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.RenderingQuality;
+
 /**
  *
- * @vesion 1.0.0 - 2022/11/13_14:58:58<br>
+ * @vesion 1.0.0 - 2022/12/08_16:24:43<br>
  * @author Dra211<br>
  */
-public class OPLogic extends GameLogic {
+public class CreateIcon {
 
-	public OPLogic(GameManager gm) {
-		super(Const.LogicName.OP, gm);
-	}
-	private TextLabelSprite operation;
+	public static void main(String[] args) {
+		BufferedImage image = ImageUtil.newImage(48, 48);
+		Graphics2D g = ImageUtil.createGraphics2D(image, RenderingQuality.SPEED);
 
-	@Override
-	public void load() {
-		String operaionText = "(A)" + I18N.translate("SKIP");
-		operation = new TextLabelSprite(operaionText, new SimpleTextLabelModel(FontModel.DEFAULT.clone()), 420, 450);
-	}
-
-	@Override
-	public void dispose() {
-	}
-
-	@Override
-	public void update(GameTimeManager gtm) {
-		InputState is = InputState.getInstance();
+		g.setColor(new Color(255, 96, 96));
+		GradientPaint gp = new GradientPaint(0, 0, new Color(255,96,96), 48, 48, new Color(255, 48, 48));
+		g.setPaint(gp);
+		g.setFont(FontModel.DEFAULT.clone().setFontSize(48).setFontStyle(Font.BOLD).getFont());
 		
-		if(is.isPressed(GamePadButton.A, InputType.SINGLE)){
-			gls.changeTo(Const.LogicName.E1);
-		}
-	}
+		g.drawString("ˆß", 0, 42);
 
-	@Override
-	public void draw(GraphicsContext g) {
-		new TextLabelSprite("‰¼", new SimpleTextLabelModel(FontModel.DEFAULT.clone()), 43, 43).draw(g);
-		operation.draw(g);
+		g.dispose();
+		ImageUtil.save("resource/test/icon.png", image);
 	}
-
 }

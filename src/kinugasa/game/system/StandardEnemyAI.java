@@ -23,11 +23,17 @@
  */
 package kinugasa.game.system;
 
+import java.awt.Dimension;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import kinugasa.object.EmptySprite;
+import kinugasa.object.KVector;
+import kinugasa.object.Sprite;
 
 /**
  *
@@ -35,37 +41,86 @@ import java.util.Map;
  * @author Dra211<br>
  */
 public enum StandardEnemyAI implements EnemyAI {
-	MAX_POWER {
+	SIMPLE {
 		@Override
 		public CmdAction getNext(BattleCharacter user, List<CmdAction> list) {
-			List<CmdAction> l = new ArrayList<>(list);
-			Collections.sort(l, new Comparator<CmdAction>() {
-				@Override
-				public int compare(CmdAction o1, CmdAction o2) {
-					Map<StatusKey, Integer> o1Map = o1.selfBattleDirectDamage();
-					Map<StatusKey, Integer> o2Map = o2.selfBattleDirectDamage();
-					StatusKey hpKey = StatusKeyStorage.getInstance().get(BattleConfig.StatusKey.hp);
-					int o1Hp = o1Map.containsKey(hpKey) ? o1Map.get(hpKey) : 0;
-					int o2Hp = o2Map.containsKey(hpKey) ? o2Map.get(hpKey) : 0;
-					return o2Hp - o1Hp;
-				}
-			});
-			return l.get(0);
-		}
-	}, RANDOM {
-		@Override
-		public CmdAction getNext(BattleCharacter user, List<CmdAction> list) {
+			//ランダムな行動を返す
 			List<CmdAction> l = new ArrayList<>(list);
 			Collections.shuffle(l);
 			return l.get(0);
 		}
-	}, SORTED {
+
 		@Override
-		public CmdAction getNext(BattleCharacter user, List<CmdAction> list) {
-			List<CmdAction> l = new ArrayList<>(list);
-			Collections.sort(l);
-			return l.get(0);
+		public Point2D.Float targetLocation(BattleCharacter user) {
+			//最も近いPCを返す
+			//ただし足障害物がある場合は障害物をよけるコースで障害物までの位置を返す
+
+			//最も近いPCを検索
+			BattleCharacter pc = BattleTargetSystem.nearPCs(user);
+
+			//現在の障害物リストを取得
+			List<BattleFieldObstacle> oList = GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getObstacle();
+
+			//userからpcまでの直線状に障害物があるか検査
+			EmptySprite s = new EmptySprite(user.getSprite().getCenter(), new Dimension(2, 2));
+			KVector v = new KVector();
+			v.setAngle(user.getCenter(), pc.getCenter());
+			v.setSpeed(1);
+			s.setVector(v);
+
+			while (true) {
+				Point2D.Float next = s.simulateMove();
+				//PCに衝突・・・PCの位置を返す
+				if (pc.getSprite().contains(next)) {
+					return pc.getCenter();
+				}
+				//エリアから出た・・・移動できるところまでの座標を返す
+				//ターゲットがエリア外にいる場合に発生するが、普通発生しない。
+				if (!GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getBattleFieldAllArea().contains(next)) {
+					return s.getCenter();
+				}
+				//障害物接触判定
+				for (int j = 0; j < oList.size(); j++) {
+					BattleFieldObstacle o = oList.get(j);
+					//障害物oに衝突
+					if (o.hit(s)) {
+						//避け角度を設定
+						float d = (float) Point2D.Float.distance(user.getCenter().x, user.getCenter().y, o.getCenterX(), o.getCenterY());
+						//現在の角度＋ーiで、距離dがヒットしなくなる角度を計算する
+						float ang1 = v.getAngle();
+						float ang2 = ang1;
+						boolean sw = true;//＋するか-するか
+						for (int i = 0;; i++) {
+							if (sw) {
+								ang1 = ang2 + i;
+							} else {
+								ang1 = ang2 - i;
+							}
+
+							//+=iした角度を算出
+							KVector kv = new KVector();
+							kv.setAngle(ang1);
+							kv.setSpeed(d);
+
+							//角度を空のスプライトに設定、距離はdで1回動かす
+							EmptySprite es = new EmptySprite(user.getSprite().getX(), user.getSprite().getY(), 2, 2);
+							es.setVector(kv);
+							es.move();
+
+							//ヒットしていなければその座標を返す
+							if (!o.hit(es)) {
+								return es.getCenter();
+							}
+							sw = !sw;
+						}
+					}
+				}
+				//問題ないため移動をコミット
+				s.move();
+			}
+
 		}
+
 	};
 
 	static {

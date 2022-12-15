@@ -23,7 +23,6 @@
  */
 package kinugasa.object;
 
-import java.awt.Dimension;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import kinugasa.game.GraphicsContext;
@@ -102,10 +101,19 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	//移動をシミュレートして、次の移動で移動後の座標を返します。
+	private Point2D.Float simulateMoveLocation;
+
+	public void commitMove() {
+		if (simulateMoveLocation == null) {
+			return;
+		}
+		setLocation(simulateMoveLocation);
+	}
+
 	public Point2D.Float simulateMove() {
 		BasicSprite s = clone();
 		s.move();
-		return s.getLocation();
+		return simulateMoveLocation = s.getLocation();
 	}
 
 	public Point2D.Float simulateMove(KVector v) {
@@ -114,7 +122,7 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 		s.move();
 		return s.getLocation();
 	}
-	
+
 	public Point2D.Float simulateMoveCenterLocation(KVector v) {
 		BasicSprite s = clone();
 		s.setVector(v);

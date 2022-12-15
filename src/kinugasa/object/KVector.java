@@ -97,6 +97,13 @@ public class KVector implements Cloneable {
 				(float) Point2D.distance(0, 0, location.x, location.y));
 	}
 
+	public KVector(Point2D.Float p1, Point2D.Float p2) {
+		KVector v = new KVector();
+		v.setAngle(p1, p2);
+		this.angle = v.getAngle();
+		this.speed = v.getSpeed();
+	}
+
 	public KVector(Point location) {
 		this(new Point2D.Float(location.x, location.y));
 	}

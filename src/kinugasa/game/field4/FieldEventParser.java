@@ -23,8 +23,11 @@
  */
 package kinugasa.game.field4;
 
-import kinugasa.resource.sound.Sound;
-import kinugasa.resource.sound.SoundStorage;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import kinugasa.resource.Storage;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 
@@ -35,9 +38,9 @@ import kinugasa.resource.text.XMLFile;
  */
 public class FieldEventParser {
 
-	private String name;
-	private D2Idx idx;
-	private XMLFile scriptData;
+	private String name;//イベントの名前
+	private D2Idx idx;//イベントの位置
+	private XMLFile scriptData;//スクリプトデータ
 
 	public FieldEventParser(String name, D2Idx idx, XMLFile scriptData) {
 		this.name = name;
@@ -45,40 +48,42 @@ public class FieldEventParser {
 		this.scriptData = scriptData;
 	}
 
-	public FieldEvent parse() {
-		XMLElement e = scriptData.load().getFirst();
-		FieldEvent result = null;
+	public List<FieldEvent> parse() {
+		XMLElement root = scriptData.load().getFirst();
+		List<FieldEvent> result = new ArrayList<>();
 
-		if (e.hasElement("playSound")) {
-			for (XMLElement ee : e.getElement("playSound")) {
-				String mapName = ee.getAttributes().get("mapName").getValue();
-				String soundName = ee.getAttributes().get("soundName").getValue();
-				result = new SoundPlay(SoundStorage.getInstance().get(mapName).get(soundName), scriptData.getName(), idx);
+		//Termのパース
+		Storage<EventTerm> term = new Storage<>();
+		for (XMLElement e : root.getElement("term")) {
+			String name = e.getAttributes().get("name").getValue();
+			EventTermType ett = e.getAttributes().get("ett").of(EventTermType.class);
+			String storageName = e.getAttributes().get("stName").getValue();
+			String tgtName = e.getAttributes().get("tgtName").getValue();
+			String value = e.getAttributes().get("value").getValue();
+			EventTerm t = new EventTerm(name, ett, storageName, tgtName, value);
+			term.add(t);
+		}
+
+		//eventのパース
+		int i = 0;
+		for (XMLElement e : root.getElement("event")) {
+			int pri = e.getAttributes().get("pri").getIntValue();
+			FieldEventType fet = e.getAttributes().get("fet").of(FieldEventType.class);
+			String storageName = e.getAttributes().get("stName").getValue();
+			String tgtName = e.getAttributes().get("tgtName").getValue();
+			String value = e.getAttributes().get("value").getValue();
+			String[] terms = e.getAttributes().get("term").safeSplit(",");
+			List<EventTerm> t = new ArrayList<>();
+			if (terms.length != 0) {
+				if (!Arrays.stream(terms).allMatch(p -> "".equals(p))) {
+					t = term.getAll(terms);
+				}
 			}
+			FieldEvent ee = new FieldEvent(name + i++, pri, idx, t, fet, storageName, tgtName, value);
+			result.add(ee);
 		}
-
 		scriptData.dispose();
-		if (result != null) {
-			return result;
-		}
-
-		throw new InternalError("undefined script " + scriptData.getName());
-
+		Collections.sort(result);
+		return result;
 	}
-}
-
-class SoundPlay extends FieldEvent {
-
-	private Sound sound;
-
-	public SoundPlay(Sound sound, String name, D2Idx location) {
-		super(name, location);
-		this.sound = sound;
-	}
-
-	@Override
-	public void exec(FieldMap m) {
-		sound.load().stopAndPlay();
-	}
-
 }

@@ -22,11 +22,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<kinugasaFieldMapData textStorageName="002" eventStorageName="002" mg="2" encountCounterDefault="6" esName="01">
+<kinugasaFieldMapData textStorageName="002" eventStorageName="002" mg="2" encountCounterDefault="810" esName="01">
 
 	<bgm mapName="BGM" soundName="フィールド５.wav" mode="STOP_AND_PLAY" />
 
-  <before image="resource/field/image/cloud.png" angle="123.1f" speed="0.5f" tp="0.075f" mg="5" />	
+  <before name="CLOUD" image="resource/field/image/cloud.png" angle="123.1f" speed="0.5f" tp="0.075f" mg="5" />	
 	
 
 	
@@ -47,7 +47,9 @@ THE SOFTWARE.
 	<inOutNode name = "ND_03_0014" x="13" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="(A)ショウナン" accepterName="TRUE" outDir="NORTH" se="SE/足音.wav"/>
 	<inOutNode name = "ND_03_0015" x="14" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="(A)ショウナン" accepterName="TRUE" outDir="NORTH" se="SE/足音.wav"/>
 	<inOutNode name = "ND_03_0016" x="15" y="1" tgtMap="ワールドマップ" exitNode="ND_01_0002" tooltip="(A)ショウナン" accepterName="TRUE" outDir="NORTH" se="SE/足音.wav"/>
-	
+
+		<event name="E_02" x="2" y="2" script="resource/field/data/event/01.xml" />
+
 	
 	<outNode name = "ND_03_EXIT" x="8" y="2"/>
 	

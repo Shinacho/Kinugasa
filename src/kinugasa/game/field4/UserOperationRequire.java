@@ -21,14 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package kinugasa.game.test;
+package kinugasa.game.field4;
 
 /**
+ * フィールドマップの状態による、ユーザ操作を要求します。
  *
- * @vesion 1.0.0 - 2022/12/05_14:47:10<br>
+ * @vesion 1.0.0 - 2022/12/12_18:04:27<br>
  * @author Dra211<br>
  */
-public class Test3 {
+public enum UserOperationRequire {
+
+	/**
+	 * イベントを実行しますので、操作を受け付けずに待機してください。FMupdate、 moveを実行し続けてください。
+	 * FieldEventSystemが操作可能になるまで待機してください。
+	 */
+	WAIT_FOR_EVENT,
+	/**
+	 * 戦闘システムの起動が要求されました。戦闘ロジックに切り替えてください。 エンカウント情報はフィールドイベントシステムから取得してください。
+	 */
+	TO_BATTLE,
+	/**
+	 * ゲームオーバーが要求されました。
+	 */
+	GAME_OVER,
+	/**
+	 * マップ変更が要求されました。
+	 */
+	CHANGE_MAP,
+	/**
+	 * メッセージウインドウの表示が要求されました。テキストをFieldEventSystemから取得して表示してください。
+	 */
+	SHOW_MESSAGE,
+	/**
+	 * 通常のフィールドマップ移動を続行してください。
+	 */
+	CONTINUE,
+	/**
+	 * フェードアウトが要求されました。フェードアウトエフェクトを再生して、終了したら次のイベントを実行してください。
+	 */
+	FADE_OUT,
+	/**
+	 * フェードインが要求されました。フェードインエフェクトを再生して、終了したら次のイベントを実行してください。
+	 */
+	FADE_IN,
+	BLACKOUT,
 
 }

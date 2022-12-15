@@ -23,10 +23,12 @@ package kinugasa.game.system;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import kinugasa.graphics.Animation;
 import kinugasa.object.AnimationSprite;
+import kinugasa.object.KVector;
 import kinugasa.util.Random;
 
 /**
@@ -45,6 +47,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 	private float p;
 	private float spread;
 	private Animation animation;
+	private AnimationMoveType animationMoveType = AnimationMoveType.NONE;
 
 	public ActionEvent(TargetType tt, ParameterType pt) {
 		this.targetType = tt;
@@ -87,6 +90,11 @@ public class ActionEvent implements Comparable<ActionEvent> {
 
 	public ActionEvent setAnimation(Animation animation) {
 		this.animation = animation;
+		return this;
+	}
+
+	public ActionEvent setAnimationMoveType(AnimationMoveType animationMoveType) {
+		this.animationMoveType = animationMoveType;
 		return this;
 	}
 
@@ -143,7 +151,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 							float v2 = c.getStatus().getBaseAttrIn().get(tgtName).getValue() * value;
 							c.getStatus().getBaseAttrIn().get(tgtName).set(v2);
 							break;
-						//ダメージ計算式は使えない
+						//ATTR_INではダメージ計算式は使えない
 						case USE_DAMAGE_CALC:
 							throw new GameSystemException("cant user damage calc model " + this);
 						default:
@@ -151,10 +159,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 					}
 					result.addResultTypePerTgt(ActionResultType.SUCCESS);
 					if (hasAnimation()) {
-						Animation ani = getAnimationClone();
-						AnimationSprite a = new AnimationSprite(0, 0, ani.getImage(0).getWidth(), ani.getImage(0).getHeight(), ani);
-						a.setLocationByCenter(c.getSprite().getCenter());
-						result.addAnimation(a);
+						result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
 					}
 					break;
 				case ITEM_LOST:
@@ -171,10 +176,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 							c.getStatus().getBaseStatus().get(tgtName).set(value);
 							result.addResultTypePerTgt(ActionResultType.SUCCESS);
 							if (hasAnimation()) {
-								Animation ani = getAnimationClone();
-								AnimationSprite a = new AnimationSprite(0, 0, ani.getImage(0).getWidth(), ani.getImage(0).getHeight(), ani);
-								a.setLocationByCenter(c.getSprite().getCenter());
-								result.addAnimation(a);
+								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
 							}
 							break;
 						case PERCENT_OF_MAX:
@@ -182,10 +184,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 							c.getStatus().getBaseStatus().get(tgtName).set(v3);
 							result.addResultTypePerTgt(ActionResultType.SUCCESS);
 							if (hasAnimation()) {
-								Animation ani = getAnimationClone();
-								AnimationSprite a = new AnimationSprite(0, 0, ani.getImage(0).getWidth(), ani.getImage(0).getHeight(), ani);
-								a.setLocationByCenter(c.getSprite().getCenter());
-								result.addAnimation(a);
+								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
 							}
 							break;
 						case PERCENT_OF_NOW:
@@ -193,10 +192,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 							c.getStatus().getBaseStatus().get(tgtName).set(v4);
 							result.addResultTypePerTgt(ActionResultType.SUCCESS);
 							if (hasAnimation()) {
-								Animation ani = getAnimationClone();
-								AnimationSprite a = new AnimationSprite(0, 0, ani.getImage(0).getWidth(), ani.getImage(0).getHeight(), ani);
-								a.setLocationByCenter(c.getSprite().getCenter());
-								result.addAnimation(a);
+								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
 							}
 							break;
 						case USE_DAMAGE_CALC:
@@ -228,6 +224,24 @@ public class ActionEvent implements Comparable<ActionEvent> {
 			return null;
 		}
 		return animation.clone();
+	}
+
+	private AnimationSprite createAnimationSprite(Point2D.Float user, Point2D.Float tgt) {
+		Animation a = getAnimationClone();
+		AnimationSprite s = new AnimationSprite(animation);
+		if (animationMoveType == AnimationMoveType.NONE) {
+			s.setLocationByCenter(tgt);
+			return s;
+		}
+		KVector v = new KVector();
+		if (animationMoveType.toString().startsWith("TGT_TO")) {
+			v.setAngle(tgt, user);
+		} else if (animationMoveType.toString().startsWith("USER_TO")) {
+			v.setAngle(user, tgt);
+		}
+		v.setSpeed(animationMoveType.getSpeed());
+		s.setVector(v);
+		return s;
 	}
 
 	public TargetType getTargetType() {

@@ -75,6 +75,10 @@ public class FieldMapTile {
 		return playerCharacter;
 	}
 
+	public boolean hasPC() {
+		return playerCharacter != null;
+	}
+
 	public boolean hasNode() {
 		return node != null;
 	}
@@ -82,8 +86,8 @@ public class FieldMapTile {
 	public boolean hasInNode() {
 		return node != null && node.getMode() == Node.Mode.INOUT;
 	}
-	
-	public MapChipAttribute get0Attr(){
+
+	public MapChipAttribute get0Attr() {
 		return chip.get(0).getAttr();
 	}
 

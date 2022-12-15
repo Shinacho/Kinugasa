@@ -2,7 +2,7 @@
 <!--
 The MIT License
 
-Copyright 2016 Dra.
+Copyright 2015 Dra.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<kinugasaFielEventScript>
-	<!--@ƒCƒxƒ“ƒg‚Ì–¼‘O‚Í‚e‚l‚Ì•û‚É’è‹`‚³‚ê‚Ä‚¢‚é -->
-	<term name="‚»‚Î’cŽqŠŽ" ett="HAS_ITEM_ANY_PC" stName="" tgtName="" value="‚»‚Î’cŽq" />
+
+
+<kinugasaStatus name="åå‰" race="äººé–“" >
+	<spritesheet image="" w="32" h="32" sy="0" wy="32" ey="64" ny="96" tc="24"/>
 	
-
-	<event pri="0" fet="DISABLE_OPERATION" stName="" tgtName="" value="" term=""/>
-	<event pri="1" fet="PLAY_SOUND_DIRECT" stName="" tgtName="" value="resource/se/choice1.wav" term=""/>
-	<event pri="2" fet="MOVE_CAMERA_2" stName="" tgtName="" value="6,6" term=""/>
-	<event pri="3" fet="PLAY_SOUND_DIRECT" stName="" tgtName="" value="resource/se/choice1.wav" term=""/>
-	<event pri="4" fet="FADE_OUT" stName="" tgtName="" value="" term=""/>
-	<event pri="5" fet="RESET_CAMERA" stName="" tgtName="" value="" term=""/>
-	<event pri="6" fet="WAIT" stName="" tgtName="" value="120" term=""/>
-	<event pri="8" fet="FADE_IN" stName="" tgtName="" value="" term=""/>
-	<event pri="9" fet="ENABLE_OPERATION" stName="" tgtName="" value="" term=""/>
-
-
-
-</kinugasaFielEventScript>
+	<status key="HP" max="150" min="0" value="150"/>
+	
+	<attrIn key="CHOP" value="0.5"/>
+	
+	<item name="" />
+	<eqip name="" />
+	<book name="" />
+	
+</kinugasaStatus>

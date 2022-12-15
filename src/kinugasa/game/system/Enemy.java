@@ -61,7 +61,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 	private static String progressBarKey = BattleConfig.StatusKey.hp;
 	private List<BattleCharacter> currentTgt;
 	private Vehicle vehicle;
-	private EnemyAI ai = StandardEnemyAI.RANDOM;
+	private EnemyAI ai = StandardEnemyAI.SIMPLE;
 
 	public static String getProgressBarKey() {
 		return progressBarKey;

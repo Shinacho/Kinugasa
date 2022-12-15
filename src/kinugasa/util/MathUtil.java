@@ -23,6 +23,8 @@
  */
 package kinugasa.util;
 
+import kinugasa.game.system.GameSystem;
+
 /**
  * 数学ユーティリティです.
  * <br>
@@ -55,7 +57,9 @@ public final class MathUtil {
 	private static final float[] cosTable = new float[720];
 
 	public static void init() {
-		System.out.println("kinugasa.util.MathUtil.init()");
+		if (GameSystem.isDebugMode()) {
+			System.out.println("kinugasa.util.MathUtil.init()");
+		}
 		for (int i = 0; i < sinTable.length; i++) {
 			sinTable[i] = (float) Math.sin(Math.toRadians((float) i / 2f));
 		}

@@ -26,6 +26,7 @@ package kinugasa.game.field4;
 import java.awt.Point;
 import java.util.Collections;
 import java.util.stream.Collectors;
+import kinugasa.object.FourDirection;
 import kinugasa.resource.DuplicateNameException;
 import kinugasa.resource.Storage;
 import kinugasa.util.Random;
@@ -406,6 +407,42 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 				idx.x -= VALUE;
 				idx.y -= VALUE;
 				return idx;
+			}
+		});
+		add(new NPCMoveModel("LOOK_AROUND") {
+			@Override
+			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+				return n.getInitialIdx();
+			}
+
+			@Override
+			public int nextMoveFrameTime(NPC n, FieldMap map) {
+				int r = Random.randomAbsInt(4);
+				switch (r) {
+					case 0:
+						n.to(FourDirection.EAST);
+						break;
+					case 1:
+						n.to(FourDirection.WEST);
+						break;
+					case 2:
+						n.to(FourDirection.SOUTH);
+						break;
+					case 3:
+						n.to(FourDirection.NORTH);
+						break;
+				}
+				return 60 + Random.randomAbsInt(541);
+			}
+
+			@Override
+			public D2Idx getMin(NPC n) {
+				return n.getInitialIdx();
+			}
+
+			@Override
+			public D2Idx getMax(NPC n) {
+				return n.getInitialIdx();
 			}
 		});
 	}

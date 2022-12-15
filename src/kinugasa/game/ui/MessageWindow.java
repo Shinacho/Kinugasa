@@ -24,6 +24,10 @@
 package kinugasa.game.ui;
 
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.LoopCall;
+import kinugasa.game.field4.FieldEvent;
+import kinugasa.game.field4.FieldEventStorageStorage;
+import kinugasa.game.system.GameSystemException;
 import kinugasa.object.BasicSprite;
 
 /**
@@ -60,9 +64,32 @@ public class MessageWindow extends BasicSprite {
 		return text;
 	}
 
+	@LoopCall
 	@Override
 	public void update() {
 		text.isReaching();
+
+		if (text.isAllVisible()) {
+			if (text.getEventName() == null && text.getEventStorageName() != null) {
+				throw new GameSystemException("event name or storage name is null : " + text);
+			}
+			if (text.getEventName() != null && text.getEventStorageName() == null) {
+				throw new GameSystemException("event name or storage name is null : " + text);
+			}
+			if (text.getEventName() != null) {
+				//ÉCÉxÉìÉgÇê›íË
+				event = FieldEventStorageStorage.getInstance().get(text.getEventStorageName()).get(text.getEventName());
+			}
+		}
+	}
+	private FieldEvent event;
+
+	public FieldEvent getEvent() {
+		return event;
+	}
+
+	public boolean hasEvent() {
+		return event != null;
 	}
 
 	public void setModel(MessageWindowModel model) {

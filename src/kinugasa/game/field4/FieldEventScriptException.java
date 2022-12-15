@@ -21,29 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test.rpg;
+
+package kinugasa.game.field4;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/12_21:37:50<br>
+ * @vesion 1.0.0 - 2022/12/14_16:45:12<br>
  * @author Dra211<br>
  */
-public class Const {
+public class FieldEventScriptException extends Exception {
 
-	public class LogicName {
+    /**
+     * Creates a new instance of <code>FieldEventScriptException</code> without detail message.
+     */
+    public FieldEventScriptException() {
+    }
 
-		public static final String TITLE_LOGIC = "TITLE_LOGIC";
-		public static final String OP = "OP";
-		public static final String LOAD_GAME = "LOAD_GAME";
-		public static final String MUSIC_ROOM = "MUSIC_ROOM";
-		public static final String GAMEPAD_TEST = "GAMEPAD_TEST";
-		public static final String E1 = "E1";
-		public static final String FIELDMAP = "FIELDMAP";
-	}
 
-	public class Screen {
-
-		public static final int WIDTH = 1440;
-		public static final int HEIGHT = 960;
-	}
+    /**
+     * Constructs an instance of <code>FieldEventScriptException</code> with the specified detail message.
+     * @param msg the detail message.
+     */
+    public FieldEventScriptException(String msg) {
+        super(msg);
+    }
 }

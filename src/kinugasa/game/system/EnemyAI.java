@@ -23,6 +23,7 @@
  */
 package kinugasa.game.system;
 
+import java.awt.geom.Point2D;
 import java.util.List;
 import kinugasa.resource.Nameable;
 
@@ -31,8 +32,9 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/12/02_16:47:42<br>
  * @author Dra211<br>
  */
-public interface EnemyAI extends Nameable{
+public interface EnemyAI extends Nameable {
 
 	CmdAction getNext(BattleCharacter user, List<CmdAction> list);
 
+	Point2D.Float targetLocation(BattleCharacter user);
 }

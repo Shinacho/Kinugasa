@@ -25,6 +25,7 @@ package kinugasa.resource.sound;
 
 import java.util.Arrays;
 import kinugasa.game.GameLog;
+import kinugasa.game.system.GameSystem;
 import kinugasa.resource.ContentsIOException;
 import kinugasa.resource.text.CSVFile;
 import kinugasa.resource.FileNotFoundException;
@@ -74,9 +75,10 @@ public class SoundLoader {
 			}
 		});
 
-		map.printAll(System.out);
-		GameLog.printInfo(map.toString());
-
+		if (GameSystem.isDebugMode()) {
+			map.printAll(System.out);
+			GameLog.printInfo(map.toString());
+		}
 		SoundStorage.getInstance().add(map);
 		return map;
 	}

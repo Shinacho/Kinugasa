@@ -22,21 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<kinugasaFielEventScript>
-	<!--@ƒCƒxƒ“ƒg‚Ì–¼‘O‚Í‚e‚l‚Ì•û‚É’è‹`‚³‚ê‚Ä‚¢‚é -->
-	<term name="‚»‚Î’cŽqŠŽ" ett="HAS_ITEM_ANY_PC" stName="" tgtName="" value="‚»‚Î’cŽq" />
-	
-
-	<event pri="0" fet="DISABLE_OPERATION" stName="" tgtName="" value="" term=""/>
-	<event pri="1" fet="PLAY_SOUND_DIRECT" stName="" tgtName="" value="resource/se/choice1.wav" term=""/>
-	<event pri="2" fet="MOVE_CAMERA_2" stName="" tgtName="" value="6,6" term=""/>
-	<event pri="3" fet="PLAY_SOUND_DIRECT" stName="" tgtName="" value="resource/se/choice1.wav" term=""/>
-	<event pri="4" fet="FADE_OUT" stName="" tgtName="" value="" term=""/>
-	<event pri="5" fet="RESET_CAMERA" stName="" tgtName="" value="" term=""/>
-	<event pri="6" fet="WAIT" stName="" tgtName="" value="120" term=""/>
-	<event pri="8" fet="FADE_IN" stName="" tgtName="" value="" term=""/>
-	<event pri="9" fet="ENABLE_OPERATION" stName="" tgtName="" value="" term=""/>
-
-
-
-</kinugasaFielEventScript>
+<kinugasaNPC>
+	<npc name="N02" initialIdx="6,4" NPCMoveModel="ROUND_1" vehicle="WALK" textID="010" image="resource/char/pipo-charachip007a.png" frame="32" s="0,32,32" w="32,32,32" e="64,32,32" n="96,32,32" initialDir="EAST"/>
+</kinugasaNPC>

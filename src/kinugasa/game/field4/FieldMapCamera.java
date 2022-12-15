@@ -39,7 +39,9 @@ public class FieldMapCamera {
 
 	private FieldMap map;
 	private FieldMapCameraMode mode = FieldMapCameraMode.FOLLOW_TO_CENTER;
-	private final D2Idx playerLocation;
+	private final D2Idx playerLocationBuf;
+	private D2Idx currentCenter;
+	private D2Idx targetIdx;
 
 	public FieldMapCamera(FieldMap map) {
 		this.map = map;
@@ -50,8 +52,27 @@ public class FieldMapCamera {
 		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
 		int x = (int) ((float) (screenW / 2 / chipW));
 		int y = (int) ((float) (screenH / 2 / chipH));
-		playerLocation = new D2Idx(x, y);
-		System.out.println("FM_CAMERA, playerLocation is : " + playerLocation);
+		playerLocationBuf = new D2Idx(x, y);
+		currentCenter = playerLocationBuf.clone();
+		INSTANCE = this;
+	}
+	private static FieldMapCamera INSTANCE;
+
+	static FieldMapCamera getInstance() {
+		return INSTANCE;
+	}
+
+	D2Idx getCurrentCenter() {
+		return currentCenter;
+	}
+
+	void setTargetIdx(D2Idx idx, float speed) {
+		this.targetIdx = idx;
+		//currentからtgtへの角度算出
+		KVector v = new KVector(currentCenter.asPoint2D(), targetIdx.asPoint2D());
+		v.setSpeed(speed);
+		map.setVector(v);
+		mode = FieldMapCameraMode.FREE;
 	}
 
 	public FieldMapCameraMode getMode() {
@@ -74,8 +95,8 @@ public class FieldMapCamera {
 			BasicSprite base = map.getBaseLayer();
 			float fieldMapX = ((-base.getX() + (chipW / 2) - (chipW / 4) + base.getVector().reverse().getLocation().x)) / chipW;
 			float fieldMapY = ((-base.getY() + (chipH / 2) + (chipH / 4) + base.getVector().reverse().getLocation().y)) / chipH;
-			int x = (int) (playerLocation.x + fieldMapX);
-			int y = (int) (playerLocation.y + fieldMapY);
+			int x = (int) (playerLocationBuf.x + fieldMapX);
+			int y = (int) (playerLocationBuf.y + fieldMapY);
 
 			//領域外の判定
 			if (x < 1 || y < 1) {
@@ -103,10 +124,13 @@ public class FieldMapCamera {
 		if (mode != FieldMapCameraMode.FOLLOW_TO_CENTER) {
 			//追従モードじゃない場合は同じベクトルで移動
 			FieldMap.getPlayerCharacter().get(0).move();
+
+		} else {
+			if (FieldMap.getPlayerCharacter().size() > 1) {
+				FieldMap.getPlayerCharacter().subList(1, FieldMap.getPlayerCharacter().size()).forEach(p -> p.move());
+			}
 		}
-		if (FieldMap.getPlayerCharacter().size() > 1) {
-			FieldMap.getPlayerCharacter().subList(1, FieldMap.getPlayerCharacter().size()).forEach(v -> v.move());
-		}
+
 		map.getNpcStorage().forEach(e -> e.move());
 		map.getFrontlLayeres().forEach(e -> e.move());
 		map.getFrontAnimation().forEach(e -> e.move());
@@ -119,15 +143,17 @@ public class FieldMapCamera {
 //			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;
 //			n.setLocation(nx, ny);
 //		}
+		BasicSprite base = map.getBaseLayer();
+		float fieldMapX = ((-base.getX() + (chipW / 2) - (chipW / 4) + base.getVector().reverse().getLocation().x)) / chipW;
+		float fieldMapY = ((-base.getY() + (chipH / 2) + (chipH / 4) + base.getVector().reverse().getLocation().y)) / chipH;
+		int x = (int) (playerLocationBuf.x + fieldMapX);
+		int y = (int) (playerLocationBuf.y + fieldMapY);
+		currentCenter = new D2Idx(x, y);
 		switch (mode) {
 			case FOLLOW_TO_CENTER:
 				//追従モードの場合、キャラクタの座標を再計算する
 				//プレイヤーキャラクター（中心）IDX更新
-				BasicSprite base = map.getBaseLayer();
-				float fieldMapX = ((-base.getX() + (chipW / 2) - (chipW / 4) + base.getVector().reverse().getLocation().x)) / chipW;
-				float fieldMapY = ((-base.getY() + (chipH / 2) + (chipH / 4) + base.getVector().reverse().getLocation().y)) / chipH;
-				int x = (int) (playerLocation.x + fieldMapX);
-				int y = (int) (playerLocation.y + fieldMapY);
+
 				//領域外の判定
 				if (x < 1 || y < 1) {
 					return;
@@ -148,8 +174,21 @@ public class FieldMapCamera {
 				break;
 			case FREE:
 				// フリーモードの場合カメラのみをを動かし、何もしない
+				if (currentCenter.equals(targetIdx)) {
+					//オートムーブ終了
+					targetIdx = null;
+					map.setVector(new KVector(0, 0));
+				}
 				break;
 		}
+	}
+
+	public boolean hasTarget() {
+		return targetIdx != null;
+	}
+
+	D2Idx getTargetIdx() {
+		return targetIdx;
 	}
 
 	public void setSpeed(float speed) {
@@ -274,6 +313,7 @@ public class FieldMapCamera {
 				c.setLocation(nx, ny);
 			}
 		}
+		currentCenter = map.getCurrentIdx();
 
 	}
 

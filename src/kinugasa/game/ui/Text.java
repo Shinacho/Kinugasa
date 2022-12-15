@@ -41,6 +41,7 @@ public class Text implements Nameable {
 	private String nextId;
 	private static int autoId = 0;
 	private static String lineSep = "/";
+	private String eventStorageName, eventName;
 
 	public static void setLineSep(String lineSep) {
 		Text.lineSep = lineSep;
@@ -71,6 +72,22 @@ public class Text implements Nameable {
 		this.text = text;
 		this.tc = tc;
 		this.visibleIdx = visibleIdx;
+	}
+
+	public String getEventStorageName() {
+		return eventStorageName;
+	}
+
+	public void setEventStorageName(String eventStorageName) {
+		this.eventStorageName = eventStorageName;
+	}
+
+	public String getEventName() {
+		return eventName;
+	}
+
+	public void setEventName(String eventName) {
+		this.eventName = eventName;
 	}
 
 	public boolean isReaching() {

@@ -175,7 +175,7 @@ public final class InputState extends InputDeviceState {
 		if (gpState == null) {
 			return isPressed(k, t);
 		}
-		return isPressed(b, t);
+		return isPressed(k, t) || isPressed(b, t);
 	}
 
 	public boolean isPressedOr(InputType type, Keys... keys) {

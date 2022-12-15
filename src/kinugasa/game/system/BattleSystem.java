@@ -651,8 +651,8 @@ public class BattleSystem implements Drawable {
 				//ターゲットがいない場合で、移動アクションを持っている場合は移動開始
 				if (user.getStatus().hasAction(BattleConfig.ActionName.move)) {
 					//移動ターゲットは最も近いPCとする
-					BattleCharacter targetChara = BattleTargetSystem.nearPCs(user);
-					user.setTargetLocation(targetChara.getCenter(), a.getAreaWithEqip(user));
+					Point2D.Float tgtLocation = ((Enemy) user).getAI().targetLocation(user);
+					user.setTargetLocation(tgtLocation, a.getAreaWithEqip(user));
 					//移動距離を初期化
 					remMovePoint = (int) user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue();
 					//移動した！のメッセージ表示
@@ -852,11 +852,7 @@ public class BattleSystem implements Drawable {
 				}
 			}
 			//ターゲットシステムが初期化状態の場合、ターゲット選択必要
-			if (targetSystem.isEmpty()) {
-				needTargetSystem = true;
-			} else {
-				needTargetSystem = false;
-			}
+			needTargetSystem = targetSystem.isEmpty();
 		}
 
 		//ターゲットシステム起動
@@ -1568,6 +1564,7 @@ public class BattleSystem implements Drawable {
 		return enemies;
 	}
 
+	//デバッグ用
 	@Deprecated
 	public Stage getStage() {
 		return stage;

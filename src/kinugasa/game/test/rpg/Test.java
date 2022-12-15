@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test;
+package kinugasa.game.test.rpg;
 
 import java.util.ArrayList;
 import java.util.Arrays;

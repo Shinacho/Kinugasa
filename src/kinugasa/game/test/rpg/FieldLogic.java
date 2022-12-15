@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test;
+package kinugasa.game.test.rpg;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GameLogic;
@@ -31,6 +32,7 @@ import kinugasa.game.GameTimeManager;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.field4.D2Idx;
+import kinugasa.game.field4.FieldEventSystem;
 import kinugasa.game.field4.FieldMap;
 import kinugasa.game.field4.FieldMapCameraMode;
 import kinugasa.game.field4.PlayerCharacterSprite;
@@ -39,6 +41,7 @@ import kinugasa.game.field4.FieldMapTile;
 import kinugasa.game.field4.FourDirAnimation;
 import kinugasa.game.field4.MapChipAttributeStorage;
 import kinugasa.game.field4.MapChipSetStorage;
+import kinugasa.game.field4.UserOperationRequire;
 import kinugasa.game.field4.VehicleStorage;
 import kinugasa.game.input.GamePadButton;
 import kinugasa.game.input.GamePadStick;
@@ -85,11 +88,9 @@ public class FieldLogic extends GameLogic {
 		super("FIELD", gm);
 	}
 
-	private TextLabelSprite operation;
-
 	@Override
 	public void load() {
-		fm = FieldMapStorage.getInstance().get("ズシ");
+		fm = FieldMap.getCurrentInstance() == null ? FieldMapStorage.getInstance().get("ズシ") : FieldMap.getCurrentInstance();
 		c = FieldMap.getPlayerCharacter().get(0);
 		fm.getCamera().updateToCenter();
 		//
@@ -97,10 +98,10 @@ public class FieldLogic extends GameLogic {
 		//
 		screenShot = new SoundBuilder("resource/se/screenShot.wav").builde().load();
 		String operaionText = "(LS) " + I18N.translate("MOVE");
-		operation = new TextLabelSprite(operaionText, new SimpleTextLabelModel(FontModel.DEFAULT.clone()), 420, 450);
 		//
 		ts = fm.getTextStorage();
 		battle = false;
+		stage = 0;
 //		if (!fm.getBgm().isPlaying()) {
 //			SoundStorage.getInstance().get("BGM").stopAll();
 //			fm.getBgm().load().play();
@@ -114,6 +115,7 @@ public class FieldLogic extends GameLogic {
 	int stage = 0;
 	FadeEffect effect;
 	boolean battle = false;
+	boolean waiting = false;
 
 	@Override
 	public void dispose() {
@@ -121,62 +123,93 @@ public class FieldLogic extends GameLogic {
 
 	@Override
 	public void update(GameTimeManager gtm) {
+		FieldEventSystem.getInstance().update();
+		fm.update();
+		if (waiting) {
+			fm.move();
+			if (!FieldEventSystem.getInstance().isExecuting()) {
+				waiting = false;
+			} else {
+				return;
+			}
+		}
+		//FMイベント処理
+		if (FieldEventSystem.getInstance().hasEvent()) {
+			UserOperationRequire r = FieldEventSystem.getInstance().exec();
+			switch (r) {
+				case CONTINUE:
+					break;
+				case WAIT_FOR_EVENT:
+					waiting = true;
+					return;
+				case CHANGE_MAP:
+					fm.changeMap(FieldEventSystem.getInstance().getNode());
+					return;
+				case GAME_OVER:
+					gls.changeTo("GAME_OVER");
+					return;
+				case SHOW_MESSAGE:
+					mw = FieldEventSystem.getInstance().showMessageWindow();
+					break;
+				case TO_BATTLE:
+					GameSystem.getInstance().battleStart(FieldEventSystem.getInstance().getEncountInfo());
+					gls.changeTo("BATTLE");
+					break;
+			}
+		}
+		//ユーザオペレーション可否確認
+		if (!FieldEventSystem.getInstance().isUserOperation()) {
+			return;
+		}
 		InputState is = InputState.getInstance();
-		switch (stage) {
-			case 0:
-				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
-					FieldMapTile t = fm.getCurrentTile();
-					if (t.hasInNode()) {
-						effect = new FadeEffect(gm.getWindow().getInternalBounds().width, gm.getWindow().getInternalBounds().height,
-								new ColorChanger(
-										ColorTransitionModel.valueOf(0),
-										ColorTransitionModel.valueOf(0),
-										ColorTransitionModel.valueOf(0),
-										new FadeCounter(0, +6)
-								));
-						if (mw != null) {
-							mw.setVisible(false);
-						}
-						nextStage();
+		//mw処理
+		if (mw != null) {
+			mw.update();
+		}
+		if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
+			if (mw != null && mw.isVisible()) {
+				if (!mw.isAllVisible()) {
+					mw.allText();
+				} else if (mw.isChoice()) {
+					if (mw.getChoiceOption().hasNext()) {
+						mw.choicesNext();
+					} else {
+						fm.closeMessagWindow();
 					}
-				}
-				//MW処理
-				//会話開始
-				// 会話送り、選択の処理
-				if (fm.canTalk()) {
-					String operaionText = "(A)" + I18N.translate("TALK") + " / " + "(LS)" + I18N.translate("MOVE");
-					operation.setText(operaionText);
+				} else if (mw.hasNext()) {
+					mw.next();
 				} else {
-					String operaionText = "(LS)" + I18N.translate("MOVE");
-					operation.setText(operaionText);
+					fm.closeMessagWindow();
 				}
-				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
-					if (mw != null && mw.isVisible()) {
-						if (!mw.isAllVisible()) {
-							mw.allText();
-						} else if (mw.isChoice()) {
-							if (mw.getChoiceOption().hasNext()) {
-								mw.choicesNext();
-							} else {
-								fm.closeMessagWindow();
-							}
-						} else if (mw.hasNext()) {
-							mw.next();
-						} else {
-							fm.closeMessagWindow();
-						}
-					} else if (fm.canTalk()) {
-						mw = fm.talk();
-					}
+			} else if (fm.canTalk()) {
+				mw = fm.talk();
+			}
+			FieldMapTile t = fm.getCurrentTile();
+			if (t.hasInNode()) {
+				effect = new FadeEffect(gm.getWindow().getInternalBounds().width, gm.getWindow().getInternalBounds().height,
+						new ColorChanger(
+								ColorTransitionModel.valueOf(0),
+								ColorTransitionModel.valueOf(0),
+								ColorTransitionModel.valueOf(0),
+								new FadeCounter(0, +6)
+						));
+				if (mw != null) {
+					mw.setVisible(false);
 				}
-				if (mw != null && mw.isChoice()) {
-					if (is.isPressed(GamePadButton.POV_DOWN, InputType.SINGLE)) {
-						mw.nextSelect();
-					}
-					if (is.isPressed(GamePadButton.POV_UP, InputType.SINGLE)) {
-						mw.prevSelect();
-					}
-				}
+				nextStage();
+			}
+		}
+		if (mw != null && mw.isChoice()) {
+			if (is.isPressed(GamePadButton.POV_DOWN, InputType.SINGLE)) {
+				mw.nextSelect();
+			}
+			if (is.isPressed(GamePadButton.POV_UP, InputType.SINGLE)) {
+				mw.prevSelect();
+			}
+		}
+		//マップ切替処理
+		switch (stage) {
+			case 0://操作可能
 				//テスト用カメラ処理
 				if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
 					fm.getCamera().setMode(FieldMapCameraMode.FOLLOW_TO_CENTER);
@@ -196,8 +229,6 @@ public class FieldLogic extends GameLogic {
 					fm.setVector(new KVector(is.getGamePadState().sticks.LEFT.getLocation(speed)));
 					fm.move();
 				}
-				//NPC/MW更新
-				fm.update();
 				//プレイヤーキャラクターの向き更新
 				if (mw == null || !mw.isVisible()) {
 					if (fm.getCamera().getMode() == FieldMapCameraMode.FOLLOW_TO_CENTER) {
@@ -238,9 +269,9 @@ public class FieldLogic extends GameLogic {
 							));
 					nextStage();
 				}
+
 				break;
 			case 1:
-				effect.update();
 				if (effect.isEnded()) {
 					effect = new FadeEffect(gm.getWindow().getInternalBounds().width, gm.getWindow().getInternalBounds().height,
 							new ColorChanger(
@@ -259,9 +290,6 @@ public class FieldLogic extends GameLogic {
 					GameSystem.getInstance().battleStart(fm.createEncountInfo());
 					gls.changeTo("BATTLE");
 				}
-				nextStage();
-				break;
-			case 3:
 				effect = new FadeEffect(gm.getWindow().getInternalBounds().width, gm.getWindow().getInternalBounds().height,
 						new ColorChanger(
 								ColorTransitionModel.valueOf(0),
@@ -271,8 +299,7 @@ public class FieldLogic extends GameLogic {
 						));
 				nextStage();
 				break;
-			case 4:
-				effect.update();
+			case 3:
 				if (effect.isEnded()) {
 					nextStage();
 				}
@@ -283,9 +310,8 @@ public class FieldLogic extends GameLogic {
 	}
 
 	private void nextStage() {
-		System.out.println("MAIN STAGE : " + stage + " -> " + (stage + 1));
 		stage++;
-		if (stage == 5) {
+		if (stage == 4) {
 			stage = 0;
 		}
 	}
@@ -296,10 +322,10 @@ public class FieldLogic extends GameLogic {
 		if (mw != null) {
 			mw.draw(gc);
 		}
-		operation.draw(gc);
 		if (effect != null) {
 			effect.draw(gc);
 		}
+		FieldEventSystem.getInstance().draw(gc);
 	}
 
 }

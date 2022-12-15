@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
+import kinugasa.game.LoopCall;
 import kinugasa.game.system.EncountInfo;
 import kinugasa.game.system.EnemySetStorageStorage;
 import kinugasa.game.system.GameSystemException;
@@ -126,6 +127,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 	private LinkedList<D2Idx> prevLocationList = new LinkedList<>();
 	private String enemyStorageName;
+	//
 
 	public D2Idx getCurrentIdx() {
 		return currentIdx;
@@ -211,6 +213,20 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		EncountInfo ei = new EncountInfo(bgm, EnemySetStorageStorage.getInstance().get(enemyStorageName), getCurrentTile().get0Attr());
 		return ei;
 	}
+	private static FieldMap currentInstance;
+
+	public static FieldMap getCurrentInstance() {
+		return currentInstance;
+	}
+
+	void setBeforeLayerSprites(List<BeforeLayerSprite> beforeLayerSprites) {
+		this.beforeLayerSprites = beforeLayerSprites;
+	}
+	private float mg;
+
+	float getMg() {
+		return mg;
+	}
 
 	public FieldMap build() throws FieldMapDataException {
 		data.load();
@@ -247,7 +263,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 
 		//FM描画倍率を取得
-		float mg = 1;
+		mg = 1;
 		if (root.hasAttribute("mg")) {
 			mg = root.getAttributes().get("mg").getFloatValue();
 		}
@@ -358,14 +374,20 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		//ビフォアレイヤー
 		{
 			for (XMLElement e : root.getElement("before")) {
-				String imageName = e.getAttributes().get("image").getValue();
-				float angle = e.getAttributes().contains("angle") ? e.getAttributes().get("angle").getFloatValue() : 0;
-				float speed = e.getAttributes().contains("speed") ? e.getAttributes().get("speed").getFloatValue() : 0;
-				float tp = e.getAttributes().contains("tp") ? e.getAttributes().get("tp").getFloatValue() : 1;
-				float bmg = e.getAttributes().contains("mg") ? e.getAttributes().get("mg").getFloatValue() : 1;
+				String name = e.getAttributes().get("name").getValue();
+				if (BeforeLayerSpriteStorage.getInstance().contains(name)) {
+					beforeLayerSprites.add(BeforeLayerSpriteStorage.getInstance().get(name));
+				} else {
 
-				BeforeLayerSprite bls = new BeforeLayerSprite(ImageUtil.load(imageName), tp, bmg, new KVector(angle, speed));
-				beforeLayerSprites.add(bls);
+					String imageName = e.getAttributes().get("image").getValue();
+					float angle = e.getAttributes().contains("angle") ? e.getAttributes().get("angle").getFloatValue() : 0;
+					float speed = e.getAttributes().contains("speed") ? e.getAttributes().get("speed").getFloatValue() : 0;
+					float tp = e.getAttributes().contains("tp") ? e.getAttributes().get("tp").getFloatValue() : 1;
+					float bmg = e.getAttributes().contains("mg") ? e.getAttributes().get("mg").getFloatValue() : 1;
+
+					BeforeLayerSprite bls = new BeforeLayerSprite(name, ImageUtil.load(imageName), tp, bmg, new KVector(angle, speed));
+					beforeLayerSprites.add(bls);
+				}
 			}
 
 		}
@@ -397,7 +419,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				int y = e.getAttributes().get("y").getIntValue();
 				String name = e.getAttributes().get("name").getValue();
 				String script = e.getAttributes().get("script").getValue();
-				fieldEventStorage.add(new FieldEventParser(name, new D2Idx(x, y), new XMLFile(script)).parse());
+				fieldEventStorage.addAll(new FieldEventParser(name, new D2Idx(x, y), new XMLFile(script)).parse());
 			}
 		}
 
@@ -482,7 +504,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		mapNameModel.reset();
 
-		return this;
+		return currentInstance = this;
 	}
 	private Sound bgm;
 
@@ -507,10 +529,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			backgroundLayerSprite.draw(g);
 		}
 		backlLayeres.forEach(e -> e.draw(g));
-		if (debugMode) {
-			backlLayeres.forEach(e -> e.debugDrawPC(g, playerCharacter.subList(1, playerCharacter.size()), currentIdx, playerDirIdx(), getBaseLayer().getLocation(), chipW, chipH));
-			backlLayeres.forEach(e -> e.debugDrawNPC(g, npcStorage.asList(), getBaseLayer().getLocation(), chipW, chipH));
-		}
 
 		if (playerCharacter != null) {
 			List<PlayerCharacterSprite> list = npcStorage.asList().stream().map(c -> c).collect(Collectors.toList());
@@ -523,8 +541,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 		frontlLayeres.forEach(e -> e.draw(g));
 		if (debugMode) {
-			frontlLayeres.forEach(e -> e.debugDrawPC(g, playerCharacter.subList(1, playerCharacter.size()), currentIdx, playerDirIdx(), getBaseLayer().getLocation(), chipW, chipH));
-			frontlLayeres.forEach(e -> e.debugDrawNPC(g, npcStorage.asList(), getBaseLayer().getLocation(), chipW, chipH));
+			DebugLayerSprite.debugDrawPC(g, playerCharacter, currentIdx, currentIdx, getBaseLayer().getLocation(), chipW, chipH);
+			DebugLayerSprite.debugDrawNPC(g, npcStorage.asList(), getBaseLayer().getLocation(), chipW, chipH);
+			DebugLayerSprite.debugDrawCamera(g, getBaseLayer().getLocation(), chipW, chipH);
 		}
 		frontAnimation.forEach(e -> e.draw(g));
 		beforeLayerSprites.forEach(e -> e.draw(g));
@@ -534,21 +553,21 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (tooltipModel != null) {
 			tooltipModel.drawTooltip(this, g);
 		}
-		if (debugMode) {
-			float centerX = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 2;
-			float centerY = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 2;
-			Point2D.Float p1 = new Point2D.Float(centerX - chipW, centerY - chipH);
-			Point2D.Float p2 = new Point2D.Float(centerX + chipW, centerY + chipH);
-			Point2D.Float p3 = new Point2D.Float(centerX - chipW, centerY + chipH);
-			Point2D.Float p4 = new Point2D.Float(centerX + chipW, centerY - chipH);
-			Graphics2D g2 = g.create();
-			g2.setColor(Color.RED);
-			g2.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
-			g2.drawLine((int) p3.x, (int) p3.y, (int) p4.x, (int) p4.y);
-			g2.dispose();
-//			System.out.print("IDX : " + currentIdx);
-//			System.out.println("  FM_LOCATION : " + getBaseLayer().getLocation());
-		}
+//		if (debugMode) {
+//			float centerX = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 2;
+//			float centerY = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 2;
+//			Point2D.Float p1 = new Point2D.Float(centerX - chipW, centerY - chipH);
+//			Point2D.Float p2 = new Point2D.Float(centerX + chipW, centerY + chipH);
+//			Point2D.Float p3 = new Point2D.Float(centerX - chipW, centerY + chipH);
+//			Point2D.Float p4 = new Point2D.Float(centerX + chipW, centerY - chipH);
+//			Graphics2D g2 = g.create();
+//			g2.setColor(Color.RED);
+//			g2.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
+//			g2.drawLine((int) p3.x, (int) p3.y, (int) p4.x, (int) p4.y);
+//			g2.dispose();
+////			System.out.print("IDX : " + currentIdx);
+////			System.out.println("  FM_LOCATION : " + getBaseLayer().getLocation());
+//		}
 	}
 
 	@Override
@@ -562,7 +581,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		frontlLayeres.clear();
 		frontAnimation.clear();
 		beforeLayerSprites.clear();
-		bgm.dispose();
 		npcStorage.clear();
 		if (fieldEventStorage != null) {
 			fieldEventStorage.dispose();
@@ -606,6 +624,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		this.encountCounter = encountCounter;
 	}
 
+	@LoopCall
 	public void move() {
 		D2Idx prevIdx = currentIdx.clone();
 		camera.move();
@@ -717,7 +736,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (!idx.equals(currentIdx)) {
 			//イベントの実行
 			List<FieldEvent> e = fieldEventStorage.get(idx);
-			e.forEach(v -> v.exec(this));
+			Collections.sort(e);
+			//自動発動イベントの設定
+			FieldEventSystem.getInstance().setEvent(new LinkedList<>(e));
 		}
 		this.currentIdx = idx.clone();
 
@@ -848,6 +869,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			mw = null;
 		}
 		npcStorage.forEach(c -> c.canMove());
+	}
+
+	void setMW(MessageWindow mw) {
+		this.mw = mw;
 	}
 
 	/**

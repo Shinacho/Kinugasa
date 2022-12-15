@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2021 Dra.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -16,44 +16,38 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANYE CLAIM, DAMAGES OR OTHER
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.object;
+package kinugasa.game.event.fb;
 
-import java.awt.Dimension;
-import java.awt.geom.Point2D;
-import kinugasa.game.GraphicsContext;
+import java.util.function.Supplier;
+import kinugasa.resource.Nameable;
 
 /**
- * 空のスプライトです。何も表示しません。座標計算などで使うダミーのスプライトの実装です。
  *
- * @vesion 1.0.0 - 2022/11/25_20:18:38<br>
+ * @vesion 1.0.0 - 2021/11/24_8:13:39<br>
  * @author Dra211<br>
  */
-public class EmptySprite extends BasicSprite {
+public class CreateEvent<T> extends FrameTimeEvent {
 
-	public EmptySprite(Point2D.Float p, Dimension d) {
-		this(p.x, p.y, d.width, d.height);
-	}
+	private Supplier<T> supplier;
 
-	public EmptySprite(int x, int y, int w, int h) {
-		super(x, y, w, h);
-	}
-
-	public EmptySprite(float x, float y, float w, float h) {
-		super(x, y, w, h);
+	public CreateEvent(long frame, Supplier<T> supplier) {
+		super(frame);
+		this.supplier = supplier;
 	}
 
 	@Override
-	public void draw(GraphicsContext g) {
+	public T exec() {
+		return supplier.get();
 	}
 
 	@Override
-	public EmptySprite clone() {
-		return (EmptySprite) super.clone();
+	public String toString() {
+		return "CreateEvent{" + "supplier=" + supplier + '}';
 	}
 
 }

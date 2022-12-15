@@ -16,44 +16,60 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANYE CLAIM, DAMAGES OR OTHER
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.object;
+package kinugasa.game.system;
 
-import java.awt.Dimension;
-import java.awt.geom.Point2D;
-import kinugasa.game.GraphicsContext;
+import java.util.HashMap;
+import java.util.Map;
+import kinugasa.resource.Nameable;
 
 /**
- * 空のスプライトです。何も表示しません。座標計算などで使うダミーのスプライトの実装です。
  *
- * @vesion 1.0.0 - 2022/11/25_20:18:38<br>
+ * @vesion 1.0.0 - 2022/12/11_16:56:15<br>
  * @author Dra211<br>
  */
-public class EmptySprite extends BasicSprite {
+public class QuestLine implements Nameable {
 
-	public EmptySprite(Point2D.Float p, Dimension d) {
-		this(p.x, p.y, d.width, d.height);
+	private String name;
+	private Map<Integer, String> desc;
+	private FlagStorage flag;
+	private QuestStage stage;
+
+	public QuestLine(String name) {
+		this.name = name;
+		this.desc = new HashMap<>();
+		flag = new FlagStorage(name);
+		this.stage = new QuestStage();
 	}
 
-	public EmptySprite(int x, int y, int w, int h) {
-		super(x, y, w, h);
+	public Map<Integer, String> getDesc() {
+		return desc;
 	}
 
-	public EmptySprite(float x, float y, float w, float h) {
-		super(x, y, w, h);
+	public void setDesc(Map<Integer, String> desc) {
+		this.desc = desc;
+	}
+
+	public QuestStage getStage() {
+		return stage;
+	}
+
+	public FlagStorage getFlag() {
+		return flag;
 	}
 
 	@Override
-	public void draw(GraphicsContext g) {
+	public String getName() {
+		return name;
 	}
 
 	@Override
-	public EmptySprite clone() {
-		return (EmptySprite) super.clone();
+	public String toString() {
+		return "QuestLine{" + "name=" + name + ", stage=" + stage + '}';
 	}
 
 }

@@ -21,45 +21,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
+package kinugasa.game.test.rpg;
 
-import kinugasa.resource.Nameable;
+import java.util.ArrayList;
+import java.util.List;
+import kinugasa.game.GameManager;
+import kinugasa.game.GameOption;
+import kinugasa.game.GameTimeManager;
+import kinugasa.game.GraphicsContext;
+import kinugasa.game.LockUtil;
+import static kinugasa.game.system.BattleConfig.messageWindowY;
+import kinugasa.game.ui.MessageWindow;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/12_20:19:10<br>
+ * @vesion 1.0.0 - 2022/11/22_5:31:16<br>
  * @author Dra211<br>
  */
-public class Flag implements Nameable {
+public class Test2 extends GameManager {
 
-	private String name;
-	private FlagStatus status;
-
-	public Flag(String name) {
-		this.name = name;
+	public static void main(String[] args) {
+	
+		LockUtil.deleteAllLockFile();
+		new Test2().gameStart();
 	}
 
-	public Flag(String name, FlagStatus status, int value) {
-		this.name = name;
-		this.status = status;
+	Test2() {
+		super(GameOption.defaultOption());
+	}
+	MessageWindow mw;
+
+	@Override
+	protected void startUp() {
+		float w = GameOption.getInstance().getWindowSize().width - 6;
+		float h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
+		mw = new MessageWindow(3, messageWindowY, w, h);
+		mw.setText("‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O");
+		mw.allText();
 	}
 
 	@Override
-	public String getName() {
-		return name;
-	}
-
-	public FlagStatus get() {
-		return status;
-	}
-
-	public void set(FlagStatus status) {
-		this.status = status;
+	protected void dispose() {
 	}
 
 	@Override
-	public String toString() {
-		return name + "=" + status;
+	protected void update(GameTimeManager gtm) {
+		mw.update();
+	}
+
+	@Override
+	protected void draw(GraphicsContext gc) {
+		mw.draw(gc);
 	}
 
 }

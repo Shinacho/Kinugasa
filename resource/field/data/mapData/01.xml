@@ -22,14 +22,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<kinugasaFieldMapData textStorageName="001" eventStorageName="001" mg="2" encountCounterDefault="16" esName="01">
+<kinugasaFieldMapData textStorageName="001" eventStorageName="001" mg="2" encountCounterDefault="810" esName="01">
 
     <background image="resource/field/image/seaChip16.png" frame="36" w="16" h="16" />
 
-    <before image="resource/field/image/cloud.png" angle="123.1f" speed="0.5f" tp="0.075f" mg="5" />	
+    <before name="CLOUD" image="resource/field/image/cloud.png" angle="123.1f" speed="0.5f" tp="0.075f" mg="5" />	
 	
-	<animation image="resource/chipTest1.png" x="0" y="1" frame="12" w="16" h="16"/>
-	<animation image="resource/chipTest1.png" x="1" y="0" frame="12" w="16" h="16"/>
+	<animation image="resource/chipTest1.png" x="0" y="1" frame="12" w="32" h="32"/>
+	<animation image="resource/chipTest1.png" x="1" y="0" frame="12" w="32" h="32"/>
 	
 
 	<inOutNode name="ND_01_0002" x="21" y="21" tgtMap="ズシ" exitNode="ND_03_EXIT" tooltip="(A)ズシ" accepterName="TRUE" outDir="SOUTH" se="SE/足音.wav"/>

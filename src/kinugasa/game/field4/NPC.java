@@ -25,11 +25,19 @@ package kinugasa.game.field4;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import kinugasa.game.ui.Text;
 import kinugasa.game.ui.TextStorage;
+import kinugasa.graphics.Animation;
+import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.FourDirection;
+import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.text.XMLElement;
+import kinugasa.resource.text.XMLFile;
 import kinugasa.util.FrameTimeCounter;
+import kinugasa.util.TimeCounter;
 
 /**
  *
@@ -86,8 +94,27 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 		return targetIdx;
 	}
 
+	public void setTargetIdx(D2Idx targetIdx) {
+		this.targetIdx = targetIdx;
+		outerTarget = true;
+		stage = 3;
+		moveStop = false;
+	}
+
 	public FrameTimeCounter getNextMoveFrameTime() {
 		return nextMoveFrameTime;
+	}
+
+	public boolean isMoveStop() {
+		return moveStop;
+	}
+
+	public boolean isOuterTarget() {
+		return outerTarget;
+	}
+
+	public void setMoveStop(boolean moveStop) {
+		this.moveStop = moveStop;
 	}
 
 	@Override
@@ -96,12 +123,22 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 	}
 	private int stage = 0;
 	private int lx, ly;
+	private boolean outerTarget = false;
+	private boolean moveStop = false;
 
 	@Override
 	public void update() {
 		super.update();
+		if (moveStop) {
+			return;
+		}
 		switch (stage) {
 			case 0:
+				if (outerTarget) {
+					nextMoveFrameTime = new FrameTimeCounter(0);
+					nextStage();
+					break;
+				}
 				//èâä˙âª
 				nextMoveFrameTime = new FrameTimeCounter(moveModel.nextMoveFrameTime(this, map));
 				targetIdx = moveModel.getNextTargetIdx(this, map);
@@ -176,6 +213,7 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 				float nx = map.getBaseLayer().getX() + getCurrentIdx().x * map.getChipW();
 				float ny = map.getBaseLayer().getY() + getCurrentIdx().y * map.getChipH();
 				setLocation(nx, ny);
+				moveStop = outerTarget;
 				nextStage();
 				break;
 			case 4:
@@ -225,4 +263,67 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 		return "NPC{" + "targetIdx=" + targetIdx + ", currentIdx=" + currentIdx + ", nextMoveFrameTime=" + nextMoveFrameTime + ", name=" + name + ", vehicle=" + vehicle + ", textId=" + textId + ", stage=" + stage + ", lx=" + lx + ", ly=" + ly + '}';
 	}
 
+	public static NPC readFromXML(String filePath) {
+		//	<npc name="N02" initialIdx="6,4" NPCMoveModel="ROUND_1" vehicle="WALK"
+		//textID="010" image="resource/char/pipo-charachip007a.png"
+		//frame="32" s="0,32,32" w="32,32,32" e="64,32,32" n="96,32,32" initialDir="EAST"/>
+
+		XMLFile file = new XMLFile(filePath);
+		if (!file.exists()) {
+			throw new FileNotFoundException(file.getFile());
+		}
+
+		XMLElement root = file.load().getFirst();
+
+		XMLElement e = root.getElement("npc").get(0);
+
+		String name = e.getAttributes().get("name").getValue();
+		String initialIdxStr = e.getAttributes().get("initialIdx").getValue();
+		D2Idx idx = new D2Idx(Integer.parseInt(initialIdxStr.split(",")[0]), Integer.parseInt(initialIdxStr.split(",")[1]));
+
+		NPCMoveModel moveModel = NPCMoveModelStorage.getInstance().get(e.getAttributes().get("NPCMoveModel").getValue());
+		Vehicle v = VehicleStorage.getInstance().get(e.getAttributes().get("vehicle").getValue());
+		String textID = e.getAttributes().get("textID").getValue();
+		int frame = e.getAttributes().get("frame").getIntValue();
+		BufferedImage image = ImageUtil.load(e.getAttributes().get("image").getValue());
+		int sx, sw, sh;
+		int ex, ew, eh;
+		int wx, ww, wh;
+		int nx, nw, nh;
+		String[] cs = e.getAttributes().get("s").getValue().split(",");
+		String[] ce = e.getAttributes().get("e").getValue().split(",");
+		String[] cw = e.getAttributes().get("w").getValue().split(",");
+		String[] cn = e.getAttributes().get("n").getValue().split(",");
+		sx = Integer.parseInt(cs[0]);
+		sw = Integer.parseInt(cs[1]);
+		sh = Integer.parseInt(cs[2]);
+		ex = Integer.parseInt(ce[0]);
+		ew = Integer.parseInt(ce[1]);
+		eh = Integer.parseInt(ce[2]);
+		wx = Integer.parseInt(cw[0]);
+		ww = Integer.parseInt(cw[1]);
+		wh = Integer.parseInt(cw[2]);
+		nx = Integer.parseInt(cn[0]);
+		nw = Integer.parseInt(cn[1]);
+		nh = Integer.parseInt(cn[2]);
+		Animation south = new Animation(new FrameTimeCounter(frame), new SpriteSheet(image).rows(sx, sw, sh).images());
+		Animation west = new Animation(new FrameTimeCounter(frame), new SpriteSheet(image).rows(wx, ww, wh).images());
+		Animation east = new Animation(new FrameTimeCounter(frame), new SpriteSheet(image).rows(ex, ew, eh).images());
+		Animation north = new Animation(new FrameTimeCounter(frame), new SpriteSheet(image).rows(nx, nw, nh).images());
+		FourDirAnimation anime = new FourDirAnimation(south, west, east, north);
+		FourDirection initialDir = FourDirection.valueOf(e.getAttributes().get("initialDir").getValue());
+		int w = sw;
+		int h = sh;
+		FieldMapLayerSprite baseLayer = FieldMap.getCurrentInstance().getBaseLayer();
+		int chipW = (int) (baseLayer.getChip(0, 0).getImage().getWidth() * FieldMap.getCurrentInstance().getMg());
+		int chipH = (int) (baseLayer.getChip(0, 0).getImage().getHeight() * FieldMap.getCurrentInstance().getMg());
+		float x = baseLayer.getX() + idx.x * chipW;
+		float y = baseLayer.getY() + idx.y * chipH;
+		NPC npc = new NPC(name, idx, moveModel, v,
+				FieldMap.getCurrentInstance(), textID, x, y, w, h, idx, anime, initialDir);
+		FieldMap.getCurrentInstance().getNpcStorage().add(npc);
+
+		file.dispose();
+		return npc;
+	}
 }

@@ -23,6 +23,7 @@
  */
 package kinugasa.game.field4;
 
+import java.awt.geom.Point2D;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kinugasa.resource.Nameable;
@@ -50,6 +51,10 @@ public class D2Idx implements Nameable, Cloneable {
 	@Override
 	public final String getName() {
 		return x + "," + y;
+	}
+
+	public Point2D.Float asPoint2D() {
+		return new Point2D.Float(x, y);
 	}
 
 	@Override

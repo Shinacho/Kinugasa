@@ -24,10 +24,20 @@
 package kinugasa.game.system;
 
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import kinugasa.game.field4.FieldMap;
+import kinugasa.game.field4.FourDirAnimation;
 import kinugasa.game.field4.PlayerCharacterSprite;
 import kinugasa.game.field4.VehicleStorage;
+import kinugasa.graphics.Animation;
+import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.FourDirection;
 import kinugasa.object.KVector;
+import kinugasa.resource.FileNotFoundException;
+import kinugasa.resource.text.XMLElement;
+import kinugasa.resource.text.XMLFile;
+import kinugasa.util.FrameTimeCounter;
 
 /**
  *
@@ -152,4 +162,72 @@ public class PlayerCharacter implements BattleCharacter {
 		return true;
 	}
 
+	public static PlayerCharacter readFromXML(String fileName) {
+		XMLFile f = new XMLFile(fileName);
+		if (!f.exists()) {
+			throw new FileNotFoundException(f.getFile());
+		}
+
+		XMLElement root = f.load().getFirst();
+
+		String name = root.getAttributes().get("name").getValue();
+		Race race = RaceStorage.getInstance().get(root.getAttributes().get("race").getValue());
+
+		XMLElement e = root.getElement("spritesheet").get(0);
+		BufferedImage base = ImageUtil.load(e.getAttributes().get("image").getValue());
+		int tc = e.getAttributes().get("tc").getIntValue();
+
+		int w = e.getAttributes().get("w").getIntValue();
+		int h = e.getAttributes().get("h").getIntValue();
+
+		int ny = e.getAttributes().get("ny").getIntValue();
+		int sy = e.getAttributes().get("sy").getIntValue();
+		int ey = e.getAttributes().get("ey").getIntValue();
+		int wy = e.getAttributes().get("wy").getIntValue();
+
+		Animation na = new Animation(new FrameTimeCounter(tc), new SpriteSheet(base).rows(ny, w, h).images());
+		Animation sa = new Animation(new FrameTimeCounter(tc), new SpriteSheet(base).rows(sy, w, h).images());
+		Animation ea = new Animation(new FrameTimeCounter(tc), new SpriteSheet(base).rows(ey, w, h).images());
+		Animation wa = new Animation(new FrameTimeCounter(tc), new SpriteSheet(base).rows(wy, w, h).images());
+		FourDirAnimation ani = new FourDirAnimation(sa, wa, ea, na);
+		Point2D.Float pcl = FieldMap.getPlayerCharacter().get(0).getLocation();
+		PlayerCharacterSprite sprite = new PlayerCharacterSprite(pcl.x, pcl.y, w, h, FieldMap.getCurrentInstance().getCurrentIdx(), ani, FourDirection.EAST);
+
+		int order = FieldMap.getPlayerCharacter().size();
+
+		Status status = new Status(name, race);
+		for (XMLElement ee : root.getElement("status")) {
+			String key = ee.getAttributes().get("key").getValue();
+			int max = ee.getAttributes().get("max").getIntValue();
+			int min = ee.getAttributes().get("min").getIntValue();
+			int value = ee.getAttributes().get("value").getIntValue();
+			status.getBaseStatus().get(key).setMax(max);
+			status.getBaseStatus().get(key).setMin(min);
+			status.getBaseStatus().get(key).setValue(value);
+		}
+		for (XMLElement ee : root.getElement("attrIn")) {
+			String key = ee.getAttributes().get("key").getValue();
+			float value = ee.getAttributes().get("value").getFloatValue();
+			status.getBaseAttrIn().get(key).set(value);
+		}
+		for (XMLElement ee : root.getElement("item")) {
+			Item i = ItemStorage.getInstance().get(ee.getAttributes().get("name").getValue());
+			status.getItemBag().add(i);
+		}
+		for (XMLElement ee : root.getElement("eqip")) {
+			Item i = ItemStorage.getInstance().get(ee.getAttributes().get("name").getValue());
+			status.getItemBag().add(i);
+			status.eqip(i);
+		}
+		for (XMLElement ee : root.getElement("book")) {
+			Book b = BookStorage.getInstance().get(ee.getAttributes().get("name").getValue());
+			status.getBookBag().add(b);
+		}
+
+		f.dispose();
+
+		PlayerCharacter pc = new PlayerCharacter(status, sprite);
+		pc.setOrder(order);
+		return pc;
+	}
 }

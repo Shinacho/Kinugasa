@@ -113,7 +113,10 @@ public class BattleFieldSystem implements XMLFileSupport {
 		}
 		//è·äQï®ÇÃê›íË
 		obstacle.clear();
-		int max = obstacleMax.get(attr);
+		int max = obstacleMax.containsKey(attr) ? obstacleMax.get(attr) : 0;
+		if (max <= 0) {
+			return;
+		}
 		max = Random.randomAbsInt(max);
 		String[] name = obstacleName.get(attr);
 		obstacle.addAll(BattleFieldObstacleStorage.getInstance().createN(max, name));

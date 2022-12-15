@@ -96,7 +96,7 @@ public class PlayerCharacterSprite extends AnimationSprite {
 		return targetIdx;
 	}
 
-	public void setTargetIdx(D2Idx targetIdx) {
+	void setTargetIdx(D2Idx targetIdx) {
 		this.targetIdx = targetIdx;
 	}
 

@@ -424,23 +424,25 @@ public class Status {
 
 		for (ConditionValue v : condition) {
 			for (EffectMaster e : v.getEffects()) {
-				if (r.contains(e.getTargetName())) {
-					StatusValue tgtVal = r.get(e.getTargetName());
-					if (Random.percent(e.getP())) {
-						switch (e.getSetType()) {
-							case ADD_PERCENT_OF_MAX:
-								float val = tgtVal.getValue();
-								val += (e.getValue() * tgtVal.getKey().getMax());
-								tgtVal.set(val);
-								break;
-							case ADD_VALUE:
-								tgtVal.add(e.getValue());
-								break;
-							case TO:
-								tgtVal.set(e.getValue());
-								break;
-							default:
-								throw new AssertionError();
+				if (e.getTargetType() == EffectTargetType.STATUS) {
+					if (r.contains(e.getTargetName())) {
+						StatusValue tgtVal = r.get(e.getTargetName());
+						if (Random.percent(e.getP())) {
+							switch (e.getSetType()) {
+								case ADD_PERCENT_OF_MAX:
+									float val = tgtVal.getValue();
+									val += (e.getValue() * tgtVal.getKey().getMax());
+									tgtVal.set(val);
+									break;
+								case ADD_VALUE:
+									tgtVal.add(e.getValue());
+									break;
+								case TO:
+									tgtVal.set(e.getValue());
+									break;
+								default:
+									throw new AssertionError();
+							}
 						}
 					}
 				}
@@ -579,5 +581,6 @@ public class Status {
 
 		return result;
 	}
+	
 
 }

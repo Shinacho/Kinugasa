@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package kinugasa.game.ui;
 
 import javax.swing.JOptionPane;
+import kinugasa.game.GameOption;
 
 /**
  *
@@ -33,7 +33,12 @@ import javax.swing.JOptionPane;
  */
 public class Dialog {
 
-	public static DialogOption yesOrNo(String title, DialogIcon icon, String msg){
+	public static DialogOption info(String msg) {
+		int r = JOptionPane.showConfirmDialog(null, msg, GameOption.getInstance().getTitle(), JOptionPane.DEFAULT_OPTION);
+		return DialogOption.of(r);
+	}
+
+	public static DialogOption yesOrNo(String title, DialogIcon icon, String msg) {
 		int r = JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.YES_NO_OPTION, icon.getOption());
 		return DialogOption.of(r);
 	}

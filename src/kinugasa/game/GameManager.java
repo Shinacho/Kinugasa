@@ -78,6 +78,7 @@ public abstract class GameManager {
 	private RenderingHints renderingHints;
 	private int fps;
 	private float drawSize = 0;
+	private Runnable painter;
 
 	protected GameManager(GameOption option) throws IllegalStateException {
 		this.option = option;
@@ -170,6 +171,51 @@ public abstract class GameManager {
 			GamePadConnection.init();
 		}
 
+		painter = option.getDrawSize() == 1
+				? new Runnable() {
+			@Override
+			public void run() {
+				g = (Graphics2D) graphicsBuffer.getDrawGraphics();
+				g.setClip(clippingRectangle);
+				g.clearRect(clippingRectangle.x, clippingRectangle.y,
+						clippingRectangle.width, clippingRectangle.height);
+				g.setRenderingHints(renderingHints);
+				draw(new GraphicsContext(g));
+				g.dispose();
+				if (graphicsBuffer.contentsRestored()) {
+					repaint();
+				}
+				graphicsBuffer.show();
+				if (graphicsBuffer.contentsLost()) {
+					repaint();
+				}
+			}
+		}
+				: new Runnable() {
+			@Override
+			public void run() {
+				g = ImageUtil.createGraphics2D(image, RenderingQuality.NOT_USE);
+				g.setBackground(window.getBackground());
+				g.setClip(clippingRectangle);
+				g.clearRect(clippingRectangle.x, clippingRectangle.y,
+						clippingRectangle.width, clippingRectangle.height);
+				g.setRenderingHints(renderingHints);
+				draw(new GraphicsContext(g));
+				g.dispose();
+				Graphics2D g2 = (Graphics2D) graphicsBuffer.getDrawGraphics();
+				g2.drawImage(image, 0, 0, image.getWidth() * 2, image.getHeight() * 2, null);
+				g2.dispose();
+
+				if (graphicsBuffer.contentsRestored()) {
+					repaint();
+				}
+				graphicsBuffer.show();
+				if (graphicsBuffer.contentsLost()) {
+					repaint();
+				}
+			}
+		};
+
 		GameSystem.setDebugMode(option.isDebugMode());
 
 	}
@@ -201,7 +247,7 @@ public abstract class GameManager {
 				System.exit(1);
 			}
 			window.setVisible(true);
-			window.createBufferStrategy(drawSize == 1 ? 1 : 2);
+			window.createBufferStrategy(drawSize == 1 ? 2 : 1);
 			graphicsBuffer = window.getBufferStrategy();
 			clippingRectangle = window.getInternalBounds();
 			started = true;
@@ -271,41 +317,6 @@ public abstract class GameManager {
 	 */
 	@LoopCall
 	final void repaint() {
-		if (drawSize == 1) {
-			g = (Graphics2D) graphicsBuffer.getDrawGraphics();
-			g.setClip(clippingRectangle);
-			g.clearRect(clippingRectangle.x, clippingRectangle.y,
-					clippingRectangle.width, clippingRectangle.height);
-			g.setRenderingHints(renderingHints);
-			draw(new GraphicsContext(g));
-			g.dispose();
-			if (graphicsBuffer.contentsRestored()) {
-				repaint();
-			}
-			graphicsBuffer.show();
-			if (graphicsBuffer.contentsLost()) {
-				repaint();
-			}
-		} else {
-			g = ImageUtil.createGraphics2D(image, RenderingQuality.NOT_USE);
-			g.setBackground(window.getBackground());
-			g.setClip(clippingRectangle);
-			g.clearRect(clippingRectangle.x, clippingRectangle.y,
-					clippingRectangle.width, clippingRectangle.height);
-			g.setRenderingHints(renderingHints);
-			draw(new GraphicsContext(g));
-			g.dispose();
-			Graphics2D g2 = (Graphics2D) graphicsBuffer.getDrawGraphics();
-			g2.drawImage(image, 0, 0, image.getWidth() * 2, image.getHeight() * 2, null);
-			g2.dispose();
-
-			if (graphicsBuffer.contentsRestored()) {
-				repaint();
-			}
-			graphicsBuffer.show();
-			if (graphicsBuffer.contentsLost()) {
-				repaint();
-			}
-		}
+		painter.run();
 	}
 }

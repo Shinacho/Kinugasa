@@ -38,6 +38,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import kinugasa.game.system.GameSystem;
 
 /**
  * アルゴリズムなどの命名可能なオブジェクトを格納するマップです.
@@ -348,6 +349,9 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 * @param stream 書き出すストリームを指定します。<br>
 	 */
 	public void printAll(PrintStream stream) {
+		if (!GameSystem.isDebugMode()) {
+			return;
+		}
 		stream.println("> Storage : class=[" + getClass() + "]");
 		for (T obj : map.values()) {
 			stream.println("> Storage : printAll : " + obj.getName());
@@ -362,6 +366,9 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 * @param valueOut trueを指定すると値も出力します。<br>
 	 */
 	public void printAll(PrintStream stream, boolean valueOut) {
+		if (!GameSystem.isDebugMode()) {
+			return;
+		}
 		stream.println("> Storage : class=[" + getClass() + "]");
 		for (T obj : map.values()) {
 			stream.print("> Storage : printAll : " + obj.getName());
@@ -419,6 +426,14 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 
 	public Stream<T> stream() {
 		return asList().stream();
+	}
+
+	public List<T> getAll(String... v) {
+		List<T> result = new ArrayList<>();
+		for (String s : v) {
+			result.add(get(s));
+		}
+		return result;
 	}
 
 	@Override

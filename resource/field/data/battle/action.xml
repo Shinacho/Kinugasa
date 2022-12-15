@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<KinugasattleActionMaster>
+<KinugasActionMaster>
 
 
 	<!-- ƒoƒgƒ‹ƒAƒNƒVƒ‡ƒ“ðŒ‚Ì’è‹` -->
@@ -86,13 +86,13 @@ THE SOFTWARE.
 
 	<!--’ÊíUŒ‚ -->
 	<attack name="ŒU¾Ø‚è" desc="•Ší‚É‚æ‚é’ÊíUŒ‚" term="Œ•‘•”õ" area="8" waitTime="60" sound="’ÊíUŒ‚" >
-		<battleEvent tt="ONE_ENEMY" pt="STATUS" tgtName="HP" attr="CHOP" value="-10" p="0.90" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" />
+		<battleEvent tt="ONE_ENEMY" pt="STATUS" tgtName="HP" attr="CHOP" value="-10" p="0.90" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" amt="NONE"/>
 	</attack>
 	<attack name="‚±‚Ô‚µ" desc="‰£‚è‚©‚©‚é" term="˜r–¢‘•”õ" area="24" waitTime="48" sound="’ÊíUŒ‚" >
-		<battleEvent tt="ONE_ENEMY" pt="STATUS" tgtName="HP" attr="IMPACT" value="-5" p="0.75" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" />
+		<battleEvent tt="ONE_ENEMY" pt="STATUS" tgtName="HP" attr="IMPACT" value="-5" p="0.75" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" amt="NONE"/>
 	</attack>
 	<attack name="Î‚±‚ë“Š±" desc="Î‚±‚ë‚ð“Š‚°‚é" term="Î‚±‚ë•Û—L" area="128" waitTime="60" sound="’ÊíUŒ‚" >
-		<battleEvent tt="ONE_ENEMY" pt="STATUS" tgtName="HP" attr="IMPACT" value="-5" p="0.5" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" />
+		<battleEvent tt="ONE_ENEMY" pt="STATUS" tgtName="HP" attr="IMPACT" value="-5" p="0.5" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" amt="NONE"/>
 		<battleEvent tt="ONE_ENEMY" pt="ITEM_LOST" tgtName="Î‚±‚ë" value="1" p="1"/>
 	</attack>
 		
@@ -106,12 +106,12 @@ THE SOFTWARE.
 
 	<!-- –‚–@Ží—Þ -->
 	<magic name="ƒtƒ@ƒCƒAƒ{ƒ‹ƒg" desc="‰Š–‚–@‚ÌŠî‘b“I‚ÈpŽ®‚¾" area="128" term="‰Î‰Š‚Ì‘•Û—L" waitTime="70" sound="’ÊíUŒ‚">
-		<battleEvent tt="ONE_ENEMY" pt="STATUS" tgtName="HP" value="-30" attr="FLAME" p="1" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" />
+		<battleEvent tt="ONE_ENEMY" pt="STATUS" tgtName="HP" value="-30" attr="FLAME" p="1" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" amt="USER_TO_TGT_8"/>
 		<battleEvent tt="SELF" pt="STATUS" tgtName="MP" value="-3" attr="NONE" p="1" dct="DIRECT" />
 	</magic>
 
 	<magic name="“V’n—‹–Â" desc="‹CÛ–‚–@‚É•ª—Þ‚³‚ê‚é‚à‚Ì‚ÅAâ‘å‚È—‹‚ðŒÄ‚Ñ‹N‚±‚·" spellTime="2" area="256" term="‰Î‰Š‚Ì‘•Û—L" waitTime="90" sound="’ÊíUŒ‚">
-		<battleEvent tt="TEAM_ENEMY" pt="STATUS" tgtName="HP" value="-60" attr="THNDER" p="1" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" />
+		<battleEvent tt="TEAM_ENEMY" pt="STATUS" tgtName="HP" value="-60" attr="THNDER" p="1" dct="USE_DAMAGE_CALC" animation="’ÊíUŒ‚" amt="USER_TO_TGT_8" />
 		<battleEvent tt="SELF" pt="STATUS" tgtName="MP" value="-15" attr="NONE" p="1" dct="DIRECT"/>
 	</magic>
 
@@ -148,4 +148,4 @@ THE SOFTWARE.
 		<battleEvent tt="SELF" pt="NONE" p="1"/>
 	</other>
 	
-</KinugasattleActionMaster>
+</KinugasActionMaster>

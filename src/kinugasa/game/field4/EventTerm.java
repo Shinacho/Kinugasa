@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Dra.
+ * Copyright 2022 Dra.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,30 +21,61 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.event;
+package kinugasa.game.field4;
 
-import java.util.function.Supplier;
+import java.util.List;
+import kinugasa.game.system.Status;
 import kinugasa.resource.Nameable;
 
 /**
  *
- * @vesion 1.0.0 - 2021/11/24_8:13:39<br>
+ * @vesion 1.0.0 - 2022/12/11_17:09:47<br>
  * @author Dra211<br>
  */
-public abstract class FrameTimeEvent<T>{
+public class EventTerm implements Nameable {
 
-	private long frame;
+	private String name;
+	private EventTermType termType;
+	private String storageName;
+	private String targetName;
+	private String value;
 
-	public FrameTimeEvent(long frame) {
-		this.frame = frame;
+	public EventTerm(String name, EventTermType termType, String storageName, String targetName, String value) {
+		this.name = name;
+		this.termType = termType;
+		this.storageName = storageName;
+		this.targetName = targetName;
+		this.value = value;
 	}
 
-	public long getFrame() {
-		return frame;
+	public boolean canDoThis(List<Status> party, FieldEvent e) {
+		return termType.canExec(party, this);
 	}
-	
-	public abstract T exec();
 
-	
-	
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	public EventTermType getTermType() {
+		return termType;
+	}
+
+	public String getStorageName() {
+		return storageName;
+	}
+
+	public String getTargetName() {
+		return targetName;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	@Override
+	public String toString() {
+		return "EventTerm{" + "name=" + name + ", termType=" + termType + ", storageName=" + storageName + ", targetName=" + targetName + ", value=" + value + '}';
+	}
+
 }

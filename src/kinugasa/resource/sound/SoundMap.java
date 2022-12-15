@@ -1,25 +1,19 @@
 package kinugasa.resource.sound;
 
-import static kinugasa.game.input.GamePadConnection.free;
 import kinugasa.resource.DynamicStorage;
-import kinugasa.resource.Input;
 import kinugasa.resource.InputStatus;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.text.FileIOException;
 
-
-
 /**
  * サウンドの一時的な保存領域を提供します.
  * <br>
- * このストレージの実装はロジックのプリセットによって、
- * 効果音やBGMを再生するためのキーが指定されている場合があります。<br>
+ * このストレージの実装はロジックのプリセットによって、 効果音やBGMを再生するためのキーが指定されている場合があります。<br>
  *
  * 作成されたサウンドマップは自動的にサウンドストレージに追加されます。<br>
  * サウンドマップの名前を指定しない場合は、適当な名前が割り当てられます。<br>
  * <br>
- * サウンドの具象クラスの型に注意してください。1つのマップに含まれる、サウンドの型は
- * 統一することを推奨します。<br>
+ * サウンドの具象クラスの型に注意してください。1つのマップに含まれる、サウンドの型は 統一することを推奨します。<br>
  * <br>
  * Freeableの実装は、マップに追加されているすべてのサウンドに行われます。<br>
  * <br>
@@ -29,10 +23,13 @@ import kinugasa.resource.text.FileIOException;
  */
 public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 
-	/** このサウンドマップの名前です.
-	 * たとえば、「町A」や「ダンジョン5」のようなわかりやすい名前を付けることができます。 */
+	/**
+	 * このサウンドマップの名前です. たとえば、「町A」や「ダンジョン5」のようなわかりやすい名前を付けることができます。
+	 */
 	private String name;
-	/** サウンドマップのインスタンス数のカウンタです. */
+	/**
+	 * サウンドマップのインスタンス数のカウンタです.
+	 */
 	private static int counter;
 
 	/**
@@ -62,7 +59,6 @@ public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 		this.name = name;
 	}
 
-
 	/**
 	 * サウンドビルダから、キャッシュサウンドを作成し、このマップに追加します.
 	 *
@@ -86,12 +82,10 @@ public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 	 */
 	@Override
 	public void dispose() {
-		free();
-		SoundStorage.getInstance().remove(this);
+		forEach(p -> p.dispose());
 	}
 
-	
-	public void stopAll(){
+	public void stopAll() {
 		for (Sound sound : this) {
 			sound.stop();
 		}
@@ -99,14 +93,16 @@ public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 
 	@Override
 	public SoundMap load() throws FileIOException {
-		forEach(s->s.load());
+		forEach(s -> s.load());
 		return this;
 	}
 
 	@Override
 	public InputStatus getStatus() {
-		for(Sound s : this ){
-			if( s.getStatus() == InputStatus.LOADED)return InputStatus.LOADED;
+		for (Sound s : this) {
+			if (s.getStatus() == InputStatus.LOADED) {
+				return InputStatus.LOADED;
+			}
 		}
 		return InputStatus.NOT_LOADED;
 	}

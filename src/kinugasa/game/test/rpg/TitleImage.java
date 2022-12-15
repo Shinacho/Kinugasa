@@ -21,45 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
+package kinugasa.game.test.rpg;
 
-import kinugasa.resource.Nameable;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.RenderingQuality;
+import kinugasa.util.Versions;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/12_20:19:10<br>
+ * @vesion 1.0.0 - 2022/11/12_21:21:47<br>
  * @author Dra211<br>
  */
-public class Flag implements Nameable {
+public class TitleImage {
 
-	private String name;
-	private FlagStatus status;
+	public static void main(String[] args) {
+		BufferedImage image = ImageUtil.newImage(720, 480);
+		Graphics2D g = ImageUtil.createGraphics2D(image, RenderingQuality.QUALITY);
+		g.setColor(new Color(0, 32, 66));
+		g.fillRect(0, 0, 720, 480);
+		g.setColor(Color.WHITE);
+		Font f = new Font(Font.SERIF, Font.PLAIN, 40);
+		g.setFont(f);
+		g.drawString("Fuzzy World", 24, 70);
+		
+		f = new Font(Font.SERIF, Font.PLAIN, 32);
+		g.setFont(f);
+		g.drawString("-ñÇñ@égÇ¢Ç∆ïséÄÇÃîÈèp-", 38, 120);
+		//16,85,240,85
+		g.drawLine(16, 85, 240, 85);
 
-	public Flag(String name) {
-		this.name = name;
+		f = new Font(Font.SERIF, Font.PLAIN, 16);
+		g.setFont(f);
+		g.setColor(Color.LIGHT_GRAY);
+		g.drawString(Versions.COPY_RIGHT, 24, 470);
+
+		g.dispose();
+		ImageUtil.save("resource/test/title.png", image);
 	}
-
-	public Flag(String name, FlagStatus status, int value) {
-		this.name = name;
-		this.status = status;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public FlagStatus get() {
-		return status;
-	}
-
-	public void set(FlagStatus status) {
-		this.status = status;
-	}
-
-	@Override
-	public String toString() {
-		return name + "=" + status;
-	}
-
 }

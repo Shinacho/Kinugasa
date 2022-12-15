@@ -21,41 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import kinugasa.graphics.ImageUtil;
-import kinugasa.graphics.RenderingQuality;
-import kinugasa.util.Versions;
+package kinugasa.game.system;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/12_21:21:47<br>
+ * @vesion 1.0.0 - 2022/12/11_21:45:01<br>
  * @author Dra211<br>
  */
-public class TitleImage {
+public enum AnimationMoveType {
+	NONE(0),
+	USER_TO_TGT_4(4),
+	TGT_TO_USER_4(4),
+	USER_TO_TGT_8(8),
+	TGT_TO_USER_8(8),
+	USER_TO_TGT_12(12),
+	TGT_TO_USER_12(12),
+	USER_TO_TGT_16(16),
+	TGT_TO_USER_16(16),
+	USER_TO_TGT_20(20),
+	TGT_TO_USER_20(20),
+	USER_TO_TGT_24(24),
+	TGT_TO_USER_24(24),
+	USER_TO_TGT_28(28),
+	TGT_TO_USER_28(28),
+	USER_TO_TGT_32(32),
+	TGT_TO_USER_32(32),;
+	private float speed;
 
-	public static void main(String[] args) {
-		BufferedImage image = ImageUtil.newImage(720, 480);
-		Graphics2D g = ImageUtil.createGraphics2D(image, RenderingQuality.QUALITY);
-		g.setColor(new Color(0, 32, 66));
-		g.fillRect(0, 0, 720, 480);
-		g.setColor(Color.WHITE);
-		Font f = new Font(Font.SERIF, Font.PLAIN, 40);
-		g.setFont(f);
-		g.drawString("Fuzzy World", 24, 70);
-		//16,85,240,85
-		g.drawLine(16, 85, 240, 85);
-
-		f = new Font(Font.SERIF, Font.PLAIN, 16);
-		g.setFont(f);
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(Versions.COPY_RIGHT, 24, 470);
-
-		g.dispose();
-		ImageUtil.save("resource/test/title.png", image);
+	private AnimationMoveType(float speed) {
+		this.speed = speed;
 	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
 }

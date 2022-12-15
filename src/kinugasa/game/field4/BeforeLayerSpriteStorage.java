@@ -16,44 +16,29 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANYE CLAIM, DAMAGES OR OTHER
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.object;
+package kinugasa.game.field4;
 
-import java.awt.Dimension;
-import java.awt.geom.Point2D;
-import kinugasa.game.GraphicsContext;
+import kinugasa.resource.Storage;
 
 /**
- * 空のスプライトです。何も表示しません。座標計算などで使うダミーのスプライトの実装です。
  *
- * @vesion 1.0.0 - 2022/11/25_20:18:38<br>
+ * @vesion 1.0.0 - 2022/12/14_14:20:10<br>
  * @author Dra211<br>
  */
-public class EmptySprite extends BasicSprite {
+public class BeforeLayerSpriteStorage extends Storage<BeforeLayerSprite> {
 
-	public EmptySprite(Point2D.Float p, Dimension d) {
-		this(p.x, p.y, d.width, d.height);
+	private static final BeforeLayerSpriteStorage INSTANCE = new BeforeLayerSpriteStorage();
+
+	private BeforeLayerSpriteStorage() {
 	}
 
-	public EmptySprite(int x, int y, int w, int h) {
-		super(x, y, w, h);
-	}
-
-	public EmptySprite(float x, float y, float w, float h) {
-		super(x, y, w, h);
-	}
-
-	@Override
-	public void draw(GraphicsContext g) {
-	}
-
-	@Override
-	public EmptySprite clone() {
-		return (EmptySprite) super.clone();
+	public static BeforeLayerSpriteStorage getInstance() {
+		return INSTANCE;
 	}
 
 }

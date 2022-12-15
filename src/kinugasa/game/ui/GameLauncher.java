@@ -26,12 +26,15 @@ package kinugasa.game.ui;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Locale;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import kinugasa.game.GameOption;
 import kinugasa.game.LockUtil;
+import kinugasa.game.input.Keys;
 import kinugasa.game.system.GameSystem;
 import kinugasa.graphics.RenderingQuality;
 
@@ -132,6 +135,11 @@ public class GameLauncher extends javax.swing.JFrame {
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+        jButton1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButton1KeyPressed(evt);
             }
         });
 
@@ -324,6 +332,12 @@ public class GameLauncher extends javax.swing.JFrame {
 		logFileActionPerformed(null);
     }//GEN-LAST:event_logFileMouseClicked
 
+    private void jButton1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton1KeyPressed
+		if (evt.getKeyCode() == Keys.ENTER.getKeyCode()) {
+			jButton1.doClick();
+		}
+    }//GEN-LAST:event_jButton1KeyPressed
+
 	/**
 	 * @param args the command line arguments
 	 */
@@ -380,6 +394,14 @@ public class GameLauncher extends javax.swing.JFrame {
 		center.y -= getHeight() / 2;
 		setLocation(center);
 
+		//ウインドウサイズの初期選択
+		GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		if (e.getMaximumWindowBounds().width > 1440 && e.getMaximumWindowBounds().height > 960) {
+			windowSize.setSelectedIndex(1);
+		}
+
+		jButton1.grabFocus();
+
 		//ウインドウタイトルの設定
 		setTitle(name);
 	}
@@ -390,7 +412,19 @@ public class GameLauncher extends javax.swing.JFrame {
 		return option;
 	}
 
-	public GameLauncher setMaouse(boolean f) {
+	public JCheckBox getMouse() {
+		return mouse;
+	}
+
+	public JCheckBox getKeyboard() {
+		return keyboard;
+	}
+
+	public JCheckBox getGamepad() {
+		return gamepad;
+	}
+
+	public GameLauncher setMouse(boolean f) {
 		mouse.setSelected(f);
 		return this;
 	}

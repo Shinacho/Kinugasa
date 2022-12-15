@@ -63,25 +63,21 @@ public final class GameLog {
 
 	public static void print(Level lv, String message) {
 		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, message);
-		System.out.println(DATE_FORMAT.format(Calendar.getInstance().getTime()) + " " + message);
 	}
 
 	public static void print(Level lv, Throwable t) {
 		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, t.toString());
-		System.out.println(DATE_FORMAT.format(Calendar.getInstance().getTime()) + " " + t);
 	}
 
 	public static void printIfUsing(Level lv, String message) {
 		if (using) {
 			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, message);
-			System.out.println(DATE_FORMAT.format(Calendar.getInstance().getTime()) + " " + message);
 		}
 	}
 
 	public static void printIfUsing(Level lv, Throwable t) {
 		if (using) {
 			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, t.toString());
-			System.out.println(DATE_FORMAT.format(Calendar.getInstance().getTime()) + " " + t);
 		}
 	}
 
