@@ -52,6 +52,8 @@ public enum UserOperationRequire {
 	 * メッセージウインドウの表示が要求されました。テキストをFieldEventSystemから取得して表示してください。
 	 */
 	SHOW_MESSAGE,
+	CLOSE_MESSAGE,
+	GET_ITEAM,
 	/**
 	 * 通常のフィールドマップ移動を続行してください。
 	 */

@@ -51,9 +51,11 @@ public class FieldMapResourceUtil {
 	 *
 	 * @param input
 	 * @param output
+	 * @param w イメージのタイル数。
+	 * @param h イメージのタイル数。
 	 * @throws ContentsIOException
 	 */
-	public static void platinumCsvType1ToKGCsv(File input, File output)
+	public static void platinumCsvType1ToKGCsv(File input, File output, int h, int w)
 			throws ContentsIOException {
 		if (!input.exists() | output.exists()) {
 			throw new ContentsIOException("File is Already Exists");
@@ -63,8 +65,8 @@ public class FieldMapResourceUtil {
 		CSVFile writer = new CSVFile(output);
 
 		String[] convertTable = new String[65536];
-		for (int i = 0, k = 0; i < 256; i++) {
-			for (int j = 0; j < 256; j++) {
+		for (int i = 0, k = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
 				String y = Integer.toString(i);
 				while (y.length() != 3) {
 					y = "0" + y;
@@ -79,6 +81,13 @@ public class FieldMapResourceUtil {
 		List<String[]> inputData = reader.load().getData();
 
 		for (String[] inputLine : inputData) {
+			if (inputLine.length <= 0) {
+				continue;
+			}
+			if (inputLine[0].equals("")) {
+				writer.add(new String[]{"-"});
+				continue;
+			}
 			String[] outputLine = new String[inputLine.length];
 			for (int j = 0; j < inputLine.length; j++) {
 				outputLine[j] = convertTable[Integer.parseInt(inputLine[j])];

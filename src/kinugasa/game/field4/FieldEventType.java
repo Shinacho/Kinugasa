@@ -23,15 +23,19 @@
  */
 package kinugasa.game.field4;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GameOption;
 import kinugasa.game.system.EncountInfo;
 import kinugasa.game.system.EnemySetStorage;
 import kinugasa.game.system.EnemySetStorageStorage;
+import kinugasa.game.system.Flag;
 import kinugasa.game.system.FlagStatus;
+import kinugasa.game.system.FlagStorage;
 import kinugasa.game.system.FlagStorageStorage;
 import kinugasa.game.system.GameSystem;
+import kinugasa.game.system.ItemStorage;
 import kinugasa.game.system.PlayerCharacter;
 import kinugasa.game.system.QuestLineStorage;
 import kinugasa.game.system.Status;
@@ -54,6 +58,17 @@ import kinugasa.util.FrameTimeCounter;
  * @author Dra211<br>
  */
 public enum FieldEventType {
+	//調べられるイベント
+	/**
+	 * 通常、イベントはそのマスを踏むと自動起動しますが、
+	 * スクリプトにこのイベントが入っていると、フィールド上で「調べる」コマンドを実行してから、イベントが起動します。
+	 */
+	MANUAL_EVENT {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			return UserOperationRequire.CONTINUE;
+		}
+	},
 	//サウンドマップ名、サウンド名
 	STOP_ALL_SOUND {
 		@Override
@@ -73,6 +88,22 @@ public enum FieldEventType {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			new SoundBuilder(e.getValue()).builde().load().stopAndPlay();
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	//アイテム名
+	GET_ITEM {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			FieldEventSystem.getInstance().setItem(e.getValue());
+			return UserOperationRequire.GET_ITEAM;
+		}
+	},
+	DROP_ITEM {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			int i = Integer.parseInt(e.getTargetName());
+			party.get(i).getItemBag().drop(ItemStorage.getInstance().get(e.getValue()));
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -166,6 +197,13 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
+	NPC_DIR_TO {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			FieldMap.getCurrentInstance().getNpcStorage().get(e.getTargetName()).to(FourDirection.valueOf(e.getValue()));
+			return UserOperationRequire.CONTINUE;
+		}
+	},
 	ALL_NPC_UNLOCK_LOCATION {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -212,6 +250,14 @@ public enum FieldEventType {
 	NPC_REMOVE {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			String name = FieldMap.getCurrentInstance().getName();
+			if (FieldMap.getRemovedNPC().containsKey(name)) {
+				FieldMap.getRemovedNPC().get(name).add(e.getTargetName());
+			} else {
+				List<String> list = new ArrayList<>();
+				list.add(e.getTargetName());
+				FieldMap.getRemovedNPC().put(name, list);
+			}
 			FieldMap.getCurrentInstance().getNpcStorage().remove(e.getTargetName());
 			return UserOperationRequire.CONTINUE;
 		}
@@ -220,6 +266,14 @@ public enum FieldEventType {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			NPC n = NPC.readFromXML(e.getValue());
+			String name = FieldMap.getCurrentInstance().getName();
+			if (FieldMap.getAddedNPC().containsKey(name)) {
+				FieldMap.getAddedNPC().get(name).add(n);
+			} else {
+				List<NPC> list = new ArrayList<>();
+				list.add(n);
+				FieldMap.getAddedNPC().put(name, list);
+			}
 			FieldMap.getCurrentInstance().getNpcStorage().add(n);
 			return UserOperationRequire.CONTINUE;
 		}
@@ -228,7 +282,8 @@ public enum FieldEventType {
 	SHOW_MESSAGE_FROM_TEXTSTORAGE {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
-			TextStorage ts = TextStorageStorage.getInstance().get(e.getStorageName());
+			TextStorageStorage.getInstance().dispose();
+			TextStorage ts = TextStorageStorage.getInstance().get(e.getStorageName()).build();
 			FieldEventSystem.getInstance().setTextStorage(ts);
 			Text t = ts.get(e.getValue());
 			FieldEventSystem.getInstance().setText(t);
@@ -236,7 +291,6 @@ public enum FieldEventType {
 		}
 	},
 	//テキスト
-	@Deprecated
 	SHOW_MESSAGE_DIRECT {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -244,7 +298,13 @@ public enum FieldEventType {
 			return UserOperationRequire.SHOW_MESSAGE;
 		}
 	},
-	SET_PC_DIR_TO {
+	END_AND_RESET_EVENT {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	PC_DIR_TO {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			int idx = Integer.parseInt(e.getTargetName());
@@ -263,10 +323,31 @@ public enum FieldEventType {
 		}
 	},
 	//フラグストレージ名、フラグ名
-	SET_FLG {
+	SET_FLG_DIRECT {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
-			FlagStorageStorage.getInstance().get(e.getStorageName()).get(e.getTargetName()).set(FlagStatus.valueOf(e.getValue()));
+			if (!FlagStorageStorage.getInstance().contains(e.getStorageName())) {
+				FlagStorageStorage.getInstance().add(new FlagStorage(e.getStorageName()));
+			}
+			FlagStorage fs = FlagStorageStorage.getInstance().get(e.getStorageName());
+			if (!fs.contains(e.getTargetName())) {
+				fs.add(new Flag(e.getTargetName()));
+			}
+			Flag f = fs.get(e.getTargetName());
+			f.set(FlagStatus.valueOf(e.getValue()));
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	SET_FLG_TMP {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			FieldEventSystem.getInstance().setFlag(e.getStorageName(), e.getTargetName(), FlagStatus.valueOf(e.getValue()));
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	COMMIT_FLG {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -275,7 +356,7 @@ public enum FieldEventType {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			int v = Integer.parseInt(e.getValue());
-			QuestLineStorage.getInstance().get(e.getStorageName()).getStage().setValue(v);
+			QuestLineStorage.getInstance().get(e.getTargetName()).getStage().setValue(v);
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -378,11 +459,13 @@ public enum FieldEventType {
 	},
 	//CHANGEMAPを要求する
 	CHANGE_MAP {
+		int v = 0;
+
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			int x = Integer.parseInt(e.getValue().split(",")[0]);
 			int y = Integer.parseInt(e.getValue().split(",")[1]);
-			FieldEventSystem.getInstance().setNode(Node.ofOutNode(e.getTargetName(), x, y));
+			FieldEventSystem.getInstance().setNode(Node.ofOutNode("AUTO_NODE" + v++, e.getTargetName(), x, y));
 			return UserOperationRequire.CHANGE_MAP;
 		}
 	},
@@ -414,6 +497,25 @@ public enum FieldEventType {
 			PlayerCharacter pc = PlayerCharacter.readFromXML(e.getValue());
 			FieldMap.getPlayerCharacter().add(pc.getSprite());
 			GameSystem.getInstance().getParty().add(pc);
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	//END_IFが現れるまでのイベントに、このイベントのtermを適用します。適用するのはイベントがセットされたときです。
+	IF {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	END_IF {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	END {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			return UserOperationRequire.CONTINUE;
 		}
 	};

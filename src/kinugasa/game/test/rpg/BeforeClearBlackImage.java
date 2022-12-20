@@ -23,56 +23,28 @@
  */
 package kinugasa.game.test.rpg;
 
-import java.util.ArrayList;
-import java.util.List;
-import kinugasa.game.GameManager;
-import kinugasa.game.GameOption;
-import kinugasa.game.GameTimeManager;
-import kinugasa.game.GraphicsContext;
-import kinugasa.game.LockUtil;
-import kinugasa.game.input.InputState;
-import static kinugasa.game.system.BattleConfig.messageWindowY;
-import kinugasa.game.ui.MessageWindow;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.RenderingQuality;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/22_5:31:16<br>
+ * @vesion 1.0.0 - 2022/12/16_9:07:07<br>
  * @author Dra211<br>
  */
-public class Test2 extends GameManager {
+public class BeforeClearBlackImage {
 
 	public static void main(String[] args) {
-	
-		LockUtil.deleteAllLockFile();
-		new Test2().gameStart();
+		Color c = new Color(0, 0, 0, 72);
+		BufferedImage image = ImageUtil.newImage(1440 / 2, 960 / 2);
+		Graphics2D g = ImageUtil.createGraphics2D(image, RenderingQuality.SPEED);
+		g.setColor(c);
+		g.fillRect(0, 0, 1440 / 2, 960 / 2);
+		g.dispose();
+		ImageUtil.save(new File("resource/test/before1.png"), image);
+		
 	}
-
-	Test2() {
-		super(GameOption.defaultOption());
-	}
-	MessageWindow mw;
-
-	@Override
-	protected void startUp() {
-		float w = GameOption.getInstance().getWindowSize().width - 6;
-		float h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
-		mw = new MessageWindow(3, messageWindowY, w, h);
-		mw.setText("‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O");
-		mw.allText();
-	}
-
-	@Override
-	protected void dispose() {
-	}
-
-	@Override
-	protected void update(GameTimeManager gtm, InputState is) {
-		mw.update();
-	}
-
-	@Override
-	protected void draw(GraphicsContext gc) {
-		mw.draw(gc);
-	}
-
 }

@@ -37,6 +37,7 @@ public class Flag implements Nameable {
 
 	public Flag(String name) {
 		this.name = name;
+		status = FlagStatus.OFF;
 	}
 
 	public Flag(String name, FlagStatus status, int value) {

@@ -91,4 +91,9 @@ public class FieldMapTile {
 		return chip.get(0).getAttr();
 	}
 
+	@Override
+	public String toString() {
+		return "FieldMapTile{" + "chip=" + chip + ", npc=" + npc + ", playerCharacter=" + playerCharacter + ", event=" + event + ", node=" + node + '}';
+	}
+
 }

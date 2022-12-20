@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.I18N;
 import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.SimpleTextLabelModel;
 import kinugasa.game.ui.TextLabelModel;
@@ -68,7 +69,8 @@ public class SimpleMapNameModel extends MapNameModel {
 		Graphics2D g2 = g.create();
 		switch (stage) {
 			case 0:
-				label.setText(fm.getName());
+				String val = I18N.translate(fm.getName());
+				label.setText(val.equals("?") ? fm.getName() : val);
 				float x = (float) (GameOption.getInstance().getWindowSize().getWidth() / GameOption.getInstance().getDrawSize() - 24 - label.getText().length() * label.getLabelModel().getFontSize());
 				label.setX(x);
 				labelFont = FadeCounter.fadeOut(-1);

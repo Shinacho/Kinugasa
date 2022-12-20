@@ -23,56 +23,31 @@
  */
 package kinugasa.game.test.rpg;
 
-import java.util.ArrayList;
-import java.util.List;
-import kinugasa.game.GameManager;
-import kinugasa.game.GameOption;
-import kinugasa.game.GameTimeManager;
-import kinugasa.game.GraphicsContext;
-import kinugasa.game.LockUtil;
-import kinugasa.game.input.InputState;
-import static kinugasa.game.system.BattleConfig.messageWindowY;
-import kinugasa.game.ui.MessageWindow;
+import java.io.File;
+import javax.swing.JFileChooser;
+import kinugasa.game.field4.FieldMapResourceUtil;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/22_5:31:16<br>
+ * @vesion 1.0.0 - 2022/12/15_20:16:47<br>
  * @author Dra211<br>
  */
-public class Test2 extends GameManager {
+public class MapDatConvert {
 
 	public static void main(String[] args) {
-	
-		LockUtil.deleteAllLockFile();
-		new Test2().gameStart();
+		JFileChooser f = new JFileChooser("D:/Project/FuzzyWorld1/resource/data/map/raw/");
+		f.showOpenDialog(null);
+		File file = f.getSelectedFile();
+		File out = new File("D:/Project/FuzzyWorld1/resource/data/map/" + file.getName());
+		if (out.exists()) {
+			out.delete();
+		}
+		//inner
+		//*
+		FieldMapResourceUtil.platinumCsvType1ToKGCsv(file, out, 8, 8);
+		//outer 
+		/*/
+		FieldMapResourceUtil.platinumCsvType1ToKGCsv(file, out, 28, 16);
+		//*/
 	}
-
-	Test2() {
-		super(GameOption.defaultOption());
-	}
-	MessageWindow mw;
-
-	@Override
-	protected void startUp() {
-		float w = GameOption.getInstance().getWindowSize().width - 6;
-		float h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
-		mw = new MessageWindow(3, messageWindowY, w, h);
-		mw.setText("‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O‚P‚Q‚R‚S‚T‚U‚V‚W‚X‚O");
-		mw.allText();
-	}
-
-	@Override
-	protected void dispose() {
-	}
-
-	@Override
-	protected void update(GameTimeManager gtm, InputState is) {
-		mw.update();
-	}
-
-	@Override
-	protected void draw(GraphicsContext gc) {
-		mw.draw(gc);
-	}
-
 }

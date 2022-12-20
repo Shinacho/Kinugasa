@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Dra.
+ * Copyright 2022 Dra.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,44 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.ui;
-
-import javax.swing.JOptionPane;
+package kinugasa.game.system;
 
 /**
  *
- * @vesion 1.0.0 - 2021/08/17_6:53:17<br>
+ * @vesion 1.0.0 - 2022/12/20_14:12:33<br>
  * @author Dra211<br>
  */
-public enum DialogOption {
-	YES(JOptionPane.YES_OPTION),
-	NO(JOptionPane.NO_OPTION),
-	CANCEL(JOptionPane.CANCEL_OPTION),
-	OK(JOptionPane.OK_OPTION),
-	CLOSE(JOptionPane.CLOSED_OPTION),
-	
+public class ScriptFormatException extends GameSystemException {
 
-	;
-	private int option;
-
-	private DialogOption(int option) {
-		this.option = option;
+	public ScriptFormatException() {
 	}
 
-	public int getOption() {
-		return option;
+	public ScriptFormatException(String msg) {
+		super(msg);
 	}
 
-	public boolean is(DialogOption dialogOption) {
-		return this == dialogOption;
-	}
-
-	public static DialogOption of(int r) {
-		for (DialogOption o : values()) {
-			if (o.option == r) {
-				return o;
-			}
-		}
-		throw new RuntimeException(r + " is not found");
-	}
 }

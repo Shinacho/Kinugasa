@@ -126,7 +126,9 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			a.setRepeat(false);
 			animationMap.put(name, a);
 		}
-		System.out.println(animationMap);
+		if (GameSystem.isDebugMode()) {
+			System.out.println(animationMap);
+		}
 
 		//サウンドのパース
 		Map<String, Sound> soundMap = new HashMap<>();
@@ -135,7 +137,9 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			Sound s = new SoundBuilder(e.getAttributes().get("file").getValue()).builde();
 			soundMap.put(name, s);
 		}
-		System.out.println(soundMap);
+		if (GameSystem.isDebugMode()) {
+			System.out.println(soundMap);
+		}
 
 		//アイテムのパース
 		for (XMLElement e : root.getElement("item")) {

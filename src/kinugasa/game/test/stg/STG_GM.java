@@ -30,6 +30,7 @@ import kinugasa.game.GameOption;
 import kinugasa.game.GameTimeManager;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LockUtil;
+import kinugasa.game.input.InputState;
 
 /**
  *
@@ -63,8 +64,8 @@ public class STG_GM extends GameManager {
 	}
 
 	@Override
-	protected void update(GameTimeManager gtm) {
-		GameLogicStorage.getInstance().getCurrent().update(gtm);
+	protected void update(GameTimeManager gtm, InputState is) {
+		GameLogicStorage.getInstance().getCurrent().update(gtm,is);
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public class BattleMessageWindowSystem implements Drawable {
 	//INFOの表示時間カウンタ
 	private FrameTimeCounter infoWindowVisibleTC;
 	//ステータスペイン
-	private StatusWindows statusWindows;
+	private BattleStatusWindows statusWindows;
 	//移動後行動用のウインドウ
 	private AfterMoveActionMessageWindow afterMoveCommandWindow;
 
@@ -79,7 +79,7 @@ public class BattleMessageWindowSystem implements Drawable {
 		infoWindow = new MessageWindow(48, messageWindowY, w - 48 * 2, h, new SimpleMessageWindowModel().setNextIcon(""));
 		tooltipWindow = new MessageWindow(48 * 4, messageWindowY, w - 48 * 2, h, new SimpleMessageWindowModel().setNextIcon(""));
 
-		statusWindows = new StatusWindows(statusList);
+		statusWindows = new BattleStatusWindows(statusList);
 		statusWindows.setVisible(true);
 		commandWindow.setVisible(false);
 		afterMoveCommandWindow.setVisible(false);
@@ -236,7 +236,7 @@ public class BattleMessageWindowSystem implements Drawable {
 		return tooltipWindow;
 	}
 
-	StatusWindows getStatusWindows() {
+	BattleStatusWindows getStatusWindows() {
 		return statusWindows;
 	}
 

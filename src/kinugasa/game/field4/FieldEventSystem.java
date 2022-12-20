@@ -25,20 +25,34 @@ package kinugasa.game.field4;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
 import kinugasa.game.NoLoopCall;
 import kinugasa.game.system.EncountInfo;
+import kinugasa.game.system.Flag;
+import kinugasa.game.system.FlagStatus;
+import kinugasa.game.system.FlagStorage;
+import kinugasa.game.system.FlagStorageStorage;
 import kinugasa.game.system.GameSystem;
+import kinugasa.game.system.GameSystemException;
+import kinugasa.game.system.Item;
+import kinugasa.game.system.ItemStorage;
+import kinugasa.game.system.PlayerCharacter;
+import kinugasa.game.system.ScriptFormatException;
+import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.object.Drawable;
 import kinugasa.object.FadeEffect;
+import kinugasa.resource.Storage;
 import kinugasa.util.FrameTimeCounter;
 
 /**
@@ -70,14 +84,143 @@ public class FieldEventSystem implements Drawable {
 	private List<NPC> watchingPC = new ArrayList<>();
 	private Node node;
 	private LinkedList<FieldEvent> event = new LinkedList<>();
+	private LinkedList<FieldEvent> prevEvent = new LinkedList<>();
+	private boolean manual = false;
+	//
+	private Item item;
+	private Storage<FlagStorage> flags = new Storage<FlagStorage>();
 
-	void setEvent(LinkedList<FieldEvent> event) {
+	public void setEvent(LinkedList<FieldEvent> event) {
+		Collections.sort(event);
+		prevEvent = (LinkedList<FieldEvent>) event.clone();
 		this.event = event;
-		if (GameSystem.isDebugMode()) {
-			for (FieldEvent e : event) {
-				System.out.println(e);
+		if (!event.isEmpty() && event.stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT)) {
+			manual = true;
+		}
+		if (event.isEmpty()) {
+			manual = false;
+		}
+		//IFのterm設定
+		if (event.stream().filter(p -> p.getEventType() == FieldEventType.IF).count()
+				!= event.stream().filter(p -> p.getEventType() == FieldEventType.END_IF).count()) {
+			throw new ScriptFormatException("IF - END_IF is missmatch:" + event);
+		}
+		int i = 0, j = 0;
+		while (true) {
+			for (; i < event.size() && event.get(i).getEventType() != FieldEventType.IF; i++);
+			for (j = i + 1; j < event.size() && event.get(j).getEventType() != FieldEventType.END_IF; j++);
+			if (i < event.size()) {
+				List<EventTerm> term = event.get(i).getTerm();
+				for (; i <= j; i++) {
+					event.get(i).setTerm(term);
+				}
+			}
+			if (i >= event.size()) {
+				break;
 			}
 		}
+
+		if (GameSystem.isDebugMode() && !event.isEmpty()) {
+			System.out.println("kinugasa.game.field4.FieldEventSystem.setEvent()");
+			for (FieldEvent e : event) {
+				System.out.println("> " + e);
+			}
+		}
+	}
+
+	Storage<FlagStorage> getFlags() {
+		return flags;
+	}
+
+	void setFlag(String storageName, String flagName, FlagStatus v) {
+		//仮ストレージにフラグを追加
+		if (!flags.contains(storageName)) {
+			flags.add(new FlagStorage(storageName));
+		}
+		FlagStorage fs = flags.get(storageName);
+		if (!fs.contains(flagName)) {
+			fs.add(new Flag(flagName));
+		}
+		fs.get(flagName).set(v);
+	}
+
+	public void commitFlags() {
+		//フラグストレージの更新
+		for (FlagStorage s : flags) {
+			if (!FlagStorageStorage.getInstance().contains(s.getName())) {
+				FlagStorageStorage.getInstance().add(s);
+			}
+		}
+		//フラグ自体の更新
+		for (FlagStorage s : FlagStorageStorage.getInstance()) {
+			if (flags.contains(s)) {
+				s.update(flags.get(s.getName()));
+			}
+		}
+		if (GameSystem.isDebugMode()) {
+			System.out.println("tmp flags commit is done.");
+		}
+		clearTmpFlags();
+	}
+
+	public void clearTmpFlags() {
+		flags.clear();
+	}
+
+	public void reset() {
+		reset= true;
+		setEvent(prevEvent);
+	}
+
+	void setItem(String item) {
+		Item i = ItemStorage.getInstance().get(item);
+		if (i == null) {
+			throw new ScriptFormatException("item is null : " + item);
+		}
+		this.item = i;
+	}
+
+	public boolean hasItem() {
+		return item != null;
+	}
+
+	public Item getItem() {
+		if (item == null) {
+			return null;
+		}
+		Item r = item.clone();
+		item = null;
+		return r;
+	}
+
+	//誰が持つ？ウインドウの表示
+	public MessageWindow showItemGetMessageWindow() {
+		float buffer = 24;
+		float x = buffer;
+		float y = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 2 + buffer * 2;
+		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - (buffer * 2);
+		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
+		List<Text> options = new ArrayList<>();
+		for (PlayerCharacter pc : GameSystem.getInstance().getParty()) {
+			options.add(new Text(pc.getName() + " / " + I18N.translate("CAN_HAVE").replaceAll("n", "" + (pc.getStatus().getItemBag().getMax() - pc.getStatus().getItemBag().size()))));
+		}
+		options.add(new Text(I18N.translate("GIVE_UP")));
+
+		Choice c = new Choice(options, "",
+				item.getName() + I18N.translate("IS_GET") + ", " + I18N.translate("WHO_WILL_HOLD_IT"),
+				new FrameTimeCounter(0), 0);
+		c.allText();
+
+		MessageWindow mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), null, c);
+		FieldMap.getCurrentInstance().setMW(mw);
+		return mw;
+	}
+
+	public boolean hasManualEvent() {
+		if (event == null || event.isEmpty() || reset) {
+			return false;
+		}
+		return event.stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT);
 	}
 
 	void setUserOperation(boolean userOperation) {
@@ -97,15 +240,63 @@ public class FieldEventSystem implements Drawable {
 	}
 
 	public boolean hasEvent() {
+		if (reset) {
+			reset = false;
+			return false;
+		}
 		return !event.isEmpty();
 	}
 
+	public boolean isLastEvent() {
+		return event.isEmpty();
+	}
+
+	public UserOperationRequire manualExec() {
+		return exec();
+	}
+
+	public boolean isManual() {
+		return manual;
+	}
+
+	public void endEvent() {
+		event.clear();
+		executing = false;
+	}
+
+	private boolean reset = false;
+
 	@NoLoopCall
 	public UserOperationRequire exec() {
+		item = null;
 		currentEvent = event.getFirst();
 		event.removeFirst();
 		if (GameSystem.isDebugMode()) {
 			System.out.println("start event : " + currentEvent);
+		}
+		if (currentEvent.getEventType() == FieldEventType.IF) {
+			return UserOperationRequire.CONTINUE;
+		}
+		if (currentEvent.getEventType() == FieldEventType.END_IF) {
+			return UserOperationRequire.CONTINUE;
+		}
+		if (currentEvent.getEventType() == FieldEventType.COMMIT_FLG) {
+			commitFlags();
+			return UserOperationRequire.CONTINUE;
+		}
+		if (currentEvent.getEventType() == FieldEventType.END) {
+			if (currentEvent.getTerm() != null && currentEvent.getTerm().stream().allMatch(p -> p.canDoThis(GameSystem.getInstance().getPartyStatus(), currentEvent))) {
+				endEvent();
+				return UserOperationRequire.CONTINUE;
+			}
+		}
+		if (currentEvent.getEventType() == FieldEventType.END_AND_RESET_EVENT) {
+			if (currentEvent.getTerm() != null && currentEvent.getTerm().stream().allMatch(p -> p.canDoThis(GameSystem.getInstance().getPartyStatus(), currentEvent))) {
+				reset = true;
+				endEvent();
+				reset();
+				return UserOperationRequire.CONTINUE;
+			}
 		}
 		UserOperationRequire res = currentEvent.exec(FieldMap.getCurrentInstance());
 		if (res == UserOperationRequire.WAIT_FOR_EVENT) {
@@ -177,9 +368,9 @@ public class FieldEventSystem implements Drawable {
 	public MessageWindow showMessageWindow() {
 		float buffer = 24;
 		float x = buffer;
-		float y = GameOption.getInstance().getWindowSize().height / 2 + buffer;
-		float w = GameOption.getInstance().getWindowSize().width - (buffer * 2);
-		float h = GameOption.getInstance().getWindowSize().height / 3;
+		float y = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 2 + buffer * 2;
+		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - (buffer * 2);
+		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
 		text.reset();
 
 		MessageWindow mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), textStorage, text);

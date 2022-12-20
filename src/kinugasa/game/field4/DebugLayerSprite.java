@@ -36,18 +36,12 @@ import kinugasa.game.GraphicsContext;
  */
 public class DebugLayerSprite {
 
-	public static void debugDrawPC(GraphicsContext g, List<PlayerCharacterSprite> pcList, D2Idx idx, D2Idx plDir, Point2D.Float base, int chipW, int chipH) {
+	public static void debugDrawPC(GraphicsContext g, List<PlayerCharacterSprite> pcList, D2Idx idx, Point2D.Float base, int chipW, int chipH) {
 		float drawX = base.x + (idx.x * chipW);
 		float drawY = base.y + (idx.y * chipH);
 		Graphics2D g2 = g.create();
 		g2.setColor(Color.CYAN);
-		g2.drawRect((int) drawX, (int) drawY, chipW, chipH);
-		g2.setColor(Color.LIGHT_GRAY);
-
-		drawX = base.x + (plDir.x * chipW);
-		drawY = base.y + (plDir.y * chipH);
-		g2.setColor(Color.LIGHT_GRAY);
-		g2.drawRect((int) drawX, (int) drawY, chipW, chipH);
+		g2.drawRect((int) drawX + 1, (int) drawY + 1, chipW - 2, chipH - 2);
 
 		int i = 1;
 		for (PlayerCharacterSprite c : pcList) {
@@ -56,7 +50,7 @@ public class DebugLayerSprite {
 			if (tgt != null) {
 				drawX = base.x + (c.getTargetIdx().x * chipW);
 				drawY = base.y + (c.getTargetIdx().y * chipH);
-				g2.drawRect((int) drawX, (int) drawY, chipW, chipH);
+				g2.drawRect((int) drawX + 2, (int) drawY + 2, chipW - 4, chipH - 4);
 				g2.drawString("PC" + i++, (int) drawX, (int) drawY);
 			}
 		}
@@ -70,6 +64,7 @@ public class DebugLayerSprite {
 			D2Idx idx = n.getCurrentIdx();
 			float drawX = base.x + (idx.x * chipW);
 			float drawY = base.y + (idx.y * chipH);
+
 			g2.setColor(Color.WHITE);
 			g2.drawRect((int) drawX, (int) drawY, chipW, chipH);
 			g2.drawString(n.getName(), (int) drawX, (int) drawY);

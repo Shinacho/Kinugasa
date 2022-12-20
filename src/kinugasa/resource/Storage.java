@@ -38,6 +38,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import kinugasa.game.GameLog;
 import kinugasa.game.system.GameSystem;
 
 /**
@@ -355,6 +356,7 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 		stream.println("> Storage : class=[" + getClass() + "]");
 		for (T obj : map.values()) {
 			stream.println("> Storage : printAll : " + obj.getName());
+			GameLog.printInfo("> Storage : printAll : " + obj.getName());
 		}
 		stream.println("> Storage : ------------------------");
 	}

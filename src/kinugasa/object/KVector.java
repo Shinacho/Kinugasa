@@ -153,6 +153,10 @@ public class KVector implements Cloneable {
 		this.angle = angle;
 	}
 
+	public void setAngle(FourDirection dir) {
+		setAngle(dir.getAngle());
+	}
+
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}

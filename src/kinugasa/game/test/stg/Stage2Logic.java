@@ -161,7 +161,7 @@ public class Stage2Logic extends GameLogic {
 	private Teki_1 last;
 	
 	@Override
-	public void update(GameTimeManager gtm) {
+	public void update(GameTimeManager gtm, InputState is) {
 		// フレーム数リセット
 		if (first) {
 			gtm.resetTotalFrame();

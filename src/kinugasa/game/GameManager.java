@@ -43,10 +43,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import kinugasa.game.input.GamePadConnection;
+import kinugasa.game.input.InputState;
 import kinugasa.game.input.KeyConnection;
 import kinugasa.game.input.MouseConnection;
 import kinugasa.game.system.GameSystem;
-import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.graphics.RenderingQuality;
 import kinugasa.resource.TempFileStorage;
@@ -89,9 +89,9 @@ public abstract class GameManager {
 	protected final void updateOption() {
 		MathUtil.init();
 		if (option.isUseLog()) {
-			GameLog.usingLog(option.getLogPath());
+			GameLog.usingLog(option.getLogPath() + option.getLogName());
 			try {
-				FileHandler handler = new FileHandler(option.getLogPath());
+				FileHandler handler = new FileHandler(option.getLogPath() + option.getLogName());
 				handler.setLevel(Level.ALL);
 				handler.setFormatter(new Formatter() {
 
@@ -239,6 +239,7 @@ public abstract class GameManager {
 			throw new IllegalStateException("game is alredy started");
 		}
 		loop = new GameLoop(this, gameTimeManager = new GameTimeManager(fps), updateIfNotActive);
+		gameTimeManager.setStartTime(System.currentTimeMillis());
 		EventQueue.invokeLater(() -> {
 			try {
 				startUp();
@@ -251,7 +252,6 @@ public abstract class GameManager {
 			graphicsBuffer = window.getBufferStrategy();
 			clippingRectangle = window.getInternalBounds();
 			started = true;
-			GameLog.printInfo("gameStart is done.");
 			loop.start();
 			if (drawSize != 1) {
 				image = ImageUtil.newImage((int) (window.getInternalBounds().getWidth() / drawSize), (int) (window.getInternalBounds().getHeight() / drawSize));
@@ -301,7 +301,7 @@ public abstract class GameManager {
 	 * @param gtm ゲームタイムマネージャーの唯一のインスタンス.
 	 */
 	@LoopCall
-	protected abstract void update(GameTimeManager gtm);
+	protected abstract void update(GameTimeManager gtm, InputState is);
 
 	/**
 	 * 画面を描画する処理を記述します.

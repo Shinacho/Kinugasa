@@ -89,6 +89,7 @@ public final class InputState extends InputDeviceState {
 	 *
 	 * @return InputStateのインスタンスを返します。<br>
 	 */
+	@Deprecated
 	public static InputState getInstance() {
 		INSTANCE.refresh();
 		return INSTANCE;

@@ -23,11 +23,10 @@
  */
 package kinugasa.game.ui;
 
+import java.util.LinkedList;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LoopCall;
-import kinugasa.game.field4.FieldEvent;
-import kinugasa.game.field4.FieldEventStorageStorage;
-import kinugasa.game.system.GameSystemException;
+import kinugasa.game.field4.FieldEventSystem;
 import kinugasa.object.BasicSprite;
 
 /**
@@ -70,27 +69,15 @@ public class MessageWindow extends BasicSprite {
 		text.isReaching();
 
 		if (text.isAllVisible()) {
-			if (text.getEventName() == null && text.getEventStorageName() != null) {
-				throw new GameSystemException("event name or storage name is null : " + text);
-			}
-			if (text.getEventName() != null && text.getEventStorageName() == null) {
-				throw new GameSystemException("event name or storage name is null : " + text);
-			}
-			if (text.getEventName() != null) {
-				//ÉCÉxÉìÉgÇê›íË
-				event = FieldEventStorageStorage.getInstance().get(text.getEventStorageName()).get(text.getEventName());
+			if (text.getEvents() != null && !text.getEvents().isEmpty()) {
+				if (!set) {
+					FieldEventSystem.getInstance().setEvent(new LinkedList<>(text.getEvents()));
+					set = true;
+				}
 			}
 		}
 	}
-	private FieldEvent event;
-
-	public FieldEvent getEvent() {
-		return event;
-	}
-
-	public boolean hasEvent() {
-		return event != null;
-	}
+	private boolean set = false;
 
 	public void setModel(MessageWindowModel model) {
 		this.model = model;
@@ -114,10 +101,13 @@ public class MessageWindow extends BasicSprite {
 
 	public void setText(Text text) {
 		this.text = text;
+		set = false;
+		select = 0;
 	}
 
 	public void setText(String text) {
 		setText(new Text(text));
+		select = 0;
 	}
 
 	public void clearText() {
@@ -153,6 +143,7 @@ public class MessageWindow extends BasicSprite {
 	public void next() {
 		setText(textStorage.get(text.getNextId()));
 		getText().reset();
+		select = 0;
 	}
 
 	public void choicesNext() {

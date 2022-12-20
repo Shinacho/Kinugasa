@@ -56,6 +56,7 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	 */
 	private KImage[] images;
 	private boolean repeat = true;
+	private boolean stop;
 
 	/**
 	 * 新しいアニメーションを構築します. このコンストラクタでは、配列インデックスは＋方向へループするシーケンシャルなモデルになります。<br>
@@ -221,11 +222,22 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	 * 表示時間の判定を行います. 現在表示中の要素の表示時間が経過した場合には、 インデックスを更新し、描画すべき画像を変更します。<br>
 	 */
 	public void update() {
+		if (stop) {
+			return;
+		}
 		if (visibleTime.isReaching()) {
 			if (index.getIndex() != images.length - 1 || repeat) {
 				index.index(images == null ? 0 : images.length);
 			}
 		}
+	}
+
+	public void setStop(boolean stop) {
+		this.stop = stop;
+	}
+
+	public boolean isStop() {
+		return stop;
 	}
 
 	public boolean isRepeat() {

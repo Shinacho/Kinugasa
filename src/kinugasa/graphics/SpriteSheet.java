@@ -223,7 +223,6 @@ public class SpriteSheet {
 	 * @return ’Ç‰Á‚³‚ê‚Ä‚¢‚é‰æ‘œ‚Ì”z—ñ.<br>
 	 */
 	public BufferedImage[] images() {
-		GameLog.printInfo("SpriteSheet‚ªØ‚èo‚³‚ê‚Ü‚µ‚½ : size=[" + subImages.size() + "]");
 		subImages.trimToSize();
 		int nullIdx = 0;
 		for (int size = subImages.size(); nullIdx < size && subImages.get(nullIdx) != null; nullIdx++);

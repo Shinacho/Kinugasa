@@ -52,7 +52,8 @@ public class Node implements Nameable {
 	private Node() {
 	}
 
-	public static Node ofInOutNode(String name, String exitFieldMapName, String exitNodeName, int x, int y, String tooltip, NodeAccepter accepter, FourDirection outDir) {
+	public static Node ofInOutNode(String name, String exitFieldMapName,
+			String exitNodeName, int x, int y, String tooltip, NodeAccepter accepter, FourDirection outDir) {
 		Node n = new Node();
 		n.name = name;
 		n.exitFieldMapName = exitFieldMapName;
@@ -66,8 +67,8 @@ public class Node implements Nameable {
 		return n;
 	}
 
-	public static Node ofOutNode(String name, int x, int y) {
-		Node n = ofInOutNode(name, null, null, x, y, null, null, null);
+	public static Node ofOutNode(String name, String outMapName, int x, int y) {
+		Node n = ofInOutNode(name, outMapName, null, x, y, null, null, null);
 		n.mode = Mode.OUT;
 		return n;
 	}
@@ -123,10 +124,7 @@ public class Node implements Nameable {
 
 	@Override
 	public String toString() {
-		if (mode == Mode.INOUT) {
-			return "FieldMapNode{" + "mode=" + mode + ", name=" + name + ", x=" + x + ", y=" + y + ", exitFieldMapName=" + exitFieldMapName + ", exitNodeName=" + exitNodeName + ", tooltip=" + tooltip + ", se=" + se + ", accepter=" + accepter + '}';
-		}
-		return "FieldMapNode{" + "mode=" + mode + ", name=" + name + ", x=" + x + ", y=" + y + '}';
+		return "FieldMapNode{" + "mode=" + mode + ", name=" + name + ", x=" + x + ", y=" + y + ", exitFieldMapName=" + exitFieldMapName + ", exitNodeName=" + exitNodeName + ", tooltip=" + tooltip + ", se=" + se + ", accepter=" + accepter + '}';
 	}
 
 }

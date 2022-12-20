@@ -61,7 +61,7 @@ public class BattleLogic extends GameLogic {
 
 	@Override
 	public void load() {
-		
+
 		stage = 0;
 		battleSystem = GameSystem.getInstance().getBattleSystem();
 		c5 = new SoundBuilder("resource/se/Œø‰Ê‰¹Q‘I‘ğ1.wav").builde().load();
@@ -83,9 +83,8 @@ public class BattleLogic extends GameLogic {
 	private int lp = 0;
 
 	@Override
-	public void update(GameTimeManager gtm) {
+	public void update(GameTimeManager gtm, InputState is) {
 		battleSystem.update();
-		InputState is = InputState.getInstance();
 
 		//‹Ù‹}’Eoƒ{ƒ^ƒ“
 		if (is.isPressed(GamePadButton.BACK, InputType.SINGLE)) {

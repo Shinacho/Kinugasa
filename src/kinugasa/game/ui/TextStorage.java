@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import kinugasa.game.GameLog;
+import kinugasa.game.field4.FieldEventParser;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Storage;
@@ -87,6 +88,9 @@ public class TextStorage extends Storage<Text> implements Nameable {
 			if (e.getAttributes().contains("next")) {
 				t.setNextId(e.getAttributes().get("next").getValue());
 			}
+			if (e.hasAttribute("eventScript")) {
+				t.setEvents(FieldEventParser.parse(id, e.getAttributes().get("eventScript").getValue()));
+			}
 			if (!contains(t)) {
 				add(t);
 			}
@@ -127,6 +131,10 @@ public class TextStorage extends Storage<Text> implements Nameable {
 		printAll(System.out);
 
 		return this;
+	}
+
+	public void dispose() {
+		clear();
 	}
 
 	public MessageWindow createWindow(float x, float y, float w, float h, String id) throws NameNotFoundException {

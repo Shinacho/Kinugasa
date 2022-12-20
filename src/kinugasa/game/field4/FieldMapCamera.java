@@ -25,6 +25,7 @@ package kinugasa.game.field4;
 
 import java.awt.geom.Point2D;
 import kinugasa.game.GameOption;
+import kinugasa.game.system.GameSystem;
 import kinugasa.object.KVector;
 import kinugasa.object.BasicSprite;
 
@@ -312,6 +313,30 @@ public class FieldMapCamera {
 				float ny = map.getBaseLayer().getY() + c.getCurrentIdx().y * chipH;
 				c.setLocation(nx, ny);
 			}
+		}
+		currentCenter = map.getCurrentIdx();
+
+	}
+
+	//PCがいないマップはこちらを使用する
+	public void updateToCenterNoPC() {
+		D2Idx currentIdx = map.getCurrentIdx();
+		int chipW = map.getChipW();
+		int chipH = map.getChipH();
+		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
+		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
+		//表示位置＝中心-画面サイズ
+		int x = currentIdx.x * chipW - (screenW / 2);
+		int y = currentIdx.y * chipH - (screenH / 2);
+		x += chipW / 2;
+		y += chipH / 2;
+		setLocation(-x, -y);
+
+		//NPCの位置更新
+		for (NPC n : map.getNpcStorage()) {
+			float nx = map.getBaseLayer().getX() + n.getCurrentIdx().x * chipW;
+			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;
+			n.setLocation(nx, ny);
 		}
 		currentCenter = map.getCurrentIdx();
 

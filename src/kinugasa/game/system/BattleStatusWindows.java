@@ -39,12 +39,12 @@ import kinugasa.object.BasicSprite;
  * @vesion 1.0.0 - 2022/11/23_17:37:07<br>
  * @author Dra211<br>
  */
-public class StatusWindows extends BasicSprite {
+public class BattleStatusWindows extends BasicSprite {
 
 	private List<MessageWindow> mw = new ArrayList<>();
 	private List<Status> status;
 
-	StatusWindows(List<Status> s) {
+	BattleStatusWindows(List<Status> s) {
 		status = s;
 		init();
 	}

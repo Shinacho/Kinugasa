@@ -122,7 +122,7 @@ public class FieldLogic extends GameLogic {
 	}
 
 	@Override
-	public void update(GameTimeManager gtm) {
+	public void update(GameTimeManager gtm, InputState is) {
 		FieldEventSystem.getInstance().update();
 		fm.update();
 		if (waiting) {
@@ -161,7 +161,6 @@ public class FieldLogic extends GameLogic {
 		if (!FieldEventSystem.getInstance().isUserOperation()) {
 			return;
 		}
-		InputState is = InputState.getInstance();
 		//mwèàóù
 		if (mw != null) {
 			mw.update();

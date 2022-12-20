@@ -25,8 +25,9 @@ package kinugasa.game.field4;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kinugasa.game.field4.FieldEvent;
+import kinugasa.game.system.Flag;
 import kinugasa.game.system.FlagStatus;
+import kinugasa.game.system.FlagStorage;
 import kinugasa.game.system.FlagStorageStorage;
 import kinugasa.game.system.GameSystem;
 import kinugasa.game.system.QuestLineStorage;
@@ -104,10 +105,65 @@ public enum EventTermType {
 			return party.size() == Integer.parseInt(t.getValue());
 		}
 	},
-	FLAG_IS {
+	FLG_IS {
+		@Override
+		boolean canExec(List<Status> party, EventTerm t) {
+			//return FlagStorageStorage.getInstance().get(t.getStorageName()).get(t.getTargetName()).get().is(FlagStatus.valueOf(t.getValue()));
+			if (!FlagStorageStorage.getInstance().contains(t.getStorageName())) {
+				return false;
+			}
+			FlagStorage s = FlagStorageStorage.getInstance().get(t.getStorageName());
+			if (s == null) {
+				return false;
+			}
+			if (!s.contains(t.getTargetName())) {
+				return false;
+			}
+			Flag f = s.get(t.getTargetName());
+			if (f == null) {
+				return false;
+			}
+			return f.get() == FlagStatus.valueOf(t.getValue());
+		}
+	},
+	NO_EXISTS_FLG {
+		@Override
+		boolean canExec(List<Status> party, EventTerm t) {
+			if (!FlagStorageStorage.getInstance().contains(t.getStorageName())) {
+				return true;
+			}
+			FlagStorage s = FlagStorageStorage.getInstance().get(t.getStorageName());
+			if (s == null) {
+				return true;
+			}
+			if (!s.contains(t.getTargetName())) {
+				return true;
+			}
+			Flag f = s.get(t.getTargetName());
+			if (f == null) {
+				return true;
+			}
+			return false;
+		}
+	},
+	EXISTS_FLG {
 		@Override
 		public boolean canExec(List<Status> party, EventTerm t) {
-			return FlagStorageStorage.getInstance().get(t.getStorageName()).get(t.getTargetName()).get().is(FlagStatus.valueOf(t.getValue()));
+			if (!FlagStorageStorage.getInstance().contains(t.getStorageName())) {
+				return false;
+			}
+			FlagStorage s = FlagStorageStorage.getInstance().get(t.getStorageName());
+			if (s == null) {
+				return false;
+			}
+			if (!s.contains(t.getTargetName())) {
+				return false;
+			}
+			Flag f = s.get(t.getTargetName());
+			if (f == null) {
+				return false;
+			}
+			return true;
 		}
 	},
 	QUEST_LINE_IS {

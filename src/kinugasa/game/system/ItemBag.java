@@ -70,11 +70,21 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 
 	public void add(Item i) {
 		items.add(i);
+		if (GameSystem.isDebugMode()) {
+			System.out.println("ItemBags,addItem:" + i);
+		}
+	}
+
+	public boolean canAdd() {
+		return max > size();
 	}
 
 	public void drop(Item i) {
 		if (items.contains(i)) {
 			items.remove(i);
+			if (GameSystem.isDebugMode()) {
+				System.out.println("ItemBags,dropItem:" + i);
+			}
 		}
 	}
 

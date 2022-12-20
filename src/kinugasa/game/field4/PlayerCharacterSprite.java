@@ -66,6 +66,11 @@ public class PlayerCharacterSprite extends AnimationSprite {
 		setAnimation(fAnimation.get(dir));
 		currentDir = dir;
 	}
+	private boolean shadow = true;
+
+	public void setShadow(boolean shadow) {
+		this.shadow = shadow;
+	}
 
 	@Override
 	public void draw(GraphicsContext g) {
@@ -73,10 +78,12 @@ public class PlayerCharacterSprite extends AnimationSprite {
 			return;
 		}
 		super.draw(g);
-		Graphics2D g2 = g.create();
-		g2.setColor(SHADOW);
-		g2.fillOval((int) (getX() + getWidth() / 8), (int) (getY() + getHeight() - getHeight() / 16), (int) (getWidth() - getWidth() / 4), (int) (getHeight() / 8));
-		g2.dispose();
+		if (shadow) {
+			Graphics2D g2 = g.create();
+			g2.setColor(SHADOW);
+			g2.fillOval((int) (getX() + getWidth() / 8), (int) (getY() + getHeight() - getHeight() / 16), (int) (getWidth() - getWidth() / 4), (int) (getHeight() / 8));
+			g2.dispose();
+		}
 	}
 	private static final Color SHADOW = new Color(0, 0, 0, 128);
 	private int stage = 0;

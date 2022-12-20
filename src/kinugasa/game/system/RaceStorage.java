@@ -58,12 +58,13 @@ public class RaceStorage extends Storage<Race> implements XMLFileSupport {
 		for (XMLElement e : root.getElement("race")) {
 			String raceName = e.getAttributes().get("name").getValue();
 			int itemBagSize = e.getAttributes().get("itemBagSize").getIntValue();
+			int bookBagSize = e.getAttributes().get("bookBagSize").getIntValue();
 			HashSet<ItemEqipmentSlot> set = new HashSet<>();
 			for (XMLElement ee : e.getElement("slot")) {
 				String slotName = ee.getAttributes().get("name").getValue();
 				set.add(ItemEqipmentSlotStorage.getInstance().get(slotName));
 			}
-			getInstance().add(new Race(raceName, itemBagSize, set));
+			getInstance().add(new Race(raceName, itemBagSize, bookBagSize, set));
 		}
 		file.dispose();
 		printAll(System.out);

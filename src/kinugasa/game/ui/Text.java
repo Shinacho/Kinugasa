@@ -23,6 +23,11 @@
  */
 package kinugasa.game.ui;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import kinugasa.game.field4.FieldEvent;
 import kinugasa.resource.Nameable;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.TimeCounter;
@@ -34,14 +39,25 @@ import kinugasa.util.TimeCounter;
  */
 public class Text implements Nameable {
 
+	private static Map<String, String> replaceMap = new HashMap<>();
+
+	public static void setReplaceMap(Map<String, String> replaceMap) {
+		Text.replaceMap = replaceMap;
+	}
+
+	public static Map<String, String> getReplaceMap() {
+		return replaceMap;
+	}
+
+	//
 	private final String name;
-	private final String text;
+	private String text;
 	private TimeCounter tc = new FrameTimeCounter(0);
 	private int visibleIdx = 0;
 	private String nextId;
 	private static int autoId = 0;
 	private static String lineSep = "/";
-	private String eventStorageName, eventName;
+	private List<FieldEvent> events;
 
 	public static void setLineSep(String lineSep) {
 		Text.lineSep = lineSep;
@@ -57,37 +73,38 @@ public class Text implements Nameable {
 
 	public Text(String text) {
 		this.name = autoId++ + "";
-		this.text = text;
+		setText(text);
 	}
 
 	public Text(String text, TimeCounter tc) {
 		this.name = autoId++ + "";
-		this.text = text;
+		setText(text);
 		this.tc = tc;
 		visibleIdx = 0;
 	}
 
 	public Text(String name, String text, TimeCounter tc, int visibleIdx) {
 		this.name = name;
-		this.text = text;
+		setText(text);
 		this.tc = tc;
 		this.visibleIdx = visibleIdx;
 	}
 
-	public String getEventStorageName() {
-		return eventStorageName;
+	private void setText(String t) {
+		this.text = t;
+		for (Map.Entry<String, String> e : replaceMap.entrySet()) {
+			text = text.replaceAll(e.getKey(), e.getValue());
+		}
+
 	}
 
-	public void setEventStorageName(String eventStorageName) {
-		this.eventStorageName = eventStorageName;
+	List<FieldEvent> getEvents() {
+		return events;
 	}
 
-	public String getEventName() {
-		return eventName;
-	}
-
-	public void setEventName(String eventName) {
-		this.eventName = eventName;
+	void setEvents(List<FieldEvent> events) {
+		Collections.sort(events);
+		this.events = events;
 	}
 
 	public boolean isReaching() {

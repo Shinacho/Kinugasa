@@ -24,6 +24,7 @@
 
 package kinugasa.game;
 
+import kinugasa.game.input.InputState;
 import kinugasa.resource.Disposable;
 import kinugasa.resource.Nameable;
 
@@ -53,7 +54,7 @@ public abstract class GameLogic implements Nameable, Disposable{
 	@Override
 	public abstract void dispose();
 	
-	public abstract void update(GameTimeManager gtm);
+	public abstract void update(GameTimeManager gtm, InputState is);
 	
 	public abstract void draw(GraphicsContext g);
 	

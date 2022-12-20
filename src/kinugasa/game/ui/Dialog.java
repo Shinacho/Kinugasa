@@ -23,7 +23,13 @@
  */
 package kinugasa.game.ui;
 
+import java.awt.Event;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import kinugasa.game.GameOption;
 
 /**
@@ -36,6 +42,34 @@ public class Dialog {
 	public static DialogOption info(String msg) {
 		int r = JOptionPane.showConfirmDialog(null, msg, GameOption.getInstance().getTitle(), JOptionPane.DEFAULT_OPTION);
 		return DialogOption.of(r);
+	}
+
+	public static class InputResult {
+
+		public InputResult(String value, DialogOption result) {
+			this.value = value;
+			this.result = result;
+		}
+
+		public String value;
+		public DialogOption result;
+	}
+
+	public static InputResult input(String title, int max) {
+		JTextField jt = new JTextField();
+		jt.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField f = (JTextField) e.getSource();
+				String s = f.getText();
+				if (s.length() > max) {
+					f.setText(s.substring(0, max));
+				}
+			}
+		});
+		jt.grabFocus();
+		int r = JOptionPane.showConfirmDialog(null, jt, title, JOptionPane.DEFAULT_OPTION);
+		return new InputResult(jt.getText(), DialogOption.of(r));
 	}
 
 	public static DialogOption yesOrNo(String title, DialogIcon icon, String msg) {

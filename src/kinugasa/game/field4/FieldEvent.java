@@ -36,21 +36,21 @@ import kinugasa.resource.Nameable;
 public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent> {
 
 	private String name;
-	private int priority;
+	private int order;
 	private D2Idx location;
-	private List<EventTerm> term;
 	private FieldEventType eventType;
 	private String storageName;
 	private String targetName;
 	private String value;
 	private boolean disposeWhenExec = true;
 	private boolean exists = true;
+	private List<EventTerm> term;
 
-	public FieldEvent(String name, int priority, D2Idx location,
+	public FieldEvent(String name, int order, D2Idx location,
 			List<EventTerm> term, FieldEventType eventType,
 			String storageName, String targetName, String value) {
 		this.name = name;
-		this.priority = priority;
+		this.order = order;
 		this.location = location;
 		this.term = term;
 		this.eventType = eventType;
@@ -62,11 +62,17 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 	public UserOperationRequire exec(FieldMap m) {
 		//¶‘¶ó‘Ô‚Ì”»’è
 		if (!exists) {
+			if (GameSystem.isDebugMode()) {
+				System.out.println("->, but this event is dead");
+			}
 			return UserOperationRequire.CONTINUE;
 		}
 		//Term‚Ì”»’è
 		if (term != null) {
 			if (term.stream().anyMatch(p -> !p.canDoThis(GameSystem.getInstance().getPartyStatus(), this))) {
+				if (GameSystem.isDebugMode()) {
+					System.out.println("->, but this event is disable");
+				}
 				return UserOperationRequire.CONTINUE;
 			}
 		}
@@ -76,6 +82,7 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 		if (disposeWhenExec) {
 			exists = false;
 		}
+		System.out.println("->done");
 		return u;
 	}
 
@@ -145,13 +152,13 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 	}
 
 	@Override
-	public String toString() {
-		return "FieldEvent{" + "name=" + name + ", location=" + location + ", eventType=" + eventType + ", storageName=" + storageName + ", targetName=" + targetName + ", value=" + value + '}';
+	public int compareTo(FieldEvent o) {
+		return order - o.order;
 	}
 
 	@Override
-	public int compareTo(FieldEvent o) {
-		return priority - o.priority;
+	public String toString() {
+		return "FieldEvent{" + "name=" + name + ", order=" + order + ", location=" + location + ", eventType=" + eventType + ", storageName=" + storageName + ", targetName=" + targetName + ", value=" + value + ", disposeWhenExec=" + disposeWhenExec + ", exists=" + exists + ", term=" + term + '}';
 	}
 
 }

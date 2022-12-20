@@ -35,17 +35,13 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.LockUtil;
 import kinugasa.game.field4.D2Idx;
 import kinugasa.game.field4.PlayerCharacterSprite;
-import kinugasa.game.field4.FieldMapStorage;
 import kinugasa.game.field4.FieldMapXMLLoader;
 import kinugasa.game.field4.FourDirAnimation;
+import kinugasa.game.input.InputState;
 import kinugasa.game.system.ActionStorage;
-import kinugasa.game.system.ActionType;
 import kinugasa.game.system.BattleCharacter;
-import kinugasa.game.system.BattleCommandMessageWindow;
 import kinugasa.game.system.BattleConfig;
 import kinugasa.game.system.BattleResult;
-import kinugasa.game.system.BattleSystem;
-import kinugasa.game.system.BattleWinLoseLogic;
 import kinugasa.game.system.BookStorage;
 import kinugasa.game.system.Enemy;
 import kinugasa.game.system.GameSystem;
@@ -56,10 +52,8 @@ import kinugasa.game.system.PlayerCharacter;
 import kinugasa.game.system.RaceStorage;
 import kinugasa.game.system.SpeedCalcModelStorage;
 import kinugasa.game.system.Status;
-import kinugasa.game.system.StatusWindows;
 import kinugasa.game.ui.FPSLabel;
 import kinugasa.graphics.Animation;
-import kinugasa.graphics.RenderingQuality;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.FourDirection;
 import kinugasa.util.FrameTimeCounter;
@@ -107,7 +101,7 @@ public class Test extends GameManager {
 				.addRaceStorage("resource/field/data/race/raceList.xml")
 				.addBattleActionStorage("resource/field/data/battle/action.xml")
 				.addBattleField("resource/field/data/battle/battleField.xml")
-				.addEnemyList("resource/field/data/enemy/enemyList.xml")
+				.addEnemyMaster("resource/field/data/enemy/enemyList.xml")
 				.addEnemySet("resource/field/data/enemy/enemySet.xml")
 				.addBookList("resource/field/data/item/bookList.xml")
 				.load();
@@ -275,7 +269,6 @@ public class Test extends GameManager {
 		BattleConfig.setMagicVisibleStatusKey(Arrays.asList("MP", "SAN"));
 		BattleConfig.setVisibleStatus(Arrays.asList("HP ", "MP ", "SAN"));
 
-
 		gls.add(new FieldLogic(this));
 		gls.add(new BattleLogic(this));
 
@@ -290,9 +283,9 @@ public class Test extends GameManager {
 	}
 
 	@Override
-	protected void update(GameTimeManager gtm) {
+	protected void update(GameTimeManager gtm, InputState is) {
 		fps.setGtm(gtm);
-		gls.getCurrent().update(gtm);
+		gls.getCurrent().update(gtm, is);
 	}
 
 	@Override

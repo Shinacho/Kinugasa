@@ -34,7 +34,7 @@ import kinugasa.resource.Nameable;
 public class Race implements Nameable {
 
 	private String name;
-	private int itemBagSize;
+	private int itemBagSize, bookBagSize;
 	private Set<ItemEqipmentSlot> eqipSlot;
 
 	public Race(String name, Set<ItemEqipmentSlot> eqipSlot) {
@@ -42,10 +42,15 @@ public class Race implements Nameable {
 		this.eqipSlot = eqipSlot;
 	}
 
-	public Race(String name, int itemBagSize, Set<ItemEqipmentSlot> eqipSlot) {
+	public Race(String name, int itemBagSize, int bookBagSize, Set<ItemEqipmentSlot> eqipSlot) {
 		this.name = name;
 		this.itemBagSize = itemBagSize;
+		this.bookBagSize = bookBagSize;
 		this.eqipSlot = eqipSlot;
+	}
+
+	public int getBookBagSize() {
+		return bookBagSize;
 	}
 
 	public int getItemBagSize() {

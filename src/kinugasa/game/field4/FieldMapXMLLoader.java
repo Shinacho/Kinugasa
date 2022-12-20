@@ -130,14 +130,8 @@ public class FieldMapXMLLoader {
 	}
 
 	public FieldMap load() throws IllegalStateException {
-		if (soundLoader.isEmpty()) {
-			throw new IllegalStateException("sound is empty");
-		}
 		soundLoader.forEach(v -> SoundLoader.loadList(v));
 
-		if (textStorage.isEmpty()) {
-			throw new IllegalStateException("textStorage is empty");
-		}
 		textStorage.forEach(v -> TextStorageStorage.getInstance().readFromXML(v));
 
 		if (mapChipAttrStorage.isEmpty()) {

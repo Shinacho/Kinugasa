@@ -73,6 +73,7 @@ public class Status {
 		this.name = name;
 		this.race = race;
 		itemBag.setMax(race.getItemBagSize());
+		bookBag.setMax(race.getBookBagSize());
 		actions.addAll(itemBag.getItems());
 		for (ItemEqipmentSlot slot : race.getEqipSlot()) {
 			eqipment.put(slot, null);
@@ -581,6 +582,5 @@ public class Status {
 
 		return result;
 	}
-	
 
 }

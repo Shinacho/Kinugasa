@@ -128,10 +128,17 @@ public class GameOption {
 	}
 
 	public static GameOption fromGUI() {
-		return fromGUI("MyGame", true, true, true);
+		return fromGUI("MyGame", GUILockMode.ON_ENABLE, GUILockMode.ON_ENABLE, GUILockMode.ON_ENABLE);
 	}
 
-	public static GameOption fromGUI(String name, boolean mouse, boolean keyboard, boolean gamepad) {
+	public enum GUILockMode {
+		ON_ENABLE,
+		ON_DISABLE,
+		OFF_ENABLE,
+		OFF_DISABLE
+	}
+
+	public static GameOption fromGUI(String name, GUILockMode mouse, GUILockMode keyboard, GUILockMode gamepad) {
 
 		/* Set the Nimbus look and feel */
 		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -161,9 +168,61 @@ public class GameOption {
 
 		/* Create and display the form */
 		final GameLauncher gl = new GameLauncher(name);
-		gl.getMouse().setEnabled(mouse);
-		gl.getKeyboard().setEnabled(keyboard);
-		gl.getGamepad().setEnabled(gamepad);
+		switch (mouse) {
+			case OFF_DISABLE:
+				gl.getMouse().setSelected(false);
+				gl.getMouse().setEnabled(false);
+				break;
+			case OFF_ENABLE:
+				gl.getMouse().setSelected(false);
+				gl.getMouse().setEnabled(true);
+				break;
+			case ON_DISABLE:
+				gl.getMouse().setSelected(true);
+				gl.getMouse().setEnabled(false);
+				break;
+			case ON_ENABLE:
+				gl.getMouse().setSelected(true);
+				gl.getMouse().setEnabled(true);
+				break;
+		}
+		switch (keyboard) {
+			case OFF_DISABLE:
+				gl.getKeyboard().setSelected(false);
+				gl.getKeyboard().setEnabled(false);
+				break;
+			case OFF_ENABLE:
+				gl.getKeyboard().setSelected(false);
+				gl.getKeyboard().setEnabled(true);
+				break;
+			case ON_DISABLE:
+				gl.getKeyboard().setSelected(true);
+				gl.getKeyboard().setEnabled(false);
+				break;
+			case ON_ENABLE:
+				gl.getKeyboard().setSelected(true);
+				gl.getKeyboard().setEnabled(true);
+				break;
+		}
+		switch (gamepad) {
+			case OFF_DISABLE:
+				gl.getGamepad().setSelected(false);
+				gl.getGamepad().setEnabled(false);
+				break;
+			case OFF_ENABLE:
+				gl.getGamepad().setSelected(false);
+				gl.getGamepad().setEnabled(true);
+				break;
+			case ON_DISABLE:
+				gl.getGamepad().setSelected(true);
+				gl.getGamepad().setEnabled(false);
+				break;
+			case ON_ENABLE:
+				gl.getGamepad().setSelected(true);
+				gl.getGamepad().setEnabled(true);
+				break;
+		}
+
 		java.awt.EventQueue.invokeLater(() -> {
 			gl.setVisible(true);
 		});

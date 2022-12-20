@@ -65,5 +65,9 @@ public class TextStorageStorage extends Storage<TextStorage> implements XMLFileS
 		printAll(System.out);
 
 	}
+	
+	public void dispose(){
+		forEach(p->p.dispose());
+	}
 
 }

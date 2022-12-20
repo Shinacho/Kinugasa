@@ -32,7 +32,9 @@ import java.util.Locale;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import kinugasa.game.GameOption;
+import kinugasa.game.I18N;
 import kinugasa.game.LockUtil;
 import kinugasa.game.input.Keys;
 import kinugasa.game.system.GameSystem;
@@ -143,7 +145,7 @@ public class GameLauncher extends javax.swing.JFrame {
             }
         });
 
-        fps.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "30", "50", "60", "61", "62" }));
+        fps.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "30", "50", "60", "61", "62", "120（テスト用）" }));
         fps.setSelectedIndex(2);
 
         debugMode.setText("デバッグモードを有効にする");
@@ -247,6 +249,10 @@ public class GameLauncher extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
+		if (!keyboard.isSelected() && !mouse.isSelected() && !gamepad.isSelected()) {
+			JOptionPane.showConfirmDialog(null, "いずれかの入力デバイスは必要です", "起動失敗", JOptionPane.DEFAULT_OPTION);
+			return;
+		}
 		option = new GameOption(getTitle());
 
 		String a = args.getText().trim().replaceAll(" ", "/");
@@ -266,16 +272,23 @@ public class GameLauncher extends javax.swing.JFrame {
 		option.setWindowLocation(new Point(0, 0));
 		option.setCenterOfScreen();
 
-		String logPath = new File(logFile.getText()).getParentFile().getAbsolutePath();
-		String logName = new File(logFile.getText()).getName();
-		option.setLogPath(logPath);
-		option.setLogName(logName);
+		if (!logFile.getText().equals("")) {
+			String logPath = new File(logFile.getText()).getParentFile().getAbsolutePath();
+			String logName = new File(logFile.getText()).getName();
+			option.setLogPath(logPath.replaceAll("\\\\", "/") + "/");
+			option.setLogName(logName);
+			option.setUseLog(true);
+		}
 
 		option.setUseMouse(mouse.isSelected());
 		option.setUseKeyboard(keyboard.isSelected());
 		option.setUseGamePad(gamepad.isSelected());
 
-		option.setFps(Integer.parseInt(fps.getSelectedItem().toString()));
+		if (fps.getSelectedItem().toString().equals("120（テスト用）")) {
+			option.setFps(120);
+		} else {
+			option.setFps(Integer.parseInt(fps.getSelectedItem().toString()));
+		}
 
 		if (rendering.getSelectedItem().toString().equals("速度（推奨）")) {
 			option.setRenderingQuality(RenderingQuality.SPEED);
@@ -293,6 +306,7 @@ public class GameLauncher extends javax.swing.JFrame {
 		if (lockFileDelete.isSelected()) {
 			LockUtil.deleteAllLockFile();
 		}
+		option.setLock(true);
 
 		option.setDebugMode(debugMode.isSelected());
 

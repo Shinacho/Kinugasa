@@ -24,7 +24,6 @@
 package kinugasa.game.field4;
 
 import kinugasa.object.FourDirection;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -32,8 +31,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
@@ -41,6 +42,7 @@ import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
 import kinugasa.game.system.EncountInfo;
 import kinugasa.game.system.EnemySetStorageStorage;
+import kinugasa.game.system.GameSystem;
 import kinugasa.game.system.GameSystemException;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
@@ -71,6 +73,16 @@ import kinugasa.util.Random;
  * @author Dra211<br>
  */
 public class FieldMap implements Drawable, Nameable, Disposable {
+
+	private static String enterOperation = "(A)";
+
+	public static String getEnterOperation() {
+		return enterOperation;
+	}
+
+	public static void setEnterOperation(String enterOperation) {
+		FieldMap.enterOperation = enterOperation;
+	}
 
 	public FieldMap(String name, XMLFile data) {
 		this.name = name;
@@ -109,6 +121,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private List<BeforeLayerSprite> beforeLayerSprites = new ArrayList<>();
 	//------------------------------------------------
 	private NPCStorage npcStorage = new NPCStorage();
+	private static Map<String, List<String>> removedNPC = new HashMap<>();
+	private static Map<String, List<NPC>> addedNPC = new HashMap<>();
 	private FieldEventStorage fieldEventStorage;//nullable
 	private NodeStorage nodeStorage = new NodeStorage();
 	private TextStorage textStorage;//nullable
@@ -128,6 +142,14 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private LinkedList<D2Idx> prevLocationList = new LinkedList<>();
 	private String enemyStorageName;
 	//
+
+	public static Map<String, List<NPC>> getAddedNPC() {
+		return addedNPC;
+	}
+
+	public static Map<String, List<String>> getRemovedNPC() {
+		return removedNPC;
+	}
 
 	public D2Idx getCurrentIdx() {
 		return currentIdx;
@@ -309,15 +331,15 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				}
 				nodeStorage.add(node);
 			}
-
 		}
 		//出口専用ノード
 		{
 			for (XMLElement e : root.getElement("outNode")) {
 				String name = e.getAttributes().get("name").getValue();
+				String outMapName = e.getAttributes().get("outMap").getValue();
 				int x = e.getAttributes().get("x").getIntValue();
 				int y = e.getAttributes().get("y").getIntValue();
-				Node node = Node.ofOutNode(name, x, y);
+				Node node = Node.ofOutNode(name, outMapName, x, y);
 				nodeStorage.add(node);
 			}
 
@@ -353,7 +375,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			for (XMLElement e : root.getElement("frontLayer")) {
 				MapChipSet chipset = MapChipSetStorage.getInstance().get(e.getAttributes().get("chipSet").getValue());
 				String lineSep = e.getAttributes().get("lineSeparator").getValue();
-				String[] lineVal = e.getValue().replaceAll(" ", "").replaceAll("\t", "").split(lineSep);
+				String[] lineVal = e.getValue().replaceAll("\n", "").replaceAll("\r\n", "").replaceAll(" ", "").replaceAll("\t", "").split(lineSep);
 				MapChip[][] data = new MapChip[lineVal.length][];
 				for (int y = 0; y < lineVal.length; y++) {
 					String[] val = lineVal[y].split(",");
@@ -430,11 +452,14 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 		//NPC
 		{
-			if (!root.getElement("npc").isEmpty() && textStorage.isEmpty()) {
-				throw new FieldMapDataException("npc is not empty, but text is empty");
-			}
 			for (XMLElement e : root.getElement("npc")) {
 				String name = e.getAttributes().get("name").getValue();
+				//削除されたNPCの場合は追加しない
+				if (removedNPC.containsKey(this.getName())) {
+					if (removedNPC.get(getName()).contains(name)) {
+						continue;
+					}
+				}
 				String initialIdxStr = e.getAttributes().get("initialIdx").getValue();
 				D2Idx idx = new D2Idx(Integer.parseInt(initialIdxStr.split(",")[0]), Integer.parseInt(initialIdxStr.split(",")[1]));
 				// 領域のチェック
@@ -442,9 +467,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 					throw new FieldMapDataException("npc : " + name + " is out of bounds");
 				}
 				NPCMoveModel moveModel = NPCMoveModelStorage.getInstance().get(e.getAttributes().get("NPCMoveModel").getValue());
-				Vehicle v = VehicleStorage.getInstance().get(e.getAttributes().get("vehicle").getValue());
-				String textID = e.getAttributes().get("textID").getValue();
-				int frame = e.getAttributes().get("frame").getIntValue();
+
+				Vehicle v = e.hasAttribute("vehicle") ? VehicleStorage.getInstance().get(e.getAttributes().get("vehicle").getValue()) : null;
+				String textID = e.hasAttribute("textID") ? e.getAttributes().get("textID").getValue() : null;
+
+				int frame = e.hasAttribute("frame") ? e.getAttributes().get("frame").getIntValue() : Integer.MAX_VALUE;
+
 				BufferedImage image = ImageUtil.load(e.getAttributes().get("image").getValue());
 				int sx, sw, sh;
 				int ex, ew, eh;
@@ -477,6 +505,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				float x = getBaseLayer().getX() + idx.x * chipW;
 				float y = getBaseLayer().getY() + idx.y * chipH;
 				npcStorage.add(new NPC(name, currentIdx, moveModel, v, this, textID, x, y, w, h, idx, anime, initialDir));
+			}
+			//追加NPCを設定
+			if (addedNPC.containsKey(getName())) {
+				npcStorage.addAll(addedNPC.get(getName()));
 			}
 		}
 
@@ -541,7 +573,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 		frontlLayeres.forEach(e -> e.draw(g));
 		if (debugMode) {
-			DebugLayerSprite.debugDrawPC(g, playerCharacter, currentIdx, currentIdx, getBaseLayer().getLocation(), chipW, chipH);
+			DebugLayerSprite.debugDrawPC(g, playerCharacter, currentIdx, getBaseLayer().getLocation(), chipW, chipH);
 			DebugLayerSprite.debugDrawNPC(g, npcStorage.asList(), getBaseLayer().getLocation(), chipW, chipH);
 			DebugLayerSprite.debugDrawCamera(g, getBaseLayer().getLocation(), chipW, chipH);
 		}
@@ -574,6 +606,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	public void dispose() {
 		if (backgroundLayerSprite != null) {
 			backgroundLayerSprite.dispose();
+			backgroundLayerSprite = null;
 		}
 		backlLayeres.forEach(e -> e.dispose());
 		backlLayeres.clear();
@@ -597,8 +630,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			for (int i = 0; i < playerCharacter.size() - 1; i++) {
 				prevLocationList.add(currentIdx);
 			}
-			playerCharacter.subList(1, playerCharacter.size()).forEach(v -> v.setCurrentIdx(currentIdx));
-			playerCharacter.subList(1, playerCharacter.size()).forEach(v -> v.setTargetIdx(currentIdx));
+			if (playerCharacter.size() > 1) {
+				playerCharacter.subList(1, playerCharacter.size()).forEach(v -> v.setCurrentIdx(currentIdx));
+				playerCharacter.subList(1, playerCharacter.size()).forEach(v -> v.setTargetIdx(currentIdx));
+			}
 		}
 		npcStorage.forEach(c -> c.update());
 		if (mw != null) {
@@ -626,6 +661,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 	@LoopCall
 	public void move() {
+		if (getBaseLayer().getVector().getSpeed() == 0) {
+			return;
+		}
 		D2Idx prevIdx = currentIdx.clone();
 		camera.move();
 		if (!prevIdx.equals(currentIdx)) {
@@ -636,7 +674,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 			encountCounter.sub(x);
 			if (debugMode) {
-				System.out.println("FM MOVE " + currentIdx + " / EC=" + encountCounter.getCurrentTime());
+				System.out.print("FM MOVE " + currentIdx + " / EC=" + encountCounter.getCurrentTime());
+				System.out.println(getCurrentTile());
 			}
 			prevLocationList.addFirst(prevIdx);
 			if (playerCharacter.size() <= prevLocationList.size()) {
@@ -719,6 +758,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		List<FieldEvent> event = fieldEventStorage == null ? null : fieldEventStorage.get(idx);
 		Node node = nodeStorage.get(idx);
 
+		if (playerCharacter.isEmpty()) {
+			return new FieldMapTile(chip, npc, null, event, node);
+		}
+
 		return new FieldMapTile(chip, npc, idx.equals(currentIdx) ? playerCharacter.get(0) : null, event, node);
 	}
 
@@ -734,11 +777,13 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 */
 	public void setCurrentIdx(D2Idx idx) {
 		if (!idx.equals(currentIdx)) {
-			//イベントの実行
-			List<FieldEvent> e = fieldEventStorage.get(idx);
-			Collections.sort(e);
-			//自動発動イベントの設定
-			FieldEventSystem.getInstance().setEvent(new LinkedList<>(e));
+			if (fieldEventStorage != null) {
+				//イベントの実行
+				List<FieldEvent> e = fieldEventStorage.get(idx);
+				Collections.sort(e);
+				//自動発動イベントの設定
+				FieldEventSystem.getInstance().setEvent(new LinkedList<>(e));
+			}
 		}
 		this.currentIdx = idx.clone();
 
@@ -846,7 +891,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		//NPCが画面下半分にいる場合はメッセージウインドウを上に表示。上半分にいる場合は下に表示。
 		float buffer = 24;
 		float x = buffer;
-		float y = n == null || n.getCenterY() < GameOption.getInstance().getWindowSize().width / 2 ? GameOption.getInstance().getWindowSize().height / 2 + buffer : buffer;
+		float y = n == null || n.getCenterY() < GameOption.getInstance().getWindowSize().width / 2 ? GameOption.getInstance().getWindowSize().height / 2 + buffer * 2 : buffer;
 		float w = GameOption.getInstance().getWindowSize().width - (buffer * 2);
 		float h = GameOption.getInstance().getWindowSize().height / 3;
 		Text t = n == null ? new Text(noNPCMessage) : textStorage.get(n.getTextID());
@@ -869,6 +914,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			mw = null;
 		}
 		npcStorage.forEach(c -> c.canMove());
+	}
+
+	MessageWindow getMessageWindow() {
+		return mw;
 	}
 
 	void setMW(MessageWindow mw) {
@@ -900,18 +949,27 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 		}
 		dispose();
+		if (n.getSe() != null) {
+			n.getSe().load().stopAndPlay();
+		}
 		FieldMap fm = FieldMapStorage.getInstance().get(n.getExitFieldMapName()).build();
-		fm.setCurrentIdx(fm.getNodeStorage().get(n.getExitNodeName()).getIdx());
+		if (n.getExitNodeName() == null) {
+			fm.setCurrentIdx(n.getIdx());
+		} else {
+			fm.setCurrentIdx(fm.getNodeStorage().get(n.getExitNodeName()).getIdx());
+		}
 		fm.getCamera().updateToCenter();
 		fm.prevLocationList.clear();
-
-		FieldMap.getPlayerCharacter().get(0).to(n.getOutDir());
+		if (n.getOutDir() != null) {
+			FieldMap.getPlayerCharacter().get(0).to(n.getOutDir());
+		}
 		if (FieldMap.getPlayerCharacter().size() > 1) {
 			FieldMap.getPlayerCharacter().subList(1, getPlayerCharacter().size()).forEach(v -> v.setCurrentIdx(getCurrentIdx()));
 			FieldMap.getPlayerCharacter().subList(1, getPlayerCharacter().size()).forEach(v -> v.setLocation(playerCharacter.get(0).getLocation()));
 		}
-		n.getSe().load().play();
-		System.out.println("CHANGE_MAP IN: " + n + " OUT:" + fm.getNodeStorage().get(n.getExitNodeName()));
+		if (GameSystem.isDebugMode()) {
+			System.out.println("CHANGE_MAP: " + n);
+		}
 		return fm;
 	}
 

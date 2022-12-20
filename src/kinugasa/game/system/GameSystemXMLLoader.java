@@ -96,7 +96,7 @@ public class GameSystemXMLLoader {
 		return this;
 	}
 
-	public GameSystemXMLLoader addEnemyList(String fileName) {
+	public GameSystemXMLLoader addEnemyMaster(String fileName) {
 		this.enemyList.add(fileName);
 		return this;
 	}
@@ -210,14 +210,8 @@ public class GameSystemXMLLoader {
 		}
 		battleField.forEach(f -> BattleFieldSystem.getInstance().readFromXML(f));
 
-		if (enemyList.isEmpty()) {
-			throw new IllegalStateException("enemyList is empty");
-		}
 		enemyList.forEach(f -> EnemyStorage.getInstance().readFromXML(f));
 
-		if (ess.isEmpty()) {
-			throw new IllegalStateException("enemySet is empty");
-		}
 		ess.forEach(f -> EnemySetStorageStorage.getInstance().readFromXML(f));
 
 		if (enemyProgressBarKey != null && !enemyProgressBarKey.isEmpty()) {

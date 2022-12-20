@@ -66,7 +66,9 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 		this.map = map;
 		this.textId = textId;
 		this.currentIdx = initialIdx.clone();
-		setSpeed(vehicle.getSpeed());
+		if (vehicle != null) {
+			setSpeed(vehicle.getSpeed());
+		}
 		to(initialDir);
 	}
 
@@ -97,7 +99,7 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 	public void setTargetIdx(D2Idx targetIdx) {
 		this.targetIdx = targetIdx;
 		outerTarget = true;
-		stage = 3;
+		stage = 0;
 		moveStop = false;
 	}
 
@@ -135,7 +137,8 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 		switch (stage) {
 			case 0:
 				if (outerTarget) {
-					nextMoveFrameTime = new FrameTimeCounter(0);
+					nextMoveFrameTime = new FrameTimeCounter(1);
+					assert targetIdx != null : "NPC target is null " + getName();
 					nextStage();
 					break;
 				}
@@ -154,9 +157,10 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 			case 2:
 				//ˆÚ“®Às
 				if (getTargetIdx().equals(map.getCurrentIdx())) {
+					//ˆÚ“®•s”\‚Ì‚½‚ß–ß‚é
 					stage = 0;
 				}
-				float speed = vehicle.getSpeed() / 2;
+				float speed = vehicle == null ? 1f : vehicle.getSpeed() / 2;
 				Point2D.Float p = (Point2D.Float) getLocation().clone();
 				if (getCurrentIdx().x > getTargetIdx().x) {
 					p.x -= speed;
@@ -240,9 +244,6 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 	}
 
 	void nextStage() {
-//		if (FieldMap.isDebugMode()) {
-//			System.out.println("NPC " + getName() + " s stage : " + stage + " -> " + (stage + 1) + " " + this);
-//		}
 		stage++;
 		if (stage >= 4) {
 			stage = 0;

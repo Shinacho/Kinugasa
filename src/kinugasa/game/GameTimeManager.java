@@ -23,7 +23,6 @@
  */
 package kinugasa.game;
 
-
 /**
  * ゲームの進行時間を管理し、FPSを一定に保つための機能を提供します.
  * <br>
@@ -35,20 +34,35 @@ package kinugasa.game;
  */
 public final class GameTimeManager {
 
-	/** 単位時間当たりの更新回数. */
+	/**
+	 * 単位時間当たりの更新回数.
+	 */
 	private int updateNum;
-	/** 前回検査時の時刻. */
+	/**
+	 * 前回検査時の時刻.
+	 */
 	private long prevTime;
-	/** 現在の時刻. */
+	/**
+	 * 現在の時刻.
+	 */
 	private long nowTime;
-	/** 現在のFPS. */
+	/**
+	 * 現在のFPS.
+	 */
 	private float fps;
-	/** スリープでの待ち時間. */
+	/**
+	 * スリープでの待ち時間.
+	 */
 	private long waitTime;
-	/** 開始からの経過フレーム. */
+	/**
+	 * 開始からの経過フレーム.
+	 */
 	private long totalFrame = 0L;
-	/** スリープの終了時刻. */
+	/**
+	 * スリープの終了時刻.
+	 */
 	private long endTime;
+	private long startTime;
 
 	/**
 	 * FPSの最大値が60の新しいTimeManagerを作成します.
@@ -68,9 +82,20 @@ public final class GameTimeManager {
 		prevTime = System.nanoTime() - 1000000000;
 	}
 
+	void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+
 	/**
-	 * FPSの最大値を取得します.
-	 * このメソッドの戻り値はミリ秒制度に丸められる.
+	 * ゲーム開始時刻を取得します。このゲームが開始された時刻です。
+	 * @return ゲーム開始時刻。System.currentTimeMillisです。
+	 */
+	public long getStartTime() {
+		return startTime;
+	}
+
+	/**
+	 * FPSの最大値を取得します. このメソッドの戻り値はミリ秒制度に丸められる.
 	 *
 	 * @return FPSの最大値.<br>
 	 */
@@ -98,8 +123,7 @@ public final class GameTimeManager {
 	}
 
 	/**
-	 * FPSのみ時列表記を取得します.
-	 * このメソッドの戻り値は単精度です.<Br>
+	 * FPSのみ時列表記を取得します. このメソッドの戻り値は単精度です.<Br>
 	 *
 	 * @return FPSの文字列表記.通常は少数以下は6桁程度になる.<br>
 	 */

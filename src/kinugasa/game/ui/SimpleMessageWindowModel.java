@@ -135,20 +135,20 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 		//グラデーションでインナー描画
 		g2.setPaint(paint);
 		g2.fillRect(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6);
-		
+
 		//ペイントをもとに戻す
 		g2.setPaint(p);
 
 		g2.setColor(cColor);
-		x += BORDER_SIZE * 3;
-		y += BORDER_SIZE * 3 + font.getFont().getSize2D();
+		x += BORDER_SIZE * 5;
+		y += BORDER_SIZE * 5 + font.getFont().getSize2D();
 
 		String visibleText = mw.getVisibleText();
 		String[] text = visibleText.contains(Text.getLineSep()) ? visibleText.split(Text.getLineSep()) : new String[]{visibleText};
 
 		for (String t : text) {
 			g2.drawString(t, x, y);
-			y += font.getFont().getSize2D();
+			y += font.getFont().getSize2D() + BORDER_SIZE;
 		}
 		y += BORDER_SIZE * 2 + font.getFont().getSize2D();
 		// オプションと選択の表示

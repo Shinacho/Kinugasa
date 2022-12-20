@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package kinugasa.game.field4;
 
 import kinugasa.game.GraphicsContext;
@@ -32,15 +31,30 @@ import kinugasa.object.Model;
  * @vesion 1.0.0 - 2022/11/11_12:26:30<br>
  * @author Dra211<br>
  */
-public abstract class  TooltipModel extends Model{
-	
+public abstract class TooltipModel extends Model {
+
+	public enum Mode {
+		NODE,
+		TALK,
+		SEARCH,
+		NONE,
+
+	}
+	protected Mode mode;
+
+	public Mode getMode() {
+		return mode;
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+
 	public abstract void drawTooltip(FieldMap fm, GraphicsContext g);
 
 	@Override
 	public TooltipModel clone() {
 		return (TooltipModel) super.clone(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
 	}
-	
-	
 
 }

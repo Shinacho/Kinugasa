@@ -39,9 +39,24 @@ public class FlagStorage extends Storage<Flag> implements Nameable {
 		this.name = name;
 	}
 
+	public FlagStorage(FlagStorage f) {
+		this.name = f.getName();
+		addAll(f);
+	}
+
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	public void update(FlagStorage fs) {
+		for (Flag f : fs) {
+			if (contains(f)) {
+				get(f.getName()).set(f.get());
+			} else {
+				add(f);
+			}
+		}
 	}
 
 }

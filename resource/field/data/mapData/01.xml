@@ -34,7 +34,7 @@ THE SOFTWARE.
 
 	<inOutNode name="ND_01_0002" x="21" y="21" tgtMap="ズシ" exitNode="ND_03_EXIT" tooltip="(A)ズシ" accepterName="TRUE" outDir="SOUTH" se="SE/足音.wav"/>
 
-	<event name="E_01" x="11" y="8" script="resource/field/data/event/01.xml" />
+	<event name="E_01" x="11" y="8" script="resource/data/E01.xml" />
 	
 	
     <backLayer chipSet="outer16.png" lineSeparator ="/">

@@ -95,6 +95,14 @@ public class GameSystem {
 		return party;
 	}
 
+	public void updateParty() {
+		for (PlayerCharacter pc : party) {
+			if (!FieldMap.getPlayerCharacter().contains(pc.getSprite())) {
+				FieldMap.getPlayerCharacter().add(pc.getSprite());
+			}
+		}
+	}
+
 	public List<PlayerCharacterSprite> getPartySprite() {
 		return party.stream().map(v -> v.getSprite()).collect(Collectors.toList());
 	}

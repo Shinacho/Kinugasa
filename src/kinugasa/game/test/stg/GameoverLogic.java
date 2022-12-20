@@ -63,8 +63,8 @@ public class GameoverLogic extends GameLogic {
 	}
 
 	@Override
-	public void update(GameTimeManager gtm) {
-		if(InputState.getInstance().isPressed(GamePadButton.A, InputType.SINGLE)){
+	public void update(GameTimeManager gtm, InputState is) {
+		if(is.isPressed(GamePadButton.A, InputType.SINGLE)){
 			GameLogicStorage.getInstance().changeTo(gls.getPrev().getName());
 		}
 	}
