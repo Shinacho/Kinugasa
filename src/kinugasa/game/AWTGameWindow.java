@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package kinugasa.game;
 
 import java.awt.Canvas;
@@ -37,11 +36,12 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 
 /**
+ * AWTを利用した、標準のゲームウインドウの実装です。
  *
  * @vesion 1.0.0 - 2021/08/17_14:20:58<br>
  * @author Dra211<br>
  */
-public class AWTGameWindow extends Frame implements GameWindow{
+public class AWTGameWindow extends Frame implements GameWindow {
 
 	/**
 	 * このフレームの内部領域のキャッシュです.座標は0,0になります.
@@ -55,6 +55,7 @@ public class AWTGameWindow extends Frame implements GameWindow{
 	 * ウインドウがアクティブであるかを検査するフラグです.
 	 */
 	private boolean active;
+
 	/**
 	 * フレームを作成します.
 	 *
@@ -78,7 +79,6 @@ public class AWTGameWindow extends Frame implements GameWindow{
 		});
 		pack();
 	}
-
 
 	@Override
 	public void setCursor(Cursor cursor) {
@@ -153,4 +153,3 @@ public class AWTGameWindow extends Frame implements GameWindow{
 	}
 
 }
-
