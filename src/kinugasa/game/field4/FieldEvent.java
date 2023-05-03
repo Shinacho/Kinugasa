@@ -77,6 +77,7 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 		}
 		//type別実行
 		UserOperationRequire u = eventType.exec(GameSystem.getInstance().getPartyStatus(), this);
+		//FieldEventScriptExceptionが出たらここで落ちる。
 		//実行後生存状態の更新
 		if (disposeWhenExec) {
 			exists = false;

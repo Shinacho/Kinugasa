@@ -29,7 +29,7 @@ package kinugasa.game.field4;
  * @vesion 1.0.0 - 2022/12/14_16:45:12<br>
  * @author Dra211<br>
  */
-public class FieldEventScriptException extends Exception {
+public class FieldEventScriptException extends RuntimeException {
 
     /**
      * Creates a new instance of <code>FieldEventScriptException</code> without detail message.
