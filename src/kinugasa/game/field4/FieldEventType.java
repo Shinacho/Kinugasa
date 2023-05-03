@@ -35,9 +35,12 @@ import kinugasa.game.system.FlagStatus;
 import kinugasa.game.system.FlagStorage;
 import kinugasa.game.system.FlagStorageStorage;
 import kinugasa.game.system.GameSystem;
+import kinugasa.game.system.GameSystemException;
+import kinugasa.game.system.Item;
 import kinugasa.game.system.ItemStorage;
 import kinugasa.game.system.PlayerCharacter;
 import kinugasa.game.system.QuestLineStorage;
+import kinugasa.game.system.ScriptFormatException;
 import kinugasa.game.system.Status;
 import kinugasa.game.ui.Text;
 import kinugasa.game.ui.TextStorage;
@@ -47,6 +50,7 @@ import kinugasa.graphics.ColorTransitionModel;
 import kinugasa.graphics.FadeCounter;
 import kinugasa.object.FadeEffect;
 import kinugasa.object.FourDirection;
+import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundBuilder;
 import kinugasa.resource.sound.SoundStorage;
@@ -72,14 +76,23 @@ public enum FieldEventType {
 	//サウンドマップ名、サウンド名
 	STOP_ALL_SOUND {
 		@Override
-		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
+			if (e.getStorageName() == null) {
+				throw new FieldEventScriptException("storage name is null  : " + e);
+			}
 			SoundStorage.getInstance().get(e.getStorageName()).stopAll();
 			return UserOperationRequire.CONTINUE;
 		}
 	},
 	PLAY_SOUND {
 		@Override
-		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
+			if (e.getStorageName() == null) {
+				throw new FieldEventScriptException("storage name is null  : " + e);
+			}
+			if (e.getTargetName() == null) {
+				throw new FieldEventScriptException("target name is null  : " + e);
+			}
 			SoundStorage.getInstance().get(e.getStorageName()).get(e.getTargetName()).load().stopAndPlay();
 			return UserOperationRequire.CONTINUE;
 		}
@@ -92,6 +105,15 @@ public enum FieldEventType {
 		}
 	},
 	//アイテム名
+	ADD_ITEM {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			Item item = ItemStorage.getInstance().get(e.getValue());
+			int i = Integer.parseInt(e.getTargetName());
+			GameSystem.getInstance().getParty().get(i).getStatus().getItemBag().add(item);
+			return UserOperationRequire.GET_ITEAM;
+		}
+	},
 	GET_ITEM {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -518,8 +540,82 @@ public enum FieldEventType {
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			return UserOperationRequire.CONTINUE;
 		}
+	},
+	SET_ATTRIN {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			if (!e.getTargetName().contains(",")) {
+				throw new ScriptFormatException("SET_ATTR_IN, but tgtName is missmatch : " + e);
+			}
+			try {
+				int tgtIdx = Integer.parseInt(e.getTargetName().split(",")[0]);
+				String key = e.getTargetName().split(",")[1];
+				float value = Float.parseFloat(e.getValue());
+				party.get(tgtIdx).getBaseAttrIn().get(key).set(value);
+				party.get(tgtIdx).getBaseAttrIn().get(key).setInitial(value);
+				party.get(tgtIdx).getBaseAttrIn().get(key).setMax(value);
+
+				return UserOperationRequire.CONTINUE;
+			} catch (NumberFormatException | NameNotFoundException ex) {
+				throw new ScriptFormatException("SET_ATTR_IN, but tgtName is missmatch : " + e);
+			}
+		}
+
+	},
+	INIT_STATUS {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			if (!e.getTargetName().contains(",")) {
+				throw new ScriptFormatException("SET_ATTR_IN, but tgtName is missmatch : " + e);
+			}
+			try {
+				int tgtIdx = Integer.parseInt(e.getTargetName().split(",")[0]);
+				String key = e.getTargetName().split(",")[1];
+				float value = Float.parseFloat(e.getValue());
+				party.get(tgtIdx).getBaseStatus().get(key).set(value);
+				party.get(tgtIdx).getBaseStatus().get(key).setMax(value);
+				party.get(tgtIdx).getBaseStatus().get(key).setInitial(value);
+
+				return UserOperationRequire.CONTINUE;
+			} catch (NumberFormatException | NameNotFoundException ex) {
+				throw new ScriptFormatException("INIT_STATUS, but tgtName is missmatch : " + e);
+			}
+		}
+	},
+	SET_STATUS_MAX {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			if (!e.getTargetName().contains(",")) {
+				throw new ScriptFormatException("SET_ATTR_IN, but tgtName is missmatch : " + e);
+			}
+			try {
+				int tgtIdx = Integer.parseInt(e.getTargetName().split(",")[0]);
+				String key = e.getTargetName().split(",")[1];
+				float value = Float.parseFloat(e.getValue());
+				party.get(tgtIdx).getBaseStatus().get(key).setMax(value);
+
+				return UserOperationRequire.CONTINUE;
+			} catch (NumberFormatException | NameNotFoundException ex) {
+				throw new ScriptFormatException("SET_STATUS_MAX, but tgtName is missmatch : " + e);
+			}
+		}
+	},
+	EQIP_ITEM {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) {
+			Item item = ItemStorage.getInstance().get(e.getValue());
+			int i = Integer.parseInt(e.getTargetName());
+			if (!GameSystem.getInstance().getParty().get(i).getStatus().getItemBag().contains(item)) {
+				throw new GameSystemException("pc " + i + " is not have item :" + item);
+			}
+			if (!item.canEqip(party.get(i))) {
+				throw new GameSystemException("item is can not eqip : " + item);
+			}
+			party.get(i).addEqip(item);
+			return UserOperationRequire.GET_ITEAM;
+		}
 	};
 
-	abstract UserOperationRequire exec(List<Status> party, FieldEvent e);
+	abstract UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException;
 
 }

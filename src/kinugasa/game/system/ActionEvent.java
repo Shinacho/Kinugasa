@@ -101,7 +101,8 @@ public class ActionEvent implements Comparable<ActionEvent> {
 	//この実行はダメージ計算式を使用しない
 	//ターゲットシステムによりAREA内の正しい敵が入っている前提。
 	//FIELDターゲットの成否は、RESULTから取れる。アクションのDESCを表示できる。
-	public ActionEventResult exec(BattleActionTarget tgt) {
+	public ActionEventResult exec(ActionTarget tgt) {
+		//フィールドモードの場合、アニメーションは無視される。
 		//すべてのtgtに対して行う。その結果をTypeとして返す
 		//フィールドアクションの場合
 		if (tgt.isFieldTarget() && targetType == TargetType.FIELD) {
@@ -124,7 +125,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 			//P判定
 			if (!Random.percent(p)) {
 				if (GameSystem.isDebugMode()) {
-					System.out.println(this + " is no exec");
+					System.out.println(this + " is no exec(P)");
 				}
 				result.addResultTypePerTgt(ActionResultType.MISS);
 				continue;
@@ -141,7 +142,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 				case ATTR_IN:
 					switch (damageCalcType) {
 						case DIRECT:
-							c.getStatus().getBaseAttrIn().get(tgtName).set(value);
+							c.getStatus().getBaseAttrIn().get(tgtName).add(value);
 							break;
 						case PERCENT_OF_MAX:
 							float v1 = c.getStatus().getBaseAttrIn().get(tgtName).getMax() * value;
@@ -173,7 +174,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 				case STATUS:
 					switch (damageCalcType) {
 						case DIRECT:
-							c.getStatus().getBaseStatus().get(tgtName).set(value);
+							c.getStatus().getBaseStatus().get(tgtName).add(value);
 							result.addResultTypePerTgt(ActionResultType.SUCCESS);
 							if (hasAnimation()) {
 								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));

@@ -23,7 +23,6 @@
  */
 package kinugasa.game.system;
 
-import java.util.ArrayList;
 import kinugasa.resource.Storage;
 
 /**
@@ -34,9 +33,6 @@ import kinugasa.resource.Storage;
 public class CharacterConditionValueSet extends Storage<ConditionValue> {
 
 	public CharacterConditionValueSet() {
-		for (FieldConditionKey k : FieldConditionKeyStorage.getInstance()) {
-			add(new ConditionValue(k));
-		}
 	}
 
 }

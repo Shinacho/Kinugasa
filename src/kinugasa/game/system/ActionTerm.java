@@ -58,7 +58,7 @@ public class ActionTerm implements Nameable {
 	}
 
 	//アクションが発動できるかを返す。true：可能
-	public boolean canExec(BattleActionTarget tgt) {
+	public boolean canExec(ActionTarget tgt) {
 		switch (type) {
 			case NONE:
 				return true;
@@ -82,6 +82,26 @@ public class ActionTerm implements Nameable {
 				return tgt.getUser().getStatus().isEqip(ItemEqipmentSlotStorage.getInstance().get(value));
 			case NO_EQ_ANY_ITEM:
 				return !tgt.getUser().getStatus().isEqip(ItemEqipmentSlotStorage.getInstance().get(value));
+			case EQ_ITEM_DESC_CONTAINS:
+				for (Item i : tgt.getUser().getStatus().getEqipment().values()) {
+					if (i == null) {
+						continue;
+					}
+					if (i.getDesc().contains(value)) {
+						return true;
+					}
+				}
+				return false;
+			case EQ_ITEM_NAME_CONTAINS:
+				for (Item i : tgt.getUser().getStatus().getEqipment().values()) {
+					if (i == null) {
+						continue;
+					}
+					if (i.getName().contains(value)) {
+						return true;
+					}
+				}
+				return false;
 			default:
 				throw new GameSystemException("undefined termtype : " + type);
 		}

@@ -114,10 +114,10 @@ public class BattleTargetSystem implements Drawable {
 
 	//カレントを設定せずに、ターゲットを分析する。
 	//空のターゲットインスタンスを返す場合がある。
-	static BattleActionTarget instantTarget(BattleCharacter user, CmdAction a) {
+	static ActionTarget instantTarget(BattleCharacter user, CmdAction a) {
 		Point2D.Float center = user.getSprite().getCenter();
 		int area = a.getAreaWithEqip(user.getStatus());
-		BattleActionTarget result = new BattleActionTarget(user, a);
+		ActionTarget result = new ActionTarget(user, a);
 
 		List<BattleCharacter> tgt = new ArrayList<>();
 		for (ActionEvent e : a.getBattleEvent()) {
@@ -245,8 +245,8 @@ public class BattleTargetSystem implements Drawable {
 		updateIcon();
 	}
 
-	public BattleActionTarget getSelected() {
-		return new BattleActionTarget(currentUser, currentBA)
+	public ActionTarget getSelected() {
+		return new ActionTarget(currentUser, currentBA)
 				.setFieldTarget(fieldSelect)
 				.setInField(false)
 				.setTarget(selected)

@@ -36,7 +36,7 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/11/15_12:07:46<br>
  * @author Dra211<br>
  */
-public class ConditionValue implements Nameable {
+public class ConditionValue implements Nameable, Cloneable {
 
 	private ConditionKey key;
 	private List<EffectMaster> effects = new ArrayList<>();

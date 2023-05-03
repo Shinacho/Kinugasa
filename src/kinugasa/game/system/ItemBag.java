@@ -24,6 +24,7 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -45,6 +46,18 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 
 	public ItemBag(int max) {
 		this.max = max;
+	}
+
+	public boolean has(Item i) {
+		return contains(i);
+	}
+
+	public boolean hasAll(Item... i) {
+		boolean f = true;
+		for (Item item : this) {
+			f &= Arrays.asList(i).contains(item);
+		}
+		return f;
 	}
 
 	@Override

@@ -69,7 +69,7 @@ public class QuestLine implements Nameable {
 
 	@Override
 	public String toString() {
-		return "QuestLine{" + "name=" + name + ", stage=" + stage + '}';
+		return "QuestLine{" + "name=" + name + ", desc=" + desc + ", flag=" + flag + ", stage=" + stage + '}';
 	}
 
 }

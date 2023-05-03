@@ -78,7 +78,7 @@ public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 	}
 
 	/**
-	 * 全てのサウンドを破棄し、サウンドストレージからこのマップを削除します.
+	 * 全てのサウンドを解放します.
 	 */
 	@Override
 	public void dispose() {

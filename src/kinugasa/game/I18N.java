@@ -78,6 +78,10 @@ public class I18N {
 
 	}
 
+	public static <T extends Enum<T>> String translate(T t) {
+		return translate(t.toString());
+	}
+
 	public static String translate(String key) {
 		if (!ini.containsKey(key)) {
 			GameLog.printIfUsing(Level.ALL, "unknown I18N key " + key);

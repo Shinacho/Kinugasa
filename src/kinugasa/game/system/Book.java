@@ -23,7 +23,10 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kinugasa.resource.Nameable;
 
 /**
@@ -31,14 +34,34 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/11/23_18:56:25<br>
  * @author Dra211<br>
  */
-public class Book implements Nameable {
+public class Book implements Nameable, Cloneable {
 
 	private String name;
 	private String desc;
+	private ArrayList<BookPage> pages = new ArrayList<>();
+	private int value;
 
 	public Book(String name, String desc) {
 		this.name = name;
 		this.desc = desc;
+	}
+
+	public Book setPages(List<BookPage> pages) {
+		this.pages = new ArrayList<>(pages);
+		return this;
+	}
+
+	public Book setValue(int value) {
+		this.value = value;
+		return this;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public List<BookPage> getPages() {
+		return pages;
 	}
 
 	@Override
@@ -48,6 +71,22 @@ public class Book implements Nameable {
 
 	public String getDesc() {
 		return desc;
+	}
+
+	@Override
+	public Book clone() {
+		try {
+			Book b = (Book) super.clone();
+			b.pages = (ArrayList<BookPage>) this.pages.clone();
+			return b;
+		} catch (CloneNotSupportedException ex) {
+			throw new InternalError();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Book{" + "name=" + name + ", desc=" + desc + '}';
 	}
 
 }

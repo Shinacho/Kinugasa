@@ -30,14 +30,16 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/11/15_12:00:00<br>
  * @author Dra211<br>
  */
-public class AttributeKey implements Nameable {
+public class AttributeKey implements Nameable, Comparable<AttributeKey> {
 
 	private String name;
 	private String desc;
+	private int order;
 
-	public AttributeKey(String name, String desc) {
+	public AttributeKey(String name, String desc, int order) {
 		this.name = name;
 		this.desc = desc;
+		this.order = order;
 	}
 
 	@Override
@@ -47,6 +49,20 @@ public class AttributeKey implements Nameable {
 
 	public String getDesc() {
 		return desc;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	@Override
+	public int compareTo(AttributeKey o) {
+		return order - o.order;
+	}
+
+	@Override
+	public String toString() {
+		return "AttributeKey{" + "name=" + name + ", order=" + order + '}';
 	}
 
 }

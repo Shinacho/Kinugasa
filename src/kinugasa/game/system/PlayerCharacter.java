@@ -217,7 +217,7 @@ public class PlayerCharacter implements BattleCharacter {
 		for (XMLElement ee : root.getElement("eqip")) {
 			Item i = ItemStorage.getInstance().get(ee.getAttributes().get("name").getValue());
 			status.getItemBag().add(i);
-			status.eqip(i);
+			status.addEqip(i);
 		}
 		for (XMLElement ee : root.getElement("book")) {
 			Book b = BookStorage.getInstance().get(ee.getAttributes().get("name").getValue());

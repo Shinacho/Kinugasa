@@ -247,7 +247,7 @@ public class FieldLogic extends GameLogic {
 				}
 				//スクリーンショット系の処理
 				if (is.isPressed(Keys.M, InputType.SINGLE)) {
-					KImage image = fm.createMiniMap(0.25f, true);
+					KImage image = fm.createMiniMap(0.25f, true, true);
 					ImageUtil.save("resource/test/miniMap.png", image.get());
 					screenShot.stopAndPlay();
 				}

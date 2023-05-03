@@ -25,9 +25,14 @@ package kinugasa.game.system;
  */
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import kinugasa.game.system.BattleCharacter;
+import kinugasa.object.BasicSprite;
+import kinugasa.object.EmptySprite;
+import kinugasa.object.FourDirection;
 import kinugasa.object.Sprite;
 
 /**
@@ -35,7 +40,7 @@ import kinugasa.object.Sprite;
  * @vesion 1.0.0 - 2022/12/01_19:16:09<br>
  * @author Dra211<br>
  */
-public class BattleActionTarget implements Iterable<BattleCharacter> {
+public class ActionTarget implements Iterable<BattleCharacter> {
 
 	private BattleCharacter user;
 	private CmdAction action;
@@ -44,7 +49,7 @@ public class BattleActionTarget implements Iterable<BattleCharacter> {
 	private List<BattleCharacter> target = new ArrayList<>();
 	private boolean selfTarget = false;
 
-	public BattleActionTarget(BattleCharacter user, CmdAction a) {
+	public ActionTarget(BattleCharacter user, CmdAction a) {
 		if (user == null) {
 			throw new GameSystemException("battle action result s user is null");
 		}
@@ -52,22 +57,106 @@ public class BattleActionTarget implements Iterable<BattleCharacter> {
 		this.action = a;
 	}
 
-	public BattleActionTarget setFieldTarget(boolean fieldTarget) {
+	public static ActionTarget instantTarget(Status user, CmdAction a) {
+		return instantTarget(user, a, new Status[]{});
+	}
+
+	public static ActionTarget instantTarget(Status user, CmdAction a, List<Status> tgt) {
+		boolean userIsPlayer = GameSystem.getInstance().getPartyStatus().contains(user);
+		List<DummyCharacter> target = new ArrayList<>();
+		for (Status s : tgt) {
+			boolean f = GameSystem.getInstance().getPartyStatus().contains(s);
+			target.add(new DummyCharacter(s, f));
+		}
+
+		return new ActionTarget(new DummyCharacter(user, userIsPlayer), a)
+				.setTarget(target.stream().collect(Collectors.toList()));
+	}
+
+	public static ActionTarget instantTarget(Status user, CmdAction a, Status... tgt) {
+		boolean userIsPlayer = GameSystem.getInstance().getPartyStatus().contains(user);
+		List<DummyCharacter> target = new ArrayList<>();
+		for (Status s : tgt) {
+			boolean f = GameSystem.getInstance().getPartyStatus().contains(s);
+			target.add(new DummyCharacter(s, f));
+		}
+
+		return new ActionTarget(new DummyCharacter(user, userIsPlayer), a)
+				.setTarget(target.stream().collect(Collectors.toList()));
+	}
+
+	private static class DummyCharacter implements BattleCharacter {
+
+		private Status s;
+		private boolean player;
+
+		public DummyCharacter(Status s, boolean player) {
+			this.s = s;
+			this.player = player;
+		}
+
+		@Override
+		public BasicSprite getSprite() {
+			return new EmptySprite(-123, -123, 1, 1);
+		}
+
+		@Override
+		public Status getStatus() {
+			return s;
+		}
+
+		@Override
+		public void setTargetLocation(Point2D.Float p, int area) {
+		}
+
+		@Override
+		public void unsetTarget() {
+		}
+
+		@Override
+		public boolean isMoving() {
+			return false;
+		}
+
+		@Override
+		public void moveToTgt() {
+		}
+
+		@Override
+		public void move() {
+		}
+
+		@Override
+		public void to(FourDirection dir) {
+		}
+
+		@Override
+		public boolean isPlayer() {
+			return player;
+		}
+
+		@Override
+		public String getId() {
+			return getName();
+		}
+	}
+
+	public ActionTarget setFieldTarget(boolean fieldTarget) {
 		this.fieldTarget = fieldTarget;
 		return this;
 	}
 
-	public BattleActionTarget setInField(boolean inField) {
+	public ActionTarget setInField(boolean inField) {
 		this.inField = inField;
 		return this;
 	}
 
-	public BattleActionTarget setTarget(List<BattleCharacter> target) {
+	public ActionTarget setTarget(List< BattleCharacter> target) {
 		this.target = target;
 		return this;
 	}
 
-	public BattleActionTarget setSelfTarget(boolean f) {
+	public ActionTarget setSelfTarget(boolean f) {
 		this.selfTarget = f;
 		return this;
 	}

@@ -41,9 +41,9 @@ public class ProgressBarSprite extends BasicSprite {
 
 	public ProgressBarSprite(float x, float y, float w, float h, int val, int initial, int max) {
 		super(x, y, w, h);
-		this.val = val;
 		this.initial = initial;
 		this.max = max;
+		setVal(val);
 	}
 
 	public void reset() {

@@ -27,13 +27,31 @@ import kinugasa.resource.Nameable;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_12:05:48<br>
+ * @vesion 1.0.0 - 2022/12/26_16:44:54<br>
  * @author Dra211<br>
  */
-public class FieldConditionKey extends ConditionKey {
+public class Material implements Nameable {
 
-	public FieldConditionKey(String name, String desc, int priority) {
-		super(name, desc, priority);
+	private String name;
+	private int value;
+
+	public Material(String name, int value) {
+		this.name = name;
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return "Material{" + "name=" + name + ", value=" + value + '}';
 	}
 
 }

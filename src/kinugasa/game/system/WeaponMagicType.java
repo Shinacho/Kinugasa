@@ -49,4 +49,9 @@ public class WeaponMagicType implements Nameable {
 		return name;
 	}
 
+	@Override
+	public String toString() {
+		return "WeaponMagicType{" + "name=" + name + '}';
+	}
+
 }

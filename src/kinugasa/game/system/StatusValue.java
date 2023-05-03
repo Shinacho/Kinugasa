@@ -32,7 +32,7 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/11/15_11:57:35<br>
  * @author Dra211<br>
  */
-public class StatusValue implements Nameable, Cloneable {
+public class StatusValue implements Nameable, Cloneable, Comparable<StatusValue> {
 
 	private StatusKey key;
 	private float value, initial, min, max;
@@ -87,9 +87,6 @@ public class StatusValue implements Nameable, Cloneable {
 
 	public void set(float value) {
 		this.value = value;
-		if (key.getMin() > value) {
-			this.value = key.getMin();
-		}
 	}
 
 	public void add(float value) {
@@ -136,6 +133,11 @@ public class StatusValue implements Nameable, Cloneable {
 	@Override
 	public String toString() {
 		return "StatusValue{" + "key=" + key + ", value=" + value + ", initial=" + initial + '}';
+	}
+
+	@Override
+	public int compareTo(StatusValue o) {
+		return key.compareTo(o.key);
 	}
 
 }

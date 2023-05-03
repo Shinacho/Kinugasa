@@ -23,8 +23,14 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 import kinugasa.resource.*;
 
 /**
@@ -40,6 +46,12 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 	private ItemEqipmentSlot eqipmentSlot;
 	private WeaponMagicType weaponMagicType;
 	private Set<StatusKey> damageCalcStatusKey = new HashSet<>();
+	private int value;//ベース価値
+	private boolean canSale = true;//売れるかどうか
+	private int currentUpgrade = 0;
+	private List<ItemUpgrade> upgradeMaterials = new ArrayList<>();//強化に必要な資源
+	private Map<Material, Integer> dissasseMaterials = new HashMap<>();//解体時に得られる資源
+	private List<ItemEqipTerm> eqipTerm = new ArrayList<>();
 
 	public Item(String name, String desc) {
 		super(ActionType.ITEM_USE, name, desc);
@@ -58,7 +70,89 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 		this.damageCalcStatusKey = damageCalcStatusKey;
 		return this;
 	}
-	
+
+	public Item setValue(int v) {
+		this.value = v;
+		return this;
+	}
+
+	//マテリアルと金額は別途判定すること
+	public boolean canUpgrade() {
+		return currentUpgrade < upgradeMaterials.size();
+	}
+
+	public List<ItemUpgrade> getUpgradeMaterials() {
+		return upgradeMaterials;
+	}
+
+	public int getCurrentUpgrade() {
+		return currentUpgrade;
+	}
+
+	public List<ItemEqipTerm> getEqipTerm() {
+		return eqipTerm;
+	}
+
+	//注意：戻り値がアップグレードされたアイテム
+	public Item doUpgrade() {
+		if (!canUpgrade()) {
+			throw new GameSystemException("this item is cant be upgrade : " + this);
+		}
+		Collections.sort(upgradeMaterials);
+		Item i = clone();
+		i.getEqAttr().addAll(upgradeMaterials.get(currentUpgrade).getAddAttrin());
+		i.getEqStatus().addAll(upgradeMaterials.get(currentUpgrade).getAddStatus());
+		String name = i.getName();
+		if (name.contains("+")) {
+			name = name.substring(0, name.indexOf("+"));
+		}
+		name += "+" + (currentUpgrade + 1);
+		i.setName(name);
+		currentUpgrade++;
+		return i;
+	}
+
+	public Item setCanSale(boolean f) {
+		this.canSale = f;
+		return this;
+	}
+
+	public Map<Material, Integer> getDissasseMaterials() {
+		return dissasseMaterials;
+	}
+
+	public Item addUpgrade(ItemUpgrade u) {
+		upgradeMaterials.add(u);
+		Collections.sort(upgradeMaterials);
+		return this;
+	}
+
+	public Item setEqipTerm(List<ItemEqipTerm> t) {
+		this.eqipTerm.addAll(t);
+		return this;
+	}
+
+	public void setUpgradeMaterials(List<ItemUpgrade> upgradeMaterials) {
+		this.upgradeMaterials = upgradeMaterials;
+		Collections.sort(upgradeMaterials);
+	}
+
+	public void setDissasseMaterials(Map<Material, Integer> dissasseMaterials) {
+		this.dissasseMaterials = dissasseMaterials;
+	}
+
+	@Override
+	public String getName() {
+		return super.getName();
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public boolean canSale() {
+		return canSale;
+	}
 
 	public Item setEqipmentSlot(ItemEqipmentSlot eqipmentSlot) {
 		this.eqipmentSlot = eqipmentSlot;
@@ -83,8 +177,11 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 		return weaponMagicType;
 	}
 
-	public boolean canEqip() {
-		return eqipmentSlot != null;
+	public boolean canEqip(Status s) {
+		if (eqipmentSlot == null) {
+			return false;
+		}
+		return eqipTerm.stream().allMatch(p -> p.canEqip(s, this));
 	}
 
 	public StatusValueSet getEqStatus() {
@@ -95,10 +192,20 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 		return eqipmentSlot;
 	}
 
+	public boolean isEqipItem() {
+		return eqipmentSlot != null;
+	}
+
 	@Override
 	public Item clone() {
 		try {
 			Item i = (Item) super.clone();
+			if (eqAttr != null) {
+				i.eqAttr = eqAttr.clone();
+			}
+			if (eqStatus != null) {
+				i.eqStatus = eqStatus.clone();
+			}
 			return i;
 		} catch (CloneNotSupportedException ex) {
 			throw new InternalError(ex);

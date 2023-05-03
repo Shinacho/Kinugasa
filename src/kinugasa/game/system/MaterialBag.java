@@ -23,22 +23,57 @@
  */
 package kinugasa.game.system;
 
-import kinugasa.resource.Storage;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_12:06:46<br>
+ * @vesion 1.0.0 - 2022/12/25_16:17:14<br>
  * @author Dra211<br>
  */
-public class FieldConditionKeyStorage extends Storage<FieldConditionKey> {
+public class MaterialBag {
 
-	private static final FieldConditionKeyStorage INSTANCE = new FieldConditionKeyStorage();
+	private Map<Material, Integer> map = new HashMap<>();
 
-	private FieldConditionKeyStorage() {
+	public MaterialBag() {
 	}
 
-	public static FieldConditionKeyStorage getInstance() {
-		return INSTANCE;
+	public Map<Material, Integer> getMap() {
+		return map;
+	}
+
+	public void addAll(List<Material> list) {
+		for (Material p : list) {
+			if (map.containsKey(p)) {
+				map.put(p, map.get(p) + 1);
+			} else {
+				map.put(p, 1);
+			}
+
+		}
+	}
+
+	public void add(Material p) {
+		if (map.containsKey(p)) {
+			map.put(p, map.get(p) + 1);
+		} else {
+			map.put(p, 1);
+		}
+	}
+
+	public void addAll(Map<Material, Integer> m) {
+		for (Map.Entry<Material, Integer> e : m.entrySet()) {
+			if (map.containsKey(e.getKey())) {
+				map.put(e.getKey(), map.get(e.getKey()) + 1);
+			} else {
+				map.put(e.getKey(), 1);
+			}
+		}
+	}
+
+	public int size() {
+		return map.size();
 	}
 
 }

@@ -41,7 +41,7 @@ import kinugasa.resource.*;
  * @vesion 1.0.0 - 2022/11/15_11:57:27<br>
  * @author Dra211<br>
  */
-public class Status {
+public class Status implements Nameable {
 
 	//–¼‘O
 	private String name;
@@ -142,10 +142,18 @@ public class Status {
 		return hasConditions(all, Arrays.asList(name));
 	}
 
+	public boolean canEqip(Item i) {
+		if (!itemBag.contains(i)) {
+			throw new GameSystemException(this + " not have item:" + i);
+		}
+		return i.canEqip(this) && eqipment.keySet().contains(i.getEqipmentSlot());
+	}
+
 	public List<CmdAction> getActions(ActionType type) {
 		return actions.stream().filter(p -> p.getType() == type).collect(Collectors.toList());
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -189,7 +197,7 @@ public class Status {
 		if (!itemBag.contains(i)) {
 			throw new GameSystemException(name + " is not have " + i);
 		}
-		if (!i.canEqip()) {
+		if (!i.canEqip(this)) {
 			throw new GameSystemException(i + " is can not eqip");
 		}
 		ItemEqipmentSlot slot = i.getEqipmentSlot();
@@ -206,7 +214,15 @@ public class Status {
 		itemBag.drop(i);
 		actions.remove(i);
 		tgt.itemBag.add(i);
-		actions.add(i);
+		tgt.actions.add(i);
+	}
+
+	public void passBook(Status tgt, Book b) {
+		if (!bookBag.contains(b)) {
+			throw new GameSystemException(name + " is not have " + b);
+		}
+		bookBag.drop(b);
+		tgt.bookBag.add(b);
 	}
 
 	void updateItemAction() {
@@ -214,6 +230,26 @@ public class Status {
 		List<CmdAction> removeList = getActions().stream().filter(p -> p.getType() == ActionType.ITEM_USE).collect(Collectors.toList());
 		getActions().removeAll(removeList);
 		getActions().addAll(getItemBag().getItems());
+	}
+
+	public void updateAction() {
+		actions.clear();
+		for (CmdAction a : ActionStorage.getInstance()) {
+			if (a.getType() == ActionType.OTHER) {
+				actions.add(a);
+				continue;
+			}
+			if (a.getType() == ActionType.ITEM_USE) {
+				if (itemBag.contains(a.getName())) {
+					actions.add(a);
+					continue;
+				}
+			}
+			if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
+				actions.add(a);
+			}
+		}
+
 	}
 
 	public void clearEqip() {
@@ -226,7 +262,7 @@ public class Status {
 	public void removeEqip(Item i) {
 		ItemEqipmentSlot slot = i.getEqipmentSlot();
 		if (eqipment.containsKey(slot)) {
-			eqipment.remove(slot);
+			eqipment.put(slot, null);
 		}
 	}
 
@@ -541,23 +577,6 @@ public class Status {
 
 	public ItemBag getItemBag() {
 		return itemBag;
-	}
-
-	public void eqip(Item i) {
-		if (!itemBag.contains(i)) {
-			throw new GameSystemException(name + " is not have this item " + i);
-		}
-		if (!i.canEqip()) {
-			throw new GameSystemException(i + " is can not eqip");
-		}
-		if (!race.getEqipSlot().contains(i.getEqipmentSlot())) {
-			throw new GameSystemException(name + " is can not eqip this item " + i);
-		}
-		eqipment.put(i.getEqipmentSlot(), i);
-	}
-
-	public void eqip(String name) {
-		eqip(ItemStorage.getInstance().get(name));
 	}
 
 	public HashMap<ItemEqipmentSlot, Item> getEqipment() {

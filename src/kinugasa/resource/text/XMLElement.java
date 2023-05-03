@@ -27,6 +27,9 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import kinugasa.game.GameLog;
+import kinugasa.game.system.GameSystem;
 import kinugasa.resource.Nameable;
 
 /**
@@ -140,7 +143,14 @@ public class XMLElement implements Nameable {
 	 * @return 指定した名前の要素のリストを返します。存在しない名前を指定した場合は nullを返します。<br>
 	 */
 	public List<XMLElement> getElement(String name) {
-		return content.get(name) == null ? Collections.emptyList() : content.get(name);
+		if (content.get(name) == null) {
+			if (GameSystem.isDebugMode()) {
+				System.out.println("! > XMLElement[" + name + "] is nothing : " + getName());
+				GameLog.print(Level.WARNING, "! > XMLElement[" + name + "] is nothing : " + getName());
+			}
+			return Collections.emptyList();
+		}
+		return content.get(name);
 	}
 
 	/**

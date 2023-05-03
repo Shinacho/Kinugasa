@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kinugasa.game.GameLog;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
@@ -120,12 +121,12 @@ public class FieldEventSystem implements Drawable {
 			}
 		}
 
-		if (GameSystem.isDebugMode() && !event.isEmpty()) {
-			System.out.println("kinugasa.game.field4.FieldEventSystem.setEvent()");
-			for (FieldEvent e : event) {
-				System.out.println("> " + e);
-			}
-		}
+//		if (GameSystem.isDebugMode() && !event.isEmpty()) {
+//			System.out.println("kinugasa.game.field4.FieldEventSystem.setEvent()");
+//			for (FieldEvent e : event) {
+//				System.out.println("> " + e);
+//			}
+//		}
 	}
 
 	Storage<FlagStorage> getFlags() {
@@ -168,7 +169,7 @@ public class FieldEventSystem implements Drawable {
 	}
 
 	public void reset() {
-		reset= true;
+		reset = true;
 		setEvent(prevEvent);
 	}
 
@@ -261,6 +262,7 @@ public class FieldEventSystem implements Drawable {
 
 	public void endEvent() {
 		event.clear();
+		item = null;
 		executing = false;
 	}
 
@@ -271,9 +273,8 @@ public class FieldEventSystem implements Drawable {
 		item = null;
 		currentEvent = event.getFirst();
 		event.removeFirst();
-		if (GameSystem.isDebugMode()) {
-			System.out.println("start event : " + currentEvent);
-		}
+		System.out.println("start event : " + currentEvent);
+		GameLog.printInfo("start event : " + currentEvent);
 		if (currentEvent.getEventType() == FieldEventType.IF) {
 			return UserOperationRequire.CONTINUE;
 		}
@@ -312,6 +313,7 @@ public class FieldEventSystem implements Drawable {
 		return watchingPC;
 	}
 
+	@Deprecated
 	public boolean isExecuting() {
 		return executing;
 	}

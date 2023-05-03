@@ -26,6 +26,7 @@ package kinugasa.game.ui;
 import java.util.List;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.util.FrameTimeCounter;
+import kinugasa.util.TimeCounter;
 
 /**
  *
@@ -35,6 +36,11 @@ import kinugasa.util.FrameTimeCounter;
 public class Choice extends Text {
 
 	private List<Text> options;
+
+	public Choice(List<Text> options, String name, String text) {
+		super(name, text, TimeCounter.TRUE, Integer.MAX_VALUE);
+		this.options = options;
+	}
 
 	public Choice(List<Text> options, String name, String text, FrameTimeCounter tc, int visibleIdx) {
 		super(name, text, tc, visibleIdx);

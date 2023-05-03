@@ -23,11 +23,15 @@
  */
 package kinugasa.game.ui;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LoopCall;
 import kinugasa.game.field4.FieldEventSystem;
 import kinugasa.object.BasicSprite;
+import kinugasa.resource.NameNotFoundException;
+import kinugasa.resource.Nameable;
+import kinugasa.resource.Storage;
 
 /**
  *
@@ -163,6 +167,23 @@ public class MessageWindow extends BasicSprite {
 
 	public int getSelect() {
 		return select;
+	}
+
+	public <T extends Nameable> T of(Storage<? extends T> s) {
+		return s.get(getChoice().getOptions().get(select).getText());
+	}
+
+	public <T extends Nameable> T of(Collection<? extends T> s) {
+		for (T t : s) {
+			if (t.getName().equals(getChoice().getText())) {
+				return t;
+			}
+		}
+		throw new NameNotFoundException("name not found : " + getChoice() + " of / " + s);
+	}
+
+	public void close() {
+		setVisible(false);
 	}
 
 	public void setSelect(int select) {

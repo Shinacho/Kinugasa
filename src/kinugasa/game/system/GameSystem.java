@@ -131,5 +131,15 @@ public class GameSystem {
 		battleSystem.endBattle();
 		return battleSystem.getBattleResultValue();
 	}
+	private BookPageBag pageBag = new BookPageBag();
+
+	public BookPageBag getBookPageBag() {
+		return pageBag;
+	}
+	private MaterialBag materialBag = new MaterialBag();
+
+	public MaterialBag getMaterialBag() {
+		return materialBag;
+	}
 
 }

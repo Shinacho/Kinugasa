@@ -32,12 +32,10 @@ public enum ParameterType {
 	/**
 	 * ステータスの変更を行うアクションタイプです。
 	 */
-	@Deprecated
 	STATUS(3),
 	/**
 	 * 属性耐性の変更を行うアクションタイプです。
 	 */
-	@Deprecated
 	ATTR_IN(4),
 	/**
 	 * valueの名前のアイテムを破棄するタイプです。

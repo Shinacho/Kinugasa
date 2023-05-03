@@ -418,6 +418,7 @@ public abstract class Sprite
 	public void switchVisible() {
 		setVisible(!isVisible());
 	}
+	
 
 	/**
 	 * このスプライトの左上のX座標を取得します.<br>

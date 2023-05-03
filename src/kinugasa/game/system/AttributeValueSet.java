@@ -23,6 +23,7 @@
  */
 package kinugasa.game.system;
 
+import java.util.Map;
 import kinugasa.resource.Storage;
 
 /**
@@ -53,6 +54,16 @@ public class AttributeValueSet extends Storage<AttributeValue> implements Clonea
 			r.add(v.clone());
 		}
 		return r;
+	}
+
+	public void addAll(Map<AttributeKey, Float> v) {
+		for (Map.Entry<AttributeKey, Float> e : v.entrySet()) {
+			for (AttributeValue av : this) {
+				if (av.getKey().equals(e.getKey())) {
+					av.add(e.getValue());
+				}
+			}
+		}
 	}
 
 }

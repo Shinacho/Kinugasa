@@ -39,6 +39,22 @@ import kinugasa.util.TimeCounter;
  */
 public class Text implements Nameable {
 
+	public static Text collect(List<Text> t) {
+		StringBuilder sb = new StringBuilder();
+		for (Text tt : t) {
+			sb.append(tt.getText()).append(Text.lineSep);
+		}
+		return new Text(sb.substring(0, sb.length() - 1));
+	}
+
+	public static Text collect(Text... t) {
+		StringBuilder sb = new StringBuilder();
+		for (Text tt : t) {
+			sb.append(tt.getText()).append(Text.lineSep);
+		}
+		return new Text(sb.substring(0, sb.length() - 1));
+	}
+
 	private static Map<String, String> replaceMap = new HashMap<>();
 
 	public static void setReplaceMap(Map<String, String> replaceMap) {

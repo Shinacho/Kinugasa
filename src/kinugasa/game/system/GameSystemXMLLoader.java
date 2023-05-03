@@ -230,9 +230,10 @@ public class GameSystemXMLLoader {
 			String name = e.getAttributes().get("name").getValue();
 			float min = e.getAttributes().get("min").getFloatValue();
 			float max = e.getAttributes().get("max").getFloatValue();
+			int order = e.getAttributes().get("order").getIntValue();
 			String desc = e.getAttributes().get("desc").getValue();
 			String when0 = e.getAttributes().contains("when0") ? e.getAttributes().get("when0").getValue() : null;
-			StatusKeyStorage.getInstance().add(new StatusKey(name, desc, min, max, when0));
+			StatusKeyStorage.getInstance().add(new StatusKey(name, desc, order, min, max, when0));
 		}
 		StatusKeyStorage.getInstance().printAll(System.out);
 		f.dispose();
@@ -249,12 +250,14 @@ public class GameSystemXMLLoader {
 		for (XMLElement e : root.getElement("aAttribute")) {
 			String name = e.getAttributes().get("name").getValue();
 			String desc = e.getAttributes().get("desc").getValue();
-			AttributeKeyStorage.getInstance().add(new AttributeKey(name, desc));
+			int order = e.getAttributes().get("order").getIntValue();
+			AttributeKeyStorage.getInstance().add(new AttributeKey(name, desc, order));
 		}
 		for (XMLElement e : root.getElement("dAttribute")) {
 			String name = e.getAttributes().get("name").getValue();
 			String desc = e.getAttributes().get("desc").getValue();
-			AttributeKeyStorage.getInstance().add(new AttributeKey(name, desc));
+			int order = e.getAttributes().get("order").getIntValue();
+			AttributeKeyStorage.getInstance().add(new AttributeKey(name, desc, order));
 		}
 		AttributeKeyStorage.getInstance().printAll(System.out);
 		f.dispose();

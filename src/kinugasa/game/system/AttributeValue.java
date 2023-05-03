@@ -32,7 +32,7 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/11/15_12:01:53<br>
  * @author Dra211<br>
  */
-public class AttributeValue implements Nameable, Cloneable {
+public class AttributeValue implements Nameable, Cloneable, Comparable<AttributeValue> {
 
 	private AttributeKey key;
 	private float value, initial, min, max;
@@ -68,16 +68,10 @@ public class AttributeValue implements Nameable, Cloneable {
 
 	public void set(float value) {
 		this.value = value;
-		if (getMin() > value) {
-			this.value = getMin();
-		}
 	}
 
 	public void add(float value) {
 		this.value += value;
-		if (getMin() > value) {
-			this.value = getMin();
-		}
 	}
 
 	public float getInitial() {
@@ -111,6 +105,16 @@ public class AttributeValue implements Nameable, Cloneable {
 		} catch (CloneNotSupportedException ex) {
 			throw new InternalError(ex);
 		}
+	}
+
+	@Override
+	public int compareTo(AttributeValue o) {
+		return key.compareTo(o.key);
+	}
+
+	@Override
+	public String toString() {
+		return "AttributeValue{" + "key=" + key + ", value=" + value + ", min=" + min + '}';
 	}
 
 }

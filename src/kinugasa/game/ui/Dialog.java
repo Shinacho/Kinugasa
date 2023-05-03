@@ -23,14 +23,15 @@
  */
 package kinugasa.game.ui;
 
-import java.awt.Event;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.AbstractAction;
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import kinugasa.game.GameOption;
+import kinugasa.game.I18N;
+import kinugasa.graphics.ImageUtil;
 
 /**
  *
@@ -75,5 +76,9 @@ public class Dialog {
 	public static DialogOption yesOrNo(String title, DialogIcon icon, String msg) {
 		int r = JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.YES_NO_OPTION, icon.getOption());
 		return DialogOption.of(r);
+	}
+
+	public static void image(String title, BufferedImage image) {
+		JOptionPane.showMessageDialog(null, new ImageIcon(image), title, JOptionPane.DEFAULT_OPTION);
 	}
 }

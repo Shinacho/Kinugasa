@@ -26,6 +26,7 @@ package kinugasa.util;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 乱数とダイスのエミュレートを提供します.
@@ -214,6 +215,11 @@ public final class Random implements Serializable {
 			return from;
 		}
 		return to;
+	}
+
+	public static <T> T random(List<T> t) {
+		int i = randomAbsInt(t.size());
+		return t.get(i);
 	}
 
 	public static <T> T random(T... t) {

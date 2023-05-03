@@ -107,7 +107,7 @@ public class FieldEventParser {
 					t = term.getAll(terms);
 				}
 			}
-			FieldEvent ee = new FieldEvent(name + i++, pri, idx, t, fet, storageName, tgtName, value);
+			FieldEvent ee = new FieldEvent(name + "_" + i++, pri, idx, t, fet, storageName, tgtName, value);
 			if (e.hasAttribute("undead") || undead) {
 				ee.setDisposeWhenExec(false);
 			}

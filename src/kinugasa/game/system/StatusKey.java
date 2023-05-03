@@ -31,16 +31,18 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/11/15_11:11:32<br>
  * @author Dra211<br>
  */
-public class StatusKey implements Nameable {
+public class StatusKey implements Nameable, Comparable<StatusKey> {
 
 	private String name;
 	private String desc;
+	private int order;
 	private float min, max;
 	private String when0ConditionName;
 
-	public StatusKey(String name, String desc, float min, float max, String when0ConditionName) {
+	public StatusKey(String name, String desc, int order, float min, float max, String when0ConditionName) {
 		this.name = name;
 		this.desc = desc;
+		this.order = order;
 		this.min = min;
 		this.max = max;
 		this.when0ConditionName = when0ConditionName;
@@ -69,8 +71,12 @@ public class StatusKey implements Nameable {
 
 	@Override
 	public String toString() {
-		return getName();
+		return "StatusKey{" + "name=" + name + ", desc=" + desc + ", order=" + order + ", min=" + min + ", max=" + max + ", when0ConditionName=" + when0ConditionName + '}';
 	}
 
+	@Override
+	public int compareTo(StatusKey o) {
+		return order - o.order;
+	}
 
 }

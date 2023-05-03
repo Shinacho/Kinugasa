@@ -34,20 +34,20 @@ import kinugasa.util.FrameTimeCounter;
  */
 public class ActionResult {
 
-	private BattleActionTarget target;
+	private ActionTarget target;
 	private List<List<ActionResultType>> resultType;
 
 	private FrameTimeCounter waitTime;
 	private List<AnimationSprite> animation;
 
-	public ActionResult(BattleActionTarget target, List<List<ActionResultType>> resultType, FrameTimeCounter waitTime, List<AnimationSprite> animation) {
+	public ActionResult(ActionTarget target, List<List<ActionResultType>> resultType, FrameTimeCounter waitTime, List<AnimationSprite> animation) {
 		this.target = target;
 		this.resultType = resultType;
 		this.waitTime = waitTime;
 		this.animation = animation;
 	}
 
-	public BattleActionTarget getTarget() {
+	public ActionTarget getTarget() {
 		return target;
 	}
 

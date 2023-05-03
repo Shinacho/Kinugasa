@@ -206,7 +206,8 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 			throw new NameNotFoundException("null key : " + this);
 		}
 		if (contains(val.getName())) {
-			throw new DuplicateNameException("! > Storage : add : duplicate name : name=[" + val.getName() + "] : " + this);
+			printAll(System.out);
+			throw new DuplicateNameException("! > Storage : add : duplicate name : name=[" + val.getName() + "] : ");
 		}
 		map.put(val.getName(), val);
 	}
@@ -350,15 +351,7 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 * @param stream 書き出すストリームを指定します。<br>
 	 */
 	public void printAll(PrintStream stream) {
-		if (!GameSystem.isDebugMode()) {
-			return;
-		}
-		stream.println("> Storage : class=[" + getClass() + "]");
-		for (T obj : map.values()) {
-			stream.println("> Storage : printAll : " + obj.getName());
-			GameLog.printInfo("> Storage : printAll : " + obj.getName());
-		}
-		stream.println("> Storage : ------------------------");
+		printAll(stream, false);
 	}
 
 	/**
@@ -372,14 +365,18 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 			return;
 		}
 		stream.println("> Storage : class=[" + getClass() + "]");
+		GameLog.printInfo("> Storage : class=[" + getClass() + "]");
 		for (T obj : map.values()) {
 			stream.print("> Storage : printAll : " + obj.getName());
+			GameLog.printInfo("> Storage : printAll : " + obj.getName());
 			if (valueOut) {
 				stream.print(" : " + obj);
+				GameLog.printInfo(" : " + obj);
 			}
 			stream.println();
 		}
 		stream.println("> Storage : ------------------------");
+		GameLog.printInfo("> Storage : ------------------------");
 	}
 
 	/**

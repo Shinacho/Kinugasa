@@ -25,6 +25,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import kinugasa.resource.Storage;
 
 /**
@@ -90,6 +91,16 @@ public class StatusValueSet extends Storage<StatusValue> implements Cloneable {
 			}
 		}
 		return result;
+	}
+
+	public void addAll(Map<StatusKey, Float> v) {
+		for (Map.Entry<StatusKey, Float> e : v.entrySet()) {
+			for (StatusValue av : this) {
+				if (av.getKey().equals(e.getKey())) {
+					av.add(e.getValue());
+				}
+			}
+		}
 	}
 
 	@Override

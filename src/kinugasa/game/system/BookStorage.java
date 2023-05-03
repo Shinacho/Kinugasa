@@ -23,6 +23,8 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
+import java.util.List;
 import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
@@ -53,13 +55,52 @@ public class BookStorage extends Storage<Book> implements XMLFileSupport {
 		if (!file.exists()) {
 			throw new FileNotFoundException(file.getFile());
 		}
-
 		XMLElement root = file.load().getFirst();
+		//ページ単体のロード
+		for (XMLElement e : root.getElement("page")) {
+			MagicCompositeType t = e.getAttributes().get("mct").of(MagicCompositeType.class);
+			String name = e.getAttributes().get("name").getValue();
+			String tgtName = null;
+			if (e.hasAttribute("tgtName")) {
+				tgtName = e.getAttributes().get("tgtName").getValue();
+			}
+			float value = 0f;
+			if (e.hasAttribute("value")) {
+				value = e.getAttributes().get("value").getFloatValue();
+			}
+			BookPageStorage.getInstance().add(new BookPage(t, name, tgtName, value));
+		}
+		BookPageStorage.getInstance().printAll(System.out);
+
+		//本のロード
 		for (XMLElement e : root.getElement("book")) {
 			String name = e.getAttributes().get("name").getValue();
 			String desc = e.getAttributes().get("desc").getValue();
-			getInstance().add(new Book(name, desc));
+			Book b = new Book(name, desc);
+			if (e.hasAttribute("value")) {
+				b.setValue(e.getAttributes().get("value").getIntValue());
+			}
+			if (e.hasElement("page")) {
+				List<BookPage> pages = new ArrayList<>();
+				for (XMLElement ee : e.getElement("page")) {
+					MagicCompositeType t = ee.getAttributes().get("mct").of(MagicCompositeType.class);
+					String name2 = ee.getAttributes().get("name").getValue();
+					String tgtName = null;
+					if (ee.hasAttribute("tgtName")) {
+						tgtName = ee.getAttributes().get("tgtName").getValue();
+					}
+					float value = 0f;
+					if (ee.hasAttribute("value")) {
+						value = ee.getAttributes().get("value").getFloatValue();
+					}
+					BookPage p = new BookPage(t, name2, tgtName, value);
+					pages.add(p);//本に設定するだけでストレージには入れない。ストレージは販売や宝箱ゲットを想定している。
+				}
+				b.setPages(pages);
+			}
+			getInstance().add(b);
 		}
+		printAll(System.out);
 		file.dispose();
 	}
 

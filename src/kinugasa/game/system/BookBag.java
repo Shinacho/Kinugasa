@@ -69,18 +69,30 @@ public class BookBag implements Cloneable, Iterable<Book> {
 		books.add(i);
 	}
 
-	public void drop(Item i) {
+	public void drop(Book i) {
 		if (books.contains(i)) {
 			books.remove(i);
 		}
 	}
 
+	public boolean isEmpty() {
+		return books.isEmpty();
+	}
+
+	public int size() {
+		return books.size();
+	}
+
 	public void drop(String name) {
-		drop(ItemStorage.getInstance().get(name));
+		drop(BookStorage.getInstance().get(name));
 	}
 
 	public boolean contains(Book i) {
 		return books.contains(i);
+	}
+
+	public boolean canAdd() {
+		return size() < max;
 	}
 
 	public boolean contains(String name) {

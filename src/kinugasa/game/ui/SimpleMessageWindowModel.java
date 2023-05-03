@@ -76,6 +76,10 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	public SimpleMessageWindowModel() {
 	}
 
+	public SimpleMessageWindowModel(String nextIcon) {
+		setNextIcon(nextIcon);
+	}
+
 	@Override
 	public SimpleMessageWindowModel clone() {
 		return (SimpleMessageWindowModel) super.clone(); //To change body of generated methods, choose Tools | Templates.
@@ -122,6 +126,9 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 		int y = (int) mw.getY();
 		int w = (int) mw.getWidth();
 		int h = (int) mw.getHeight();
+		if (w <= 0 || h <= 0) {
+			return;
+		}
 		Graphics2D g2 = g.create();
 		g2.setColor(border1);
 		g2.fillRect(x, y, w, h);
@@ -150,10 +157,11 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 			g2.drawString(t, x, y);
 			y += font.getFont().getSize2D() + BORDER_SIZE;
 		}
-		y += BORDER_SIZE * 2 + font.getFont().getSize2D();
+		y += font.getFont().getSize2D();
 		// オプションと選択の表示
 		if (mw.isAllVisible()) {
 			if (mw.getText() instanceof Choice) {
+				y -= font.getFont().getSize2D() / 2;
 				for (int i = 0; i < mw.getChoice().getOptions().size(); i++) {
 					if (i == mw.getSelect()) {
 						g2.drawString(selectIcon, x, y);

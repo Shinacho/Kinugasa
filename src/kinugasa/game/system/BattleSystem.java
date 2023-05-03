@@ -487,7 +487,7 @@ public class BattleSystem implements Drawable {
 		if (currentCmd.isMagicSpell()) {
 			CmdAction ba = currentCmd.getFirstBattleAction();//1つしか入っていない
 			//現状でのターゲットを取得
-			BattleActionTarget target = BattleTargetSystem.instantTarget(currentCmd.getUser(), ba);
+			ActionTarget target = BattleTargetSystem.instantTarget(currentCmd.getUser(), ba);
 			//ターゲットがいない場合、詠唱失敗のメッセージ出す
 			if (target.isEmpty()) {
 				//対象なし
@@ -639,14 +639,14 @@ public class BattleSystem implements Drawable {
 		if (user.getStatus().isConfu()) {
 			//ターゲットシステムのカレント起動しないで対象を取得する
 			setActionMessage(user, a);
-			BattleActionTarget tgt = BattleTargetSystem.instantTarget(user, a);
+			ActionTarget tgt = BattleTargetSystem.instantTarget(user, a);
 			return execAction(a, tgt);
 		}
 
 		//NPCの場合
 		if (!user.isPlayer()) {
 			//アクションの効果範囲に相手がいるか、インスタント確認
-			BattleActionTarget tgt = BattleTargetSystem.instantTarget(user, a);
+			ActionTarget tgt = BattleTargetSystem.instantTarget(user, a);
 			if (tgt.isEmpty()) {
 				//ターゲットがいない場合で、移動アクションを持っている場合は移動開始
 				if (user.getStatus().hasAction(BattleConfig.ActionName.move)) {
@@ -780,7 +780,7 @@ public class BattleSystem implements Drawable {
 				//アイテム使用　※アイテムextendsアクション
 				//アイテムターゲット選択要否
 				//アイテム使用は、アイテム使用->装備の優先度とする
-				if (a.isBattleUse() && a.getBattleEvent().stream().anyMatch(p -> p.getTargetType() != SELF) && !((Item) a).canEqip()) {
+				if (a.isBattleUse() && a.getBattleEvent().stream().anyMatch(p -> p.getTargetType() != SELF) && !((Item) a).canEqip(user.getStatus())) {
 					//利用可能でSELFのみじゃない場合ターゲットシステム起動
 					//ターゲットシステムを起動する前に、インスタントターゲットでターゲットがいるか確認する。いない場合キャンセルにする。
 					if (!BattleTargetSystem.instantTarget(user, a).hasAnyTargetChara()) {
@@ -795,7 +795,7 @@ public class BattleSystem implements Drawable {
 				}
 				if (a.isBattleUse() && a.getBattleEvent().stream().allMatch(p -> p.getTargetType() == SELF)) {
 					//利用可能でSELFのみの場合、即時実行
-					BattleActionTarget tgt = BattleTargetSystem.instantTarget(user, a);//SELF
+					ActionTarget tgt = BattleTargetSystem.instantTarget(user, a);//SELF
 					tgt.getUser().getStatus().setDamageCalcPoint();
 					ActionResult result = a.exec(tgt);
 					setActionMessage(user, a, tgt, result);
@@ -804,7 +804,7 @@ public class BattleSystem implements Drawable {
 					setStage(Stage.EXECUTING_ACTION, "execAction");
 					return OperationResult.SUCCESS;
 				}
-				if (((Item) a).canEqip()) {
+				if (((Item) a).canEqip(user.getStatus())) {
 					//装備可能アイテムの場合
 					Item i = (Item) a;
 					//このアイテムをすでに装備している場合、空振りさせる
@@ -824,7 +824,7 @@ public class BattleSystem implements Drawable {
 					//同じスロットの装備を外す
 					user.getStatus().removeEqip(i.getEqipmentSlot());
 					//装備する
-					user.getStatus().eqip(i);
+					user.getStatus().addEqip(i);
 					StringBuilder s = new StringBuilder();
 					s.append(user.getStatus().getName());
 					s.append(I18N.translate("IS"));
@@ -875,7 +875,7 @@ public class BattleSystem implements Drawable {
 	}
 
 	//アクション実行
-	OperationResult execAction(CmdAction a, BattleActionTarget tgt) {
+	OperationResult execAction(CmdAction a, ActionTarget tgt) {
 		messageWindowSystem.closeTooltipWindow();//ターゲット選択中の表示を閉じる
 		//ターゲットシステムが呼ばれているので、初期化
 		targetSystem.unsetCurrent();
@@ -1055,7 +1055,7 @@ public class BattleSystem implements Drawable {
 	}
 
 	//resultに基づくメッセージをアクションウインドウに設定する
-	private void setActionMessage(BattleCharacter user, CmdAction action, BattleActionTarget target, ActionResult result) {
+	private void setActionMessage(BattleCharacter user, CmdAction action, ActionTarget target, ActionResult result) {
 		//アクションが実行されているので、必要ないウインドウは閉じる
 		messageWindowSystem.closeCommandWindow();
 		messageWindowSystem.closeAfterMoveCommandWindow();
@@ -1309,7 +1309,7 @@ public class BattleSystem implements Drawable {
 	}
 
 //resultに基づくアニメーションをthisに追加する
-	private void setActionAnimation(BattleCharacter user, CmdAction action, BattleActionTarget target, ActionResult result) {
+	private void setActionAnimation(BattleCharacter user, CmdAction action, ActionTarget target, ActionResult result) {
 		animation.addAll(result.getAnimation());
 		currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
 		setStage(Stage.EXECUTING_ACTION, "setActionAnimation");
@@ -1486,7 +1486,7 @@ public class BattleSystem implements Drawable {
 				}
 
 				// イベント対象者別にターゲットを設定
-				BattleActionTarget tgt = BattleTargetSystem.instantTarget(currentCmd.getUser(), eba);
+				ActionTarget tgt = BattleTargetSystem.instantTarget(currentCmd.getUser(), eba);
 
 				//ターゲットがいない場合、何もしない
 				if (tgt.isEmpty()) {

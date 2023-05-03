@@ -26,7 +26,8 @@ package kinugasa.game.input;
 /**
  * キーボードのキーを指定するための列挙です.
  * <br>
- * Keysは対応するキーのAWTキーコードを持ちます。 AWTキーコードについては、java.awt.event.KeyEventクラスのリファレンスを参照してください。<br>
+ * Keysは対応するキーのAWTキーコードを持ちます。
+ * AWTキーコードについては、java.awt.event.KeyEventクラスのリファレンスを参照してください。<br>
  * <br>
  *
  * @see java.awt.event.KeyEvent
@@ -384,7 +385,11 @@ public enum Keys {
 	/**
 	 * PAGEDOWNキーです.
 	 */
-	PAGE_DOWN(java.awt.event.KeyEvent.VK_PAGE_DOWN),;
+	PAGE_DOWN(java.awt.event.KeyEvent.VK_PAGE_DOWN),
+	/**
+	 * @です。
+	 */
+	AT(java.awt.event.KeyEvent.VK_AT),;
 	/**
 	 * キーのAWTキー番号.
 	 */

@@ -140,6 +140,12 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 		if (GameSystem.isDebugMode()) {
 			System.out.println(soundMap);
 		}
+		//素材のパース
+		for (XMLElement e : root.getElement("material")) {
+			String name = e.getAttributes().get("name").getValue();
+			int value = e.getAttributes().get("value").getIntValue();
+			MaterialStorage.getInstance().add(new Material(name, value));
+		}
 
 		//アイテムのパース
 		for (XMLElement e : root.getElement("item")) {
@@ -180,6 +186,12 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 					i.getDamageCalcStatusKey().add(key);
 				}
 			}
+			if (e.hasAttribute("value")) {
+				i.setValue(e.getAttributes().get("value").getIntValue());
+			}
+			if (e.hasAttribute("canSale")) {
+				i.setCanSale(e.getAttributes().get("canSale").getBool());
+			}
 			//イベント
 			for (XMLElement ee : e.getElement("battleEvent")) {
 				i.addBattleEvent(parseEvent(ee));
@@ -187,19 +199,96 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			for (XMLElement ee : e.getElement("fieldEvent")) {
 				i.addFieldEvent(parseEvent(ee));
 			}
+			//強化関連
+			if (e.hasElement("upgrade")) {
+				for (XMLElement ee : e.getElement("upgrade")) {
+					int order = ee.getAttributes().get("order").getIntValue();
+					int value = ee.getAttributes().get("value").getIntValue();
+					ItemUpgrade up = new ItemUpgrade(order, value);
+					Map<Material, Integer> upgradeMaterials = new HashMap<>();
+					for (XMLElement eee : ee.getElement("material")) {
+						Material m = MaterialStorage.getInstance().get(eee.getAttributes().get("name").getValue());
+						int n = 1;
+						if (eee.hasAttribute("num")) {
+							n = eee.getAttributes().get("num").getIntValue();
+						}
+						upgradeMaterials.put(m, n);
+					}
+					up.setMaterials(upgradeMaterials);
+					Map<StatusKey, Float> upgradeStatus = new HashMap<>();
+					for (XMLElement eee : ee.getElement("addStatus")) {
+						StatusKey k = StatusKeyStorage.getInstance().get(eee.getAttributes().get("tgt").getValue());
+						float v = eee.getAttributes().get("value").getFloatValue();
+						upgradeStatus.put(k, v);
+					}
+					up.setAddStatus(upgradeStatus);
+					Map<AttributeKey, Float> upgradeAttr = new HashMap<>();
+					for (XMLElement eee : ee.getElement("addAttr")) {
+						AttributeKey k = AttributeKeyStorage.getInstance().get(eee.getAttributes().get("tgt").getValue());
+						float v = eee.getAttributes().get("value").getFloatValue();
+						upgradeAttr.put(k, v);
+					}
+					up.setAddAttrin(upgradeAttr);
+					i.addUpgrade(up);
+				}
+			}
+			//攻撃回数・・・初期値１
+			if (e.hasAttribute("count")) {
+				i.setActionCount(e.getAttributes().get("count").getIntValue());
+			}
+			//装備条件・・・複数入っている場合はANDになる
+			if (e.hasElement("eqipTerm")) {
+				for (XMLElement ee : e.getElement("eqipTerm")) {
+					String type = ee.getAttributes().get("type").getValue();
+					String tgt = ee.getAttributes().get("tgt").getValue();
+					int value = ee.getAttributes().get("value").getIntValue();
+					switch (type) {
+						case "STATUS_IS":
+							i.getEqipTerm().add(ItemEqipTerm.statusIs(StatusKeyStorage.getInstance().get(tgt), value));
+							break;
+						case "STATUS_IS_OVER":
+							i.getEqipTerm().add(ItemEqipTerm.statusIsOver(StatusKeyStorage.getInstance().get(tgt), value));
+							break;
+						case "RACE_IS":
+							i.getEqipTerm().add(ItemEqipTerm.raceIs(RaceStorage.getInstance().get(tgt)));
+							break;
+						default:
+							throw new AssertionError("undefined eqipTerm name : " + type);
+					}
+				}
+			} else {
+				i.getEqipTerm().add(ItemEqipTerm.ANY);
+			}
+			//解体
+			if (e.hasElement("disassembly")) {
+				Map<Material, Integer> dissase = new HashMap<>();
+				for (XMLElement eee : e.getElement("disassembly").get(0).getElement("material")) {
+					Material m = MaterialStorage.getInstance().get(eee.getAttributes().get("name").getValue());
+					int n = 1;
+					if (eee.hasAttribute("num")) {
+						n = eee.getAttributes().get("num").getIntValue();
+					}
+					dissase.put(m, n);
+				}
+				i.setDissasseMaterials(dissase);
+			}
 			//アイテム装備効果（ステータス）
-			if (i.canEqip()) {
+			if (i.isEqipItem()) {
 				StatusValueSet s = new StatusValueSet();
+				s.forEach(p -> p.set(0));
+				s.forEach(p -> p.setMax(9999));
+				s.forEach(p -> p.setMin(-9999));
 				for (XMLElement ee : e.getElement("eqStatus")) {
 					String tgt = ee.getAttributes().get("tgt").getValue();
 					float value = ee.getAttributes().get("value").getFloatValue();
-					s.get(tgt).add(value);
+					s.get(tgt).set(value);//後勝ち
 				}
 				i.setEqStatus(s);
 			}
 			//アイテム装備効果（耐性）
-			if (i.canEqip()) {
+			if (i.isEqipItem()) {
 				AttributeValueSet a = new AttributeValueSet();
+				a.forEach(p -> p.set(0));
 				for (XMLElement ee : e.getElement("eqAttr")) {
 					String tgt = ee.getAttributes().get("tgt").getValue();
 					float value = ee.getAttributes().get("value").getFloatValue();
@@ -358,6 +447,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 
 		animationMap.clear();
 		file.dispose();
+
 	}
 
 }

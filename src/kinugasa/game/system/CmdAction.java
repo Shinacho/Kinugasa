@@ -54,11 +54,24 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 	private List<ActionTerm> terms = new ArrayList<>();
 	private int sort;
 	private int spellTime;
+	private int actionCount = 1;
 
 	public CmdAction(ActionType type, String name, String desc) {
 		this.type = type;
 		this.name = name;
 		this.desc = desc;
+	}
+
+	public void setActionCount(int actionCount) {
+		this.actionCount = actionCount;
+	}
+
+	public int getActionCount() {
+		return actionCount;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getSpellTime() {
@@ -161,7 +174,6 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 		return fieldEvent;
 	}
 
-	@Deprecated
 	public int getArea() {
 		return area;
 	}
@@ -230,7 +242,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 		return getBattleEvent().stream().anyMatch(p -> p.getParameterType() == t);
 	}
 
-	private boolean canDoThis(BattleActionTarget tgt) {
+	private boolean canDoThis(ActionTarget tgt) {
 		return terms == null ? true : terms.stream().allMatch(p -> p.canExec(tgt));
 	}
 
@@ -274,7 +286,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 	}
 
 	//effect ->targtet
-	public final ActionResult exec(BattleActionTarget tgt) {
+	public final ActionResult exec(ActionTarget tgt) {
 		if (stop || !canDoThis(tgt)) {
 			if (tgt.isInField()) {
 				List<ActionResultType> list = Collections.nCopies(tgt.getTarget().size(), ActionResultType.MISS);
@@ -293,27 +305,36 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 				throw new GameSystemException("this event is cant exec : " + this);
 			}
 			List<List<ActionResultType>> result = new ArrayList<>();
-			List<AnimationSprite> anime = new ArrayList<>();
 			for (ActionEvent e : fieldEvent) {
-				ActionEventResult r = e.exec(tgt);
-				result.add(r.getResultTypePerTgt());
-				anime.addAll(r.getAnimation());
+				for (int i = 0; i < actionCount; i++) {
+					ActionEventResult r = e.exec(tgt);
+					result.add(r.getResultTypePerTgt());
+				}
 			}
-			return new ActionResult(tgt, result, createWaitTime(), anime);
-		} else {
-			//バトル
-			if (battleEvent == null || battleEvent.isEmpty()) {
-				throw new GameSystemException("this event is cant exec : " + this);
+			if (result.stream().flatMap(p -> p.stream()).anyMatch(p -> p == ActionResultType.SUCCESS)) {
+				playSound();
 			}
-			List<List<ActionResultType>> result = new ArrayList<>();
-			List<AnimationSprite> anime = new ArrayList<>();
-			for (ActionEvent e : battleEvent) {
-				ActionEventResult r = e.exec(tgt);
-				result.add(r.getResultTypePerTgt());
-				anime.addAll(r.getAnimation());
-			}
-			return new ActionResult(tgt, result, createWaitTime(), anime);
+			return new ActionResult(tgt, result, createWaitTime(), new ArrayList<>());
 		}
+
+		//バトル
+		if (battleEvent == null || battleEvent.isEmpty()) {
+			throw new GameSystemException("this event is cant exec : " + this);
+		}
+		List<List<ActionResultType>> result = new ArrayList<>();
+		List<AnimationSprite> anime = new ArrayList<>();
+		for (ActionEvent e : battleEvent) {
+			for (int i = 0; i < actionCount; i++) {
+				ActionEventResult r = e.exec(tgt);
+				result.add(r.getResultTypePerTgt());
+				anime.addAll(r.getAnimation());
+			}
+		}
+		if (result.stream().flatMap(p -> p.stream()).anyMatch(p -> p == ActionResultType.SUCCESS)) {
+			playSound();
+		}
+		return new ActionResult(tgt, result, createWaitTime(), anime);
+
 	}
 
 	private final void playSound() {
@@ -333,6 +354,12 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 
 	@Override
 	public int compareTo(CmdAction o) {
+		if (sort == o.sort) {
+			if (name.length() != o.name.length()) {
+				return name.length() - o.name.length();
+			}
+			return name.compareTo(o.getName());
+		}
 		return sort - o.sort;
 	}
 

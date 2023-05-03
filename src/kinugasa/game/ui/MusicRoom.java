@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import kinugasa.object.Sprite;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundMap;
@@ -38,98 +39,19 @@ import kinugasa.resource.sound.SoundStorage;
  * @vesion 1.0.0 - 2022/11/13_0:36:02<br>
  * @author Dra211<br>
  */
-public class MusicRoom extends ActionTextSpriteGroup {
+public class MusicRoom extends ScrollSelectableMessageWindow {
 
-	private float w, h;
-	private String mapName;
-	private float maxY;
+	private SoundMap map;
 
-	public MusicRoom(String mapName, float w, float h) {
-		super(10, 40, 38, Collections.<ActionTextSprite>emptyList(), 0);
-		this.w = w;
-		this.h = h;
-		this.mapName = mapName;
-		this.maxY = h - 12 - 38 - 24;
-		create(mapName);
-		updateLocation(40, 38);
-		updateSelectIcon();
+	public MusicRoom(SoundMap map, int x, int y, int w, int h, int line) {
+		super(x, y, w, h, line);
+		this.map = map;
+		setText(map.stream().map(p -> p.getName()).sorted().map(p -> new Text(p)).collect(Collectors.toList()));
 	}
 
-	private void create(String mapName) {
-		SoundMap map = SoundStorage.getInstance().get(mapName);
-		List<ActionTextSprite> list = new ArrayList<>();
-		List<Sound> soundList = map.asList();
-		Collections.sort(soundList, (Sound o1, Sound o2) -> o1.getName().compareTo(o2.getName()));
-		for (Sound s : soundList) {
-			list.add(new ActionTextSprite(s.getName().split("[.]")[0], new SimpleTextLabelModel(FontModel.DEFAULT.clone().setFontSize(14)), 0, 0, 200, 14, new PlaySoundAction(map, s)));
-		};
-		setList(list);
-		updateSelectIcon();
-	}
-
-	@Override
-	public void updateLocation(float x, float y) {
-		List<ActionTextSprite> list = getList();
-		if (list.isEmpty()) {
-			return;
-		}
-		//óvëfÇÃç¿ïWí≤êÆ
-		float xx = x;
-		float yy = y;
-		int c = -1;
-		for (int i = 0; i < list.size(); i++, c++) {
-			if (yy > maxY) {
-				xx += list.get(0).getWidth() + (getBuffer() * 2);
-				yy = y;
-				c = -1;
-			} else {
-				yy = y + c * list.get(0).getHeight() + (getBuffer() * 2);
-			}
-			list.get(i).setLocation(xx, yy);
-			if (c > max) {
-				max = c;
-			}
-		}
-		max += 2;
-	}
-	private int max = 0;
-
-	public void nextColumn() {
-		int v = getSelectedIdx() + max;
-		if (v > getList().size()) {
-			v = getList().size() - 1;
-		}
-		setSelectedIdx(v);
-	}
-
-	public void prevColumn() {
-		int v = getSelectedIdx() - max;
-		if (v < 0) {
-			v = 0;
-		}
-		setSelectedIdx(v);
-	}
-
-	class PlaySoundAction extends Action {
-
-		private SoundMap map;
-		private Sound s;
-
-		public PlaySoundAction(SoundMap map, Sound s) {
-			this.map = map;
-			this.s = s;
-		}
-
-		@Override
-		public void exec() {
-			map.forEach(p -> p.dispose());
-			s.load();
-			if (s.isPlaying()) {
-				s.stop();
-			} else {
-				s.load().stopAndPlay();;
-			}
-		}
+	public void play() {
+		map.dispose();
+		map.get(getSelected().getText()).load().stopAndPlay();
 	}
 
 }

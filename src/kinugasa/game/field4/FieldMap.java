@@ -23,6 +23,7 @@
  */
 package kinugasa.game.field4;
 
+import java.awt.Color;
 import kinugasa.object.FourDirection;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -675,7 +676,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			encountCounter.sub(x);
 			if (debugMode) {
 				System.out.print("FM MOVE " + currentIdx + " / EC=" + encountCounter.getCurrentTime());
-				System.out.println(getCurrentTile());
+				System.out.println(" / " + getCurrentTile());
 			}
 			prevLocationList.addFirst(prevIdx);
 			if (playerCharacter.size() <= prevLocationList.size()) {
@@ -795,9 +796,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 *
 	 * @param scale 拡大率。1で等倍、0.5で50%のサイズ。
 	 * @param animation フロントアニメーションを描画するかどうか。
+	 * @param pcLocation PCの位置に点を打つか。
 	 * @return 指定の拡大率で描画された画像。
 	 */
-	public KImage createMiniMap(float scale, boolean animation) {
+	public KImage createMiniMap(float scale, boolean animation, boolean pcLocation) {
 
 		float w = getBaseLayer().getDataWidth() * getBaseLayer().getChip(0, 0).getImage().getWidth();
 		float h = getBaseLayer().getDataHeight() * getBaseLayer().getChip(0, 0).getImage().getHeight();
@@ -817,7 +819,17 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			for (FieldAnimationSprite a : frontAnimation) {
 				float x = chipW * a.getIdx().x;
 				float y = chipH * a.getIdx().y;
-				g.drawImage(a.getAWTImage(), (int) x, (int) y, null);
+				g.drawImage(a.getAWTImage(), (int) x, (int) y, (int) (chipW * scale), (int) (chipH * scale), null);
+			}
+		}
+		if (pcLocation) {
+			if (!playerCharacter.isEmpty()) {
+				float x = chipW * getCurrentIdx().x;
+				float y = chipH * getCurrentIdx().y;
+				float dw = chipW * scale;
+				float dh = chipH * scale;
+				g.setColor(Color.RED);
+				g.fillRect((int) x, (int) y, (int) dw, (int) dh);
 			}
 		}
 		g.dispose();
@@ -909,6 +921,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 * メッセージウインドウを閉じます。ついでにNPCの移動を解除します。
 	 */
 	public void closeMessagWindow() {
+		if (mw == null) {
+			return;
+		}
 		mw.setVisible(false);
 		if (mw != null) {
 			mw = null;
@@ -971,6 +986,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			System.out.println("CHANGE_MAP: " + n);
 		}
 		return fm;
+	}
+
+	@Override
+	public String toString() {
+		return "FieldMap{" + "name=" + name + ", chipW=" + chipW + ", chipH=" + chipH + '}';
 	}
 
 }
