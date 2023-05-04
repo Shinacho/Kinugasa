@@ -75,7 +75,8 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * srcをグレイスケール変換した画像をdstに格納して返します. このメソッドはピクセルのRGB平均をそのまま設定します。 NTSC系加重平均法は使用しません。<br>
+	 * srcをグレイスケール変換した画像をdstに格納して返します. このメソッドはピクセルのRGB平均をそのまま設定します。
+	 * NTSC系加重平均法は使用しません。<br>
 	 *
 	 * @param src 色を置換するソース画像を指定します。この画像のピクセルは変更されません。<br>
 	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
@@ -277,7 +278,8 @@ public final class ImageEditor {
 	 * @param deg 回転角度を度数法で指定します。<br>
 	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return srcを回転した画像を返します。degが1のときはsrcのコピーが返されます。回転時に画像が領域の 外に出る場合、空いた領域は黒(Color.BLACK)となります。<br>
+	 * @return srcを回転した画像を返します。degが1のときはsrcのコピーが返されます。回転時に画像が領域の
+	 * 外に出る場合、空いた領域は黒(Color.BLACK)となります。<br>
 	 */
 	public static BufferedImage rotate(BufferedImage src, float deg, BufferedImage dst) {
 		if (deg == 0) {
@@ -288,7 +290,7 @@ public final class ImageEditor {
 		}
 		Graphics2D g = createGraphics2D(dst, RenderingQuality.QUALITY);
 		g.setClip(0, 0, dst.getWidth(), dst.getHeight());
-		g.setColor(Color.BLACK);
+		g.setColor(new Color(ARGBColor.CLEAR_BLACK, true));
 		g.fillRect(0, 0, dst.getWidth(), dst.getHeight());
 		g.rotate(Math.toRadians(deg), dst.getWidth() / 2, dst.getHeight() / 2);
 		g.drawImage(src, 0, 0, null);
@@ -297,7 +299,8 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * ソース画像の全てのピクセルの透過度にtpを加算した画像を返します. このメソッドではピクセルの透過度が0未満又は255を超える場合は有効範囲内に切り詰められます。<br>
+	 * ソース画像の全てのピクセルの透過度にtpを加算した画像を返します.
+	 * このメソッドではピクセルの透過度が0未満又は255を超える場合は有効範囲内に切り詰められます。<br>
 	 * tpが0の場合、透過度を変更する必要がないため、単純にsrcのコピーをdstに格納して返します。<br>
 	 *
 	 * @param src 透過度を変更するソース画像を指定します。この画像のピクセルデータは操作されません。<br>

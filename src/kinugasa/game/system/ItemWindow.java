@@ -270,7 +270,7 @@ public class ItemWindow extends BasicSprite {
 						//ターゲットタイプランダムの場合は即時実行
 						//チームが入っている場合即時実行
 						if (i.fieldEventIsOnly(TargetType.SELF) || i.fieldEventIsOnly(TargetType.RANDOM_ONE) || i.fieldEventIsOnly(TargetType.RANDOM_ONE_PARTY)
-								||i.fieldEventIsOnly(TargetType.TEAM_PARTY)) {
+								|| i.fieldEventIsOnly(TargetType.TEAM_PARTY)) {
 							//即時実行してサブに効果を出力
 							Status tgt = getSelectedPC();
 							tgt.setDamageCalcPoint();
@@ -566,10 +566,10 @@ public class ItemWindow extends BasicSprite {
 			Map<StatusKey, Integer> map = tgt.calcDamage();
 			for (Map.Entry<StatusKey, Integer> e : map.entrySet()) {
 				if (e.getValue() < 0) {
-					sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("HEALDAMAGE"));
+					sb.append(tgt.getName()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
 					sb.append(Text.getLineSep());
 				} else if (e.getValue() > 0) {
-					sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("DAMAGE"));
+					sb.append(tgt.getName()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
 					sb.append(Text.getLineSep());
 				} else {
 					//==0
@@ -779,6 +779,3 @@ public class ItemWindow extends BasicSprite {
 	}
 
 }
-
-
-
