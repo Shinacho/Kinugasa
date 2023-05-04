@@ -27,11 +27,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.NoLoopCall;
 import kinugasa.game.ui.MessageWindow;
-import kinugasa.game.ui.SimpleMessageWindowModel;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
 
@@ -42,88 +43,72 @@ import kinugasa.object.BasicSprite;
  */
 public class MaterialPageWindow extends BasicSprite {
 
-	public MaterialPageWindow(float x, float y, float w, float h) {
+	public MaterialPageWindow(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
-		update();
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, 20, false);
+		mw.setLoop(true);
+		updateText();
 	}
-	private MessageWindow mw;
+	private ScrollSelectableMessageWindow mw;
 
 	public enum Mode {
 		MATERIAL,
 		PAGE,
 	}
 	private Mode mode = Mode.MATERIAL;
-	private int start = 0;
 
-	@NoLoopCall
-	@Override
-	public void update() {
+	private void updateText() {
 		List<String> list = new ArrayList<>();
 		switch (mode) {
 			case MATERIAL:
 				Map<Material, Integer> map1 = GameSystem.getInstance().getMaterialBag().getMap();
 				for (Map.Entry<Material, Integer> e : map1.entrySet()) {
-					list.add(e.getKey().getName() + ":" + e.getValue());
+					list.add(e.getKey().getName() + ":" + e.getValue() + (I18N.translate("VALUE") + ":" + e.getKey().getValue()));
 				}
 				break;
 			case PAGE:
 				Map<BookPage, Integer> map2 = GameSystem.getInstance().getBookPageBag().getMap();
 				for (Map.Entry<BookPage, Integer> e : map2.entrySet()) {
-					list.add(e.getKey().getName() + ":" + e.getValue());
+					list.add(e.getKey().getName() + ":" + e.getValue() + (I18N.translate("VALUE") + ":" + e.getKey().getSaleValue()));
 				}
 				break;
 		}
 		Collections.sort(list);
-		StringBuilder sb = new StringBuilder();
-		sb.append("<----").append(I18N.translate(mode.toString())).append(start / PCStatusWindow.line + 1).append("---->").append(Text.getLineSep());
-		int i = 0, c = 0;
-		for (String s : list) {
-			if (c >= PCStatusWindow.line) {
-				break;
-			}
-			if (i < start) {
-				i++;
-				continue;
-			}
-			sb.append("  ");
-			sb.append(s);
-			sb.append(Text.getLineSep());
-			i++;
-			c++;
-		}
-		mw.setText(sb.toString());
-		mw.allText();
+
+		list.add(0, "<----" + I18N.translate(mode.toString()) + "---->");
+
+		mw.setText(list.stream().map(p -> new Text(p)).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void update() {
+		mw.update();
 	}
 
 	public void switchMode() {
 		switch (mode) {
 			case MATERIAL:
 				mode = Mode.PAGE;
+				mw.reset();
 				break;
 			case PAGE:
 				mode = Mode.MATERIAL;
+				mw.reset();
 				break;
 		}
-		start = 0;
-		update();
+		updateText();
 	}
 
-	public void nextPage() {
-		start += PCStatusWindow.line;
-		switch (mode) {
-			case MATERIAL:
-				if (start >= GameSystem.getInstance().getMaterialBag().size()) {
-					start = 0;
-				}
-				break;
-			case PAGE:
-				if (start >= GameSystem.getInstance().getBookPageBag().size()) {
-					start = 0;
-				}
-				break;
-		}
-		update();
+	public void prev() {
+		mw.prevSelect();
+	}
+
+	public void next() {
+		mw.nextSelect();
+	}
+
+	public MessageWindow getWindow() {
+		return mw.getWindow();
 	}
 
 	@Override

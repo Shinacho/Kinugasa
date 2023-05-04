@@ -54,16 +54,25 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 	private int visibleIdx;
 	private int visibleLine = 6;
 	private boolean loop = false;
+	private boolean line1select = true;
 
 	public MessageWindow getWindow() {
 		return window;
 	}
 
+	public ScrollSelectableMessageWindow(int x, int y, int w, int h, int line, boolean line1) {
+		window = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
+		this.visibleLine = line;
+		this.line1select = line1;
+		this.select = line1select ? 0 : 1;
+		this.visibleIdx = 0;
+	}
+
 	public ScrollSelectableMessageWindow(int x, int y, int w, int h, int line) {
 		window = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		this.visibleLine = line;
-		select = 0;
-		visibleIdx = 0;
+		this.select = 0;
+		this.visibleIdx = 0;
 	}
 
 	public ScrollSelectableMessageWindow(int x, int y, int w, int h, int line, String... text) {
@@ -84,6 +93,8 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 	public void setText(List<? extends Text> text) {
 		this.text.clear();
 		this.text.addAll(text);
+		select = line1select ? 0 : 1;
+		visibleIdx = 0;
 	}
 
 	private void updateText() {
@@ -120,6 +131,14 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 
 	public Text getSelected() {
 		return text.get(select);
+	}
+
+	public boolean isLine1select() {
+		return line1select;
+	}
+
+	public void setLine1select(boolean line1select) {
+		this.line1select = line1select;
 	}
 
 	public boolean isChoice() {
@@ -170,7 +189,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 		select++;
 		if (select >= size()) {
 			if (isLoop()) {
-				select = 0;
+				select = line1select ? 0 : 1;
 				visibleIdx = 0;
 				pos = 0;
 				return;
@@ -191,6 +210,16 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 	public void prevSelect() {
 		select--;
 		if (select < 0) {
+			if (select == 0 && !line1select) {
+				if (loop) {
+					select = size() - 1;
+					visibleIdx = size() - visibleLine;
+					pos = visibleLine - 1;
+					return;
+				} else {
+					select++;
+				}
+			}
 			if (isLoop()) {
 				select = size() - 1;
 				visibleIdx = size() - visibleLine;

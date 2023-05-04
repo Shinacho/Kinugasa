@@ -42,7 +42,7 @@ public class EqipItemWindow extends PCStatusWindow {
 	private MessageWindow mw;
 	private List<Status> s;
 
-	public EqipItemWindow(float x, float y, float w, float h, List<Status> s) {
+	public EqipItemWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
 		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
@@ -74,7 +74,7 @@ public class EqipItemWindow extends PCStatusWindow {
 	@Override
 	public void update() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(I18N.translate("EQIP")).append(Text.getLineSep());
+		sb.append("<---").append(s.get(pcIdx).getName()).append(I18N.translate("S")).append(I18N.translate("EQIP")).append("--->").append(Text.getLineSep());
 
 		for (Map.Entry<ItemEqipmentSlot, Item> e : s.get(pcIdx).getEqipment().entrySet()) {
 			String key = e.getKey().getName();
@@ -87,12 +87,16 @@ public class EqipItemWindow extends PCStatusWindow {
 	}
 
 	@Override
-	public void nextPage() {
+	public void prev() {
 	}
 
 	@Override
-	public boolean hasNextPage() {
-		return false;
+	public void next() {
+	}
+
+	@Override
+	public MessageWindow getWindow() {
+		return mw;
 	}
 
 	@Override

@@ -64,6 +64,11 @@ public class BookPage implements Nameable {
 	public String getName() {
 		return getDesc();
 	}
+	
+	public int getSaleValue(){
+		//TODO:価格ここ
+		return 100;
+	}
 
 	public String getDesc() {
 		//中でtoStringやgetNameを使わないように注意！！！！！！！

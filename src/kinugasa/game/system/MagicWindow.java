@@ -29,10 +29,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import kinugasa.game.NoLoopCall;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.MessageWindowGroup;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
@@ -45,9 +45,10 @@ import kinugasa.util.Random;
  */
 public class MagicWindow extends BasicSprite {
 
-	public MagicWindow(float x, float y, float w, float h) {
+	public MagicWindow(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		main = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(""));
+		main = new ScrollSelectableMessageWindow(x, y, w, h, 20, false);
+		main.setLoop(true);
 		x += 8;
 		y += 8;
 		w -= 8;
@@ -59,8 +60,7 @@ public class MagicWindow extends BasicSprite {
 		msg = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(""));
 		msg.setVisible(false);
 		group = new MessageWindowGroup(choiceUse, tgtSelect, msg);
-		mainSelect = 0;
-		update();
+		updateText();
 	}
 
 	public enum Mode {
@@ -72,9 +72,9 @@ public class MagicWindow extends BasicSprite {
 	}
 	private Mode mode = Mode.MAGIC_AND_USER_SELECT;
 	private int pcIdx = 0;
-	private MessageWindow main, choiceUse, tgtSelect, msg;
+	private ScrollSelectableMessageWindow main;
+	private MessageWindow choiceUse, tgtSelect, msg;
 	private MessageWindowGroup group;
-	private int mainSelect = 0;
 
 	private static final int USE = 0;
 	private static final int CHECK = 1;
@@ -82,10 +82,7 @@ public class MagicWindow extends BasicSprite {
 	public void nextSelect() {
 		switch (mode) {
 			case MAGIC_AND_USER_SELECT:
-				mainSelect++;
-				if (mainSelect >= getSelectedPC().getActions(ActionType.MAGIC).size()) {
-					mainSelect = 0;
-				}
+				main.nextSelect();
 				break;
 			case CHOICE_USE:
 				choiceUse.nextSelect();
@@ -99,14 +96,7 @@ public class MagicWindow extends BasicSprite {
 	public void prevSelect() {
 		switch (mode) {
 			case MAGIC_AND_USER_SELECT:
-				mainSelect--;
-				if (mainSelect < 0) {
-					if (!getSelectedPC().getActions(ActionType.MAGIC).isEmpty()) {
-						mainSelect = getSelectedPC().getActions(ActionType.MAGIC).size() - 1;
-					} else {
-						mainSelect = 0;
-					}
-				}
+				main.prevSelect();
 				break;
 			case CHOICE_USE:
 				choiceUse.prevSelect();
@@ -124,7 +114,8 @@ public class MagicWindow extends BasicSprite {
 				if (pcIdx >= GameSystem.getInstance().getParty().size()) {
 					pcIdx = 0;
 				}
-				mainSelect = 0;
+				main.reset();
+				updateText();
 				break;
 			case TARGET_SELECT:
 				tgtSelect.nextSelect();
@@ -144,7 +135,8 @@ public class MagicWindow extends BasicSprite {
 				if (pcIdx < 0) {
 					pcIdx = GameSystem.getInstance().getParty().size() - 1;
 				}
-				mainSelect = 0;
+				main.reset();
+				updateText();
 				break;
 			case TARGET_SELECT:
 				tgtSelect.prevSelect();
@@ -369,21 +361,21 @@ public class MagicWindow extends BasicSprite {
 							sb.append(Text.getLineSep());
 						}
 						//イベント詳細
-						sb.append(I18N.translate("BATTLE_ACTION")).append(Text.getLineSep());
+						sb.append("--").append(I18N.translate("BATTLE_ACTION")).append(Text.getLineSep());
 						//SPELL_TIME
 						sb.append("  ");
-						sb.append(I18N.translate("SPELLTIME")).append(":").append(a.getSpellTime());
+						sb.append(I18N.translate("SPELLTIME")).append(":").append(a.getSpellTime()).append(I18N.translate("TURN"));
 						sb.append(Text.getLineSep());
 						//AREA
 						sb.append("  ");
 						sb.append(I18N.translate("AREA")).append(":").append(a.getArea());
 						sb.append(Text.getLineSep());
-						sb.append("  ");
 						if (a.isBattleUse()) {
 							for (ActionEvent e : a.getBattleEvent()) {
+								sb.append("  ");
 								switch (e.getParameterType()) {
 									case ADD_CONDITION:
-										sb.append(I18N.translate("ADD_CONDITION").replaceAll("c", e.getTgtName()));
+										sb.append(I18N.translate("ADD_CONDITION").replaceAll("c", ConditionValueStorage.getInstance().get(e.getTgtName()).getKey().getDesc()));
 										break;
 									case ATTR_IN:
 										sb.append(I18N.translate("CHANGE_ATTR"));
@@ -446,7 +438,7 @@ public class MagicWindow extends BasicSprite {
 						} else {
 							sb.append("  ").append(I18N.translate("CANT_USE_BATTLE")).append(Text.getLineSep());
 						}
-						sb.append(I18N.translate("FIELD_ACTION")).append(Text.getLineSep());
+						sb.append("--").append(I18N.translate("FIELD_ACTION")).append(Text.getLineSep());
 						if (a.isFieldUse()) {
 							for (ActionEvent e : a.getFieldEvent()) {
 								sb.append("  ");
@@ -587,10 +579,11 @@ public class MagicWindow extends BasicSprite {
 		msg.setText(sb.toString());
 		msg.allText();
 		group.show(msg);
+		updateText();
 	}
 
 	public CmdAction getSelectedAction() {
-		return GameSystem.getInstance().getPartyStatus().get(pcIdx).getActions(ActionType.MAGIC).get(mainSelect);
+		return GameSystem.getInstance().getPartyStatus().get(pcIdx).getActions(ActionType.MAGIC).get(main.getSelectedIdx() - 1);
 	}
 
 	public Status getSelectedPC() {
@@ -601,33 +594,24 @@ public class MagicWindow extends BasicSprite {
 		return mode;
 	}
 
-	@NoLoopCall
-	@Override
-	public void update() {
+	private void updateText() {
+		Text line1 = new Text("<---" + getSelectedPC().getName() + I18N.translate("S") + I18N.translate("MAGIC") + "--->");
+
 		List<CmdAction> list = getSelectedPC().getActions(ActionType.MAGIC);
-		StringBuilder sb = new StringBuilder();
-		sb.append("<---");
-		sb.append(getSelectedPC().getName());
-		sb.append("--->");
-		sb.append(Text.getLineSep());
 		if (list.isEmpty()) {
-			sb.append(I18N.translate("NOTHING_MAGIC"));
-			main.setText(new Text(sb.toString()));
-			main.allText();
+			Text line2 = new Text(I18N.translate("NOTHING_MAGIC"));
+			main.setText(List.of(line1, line2));
 			return;
 		}
-		//mainSelectまで飛ばす
-		for (int i = mainSelect, j = 0; i < list.size() && j < PCStatusWindow.line; i++, j++) {
-			if (i == mainSelect) {
-				sb.append("  >");
-			} else {
-				sb.append("   ");
-			}
-			sb.append(list.get(i).getName());
-			sb.append(Text.getLineSep());
-		}
-		main.setText(new Text(sb.toString()));
-		main.allText();
+		List<Text> l = new ArrayList<>();
+		l.add(line1);
+		l.addAll(list.stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
+		main.setText(l);
+	}
+
+	@Override
+	public void update() {
+		main.update();
 	}
 
 	//1つ前の画面に戻る

@@ -77,7 +77,7 @@ public class BookWindow extends BasicSprite {
 		/**
 		 * どのアイテムにするかを選択中。
 		 */
-		ITEM_AND_USER_SELECT,
+		BOOK_AND_USER_SELECT,
 		/**
 		 * アイテム使用内容を選択中。
 		 */
@@ -100,13 +100,13 @@ public class BookWindow extends BasicSprite {
 		 */
 		DROP_CONFIRM,
 	}
-	private Mode mode = Mode.ITEM_AND_USER_SELECT;
+	private Mode mode = Mode.BOOK_AND_USER_SELECT;
 	private int pcIdx;
 	private int mainSelect = 0;
 
 	public void nextSelect() {
 		switch (mode) {
-			case ITEM_AND_USER_SELECT:
+			case BOOK_AND_USER_SELECT:
 				mainSelect++;
 				if (mainSelect >= getSelectedPC().getBookBag().size()) {
 					mainSelect = 0;
@@ -131,7 +131,7 @@ public class BookWindow extends BasicSprite {
 
 	public void prevSelect() {
 		switch (mode) {
-			case ITEM_AND_USER_SELECT:
+			case BOOK_AND_USER_SELECT:
 				mainSelect--;
 				if (mainSelect < 0) {
 					mainSelect = getSelectedPC().getBookBag().size() - 1;
@@ -156,7 +156,7 @@ public class BookWindow extends BasicSprite {
 
 	public void nextPC() {
 		switch (mode) {
-			case ITEM_AND_USER_SELECT:
+			case BOOK_AND_USER_SELECT:
 				mainSelect = 0;
 				pcIdx++;
 				if (pcIdx >= list.size()) {
@@ -178,7 +178,7 @@ public class BookWindow extends BasicSprite {
 
 	public void prevPC() {
 		switch (mode) {
-			case ITEM_AND_USER_SELECT:
+			case BOOK_AND_USER_SELECT:
 				mainSelect = 0;
 				pcIdx--;
 				if (pcIdx < 0) {
@@ -217,12 +217,12 @@ public class BookWindow extends BasicSprite {
 	public void select() {
 		if (getSelectedPC().getBookBag().isEmpty()) {
 			group.closeAll();
-			mode = Mode.ITEM_AND_USER_SELECT;
+			mode = Mode.BOOK_AND_USER_SELECT;
 			return;
 		}
 		Book b = getSelectedBook();
 		switch (mode) {
-			case ITEM_AND_USER_SELECT:
+			case BOOK_AND_USER_SELECT:
 				List<Text> options = new ArrayList<>();
 				options.add(new Text(I18N.translate("PASS")));
 				options.add(new Text(I18N.translate("CHECK")));
@@ -358,7 +358,7 @@ public class BookWindow extends BasicSprite {
 				break;
 			case WAIT_MSG_CLOSE_TO_IUS:
 				group.closeAll();
-				mode = Mode.ITEM_AND_USER_SELECT;
+				mode = Mode.BOOK_AND_USER_SELECT;
 				break;
 			case WAIT_MSG_CLOSE_TO_CU:
 				group.show(choiceUse);
@@ -438,7 +438,7 @@ public class BookWindow extends BasicSprite {
 	public boolean close() {
 		//IUS表示中の場合は戻るは全消し
 		if (group.getWindows().stream().allMatch(p -> !p.isVisible())) {
-			mode = Mode.ITEM_AND_USER_SELECT;
+			mode = Mode.BOOK_AND_USER_SELECT;
 			return true;
 		}
 		if (msg.isVisible()) {
@@ -462,19 +462,19 @@ public class BookWindow extends BasicSprite {
 			return false;
 		}
 		if (choiceUse.isVisible()) {
-			mode = Mode.ITEM_AND_USER_SELECT;
+			mode = Mode.BOOK_AND_USER_SELECT;
 			group.closeAll();
 			return false;
 		}
 		group.closeAll();
-		mode = Mode.ITEM_AND_USER_SELECT;
+		mode = Mode.BOOK_AND_USER_SELECT;
 		return false;
 	}
 
 	@Override
 	public void update() {
 		//メインウインドウの内容更新
-		if (mode == Mode.ITEM_AND_USER_SELECT) {
+		if (mode == Mode.BOOK_AND_USER_SELECT) {
 			BookBag ib = getSelectedPC().getBookBag();
 			StringBuilder sb = new StringBuilder();
 			sb.append("<---");

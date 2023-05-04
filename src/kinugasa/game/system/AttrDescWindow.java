@@ -29,9 +29,8 @@ import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.ui.MessageWindow;
-import kinugasa.game.ui.SimpleMessageWindowModel;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
-import kinugasa.object.BasicSprite;
 
 /**
  *
@@ -50,18 +49,17 @@ public class AttrDescWindow extends PCStatusWindow {
 		AttrDescWindow.unvisibleAttrName = unvisibleConditionName;
 	}
 
-	private MessageWindow mw;
+	private ScrollSelectableMessageWindow mw;
 	private List<Status> s;
 
-	public AttrDescWindow(float x, float y, float w, float h, List<Status> s) {
+	public AttrDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
-		pageIdx = 0;
-		update();
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, line, false);
+		mw.setLoop(true);
+		updateText();
 	}
 	private int pcIdx;
-	private int pageIdx = 0;
 
 	@Override
 	public void nextPc() {
@@ -69,6 +67,8 @@ public class AttrDescWindow extends PCStatusWindow {
 		if (pcIdx >= s.size()) {
 			pcIdx = 0;
 		}
+		mw.reset();
+		updateText();
 	}
 
 	@Override
@@ -77,6 +77,8 @@ public class AttrDescWindow extends PCStatusWindow {
 		if (pcIdx < 0) {
 			pcIdx = s.size() - 1;
 		}
+		mw.reset();
+		updateText();
 	}
 
 	@Override
@@ -84,44 +86,41 @@ public class AttrDescWindow extends PCStatusWindow {
 		return pcIdx;
 	}
 
-	@Override
-	public void update() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(I18N.translate("ATTR")).append(pageIdx + 1).append(Text.getLineSep());
+	private void updateText() {
 
-		List<AttributeValue> list = null;
-		switch (pageIdx) {
-			case 0:
-				list = s.get(pcIdx).getEffectedAttrIn().stream().sorted().filter(p -> p.getKey().getOrder() <= 100).collect(Collectors.toList());
-				break;
-			case 1:
-				list = s.get(pcIdx).getEffectedAttrIn().stream().sorted().filter(p -> p.getKey().getOrder() > 100).collect(Collectors.toList());
-				break;
-		}
+		Text line1 = new Text("<---" + s.get(pcIdx).getName() + I18N.translate("S") + I18N.translate("ATTR") + "--->");
+
+		List<AttributeValue> list = s.get(pcIdx).getEffectedAttrIn().stream().sorted().collect(Collectors.toList());
+		List<Text> l = new ArrayList<>();
+		l.add(line1);
 		assert list != null;
 		for (AttributeValue v : list) {
 			if (unvisibleAttrName.contains(v.getKey().getName())) {
 				continue;
 			}
-			sb.append(" ");
-			sb.append(v.getKey().getDesc()).append(":").append(v.getValue() * 100).append('%').append(Text.getLineSep());
+			l.add(new Text("  " + v.getKey().getDesc() + ":" + (v.getValue() * 100) + '%'));
 		}
-
-		mw.setText(new Text(sb.toString()));
-		mw.allText();
+		mw.setText(l);
 	}
 
 	@Override
-	public void nextPage() {
-		pageIdx++;
-		if (pageIdx > 1) {
-			pageIdx = 1;
-		}
+	public void update() {
+		mw.update();
 	}
 
 	@Override
-	public boolean hasNextPage() {
-		return pageIdx == 0;
+	public void prev() {
+		mw.prevSelect();
+	}
+
+	@Override
+	public void next() {
+		mw.nextSelect();
+	}
+
+	@Override
+	public MessageWindow getWindow() {
+		return mw.getWindow();
 	}
 
 	@Override

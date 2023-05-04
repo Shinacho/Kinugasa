@@ -30,7 +30,7 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import static kinugasa.game.system.PCStatusWindow.line;
 import kinugasa.game.ui.MessageWindow;
-import kinugasa.game.ui.SimpleMessageWindowModel;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
 
 /**
@@ -40,14 +40,15 @@ import kinugasa.game.ui.Text;
  */
 public class ConditionDescWindow extends PCStatusWindow {
 
-	private MessageWindow mw;
+	private ScrollSelectableMessageWindow mw;
 	private List<Status> s;
 
-	public ConditionDescWindow(float x, float y, float w, float h, List<Status> s) {
+	public ConditionDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
-		update();
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, line, false);	
+		mw.setLoop(true);
+		updateText();
 	}
 
 	@Override
@@ -56,6 +57,8 @@ public class ConditionDescWindow extends PCStatusWindow {
 		if (pcIdx >= s.size()) {
 			pcIdx = 0;
 		}
+		mw.reset();
+		updateText();
 	}
 
 	@Override
@@ -64,6 +67,8 @@ public class ConditionDescWindow extends PCStatusWindow {
 		if (pcIdx < 0) {
 			pcIdx = s.size() - 1;
 		}
+		mw.reset();
+		updateText();
 	}
 
 	@Override
@@ -72,45 +77,34 @@ public class ConditionDescWindow extends PCStatusWindow {
 	}
 
 	private int pcIdx;
-	private int pageIdx = 0;
-	private boolean hasNext = false;
-	private int idx = 0;//ï\é¶ÇµÇΩåèêî
+
+	private void updateText() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(s.get(pcIdx).getName()).append(I18N.translate("S")).append(I18N.translate("CURRENT_CONDITION")).append(Text.getLineSep());
+		List<Text> l = new ArrayList<>();
+		l.add(new Text(sb.toString()));
+		l.addAll(s.get(pcIdx).getCondition().stream().map(p -> new Text(p.getKey().getDesc())).collect(Collectors.toList()));
+		mw.setText(l);
+	}
 
 	@Override
 	public void update() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(I18N.translate("CURRENT_CONDITION")).append(Text.getLineSep());
-
-		int i = 0;
-		int j = 1;//ï\é¶çsêî
-		for (ConditionValue v : s.get(pcIdx).getCondition()) {
-			if (i < pageIdx) {
-				i++;
-				continue;
-			}
-			sb.append(" ");
-			sb.append(v.getKey().getDesc()).append(Text.getLineSep());
-			j++;
-			if (j > line) {
-				break;
-			}
-
-		}
-		idx = j;
-		hasNext = i < s.get(pcIdx).getCondition().size();
-
-		mw.setText(new Text(sb.toString()));
-		mw.allText();
+		mw.update();
 	}
 
 	@Override
-	public void nextPage() {
-		pageIdx += idx;
+	public void prev() {
+		mw.prevSelect();
 	}
 
 	@Override
-	public boolean hasNextPage() {
-		return hasNext;
+	public void next() {
+		mw.nextSelect();
+	}
+
+	@Override
+	public MessageWindow getWindow() {
+		return mw.getWindow();
 	}
 
 	@Override

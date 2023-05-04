@@ -62,7 +62,7 @@ public class StatusDescWindow extends PCStatusWindow {
 	private List<Status> s;
 	private MessageWindow main;
 
-	public StatusDescWindow(float x, float y, float w, float h, List<Status> s) {
+	public StatusDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
 
@@ -73,12 +73,16 @@ public class StatusDescWindow extends PCStatusWindow {
 	private int pcIdx;
 
 	@Override
-	public void nextPage() {
+	public MessageWindow getWindow() {
+		return main;
 	}
 
 	@Override
-	public boolean hasNextPage() {
-		return false;
+	public void next() {
+	}
+
+	@Override
+	public void prev() {
 	}
 
 	@Override
@@ -135,7 +139,7 @@ public class StatusDescWindow extends PCStatusWindow {
 
 		main.setText(new Text(sb.toString()));
 		main.allText();
-		
+
 	}
 
 	@Override

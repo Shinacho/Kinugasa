@@ -23,12 +23,13 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.ui.MessageWindow;
-import kinugasa.game.ui.SimpleMessageWindowModel;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
 
 /**
@@ -38,18 +39,17 @@ import kinugasa.game.ui.Text;
  */
 public class ActionDescWindow extends PCStatusWindow {
 
-	private MessageWindow mw;
+	private ScrollSelectableMessageWindow mw;
 	private List<Status> s;
 
-	public ActionDescWindow(float x, float y, float w, float h, List<Status> s) {
+	public ActionDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
-		pageIdx = 0;
-		update();
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, line, false);
+		mw.setLoop(true);
+		updateText();
 	}
 	private int pcIdx;
-	private int pageIdx = 0;
 
 	@Override
 	public void nextPc() {
@@ -57,6 +57,8 @@ public class ActionDescWindow extends PCStatusWindow {
 		if (pcIdx >= s.size()) {
 			pcIdx = 0;
 		}
+		mw.reset();
+		updateText();
 	}
 
 	@Override
@@ -65,6 +67,8 @@ public class ActionDescWindow extends PCStatusWindow {
 		if (pcIdx < 0) {
 			pcIdx = s.size() - 1;
 		}
+		mw.reset();
+		updateText();
 	}
 
 	@Override
@@ -74,23 +78,18 @@ public class ActionDescWindow extends PCStatusWindow {
 
 	private static final int MAX_LINE = StatusDescWindow.line - 1;
 
-	@Override
-	public void update() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(I18N.translate("ACTION")).append(pageIdx + 1).append(Text.getLineSep());
+	private void updateText() {
+		//SSMWに文字列を設定
 
-		int i = 0;//開始までのカウント
-		int j = 0;//開始後のカウント
-		int start = pageIdx == 0 ? ((MAX_LINE) * pageIdx) : ((MAX_LINE) * pageIdx) + 1;
+		List<Text> t = new ArrayList<>();
+		t.add(new Text("<---" + s.get(pcIdx).getName() + I18N.translate("S") + I18N.translate("ACTION") + "--->"));
+
 		for (CmdAction a : s.get(pcIdx).getActions().stream().filter(p -> p.isBattleUse()).sorted().collect(Collectors.toList())) {
+			StringBuilder sb = new StringBuilder();
 			if (a.getType() == ActionType.ITEM_USE) {
 				continue;
 			}
 			if (a.getType() == ActionType.OTHER) {
-				continue;
-			}
-			if (i < start) {
-				i++;
 				continue;
 			}
 			sb.append("  ")
@@ -136,37 +135,29 @@ public class ActionDescWindow extends PCStatusWindow {
 
 			sb.append(")");
 
-			sb.append(Text.getLineSep());
-			j++;
-			if (j > MAX_LINE) {
-				break;
-			}
-			updateHasNext();
+			t.add(new Text(sb.toString()));
 		}
-
-		mw.setText(new Text(sb.toString()));
-		mw.allText();
-	}
-	private boolean hasNext = false;
-
-	private void updateHasNext() {
-		int pages = (int) s.get(pcIdx).getActions().stream()
-				.filter(p -> p.getType() != ActionType.ITEM_USE)
-				.filter(p -> p.getType() != ActionType.OTHER)
-				.filter(p -> p.isBattleUse())
-				.count() / MAX_LINE;
-		hasNext = pageIdx < pages;
+		mw.setText(t);
 	}
 
 	@Override
-	public void nextPage() {
-		pageIdx++;
-		updateHasNext();
+	public void update() {
+		mw.update();
 	}
 
 	@Override
-	public boolean hasNextPage() {
-		return hasNext;
+	public MessageWindow getWindow() {
+		return mw.getWindow();
+	}
+
+	@Override
+	public void next() {
+		mw.nextSelect();
+	}
+
+	@Override
+	public void prev() {
+		mw.prevSelect();
 	}
 
 	@Override
