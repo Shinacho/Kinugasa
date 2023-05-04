@@ -26,6 +26,7 @@ package kinugasa.graphics;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import kinugasa.resource.KImage;
 import kinugasa.util.ArrayIndexModel;
 import kinugasa.util.SimpleIndex;
@@ -66,6 +67,10 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	 */
 	public Animation(TimeCounter visibleTime, BufferedImage... images) {
 		this(visibleTime, new SimpleIndex(), images);
+	}
+
+	public Animation(TimeCounter visibleTime, List<BufferedImage> images) {
+		this(visibleTime, images.toArray(new BufferedImage[images.size()]));
 	}
 
 	/**

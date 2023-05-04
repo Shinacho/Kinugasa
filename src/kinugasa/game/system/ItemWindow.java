@@ -565,10 +565,10 @@ public class ItemWindow extends BasicSprite {
 			//Œø‰Ê‘ª’è
 			Map<StatusKey, Integer> map = tgt.calcDamage();
 			for (Map.Entry<StatusKey, Integer> e : map.entrySet()) {
-				if (e.getValue() > 0) {
+				if (e.getValue() < 0) {
 					sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("HEALDAMAGE"));
 					sb.append(Text.getLineSep());
-				} else if (e.getValue() < 0) {
+				} else if (e.getValue() > 0) {
 					sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("DAMAGE"));
 					sb.append(Text.getLineSep());
 				} else {
@@ -778,11 +778,6 @@ public class ItemWindow extends BasicSprite {
 		msg.draw(g);
 	}
 
-	public static void main(String[] args) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(sb.length() > 0 ) ;
-		System.out.println(sb);
-	}
 }
 
 

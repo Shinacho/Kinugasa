@@ -23,15 +23,8 @@
  */
 package kinugasa.game.ui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
-import kinugasa.object.Sprite;
-import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundMap;
-import kinugasa.resource.sound.SoundStorage;
 
 /**
  * BGMの一覧を表示し、再生可能にする画面表示の実装です。アクションテキストスプライトグループを使用しています。
@@ -46,6 +39,7 @@ public class MusicRoom extends ScrollSelectableMessageWindow {
 	public MusicRoom(SoundMap map, int x, int y, int w, int h, int line) {
 		super(x, y, w, h, line);
 		this.map = map;
+		setLoop(true);
 		setText(map.stream().map(p -> p.getName()).sorted().map(p -> new Text(p)).collect(Collectors.toList()));
 	}
 
