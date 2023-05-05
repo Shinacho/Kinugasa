@@ -24,8 +24,6 @@
 package kinugasa.game.system;
 
 import java.util.Objects;
-import kinugasa.game.I18N;
-import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Nameable;
 
 /**

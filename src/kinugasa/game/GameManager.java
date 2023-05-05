@@ -203,7 +203,7 @@ public abstract class GameManager {
 				draw(new GraphicsContext(g));
 				g.dispose();
 				Graphics2D g2 = (Graphics2D) graphicsBuffer.getDrawGraphics();
-				g2.drawImage(image, 0, 0, image.getWidth() * 2, image.getHeight() * 2, null);
+				g2.drawImage(image, 0, 0, (int) (image.getWidth() * drawSize), (int) (image.getHeight() * drawSize), null);
 				g2.dispose();
 
 				if (graphicsBuffer.contentsRestored()) {

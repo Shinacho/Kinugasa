@@ -270,7 +270,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 					}
 					dissase.put(m, n);
 				}
-				i.setDissasseMaterials(dissase);
+				i.setDisasseMaterials(dissase);
 			}
 			//アイテム装備効果（ステータス）
 			if (i.isEqipItem()) {

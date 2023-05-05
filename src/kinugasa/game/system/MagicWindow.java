@@ -436,7 +436,7 @@ public class MagicWindow extends BasicSprite {
 										sb.append(I18N.translate("REMOVE_CONDITION").replaceAll("c", e.getTgtName()));
 										break;
 									case STATUS:
-										sb.append(I18N.translate("DAMAGE"));
+										sb.append(I18N.translate("DAMAGE")).append(":");
 										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getName());
 										sb.append(",");
 										//dct
@@ -457,7 +457,9 @@ public class MagicWindow extends BasicSprite {
 										break;
 								}
 								sb.append(",");
-								sb.append(I18N.translate("ACTION_EFFECT")).append(":").append(Math.abs((int) e.getValue()));
+								if (e.getParameterType() == ParameterType.STATUS) {
+									sb.append(I18N.translate("ACTION_EFFECT")).append(":").append(Math.abs((int) e.getValue()));
+								}
 								sb.append(",");
 								sb.append(I18N.translate("P")).append(":").append((int) (e.getP() * 100)).append("%");
 								sb.append(Text.getLineSep());
@@ -505,7 +507,7 @@ public class MagicWindow extends BasicSprite {
 										sb.append(I18N.translate("REMOVE_CONDITION").replaceAll("c", e.getTgtName()));
 										break;
 									case STATUS:
-										sb.append(I18N.translate("DAMAGE"));
+										sb.append(I18N.translate("DAMAGE")).append(":");
 										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getName());
 										sb.append(",");
 										//dct
@@ -526,7 +528,9 @@ public class MagicWindow extends BasicSprite {
 										break;
 								}
 								sb.append(",");
-								sb.append(I18N.translate("ACTION_EFFECT")).append(":").append(Math.abs((int) e.getValue()));
+								if (e.getParameterType() == ParameterType.STATUS) {
+									sb.append(I18N.translate("ACTION_EFFECT")).append(":").append(Math.abs((int) e.getValue()));
+								}
 								sb.append(",");
 								sb.append(I18N.translate("P")).append(":").append((int) (e.getP() * 100)).append("%");
 								sb.append(Text.getLineSep());
@@ -575,8 +579,6 @@ public class MagicWindow extends BasicSprite {
 			//成功
 			//ターゲットへの効果測定
 			Map<StatusKey, Float> map = getSelectedPC().calcDamage();
-			System.out.println("tgt.calcDamage");
-			System.out.println(map);
 			for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 				if (e.getValue() < 0f) {
 					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
@@ -589,7 +591,6 @@ public class MagicWindow extends BasicSprite {
 					sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
 					sb.append(Text.getLineSep());
 				}
-				sb.append(Text.getLineSep());
 			}
 			//SELFへのダメージ
 			//TODO:

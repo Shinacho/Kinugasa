@@ -94,7 +94,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 		this.text.clear();
 		this.text.addAll(text);
 		select = line1select ? 0 : 1;
-		visibleIdx = 0;
+		pos = visibleIdx = 0;
 	}
 
 	private void updateText() {
@@ -248,7 +248,8 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 	}
 
 	public void toFirst() {
-		setText(text);
+		pos = visibleIdx = 0;
+		select = line1select ? 0 : 1;
 	}
 
 	public void reset() {

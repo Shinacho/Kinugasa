@@ -50,7 +50,7 @@ public class ItemWindow extends BasicSprite {
 
 	private List<Status> list;
 	private MessageWindow main;
-	private MessageWindow choiceUse, dropConfirm, tgtSelect, msg;//msgはボタン操作で即閉じる
+	private MessageWindow choiceUse, dropConfirm, disasseConfirm, tgtSelect, msg;//msgはボタン操作で即閉じる
 	private MessageWindowGroup group;
 
 	public ItemWindow(float x, float y, float w, float h) {
@@ -64,12 +64,14 @@ public class ItemWindow extends BasicSprite {
 		choiceUse.setVisible(false);
 		dropConfirm = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		dropConfirm.setVisible(false);
+		disasseConfirm = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
+		disasseConfirm.setVisible(false);
 		tgtSelect = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		tgtSelect.setVisible(false);
 		msg = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel());
 		msg.setVisible(false);
 
-		group = new MessageWindowGroup(choiceUse, dropConfirm, tgtSelect, msg);
+		group = new MessageWindowGroup(choiceUse, dropConfirm, tgtSelect, msg, disasseConfirm);
 		mainSelect = 0;
 		update();
 	}
@@ -96,6 +98,10 @@ public class ItemWindow extends BasicSprite {
 		 * 捨ててもよいか確認中。
 		 */
 		DROP_CONFIRM,
+		/**
+		 * 解体してもよいか確認中。
+		 */
+		DISASSE_CONFIRM,
 	}
 	private Mode mode = Mode.ITEM_AND_USER_SELECT;
 	private int pcIdx;
@@ -114,6 +120,9 @@ public class ItemWindow extends BasicSprite {
 				return;
 			case DROP_CONFIRM:
 				dropConfirm.nextSelect();
+				return;
+			case DISASSE_CONFIRM:
+				disasseConfirm.nextSelect();
 				return;
 			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
@@ -137,6 +146,9 @@ public class ItemWindow extends BasicSprite {
 			case DROP_CONFIRM:
 				dropConfirm.prevSelect();
 				return;
+			case DISASSE_CONFIRM:
+				disasseConfirm.prevSelect();
+				return;
 			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
@@ -156,6 +168,7 @@ public class ItemWindow extends BasicSprite {
 				return;
 			case CHOICE_USE:
 			case DROP_CONFIRM:
+			case DISASSE_CONFIRM:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
 				//処理なし
@@ -177,6 +190,7 @@ public class ItemWindow extends BasicSprite {
 				return;
 			case CHOICE_USE:
 			case DROP_CONFIRM:
+			case DISASSE_CONFIRM:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
 				//処理なし
@@ -203,7 +217,8 @@ public class ItemWindow extends BasicSprite {
 	private static final int EQIP = 1;
 	private static final int PASS = 2;
 	private static final int CHECK = 3;
-	private static final int DROP = 4;
+	private static final int DISASSEMBLY = 4;
+	private static final int DROP = 5;
 
 	public void select() {
 		if (getSelectedPC().getItemBag().isEmpty()) {
@@ -219,6 +234,7 @@ public class ItemWindow extends BasicSprite {
 				options.add(new Text(I18N.translate("EQIP")));
 				options.add(new Text(I18N.translate("PASS")));
 				options.add(new Text(I18N.translate("CHECK")));
+				options.add(new Text(I18N.translate("DISASSEMBLY")));
 				options.add(new Text(I18N.translate("DROP")));
 				Choice c = new Choice(options, "ITEM_WINDOW_SUB", getSelectedItem().getName() + I18N.translate("OF"));
 				choiceUse.setText(c);
@@ -459,11 +475,11 @@ public class ItemWindow extends BasicSprite {
 								sb.append(Text.getLineSep());
 							}
 							//解体
-							if (!i.getDissasseMaterials().isEmpty()) {
+							if (!i.getDisasseMaterials().isEmpty()) {
 								sb.append(" ");
 								sb.append(I18N.translate("IF_DISASSEMBLY_GET"));
 								sb.append(Text.getLineSep());
-								for (Map.Entry<Material, Integer> e : i.getDissasseMaterials().entrySet()) {
+								for (Map.Entry<Material, Integer> e : i.getDisasseMaterials().entrySet()) {
 									sb.append("   ");
 									sb.append(e.getKey().getName()).append(":").append(e.getValue());
 									sb.append(Text.getLineSep());
@@ -495,6 +511,24 @@ public class ItemWindow extends BasicSprite {
 							dropConfirm.allText();
 							group.show(dropConfirm);
 							mode = Mode.DROP_CONFIRM;
+						}
+						break;
+					case DISASSEMBLY:
+						//解体できるアイテムか判定
+						if (!i.canSale() || !i.canDisasse()) {
+							msg.setText(I18N.translate("CANT_DISASSEMBLY"));
+							msg.allText();
+							group.show(msg);
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+						} else {
+							List<Text> options5 = new ArrayList<>();
+							options5.add(new Text(I18N.translate("NO")));
+							options5.add(new Text(I18N.translate("YES")));
+							disasseConfirm.reset();
+							disasseConfirm.setText(new Choice(options5, "DISASSE_CONFIRM", i.getName() + I18N.translate("REALLY_DISASSEMBLY")));
+							disasseConfirm.allText();
+							group.show(disasseConfirm);
+							mode = Mode.DISASSE_CONFIRM;
 						}
 						break;
 				}
@@ -535,6 +569,23 @@ public class ItemWindow extends BasicSprite {
 						//はい
 						//dropしてアイテム選択に戻る
 						commitDrop();
+						group.show(msg);
+						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
+						break;
+				}
+				break;
+			case DISASSE_CONFIRM:
+				//解体確認ウインドウの選択肢により分岐
+				switch (disasseConfirm.getSelect()) {
+					case 0:
+						//いいえ
+						//用途選択に戻る
+						group.show(choiceUse);
+						mode = Mode.CHOICE_USE;
+						break;
+					case 1:
+						//はい
+						commitDisasse();
 						group.show(msg);
 						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 						break;
@@ -681,12 +732,38 @@ public class ItemWindow extends BasicSprite {
 	private void commitDrop() {
 		dropConfirm.close();
 		Item i = getSelectedItem();
+		assert i.canSale() : "item is cant disassembly : " + i;
 		//1個しか持っていなかったら装備を外す
 		if (getSelectedPC().isEqip(i.getName()) && getSelectedPC().getItemBag().getItems().stream().filter(p -> p.equals(i)).count() == 1) {
 			getSelectedPC().removeEqip(i);
 		}
 		getSelectedPC().getItemBag().drop(i);
 		msg.setText(getSelectedPC().getName() + I18N.translate("IS") + i.getName() + I18N.translate("WAS_DROP"));
+		msg.allText();
+		group.show(msg);
+		mainSelect = 0;
+	}
+
+	private void commitDisasse() {
+		disasseConfirm.close();
+		Item i = getSelectedItem();
+		assert i.canDisasse() : "item is cant disassembly : " + i;
+		assert i.canSale() : "item is cant disassembly : " + i;
+		//1個しか持っていなかったら装備を外す
+		if (getSelectedPC().isEqip(i.getName()) && getSelectedPC().getItemBag().getItems().stream().filter(p -> p.equals(i)).count() == 1) {
+			getSelectedPC().removeEqip(i);
+		}
+		getSelectedPC().getItemBag().drop(i);
+		StringBuilder sb = new StringBuilder();
+		for (Map.Entry<Material, Integer> e : i.getDisasseMaterials().entrySet()) {
+			sb.append(" ");
+			sb.append(e.getKey().getName()).append(I18N.translate("OF")).append(e.getValue()).append(I18N.translate("GET_MATE"));
+			sb.append(Text.getLineSep());
+			for (int j = 0; j < e.getValue(); j++) {
+				GameSystem.getInstance().getMaterialBag().add(e.getKey());
+			}
+		}
+		msg.setText(getSelectedPC().getName() + I18N.translate("IS") + i.getName() + I18N.translate("WAS_DISASSEMBLY") + Text.getLineSep() + sb.toString());
 		msg.allText();
 		group.show(msg);
 		mainSelect = 0;
@@ -757,6 +834,11 @@ public class ItemWindow extends BasicSprite {
 			group.show(choiceUse);
 			return false;
 		}
+		if (disasseConfirm.isVisible()) {
+			mode = Mode.CHOICE_USE;
+			group.show(choiceUse);
+			return false;
+		}
 		if (choiceUse.isVisible()) {
 			mode = Mode.ITEM_AND_USER_SELECT;
 			group.closeAll();
@@ -776,6 +858,7 @@ public class ItemWindow extends BasicSprite {
 		choiceUse.draw(g);
 		tgtSelect.draw(g);
 		dropConfirm.draw(g);
+		disasseConfirm.draw(g);
 		msg.draw(g);
 	}
 

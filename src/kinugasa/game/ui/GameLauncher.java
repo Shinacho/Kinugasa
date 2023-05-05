@@ -26,7 +26,6 @@ package kinugasa.game.ui;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Locale;
 import javax.swing.ImageIcon;
@@ -34,10 +33,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import kinugasa.game.GameOption;
-import kinugasa.game.I18N;
 import kinugasa.game.LockUtil;
 import kinugasa.game.input.Keys;
-import kinugasa.game.system.GameSystem;
 import kinugasa.graphics.RenderingQuality;
 
 /**
@@ -106,7 +103,13 @@ public class GameLauncher extends javax.swing.JFrame {
 
         jLabel7.setText("言語/Language");
 
-        windowSize.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "720,480(*1)", "1440,960(*2)" }));
+        windowSize.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "720/480", "1080/720", "1440/960" }));
+        windowSize.setSelectedIndex(2);
+        windowSize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                windowSizeActionPerformed(evt);
+            }
+        });
 
         logFile.setEditable(false);
         logFile.setToolTipText("ログファイルの格納場所を指定します。ログファイルは、ゲームの終了後消しても平気です。");
@@ -145,8 +148,8 @@ public class GameLauncher extends javax.swing.JFrame {
             }
         });
 
-        fps.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "30", "50", "60", "61", "62", "120（テスト用）" }));
-        fps.setSelectedIndex(2);
+        fps.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "50", "60" }));
+        fps.setSelectedIndex(1);
 
         debugMode.setText("デバッグモードを有効にする");
 
@@ -262,13 +265,24 @@ public class GameLauncher extends javax.swing.JFrame {
 		String[] aa = a.contains("/") ? a.split("/") : new String[]{a};
 		option.setArgs(aa);
 
-		if (windowSize.getSelectedItem().toString().equals("720,480(*1)")) {
-			option.setWindowSize(new Dimension(720, 480));
-			option.setDrawSize(1);
-		} else if (windowSize.getSelectedItem().toString().equals("1440,960(*2)")) {
-			option.setWindowSize(new Dimension(1440, 960));
-			option.setDrawSize(2);
+		String windowSizeStr = windowSize.getSelectedItem().toString();
+		int w = Integer.parseInt(windowSizeStr.split("/")[0]);
+		int h = Integer.parseInt(windowSizeStr.split("/")[1]);
+		option.setWindowSize(new Dimension(w, h));
+		switch (w) {
+			case 720:
+				option.setDrawSize(1);
+				break;
+			case 1080:
+				option.setDrawSize(1.5f);
+				break;
+			case 1440:
+				option.setDrawSize(2);
+				break;
+			default:
+				throw new AssertionError();
 		}
+
 		option.setWindowLocation(new Point(0, 0));
 		option.setCenterOfScreen();
 
@@ -352,6 +366,10 @@ public class GameLauncher extends javax.swing.JFrame {
 		}
     }//GEN-LAST:event_jButton1KeyPressed
 
+    private void windowSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_windowSizeActionPerformed
+		// TODO add your handling code here:
+    }//GEN-LAST:event_windowSizeActionPerformed
+
 	/**
 	 * @param args the command line arguments
 	 */
@@ -411,7 +429,11 @@ public class GameLauncher extends javax.swing.JFrame {
 		//ウインドウサイズの初期選択
 		GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		if (e.getMaximumWindowBounds().width > 1440 && e.getMaximumWindowBounds().height > 960) {
+			windowSize.setSelectedIndex(2);
+		} else if (e.getMaximumWindowBounds().width > 1080 && e.getMaximumWindowBounds().height > 720) {
 			windowSize.setSelectedIndex(1);
+		} else {
+			windowSize.setSelectedIndex(0);
 		}
 
 		jButton1.grabFocus();

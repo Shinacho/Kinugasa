@@ -117,8 +117,12 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 		return this;
 	}
 
-	public Map<Material, Integer> getDissasseMaterials() {
+	public Map<Material, Integer> getDisasseMaterials() {
 		return dissasseMaterials;
+	}
+	
+	public boolean canDisasse(){
+		return !dissasseMaterials.isEmpty();
 	}
 
 	public Item addUpgrade(ItemUpgrade u) {
@@ -137,7 +141,7 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 		Collections.sort(upgradeMaterials);
 	}
 
-	public void setDissasseMaterials(Map<Material, Integer> dissasseMaterials) {
+	public void setDisasseMaterials(Map<Material, Integer> dissasseMaterials) {
 		this.dissasseMaterials = dissasseMaterials;
 	}
 

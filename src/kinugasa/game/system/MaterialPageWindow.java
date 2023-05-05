@@ -89,14 +89,13 @@ public class MaterialPageWindow extends BasicSprite {
 		switch (mode) {
 			case MATERIAL:
 				mode = Mode.PAGE;
-				mw.reset();
 				break;
 			case PAGE:
 				mode = Mode.MATERIAL;
-				mw.reset();
 				break;
 		}
 		updateText();
+		mw.reset();
 	}
 
 	public void prev() {

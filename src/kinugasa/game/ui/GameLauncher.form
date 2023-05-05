@@ -185,12 +185,17 @@
     <Component class="javax.swing.JComboBox" name="windowSize">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="2">
-            <StringItem index="0" value="720,480(*1)"/>
-            <StringItem index="1" value="1440,960(*2)"/>
+          <StringArray count="3">
+            <StringItem index="0" value="720/480"/>
+            <StringItem index="1" value="1080/720"/>
+            <StringItem index="2" value="1440/960"/>
           </StringArray>
         </Property>
+        <Property name="selectedIndex" type="int" value="2"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="windowSizeActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -264,16 +269,12 @@
     <Component class="javax.swing.JComboBox" name="fps">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="6">
-            <StringItem index="0" value="30"/>
-            <StringItem index="1" value="50"/>
-            <StringItem index="2" value="60"/>
-            <StringItem index="3" value="61"/>
-            <StringItem index="4" value="62"/>
-            <StringItem index="5" value="120&#xff08;&#x30c6;&#x30b9;&#x30c8;&#x7528;&#xff09;"/>
+          <StringArray count="2">
+            <StringItem index="0" value="50"/>
+            <StringItem index="1" value="60"/>
           </StringArray>
         </Property>
-        <Property name="selectedIndex" type="int" value="2"/>
+        <Property name="selectedIndex" type="int" value="1"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
