@@ -45,6 +45,9 @@ public class BookPageBag {
 
 	public void addAll(List<BookPage> list) {
 		for (BookPage p : list) {
+			if (map.containsKey(p) && map.get(p) == 99) {
+				continue;
+			}
 			if (map.containsKey(p)) {
 				map.put(p, map.get(p) + 1);
 			} else {
@@ -55,14 +58,17 @@ public class BookPageBag {
 	}
 
 	public void add(BookPage p) {
+		if (map.containsKey(p) && map.get(p) == 99) {
+			return;
+		}
 		if (map.containsKey(p)) {
 			map.put(p, map.get(p) + 1);
 		} else {
 			map.put(p, 1);
 		}
 	}
-	
-	public int size(){
+
+	public int size() {
 		return map.size();
 	}
 

@@ -232,8 +232,8 @@ public class ItemWindow extends BasicSprite {
 				switch (choiceUse.getSelect()) {
 					case USE:
 						//アイテムがフィールドで使えるなら対象者選択へ
-						if (i.getFieldEvent() == null || i.getFieldEvent().isEmpty()) {
-							//使っても効果がないよ
+						if (!i.isFieldUse()) {
+							//フィールドでは使えません
 							StringBuilder sb = new StringBuilder();
 							sb.append(getSelectedPC().getName());
 							sb.append(I18N.translate("IS"));
@@ -586,7 +586,7 @@ public class ItemWindow extends BasicSprite {
 			for (ActionEvent e : i.getFieldEvent()) {
 				if (e.getParameterType() == ParameterType.ITEM_LOST) {
 					if (e.getP() >= 1f || Random.percent(e.getP())) {
-						tgt.getItemBag().drop(i);
+//						tgt.getItemBag().drop(i);
 						sb.append(i.getName()).append(I18N.translate("ITEM_DROP"));
 						sb.append(Text.getLineSep());
 					}

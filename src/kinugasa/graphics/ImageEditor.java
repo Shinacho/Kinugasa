@@ -478,7 +478,7 @@ public final class ImageEditor {
 		int newWidth = (int) (src.getWidth() * scale);
 		int newHeight = (int) (src.getHeight() * scale);
 		BufferedImage dst = newImage(newWidth, newHeight);
-		Graphics2D g2 = createGraphics2D(dst, RenderingQuality.SPEED);
+		Graphics2D g2 = createGraphics2D(dst, RenderingQuality.QUALITY);
 		g2.drawImage(src, 0, 0, newWidth, newHeight, null);
 		g2.dispose();
 		return dst;

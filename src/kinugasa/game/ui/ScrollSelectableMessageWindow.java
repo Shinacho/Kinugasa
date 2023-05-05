@@ -209,17 +209,17 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 
 	public void prevSelect() {
 		select--;
-		if (select < 0) {
-			if (select == 0 && !line1select) {
-				if (loop) {
-					select = size() - 1;
-					visibleIdx = size() - visibleLine;
-					pos = visibleLine - 1;
-					return;
-				} else {
-					select++;
-				}
+		if (select == 0 && !line1select) {
+			if (loop) {
+				select = size() - 1;
+				visibleIdx = size() - visibleLine;
+				pos = visibleLine - 1;
+				return;
+			} else {
+				select++;
 			}
+		}
+		if (select < 0) {
 			if (isLoop()) {
 				select = size() - 1;
 				visibleIdx = size() - visibleLine;

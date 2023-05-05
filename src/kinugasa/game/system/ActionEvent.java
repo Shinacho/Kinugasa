@@ -164,7 +164,11 @@ public class ActionEvent implements Comparable<ActionEvent> {
 					}
 					break;
 				case ITEM_LOST:
-					c.getStatus().getItemBag().drop(tgtName);
+					if (targetType == TargetType.SELF) {
+						tgt.getUser().getStatus().getItemBag().drop(tgtName);
+					} else {
+						c.getStatus().getItemBag().drop(tgtName);
+					}
 					result.addResultTypePerTgt(ActionResultType.SUCCESS);
 					break;
 				case REMOVE_CONDITION:

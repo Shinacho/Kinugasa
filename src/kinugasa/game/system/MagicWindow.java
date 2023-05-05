@@ -362,14 +362,16 @@ public class MagicWindow extends BasicSprite {
 						}
 						//イベント詳細
 						sb.append("--").append(I18N.translate("BATTLE_ACTION")).append(Text.getLineSep());
-						//SPELL_TIME
-						sb.append("  ");
-						sb.append(I18N.translate("SPELLTIME")).append(":").append(a.getSpellTime()).append(I18N.translate("TURN"));
-						sb.append(Text.getLineSep());
-						//AREA
-						sb.append("  ");
-						sb.append(I18N.translate("AREA")).append(":").append(a.getArea());
-						sb.append(Text.getLineSep());
+						if (a.isBattleUse()) {
+							//SPELL_TIME
+							sb.append("  ");
+							sb.append(I18N.translate("SPELLTIME")).append(":").append(a.getSpellTime()).append(I18N.translate("TURN"));
+							sb.append(Text.getLineSep());
+							//AREA
+							sb.append("  ");
+							sb.append(I18N.translate("AREA")).append(":").append(a.getArea());
+							sb.append(Text.getLineSep());
+						}
 						if (a.isBattleUse()) {
 							for (ActionEvent e : a.getBattleEvent()) {
 								sb.append("  ");
@@ -519,6 +521,7 @@ public class MagicWindow extends BasicSprite {
 				break;
 			case WAIT_MSG_CLOSE_TO_CU:
 				group.closeAll();
+				group.show(choiceUse);
 				mode = Mode.CHOICE_USE;
 				break;
 			case WAIT_MSG_CLOSE_TO_MUS:
@@ -559,16 +562,6 @@ public class MagicWindow extends BasicSprite {
 				sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
 				sb.append(Text.getLineSep());
 			}
-//			//DROP_ITEMイベントの判定
-//			for (ActionEvent e : i.getFieldEvent()) {
-//				if (e.getParameterType() == ParameterType.ITEM_LOST) {
-//					if (e.getP() >= 1f || Random.percent(e.getP())) {
-//						tgt.getItemBag().drop(i);
-//						sb.append(i.getName()).append(I18N.translate("ITEM_DROP"));
-//						sb.append(Text.getLineSep());
-//					}
-//				}
-//			}
 		} else {
 			//失敗
 			sb.append(I18N.translate("BUT"));

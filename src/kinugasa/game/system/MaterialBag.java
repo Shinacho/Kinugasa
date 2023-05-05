@@ -45,6 +45,9 @@ public class MaterialBag {
 
 	public void addAll(List<Material> list) {
 		for (Material p : list) {
+			if (map.containsKey(p) && map.get(p) == 99) {
+				continue;
+			}
 			if (map.containsKey(p)) {
 				map.put(p, map.get(p) + 1);
 			} else {
@@ -55,20 +58,13 @@ public class MaterialBag {
 	}
 
 	public void add(Material p) {
+		if (map.containsKey(p) && map.get(p) == 99) {
+			return;
+		}
 		if (map.containsKey(p)) {
 			map.put(p, map.get(p) + 1);
 		} else {
 			map.put(p, 1);
-		}
-	}
-
-	public void addAll(Map<Material, Integer> m) {
-		for (Map.Entry<Material, Integer> e : m.entrySet()) {
-			if (map.containsKey(e.getKey())) {
-				map.put(e.getKey(), map.get(e.getKey()) + 1);
-			} else {
-				map.put(e.getKey(), 1);
-			}
 		}
 	}
 
