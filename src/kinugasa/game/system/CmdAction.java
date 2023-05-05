@@ -246,6 +246,44 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 		return terms == null ? true : terms.stream().allMatch(p -> p.canExec(tgt));
 	}
 
+	public Map<StatusKey, Integer> selfFieldDirectDamage() {
+		Map<StatusKey, Integer> result = new HashMap<>();
+
+		for (ActionEvent a : fieldEvent) {
+			if (a.getTargetType() == TargetType.SELF) {
+				if (a.getParameterType() == ParameterType.STATUS) {
+					StatusKey key = StatusKeyStorage.getInstance().get(a.getTgtName());
+					int value = 0;
+					switch (a.getDamageCalcType()) {
+						case DIRECT:
+							value += a.getValue();
+							break;
+						case PERCENT_OF_MAX:
+							//計算不能
+							break;
+						case PERCENT_OF_NOW:
+							//計算不能
+							break;
+						case USE_DAMAGE_CALC:
+							//計算不能
+							break;
+					}
+					if (value != 0) {
+						if (result.containsKey(key)) {
+							int v = result.get(key);
+							v += value;
+							result.put(key, v);
+						} else {
+							result.put(key, value);
+						}
+					}
+
+				}
+			}
+		}
+
+		return result;
+	}
 	public Map<StatusKey, Integer> selfBattleDirectDamage() {
 		Map<StatusKey, Integer> result = new HashMap<>();
 

@@ -25,6 +25,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -189,7 +190,6 @@ public class Status implements Nameable {
 
 	//基礎ステータスを取得します。通常、レベルアップ等以外ではこの値は変わりません。
 	public StatusValueSet getBaseStatus() {
-		prevStatus = this.status.clone();
 		return status;
 	}
 
@@ -472,7 +472,7 @@ public class Status implements Nameable {
 									tgtVal.set(val);
 									break;
 								case ADD_VALUE:
-									tgtVal.add(e.getValue());
+									tgtVal.addNoLimit(e.getValue());
 									break;
 								case TO:
 									tgtVal.set(e.getValue());
@@ -489,7 +489,7 @@ public class Status implements Nameable {
 			Item eqipItem = eqipment.get(slot);
 			if (eqipItem != null) {
 				for (StatusValue v : eqipItem.getEqStatus()) {
-					r.get(v.getName()).add(v.getValue());
+					r.get(v.getName()).addNoLimit(v.getValue());
 				}
 			}
 		}
@@ -542,24 +542,31 @@ public class Status implements Nameable {
 	//calcDamageのPREVを更新する
 	public void setDamageCalcPoint() {
 		prevStatus = status.clone();
+		if (GameSystem.isDebugMode()) {
+			System.out.println(getName() + " / SAVE DCP : " + prevStatus);
+		}
 	}
 
 	//前回検査時からの差分を自動算出する
-	public Map<StatusKey, Integer> calcDamage() {
+	public Map<StatusKey, Float> calcDamage() {
 		if (prevStatus == null) {
-			prevStatus = status.clone();
+			return Collections.emptyMap();
 		}
 
-		Map<StatusKey, Integer> result = new HashMap<>();
+		Map<StatusKey, Float> result = new HashMap<>();
 
 		for (StatusValue v : prevStatus) {
 			float val = v.getValue() - status.get(v.getKey().getName()).getValue();
+			System.out.println(v.getKey().getName() + " : " + val);
 			if (val != 0) {
-				result.put(v.getKey(), (int) val);
+				result.put(v.getKey(), val);
 			}
 		}
+		if (GameSystem.isDebugMode()) {
+			System.out.println("DCP<>DC[" + getName() + "] : " + result);
+		}
 
-		prevStatus = this.status;
+//		prevStatus = this.status;
 		return result;
 	}
 
@@ -596,7 +603,7 @@ public class Status implements Nameable {
 		StatusValueSet result = getEffectedStatus();
 
 		for (Map.Entry<StatusKey, Integer> e : damage.entrySet()) {
-			result.get(e.getKey().getName()).add(e.getValue());
+			result.get(e.getKey().getName()).addNoLimit(e.getValue());
 		}
 
 		return result;

@@ -89,8 +89,18 @@ public class StatusValue implements Nameable, Cloneable, Comparable<StatusValue>
 		this.value = value;
 	}
 
+	public void addNoLimit(float value) {
+		this.value += value;
+	}
+
 	public void add(float value) {
 		this.value += value;
+		if (getMax() < this.value) {
+			this.value = getMax();
+		}
+		if (getMin() > this.value) {
+			this.value = getMin();
+		}
 		if (key.getMax() < this.value) {
 			this.value = key.getMax();
 		}

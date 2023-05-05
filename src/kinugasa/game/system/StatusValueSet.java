@@ -69,6 +69,15 @@ public class StatusValueSet extends Storage<StatusValue> implements Cloneable {
 		return false;
 	}
 
+	public boolean hasMinus() {
+		for (StatusValue v : this) {
+			if (v.getValue() < 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean isZero(boolean and, List<StatusKey> key) {
 		boolean result = and;
 		for (StatusValue v : this) {

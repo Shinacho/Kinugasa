@@ -572,8 +572,8 @@ public enum FieldEventType {
 				int tgtIdx = Integer.parseInt(e.getTargetName().split(",")[0]);
 				String key = e.getTargetName().split(",")[1];
 				float value = Float.parseFloat(e.getValue());
-				party.get(tgtIdx).getBaseStatus().get(key).set(value);
 				party.get(tgtIdx).getBaseStatus().get(key).setMax(value);
+				party.get(tgtIdx).getBaseStatus().get(key).set(value);
 				party.get(tgtIdx).getBaseStatus().get(key).setInitial(value);
 
 				return UserOperationRequire.CONTINUE;

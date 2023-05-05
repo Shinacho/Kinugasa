@@ -1088,7 +1088,7 @@ public class BattleSystem implements Drawable {
 							//ステータス効果の場合、ダメージ算出して表示
 							if (t == ActionResultType.SUCCESS) {
 								//ダメージ算出
-								Map<StatusKey, Integer> damage = user.getStatus().calcDamage();
+								Map<StatusKey, Float> damage = user.getStatus().calcDamage();
 								if (damage.containsKey(hp)) {
 									s.append(I18N.translate("TO"));
 									damage.get(hp);
@@ -1257,7 +1257,7 @@ public class BattleSystem implements Drawable {
 					case STATUS:
 						if (t == ActionResultType.SUCCESS) {
 							//ダメージ算出
-							Map<StatusKey, Integer> damage = c.getStatus().calcDamage();
+							Map<StatusKey, Float> damage = c.getStatus().calcDamage();
 							if (damage.containsKey(hp)) {
 								s.append(I18N.translate("TO"));
 								damage.get(hp);

@@ -264,6 +264,9 @@ public class FieldEventSystem implements Drawable {
 		event.clear();
 		item = null;
 		executing = false;
+		if (GameSystem.isDebugMode()) {
+			System.out.println("--------ManualEndEvent");
+		}
 	}
 
 	private boolean reset = false;

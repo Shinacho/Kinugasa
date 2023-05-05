@@ -190,16 +190,17 @@ public class MagicWindow extends BasicSprite {
 						//SELFのみの場合即時実行
 						if (a.fieldEventIsOnly(TargetType.SELF)) {
 							//代償が支払えるかのチェック
-							Map<StatusKey, Integer> selfDamage = a.selfBattleDirectDamage();
+							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
-							if (vs.hasZero()) {
+							if (vs.hasMinus()) {
 								StringBuilder sb = new StringBuilder();
 								sb.append(getSelectedPC().getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
 								sb.append(Text.getLineSep());
 								sb.append(I18N.translate("BUT"));
-								sb.append(vs.stream().map(p -> p.getName()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
+								sb.append(vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
 								msg.setText(sb.toString());
 								msg.allText();
+								group.show(msg);
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
 							}
@@ -213,12 +214,18 @@ public class MagicWindow extends BasicSprite {
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 								//成功
 								//効果測定
-								Map<StatusKey, Integer> map = tgt.calcDamage();
-								for (Map.Entry<StatusKey, Integer> e : map.entrySet()) {
-									if (e.getValue() > 0) {
-										sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("HEALDAMAGE"));
+								Map<StatusKey, Float> map = tgt.calcDamage();
+								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
+									if (e.getValue() < 0f) {
+										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
+										sb.append(Text.getLineSep());
+									} else if (e.getValue() > 0f) {
+										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
+										sb.append(Text.getLineSep());
 									} else {
-										sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("DAMAGE"));
+										//==0
+										sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
+										sb.append(Text.getLineSep());
 									}
 								}
 							} else {
@@ -227,6 +234,7 @@ public class MagicWindow extends BasicSprite {
 								sb.append(I18N.translate("NO_EFFECT"));
 							}
 							msg.setText(sb.toString());
+							msg.allText();
 							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
@@ -234,16 +242,17 @@ public class MagicWindow extends BasicSprite {
 						//ターゲットタイプランダムの場合は即時実行
 						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.RANDOM_ONE_PARTY)) {
 							//代償が支払えるかのチェック
-							Map<StatusKey, Integer> selfDamage = a.selfBattleDirectDamage();
+							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
-							if (vs.hasZero()) {
+							if (vs.hasMinus()) {
 								StringBuilder sb = new StringBuilder();
 								sb.append(getSelectedPC().getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
 								sb.append(Text.getLineSep());
 								sb.append(I18N.translate("BUT"));
-								sb.append(vs.stream().map(p -> p.getName()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
+								sb.append(vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
 								msg.setText(sb.toString());
 								msg.allText();
+								group.show(msg);
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
 							}
@@ -259,12 +268,18 @@ public class MagicWindow extends BasicSprite {
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 								//成功
 								//効果測定
-								Map<StatusKey, Integer> map = tgt.calcDamage();
-								for (Map.Entry<StatusKey, Integer> e : map.entrySet()) {
-									if (e.getValue() > 0) {
-										sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("HEALDAMAGE"));
+								Map<StatusKey, Float> map = tgt.calcDamage();
+								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
+									if (e.getValue() < 0f) {
+										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
+										sb.append(Text.getLineSep());
+									} else if (e.getValue() > 0f) {
+										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
+										sb.append(Text.getLineSep());
 									} else {
-										sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("DAMAGE"));
+										//==0
+										sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
+										sb.append(Text.getLineSep());
 									}
 								}
 							} else {
@@ -273,6 +288,7 @@ public class MagicWindow extends BasicSprite {
 								sb.append(I18N.translate("NO_EFFECT"));
 							}
 							msg.setText(sb.toString());
+							msg.allText();
 							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
@@ -280,16 +296,17 @@ public class MagicWindow extends BasicSprite {
 						//チームが入っている場合即時実行
 						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.TEAM_PARTY)) {
 							//代償が支払えるかのチェック
-							Map<StatusKey, Integer> selfDamage = a.selfBattleDirectDamage();
+							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
-							if (vs.hasZero()) {
+							if (vs.hasMinus()) {
 								StringBuilder sb = new StringBuilder();
 								sb.append(getSelectedPC().getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
 								sb.append(Text.getLineSep());
 								sb.append(I18N.translate("BUT"));
-								sb.append(vs.stream().map(p -> p.getName()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
+								sb.append(vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
 								msg.setText(sb.toString());
 								msg.allText();
+								group.show(msg);
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
 							}
@@ -304,12 +321,18 @@ public class MagicWindow extends BasicSprite {
 								if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 									//成功
 									//効果測定
-									Map<StatusKey, Integer> map = s.calcDamage();
-									for (Map.Entry<StatusKey, Integer> e : map.entrySet()) {
-										if (e.getValue() > 0) {
-											sb.append(s.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("HEALDAMAGE"));
+									Map<StatusKey, Float> map = s.calcDamage();
+									for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
+										if (e.getValue() < 0f) {
+											sb.append(I18N.translate("PARTY")).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
+											sb.append(Text.getLineSep());
+										} else if (e.getValue() > 0f) {
+											sb.append(I18N.translate("PARTY")).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
+											sb.append(Text.getLineSep());
 										} else {
-											sb.append(s.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("DAMAGE"));
+											//==0
+											sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
+											sb.append(Text.getLineSep());
 										}
 									}
 								} else {
@@ -319,21 +342,23 @@ public class MagicWindow extends BasicSprite {
 								}
 							}
 							msg.setText(sb.toString());
+							msg.allText();
 							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
 						}
 						//代償が支払えるかのチェック
-						Map<StatusKey, Integer> selfDamage = a.selfBattleDirectDamage();
+						Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 						StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
-						if (vs.hasZero()) {
+						if (vs.hasMinus()) {
 							StringBuilder sb = new StringBuilder();
 							sb.append(getSelectedPC().getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
 							sb.append(Text.getLineSep());
 							sb.append(I18N.translate("BUT"));
-							sb.append(vs.stream().map(p -> p.getName()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
+							sb.append(vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
 							msg.setText(sb.toString());
 							msg.allText();
+							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
@@ -535,21 +560,29 @@ public class MagicWindow extends BasicSprite {
 	private void commitUse() {
 		CmdAction a = getSelectedAction();
 		Status tgt = GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect());
-		tgt.setDamageCalcPoint();
+
+		//使用者のMP計算のためDCP設定
+		getSelectedPC().setDamageCalcPoint();
+		//使用者とターゲットが違う場合はターゲットもDCP設定
+		if (!getSelectedPC().equals(tgt)) {
+			tgt.setDamageCalcPoint();
+		}
 		ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
 		StringBuilder sb = new StringBuilder();
 		sb.append(tgt.getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
 		sb.append(Text.getLineSep());
 		if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 			//成功
-			//効果測定
-			Map<StatusKey, Integer> map = tgt.calcDamage();
-			for (Map.Entry<StatusKey, Integer> e : map.entrySet()) {
-				if (e.getValue() > 0) {
-					sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("HEALDAMAGE"));
+			//ターゲットへの効果測定
+			Map<StatusKey, Float> map = getSelectedPC().calcDamage();
+			System.out.println("tgt.calcDamage");
+			System.out.println(map);
+			for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
+				if (e.getValue() < 0f) {
+					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
 					sb.append(Text.getLineSep());
-				} else if (e.getValue() < 0) {
-					sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("DAMAGE"));
+				} else if (e.getValue() > 0f) {
+					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
 					sb.append(Text.getLineSep());
 				} else {
 					//==0
@@ -558,6 +591,9 @@ public class MagicWindow extends BasicSprite {
 				}
 				sb.append(Text.getLineSep());
 			}
+			//SELFへのダメージ
+			//TODO:
+
 			if (map.isEmpty()) {
 				sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
 				sb.append(Text.getLineSep());

@@ -72,4 +72,9 @@ public class ActionEventResult {
 		return resultTypePerTgt;
 	}
 
+	@Override
+	public String toString() {
+		return "ActionEventResult{" + "resultTypePerTgt=" + resultTypePerTgt + ", animation=" + animation + '}';
+	}
+
 }

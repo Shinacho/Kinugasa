@@ -130,6 +130,9 @@ public class ActionEvent implements Comparable<ActionEvent> {
 				result.addResultTypePerTgt(ActionResultType.MISS);
 				continue;
 			}
+			if (GameSystem.isDebugMode()) {
+				System.out.println("ACTION:" + parameterType + ":" + damageCalcType);
+			}
 			//実行可能
 			switch (parameterType) {
 				case NONE:
@@ -164,12 +167,13 @@ public class ActionEvent implements Comparable<ActionEvent> {
 					}
 					break;
 				case ITEM_LOST:
-					if (targetType == TargetType.SELF) {
-						tgt.getUser().getStatus().getItemBag().drop(tgtName);
-					} else {
-						c.getStatus().getItemBag().drop(tgtName);
-					}
-					result.addResultTypePerTgt(ActionResultType.SUCCESS);
+					//アイテムロストは使用側で実施すること
+//					if (targetType == TargetType.SELF) {
+//						tgt.getUser().getStatus().getItemBag().drop(tgtName);
+//					} else {
+//						c.getStatus().getItemBag().drop(tgtName);
+//					}
+//					result.addResultTypePerTgt(ActionResultType.SUCCESS);
 					break;
 				case REMOVE_CONDITION:
 					c.getStatus().removeCondition(tgtName);
@@ -211,6 +215,9 @@ public class ActionEvent implements Comparable<ActionEvent> {
 					throw new AssertionError("indefined parameter type " + this);
 
 			}
+		}
+		if (GameSystem.isDebugMode()) {
+			System.out.println("ACTION RESULT:" + result);
 		}
 		return result;
 	}

@@ -281,12 +281,12 @@ public class ItemWindow extends BasicSprite {
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 								//¬Œ÷
 								//Œø‰Ê‘ª’è
-								Map<StatusKey, Integer> map = tgt.calcDamage();
-								for (Map.Entry<StatusKey, Integer> e : map.entrySet()) {
+								Map<StatusKey, Float> map = tgt.calcDamage();
+								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 									if (e.getValue() > 0) {
-										sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("HEALDAMAGE"));
+										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
 									} else {
-										sb.append(tgt.getName()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("DAMAGE"));
+										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(e.getValue()).append(I18N.translate("DAMAGE"));
 									}
 								}
 							} else {
@@ -507,6 +507,7 @@ public class ItemWindow extends BasicSprite {
 					commitUse();
 					group.show(msg);
 					mode = Mode.WAIT_MSG_CLOSE_TO_IUS;//use‚µ‚½‚çÁ‚¦‚Ä‚¢‚é‰Â”\«‚ª‚ ‚é‚½‚ßIUS
+					break;
 				}
 				if (choiceUse.getSelect() == PASS) {
 					int itemBagSize = getSelectedPC().getItemBag().size();
@@ -563,13 +564,13 @@ public class ItemWindow extends BasicSprite {
 		if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 			//¬Œ÷
 			//Œø‰Ê‘ª’è
-			Map<StatusKey, Integer> map = tgt.calcDamage();
-			for (Map.Entry<StatusKey, Integer> e : map.entrySet()) {
+			Map<StatusKey, Float> map = tgt.calcDamage();
+			for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 				if (e.getValue() < 0) {
-					sb.append(tgt.getName()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
+					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
 					sb.append(Text.getLineSep());
 				} else if (e.getValue() > 0) {
-					sb.append(tgt.getName()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
+					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
 					sb.append(Text.getLineSep());
 				} else {
 					//==0
@@ -586,7 +587,7 @@ public class ItemWindow extends BasicSprite {
 			for (ActionEvent e : i.getFieldEvent()) {
 				if (e.getParameterType() == ParameterType.ITEM_LOST) {
 					if (e.getP() >= 1f || Random.percent(e.getP())) {
-//						tgt.getItemBag().drop(i);
+						tgt.getItemBag().drop(i);
 						sb.append(i.getName()).append(I18N.translate("ITEM_DROP"));
 						sb.append(Text.getLineSep());
 					}
