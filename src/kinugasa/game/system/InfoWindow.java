@@ -83,7 +83,7 @@ public class InfoWindow extends BasicSprite {
 				//MAIN
 				t.add(new Text("--" + I18N.translate("MAIN") + I18N.translate("QUEST")));
 				QuestStage qs = QuestLineStorage.getInstance().get("MAIN").getStage();
-				t.add(new Text("  " + qs.getTitle() + Text.getLineSep() + "  " + qs.getDesc()));
+				t.add(new Text("  " + qs.getTitle() + Text.getLineSep() + "   　　　 " + qs.getDesc().replaceAll("/", "/   　　　 ")));
 
 				//SUB
 				t.add(new Text("--" + I18N.translate("SUB") + I18N.translate("QUEST")));
