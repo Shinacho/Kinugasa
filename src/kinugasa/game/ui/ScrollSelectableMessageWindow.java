@@ -117,6 +117,10 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 			}
 			l++;
 		}
+		if (sb.toString().trim().isEmpty()) {
+			window.clearText();
+			return;
+		}
 		window.setText(new Text(sb.substring(0, sb.length() - 1)));
 		window.allText();
 	}

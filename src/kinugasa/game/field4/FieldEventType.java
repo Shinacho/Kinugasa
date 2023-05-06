@@ -40,6 +40,8 @@ import kinugasa.game.system.Item;
 import kinugasa.game.system.ItemStorage;
 import kinugasa.game.system.PlayerCharacter;
 import kinugasa.game.system.QuestLineStorage;
+import kinugasa.game.system.QuestStage;
+import kinugasa.game.system.QuestStageStorage;
 import kinugasa.game.system.ScriptFormatException;
 import kinugasa.game.system.Status;
 import kinugasa.game.ui.Text;
@@ -373,12 +375,14 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//クエストラインストレージ名、クエストID、値
+	//クエストラインストレージ名、クエストID、ステージ値
 	SET_QUEST_LINE {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			int v = Integer.parseInt(e.getValue());
-			QuestLineStorage.getInstance().get(e.getTargetName()).getStage().setValue(v);
+			//クエスト情報を設定
+			QuestStage s = QuestStageStorage.getInstance().get(e.getTargetName(), v);
+			QuestLineStorage.getInstance().get(e.getTargetName()).setStage(s);
 			return UserOperationRequire.CONTINUE;
 		}
 	},

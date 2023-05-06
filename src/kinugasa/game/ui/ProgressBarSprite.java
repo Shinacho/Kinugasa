@@ -134,6 +134,15 @@ public class ProgressBarSprite extends BasicSprite {
 			color = Color.GREEN;
 		}
 	}
+	private boolean visibleValue = true;
+
+	public void setVisibleValue(boolean visibleValue) {
+		this.visibleValue = visibleValue;
+	}
+
+	public boolean isVisibleValue() {
+		return visibleValue;
+	}
 
 	@Override
 	public void draw(GraphicsContext g) {
@@ -146,6 +155,11 @@ public class ProgressBarSprite extends BasicSprite {
 		g2.fillRect(x, y, w, h);
 		g2.setColor(Color.BLACK);
 		g2.drawRect((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
+		if (visibleValue) {
+			g2.setColor(new Color(44, 44, 196));
+			g2.setFont(FontModel.DEFAULT.clone().setFontSize(8).getFont());
+			g2.drawString(val + "", x + 4, y + h);
+		}
 		g2.dispose();
 	}
 

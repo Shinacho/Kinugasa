@@ -65,7 +65,7 @@ public class Money implements Nameable {
 	}
 
 	public String getVisibleText() {
-		return value + name;
+		return value + " " + name;
 	}
 
 	@Override

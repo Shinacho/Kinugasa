@@ -54,6 +54,10 @@ public class QuestLine implements Nameable {
 		this.desc = desc;
 	}
 
+	public void setStage(QuestStage stage) {
+		this.stage = stage;
+	}
+
 	public QuestStage getStage() {
 		return stage;
 	}

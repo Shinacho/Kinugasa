@@ -23,6 +23,8 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.resource.Nameable;
+
 /**
  *
  * @vesion 1.0.0 - 2022/12/11_16:56:25<br>
@@ -31,6 +33,22 @@ package kinugasa.game.system;
 public class QuestStage {
 
 	private int value;
+	private String title;
+	private String desc;
+
+	public QuestStage(int value, String title, String desc) {
+		this.value = value;
+		this.title = title;
+		this.desc = desc;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
 
 	public QuestStage() {
 		value = 0;
@@ -40,21 +58,14 @@ public class QuestStage {
 		return value;
 	}
 
-	public void setValue(int value) {
-		this.value = value;
-	}
-
-	public void add(int v) {
-		value += v;
-	}
-
 	public boolean is(int a) {
 		return value == a;
 	}
+	//TODO:removeNPCèÓïÒÇ±Ç±
 
 	@Override
 	public String toString() {
-		return "QuestStage{" + "value=" + value + '}';
+		return "QuestStage{" + "value=" + value + ", title=" + title + ", desc=" + desc + '}';
 	}
 
 }

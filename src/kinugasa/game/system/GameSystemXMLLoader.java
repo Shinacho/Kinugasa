@@ -49,6 +49,7 @@ public class GameSystemXMLLoader {
 	private List<String> enemyList = new ArrayList<>();
 	private List<String> ess = new ArrayList<>();
 	private List<String> bookList = new ArrayList<>();
+	private List<String> questStage = new ArrayList<>();
 	private String enemyProgressBarKey;
 
 	public GameSystemXMLLoader addWeaponMagicTypeStorage(String fileName) {
@@ -116,6 +117,11 @@ public class GameSystemXMLLoader {
 		return this;
 	}
 
+	public GameSystemXMLLoader addQuestStage(String name) {
+		this.questStage.add(name);
+		return this;
+	}
+
 	public String getEnemyProgressBarKey() {
 		return enemyProgressBarKey;
 	}
@@ -162,6 +168,10 @@ public class GameSystemXMLLoader {
 
 	public List<String> getBookList() {
 		return bookList;
+	}
+
+	public List<String> getQuestStage() {
+		return questStage;
 	}
 
 	public void load() throws IllegalStateException {
@@ -217,6 +227,8 @@ public class GameSystemXMLLoader {
 		if (enemyProgressBarKey != null && !enemyProgressBarKey.isEmpty()) {
 			Enemy.setProgressBarKey(enemyProgressBarKey);
 		}
+
+		questStage.forEach(p -> QuestStageStorage.getInstance().readFromXML(p));
 	}
 
 	private void readStatusMaster(String filePath) throws IllegalXMLFormatException, FileNotFoundException, FileIOException {

@@ -220,7 +220,7 @@ public class MagicWindow extends BasicSprite {
 										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
 										sb.append(Text.getLineSep());
 									} else if (e.getValue() > 0f) {
-										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
+										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("SUB"));
 										sb.append(Text.getLineSep());
 									} else {
 										//==0
@@ -274,7 +274,7 @@ public class MagicWindow extends BasicSprite {
 										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
 										sb.append(Text.getLineSep());
 									} else if (e.getValue() > 0f) {
-										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
+										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("SUB"));
 										sb.append(Text.getLineSep());
 									} else {
 										//==0
@@ -327,7 +327,7 @@ public class MagicWindow extends BasicSprite {
 											sb.append(I18N.translate("PARTY")).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
 											sb.append(Text.getLineSep());
 										} else if (e.getValue() > 0f) {
-											sb.append(I18N.translate("PARTY")).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
+											sb.append(I18N.translate("PARTY")).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("SUB"));
 											sb.append(Text.getLineSep());
 										} else {
 											//==0
@@ -584,7 +584,7 @@ public class MagicWindow extends BasicSprite {
 					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
 					sb.append(Text.getLineSep());
 				} else if (e.getValue() > 0f) {
-					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("DAMAGE"));
+					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("SUB"));
 					sb.append(Text.getLineSep());
 				} else {
 					//==0
