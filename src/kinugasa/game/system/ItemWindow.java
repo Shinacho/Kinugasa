@@ -23,8 +23,6 @@
  */
 package kinugasa.game.system;
 
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -213,10 +211,10 @@ public class ItemWindow extends BasicSprite {
 		return getSelectedPC().getItemBag().get(mainSelect);
 	}
 
-	private static final int USE = 0;
-	private static final int EQIP = 1;
-	private static final int PASS = 2;
-	private static final int CHECK = 3;
+	private static final int CHECK = 0;
+	private static final int USE = 1;
+	private static final int EQIP = 2;
+	private static final int PASS = 3;
 	private static final int DISASSEMBLY = 4;
 	private static final int DROP = 5;
 
@@ -230,10 +228,10 @@ public class ItemWindow extends BasicSprite {
 		switch (mode) {
 			case ITEM_AND_USER_SELECT:
 				List<Text> options = new ArrayList<>();
+				options.add(new Text(I18N.translate("CHECK")));
 				options.add(new Text(I18N.translate("USE")));
 				options.add(new Text(I18N.translate("EQIP")));
 				options.add(new Text(I18N.translate("PASS")));
-				options.add(new Text(I18N.translate("CHECK")));
 				options.add(new Text(I18N.translate("DISASSEMBLY")));
 				options.add(new Text(I18N.translate("DROP")));
 				Choice c = new Choice(options, "ITEM_WINDOW_SUB", getSelectedItem().getName() + I18N.translate("OF"));
@@ -531,6 +529,8 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.DISASSE_CONFIRM;
 						}
 						break;
+					default:
+						throw new AssertionError("undefined choiceUser case");
 				}
 				break;
 			case TARGET_SELECT:
@@ -544,6 +544,16 @@ public class ItemWindow extends BasicSprite {
 					break;
 				}
 				if (choiceUse.getSelect() == PASS) {
+					//パスタの相手がこれ以上物を持てない場合失敗
+					//TODO:交換機能が必要
+					if (!GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect()).getItemBag().canAdd()) {
+						String m = GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect()).getName() + I18N.translate("IS") + I18N.translate("CANT_HAVE");
+						this.msg.setText(m);
+						this.msg.allText();
+						group.show(msg);
+						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+						break;
+					}
 					int itemBagSize = getSelectedPC().getItemBag().size();
 					commitPass();
 					boolean self = itemBagSize == getSelectedPC().getItemBag().size();
