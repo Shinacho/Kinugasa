@@ -114,4 +114,10 @@ public class FieldMapResourceUtil {
 			System.out.println(keyList.get(i));
 		}
 	}
+	public static void main(String[] args) {
+		String f1 = "D:/Project/FuzzyWorld/resource/data/map/raw/map04.csv";
+		String f2 = "D:/Project/FuzzyWorld/resource/data/map/map04.csv";
+		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 48, 16);
+		
+	}
 }

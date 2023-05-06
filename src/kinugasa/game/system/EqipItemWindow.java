@@ -51,6 +51,11 @@ public class EqipItemWindow extends PCStatusWindow {
 	private int pcIdx;
 
 	@Override
+	public void setPcIdx(int pcIdx) {
+		this.pcIdx = pcIdx;
+	}
+
+	@Override
 	public void nextPc() {
 		pcIdx++;
 		if (pcIdx >= s.size()) {

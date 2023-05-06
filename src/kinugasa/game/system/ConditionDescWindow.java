@@ -46,9 +46,14 @@ public class ConditionDescWindow extends PCStatusWindow {
 	public ConditionDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new ScrollSelectableMessageWindow(x, y, w, h, line, false);	
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, line, false);
 		mw.setLoop(true);
 		updateText();
+	}
+
+	@Override
+	public void setPcIdx(int pcIdx) {
+		this.pcIdx = pcIdx;
 	}
 
 	@Override

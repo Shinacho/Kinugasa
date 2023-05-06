@@ -340,7 +340,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				String outMapName = e.getAttributes().get("outMap").getValue();
 				int x = e.getAttributes().get("x").getIntValue();
 				int y = e.getAttributes().get("y").getIntValue();
-				Node node = Node.ofOutNode(name, outMapName, x, y);
+				FourDirection dir = e.getAttributes().get("outDir").of(FourDirection.class);
+				Node node = Node.ofOutNode(name, outMapName, x, y, dir);
 				nodeStorage.add(node);
 			}
 
@@ -389,7 +390,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				int h = (int) (data[0][0].getImage().getWidth());
 
 				FieldMapLayerSprite layerSprite = new FieldMapLayerSprite(chipset, w, h, mg, data);
-				backlLayeres.add(layerSprite);
+				frontlLayeres.add(layerSprite);
 			}
 
 		}
@@ -975,7 +976,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		fm.getCamera().updateToCenter();
 		fm.prevLocationList.clear();
-		if (n.getOutDir() != null) {
+		if (n.getExitNodeName() != null
+				&& fm.getNodeStorage() != null
+				&& fm.getNodeStorage().get(n.getExitNodeName()) != null
+				&& fm.getNodeStorage().get(n.getExitNodeName()).getOutDir() != null) {
 			FieldMap.getPlayerCharacter().get(0).to(n.getOutDir());
 		}
 		if (FieldMap.getPlayerCharacter().size() > 1) {

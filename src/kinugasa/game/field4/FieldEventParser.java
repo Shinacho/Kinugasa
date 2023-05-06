@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.system.ScriptFormatException;
 import kinugasa.resource.FileNotFoundException;
+import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
@@ -104,7 +105,12 @@ public class FieldEventParser {
 			List<EventTerm> t = new ArrayList<>();
 			if (terms.length != 0) {
 				if (!Arrays.stream(terms).allMatch(p -> "".equals(p))) {
-					t = term.getAll(terms);
+					try {
+						t = term.getAll(terms);
+					} catch (NameNotFoundException ex) {
+						System.out.println("UNDEFINED TERM NAME:" + terms);
+						throw ex;
+					}
 				}
 			}
 			FieldEvent ee = new FieldEvent(name + "_" + i++, pri, idx, t, fet, storageName, tgtName, value);

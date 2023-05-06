@@ -87,6 +87,8 @@ public class FieldMapCamera {
 		}
 	}
 
+	public static String cameraCantMoveDesc;
+
 	public void move() {
 		//追従モードで次のチップが乗れない場合移動しない
 		if (mode == FieldMapCameraMode.FOLLOW_TO_CENTER) {
@@ -101,22 +103,27 @@ public class FieldMapCamera {
 
 			//領域外の判定
 			if (x < 1 || y < 1) {
+				cameraCantMoveDesc = "[1]x < 1 || y < 1";
 				return;
 			}
 			if (map.getBaseLayer().getDataWidth() <= x + 1 || map.getBaseLayer().getDataHeight() <= y + 1) {
+				cameraCantMoveDesc = "[1]x > dataWidth || y > dataHeight";
 				return;
 			}
 
 			//NPC衝突判定
 			if (map.getNpcStorage().get(new D2Idx(x, y)) != null) {
+				cameraCantMoveDesc = "[1]NPC hit[" + map.getNpcStorage().get(new D2Idx(x, y)) + "]";
 				return;
 			}
 
 			//乗れるチップかの判定
 			if (!VehicleStorage.getInstance().getCurrentVehicle().isStepOn(map.getTile(new D2Idx(x, y)).getChip())) {
+				cameraCantMoveDesc = "[1]cant step[" + map.getTile(new D2Idx(x, y)).getChip() + "]";
 				return;
 			}
 		}
+		cameraCantMoveDesc = null;
 
 		if (map.getBackgroundLayerSprite() != null) {
 			map.getBackgroundLayerSprite().move();
@@ -157,20 +164,25 @@ public class FieldMapCamera {
 
 				//領域外の判定
 				if (x < 1 || y < 1) {
+					cameraCantMoveDesc = "[2]x < 1 || y < 1";
 					return;
 				}
 				if (map.getBaseLayer().getDataWidth() <= x + 1 || map.getBaseLayer().getDataHeight() <= y + 1) {
+					cameraCantMoveDesc = "[2]x > dataWidth || y > dataHeight";
 					return;
 				}
 				//NPC衝突判定
 				if (map.getNpcStorage().get(new D2Idx(x, y)) != null) {
+					cameraCantMoveDesc = "[2]NPC hit[" + map.getNpcStorage().get(new D2Idx(x, y)) + "]";
 					return;
 				}
 
 				//乗れるチップかの判定
 				if (!VehicleStorage.getInstance().getCurrentVehicle().isStepOn(map.getTile(new D2Idx(x, y)).getChip())) {
+					cameraCantMoveDesc = "[2]cant step[" + map.getTile(new D2Idx(x, y)).getChip() + "]";
 					return;
 				}
+				cameraCantMoveDesc = null;
 				map.setCurrentIdx(new D2Idx(x, y));
 				break;
 			case FREE:

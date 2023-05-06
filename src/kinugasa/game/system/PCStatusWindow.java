@@ -46,6 +46,8 @@ public abstract class PCStatusWindow extends BasicSprite {
 	public abstract void prevPc();
 
 	public abstract int getPcIdx();
+	
+	public abstract void setPcIdx(int pcIdx);
 
 	public abstract void next();
 

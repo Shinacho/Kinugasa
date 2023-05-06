@@ -491,7 +491,8 @@ public enum FieldEventType {
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			int x = Integer.parseInt(e.getValue().split(",")[0]);
 			int y = Integer.parseInt(e.getValue().split(",")[1]);
-			FieldEventSystem.getInstance().setNode(Node.ofOutNode("AUTO_NODE" + v++, e.getTargetName(), x, y));
+			FourDirection dir = FourDirection.valueOf(e.getValue().split(",")[2]);
+			FieldEventSystem.getInstance().setNode(Node.ofOutNode("AUTO_NODE" + v++, e.getTargetName(), x, y, dir));
 			return UserOperationRequire.CHANGE_MAP;
 		}
 	},

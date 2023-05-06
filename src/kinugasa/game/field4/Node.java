@@ -67,9 +67,10 @@ public class Node implements Nameable {
 		return n;
 	}
 
-	public static Node ofOutNode(String name, String outMapName, int x, int y) {
+	public static Node ofOutNode(String name, String outMapName, int x, int y, FourDirection outDir) {
 		Node n = ofInOutNode(name, outMapName, null, x, y, null, null, null);
 		n.mode = Mode.OUT;
+		n.outDir = outDir;
 		return n;
 	}
 

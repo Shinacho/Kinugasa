@@ -198,9 +198,9 @@ public class PlayerCharacter implements BattleCharacter {
 		Status status = new Status(name, race);
 		for (XMLElement ee : root.getElement("status")) {
 			String key = ee.getAttributes().get("key").getValue();
-			int max = ee.getAttributes().get("max").getIntValue();
-			int min = ee.getAttributes().get("min").getIntValue();
-			int value = ee.getAttributes().get("value").getIntValue();
+			float max = ee.getAttributes().get("max").getFloatValue();
+			float min = ee.getAttributes().get("min").getFloatValue();
+			float value = ee.getAttributes().get("value").getFloatValue();
 			status.getBaseStatus().get(key).setMax(max);
 			status.getBaseStatus().get(key).setMin(min);
 			status.getBaseStatus().get(key).setValue(value);
@@ -210,14 +210,16 @@ public class PlayerCharacter implements BattleCharacter {
 			float value = ee.getAttributes().get("value").getFloatValue();
 			status.getBaseAttrIn().get(key).set(value);
 		}
+		for (XMLElement ee : root.getElement("eqip")) {
+			Item i = ItemStorage.getInstance().get(ee.getAttributes().get("name").getValue());
+			if (!status.getItemBag().contains(i)) {
+				status.getItemBag().add(i);
+			}
+			status.addEqip(i);
+		}
 		for (XMLElement ee : root.getElement("item")) {
 			Item i = ItemStorage.getInstance().get(ee.getAttributes().get("name").getValue());
 			status.getItemBag().add(i);
-		}
-		for (XMLElement ee : root.getElement("eqip")) {
-			Item i = ItemStorage.getInstance().get(ee.getAttributes().get("name").getValue());
-			status.getItemBag().add(i);
-			status.addEqip(i);
 		}
 		for (XMLElement ee : root.getElement("book")) {
 			Book b = BookStorage.getInstance().get(ee.getAttributes().get("name").getValue());
