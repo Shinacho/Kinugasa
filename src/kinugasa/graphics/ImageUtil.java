@@ -24,6 +24,7 @@
 package kinugasa.graphics;
 
 import java.awt.AWTException;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -567,5 +568,31 @@ public final class ImageUtil {
 			widthSum += images[i].getWidth();
 		}
 		return result;
+	}
+
+	public static Color averageColor(BufferedImage image) {
+		int a, r, g, b;
+		a = r = g = b = 0;
+		int[] pix = getPixel(image);
+		for (int val : pix) {
+			a += ARGBColor.getAlpha(val);
+			r += ARGBColor.getRed(val);
+			g += ARGBColor.getGreen(val);
+			b += ARGBColor.getBlue(val);
+		}
+		a /= pix.length;
+		r /= pix.length;
+		g /= pix.length;
+		b /= pix.length;
+		return new Color(r, g, b, a);
+	}
+
+	public static boolean hasClaerPixcel(BufferedImage image) {
+		for (int p : getPixel(image)) {
+			if (ARGBColor.getAlpha(p) == 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

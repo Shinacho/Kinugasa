@@ -484,6 +484,19 @@ public final class ImageEditor {
 		return dst;
 	}
 
+	public static BufferedImage resize(BufferedImage src, float wScale, float hScale) {
+		if (wScale == 1f && hScale == 1f) {
+			return copy(src);
+		}
+		int newWidth = (int) (src.getWidth() * wScale);
+		int newHeight = (int) (src.getHeight() * hScale);
+		BufferedImage dst = newImage(newWidth, newHeight);
+		Graphics2D g2 = createGraphics2D(dst, RenderingQuality.QUALITY);
+		g2.drawImage(src, 0, 0, newWidth, newHeight, null);
+		g2.dispose();
+		return dst;
+	}
+
 	public static BufferedImage[] resizeAll(BufferedImage[] images, float scale) {
 		BufferedImage[] result = new BufferedImage[images.length];
 		for (int i = 0; i < result.length; i++) {

@@ -23,7 +23,6 @@
  */
 package kinugasa.game.field4;
 
-import java.awt.Color;
 import kinugasa.object.FourDirection;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -50,6 +49,7 @@ import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.game.ui.TextStorageStorage;
+import kinugasa.graphics.ARGBColor;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
@@ -805,46 +805,59 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 * フィールドマップのキャラクタとビフォアレイヤー以外を描画した画像を生成します。
 	 * バックグラウンド及びフロントアニメーションは、現在の状態が使用されます。 NPC及びキャラクタは表示されません。
 	 *
-	 * @param scale 拡大率。1で等倍、0.5で50%のサイズ。
-	 * @param animation フロントアニメーションを描画するかどうか。
+	 * @param w 幅ピクセル
+	 * @param h 高さピクセル
 	 * @param pcLocation PCの位置に点を打つか。
 	 * @return 指定の拡大率で描画された画像。
 	 */
-	public KImage createMiniMap(float scale, boolean animation, boolean pcLocation) {
+	public KImage createMiniMap(int w, int h, boolean pcLocation) {
 
-		float w = getBaseLayer().getDataWidth() * getBaseLayer().getChip(0, 0).getImage().getWidth();
-		float h = getBaseLayer().getDataHeight() * getBaseLayer().getChip(0, 0).getImage().getHeight();
+		int imageW = (int) (getBaseLayer().getChip(0, 0).getImage().getWidth() * mg);
+		int imageH = (int) (getBaseLayer().getChip(0, 0).getImage().getHeight() * mg);
+		BufferedImage[][] baseImage = ImageUtil.splitAsArray(getBaseLayer().getImage(), imageW, imageH);
 
-		BufferedImage image = ImageUtil.newImage((int) w, (int) h);
-		Graphics2D g = ImageUtil.createGraphics2D(image, RenderingQuality.QUALITY);
-		if (backgroundLayerSprite != null) {
-			g.drawImage(backgroundLayerSprite.getAWTImage(), 0, 0, null);
-		}
-		for (FieldMapLayerSprite s : backlLayeres) {
-			g.drawImage(s.getImage(), 0, 0, null);
-		}
-		for (FieldMapLayerSprite s : frontlLayeres) {
-			g.drawImage(s.getImage(), 0, 0, null);
-		}
-		if (animation) {
-			for (FieldAnimationSprite a : frontAnimation) {
-				float x = chipW * a.getIdx().x;
-				float y = chipH * a.getIdx().y;
-				g.drawImage(a.getAWTImage(), (int) x, (int) y, (int) (chipW * scale), (int) (chipH * scale), null);
+		BufferedImage image = ImageUtil.newImage(getBaseLayer().getDataWidth(), getBaseLayer().getDataHeight());
+		int[] pix = new int[getBaseLayer().getDataWidth() * getBaseLayer().getDataHeight()];
+
+		if (getBackgroundLayerSprite() != null) {
+			int col = ARGBColor.toARGB(ImageUtil.averageColor(getBackgroundLayerSprite().getImage().get()));;
+			for (int i = 0; i < pix.length; i++) {
+				pix[i] = col;
 			}
 		}
-		if (pcLocation) {
-			if (!playerCharacter.isEmpty()) {
-				float x = chipW * getCurrentIdx().x;
-				float y = chipH * getCurrentIdx().y;
-				float dw = chipW * scale;
-				float dh = chipH * scale;
-				g.setColor(Color.RED);
-				g.fillRect((int) x, (int) y, (int) dw, (int) dh);
+
+		assert baseImage.length * baseImage[0].length == pix.length : "createMiniMap PIX LENGTH MISSMATCH : " + baseImage.length * baseImage[0].length + " / " + pix.length;
+
+		for (int i = 0, y = 0; y < baseImage.length; y++) {
+			for (int x = 0; x < baseImage[y].length; x++) {
+				//ベースイメージyxに透明タイルがある場合はこのタイルをスキップする
+				if(ImageUtil.hasClaerPixcel(baseImage[y][x])){
+					i++;
+					continue;
+				}
+				int col = ARGBColor.toARGB(ImageUtil.averageColor(baseImage[y][x]));
+				if (ARGBColor.getAlpha(col) == 0) {
+					i++;
+					continue;
+				}
+				if (pcLocation && currentIdx.x == x && currentIdx.y == y) {
+					pix[i] = ARGBColor.RED;
+					i++;
+					continue;
+				}
+				pix[i] = col;
+				i++;
 			}
 		}
-		g.dispose();
-		return new KImage(ImageEditor.resize(image, scale));
+		ImageUtil.setPixel(image, pix);
+		baseImage = null;
+
+		//スケール計算
+		float ws = w / image.getWidth();
+		float hs = h / image.getHeight();
+
+		return new KImage(ImageEditor.resize(image, ws, hs));
+
 	}
 
 	public boolean canTalk() {
