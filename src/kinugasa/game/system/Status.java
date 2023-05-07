@@ -557,7 +557,6 @@ public class Status implements Nameable {
 
 		for (StatusValue v : prevStatus) {
 			float val = v.getValue() - status.get(v.getKey().getName()).getValue();
-			System.out.println(v.getKey().getName() + " : " + val);
 			if (val != 0) {
 				result.put(v.getKey(), val);
 			}

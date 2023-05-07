@@ -74,6 +74,9 @@ public class MaterialPageWindow extends BasicSprite {
 				break;
 		}
 		Collections.sort(list);
+		if (list.isEmpty()) {
+			list.add(I18N.translate("NOTHING_ITEM"));
+		}
 
 		list.add(0, "<----" + I18N.translate(mode.toString()) + "---->");
 

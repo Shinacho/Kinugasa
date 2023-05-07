@@ -416,7 +416,7 @@ public class GameLauncher extends javax.swing.JFrame {
 		logFile.setText(new File("KinugasaGame.log").getAbsolutePath());
 
 		//翻訳ファイルの選択肢追加
-		for (File f : new File("translate").listFiles(p -> p.getName().toLowerCase().endsWith(".ini"))) {
+		for (File f : new File("./translate/").listFiles(p -> p.getName().toLowerCase().endsWith(".ini"))) {
 			language.addItem(f.getName());
 		}
 

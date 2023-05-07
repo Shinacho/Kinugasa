@@ -75,7 +75,18 @@ public class OrderSelectWindow extends BasicSprite {
 				GameSystem.getInstance().getPartyStatus().get(idx).setPartyLocation(PartyLocation.BACK);
 				break;
 		}
-		init();
+		updateText();
+	}
+
+	private void updateText() {
+		int selectId = window.getSelect();
+		List<Text> options = new ArrayList<>();
+		for (Status s : GameSystem.getInstance().getPartyStatus()) {
+			options.add(new Text(s.getName() + " : " + I18N.translate(s.getPartyLocation())));
+		}
+		window.setText(new Choice(options, "ORDER_SELECT_WINDOW", I18N.translate("ORDER_SELECT")));
+		window.allText();
+		window.setSelect(selectId);
 	}
 
 	@Override
