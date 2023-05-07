@@ -64,6 +64,7 @@ public class AttrDescWindow extends PCStatusWindow {
 	@Override
 	public void setPcIdx(int pcIdx) {
 		this.pcIdx = pcIdx;
+		updateText();
 	}
 
 	@Override
@@ -99,9 +100,14 @@ public class AttrDescWindow extends PCStatusWindow {
 		List<Text> l = new ArrayList<>();
 		l.add(line1);
 		assert list != null;
+		boolean midashi = false;
 		for (AttributeValue v : list) {
 			if (unvisibleAttrName.contains(v.getKey().getName())) {
 				continue;
+			}
+			if (v.getKey().getOrder() > 100 && !midashi) {
+				l.add(new Text("--" + I18N.translate("CONDITION")));
+				midashi = true;
 			}
 			l.add(new Text("  " + v.getKey().getDesc() + ":" + (v.getValue() * 100) + '%'));
 		}

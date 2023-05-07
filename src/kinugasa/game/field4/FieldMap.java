@@ -67,6 +67,7 @@ import kinugasa.resource.text.XMLFile;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.ManualTimeCounter;
 import kinugasa.util.Random;
+import kinugasa.util.TimeCounter;
 
 /**
  *
@@ -279,7 +280,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (root.getAttributes().contains("encountCounterDefault")) {
 			this.encountCounter = new ManualTimeCounter(root.getAttributes().get("encountCounterDefault").getIntValue());
 			int r = encountCounter.getCurrentTime();
-			r = Random.randomAbsInt(r - r / 2, r + r / 2);
+			if (r != 1) {
+				r = Random.randomAbsInt(r - r / 2, r + r / 2);
+			}
 			encountCounter.setCurrentTime(r);
 		} else {
 			this.encountCounter = ManualTimeCounter.FALSE;
@@ -693,6 +696,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	}
 
 	public boolean isEncount() {
+		if (encountCounter.equals(ManualTimeCounter.FALSE)) {
+			return false;
+		}
 		boolean r = encountCounter.isReaching();
 		if (debugMode && r) {
 			System.out.println("ENCOUNT!");
@@ -708,7 +714,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 	public void resetEncountCounter() {
 		int r = encountCounter.getInitialTime();
-		r = Random.randomAbsInt(r - r / 2, r + r / 2);
+		if (r != 1) {
+			r = Random.randomAbsInt(r - r / 2, r + r / 2);
+		}
 		encountCounter.setCurrentTime(r);
 	}
 

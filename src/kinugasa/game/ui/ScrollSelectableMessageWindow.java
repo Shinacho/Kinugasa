@@ -204,7 +204,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 			}
 		}
 		//selectが最終行の場合、次の行を表示
-		if (pos < visibleLine - 1) {
+		if (pos < visibleLine - 1 - (line1select ? 0 : 1)) {
 			pos++;
 		} else {
 			visibleIdx++;
@@ -236,7 +236,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 			}
 		}
 		//selectが最終行の場合、次の行を表示
-		if (pos > 0) {
+		if (pos > 0 + (line1select ? 1 : 0)) {
 			pos--;
 		} else {
 			visibleIdx--;

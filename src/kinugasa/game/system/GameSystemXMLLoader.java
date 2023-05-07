@@ -72,11 +72,6 @@ public class GameSystemXMLLoader {
 		return this;
 	}
 
-	public GameSystemXMLLoader addFieldConditionValueStorage(String fileName) {
-		conditionValueStorage.add(fileName);
-		return this;
-	}
-
 	public GameSystemXMLLoader addItemEqipmentSlotStorage(String fileName) {
 		itemEqipmentSlotStorage.add(fileName);
 		return this;

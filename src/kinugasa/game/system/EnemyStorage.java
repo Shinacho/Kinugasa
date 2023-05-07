@@ -60,7 +60,7 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 
 	public EnemyBlueprint getByVisibleName(String name) {
 		for (EnemyBlueprint e : this) {
-			if (e.getVisibleName().equals(name)) {
+			if (e.getName().equals(name)) {
 				return e;
 			}
 		}

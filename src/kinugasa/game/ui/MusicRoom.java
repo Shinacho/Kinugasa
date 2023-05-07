@@ -23,6 +23,7 @@
  */
 package kinugasa.game.ui;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.resource.sound.SoundMap;
 
@@ -40,7 +41,10 @@ public class MusicRoom extends ScrollSelectableMessageWindow {
 		super(x, y, w, h, line);
 		this.map = map;
 		setLoop(true);
-		setText(map.stream().map(p -> p.getName()).sorted().map(p -> new Text(p)).collect(Collectors.toList()));
+		setLine1select(false);
+		List<Text> t = map.stream().map(p -> p.getName()).sorted().map(p -> new Text(p)).collect(Collectors.toList());
+		t.add(0, new Text("--" + map.getName()));
+		setText(t);
 	}
 
 	public void play() {

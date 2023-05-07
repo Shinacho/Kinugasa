@@ -56,6 +56,10 @@ public class GraphicsContext {
 		}
 	}
 
+	public void drawString(String v, int x, int y) {
+		g.drawString(v, x, y);
+	}
+
 	public void draw(List<Drawable> d) {
 		d.forEach((v) -> v.draw(this));
 	}

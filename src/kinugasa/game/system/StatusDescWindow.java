@@ -75,6 +75,7 @@ public class StatusDescWindow extends PCStatusWindow {
 	@Override
 	public void setPcIdx(int pcIdx) {
 		this.pcIdx = pcIdx;
+		update();
 	}
 
 	@Override

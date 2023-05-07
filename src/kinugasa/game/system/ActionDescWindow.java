@@ -54,6 +54,7 @@ public class ActionDescWindow extends PCStatusWindow {
 	@Override
 	public void setPcIdx(int pcIdx) {
 		this.pcIdx = pcIdx;
+		updateText();
 	}
 
 	@Override
