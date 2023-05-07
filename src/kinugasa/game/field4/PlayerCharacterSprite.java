@@ -29,7 +29,6 @@ import java.awt.geom.Point2D;
 import kinugasa.game.GraphicsContext;
 import kinugasa.object.AnimationSprite;
 import kinugasa.object.FourDirection;
-import kinugasa.game.system.*;
 import kinugasa.object.KVector;
 
 /**
@@ -65,6 +64,8 @@ public class PlayerCharacterSprite extends AnimationSprite {
 	public void to(FourDirection dir) {
 		setAnimation(fAnimation.get(dir));
 		currentDir = dir;
+		getAnimation().update();
+		setImage(getAnimation().getCurrentImage());
 	}
 	private boolean shadow = true;
 
@@ -87,7 +88,7 @@ public class PlayerCharacterSprite extends AnimationSprite {
 	}
 	private static final Color SHADOW = new Color(0, 0, 0, 128);
 	private int stage = 0;
-	private int lx, ly;
+	private int ly, lx;
 	private D2Idx currentIdx, targetIdx;
 
 	public void setCurrentIdx(D2Idx currentIdx) {
@@ -107,8 +108,23 @@ public class PlayerCharacterSprite extends AnimationSprite {
 		this.targetIdx = targetIdx;
 	}
 
+	@Override
+	public void update() {
+		if (!FieldMap.getPlayerCharacter().isEmpty() && FieldMap.getPlayerCharacter().get(0).equals(this)) {
+			return;
+		}
+		if (getVector().getSpeed() != 0) {
+			super.update();
+		}
+	}
+
+	public void updateAnimation() {
+		getAnimation().update();
+		setImage(getAnimation().getCurrentImage());
+	}
+
 	void updatePartyMemberLocation(FieldMap map, D2Idx tgt) {
-		super.update();
+		update();
 		switch (stage) {
 			case 0:
 				//èâä˙âª

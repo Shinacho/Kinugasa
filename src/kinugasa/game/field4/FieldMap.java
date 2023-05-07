@@ -532,8 +532,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 						SoundStorage.getInstance().get(mapName).stopAll();
 					}
 					if (mode == BGMMode.STOP_AND_PLAY) {
-						bgm = SoundStorage.getInstance().get(mapName).get(soundName).load();
-						bgm.stopAndPlay();
+						bgm = SoundStorage.getInstance().get(mapName).get(soundName);
+						if (!bgm.isPlaying()) {
+							bgm.load().stopAndPlay();
+						}
 					}
 				}
 

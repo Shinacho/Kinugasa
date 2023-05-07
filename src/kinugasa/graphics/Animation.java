@@ -312,6 +312,7 @@ public class Animation implements Iterable<KImage>, Cloneable {
 
 	@Override
 	public String toString() {
-		return "Animation{" + "visibleTime=" + visibleTime + ", index=" + index + ", images=" + images + '}';
+		return "Animation{" + "visibleTime=" + visibleTime + ", index=" + index + ", images=" + images + ", repeat=" + repeat + ", stop=" + stop + '}';
 	}
+
 }
