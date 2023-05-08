@@ -47,9 +47,21 @@ public class GameLogicStorage extends Storage<GameLogic> {
 	private GameLogic current;
 	private GameLogic prev;
 
+	/**
+	 * startUpで実行する場合はウインドウがまだ初期化されていない点に注意してください。
+	 *
+	 * @param name
+	 */
 	public void changeTo(String name) {
 		changeTo(name, true);
 	}
+
+	/**
+	 * startUpで実行する場合はウインドウがまだ初期化されていない点に注意してください。
+	 *
+	 * @param name
+	 * @param load
+	 */
 
 	public void changeTo(String name, boolean load) {
 		if (GameSystem.isDebugMode()) {
