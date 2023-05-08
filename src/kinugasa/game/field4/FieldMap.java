@@ -630,6 +630,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (textStorage != null) {
 			textStorage.clear();
 		}
+		if (GameSystem.isDebugMode()) {
+			System.err.println("FieldMap[" + getName() + "] is disposed");
+		}
 	}
 
 	public void update() {
@@ -831,7 +834,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		for (int i = 0, y = 0; y < baseImage.length; y++) {
 			for (int x = 0; x < baseImage[y].length; x++) {
 				//ベースイメージyxに透明タイルがある場合はこのタイルをスキップする
-				if(ImageUtil.hasClaerPixcel(baseImage[y][x])){
+				if (ImageUtil.hasClaerPixcel(baseImage[y][x])) {
 					i++;
 					continue;
 				}

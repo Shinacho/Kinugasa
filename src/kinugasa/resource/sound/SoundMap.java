@@ -83,6 +83,7 @@ public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 	@Override
 	public void dispose() {
 		forEach(p -> p.dispose());
+		System.gc();
 	}
 
 	public void stopAll() {

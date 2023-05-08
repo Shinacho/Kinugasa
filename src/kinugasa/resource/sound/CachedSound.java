@@ -51,11 +51,6 @@ import kinugasa.util.StopWatch;
 public class CachedSound implements Sound {
 
 	/**
-	 * サウンドのキャッシュデータ.
-	 */
-	private static final HashMap<SoundBuilder, CachedSound> CACHE = new HashMap<SoundBuilder, CachedSound>(16);
-
-	/**
 	 * 新しいキャッシュサウンドを構築します.
 	 *
 	 * @param b サウンドの構築に使用するビルダ.<br>
@@ -63,11 +58,7 @@ public class CachedSound implements Sound {
 	 * @return ビルダの設定で作成されたキャッシュサウンド.<br>
 	 */
 	static CachedSound create(SoundBuilder b) {
-		if (CACHE.containsKey(b) && !b.isNewFile()) {
-			return CACHE.get(b);
-		}
 		CachedSound sc = new CachedSound(b);
-		CACHE.put(b, sc);
 		return sc;
 	}
 	/**
@@ -146,7 +137,9 @@ public class CachedSound implements Sound {
 	@Override
 	public void play() throws NotYetLoadedException {
 		if (!(getStatus() == InputStatus.LOADED)) {
-			throw new NotYetLoadedException("sound " + this + " is not yet loaded.");
+			//暫定対応
+//			throw new NotYetLoadedException("sound " + this + " is not yet loaded.");
+			return;
 		}
 		if (lp != LoopPoint.NO_USE) {
 			if (framePos > 0) {
@@ -235,8 +228,8 @@ public class CachedSound implements Sound {
 			clip.open(stream);
 			Set<Control.Type> types = ctrls.keySet();
 			for (Control.Type t : types) {
-				float val = ctrls.get(t);
 				try {
+					float val = ctrls.get(t);
 					FloatControl control = (FloatControl) clip.getControl(t);
 					control.setValue(val);
 				} catch (IllegalArgumentException i) {
@@ -247,7 +240,8 @@ public class CachedSound implements Sound {
 				clip.setLoopPoints(lp.getTo(), lp.getFrom());
 			}
 		} catch (Exception ex) {
-			throw new SoundStreamException(ex);
+//			throw new SoundStreamException(ex);
+
 		} finally {
 			try {
 				if (stream != null) {
