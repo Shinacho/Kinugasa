@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ import kinugasa.resource.Nameable;
  * @version 8.4.0 - 2013/04/28_21:54<br>
  * @version 8.5.0 - 2015/01/05_21:14<br>
  * @version 8.6.0 - 2015/03/29_16:26<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public abstract class Sprite
 		implements Drawable, Shapeable, Cloneable, Comparable<Sprite> {

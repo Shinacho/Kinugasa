@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Dra.
+ * Copyright 2015 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import kinugasa.game.GameLog;
  * <br>
  *
  * @version 1.0.0 - 2015/01/04<br>
- * @author Dra<br>
+ * @author Shinacho<br>
  * <br>
  */
 public final class TempFile implements Nameable {

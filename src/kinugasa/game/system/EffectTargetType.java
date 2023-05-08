@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package kinugasa.game.system;
  * エフェクトの設定対象を指定する列挙です。
  *
  * @vesion 1.0.0 - 2022/11/15_12:08:31<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public enum EffectTargetType {
 	/**

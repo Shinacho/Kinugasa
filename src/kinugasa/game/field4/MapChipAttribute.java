@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import kinugasa.resource.Nameable;
  * このクラスは、マップチップ1枚が持つ属性を定義します。属性には、「平地」「草原」「山」等があります。 チップの属性は、歩数エンカウントの基本値を持ちます。
  *
  * @vesion 1.0.0 - 2022/11/08_16:04:58<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class MapChipAttribute implements Nameable {
 

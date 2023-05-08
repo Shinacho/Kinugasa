@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import kinugasa.util.Random;
  * 特定の場所に移動するアルゴリズムは、基本的にマップ形状に依存するため、独自に作成する必要があります。<br>
  *
  * @vesion 1.0.0 - 2022/11/08_19:50:30<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 

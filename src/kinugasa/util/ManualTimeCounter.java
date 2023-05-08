@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package kinugasa.util;
  * 手動式のタイムカウンタの実装です。 update,add,subの各メソッドで値を変更します、値が0を下回ったとき、完了となります。
  *
  * @vesion 1.0.0 - 2022/11/12_13:50:47<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class ManualTimeCounter extends TimeCounter {
 

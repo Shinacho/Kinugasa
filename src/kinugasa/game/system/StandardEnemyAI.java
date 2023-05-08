@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import kinugasa.object.Sprite;
 /**
  *
  * @vesion 1.0.0 - 2022/12/02_16:46:35<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public enum StandardEnemyAI implements EnemyAI {
 	SIMPLE {

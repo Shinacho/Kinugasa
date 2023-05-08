@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Dra.
+ * Copyright 2015 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import kinugasa.object.Model;
  * <br>
  *
  * @version 1.0.0 - 2015/09/27<br>
- * @author Dra<br>
+ * @author Shinacho<br>
  * <br>
  */
 public abstract class Action extends Model implements Comparable<Action> {

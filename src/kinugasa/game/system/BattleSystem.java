@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ import kinugasa.util.Random;
  * バトル管理クラス。
  *
  * @vesion 1.0.0 - 2022/11/16_20:52:15<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class BattleSystem implements Drawable {
 
@@ -1332,7 +1332,7 @@ public class BattleSystem implements Drawable {
 		//勝敗判定
 		List<BattleWinLoseLogic> winLoseLogic = BattleConfig.getWinLoseLogic();
 		if (winLoseLogic.isEmpty()) {
-			throw new GameSystemException("win lose logic is empty, this battle neber end.");
+			throw new GameSystemException("win lose logic is empty, this battle never end.");
 		}
 		List<Status> party = GameSystem.getInstance().getPartyStatus();
 		List<Status> enemy = enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList());

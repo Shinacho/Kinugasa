@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ import kinugasa.util.StopWatch;
  *
  * @version 1.0.0 - 2013/01/13_2:08:33<br>
  * @version 1.1.0 - 2013/04/28_23:16<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public final class ImageUtil {
 

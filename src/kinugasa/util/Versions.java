@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ package kinugasa.util;
  * <br>
  *
  * @version 1.0.0 - 2013/04/20_17:18:27<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public enum Versions {
 
@@ -40,7 +40,7 @@ public enum Versions {
 	/**
 	 * 私です.
 	 */
-	public static final String AUTHOR = "Dra0211";
+	public static final String AUTHOR = "Shinacho";
 	/**
 	 * 私のメールアドレスです.
 	 */
@@ -48,7 +48,7 @@ public enum Versions {
 	/**
 	 * 著作権の表記です.
 	 */
-	public static final String COPY_RIGHT = "Copyright (c) 2011-2023 " + AUTHOR + " All rights reserved.";
+	public static final String COPY_RIGHT = "Copyright (c) 2011- " + AUTHOR + " All rights reserved.";
 
 	private final String value;
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ import kinugasa.util.ArrayUtil;
  * @version 1.1.0 - 2013/02/19_00:49<br>
  * @version 1.1.2 - 2013/04/13_19:31<br>
  * @version 1.4.0 - 2013/04/28_23:40<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public abstract class DynamicStorage<T extends Nameable & Input>
 		extends Storage<T> implements Input {

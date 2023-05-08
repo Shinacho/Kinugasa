@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ package kinugasa.game.system;
 /**
  *
  * @vesion 1.0.0 - 2022/11/26_17:22:59<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public enum BattleResult {
 	NOT_YET,

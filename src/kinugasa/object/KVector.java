@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ import kinugasa.util.MathUtil;
  * @version 4.27.0-12/7/14_21:46.<br>
  * @version 4.27.5-12/7/19_15:51.<br>
  * @version 5.0.0 - 2013/01/14_16:23:07<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public class KVector implements Cloneable {
 

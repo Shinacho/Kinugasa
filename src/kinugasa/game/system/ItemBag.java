@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * キャラクタ一人のアイテムを定義するクラスです。
  *
  * @vesion 1.0.0 - 2022/11/16_11:59:31<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class ItemBag implements Cloneable, Iterable<Item> {
 

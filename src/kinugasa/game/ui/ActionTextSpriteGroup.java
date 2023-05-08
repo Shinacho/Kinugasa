@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import kinugasa.util.TimeCounter;
  * 要素は、追加されている順に並び替えらえます。もっとも上の選択肢の座標はコンストラクタで指定する必要があります。
  *
  * @vesion 1.0.0 - 2022/11/12_22:35:09<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class ActionTextSpriteGroup implements Drawable {
 

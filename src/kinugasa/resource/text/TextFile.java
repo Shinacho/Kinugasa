@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Dra.
+ * Copyright 2021 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import kinugasa.resource.OutputResult;
 /**
  *
  * @vesion 1.0.0 - 2021/11/23_6:35:59<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class TextFile implements Input<TextFile>, Output , Nameable, Iterable<String>{
 

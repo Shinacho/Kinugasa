@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import kinugasa.resource.sound.Sound;
  * エンカウントした際の、敵セット、障害物情報、乗っているチップの情報を持つクラスです。
  *
  * @vesion 1.0.0 - 2022/11/23_11:44:50<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class EncountInfo {
 

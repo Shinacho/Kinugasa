@@ -19,7 +19,7 @@ import kinugasa.resource.text.FileIOException;
  * <br>
  *
  * @version 1.0.0 - 2013/02/06_7:52:47<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 

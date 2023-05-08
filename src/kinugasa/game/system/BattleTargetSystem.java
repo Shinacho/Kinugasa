@@ -3,7 +3,7 @@ package kinugasa.game.system;
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import kinugasa.util.Random;
 /**
  *
  * @vesion 1.0.0 - 2022/12/01_19:16:01<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class BattleTargetSystem implements Drawable {
 

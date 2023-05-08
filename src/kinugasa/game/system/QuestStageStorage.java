@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2023 Dra.
+ * Copyright 2023 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import kinugasa.resource.text.XMLFileSupport;
 /**
  *
  * @vesion 1.0.0 - 2023/05/06_9:25:23<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class QuestStageStorage implements XMLFileSupport {
 

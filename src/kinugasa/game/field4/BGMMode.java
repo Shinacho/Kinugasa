@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package kinugasa.game.field4;
 /**
  * マップ遷移時のBGMの切替について定義します.
  * @vesion 1.0.0 - 2022/11/08_15:10:17<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public enum BGMMode {
 	/** すべてのBGMを停止して、マップに設定されたBGMを開始します. */

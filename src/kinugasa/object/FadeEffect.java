@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import kinugasa.graphics.GraphicsUtil;
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_19:55:37<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public class FadeEffect extends ScreenEffect {
 

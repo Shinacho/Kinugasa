@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ import java.util.RandomAccess;
  * @param <T> リストの型を指定します。<br>
  *
  * @version 1.0.0 - 2013/02/10_0:06:34<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public final class BufferedList<T> implements List<T>, Cloneable, Serializable, RandomAccess {
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package kinugasa.game.test.rpg;
 /**
  *
  * @vesion 1.0.0 - 2022/12/05_14:47:10<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class Test3 {
 

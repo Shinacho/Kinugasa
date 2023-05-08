@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ package kinugasa.object;
  *
  * @version 1.0.0 - 2012/07/14_16:58:06.<br>
  * @version 2.0.0 - 2013/01/11_17:10:31.<br>
- * @author Dra0211.<br>
+ * @author Shinacho.<br>
  */
 public abstract class Model implements Cloneable {
 

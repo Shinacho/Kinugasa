@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import kinugasa.resource.Nameable;
  * ì¬‚µ‚½NodeAccepter‚Í©“®“I‚ÉNodeAccepterStorage‚É’Ç‰Á‚³‚ê‚Ü‚·B<br>
  * <br>
  * @version 1.0.0 - 2013/04/29_12:30:52<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public abstract class NodeAccepter extends Model implements Nameable {
 

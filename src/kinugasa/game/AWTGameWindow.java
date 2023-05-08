@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Dra.
+ * Copyright 2021 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ import java.awt.image.BufferStrategy;
  * AWTを利用した、標準のゲームウインドウの実装です。
  *
  * @vesion 1.0.0 - 2021/08/17_14:20:58<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class AWTGameWindow extends Frame implements GameWindow {
 

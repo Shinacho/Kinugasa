@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 /**
  *
  * @vesion 1.0.0 - 2022/12/01_23:49:11<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 @Target(ElementType.METHOD)
 public @interface OneceTime {

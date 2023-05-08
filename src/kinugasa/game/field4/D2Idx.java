@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import kinugasa.resource.Nameable;
  * 2次元配列の座標をカプセル化するクラスです. これは、表示座標と区別するために使用されます。
  *
  * @vesion 1.0.0 - 2022/11/09_18:18:35<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class D2Idx implements Nameable, Cloneable {
 

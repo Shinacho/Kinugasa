@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import kinugasa.object.Statable;
  * <br>
  *
  * @version 1.0.0 - 2013/01/11_17:07:17.<br>
- * @author Dra0211.<br>
+ * @author Shinacho.<br>
  */
 public abstract class TimeCounter extends Model implements Statable {
 

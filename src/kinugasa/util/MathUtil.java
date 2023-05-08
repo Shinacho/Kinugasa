@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import kinugasa.game.system.GameSystem;
  * @version 4.0.0 - 2013/1/03_06:18<br>
  * @version 5.0.0 - 2013/01/11_17:25:19<br>
  * @version 5.1.0 - 2013/02/07_09:17<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public final class MathUtil {
 

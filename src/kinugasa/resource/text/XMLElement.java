@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ import kinugasa.resource.Nameable;
  * <br>
  *
  * @version 1.0.0 - 2013/03/15_7:07:44.<br>
- * @author dra0211 (
+ * @author Shinacho (
  * <a href="mailto:d0211@live.jp">d0211@live.jp</a>&nbsp;).<br>
  * <br>
  */

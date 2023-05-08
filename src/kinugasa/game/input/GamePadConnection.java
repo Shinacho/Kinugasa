@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2014 Dra.
+ * Copyright 2014 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ package kinugasa.game.input;
  * <br>
  *
  * @version 1.0.0 - 2014/09/20<br>
- * @author Dra<br>
+ * @author Shinacho<br>
  * <br>
  */
 public final class GamePadConnection{

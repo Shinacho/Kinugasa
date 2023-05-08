@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ import kinugasa.util.Random;
 /**
  *
  * @vesion 1.0.0 - 2022/11/21_21:39:55<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 

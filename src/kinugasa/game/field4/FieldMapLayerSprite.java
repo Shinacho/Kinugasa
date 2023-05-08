@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Dra.
+ * Copyright 2021 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ import kinugasa.resource.Disposable;
  * その場合、このレイヤーに使用するチップセットとその二次元配列データを用意する必要があります。データのインデックスは、[y][x]である点に注意してください。
  *
  * @vesion 1.0.0 - 2021/11/26_11:08:20<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 

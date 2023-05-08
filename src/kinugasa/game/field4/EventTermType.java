@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import kinugasa.game.system.Status;
  * ステータスやゲームシステムと密接に結びついたイベントの発生条件です。
  *
  * @vesion 1.0.0 - 2022/12/11_17:09:05<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public enum EventTermType {
 

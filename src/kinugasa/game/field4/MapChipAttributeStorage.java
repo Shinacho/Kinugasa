@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import kinugasa.resource.text.XMLFileSupport;
  * マップチップの属性の唯一の保管庫です。このクラスはシングルトンです。
  *
  * @vesion 1.0.0 - 2022/11/08_16:12:11<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class MapChipAttributeStorage extends Storage<MapChipAttribute> implements XMLFileSupport {
 

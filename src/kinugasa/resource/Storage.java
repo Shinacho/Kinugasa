@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ import kinugasa.game.system.GameSystem;
  * @version 1.1.0 - 2013/02/19_00:49<br>
  * @version 1.1.2 - 2013/04/13_19:31<br>
  * @version 2.0.0 - 2013/04/20_17:57<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public class Storage<T extends Nameable> implements Iterable<T> {
 

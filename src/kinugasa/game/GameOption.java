@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Dra.
+ * Copyright 2021 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ import kinugasa.game.ui.GameLauncher;
  * ゲーム起動時の画面サイズなどの設定です。ゲーム起動後にこのクラスを変更しても、反映されません。
  *
  * @vesion 1.0.0 - 2021/08/17_5:42:55<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class GameOption {
 

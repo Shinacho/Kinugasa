@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Dra.
+ * Copyright 2015 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@ import kinugasa.resource.TempFileStorage;
  * このクラスに設定した画像はループされ、描画時に自動的に移動されます。また、フィールドマップへの速度や角度の変更の影響を受けません。
  *
  * @version 1.0.0 - 2015/06/16<br>
- * @author Dra<br>
+ * @author Shinacho<br>
  * <br>
  */
 public class BeforeLayerSprite extends ImageSprite implements Disposable, Nameable {

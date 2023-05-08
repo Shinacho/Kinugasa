@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Dra.
+ * Copyright 2021 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ import kinugasa.resource.text.XMLFileSupport;
 /**
  *
  * @vesion 1.0.0 - 2021/11/24_8:08:29<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class FrameTimeEventManager implements XMLFileSupport {
 

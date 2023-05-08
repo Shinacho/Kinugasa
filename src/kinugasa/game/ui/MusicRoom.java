@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import kinugasa.resource.sound.SoundMap;
  * BGMの一覧を表示し、再生可能にする画面表示の実装です。アクションテキストスプライトグループを使用しています。
  *
  * @vesion 1.0.0 - 2022/11/13_0:36:02<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class MusicRoom extends ScrollSelectableMessageWindow {
 

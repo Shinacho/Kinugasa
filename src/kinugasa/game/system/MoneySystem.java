@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import kinugasa.resource.Storage;
  * マネーシステムは複数の種類の金銭を持てる、財布管理システムです。
  *
  * @vesion 1.0.0 - 2022/11/24_22:19:22<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public class MoneySystem extends Storage<Money> {
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Dra.
+ * Copyright 2022 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package kinugasa.game.field4;
  * フィールドマップを表示するカメラの追従設定です.
  *
  * @vesion 1.0.0 - 2022/11/08_16:32:06<br>
- * @author Dra211<br>
+ * @author Shinacho<br>
  */
 public enum CameraMode {
 	/**

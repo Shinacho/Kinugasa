@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Dra0211.
+ * Copyright 2013 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,7 +52,7 @@ import kinugasa.game.GameLog;
  * <br>
  *
  * @version 1.0.0 - 2013/01/12_21:50:14<br>
- * @author Dra0211<br>
+ * @author Shinacho<br>
  */
 public final class StdOutTracer {
 
@@ -280,7 +280,7 @@ public final class StdOutTracer {
 	 * <br>
 	 *
 	 * @version 1.0.0 - 2013/01/12_21:50:14<br>
-	 * @author Dra0211<br>
+	 * @author Shinacho<br>
 	 */
 	private static class StreamTextArea extends JTextArea {
 
@@ -322,7 +322,7 @@ public final class StdOutTracer {
 	 * <br>
 	 *
 	 * @version 1.0.0 - 2013/01/12_21:50:14<br>
-	 * @author Dra0211<br>
+	 * @author Shinacho<br>
 	 */
 	private static class VisualStream extends ByteArrayOutputStream {
 
