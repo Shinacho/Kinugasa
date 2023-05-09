@@ -69,11 +69,12 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	private Color border2 = Color.BLACK;
 	private Color inner1 = new Color(0, 0, 136);
 	private Color inner2 = new Color(44, 44, 196);
-	private FontModel font = FontModel.DEFAULT.clone();
+	private FontModel font;
 	private final static int BORDER_SIZE = 2;
 	private Color cColor = Color.WHITE;
 
 	public SimpleMessageWindowModel() {
+		font = FontModel.DEFAULT.clone();
 	}
 
 	public SimpleMessageWindowModel(String nextIcon) {
@@ -152,7 +153,7 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 
 		String visibleText = mw.getVisibleText();
 		String[] text = visibleText.contains(Text.getLineSep()) ? visibleText.split(Text.getLineSep()) : new String[]{visibleText};
-
+		g2.setFont(font.getFont());
 		for (String t : text) {
 			g2.drawString(t, x, y);
 			y += font.getFont().getSize2D() + BORDER_SIZE;

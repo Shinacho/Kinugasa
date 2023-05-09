@@ -24,10 +24,8 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
@@ -399,6 +397,11 @@ public class BookWindow extends BasicSprite {
 			sb.append("    ");
 			sb.append(b.getName()).append(Text.getLineSep());
 			j++;
+		}
+		getSelectedPC().updateAction();
+		if (!getSelectedPC().getEffectedStatus().get(Status.canMagicStatusName).equals(Status.canMagicStatusValue)) {
+			List<CmdAction> removeList = getSelectedPC().getActions(ActionType.MAGIC);
+			getSelectedPC().getActions().removeAll(removeList);
 		}
 		main.setText(sb.toString());
 		main.allText();

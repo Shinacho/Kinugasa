@@ -326,6 +326,7 @@ public class ItemWindow extends BasicSprite {
 						if (getSelectedPC().getEqipment().values().contains(i)) {
 							//‚·‚Å‚É‘•”õ‚µ‚Ä‚¢‚éŽž‚ÍŠO‚·
 							getSelectedPC().getEqipment().put(i.getEqipmentSlot(), null);
+							getSelectedPC().updateAction();
 							msg.setText(i.getName() + I18N.translate("REMOVE_EQUP"));
 							msg.allText();
 							group.show(msg);
@@ -333,6 +334,7 @@ public class ItemWindow extends BasicSprite {
 						} else if (getSelectedPC().canEqip(i)) {
 							//‘•”õ‚·‚é
 							getSelectedPC().addEqip(i);
+							getSelectedPC().updateAction();
 							msg.setText(i.getName() + I18N.translate("IS_EQIP"));
 							msg.allText();
 							group.show(msg);
@@ -734,6 +736,7 @@ public class ItemWindow extends BasicSprite {
 			sb.append(item.getName()).append(Text.getLineSep());
 			j++;
 		}
+		getSelectedPC().updateAction();
 		main.setText(sb.toString());
 		main.allText();
 		main.setVisible(true);

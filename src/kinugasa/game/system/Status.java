@@ -44,6 +44,8 @@ import kinugasa.resource.*;
  */
 public class Status implements Nameable {
 
+	public static String canMagicStatusName = "CAN_MAGIC";
+	public static String canMagicStatusValue = "1";
 	//名前
 	private String name;
 	//ステータス本体
@@ -234,6 +236,7 @@ public class Status implements Nameable {
 
 	public void updateAction() {
 		actions.clear();
+//		boolean magicUser = (getEffectedStatus().get(canMagicStatusName).getValue() + "").equals(canMagicStatusValue);
 		for (CmdAction a : ActionStorage.getInstance()) {
 			if (a.getType() == ActionType.OTHER) {
 				actions.add(a);
@@ -243,6 +246,13 @@ public class Status implements Nameable {
 				if (itemBag.contains(a.getName())) {
 					actions.add(a);
 					continue;
+				}
+			}
+			if (a.getType() == ActionType.MAGIC) {
+				if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
+//					if (magicUser) {
+					actions.add(a);
+//					}
 				}
 			}
 			if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {

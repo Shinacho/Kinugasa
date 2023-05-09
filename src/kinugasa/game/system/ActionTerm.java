@@ -102,6 +102,10 @@ public class ActionTerm implements Nameable {
 					}
 				}
 				return false;
+			case STATUS_IS:
+				String key = value.split(",")[0];
+				String val = value.split(",")[1];
+				return (tgt.getUser().getStatus().getEffectedStatus().get(key).getValue() + "").equals(val);
 			default:
 				throw new GameSystemException("undefined termtype : " + type);
 		}

@@ -619,6 +619,14 @@ public enum FieldEventType {
 			party.get(i).addEqip(item);
 			return UserOperationRequire.GET_ITEAM;
 		}
+	},
+	UPDATE_ACTION_OF_ALL_PC {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
+			GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction());
+			return UserOperationRequire.CONTINUE;
+		}
+
 	};
 
 	abstract UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException;
