@@ -150,27 +150,30 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 
 		g2.setColor(cColor);
 		x += BORDER_SIZE * 5;
-		y += BORDER_SIZE * 5 + font.getFont().getSize2D();
+		float size = font == null || font.getFont() == null ? g2.getFont().getSize() : font.getFont().getSize();
+		y += BORDER_SIZE * 5 + size;
 
 		String visibleText = mw.getVisibleText();
 		String[] text = visibleText.contains(Text.getLineSep()) ? visibleText.split(Text.getLineSep()) : new String[]{visibleText};
-		g2.setFont(font.getFont());
+		if (font != null) {
+			g2.setFont(font.getFont());
+		}
 		for (String t : text) {
 			g2.drawString(t, x, y);
-			y += font.getFont().getSize2D() + BORDER_SIZE * 2;
+			y += size + BORDER_SIZE * 2;
 		}
-		y += font.getFont().getSize2D();
+		y += size;
 		// オプションと選択の表示
 		if (mw.isAllVisible()) {
 			if (mw.getText() instanceof Choice) {
-				y -= font.getFont().getSize2D() / 2;
+				y -= size / 2;
 				for (int i = 0; i < mw.getChoice().getOptions().size(); i++) {
 					if (i == mw.getSelect()) {
 						g2.drawString(selectIcon, x, y);
 					}
 					String optionVal = mw.getChoice().getOptions().get(i).getText();
-					g2.drawString(optionVal, x + (font.getFont().getSize2D() * 2), y);
-					y += BORDER_SIZE * 3 + font.getFont().getSize2D();
+					g2.drawString(optionVal, x + (size * 2), y);
+					y += BORDER_SIZE * 3 + size;
 				}
 			}
 		}

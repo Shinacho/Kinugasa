@@ -50,6 +50,7 @@ public class BattleMessageWindowSystem implements Drawable {
 		return INSTANCE;
 	}
 
+	
 	//コマンドを表示するメッセージウインドウ
 	private BattleCommandMessageWindow commandWindow;
 	//行動を表示するメッセージウインドウ

@@ -66,7 +66,7 @@ public class Status implements Nameable {
 	//装備品
 	private final HashMap<ItemEqipmentSlot, Item> eqipment = new HashMap<>();
 	//取れる行動
-	private final List<CmdAction> actions = new ArrayList<>();
+	private List<CmdAction> actions = new ArrayList<>();
 	//前衛・後衛
 	private PartyLocation partyLocation = PartyLocation.FRONT;
 	//生存状態
@@ -236,7 +236,7 @@ public class Status implements Nameable {
 
 	public void updateAction() {
 		actions.clear();
-//		boolean magicUser = (getEffectedStatus().get(canMagicStatusName).getValue() + "").equals(canMagicStatusValue);
+//		boolean magicUser = (getEffectedStatus().get(canMagicStatusName).getValue() + "").replaceAll(".0", "").equals(canMagicStatusValue);
 		for (CmdAction a : ActionStorage.getInstance()) {
 			if (a.getType() == ActionType.OTHER) {
 				actions.add(a);
@@ -259,6 +259,7 @@ public class Status implements Nameable {
 				actions.add(a);
 			}
 		}
+		actions = actions.stream().distinct().collect(Collectors.toList());
 
 	}
 
