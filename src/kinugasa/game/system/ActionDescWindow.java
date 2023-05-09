@@ -30,6 +30,7 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
+import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 
 /**
@@ -45,7 +46,7 @@ public class ActionDescWindow extends PCStatusWindow {
 	public ActionDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new ScrollSelectableMessageWindow(x, y, w, h, line, false);
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, SimpleMessageWindowModel.maxLine, false);
 		mw.setLoop(true);
 		updateText();
 	}
@@ -82,7 +83,7 @@ public class ActionDescWindow extends PCStatusWindow {
 		return pcIdx;
 	}
 
-	private static final int MAX_LINE = StatusDescWindow.line - 1;
+	private static final int MAX_LINE = SimpleMessageWindowModel.maxLine - 1;
 
 	private void updateText() {
 		//SSMWÇ…ï∂éöóÒÇê›íË

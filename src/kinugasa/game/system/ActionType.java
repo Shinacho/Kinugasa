@@ -32,7 +32,6 @@ import kinugasa.game.I18N;
  */
 public enum ActionType {
 	ATTACK,
-	SPECIAL_ATTACK,
 	MAGIC,
 	ITEM_USE,
 	OTHER,;

@@ -337,41 +337,6 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 
 		}
 
-		//特殊攻撃のパース
-		actionType = ActionType.SPECIAL_ATTACK;
-		for (XMLElement e : root.getElement("spAttack")) {
-			String name = e.getAttributes().get("name").getValue();
-			String desc = e.getAttributes().get("desc").getValue();
-			CmdAction a = new CmdAction(actionType, name, desc);
-			if (e.hasAttribute("waitTime")) {
-				a.setWaitTime(e.getAttributes().get("waitTime").getIntValue());
-			}
-			if (e.hasAttribute("sound")) {
-				a.setSound(soundMap.get(e.getAttributes().get("sound").getValue()));
-			}
-			if (e.hasAttribute("term")) {
-				for (String v : e.getAttributes().get("term").safeSplit(",")) {
-					a.addTerm(ActionTermStorage.getInstance().get(v));
-				}
-			}
-			if (e.hasAttribute("area")) {
-				a.setArea(e.getAttributes().get("area").getIntValue());
-			}
-			if (e.hasAttribute("sort")) {
-				a.setSort(e.getAttributes().get("sort").getIntValue());
-			}
-			if (e.hasAttribute("spellTime")) {
-				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
-			}
-			//イベント
-			for (XMLElement ee : e.getElement("battleEvent")) {
-				a.addBattleEvent(parseEvent(ee));
-			}
-			for (XMLElement ee : e.getElement("fieldEvent")) {
-				a.addFieldEvent(parseEvent(ee));
-			}
-			getInstance().add(a);
-		}
 		//魔法のパース
 		actionType = ActionType.MAGIC;
 		for (XMLElement e : root.getElement("magic")) {

@@ -40,6 +40,7 @@ import kinugasa.util.TimeCounter;
  */
 public class SimpleMessageWindowModel extends MessageWindowModel {
 
+	public static int maxLine = 20;
 	private String nextIcon = ">";
 	private boolean iconVisible = false;
 
@@ -156,7 +157,7 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 		g2.setFont(font.getFont());
 		for (String t : text) {
 			g2.drawString(t, x, y);
-			y += font.getFont().getSize2D() + BORDER_SIZE;
+			y += font.getFont().getSize2D() + BORDER_SIZE * 2;
 		}
 		y += font.getFont().getSize2D();
 		// オプションと選択の表示
@@ -169,7 +170,7 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 					}
 					String optionVal = mw.getChoice().getOptions().get(i).getText();
 					g2.drawString(optionVal, x + (font.getFont().getSize2D() * 2), y);
-					y += BORDER_SIZE * 2 + font.getFont().getSize2D();
+					y += BORDER_SIZE * 3 + font.getFont().getSize2D();
 				}
 			}
 		}

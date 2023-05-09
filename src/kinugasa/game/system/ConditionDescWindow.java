@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import static kinugasa.game.system.PCStatusWindow.line;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
+import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 
 /**
@@ -46,7 +46,7 @@ public class ConditionDescWindow extends PCStatusWindow {
 	public ConditionDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new ScrollSelectableMessageWindow(x, y, w, h, line, false);
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, SimpleMessageWindowModel.maxLine, false);
 		mw.setLoop(true);
 		updateText();
 	}

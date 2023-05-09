@@ -24,6 +24,7 @@
 package kinugasa.game.system;
 
 import kinugasa.game.ui.MessageWindow;
+import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.object.BasicSprite;
 
 /**
@@ -32,8 +33,6 @@ import kinugasa.object.BasicSprite;
  * @author Shinacho<br>
  */
 public abstract class PCStatusWindow extends BasicSprite {
-
-	public static int line = 20;
 
 	public PCStatusWindow(int x, int y, int w, int h) {
 		super(x, y, w, h);
@@ -46,7 +45,7 @@ public abstract class PCStatusWindow extends BasicSprite {
 	public abstract void prevPc();
 
 	public abstract int getPcIdx();
-	
+
 	public abstract void setPcIdx(int pcIdx);
 
 	public abstract void next();

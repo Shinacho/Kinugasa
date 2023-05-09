@@ -23,7 +23,6 @@
  */
 package kinugasa.game.system;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -149,7 +148,7 @@ public class BattleCommandMessageWindow extends MessageWindow implements Command
 			} else {
 				text += "     ";
 			}
-			if (type == ActionType.MAGIC || type == ActionType.SPECIAL_ATTACK) {
+			if (type == ActionType.MAGIC) {
 				String status = "";
 				for (String s : BattleConfig.getMagicVisibleStatusKey()) {
 					Map<StatusKey, Integer> map = b.selfBattleDirectDamage();

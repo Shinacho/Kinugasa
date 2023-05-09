@@ -24,7 +24,7 @@
 package kinugasa.game.ui;
 
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.List;
 import kinugasa.game.GraphicsContext;
@@ -137,7 +137,9 @@ public class ActionTextSpriteGroup implements Drawable {
 
 	@Override
 	public void draw(GraphicsContext g) {
-		list.forEach(t -> t.draw(g));
+		Graphics2D g2 = g.create();
+		g2.setFont(FontModel.DEFAULT.clone().getFont());
+		list.forEach(t -> t.draw(g2));
 	}
 
 }
