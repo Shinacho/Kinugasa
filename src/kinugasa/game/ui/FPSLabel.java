@@ -53,7 +53,7 @@ public class FPSLabel extends BasicSprite {
 		}
 		Graphics2D g2 = g.create();
 		g2.setColor(Color.CYAN);
-		g2.setFont(FontModel.DEFAULT.clone().getFont());
+		g2.setFont(FontModel.DEFAULT.clone().setFontSize(12).getFont());
 		g2.drawString(gtm.getFPSStr(), (int) getX(), (int) getY());
 		g2.dispose();
 	}
