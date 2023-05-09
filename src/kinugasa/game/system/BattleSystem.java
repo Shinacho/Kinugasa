@@ -319,6 +319,9 @@ public class BattleSystem implements Drawable {
 		}
 		//このターンのバトルコマンドを作成
 		List<BattleCharacter> list = getAllChara();
+		if (SpeedCalcModelStorage.getInstance().getCurrent() == null) {
+			throw new GameSystemException("speed calc model is null");
+		}
 		SpeedCalcModelStorage.getInstance().getCurrent().sort(list);
 
 		//行動順にバトルコマンドを格納

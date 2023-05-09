@@ -258,6 +258,9 @@ public class CachedSound implements Sound {
 
 	@Override
 	public void dispose() {
+		if (getStatus() == InputStatus.NOT_LOADED) {
+			return;
+		}
 		stop();
 		if (clip != null) {
 			clip.flush();

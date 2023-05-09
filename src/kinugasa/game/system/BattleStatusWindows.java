@@ -53,7 +53,7 @@ public class BattleStatusWindows extends BasicSprite {
 		return mw;
 	}
 
-	public static float h = 65;
+	public static float h = 85;
 
 	public void init() {
 		float x = 3;
