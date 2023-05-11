@@ -84,6 +84,7 @@ public class BattleLogic extends GameLogic {
 
 	@Override
 	public void update(GameTimeManager gtm, InputState is) {
+		/*
 		battleSystem.update();
 
 		//‹Ù‹}’Eoƒ{ƒ^ƒ“
@@ -332,7 +333,7 @@ public class BattleLogic extends GameLogic {
 			default:
 				throw new AssertionError("undefined Test2.BattleLogic s stage");
 		}
-
+*/
 	}
 
 	@Override

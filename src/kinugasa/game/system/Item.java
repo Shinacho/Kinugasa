@@ -54,7 +54,7 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 	private List<ItemEqipTerm> eqipTerm = new ArrayList<>();
 
 	public Item(String name, String desc) {
-		super(ActionType.ITEM_USE, name, desc);
+		super(ActionType.ITEM, name, desc);
 	}
 
 	public Item setEqStatus(StatusValueSet eqStatus) {

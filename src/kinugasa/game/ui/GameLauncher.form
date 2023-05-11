@@ -153,6 +153,7 @@
     </Container>
     <Component class="javax.swing.JCheckBox" name="lockFileDelete">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="&#x30ed;&#x30c3;&#x30af;&#x30d5;&#x30a1;&#x30a4;&#x30eb;&#x3092;&#x524a;&#x9664;&#x3059;&#x308b;&#xff08;&#x30b2;&#x30fc;&#x30e0;&#x304c;&#x6b63;&#x5e38;&#x7d42;&#x4e86;&#x3057;&#x306a;&#x304b;&#x3063;&#x305f;&#x5834;&#x5408;&#x306b;&#x9078;&#x629e;&#x3057;&#x3066;&#x304f;&#x3060;&#x3055;&#x3044;&#xff09;"/>
         <Property name="toolTipText" type="java.lang.String" value="OFF&#x306b;&#x3059;&#x308b;&#x3068;&#x3001;&#x30b2;&#x30fc;&#x30e0;&#x3092;&#x591a;&#x91cd;&#x8d77;&#x52d5;&#x3067;&#x304d;&#x306a;&#x304f;&#x306a;&#x308a;&#x307e;&#x3059;&#x3002;&#x30b2;&#x30fc;&#x30e0;&#x304c;&#x6b63;&#x5e38;&#x306b;&#x7d42;&#x4e86;&#x3057;&#x306a;&#x304b;&#x3063;&#x305f;&#x5834;&#x5408;&#x306f;&#x30ed;&#x30c3;&#x30af;&#x30d5;&#x30a1;&#x30a4;&#x30eb;&#x304c;&#x6b8b;&#x3063;&#x3066;&#x3044;&#x308b;&#x305f;&#x3081;&#x3001;ON&#x306b;&#x3057;&#x3066;&#x304f;&#x3060;&#x3055;&#x3044;&#x3002;"/>
       </Properties>

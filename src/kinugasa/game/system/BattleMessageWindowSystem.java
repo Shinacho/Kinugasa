@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Shinacho.
+ * Copyright 2023 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,242 +23,418 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.I18N;
 import static kinugasa.game.system.BattleConfig.messageWindowY;
+import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.Drawable;
-import kinugasa.util.FrameTimeCounter;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/24_21:58:35<br>
+ * @vesion 1.0.0 - 2023/05/09_21:21:01<br>
  * @author Shinacho<br>
  */
 public class BattleMessageWindowSystem implements Drawable {
 
+	private BattleMessageWindowSystem() {
+	}
+
 	private static final BattleMessageWindowSystem INSTANCE = new BattleMessageWindowSystem();
 
-	private BattleMessageWindowSystem() {
-
-	}
-
-	static BattleMessageWindowSystem getInstance() {
+	public static BattleMessageWindowSystem getInstance() {
 		return INSTANCE;
 	}
+	//ステータス（上部）ペイン
+	private BattleStatusWindows statusW;
+	//コマンドウインドウ本体
+	private BattleCommandMessageWindow cmdW;
+	//ターゲット名表示ウインドウ(7)
+	private ScrollSelectableMessageWindow tgtW;
+	//アイテムChoiceUse(Choice
+	private MessageWindow itemChoiceUseW;
+	//アイテムコミット結果表示
+	private MessageWindow itemCommitResultW;
+	//移動後コマンドウインドウ
+	private AfterMoveActionMessageWindow afterMoveW;
+	//アクションリザルトウインドウ
+	private MessageWindow actionResultW;
+	//汎用INFOは別のウインドウと共存できる
+	private MessageWindow infoW;
+	//ステータス詳細ウインドウ
+	private PCStatusWindow statusDescW;
+	private int statusDescWPage = 0;
+	//アイテム詳細ウインドウ
+	private MessageWindow itemDescW;
+	//バトルリザルト
+	private MessageWindow battleResultW;
 
-	
-	//コマンドを表示するメッセージウインドウ
-	private BattleCommandMessageWindow commandWindow;
-	//行動を表示するメッセージウインドウ
-	private MessageWindow actionWindow;
-	private FrameTimeCounter actionWindowVisibleTC;
-	//行動できないなどの警告メッセージを出すウインドウ
-	private MessageWindow infoWindow;
-	//攻撃可能とかの小情報を出すウインドウ
-	private MessageWindow tooltipWindow;
-	//INFOの表示時間のマスタ
-	private int infoWindowVisibleTime = 60;
-	//INFOの表示時間カウンタ
-	private FrameTimeCounter infoWindowVisibleTC;
-	//ステータスペイン
-	private BattleStatusWindows statusWindows;
-	//移動後行動用のウインドウ
-	private AfterMoveActionMessageWindow afterMoveCommandWindow;
-
-	;
-
-	void init(List<Status> statusList) {
+	void init() {
+		List<Status> statusList = GameSystem.getInstance().getPartyStatus();
 		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - 6;
 		float h = (float) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3.66f);
-		commandWindow = new BattleCommandMessageWindow(3, messageWindowY, w, h);
-		afterMoveCommandWindow = new AfterMoveActionMessageWindow(3, messageWindowY, w, h);
-		actionWindow = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
-		infoWindow = new MessageWindow(48, messageWindowY, w - 48 * 2, h, new SimpleMessageWindowModel().setNextIcon(""));
-		tooltipWindow = new MessageWindow(48 * 4, messageWindowY, w - 48 * 2, h, new SimpleMessageWindowModel().setNextIcon(""));
+		cmdW = new BattleCommandMessageWindow(3, (int) messageWindowY, (int) w, (int) h);
+		afterMoveW = new AfterMoveActionMessageWindow(3, (int) messageWindowY, (int) w, (int) h);
+		tgtW = new ScrollSelectableMessageWindow(3, (int) messageWindowY, (int) w, (int) h, 7, false);
+		infoW = new MessageWindow(48, messageWindowY, w - 48 * 2, h, new SimpleMessageWindowModel().setNextIcon(""));
+		statusW = new BattleStatusWindows(statusList);
+		itemChoiceUseW = new MessageWindow(3, messageWindowY, w, h);
+		itemCommitResultW = new MessageWindow(3, messageWindowY, w, h);
+		actionResultW = new MessageWindow(3, messageWindowY, w, h);
+		statusDescW = new StatusDescWindow(
+				24 + 8,
+				24 + 8,
+				(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
+				(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+				GameSystem.getInstance().getPartyStatus()
+		);
+		itemDescW = new MessageWindow(
+				24 + 8,
+				24 + 8,
+				(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
+				(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32)
+		);
+		battleResultW = new MessageWindow(
+				24 + 8,
+				24 + 8,
+				(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
+				(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32)
+		);
+		statusDescWPage = 0;
 
-		statusWindows = new BattleStatusWindows(statusList);
-		statusWindows.setVisible(true);
-		commandWindow.setVisible(false);
-		afterMoveCommandWindow.setVisible(false);
-		infoWindow.setVisible(false);
-		actionWindow.setVisible(true);
-		tooltipWindow.setVisible(false);
+		setVisible(
+				StatusVisible.ON,
+				Mode.ACTION,
+				InfoVisible.OFF);
 
 	}
 
-	void setAfterMoveCommand(List<CmdAction> list) {
-		afterMoveCommandWindow.setActions(list);
-		afterMoveCommandWindow.allText();
-		afterMoveCommandWindow.setVisible(true);
+	void statusDescWindowNextPage() {
+		statusDescWPage++;
+		if (statusDescWPage >= 5) {
+			statusDescWPage = 0;
+		}
+		switch (statusDescWPage) {
+			case 0:
+				statusDescW = new StatusDescWindow(
+						24 + 8,
+						24 + 8,
+						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						GameSystem.getInstance().getPartyStatus()
+				);
+				break;
+			case 1:
+				statusDescW = new AttrDescWindow(
+						24 + 8,
+						24 + 8,
+						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						GameSystem.getInstance().getPartyStatus()
+				);
+
+			case 2:
+				statusDescW = new EqipItemWindow(
+						24 + 8,
+						24 + 8,
+						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						GameSystem.getInstance().getPartyStatus()
+				);
+
+				break;
+			case 3:
+				statusDescW = new ActionDescWindow(
+						24 + 8,
+						24 + 8,
+						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						GameSystem.getInstance().getPartyStatus()
+				);
+				break;
+			case 4:
+				statusDescW = new ConditionDescWindow(
+						24 + 8,
+						24 + 8,
+						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						GameSystem.getInstance().getPartyStatus()
+				);
+				break;
+			default:
+				throw new AssertionError();
+		}
 	}
 
-	void setActionMessage(String msg, int actionTime) {
-		actionWindowVisibleTC = new FrameTimeCounter(actionTime);
-		actionWindow.setText(new Text(msg.replaceAll("\\r\\n", Text.getLineSep())));
-		actionWindow.setVisible(true);
-		actionWindow.allText();
+	void statusDescWindowNextSelect() {
+		switch (statusDescWPage) {
+			case 0:
+			case 2:
+				break;
+			case 1:
+			case 3:
+			case 4:
+				statusDescW.next();
+				break;
+		}
 	}
 
-	void setInfoMessage(String msg) {
-		infoWindowVisibleTC = new FrameTimeCounter(infoWindowVisibleTime);
-		infoWindow.setText(new Text(msg.replaceAll("\\r\\n", Text.getLineSep())));
-		infoWindow.allText();
-		infoWindow.setVisible(true);
+	void statusDescWindowPrevSelect() {
+		switch (statusDescWPage) {
+			case 0:
+			case 2:
+				break;
+			case 1:
+			case 3:
+			case 4:
+				statusDescW.prev();
+				break;
+		}
 	}
 
-	void setTolltipMessage(String text) {
-		tooltipWindow.setText(new Text(text));
-		tooltipWindow.setVisible(true);
-		tooltipWindow.allText();
+	void saveVisible() {
+		prevSv = sv;
+		prevMode = mode;
+		prevIv = iv;
 	}
 
-	boolean isVisibleCommand() {
-		return commandWindow.isVisible();
+	void setVisibleFromSave() {
+		setVisible(prevSv, prevMode, prevIv);
 	}
 
-	boolean isVisibleAfterMoveCommand() {
-		return afterMoveCommandWindow.isVisible();
+	enum Mode {
+		TGT_SELECT,
+		CMD_SELECT,
+		ITEM_USE_SELECT,
+		ITEM_COMMIT,
+		AFTER_MOVE,
+		ACTION,
+		NOTHING,
+		SHOW_STATUS_DESC,
+		SHOW_ITEM_DESC,
+		BATTLE_RESULT,
 	}
 
-	boolean isVisibleActionMessage() {
-		return actionWindow.isVisible();
+	enum StatusVisible {
+		ON,
+		OFF
 	}
 
-	boolean isVisibleInfoMessage() {
-		return infoWindow.isVisible();
+	enum InfoVisible {
+		ON,
+		OFF
+	}
+	private Mode mode, prevMode;
+	private StatusVisible sv, prevSv;
+	private InfoVisible iv, prevIv;
+
+	void setStatusDescPCIDX(int i) {
+		statusDescW.setPcIdx(i);
 	}
 
-	boolean isVisibleTolltipMessage() {
-		return tooltipWindow.isVisible();
+	void setVisible(StatusVisible sv, Mode m, InfoVisible iv) {
+		this.sv = sv;
+		this.mode = m;
+		this.iv = iv;
+		statusW.setVisible(sv == StatusVisible.ON);
+		infoW.setVisible(iv == InfoVisible.ON);
+		cmdW.setVisible(false);
+		tgtW.setVisible(false);
+		afterMoveW.setVisible(false);
+		itemChoiceUseW.setVisible(false);
+		itemCommitResultW.setVisible(false);
+		actionResultW.setVisible(false);
+		statusDescW.setVisible(false);
+		itemDescW.setVisible(false);
+		battleResultW.setVisible(false);
+		switch (m) {
+			case NOTHING:
+				break;
+			case CMD_SELECT:
+				cmdW.setVisible(true);
+				break;
+			case TGT_SELECT:
+				tgtW.setVisible(true);
+				break;
+			case AFTER_MOVE:
+				afterMoveW.setVisible(true);
+				break;
+			case ITEM_USE_SELECT:
+				itemChoiceUseW.setVisible(true);
+				break;
+			case ITEM_COMMIT:
+				itemCommitResultW.setVisible(true);
+				break;
+			case ACTION:
+				actionResultW.setVisible(true);
+				break;
+			case SHOW_STATUS_DESC:
+				statusDescW.setVisible(true);
+				break;
+			case SHOW_ITEM_DESC:
+				itemDescW.setVisible(true);
+				break;
+			case BATTLE_RESULT:
+				battleResultW.setVisible(true);
+			default:
+				throw new AssertionError();
+		}
 	}
 
-	public void closeCommandWindow() {
-		commandWindow.clearText();
-		commandWindow.setVisible(false);
+	MessageWindow getActionResultW() {
+		return actionResultW;
 	}
 
-	public void closeActionWindow() {
-		actionWindow.clearText();
-		actionWindow.setVisible(false);
-		actionWindowVisibleTC = null;
+	BattleCommandMessageWindow getCmdW() {
+		return cmdW;
 	}
 
-	public void closeInfoWindow() {
-		infoWindow.clearText();
-		infoWindow.setVisible(false);
-		infoWindowVisibleTC = null;
+	ScrollSelectableMessageWindow getTgtW() {
+		return tgtW;
 	}
 
-	public void closeTooltipWindow() {
-		tooltipWindow.clearText();
-		tooltipWindow.setVisible(false);
+	MessageWindow getItemChoiceUseW() {
+		return itemChoiceUseW;
 	}
 
-	public void closeStatusWindow() {
-		statusWindows.setVisible(false);
+	MessageWindow getItemCommitResultW() {
+		return itemCommitResultW;
 	}
 
-	public void closeAfterMoveCommandWindow() {
-		afterMoveCommandWindow.clearText();
-		afterMoveCommandWindow.setVisible(false);
+	BattleStatusWindows getStatusW() {
+		return statusW;
+	}
+
+	AfterMoveActionMessageWindow getAfterMoveW() {
+		return afterMoveW;
+	}
+
+	PCStatusWindow getStatusDescW() {
+		return statusDescW;
+	}
+
+	MessageWindow getInfoW() {
+		return infoW;
+	}
+
+	MessageWindow getBattleResultW() {
+		return battleResultW;
+	}
+
+	MessageWindow getItemDescW() {
+		return itemDescW;
+	}
+
+	int getStatusDescWPage() {
+		return statusDescWPage;
+	}
+	public static final int ITEM_CHOICE_USE_CHECK = 0;
+	public static final int ITEM_CHOICE_USE_USE = 1;
+	public static final int ITEM_CHOICE_USE_EQIP = 2;
+	public static final int ITEM_CHOICE_USE_PASS = 3;
+	public static final int ITEM_CHOICE_USE_THROW = 4;
+	private int itemChoiceUseSelected = -1;
+
+	void openItemChoiceUse() {
+		if (!(cmdW.getSelectedCmd() instanceof Item)) {
+			throw new GameSystemException("requested open item choice use window, but selected action is not item");
+		}
+		Item i = (Item) cmdW.getSelectedCmd();
+		List<Text> options = new ArrayList<>();
+		options.add(new Text(I18N.translate("CHECK")));
+		options.add(new Text(I18N.translate("USE")));
+		options.add(new Text(I18N.translate("EQIP")));
+		options.add(new Text(I18N.translate("PASS")));
+		options.add(new Text(I18N.translate("THROW")));
+		itemChoiceUseW.setText(new Choice(options, "BATTLE_MW_SYSTEM_IUC", i.getName() + I18N.translate("OF")));
+		setVisible(StatusVisible.ON, mode.ITEM_USE_SELECT, InfoVisible.ON);
+	}
+
+	void itemChoiceUseNextSelect() {
+		if (mode != Mode.ITEM_USE_SELECT) {
+			throw new GameSystemException("item choice use select, but mode is not item choice use");
+		}
+		itemChoiceUseW.nextSelect();
+	}
+
+	void itemChoiceUsePrevSelect() {
+		if (mode != Mode.ITEM_USE_SELECT) {
+			throw new GameSystemException("item choice use select, but mode is not item choice use");
+		}
+		itemChoiceUseW.prevSelect();
+	}
+
+	int itemChoiceUseCommit() {
+		if (mode != Mode.ITEM_USE_SELECT) {
+			throw new GameSystemException("item choice use select, but mode is not item choice use");
+		}
+		return itemChoiceUseSelected = itemChoiceUseW.getSelect();
 	}
 
 	void update() {
-		if (closeAll) {
-			return;
+		if (statusW.isVisible()) {
+			statusW.update();
 		}
-		//infoウインドウの表示時間判定
-		if (infoWindowVisibleTC != null) {
-			//info表示中
-			infoWindow.update();
-			if (infoWindowVisibleTC.isReaching()) {
-				//表示終了
-				closeInfoWindow();
-			}
+		//
+		if (cmdW.isVisible()) {
+			cmdW.update();
 		}
-		if (actionWindowVisibleTC != null) {
-			//action表示中
-			actionWindow.update();
-			if (actionWindowVisibleTC.isReaching()) {
-				//表示終了
-				closeActionWindow();
-			}
+		//
+		if (afterMoveW.isVisible()) {
+			afterMoveW.update();
 		}
-
-		//コマンドウインドウの処理
-		//内容の変更はBattleSystemから実行される
-		commandWindow.update();
-
-		//ステータスウインドウの処理
-		//内容は自動的に変更される
-		statusWindows.update();
-
-		//ツールチップウインドウの更新
-		tooltipWindow.update();
-
-		afterMoveCommandWindow.update();
-
+		if (actionResultW.isVisible()) {
+			actionResultW.update();
+		}
+		if (tgtW.isVisible()) {
+			tgtW.update();
+		}
+		//
+		if (itemChoiceUseW.isVisible()) {
+			itemChoiceUseW.update();
+		}
+		if (itemCommitResultW.isVisible()) {
+			itemCommitResultW.update();
+		}
+		//
+		if (infoW.isVisible()) {
+			infoW.update();
+		}
+		if (statusDescW.isVisible()) {
+			statusDescW.update();
+		}
+		if (itemDescW.isVisible()) {
+			itemDescW.update();
+		}
+		if (battleResultW.isVisible()) {
+			battleResultW.update();
+		}
 	}
 
 	@Override
 	public void draw(GraphicsContext g) {
-		if (closeAll) {
-			return;
-		}
-		statusWindows.draw(g);
-		commandWindow.draw(g);
-		afterMoveCommandWindow.draw(g);
-		actionWindow.draw(g);
-		infoWindow.draw(g);
-		tooltipWindow.draw(g);
-	}
-
-	public void setInfoWindowVisibleTime(int infoWindowVisibleTime) {
-		this.infoWindowVisibleTime = infoWindowVisibleTime;
-	}
-
-	public BattleCommandMessageWindow getCommandWindow() {
-		return commandWindow;
-	}
-
-	MessageWindow getActionWindow() {
-		return actionWindow;
-	}
-
-	MessageWindow getInfoWindow() {
-		return infoWindow;
-	}
-
-	MessageWindow getTooltipWindow() {
-		return tooltipWindow;
-	}
-
-	BattleStatusWindows getStatusWindows() {
-		return statusWindows;
-	}
-
-	public AfterMoveActionMessageWindow getAfterMoveCommandWindow() {
-		return afterMoveCommandWindow;
-	}
-
-	//一時的にすべてのウインドウをクローズする。
-	private boolean closeAll = false;
-
-	public void closeAll() {
-		closeAll = true;
-	}
-
-	//一時的にクローズしたウインドウをオープンする
-	public void reOpenAll() {
-		closeAll = false;
-	}
-
-	public void switchVisible() {
-		closeAll = !closeAll;
+		statusW.draw(g);
+		//
+		cmdW.draw(g);
+		//
+		afterMoveW.draw(g);
+		actionResultW.draw(g);
+		tgtW.draw(g);
+		//
+		itemChoiceUseW.draw(g);
+		itemCommitResultW.draw(g);
+		//
+		infoW.draw(g);
+		statusDescW.draw(g);
+		itemDescW.draw(g);
+		//
+		battleResultW.draw(g);
 	}
 
 }

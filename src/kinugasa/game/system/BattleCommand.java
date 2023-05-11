@@ -55,6 +55,7 @@ public class BattleCommand {
 	private boolean stop = false;
 	private boolean confu = false;
 	//ユーザオペレーション要否フラグ
+	//注意：PCでもユーザオペレーション不要という場合がある
 	private boolean userOperation = false;
 
 	//詠唱完了イベントのフラグ

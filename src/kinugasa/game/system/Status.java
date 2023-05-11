@@ -229,20 +229,20 @@ public class Status implements Nameable {
 
 	void updateItemAction() {
 		//持っているアイテム使用アクションをいったんすべて消して、ITEMBAGから再導入する
-		List<CmdAction> removeList = getActions().stream().filter(p -> p.getType() == ActionType.ITEM_USE).collect(Collectors.toList());
+		List<CmdAction> removeList = getActions().stream().filter(p -> p.getType() == ActionType.ITEM).collect(Collectors.toList());
 		getActions().removeAll(removeList);
 		getActions().addAll(getItemBag().getItems());
+		actions = actions.stream().distinct().collect(Collectors.toList());
 	}
 
 	public void updateAction() {
 		actions.clear();
-//		boolean magicUser = (getEffectedStatus().get(canMagicStatusName).getValue() + "").replaceAll(".0", "").equals(canMagicStatusValue);
 		for (CmdAction a : ActionStorage.getInstance()) {
 			if (a.getType() == ActionType.OTHER) {
 				actions.add(a);
 				continue;
 			}
-			if (a.getType() == ActionType.ITEM_USE) {
+			if (a.getType() == ActionType.ITEM) {
 				if (itemBag.contains(a.getName())) {
 					actions.add(a);
 					continue;
@@ -250,9 +250,8 @@ public class Status implements Nameable {
 			}
 			if (a.getType() == ActionType.MAGIC) {
 				if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
-//					if (magicUser) {
+
 					actions.add(a);
-//					}
 				}
 			}
 			if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
@@ -298,6 +297,7 @@ public class Status implements Nameable {
 		return false;
 	}
 
+	@Deprecated
 	public boolean isEqip(ItemEqipmentSlot slot) {
 		return eqipment.get(slot) != null;
 	}

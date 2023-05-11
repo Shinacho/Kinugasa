@@ -30,5 +30,5 @@ package kinugasa.game.system;
  */
 public interface CommandWindow {
 
-	public CmdAction getSelected();
+	public CmdAction getSelectedCmd();
 }

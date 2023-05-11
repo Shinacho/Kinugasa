@@ -90,6 +90,7 @@ public class GameLauncher extends javax.swing.JFrame {
 
         jToolBar1.setRollover(true);
 
+        lockFileDelete.setSelected(true);
         lockFileDelete.setText("ロックファイルを削除する（ゲームが正常終了しなかった場合に選択してください）");
         lockFileDelete.setToolTipText("OFFにすると、ゲームを多重起動できなくなります。ゲームが正常に終了しなかった場合はロックファイルが残っているため、ONにしてください。");
 

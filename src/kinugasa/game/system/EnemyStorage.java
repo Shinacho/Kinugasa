@@ -82,6 +82,7 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 			BufferedImage image = ImageUtil.load(e.getAttributes().get("image").getValue());
 			Race race = RaceStorage.getInstance().get(e.getAttributes().get("race").getValue());
 			Vehicle vehicle = VehicleStorage.getInstance().get(e.getAttributes().get("vehicle").getValue());
+			EnemyAI ai = EnemyAIStorage.getInstance().get(e.getAttributes().get("ai").getValue());
 			StatusValueSet statusValueSet = new StatusValueSet();
 			statusValueSet.setAll(1);
 			for (XMLElement se : e.getElement("status")) {
@@ -153,7 +154,8 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 					dropItems,
 					new ImageSprite(0, 0, image.getWidth(), image.getHeight(), image),
 					actionList,
-					vehicle
+					vehicle,
+					ai
 			);
 			add(b);
 		}

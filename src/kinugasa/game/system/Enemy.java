@@ -61,7 +61,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 	private static String progressBarKey = BattleConfig.StatusKey.hp;
 	private List<BattleCharacter> currentTgt;
 	private Vehicle vehicle;
-	private EnemyAI ai = StandardEnemyAI.SIMPLE;
+	private EnemyAI ai;
 
 	public static String getProgressBarKey() {
 		return progressBarKey;
@@ -85,7 +85,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 		return id;
 	}
 
-	Enemy(String id, Status status, ArrayList<DropItem> dropItem, ImageSprite sprite, Vehicle v) {
+	Enemy(String id, Status status, ArrayList<DropItem> dropItem, ImageSprite sprite, Vehicle v, EnemyAI ai) {
 		this.id = id;
 		this.status = status;
 		this.dropItem = dropItem;
@@ -94,6 +94,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 		if (status.getActions().isEmpty()) {
 			throw new GameSystemException(status.getName() + " s action is empty");
 		}
+		this.ai = ai;
 	}
 
 	private Point2D.Float tgt;
@@ -292,7 +293,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 		}
 		Graphics2D g2 = g.create();
 		g2.setColor(Color.RED);
-		g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.BOLD).setFontSize(14).getFont());
+		g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.PLAIN).setFontSize(12).getFont());
 		g2.drawString(status.getName(), sprite.getX() - getName().length() * 3, sprite.getY() - 4);
 
 		g2.setColor(SHADOW);

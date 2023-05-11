@@ -112,6 +112,140 @@ public class BattleTargetSystem implements Drawable {
 		return result;
 	}
 
+	static ActionTarget instantTarget(BattleCharacter user, CmdAction i, int area, boolean enemy, boolean party) {
+		if (!enemy && !party) {
+			return new ActionTarget(user, i);
+		}
+		Point2D.Float center = user.getSprite().getCenter();
+		ActionTarget result = new ActionTarget(user, i);
+
+		List<BattleCharacter> tgt = new ArrayList<>();
+		for (ActionEvent e : i.getBattleEvent()) {
+			switch (e.getTargetType()) {
+				case FIELD:
+					result.setFieldTarget(true);
+					break;
+				case SELF:
+					//SELFの場合はフラグをONにする
+					result.setSelfTarget(true);
+					break;
+				case ALL:
+					tgt.addAll(getInstance().all(center, area));
+					break;
+				case RANDOM_ONE:
+					List<BattleCharacter> l1 = getInstance().all(center, area);
+					Collections.shuffle(l1);
+					if (!l1.isEmpty()) {
+						tgt.add(l1.get(0));
+					}
+				case TEAM_ENEMY:
+					if (user.isPlayer()) {
+						if (enemy) {
+							tgt.addAll(getInstance().allEnemies(center, area));
+						}
+					} else {
+						if (party) {
+							tgt.addAll(getInstance().allPCs(center, area));
+						}
+					}
+					break;
+				case TEAM_PARTY:
+					if (user.isPlayer()) {
+						if (party) {
+							tgt.addAll(getInstance().allPCs(center, area));
+						}
+					} else {
+						if (enemy) {
+							tgt.addAll(getInstance().allEnemies(center, area));
+						}
+					}
+					break;
+				case ONE_ENEMY:
+					if (user.isPlayer()) {
+						List<BattleCharacter> l = getInstance().allEnemies(center, area);
+						if (!l.isEmpty()) {
+							if (enemy) {
+								tgt.add(l.get(0));
+							}
+						}
+					} else {
+						List<BattleCharacter> l = getInstance().allPCs(center, area);
+						if (!l.isEmpty()) {
+							if (party) {
+								tgt.add(l.get(0));
+							}
+						}
+					}
+					break;
+				case ONE_PARTY:
+					if (user.isPlayer()) {
+						List<BattleCharacter> l = getInstance().allPCs(center, area);
+						if (!l.isEmpty()) {
+							if (party) {
+								tgt.add(l.get(0));
+							}
+						}
+					} else {
+						List<BattleCharacter> l = getInstance().allEnemies(center, area);
+						if (!l.isEmpty()) {
+							if (enemy) {
+								tgt.add(l.get(0));
+							}
+						}
+					}
+					break;
+				case RANDOM_ONE_ENEMY:
+					if (user.isPlayer()) {
+						List<BattleCharacter> l = getInstance().allEnemies(center, area);
+						Collections.shuffle(l);
+						if (!l.isEmpty()) {
+							if (enemy) {
+								tgt.add(l.get(0));
+							}
+						}
+					} else {
+						List<BattleCharacter> l = getInstance().allPCs(center, area);
+						Collections.shuffle(l);
+						if (!l.isEmpty()) {
+							if (party) {
+								tgt.add(l.get(0));
+							}
+						}
+					}
+					break;
+				case RANDOM_ONE_PARTY:
+					if (user.isPlayer()) {
+						List<BattleCharacter> l = getInstance().allPCs(center, area);
+						Collections.shuffle(l);
+						if (!l.isEmpty()) {
+							if (party) {
+								tgt.add(l.get(0));
+							}
+						}
+					} else {
+						List<BattleCharacter> l = getInstance().allEnemies(center, area);
+						Collections.shuffle(l);
+						if (!l.isEmpty()) {
+							if (enemy) {
+								tgt.add(l.get(0));
+							}
+						}
+					}
+					break;
+				default:
+					throw new AssertionError("undefined targetType " + i);
+			}
+		}
+		tgt = tgt.stream().distinct().collect(Collectors.toList());
+		result.setTarget(tgt);
+
+		if (GameSystem.isDebugMode()) {
+			System.out.println("TS instantTarget : " + result);
+		}
+
+		return result;
+	}
+
 	//カレントを設定せずに、ターゲットを分析する。
 	//空のターゲットインスタンスを返す場合がある。
 	static ActionTarget instantTarget(BattleCharacter user, CmdAction a) {
@@ -275,8 +409,21 @@ public class BattleTargetSystem implements Drawable {
 	}
 
 	void setCurrent(CommandWindow w) {
+		if (currentUser == null) {
+			throw new GameSystemException("TS setCurrent(Window), but user is null");
+		}
+		if (w.getSelectedCmd() == null) {
+			//魔法やアイテムがない場合。
+			//エリア初期化のみ
+			currentArea.setArea(0);
+			initialArea.setArea(0);
+			currentArea.setVisible(false);
+			initialArea.setVisible(false);
+			return;
+		}
 		selectedIdx = 0;
-		currentBA = w.getSelected();
+		initialArea.setArea(0);
+		currentBA = w.getSelectedCmd();
 		selfTarget = currentBA.getBattleEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.SELF);
 		//カレントエリアの更新
 		//アイテムの場合はMOV/2
@@ -284,10 +431,17 @@ public class BattleTargetSystem implements Drawable {
 		int area = 0;
 		if (currentBA.getName().equals(BattleConfig.ActionName.avoidance)
 				|| currentBA.getName().equals(BattleConfig.ActionName.defence)
-				|| currentBA.getName().equals(BattleConfig.ActionName.status)) {
+				|| currentBA.getName().equals(BattleConfig.ActionName.status)
+				|| currentBA.getName().equals(BattleConfig.ActionName.commit)) {
 			area = 0;
-		} else if (currentBA.getType() == ActionType.ITEM_USE) {
+		} else if (currentBA.getType() == ActionType.ITEM) {
 			area = (int) (currentUser.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
+		} else if (currentBA.getName().equals(BattleConfig.ActionName.move)
+				|| currentBA.getName().equals(BattleConfig.ActionName.escape)) {
+			area = (int) currentUser.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue();
+			initialArea.setArea(area);
+			initialArea.setLocationByCenter(currentUser.getSprite().getCenter());
+			initialArea.setVisible(true);
 		} else {
 			area = currentBA.getAreaWithEqip(currentUser.getStatus());
 		}
@@ -297,6 +451,9 @@ public class BattleTargetSystem implements Drawable {
 		updateInArea();
 		updateSelected();
 		updateIcon();
+		if (GameSystem.isDebugMode()) {
+			System.out.println("TS current:" + currentBA);
+		}
 	}
 
 	void setCurrent(BattleCharacter pc, CmdAction a) {
@@ -323,7 +480,7 @@ public class BattleTargetSystem implements Drawable {
 					|| currentBA.getName().equals(BattleConfig.ActionName.defence)
 					|| currentBA.getName().equals(BattleConfig.ActionName.status)) {
 				area = 0;
-			} else if (currentBA.getType() == ActionType.ITEM_USE) {
+			} else if (currentBA.getType() == ActionType.ITEM) {
 				area = (int) (currentUser.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
 			} else {
 				area = currentBA.getAreaWithEqip(currentUser.getStatus());
@@ -378,7 +535,7 @@ public class BattleTargetSystem implements Drawable {
 				|| currentBA.getName().equals(BattleConfig.ActionName.defence)
 				|| currentBA.getName().equals(BattleConfig.ActionName.status)) {
 			area = 0;
-		} else if (currentBA.getType() == ActionType.ITEM_USE) {
+		} else if (currentBA.getType() == ActionType.ITEM) {
 			area = (int) (currentUser.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
 		} else {
 			area = currentBA.getAreaWithEqip(currentUser.getStatus());
@@ -391,7 +548,7 @@ public class BattleTargetSystem implements Drawable {
 	private void updateSelected() {
 		//カレントに基づいてSELECTEDを更新する、先にINAREAを更新しておくこと		
 		selected.clear();
-		if (currentBA.getType() == ActionType.ITEM_USE || currentBA.getType() == ActionType.OTHER) {
+		if (currentBA.getType() == ActionType.ITEM || currentBA.getType() == ActionType.OTHER) {
 			return;
 		}
 		//SELFの場合SELECTED必要なし
@@ -428,7 +585,7 @@ public class BattleTargetSystem implements Drawable {
 		//カレントに基づいてINAREAを更新する
 		inArea.clear();
 
-		if (currentBA.getType() == ActionType.ITEM_USE || currentBA.getType() == ActionType.OTHER) {
+		if (currentBA.getType() == ActionType.ITEM || currentBA.getType() == ActionType.OTHER) {
 			return;
 		}
 
@@ -542,7 +699,7 @@ public class BattleTargetSystem implements Drawable {
 		}
 		for (BattleCharacter c : selected) {
 			float x = c.getSprite().getCenterX();
-			float y = c.getSprite().getCenterY() - iconMaster.getHeight() - 4;
+			float y = c.getSprite().getCenterY() - iconMaster.getHeight() - 12;
 			Sprite i = iconMaster.clone();
 			i.setLocationByCenter(new Point2D.Float(x, y));
 			icons.add(i);
@@ -550,7 +707,7 @@ public class BattleTargetSystem implements Drawable {
 		if (selfTarget) {
 			Sprite i = iconMaster.clone();
 			float x = currentUser.getSprite().getCenterX();
-			float y = currentUser.getSprite().getCenterY() - iconMaster.getHeight() - 4;
+			float y = currentUser.getSprite().getCenterY() - iconMaster.getHeight() - 12;
 			i.setLocationByCenter(new Point2D.Float(x, y));
 			icons.add(i);
 		}

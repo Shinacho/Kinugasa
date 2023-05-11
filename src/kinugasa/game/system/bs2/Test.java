@@ -21,14 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package kinugasa.game.system;
+package kinugasa.game.system.bs2;
 
 /**
  *
- * @vesion 1.0.0 - 2023/05/09_21:21:01<br>
+ * @vesion 1.0.0 - 2023/05/10_13:28:01<br>
  * @author Shinacho<br>
  */
-public class BattleMessageWindowSystem2 {
+public class Test {
 
+	public static void main(String[] args) {
+		String s = "";
+		System.out.println(s.getBytes().length);
+	}
 }

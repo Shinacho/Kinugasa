@@ -93,7 +93,7 @@ public class ActionDescWindow extends PCStatusWindow {
 
 		for (CmdAction a : s.get(pcIdx).getActions().stream().filter(p -> p.isBattleUse()).sorted().collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
-			if (a.getType() == ActionType.ITEM_USE) {
+			if (a.getType() == ActionType.ITEM) {
 				continue;
 			}
 			if (a.getType() == ActionType.OTHER) {

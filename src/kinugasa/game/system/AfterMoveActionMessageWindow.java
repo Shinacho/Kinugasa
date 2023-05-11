@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kinugasa.game.ui.MessageWindow;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.game.ui.TextStorage;
@@ -37,10 +38,10 @@ import kinugasa.game.ui.TextStorage;
  * @vesion 1.0.0 - 2022/11/27_21:08:16<br>
  * @author Shinacho<br>
  */
-public class AfterMoveActionMessageWindow extends MessageWindow implements CommandWindow {
+public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow implements CommandWindow {
 
-	public AfterMoveActionMessageWindow(float x, float y, float w, float h) {
-		super(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""), new TextStorage(), new Text());
+	public AfterMoveActionMessageWindow(int x, int y, int w, int h) {
+		super(x, y, w, h, 7, false);
 	}
 	private List<CmdAction> actions = new ArrayList();
 
@@ -48,37 +49,31 @@ public class AfterMoveActionMessageWindow extends MessageWindow implements Comma
 		return actions;
 	}
 
-	private int selected = 0;
-
 	@Override
-	public CmdAction getSelected() {
-		return actions.get(selected);
+	public CmdAction getSelectedCmd() {
+		return actions.get(getSelectedIdx() - 1);
 	}
 
 	public void add(CmdAction... ba) {
 		actions.addAll(Arrays.asList(ba));
 		Collections.sort(actions);
-		selected = 0;
 		updateText();
 	}
 
 	public void add(List<CmdAction> ba) {
 		actions.addAll(ba);
 		Collections.sort(actions);
-		selected = 0;
 		updateText();
 	}
 
 	public void setActions(List<CmdAction> actions) {
 		this.actions = actions;
 		Collections.sort(actions);
-		selected = 0;
 		updateText();
 	}
 
 	public void clear() {
 		actions.clear();
-		selected = 0;
 	}
 
 	private static final int ACTION_LINE = 7;
@@ -87,43 +82,24 @@ public class AfterMoveActionMessageWindow extends MessageWindow implements Comma
 		if (actions.isEmpty()) {
 			throw new GameSystemException("AMCMW :  + actions is empty");
 		}
+
 		StringBuilder s = new StringBuilder();
-		for (int i = selected, c = 0; i < actions.size(); i++, c++) {
-			if (i == selected) {
-				s.append("  -> ");
-			} else {
-				s.append("     ");
-			}
+		for (int i = 0; i < actions.size(); i++) {
 			s.append(actions.get(i).getName()).append(Text.getLineSep());
-			if (c > ACTION_LINE) {
-				break;
-			}
 		}
-		setText(new Text(s.toString()));
-		allText();
+		setText(Text.split(new Text(s.toString())));
+		getWindow().allText();
 	}
 
 	public void nextAction() {
-		selected++;
-		if (selected >= actions.size()) {
-			selected = 0;
-		}
+		nextSelect();
 		updateText();
-		if (GameSystem.isDebugMode()) {
-			System.out.println("SELECT:" + selected);
-		}
 		GameSystem.getInstance().getBattleSystem().getTargetSystem().setCurrent(this);
 	}
 
 	public void prevAction() {
-		selected--;
-		if (selected < 0) {
-			selected = actions.size() - 1;
-		}
+		prevSelect();
 		updateText();
-		if (GameSystem.isDebugMode()) {
-			System.out.println("SELECT:" + selected);
-		}
 		GameSystem.getInstance().getBattleSystem().getTargetSystem().setCurrent(this);
 	}
 }

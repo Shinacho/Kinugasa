@@ -40,58 +40,9 @@ import kinugasa.game.ui.Text;
  * @vesion 1.0.0 - 2023/05/03_16:12:32<br>
  * @author Shinacho<br>
  */
-public class Test4 extends GameManager {
+public class Test4 {
 
 	public static void main(String[] args) {
-		LockUtil.deleteAllLockFile();
-		new Test4().gameStart();
-	}
-
-	private Test4() {
-		super(GameOption.defaultOption());
-	}
-
-	private ScrollSelectableMessageWindow w = new ScrollSelectableMessageWindow(12, 12, 480, 250, 6);
-
-	{
-		w.setLoop(true);
-		w.setText(List.of(
-				new Text("‚ ‚¢‚¤‚¦‚¨0"),
-				new Text("‚ ‚¢‚¤‚¦‚¨1"),
-				new Text("‚ ‚¢‚¤‚¦‚¨2"),
-				new Text("‚ ‚¢‚¤‚¦‚¨3"),
-				new Text("‚ ‚¢‚¤‚¦‚¨4"),
-				new Text("‚ ‚¢‚¤‚¦‚¨5"),
-				new Text("‚ ‚¢‚¤‚¦‚¨6"),
-				new Text("‚ ‚¢‚¤‚¦‚¨7"),
-				new Text("‚ ‚¢‚¤‚¦‚¨8"),
-				new Text("‚ ‚¢‚¤‚¦‚¨9"),
-				new Text("‚ ‚¢‚¤‚¦‚¨10"),
-				new Text("‚ ‚¢‚¤‚¦‚¨11")));
-	}
-
-	@Override
-	protected void startUp() {
-	}
-
-	@Override
-	protected void dispose() {
-	}
-
-	@Override
-	protected void update(GameTimeManager gtm, InputState is) {
-		if (is.isPressed(Keys.DOWN, InputType.SINGLE)) {
-			w.nextSelect();
-		}
-		if (is.isPressed(Keys.UP, InputType.SINGLE)) {
-			w.prevSelect();
-		}
-		w.update();
-	}
-
-	@Override
-	protected void draw(GraphicsContext gc) {
-		w.draw(gc);
 	}
 
 }

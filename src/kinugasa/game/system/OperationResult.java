@@ -54,6 +54,11 @@ public enum OperationResult {
 	/**
 	 * ターゲット選択が要求されました。そのロジックに切り替えてください。
 	 */
-	TO_TARGET_SELECT,;
+	TO_TARGET_SELECT,
+	/**
+	 * アイテム用途選択画面が要求されました。そのロジックに切り替えてください。
+	 */
+	ITEM_CHOICE_USE
+	;
 
 }

@@ -85,6 +85,7 @@ public class EnemyBlueprint implements Nameable {
 	private ImageSprite sprite;
 	private List<CmdAction> actions;
 	private Vehicle vehicle;
+	private EnemyAI ai;
 
 	public EnemyBlueprint(String id,
 			String visibleName,
@@ -98,7 +99,7 @@ public class EnemyBlueprint implements Nameable {
 			ArrayList<DropItem> dropItems,
 			ImageSprite sprite,
 			List<CmdAction> actions,
-			Vehicle vehicle) {
+			Vehicle vehicle, EnemyAI ai) {
 		this.id = id;
 		this.visibleName = visibleName;
 		this.statusValueSet = statusValueSet;
@@ -112,6 +113,7 @@ public class EnemyBlueprint implements Nameable {
 		this.sprite = sprite;
 		this.actions = actions;
 		this.vehicle = vehicle;
+		this.ai = ai;
 	}
 
 	public Enemy create() {
@@ -132,6 +134,6 @@ public class EnemyBlueprint implements Nameable {
 		}
 		actions.forEach(v -> s.getActions().add(v));
 
-		return new Enemy(id, s, (ArrayList<DropItem>) dropItems.clone(), sprite.clone(), vehicle);
+		return new Enemy(id, s, (ArrayList<DropItem>) dropItems.clone(), sprite.clone(), vehicle, ai);
 	}
 }

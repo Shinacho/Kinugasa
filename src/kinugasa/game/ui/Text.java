@@ -23,6 +23,7 @@
  */
 package kinugasa.game.ui;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,14 @@ public class Text implements Nameable {
 			sb.append(tt.getText()).append(Text.lineSep);
 		}
 		return new Text(sb.substring(0, sb.length() - 1));
+	}
+	
+	public static List<Text> split(Text t){
+		List<Text> r = new ArrayList<>();
+		for(String v : t.getText().split(lineSep)){
+			r.add(new Text(v));
+		}
+		return r;
 	}
 
 	private static Map<String, String> replaceMap = new HashMap<>();

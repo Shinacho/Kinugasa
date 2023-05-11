@@ -65,13 +65,15 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 		this.visibleLine = line;
 		this.line1select = line1;
 		this.select = line1select ? 0 : 1;
+		this.pos = line1select ? 0 : 1;
 		this.visibleIdx = 0;
 	}
 
 	public ScrollSelectableMessageWindow(int x, int y, int w, int h, int line) {
 		window = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		this.visibleLine = line;
-		this.select = 0;
+		this.select = line1select ? 0 : 1;
+		this.pos = line1select ? 0 : 1;
 		this.visibleIdx = 0;
 	}
 
@@ -94,7 +96,8 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 		this.text.clear();
 		this.text.addAll(text);
 		select = line1select ? 0 : 1;
-		pos = visibleIdx = 0;
+		pos = line1select ? 0 : 1;
+		visibleIdx = 0;
 	}
 
 	private void updateText() {
@@ -190,56 +193,32 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 	private int pos = 0;
 
 	public void nextSelect() {
+		pos++;
 		select++;
-		if (select >= size()) {
-			if (isLoop()) {
-				select = line1select ? 0 : 1;
-				visibleIdx = 0;
-				pos = 0;
-				return;
-			} else {
-				//最後の選択中の場合は何もしない
-				select--;
-				return;
+		if (pos >= visibleLine - 1 + 1) {
+			pos--;
+			if (visibleIdx + visibleLine < size()) {
+				visibleIdx++;
 			}
 		}
-		//selectが最終行の場合、次の行を表示
-		if (pos < visibleLine - 1 - (line1select ? 0 : 1)) {
-			pos++;
-		} else {
-			visibleIdx++;
+		if (select == size()) {
+			pos = (line1select ? 0 : 1);
+			select = (line1select ? 0 : 1);
+			visibleIdx = 0;
 		}
 	}
 
 	public void prevSelect() {
+		pos--;
 		select--;
-		if (select == 0 && !line1select) {
-			if (loop) {
-				select = size() - 1;
-				visibleIdx = size() - visibleLine;
-				pos = visibleLine - 1;
-				return;
-			} else {
-				select++;
-			}
-		}
-		if (select < 0) {
-			if (isLoop()) {
-				select = size() - 1;
-				visibleIdx = size() - visibleLine;
-				pos = visibleLine - 1;
-				return;
-			} else {
-				//最後の選択中の場合は何もしない
-				select++;
-				return;
-			}
-		}
-		//selectが最終行の場合、次の行を表示
-		if (pos > 0 + (line1select ? 1 : 0)) {
-			pos--;
-		} else {
+		if (pos <= 0 - 1) {
+			pos++;
 			visibleIdx--;
+		}
+		if (select == (line1select ? -1 : 0)) {
+			pos = visibleLine - 1;
+			select = size() - 1;
+			visibleIdx = size() - visibleLine;
 		}
 	}
 

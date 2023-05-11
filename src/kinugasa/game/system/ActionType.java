@@ -33,7 +33,7 @@ import kinugasa.game.I18N;
 public enum ActionType {
 	ATTACK,
 	MAGIC,
-	ITEM_USE,
+	ITEM,
 	OTHER,;
 
 	public String displayName() {

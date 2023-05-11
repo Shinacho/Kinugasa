@@ -44,6 +44,7 @@ public class BattleConfig {
 		public static String hp = "HP";
 		public static String move = "MOV";
 		public static String exp = "EXP";
+		public static String str = "STR";
 	}
 
 	public static class ConditionName {
@@ -65,7 +66,7 @@ public class BattleConfig {
 		public static String commit = "COMMIT";
 	}
 	//
-	public static float conguStopP = 0.5f;
+	public static float confuStopP = 0.5f;
 	public static int actionWindowLF = 48;
 
 	private static List<BattleWinLoseLogic> winLoseLogic = new ArrayList<>();

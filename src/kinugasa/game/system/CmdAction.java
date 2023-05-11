@@ -211,7 +211,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 	}
 
 	public boolean isFieldUse() {
-		return (type == ActionType.MAGIC || type == ActionType.OTHER || type == ActionType.ITEM_USE) && fieldEvent != null && !fieldEvent.isEmpty();
+		return (type == ActionType.MAGIC || type == ActionType.OTHER || type == ActionType.ITEM) && fieldEvent != null && !fieldEvent.isEmpty();
 	}
 
 	public boolean isBattleUse() {
