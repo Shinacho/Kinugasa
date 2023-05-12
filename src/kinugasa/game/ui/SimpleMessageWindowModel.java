@@ -27,8 +27,6 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Rectangle;
-import javax.swing.Painter;
 import kinugasa.game.GraphicsContext;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.TimeCounter;

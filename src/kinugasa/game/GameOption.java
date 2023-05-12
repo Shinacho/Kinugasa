@@ -29,12 +29,7 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import kinugasa.graphics.GraphicsUtil;
 import kinugasa.resource.text.IniFile;
@@ -139,7 +134,6 @@ public class GameOption {
 	}
 
 	public static GameOption fromGUI(String name, GUILockMode mouse, GUILockMode keyboard, GUILockMode gamepad) {
-
 		/* Set the Nimbus look and feel */
 		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 		/* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.

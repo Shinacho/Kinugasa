@@ -130,7 +130,6 @@ public abstract class GameManager {
 			}
 			LockUtil.createLockFile();
 		}
-
 		window = new AWTGameWindow();
 		renderingHints = option.getRenderingQuality().getRenderingHints();
 
