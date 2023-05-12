@@ -23,6 +23,10 @@
  */
 package kinugasa.game.input;
 
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.util.BitSet;
+import kinugasa.game.GameManager;
 import kinugasa.game.PlayerConstants;
 import kinugasa.object.FourDirection;
 
@@ -82,6 +86,11 @@ public final class InputState extends InputDeviceState {
 		if (PlayerConstants.getInstance().isUsingMouse()) {
 			mouseState = MouseConnection.createClearState();
 		}
+	}
+
+	public void keyReleaseEvent(GameManager gm, Keys k) {
+		KeyConnection.getInstance().keyReleased(new KeyEvent(gm.getAWTComponent(), 0, System.currentTimeMillis(), 0, k.getKeyCode(), ' '));
+
 	}
 
 	/**

@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -142,7 +143,7 @@ public class CSVFile implements Input<CSVFile>, Output, Nameable, Iterable<Strin
 			line = "";
 		}
 		try {
-			Files.write(f.toPath(), lines, charset, StandardOpenOption.CREATE_NEW, StandardOpenOption.TRUNCATE_EXISTING);
+			Files.write(f.toPath(), lines, charset, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (IOException ex) {
 			throw new FileIOException(ex);
 		}

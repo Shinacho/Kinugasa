@@ -130,7 +130,7 @@ public class FieldMapXMLLoader {
 	}
 
 	public FieldMap load() throws IllegalStateException {
-		soundLoader.forEach(v -> SoundLoader.loadList(v));
+		soundLoader.forEach(v -> SoundLoader.loadList(v, 1.0f));
 
 		textStorage.forEach(v -> TextStorageStorage.getInstance().readFromXML(v));
 

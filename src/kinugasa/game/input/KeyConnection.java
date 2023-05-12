@@ -39,17 +39,27 @@ import java.util.BitSet;
  */
 public class KeyConnection implements KeyListener {
 
-	/** キー状態が格納されるビットセットです. */
+	/**
+	 * キー状態が格納されるビットセットです.
+	 */
 	private static final BitSet keySet = new BitSet(512);
-	/** 唯一のインスタンスです. */
+	/**
+	 * 唯一のインスタンスです.
+	 */
 	private static final KeyConnection INSTANCE = new KeyConnection();
-	/** 何も入力されていない状態のKeyStateです. */
+	/**
+	 * 何も入力されていない状態のKeyStateです.
+	 */
 	private static final KeyState CLEAR_STATE = new KeyState(new BitSet(512));
 
 	/**
 	 * シングルトンクラスです.インスタンス化できません.<br>
 	 */
 	private KeyConnection() {
+	}
+
+	static KeyConnection getInstance() {
+		return INSTANCE;
 	}
 
 	/**
@@ -62,8 +72,7 @@ public class KeyConnection implements KeyListener {
 	}
 
 	/**
-	 * 空のキーステートを発行します.
-	 * このメソッドは常に同じインスタンスを返します。<br>
+	 * 空のキーステートを発行します. このメソッドは常に同じインスタンスを返します。<br>
 	 *
 	 * @return 空のキーステートを返します。何も押されていない状態です。<br>
 	 */

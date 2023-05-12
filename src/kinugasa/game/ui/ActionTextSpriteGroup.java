@@ -94,10 +94,6 @@ public class ActionTextSpriteGroup implements Drawable {
 	}
 
 	public void exec() {
-		for (ActionTextSprite s : list) {
-			s.getLabelModel().getFontConfig().setColor(Color.WHITE);
-		}
-		getSelected().getLabelModel().getFontConfig().setColor(Color.YELLOW);
 		getSelected().exec();
 	}
 

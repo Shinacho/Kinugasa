@@ -31,19 +31,21 @@ package kinugasa.game.input;
  * @author Shinacho<br>
  * <br>
  */
-public final class GamePadConnection{
+public final class GamePadConnection {
 
 	private GamePadConnection() {
 	}
 
 	public static void init() throws RuntimeException {
-		if(load)throw new RuntimeException("dll is already loaded.");
+		if (load) {
+			throw new RuntimeException("dll is already loaded.");
+		}
 		try {
 			System.loadLibrary("KGP");
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		}
-		load= true;
+		load = true;
 	}
 	private static boolean load = false;
 

@@ -82,11 +82,11 @@ public class BattleMessageWindowSystem implements Drawable {
 		cmdW = new BattleCommandMessageWindow(3, (int) messageWindowY, (int) w, (int) h);
 		afterMoveW = new AfterMoveActionMessageWindow(3, (int) messageWindowY, (int) w, (int) h);
 		tgtW = new ScrollSelectableMessageWindow(3, (int) messageWindowY, (int) w, (int) h, 7, false);
-		infoW = new MessageWindow(48, messageWindowY, w - 48 * 2, h, new SimpleMessageWindowModel().setNextIcon(""));
+		infoW = new MessageWindow(480, messageWindowY, w - 480, h, new SimpleMessageWindowModel().setNextIcon(""));
 		statusW = new BattleStatusWindows(statusList);
-		itemChoiceUseW = new MessageWindow(3, messageWindowY, w, h);
-		itemCommitResultW = new MessageWindow(3, messageWindowY, w, h);
-		actionResultW = new MessageWindow(3, messageWindowY, w, h);
+		itemChoiceUseW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
+		itemCommitResultW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
+		actionResultW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		statusDescW = new StatusDescWindow(
 				24 + 8,
 				24 + 8,
@@ -172,6 +172,10 @@ public class BattleMessageWindowSystem implements Drawable {
 		}
 	}
 
+	void setItemDesc(Item i) {
+
+	}
+
 	void statusDescWindowNextSelect() {
 		switch (statusDescWPage) {
 			case 0:
@@ -236,6 +240,14 @@ public class BattleMessageWindowSystem implements Drawable {
 
 	void setStatusDescPCIDX(int i) {
 		statusDescW.setPcIdx(i);
+	}
+
+	void setVisible(Mode m) {
+		setVisible(StatusVisible.ON, m, InfoVisible.OFF);
+	}
+
+	void setVisible(StatusVisible sv, Mode m) {
+		setVisible(sv, m, InfoVisible.OFF);
 	}
 
 	void setVisible(StatusVisible sv, Mode m, InfoVisible iv) {
@@ -353,7 +365,7 @@ public class BattleMessageWindowSystem implements Drawable {
 		options.add(new Text(I18N.translate("PASS")));
 		options.add(new Text(I18N.translate("THROW")));
 		itemChoiceUseW.setText(new Choice(options, "BATTLE_MW_SYSTEM_IUC", i.getName() + I18N.translate("OF")));
-		setVisible(StatusVisible.ON, mode.ITEM_USE_SELECT, InfoVisible.ON);
+		setVisible(StatusVisible.ON, mode.ITEM_USE_SELECT, InfoVisible.OFF);
 	}
 
 	void itemChoiceUseNextSelect() {

@@ -47,11 +47,11 @@ public class SoundLoader {
 	}
 	private CSVFile file;
 
-	public static SoundMap loadList(String fileName) throws FileNotFoundException {
-		return loadList(new CSVFile(fileName));
+	public static SoundMap loadList(String fileName, float volume) throws FileNotFoundException {
+		return loadList(new CSVFile(fileName), volume);
 	}
 
-	public static SoundMap loadList(CSVFile file) throws FileNotFoundException {
+	public static SoundMap loadList(CSVFile file, float volume) throws FileNotFoundException {
 		if (!file.exists()) {
 			throw new FileNotFoundException(file + " is not exists");
 		}
@@ -64,7 +64,7 @@ public class SoundLoader {
 			return line;
 		}).forEachOrdered(line -> {
 			String name = file.getFile().getParent() + "/" + line[0];
-			float mg = Float.parseFloat(line[1]);
+			float mg = Float.parseFloat(line[1]) * volume;
 			if (line.length == 4) {
 				int from = line[2].equals("EOF") ? -1 : Integer.parseInt(line[2]);
 				int to = line[3].equals("START") ? 0 : Integer.parseInt(line[3]);

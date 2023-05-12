@@ -193,6 +193,10 @@ public class BattleSystem implements Drawable {
 		 */
 		SHOW_STATUS,
 		/**
+		 * アイテム用途選択画面
+		 */
+		ITEM_CHOICE_USE,
+		/**
 		 * アイテム詳細確認中
 		 */
 		SHOW_ITEM,
@@ -204,10 +208,6 @@ public class BattleSystem implements Drawable {
 		 * バトルは終了して、ゲームシステムからの終了指示を待っている。
 		 */
 		BATLE_END,
-		/**
-		 * アイテム用途選択画面
-		 */
-		ITEM_CHOICE_USE,
 	}
 
 	private enum MessageType {
@@ -455,9 +455,7 @@ public class BattleSystem implements Drawable {
 		}
 		//敵出現情報をセット
 		setMsg(MessageType.INITIAL_ENEMY_INFO, List.of(sb.toString()));
-		messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
-				BattleMessageWindowSystem.Mode.ACTION,
-				BattleMessageWindowSystem.InfoVisible.OFF);
+		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 
 		//リセット
 		currentCmd = null;
@@ -787,10 +785,7 @@ public class BattleSystem implements Drawable {
 		//カレントコマンド内容をコマンドウインドウに表示、その他ウインドウは閉じる
 		messageWindowSystem.getCmdW().setCmd(currentCmd);
 		messageWindowSystem.getCmdW().resetSelect();
-		messageWindowSystem.setVisible(
-				BattleMessageWindowSystem.StatusVisible.ON,
-				BattleMessageWindowSystem.Mode.CMD_SELECT,
-				BattleMessageWindowSystem.InfoVisible.OFF);
+		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.CMD_SELECT);
 
 		//ターゲットシステムをウインドウの初期選択で初期化
 		assert messageWindowSystem.getCmdW().getSelectedCmd() != null : "cmdW initial select action is null";
@@ -803,7 +798,7 @@ public class BattleSystem implements Drawable {
 		return currentCmd;
 	}
 
-	public OperationResult execPcAction() {
+	public OperationResult commitCmd() {
 		//移動後攻撃か通常攻撃かを判定
 		boolean afterMove = messageWindowSystem.getAfterMoveW().isVisible();
 		//コマンドウインドウまたは移動後攻撃ウインドウからアクションを取得
@@ -823,10 +818,7 @@ public class BattleSystem implements Drawable {
 		//PC,NPC問わず選択されたアクションを実行する。
 
 		//ウインドウ状態初期化・・・アクション実行前
-		messageWindowSystem.setVisible(
-				BattleMessageWindowSystem.StatusVisible.ON,
-				BattleMessageWindowSystem.Mode.NOTHING,//アクションＭＳＧは後で設定して出す
-				BattleMessageWindowSystem.InfoVisible.ON);
+		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.NOTHING);
 
 		//カレントユーザ
 		BattleCharacter user = currentCmd.getUser();
@@ -853,9 +845,7 @@ public class BattleSystem implements Drawable {
 					//移動した！のメッセージ表示
 					setMsg(MessageType.IS_MOVED, a, user.getStatus());
 					messageWindowSystem.setVisible(
-							BattleMessageWindowSystem.StatusVisible.ON,
-							BattleMessageWindowSystem.Mode.ACTION,
-							BattleMessageWindowSystem.InfoVisible.OFF);
+							BattleMessageWindowSystem.Mode.ACTION);
 					stage.setStage(BattleSystem.Stage.EXECUTING_MOVE);
 					return OperationResult.SUCCESS;
 				} else {
@@ -870,7 +860,6 @@ public class BattleSystem implements Drawable {
 
 		//PCの処理
 		assert user.isPlayer() : "PC action, but action is not PC";
-		assert a.isBattleUse() : "action is cant use in battle";
 		assert user.getStatus().getActions().contains(a) : "user not have action";
 
 		//PCの特殊コマンドの処理
@@ -906,9 +895,7 @@ public class BattleSystem implements Drawable {
 			if (a.getName().equals(BattleConfig.ActionName.commit)) {
 				//移動終了・キャラクタの向きとターゲット座標のクリアをする
 				messageWindowSystem.setVisible(
-						BattleMessageWindowSystem.StatusVisible.ON,
-						BattleMessageWindowSystem.Mode.NOTHING,//すぐ切り替わる
-						BattleMessageWindowSystem.InfoVisible.ON);
+						BattleMessageWindowSystem.Mode.NOTHING);
 				user.unsetTarget();
 				user.to(FourDirection.WEST);
 				stage.setStage(BattleSystem.Stage.WAITING_EXEC_CMD);
@@ -921,8 +908,7 @@ public class BattleSystem implements Drawable {
 				messageWindowSystem.setStatusDescPCIDX(i);
 				messageWindowSystem.setVisible(
 						BattleMessageWindowSystem.StatusVisible.OFF,
-						BattleMessageWindowSystem.Mode.SHOW_STATUS_DESC,
-						BattleMessageWindowSystem.InfoVisible.OFF);
+						BattleMessageWindowSystem.Mode.SHOW_STATUS_DESC);
 				stage.setStage(BattleSystem.Stage.SHOW_STATUS);
 				return OperationResult.SHOW_STATUS;
 			}
@@ -1011,9 +997,7 @@ public class BattleSystem implements Drawable {
 
 	//アクション実行（コミット、ターゲットあり）
 	OperationResult execAction(CmdAction ba, ActionTarget tgt) {
-		messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
-				BattleMessageWindowSystem.Mode.ACTION,
-				BattleMessageWindowSystem.InfoVisible.OFF);
+		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 		//ターゲットシステムが呼ばれているので、初期化
 		targetSystem.unsetCurrent();
 		//カレントユーザ
@@ -1103,21 +1087,26 @@ public class BattleSystem implements Drawable {
 		stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 	}
 
-	public void itemChoiceUseWindowNextSelect() {
+	public void nextItemChoiceUseWindowSelect() {
 		if (!messageWindowSystem.getItemChoiceUseW().isVisible()) {
 			throw new GameSystemException("item choice use, but window is not active");
 		}
 		messageWindowSystem.getItemChoiceUseW().nextSelect();
 	}
 
-	public void itemChoiceUseWindowPrevSelect() {
+	public void prevItemChoiceUseWindowSelect() {
 		if (!messageWindowSystem.getItemChoiceUseW().isVisible()) {
 			throw new GameSystemException("item choice use, but window is not active");
 		}
 		messageWindowSystem.getItemChoiceUseW().prevSelect();
 	}
 
-	public void itemChoiceUseCommit() {
+	public void cancelItemChoice() {
+		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.CMD_SELECT);
+		stage.setStage(Stage.CMD_SELECT);
+	}
+
+	public void commitItemChoiceUse() {
 		itemChoiceMode = -1;
 		//米ターゲットセレクトに遷移する可能性がある
 		if (!messageWindowSystem.getItemChoiceUseW().isVisible()) {
@@ -1129,10 +1118,8 @@ public class BattleSystem implements Drawable {
 		switch (selected) {
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_CHECK:
 				//チェックウインドウを出す
-				messageWindowSystem.setVisible(
-						BattleMessageWindowSystem.StatusVisible.ON,
-						BattleMessageWindowSystem.Mode.SHOW_ITEM_DESC,
-						BattleMessageWindowSystem.InfoVisible.OFF);
+				messageWindowSystem.setItemDesc(i);
+				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.SHOW_ITEM_DESC);
 				stage.setStage(BattleSystem.Stage.SHOW_ITEM);
 				break;
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_EQIP:
@@ -1255,8 +1242,7 @@ public class BattleSystem implements Drawable {
 			messageWindowSystem.saveVisible();
 			messageWindowSystem.setVisible(
 					BattleMessageWindowSystem.StatusVisible.OFF,
-					BattleMessageWindowSystem.Mode.NOTHING,
-					BattleMessageWindowSystem.InfoVisible.OFF);
+					BattleMessageWindowSystem.Mode.NOTHING);
 
 		}
 	}
@@ -1341,9 +1327,7 @@ public class BattleSystem implements Drawable {
 			}
 			stage.setStage(Stage.BATLE_END);
 			setMsg(MessageType.BATTLE_RESULT);
-			messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
-					BattleMessageWindowSystem.Mode.BATTLE_RESULT,
-					BattleMessageWindowSystem.InfoVisible.OFF);
+			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
 		}
 
 		//効果の終わったアニメーションを取り除く
@@ -1379,9 +1363,8 @@ public class BattleSystem implements Drawable {
 					}
 				}
 				if (initialMoveEnd) {
-					messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
-							BattleMessageWindowSystem.Mode.NOTHING,
-							BattleMessageWindowSystem.InfoVisible.OFF);
+					messageWindowSystem.setVisible(
+							BattleMessageWindowSystem.Mode.NOTHING);
 					stage.setStage(Stage.WAITING_EXEC_CMD);
 				}
 				break;
@@ -1404,9 +1387,7 @@ public class BattleSystem implements Drawable {
 						battleResultValue = new BattleResultValues(BattleResult.ESCAPE, exp, new ArrayList<>(), winLogicName);
 						stage.setStage(Stage.BATLE_END);
 						setMsg(MessageType.BATTLE_RESULT);
-						messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
-								BattleMessageWindowSystem.Mode.BATTLE_RESULT,
-								BattleMessageWindowSystem.InfoVisible.OFF);
+						messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
 						break;
 					}
 					//NPC全員逃げ判定
@@ -1424,9 +1405,8 @@ public class BattleSystem implements Drawable {
 						battleResultValue = new BattleResultValues(BattleResult.ESCAPE, 0, new ArrayList<>(), winLogicName);
 						stage.setStage(Stage.BATLE_END);
 						setMsg(MessageType.BATTLE_RESULT);
-						messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
-								BattleMessageWindowSystem.Mode.BATTLE_RESULT,
-								BattleMessageWindowSystem.InfoVisible.OFF);
+						messageWindowSystem.setVisible(
+								BattleMessageWindowSystem.Mode.BATTLE_RESULT);
 						break;
 					}
 					stage.setStage(Stage.WAITING_EXEC_CMD);
@@ -1506,10 +1486,7 @@ public class BattleSystem implements Drawable {
 	@Override
 	public void draw(GraphicsContext g) {
 		battleFieldSystem.draw(g);
-
-		//エネミーとPCのY座標による描画順の更新
-//		List<BattleCharacter> charas = getAllChara();
-//		Collections.sort(charas, (BattleCharacter o1, BattleCharacter o2) -> (int) (o1.getSprite().getY() - o2.getSprite().getY()));
+		
 		enemies.forEach(p -> p.draw(g));
 		GameSystem.getInstance().getPartySprite().forEach(p -> p.draw(g));
 
@@ -1522,9 +1499,7 @@ public class BattleSystem implements Drawable {
 
 	//ターゲット選択モードをキャンセルして閉じる。アクション選択に戻る
 	public void cancelTargetSelect() {
-		messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
-				BattleMessageWindowSystem.Mode.CMD_SELECT,
-				BattleMessageWindowSystem.InfoVisible.ON);
+		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.CMD_SELECT);
 		targetSystem.unsetCurrent();
 		stage.setStage(Stage.CMD_SELECT);
 	}

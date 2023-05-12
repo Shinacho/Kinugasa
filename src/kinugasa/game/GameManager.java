@@ -23,12 +23,15 @@
  */
 package kinugasa.game;
 
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
@@ -219,8 +222,25 @@ public abstract class GameManager {
 		GameSystem.setDebugMode(option.isDebugMode());
 
 	}
+//
+//	public void reloadInputListener() {
+//		if (PlayerConstants.getInstance().isUsingKeyboard()) {
+//			window.removeKeyListener(KeyConnection.getInstance());
+//			KeyConnection.setListener(window);
+//		}
+//		if (PlayerConstants.getInstance().isUsingMouse()) {
+//			window.removeMouseListener(MouseConnection.getInstance());
+//			window.removeMouseMotionListener(MouseConnection.getInstance());
+//			window.removeMouseWheelListener(MouseConnection.getInstance());
+//			MouseConnection.setListener(window);
+//		}
+//	}
 
 	public GameWindow getWindow() {
+		return window;
+	}
+
+	public Component getAWTComponent() {
 		return window;
 	}
 

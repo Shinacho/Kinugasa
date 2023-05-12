@@ -49,6 +49,10 @@ public class MouseConnection extends MouseAdapter {
 	 */
 	private static final MouseState CLEAR_STATE = new MouseState(false, false, false, false, false, 0, new Point(), new Point(), null);
 
+	static MouseConnection getInstance() {
+		return INSTANCE;
+	}
+
 	/**
 	 * コンポーネントにこのリスナを追加します.
 	 *
