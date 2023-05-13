@@ -83,17 +83,23 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 				bgmMapName = e.getAttributes().get("BGM").getValue().split("/")[0];
 				bgmName = e.getAttributes().get("BGM").getValue().split("/")[1];
 			}
+			String winBgmMapName = null, winBgmName = null;
+			if (e.getAttributes().contains("winBGM")) {
+				winBgmMapName = e.getAttributes().get("winBGM").getValue().split("/")[0];
+				winBgmName = e.getAttributes().get("winBGM").getValue().split("/")[1];
+			}
 			BGMMode bgmMode = BGMMode.NOTHING;
 			if (e.hasAttribute("bgmMode")) {
 				bgmMode = e.getAttributes().get("bgmMode").of(BGMMode.class);
 			}
+
 			String win = e.getAttributes().get("win").getValue();
 			String lose = e.getAttributes().get("lose").getValue();
 			List<EnemyBlueprint> list = new ArrayList<>();
 			for (XMLElement ee : e.getElement("enemy")) {
 				list.add(EnemyStorage.getInstance().getByVisibleName(ee.getAttributes().get("name").getValue()));
 			}
-			EnemySet es = new EnemySet(name, list, p, bgmMapName, bgmName, bgmMode, win, lose);
+			EnemySet es = new EnemySet(name, list, p, bgmMapName, bgmName, bgmMode, winBgmMapName, winBgmName, win, lose);
 			add(es);
 		}
 

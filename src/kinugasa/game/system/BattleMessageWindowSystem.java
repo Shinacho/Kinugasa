@@ -25,6 +25,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
@@ -89,22 +90,22 @@ public class BattleMessageWindowSystem implements Drawable {
 		actionResultW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		statusDescW = new StatusDescWindow(
 				24 + 8,
-				24 + 8,
+				(int) (BattleStatusWindows.h + 1),
 				(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
-				(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+				(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60),
 				GameSystem.getInstance().getPartyStatus()
 		);
 		itemDescW = new MessageWindow(
 				24 + 8,
-				24 + 8,
+				BattleStatusWindows.h + 1,
 				(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
-				(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32)
+				(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60)
 		);
 		battleResultW = new MessageWindow(
 				24 + 8,
-				24 + 8,
+				BattleStatusWindows.h + 1,
 				(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
-				(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32)
+				(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60)
 		);
 		statusDescWPage = 0;
 
@@ -172,8 +173,111 @@ public class BattleMessageWindowSystem implements Drawable {
 		}
 	}
 
-	void setItemDesc(Item i) {
+	void setItemDesc(Status user, Item i) {
+		//アイテムの詳細をサブに表示
+		StringBuilder sb = new StringBuilder();
+		sb.append(i.getName()).append(Text.getLineSep());
 
+		//DESC
+		String desc = i.getDesc();
+		if (desc.contains(Text.getLineSep())) {
+			String[] sv = desc.split(Text.getLineSep());
+			for (String v : sv) {
+				sb.append(" ").append(v);
+				sb.append(Text.getLineSep());
+			}
+		} else {
+			sb.append(" ").append(i.getDesc());
+			sb.append(Text.getLineSep());
+		}
+		//価値
+		sb.append(" ").append(I18N.translate("VALUE")).append(":").append(i.getValue());
+		sb.append(Text.getLineSep());
+		//装備スロット
+		sb.append(" ").append(I18N.translate("SLOT")).append(":").append(i.getEqipmentSlot() != null
+				? i.getEqipmentSlot().getName()
+				: I18N.translate("NONE"));
+		sb.append(Text.getLineSep());
+		//WMT
+		if (i.getWeaponMagicType() != null) {
+			sb.append(" ").append(I18N.translate("WMT")).append(":").append(i.getWeaponMagicType().getName());
+			sb.append(Text.getLineSep());
+		}
+		//area
+		int area = 0;
+		if (i.isEqipItem()) {
+			//範囲表示するのは武器だけ
+			if (i.getWeaponMagicType() != null) {
+				area = i.getArea();
+			}
+		} else {
+			if (i.getBattleEvent() != null && !i.getBattleEvent().isEmpty()) {
+				area = (int) (user.getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
+			}
+		}
+		if (area != 0) {
+			sb.append(" ").append(I18N.translate("AREA")).append(":").append(area);
+			sb.append(Text.getLineSep());
+		}
+		//キーアイテム属性
+		if (!i.canSale()) {
+			sb.append(" ").append(I18N.translate("CANT_SALE"));
+			sb.append(Text.getLineSep());
+		}
+		//DCS
+		if (i.getDamageCalcStatusKey() != null && !i.getDamageCalcStatusKey().isEmpty()) {
+			String dcs = "";
+			for (StatusKey s : i.getDamageCalcStatusKey()) {
+				dcs += s.getDesc() + ",";
+			}
+			dcs = dcs.substring(0, dcs.length() - 1);
+			sb.append(" ").append(I18N.translate("DCS")).append(":").append(dcs);
+			sb.append(Text.getLineSep());
+		}
+		//戦闘中アクション
+		if (i.getBattleEvent() != null && !i.getBattleEvent().isEmpty()) {
+			sb.append(" ").append(I18N.translate("CAN_USE_BATTLE"));
+			sb.append(Text.getLineSep());
+		}
+		if (i.isEqipItem()) {
+			//攻撃回数
+			if (i.getActionCount() > 1) {
+				sb.append(" ").append(I18N.translate("ACTION_COUNT").replaceAll("n", i.getActionCount() + ""));
+				sb.append(Text.getLineSep());
+			}
+			//eqStatus
+			if (i.getEqStatus() != null && !i.getEqStatus().isEmpty()) {
+				for (StatusValue s : i.getEqStatus()) {
+					if (StatusDescWindow.getUnvisibleStatusList().contains(s.getName())) {
+						continue;
+					}
+					String v;
+					if (s.getKey().getMax() <= 1f) {
+						v = (float) (s.getValue() * 100) + "%";//1%単位
+					} else {
+						v = (int) s.getValue() + "";
+					}
+					if (!v.startsWith("0")) {
+						sb.append(" ");
+						sb.append(s.getKey().getDesc()).append(":").append(v);
+						sb.append(Text.getLineSep());
+					}
+				}
+			}
+			//eqAttr
+			if (i.getEqAttr() != null && !i.getEqAttr().isEmpty()) {
+				for (AttributeValue a : i.getEqAttr()) {
+					String v = (float) (a.getValue() * 100) + "%";
+					if (!v.startsWith("0")) {
+						sb.append(" ");
+						sb.append(a.getKey().getDesc()).append(":").append(v);
+						sb.append(Text.getLineSep());
+					}
+				}
+			}
+		}
+		itemDescW.setText(sb.toString());
+		itemDescW.allText();
 	}
 
 	void statusDescWindowNextSelect() {
@@ -350,7 +454,6 @@ public class BattleMessageWindowSystem implements Drawable {
 	public static final int ITEM_CHOICE_USE_USE = 1;
 	public static final int ITEM_CHOICE_USE_EQIP = 2;
 	public static final int ITEM_CHOICE_USE_PASS = 3;
-	public static final int ITEM_CHOICE_USE_THROW = 4;
 	private int itemChoiceUseSelected = -1;
 
 	void openItemChoiceUse() {
@@ -363,7 +466,6 @@ public class BattleMessageWindowSystem implements Drawable {
 		options.add(new Text(I18N.translate("USE")));
 		options.add(new Text(I18N.translate("EQIP")));
 		options.add(new Text(I18N.translate("PASS")));
-		options.add(new Text(I18N.translate("THROW")));
 		itemChoiceUseW.setText(new Choice(options, "BATTLE_MW_SYSTEM_IUC", i.getName() + I18N.translate("OF")));
 		setVisible(StatusVisible.ON, mode.ITEM_USE_SELECT, InfoVisible.OFF);
 	}

@@ -44,14 +44,19 @@ public class EnemySet implements Nameable, Comparable<EnemySet> {
 	private String bgmName;
 	private String winLogicName, loseLogicName;
 	private BGMMode bgmMode;
+	private String winBgmMap, winBgmName;
 
-	public EnemySet(String name, List<EnemyBlueprint> enemies, float p, String bgmMapName, String bgmName, BGMMode mode,
+	public EnemySet(String name, List<EnemyBlueprint> enemies, float p, 
+			String bgmMapName, String bgmName, BGMMode mode,
+			String winbgmMap, String winBgmName,
 			String winLogicName, String loseLogicName) {
 		this.name = name;
 		this.enemies = enemies;
 		this.p = p;
 		this.bgmMapName = bgmMapName;
 		this.bgmName = bgmName;
+		this.winBgmMap = winbgmMap;
+		this.winBgmName = winBgmName;
 		this.winLogicName = winLogicName;
 		this.loseLogicName = loseLogicName;
 		this.bgmMode = mode;
@@ -86,6 +91,13 @@ public class EnemySet implements Nameable, Comparable<EnemySet> {
 			throw new GameSystemException("enemySet " + name + " is not have BGM");
 		}
 		return SoundStorage.getInstance().get(bgmMapName).get(bgmName);
+	}
+
+	public Sound getWinBgm() {
+		if (winBgmMap != null && winBgmName != null) {
+			return SoundStorage.getInstance().get(winBgmMap).get(winBgmName);
+		}
+		throw new GameSystemException("enemySet " + name + " win bgm is null");
 	}
 
 	public List<EnemyBlueprint> getEnemies() {

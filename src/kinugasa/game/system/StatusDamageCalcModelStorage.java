@@ -43,11 +43,12 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 
 	private StatusDamageCalcModelStorage() {
 		add(new StatusDamageCalcModel("DUMMY") {
+			//TODO:
 			@Override
 			public ActionEventResult exec(BattleCharacter user, ActionEvent ba, BattleCharacter tgt) {
 				System.out.println("ダメージ計算が実行された");
 				//装備アイテムの属性、ダメージ計算に使うステータスキーを参照しなければならない。
-				return new ActionEventResult(ActionResultType.SUCCESS, new AnimationSprite(new Animation(new FrameTimeCounter(20), new SpriteSheet("resource/field/image/fieldChip16.png").rows(0, 16, 16).images())));
+				return new ActionEventResult(ActionResultType.SUCCESS, new AnimationSprite(new Animation(new FrameTimeCounter(20), new SpriteSheet("resource/data/image/testAnimation.png").rows(0, 16, 16).images())));
 			}
 		});
 		//TODO DCT=DIRECTかつATTR=noneAttrKeyの場合耐性を無視してダメージを与える

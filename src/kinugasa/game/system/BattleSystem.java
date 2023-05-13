@@ -94,6 +94,8 @@ public class BattleSystem implements Drawable {
 	private Sound prevBGM;
 	//戦闘BGM
 	private Sound currentBGM;
+	//勝利BGM
+	private Sound winBGM;
 	//勝利遷移ロジック名、敗北遷移ロジック名
 	private String winLogicName, loseLogicName;
 	//--------------------------------------------------------表示中・実行中
@@ -136,21 +138,64 @@ public class BattleSystem implements Drawable {
 	class StageHolder {
 
 		private Stage stage;
+		private Stage next;
 
 		public void setStage(Stage stage) {
+			setStage(stage, null);
+		}
+
+		public void setStage(Stage s, Stage n) {
 			if (GameSystem.isDebugMode()) {
-				System.out.println(" changeStage : [" + this.stage + "] to [" + stage + "]");
+				System.out.println(" changeStage : [" + this.stage + "] to [" + s + "] next[" + n + "]");
 			}
-			if (stage == Stage.EXECUTING_ACTION) {
+			this.stage = s;
+			this.next = n;
+			if (this.stage == Stage.EXECUTING_ACTION) {
 				if (currentBAWaitTime == null) {
 					currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
 				}
+				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
+				return;
 			}
-			this.stage = stage;
+			if (this.stage == Stage.ITEM_CHOICE_USE) {
+				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ITEM_USE_SELECT);
+				return;
+			}
+			if (this.stage == Stage.SHOW_ITEM_DESC) {
+				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.SHOW_ITEM_DESC);
+				return;
+			}
+			if (this.stage == Stage.TARGET_SELECT) {
+				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.TGT_SELECT);
+				return;
+			}
+			if (this.stage == Stage.SHOW_STATUS) {
+				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.SHOW_STATUS_DESC);
+				return;
+			}
+			if (this.stage == Stage.CMD_SELECT) {
+				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.CMD_SELECT);
+				return;
+			}
+			if (this.stage == Stage.BATLE_END) {
+				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
+				return;
+			}
+		}
+
+		public Stage getNext() {
+			return next;
 		}
 
 		public Stage getStage() {
 			return stage;
+		}
+
+		public void next() {
+			if (next == null) {
+				throw new GameSystemException("next stage is null");
+			}
+			setStage(next);
 		}
 
 	}
@@ -199,7 +244,7 @@ public class BattleSystem implements Drawable {
 		/**
 		 * アイテム詳細確認中
 		 */
-		SHOW_ITEM,
+		SHOW_ITEM_DESC,
 		/**
 		 * 敵移動実行中。終わったらWAITに入る。
 		 */
@@ -326,6 +371,12 @@ public class BattleSystem implements Drawable {
 				return toString();
 			}
 		},
+		CANT_USE_THIS_ITEM {
+			@Override
+			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
+				return toString();
+			}
+		},
 		ITEM_WHO_TO_USE {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
@@ -431,6 +482,7 @@ public class BattleSystem implements Drawable {
 			currentBGM = es.getBgm().load();
 			currentBGM.stopAndPlay();
 		}
+		winBGM = enc.getEnemySetStorage().get().getWinBgm();
 		//敵取得
 		enemies = es.create();
 		ess.dispose();
@@ -730,7 +782,6 @@ public class BattleSystem implements Drawable {
 			} else {
 				//動けるが混乱
 				CmdAction ba = currentCmd.randomAction();
-				currentBAWaitTime = ba.createWaitTime();
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 				execAction(ba);
 				return currentCmd;
@@ -814,11 +865,11 @@ public class BattleSystem implements Drawable {
 
 	//アクション実行（コミット、窓口）
 	OperationResult execAction(CmdAction a) {
-		currentBAWaitTime = a.createWaitTime();
 		//PC,NPC問わず選択されたアクションを実行する。
 
 		//ウインドウ状態初期化・・・アクション実行前
-		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.NOTHING);
+		messageWindowSystem.getActionResultW().setText("");
+		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 
 		//カレントユーザ
 		BattleCharacter user = currentCmd.getUser();
@@ -907,7 +958,7 @@ public class BattleSystem implements Drawable {
 				for (; !GameSystem.getInstance().getPartyStatus().equals(currentCmd.getUser().getStatus()); i++);
 				messageWindowSystem.setStatusDescPCIDX(i);
 				messageWindowSystem.setVisible(
-						BattleMessageWindowSystem.StatusVisible.OFF,
+						BattleMessageWindowSystem.StatusVisible.ON,
 						BattleMessageWindowSystem.Mode.SHOW_STATUS_DESC);
 				stage.setStage(BattleSystem.Stage.SHOW_STATUS);
 				return OperationResult.SHOW_STATUS;
@@ -997,7 +1048,9 @@ public class BattleSystem implements Drawable {
 
 	//アクション実行（コミット、ターゲットあり）
 	OperationResult execAction(CmdAction ba, ActionTarget tgt) {
+		//メッセージウインドウを初期化
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
+		messageWindowSystem.getActionResultW().setText("");
 		//ターゲットシステムが呼ばれているので、初期化
 		targetSystem.unsetCurrent();
 		//カレントユーザ
@@ -1083,8 +1136,11 @@ public class BattleSystem implements Drawable {
 		}
 		//詠唱を開始したを表示
 		setMsg(MessageType.SPELL_START, ba, user.getStatus());
-		currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
 		stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+	}
+
+	public void cancelItemDescShow() {
+		stage.setStage(Stage.ITEM_CHOICE_USE);
 	}
 
 	public void nextItemChoiceUseWindowSelect() {
@@ -1102,7 +1158,6 @@ public class BattleSystem implements Drawable {
 	}
 
 	public void cancelItemChoice() {
-		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.CMD_SELECT);
 		stage.setStage(Stage.CMD_SELECT);
 	}
 
@@ -1118,15 +1173,20 @@ public class BattleSystem implements Drawable {
 		switch (selected) {
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_CHECK:
 				//チェックウインドウを出す
-				messageWindowSystem.setItemDesc(i);
-				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.SHOW_ITEM_DESC);
-				stage.setStage(BattleSystem.Stage.SHOW_ITEM);
+				messageWindowSystem.setItemDesc(currentCmd.getUser().getStatus(), i);
+				stage.setStage(BattleSystem.Stage.SHOW_ITEM_DESC);
 				break;
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_EQIP:
 				//装備できない
 				if (i.getEqipmentSlot() == null) {
 					setMsg(MessageType.CANT_EQIP, List.of(i.getName()));
-					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
+					return;
+				}
+				//装備できない（属性値）
+				if (!currentCmd.getUser().getStatus().canEqip(i)) {
+					setMsg(MessageType.CANT_EQIP, List.of(i.getName()));
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 					return;
 				}
 				//装備した・外した
@@ -1137,25 +1197,28 @@ public class BattleSystem implements Drawable {
 					currentCmd.getUser().getStatus().addEqip(i);
 				}
 				MessageType t = currentCmd.getUser().getStatus().isEqip(i.getName())
-						? MessageType.UNEQIP_ITEM
-						: MessageType.EQIP_ITEM;
+						? MessageType.EQIP_ITEM
+						: MessageType.UNEQIP_ITEM;
 				setMsg(t, List.of(i.getName()));
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 				break;
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_USE:
+				//バトルアクションが入っていない場合、使えないメッセージ表示
+				if (!i.isBattleUse()) {
+					setMsg(MessageType.CANT_USE_THIS_ITEM, List.of(i.getName()));
+					stage.setStage(Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
+					break;
+				}
+				//使う
 				itemChoiceMode = BattleMessageWindowSystem.ITEM_CHOICE_USE_USE;
 				area = (int) (currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
 				setMsg(MessageType.ITEM_WHO_TO_USE, List.of(i.getName()));
 				break;
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS:
+				//渡す
 				itemChoiceMode = BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS;
 				area = (int) (currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
 				setMsg(MessageType.ITEM_WHO_TO_PASS, List.of(i.getName()));
-				break;
-			case BattleMessageWindowSystem.ITEM_CHOICE_USE_THROW:
-				itemChoiceMode = BattleMessageWindowSystem.ITEM_CHOICE_USE_THROW;
-				area = (int) (currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.str).getValue() * 3);
-				setMsg(MessageType.ITEM_WHO_TO_THROW, List.of(i.getName()));
 				break;
 			default:
 				throw new AssertionError("undefined item choice use No");
@@ -1163,14 +1226,24 @@ public class BattleSystem implements Drawable {
 		//誰に？
 		if (itemChoiceMode >= 0) {
 			ActionTarget t = BattleTargetSystem.instantTarget(currentCmd.getUser(), i, area,
-					itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_THROW,
+					false,
 					itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_USE
 					|| itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS
 			);
+			//ターゲット不在の場合
+			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS && t.getTarget().isEmpty()) {
+				//パスする味方がいない
+				setMsg(MessageType.NO_TARGET, List.of(i.getName()));
+				stage.setStage(Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
+				return;
+			}
 			List<String> tgt = t.getTarget().stream().map(p -> p.getName()).collect(Collectors.toList());
-			tgt.add((itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_THROW) ? 0 : tgt.size(), t.getUser().getName());
-			setMsg(MessageType.TARGET_SELECT, tgt);
+			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_USE) {
+				tgt.add(tgt.size(), t.getUser().getName());//ラストに自分を追加（使う場合
+			}
 			//ターゲット選択へ
+			messageWindowSystem.getTgtW().setText(tgt.stream().map(p -> new Text(p)).collect(Collectors.toList()));
+			setMsg(MessageType.TARGET_SELECT, tgt);
 			stage.setStage(BattleSystem.Stage.TARGET_SELECT);
 		}
 	}
@@ -1227,7 +1300,7 @@ public class BattleSystem implements Drawable {
 
 	public void commitTargetSelect() {
 		if (itemChoiceMode != -1) {
-
+			itemChoiceMode = -1;
 		}
 	}
 
@@ -1325,9 +1398,8 @@ public class BattleSystem implements Drawable {
 			if (GameSystem.isDebugMode()) {
 				System.out.println(" this battle is ended");
 			}
-			stage.setStage(Stage.BATLE_END);
 			setMsg(MessageType.BATTLE_RESULT);
-			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
+			stage.setStage(Stage.BATLE_END);
 		}
 
 		//効果の終わったアニメーションを取り除く
@@ -1423,10 +1495,14 @@ public class BattleSystem implements Drawable {
 				break;
 			case EXECUTING_ACTION:
 				//カレントBATimeが切れるまで待つ
-				assert currentBAWaitTime != null : "EXECITING_ACTION buf tc is null";
+				assert currentBAWaitTime != null : "currentBAWaitTime is null";
 				if (currentBAWaitTime.isReaching()) {
 					currentBAWaitTime = null;
-					stage.setStage(Stage.WAITING_EXEC_CMD);
+					if (stage.getNext() != null) {
+						stage.next();
+					} else {
+						stage.setStage(Stage.WAITING_EXEC_CMD);
+					}
 				}
 				break;
 			case EXECUTING_MOVE:
@@ -1471,7 +1547,7 @@ public class BattleSystem implements Drawable {
 				stage.setStage(Stage.EXECUTING_ACTION);
 				break;
 			case ITEM_CHOICE_USE:
-			case SHOW_ITEM:
+			case SHOW_ITEM_DESC:
 			case SHOW_STATUS:
 				//何もしない（専用メソッドから操作する
 				break;
@@ -1486,7 +1562,7 @@ public class BattleSystem implements Drawable {
 	@Override
 	public void draw(GraphicsContext g) {
 		battleFieldSystem.draw(g);
-		
+
 		enemies.forEach(p -> p.draw(g));
 		GameSystem.getInstance().getPartySprite().forEach(p -> p.draw(g));
 
@@ -1499,7 +1575,6 @@ public class BattleSystem implements Drawable {
 
 	//ターゲット選択モードをキャンセルして閉じる。アクション選択に戻る
 	public void cancelTargetSelect() {
-		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.CMD_SELECT);
 		targetSystem.unsetCurrent();
 		stage.setStage(Stage.CMD_SELECT);
 	}

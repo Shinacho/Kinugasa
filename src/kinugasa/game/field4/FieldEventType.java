@@ -47,9 +47,11 @@ import kinugasa.game.system.Status;
 import kinugasa.game.ui.Text;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.game.ui.TextStorageStorage;
+import kinugasa.graphics.Animation;
 import kinugasa.graphics.ColorChanger;
 import kinugasa.graphics.ColorTransitionModel;
 import kinugasa.graphics.FadeCounter;
+import kinugasa.object.AnimationSprite;
 import kinugasa.object.FadeEffect;
 import kinugasa.object.FourDirection;
 import kinugasa.resource.NameNotFoundException;
@@ -624,6 +626,29 @@ public enum FieldEventType {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
 			GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction());
+			return UserOperationRequire.CONTINUE;
+		}
+
+	},
+	NPC_ANIMATION_IDX_TO {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
+			NPC n = FieldMap.getCurrentInstance().getNpcStorage().get(e.getTargetName());
+			Animation ani = n.getAnimation();
+			n.setImage(ani.getImage(Integer.parseInt(e.getValue())));
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	PC_ANIMATION_IDX_TO {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
+			int idx = Integer.parseInt(e.getTargetName());
+			if (idx >= 0 && idx < party.size()) {
+				AnimationSprite s = GameSystem.getInstance().getPartySprite().get(idx);
+				Animation ani = s.getAnimation();
+				s.setImage(ani.getImage(Integer.parseInt(e.getValue())));
+			}
+
 			return UserOperationRequire.CONTINUE;
 		}
 

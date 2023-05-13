@@ -149,6 +149,9 @@ public class Status implements Nameable {
 		if (!itemBag.contains(i)) {
 			throw new GameSystemException(this + " not have item:" + i);
 		}
+		if (!i.getEqipTerm().stream().allMatch(p -> p.canEqip(this, i))) {
+			return false;
+		}
 		return i.canEqip(this) && eqipment.keySet().contains(i.getEqipmentSlot());
 	}
 
