@@ -130,6 +130,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		text += "         <------------------[ " + type.displayName() + " ]------------------>";
 		text += Text.getLineSep();
 		int i = 0;
+		cmd.getUser().getStatus().updateAction(true);
 		List<CmdAction> actionList = cmd.getBattleActionOf(type);
 		//アイテム以外の場合はバトル利用可能なアクションにフィルター
 		if (type != ActionType.ITEM) {
@@ -137,6 +138,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		}
 
 		Collections.sort(actionList);
+
 		if (actionList.isEmpty()) {
 			switch (type) {
 				case ATTACK:

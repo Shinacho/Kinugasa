@@ -355,6 +355,9 @@ public class BattleMessageWindowSystem implements Drawable {
 	}
 
 	void setVisible(StatusVisible sv, Mode m, InfoVisible iv) {
+		if (m == null) {
+			throw new GameSystemException("BMWS : mode is null");
+		}
 		this.sv = sv;
 		this.mode = m;
 		this.iv = iv;
@@ -394,6 +397,7 @@ public class BattleMessageWindowSystem implements Drawable {
 				statusDescW.setVisible(true);
 				break;
 			case SHOW_ITEM_DESC:
+				itemChoiceUseW.setVisible(true);
 				itemDescW.setVisible(true);
 				break;
 			case BATTLE_RESULT:

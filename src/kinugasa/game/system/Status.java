@@ -220,6 +220,9 @@ public class Status implements Nameable {
 		actions.remove(i);
 		tgt.itemBag.add(i);
 		tgt.actions.add(i);
+		if (GameSystem.isDebugMode()) {
+			System.out.println("STATUS item pass [" + getName() + "]s[" + i.getName() + "] to [" + tgt.getName() + "]");
+		}
 	}
 
 	public void passBook(Status tgt, Book b) {
@@ -230,30 +233,22 @@ public class Status implements Nameable {
 		tgt.bookBag.add(b);
 	}
 
-	void updateItemAction() {
-		//持っているアイテム使用アクションをいったんすべて消して、ITEMBAGから再導入する
-		List<CmdAction> removeList = getActions().stream().filter(p -> p.getType() == ActionType.ITEM).collect(Collectors.toList());
-		getActions().removeAll(removeList);
-		getActions().addAll(getItemBag().getItems());
-		actions = actions.stream().distinct().collect(Collectors.toList());
+	public void updateAction() {
+		updateAction(false);
 	}
 
-	public void updateAction() {
+	public void updateAction(boolean itemAdd) {
 		actions.clear();
 		for (CmdAction a : ActionStorage.getInstance()) {
+			if (a.getType() == ActionType.ITEM) {
+				continue;
+			}
 			if (a.getType() == ActionType.OTHER) {
 				actions.add(a);
 				continue;
 			}
-			if (a.getType() == ActionType.ITEM) {
-				if (itemBag.contains(a.getName())) {
-					actions.add(a);
-					continue;
-				}
-			}
 			if (a.getType() == ActionType.MAGIC) {
 				if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
-
 					actions.add(a);
 				}
 			}
@@ -261,8 +256,20 @@ public class Status implements Nameable {
 				actions.add(a);
 			}
 		}
+		if (itemAdd) {
+			for (Item i : itemBag) {
+				actions.add(i);
+			}
+		}
 		actions = actions.stream().distinct().collect(Collectors.toList());
 
+		if (GameSystem.isDebugMode()) {
+			System.out.println("STATUS [" + getName() + "]s action update : ");
+			for (CmdAction a : actions) {
+				System.out.println(" " + a);
+			}
+			System.out.println("---");
+		}
 	}
 
 	public void clearEqip() {

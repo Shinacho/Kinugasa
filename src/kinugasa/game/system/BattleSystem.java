@@ -53,6 +53,7 @@ import kinugasa.game.system.EnemySetStorage;
 import kinugasa.game.system.GameSystem;
 import kinugasa.game.system.MagicSpell;
 import static kinugasa.game.system.TargetType.SELF;
+import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.Text;
 import kinugasa.object.AnimationSprite;
 import kinugasa.object.BasicSprite;
@@ -134,11 +135,19 @@ public class BattleSystem implements Drawable {
 	private boolean end = false;
 	//戦況図モードかどうか
 	private boolean showMode = false;
+	//AfterMoveAction更新用の前回検査時の攻撃可否
+	private boolean prevAttackOK = false;
+	//-----------------------------------------------------------アイテム
+	//アイテムChoiceUseインデックス：-1：ターゲット選択未使用
+	private int itemChoiceMode = -1;
+	//アイテム使用とパスのアイテム本体
+	private Item itemPassAndUse;
 
 	class StageHolder {
 
 		private Stage stage;
 		private Stage next;
+		private Stage prev;
 
 		public void setStage(Stage stage) {
 			setStage(stage, null);
@@ -146,8 +155,9 @@ public class BattleSystem implements Drawable {
 
 		public void setStage(Stage s, Stage n) {
 			if (GameSystem.isDebugMode()) {
-				System.out.println(" changeStage : [" + this.stage + "] to [" + s + "] next[" + n + "]");
+				System.out.println(" changeStage : [" + this.stage + "] to [" + s + "] and[" + n + "]");
 			}
+			prev = this.stage;
 			this.stage = s;
 			this.next = n;
 			if (this.stage == Stage.EXECUTING_ACTION) {
@@ -189,6 +199,14 @@ public class BattleSystem implements Drawable {
 
 		public Stage getStage() {
 			return stage;
+		}
+
+		public Stage getPrev() {
+			return prev;
+		}
+
+		public void prev() {
+			setStage(prev);
 		}
 
 		public void next() {
@@ -395,6 +413,18 @@ public class BattleSystem implements Drawable {
 				return toString();
 			}
 		},
+		ITEM_PASSED {
+			@Override
+			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
+				return toString();
+			}
+		},
+		ITEM_USED {
+			@Override
+			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
+				return toString();
+			}
+		},
 		SPELL_START {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
@@ -496,7 +526,11 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.init();
 		conditionManager = ConditionManager.getInstance();
 		//念のためパーティーのアクションを更新
-		GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction());
+		GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction(true));
+//		//アイテム使用をアクションに追加する
+//		for (PlayerCharacter pc : gs.getParty()) {
+//			pc.getStatus().getActions().addAll(pc.getStatus().getItemBag().getItems());
+//		}
 
 		//出現MSG設定用マップ
 		Map<String, Long> enemyNum = enemies.stream().collect(Collectors.groupingBy(Enemy::getId, Collectors.counting()));
@@ -557,10 +591,6 @@ public class BattleSystem implements Drawable {
 			y += size * 2;
 		}
 
-		//アイテム使用をアクションに追加する
-		for (PlayerCharacter pc : gs.getParty()) {
-			pc.getStatus().getActions().addAll(pc.getStatus().getItemBag().getItems());
-		}
 	}
 
 	private void putEnemy() {
@@ -703,7 +733,7 @@ public class BattleSystem implements Drawable {
 				pc.getSprite().setVisible(true);
 				//逃げたコンディションを外す
 				pc.getStatus().removeCondition(BattleConfig.ConditionName.escaped);
-
+				//アイテムアクションの削除
 				List<CmdAction> removeList = pc.getStatus().getActions().stream().filter(p -> p.getType() == ActionType.ITEM).collect(Collectors.toList());
 				pc.getStatus().getActions().removeAll(removeList);
 			}
@@ -1000,7 +1030,7 @@ public class BattleSystem implements Drawable {
 //				}
 				//逃げられない
 				setMsg(MessageType.PC_IS_ESCAPE_MISS, a, user.getStatus());
-				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
 				return OperationResult.CANCEL;
 			}
 		}
@@ -1102,8 +1132,6 @@ public class BattleSystem implements Drawable {
 		animation.addAll(res.getAnimation());
 		currentBAWaitTime = new FrameTimeCounter(ba.getWaitTime());
 		stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
-		//アイテムがREMOVEされている可能性があるため、全員のアクションを改める
-		getAllChara().forEach(p -> p.getStatus().updateItemAction());
 		return OperationResult.SUCCESS;
 
 	}
@@ -1162,8 +1190,8 @@ public class BattleSystem implements Drawable {
 	}
 
 	public void commitItemChoiceUse() {
+		messageWindowSystem.getTgtW().setText(List.of());
 		itemChoiceMode = -1;
-		//米ターゲットセレクトに遷移する可能性がある
 		if (!messageWindowSystem.getItemChoiceUseW().isVisible()) {
 			throw new GameSystemException("item choice use, but window is not active");
 		}
@@ -1238,19 +1266,17 @@ public class BattleSystem implements Drawable {
 				return;
 			}
 			List<String> tgt = t.getTarget().stream().map(p -> p.getName()).collect(Collectors.toList());
-			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_USE) {
-				tgt.add(tgt.size(), t.getUser().getName());//ラストに自分を追加（使う場合
-			}
 			//ターゲット選択へ
+			itemPassAndUse = i;
+			String msg = (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS)
+					? i.getName() + I18N.translate("WHO_DO_PASS")
+					: i.getName() + I18N.translate("WHO_DO_USE");
+			tgt.add(0, msg);
 			messageWindowSystem.getTgtW().setText(tgt.stream().map(p -> new Text(p)).collect(Collectors.toList()));
 			setMsg(MessageType.TARGET_SELECT, tgt);
 			stage.setStage(BattleSystem.Stage.TARGET_SELECT);
 		}
 	}
-	//アイテムChoiceUseインデックス：-1：ターゲット選択未使用
-	private int itemChoiceMode = -1;
-	//AfterMoveAction更新用の前回検査時の攻撃可否
-	private boolean prevAttackOK = false;
 
 	//移動後攻撃の設定を行う。引数で攻撃できるかを渡す。
 	@LoopCall
@@ -1300,15 +1326,64 @@ public class BattleSystem implements Drawable {
 
 	public void commitTargetSelect() {
 		if (itemChoiceMode != -1) {
-			itemChoiceMode = -1;
+			//パスor使う
+			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_USE) {
+				if (GameSystem.isDebugMode()) {
+					System.out.println("use item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
+				}
+				//ターゲットに対してアクションを実行
+				String tgtName = messageWindowSystem.getTgtW().getSelected().getText();
+				//PC,NPCから名前検索
+				List<BattleCharacter> all = new ArrayList();
+				all.addAll(enemies);
+				all.addAll(GameSystem.getInstance().getParty());
+				BattleCharacter tgt = all.stream().filter(p -> p.getName().equals(tgtName)).collect(Collectors.toList()).get(0);
+				itemPassAndUse.exec(BattleTargetSystem.instantTarget(currentCmd.getUser(), itemPassAndUse).setTarget(List.of(tgt)));
+				//ドロップアイテムイベントの実行
+				if (itemPassAndUse.getBattleEvent().stream().filter(p -> p.getParameterType() == ParameterType.ITEM_LOST).count() > 0) {
+					//TODO:暫定
+					currentCmd.getUser().getStatus().getItemBag().drop(itemPassAndUse);
+				}
+				//アクション更新
+				GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction(true));
+				//効果を表示
+				setMsg(MessageType.ITEM_USED, List.of(itemPassAndUse.getName()));
+				itemPassAndUse = null;
+				stage.setStage(Stage.EXECUTING_ACTION);
+				itemChoiceMode = -1;
+				return;
+			}
+			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS) {
+				if (GameSystem.isDebugMode()) {
+					System.out.println("pass item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
+				}
+				//ターゲットに対してパスを実行
+				//PC,NPCから名前検索
+				String tgtName = messageWindowSystem.getTgtW().getSelected().getText();
+				List<BattleCharacter> all = new ArrayList();
+				all.addAll(enemies);
+				all.addAll(GameSystem.getInstance().getParty());
+				BattleCharacter tgt = all.stream().filter(p -> p.getName().equals(tgtName)).collect(Collectors.toList()).get(0);
+				BattleCharacter user = currentCmd.getUser();
+				user.getStatus().passItem(tgt.getStatus(), itemPassAndUse);
+				//アクション更新
+				GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction(true));
+				setMsg(MessageType.ITEM_PASSED, List.of(itemPassAndUse.getName()));
+				stage.setStage(Stage.EXECUTING_ACTION);
+				itemPassAndUse = null;
+				itemChoiceMode = -1;
+				return;
+			}
+			return;
 		}
+
+		//攻撃ターゲットセレクト
 	}
 
 	/**
 	 * 戦況図モードの切替
 	 */
 	public void switchShowMode() {
-		showMode = !showMode;
 		if (showMode) {
 			messageWindowSystem.setVisibleFromSave();
 		} else {
@@ -1318,6 +1393,7 @@ public class BattleSystem implements Drawable {
 					BattleMessageWindowSystem.Mode.NOTHING);
 
 		}
+		showMode = !showMode;
 	}
 
 	private void setMsg(MessageType t) {
@@ -1576,7 +1652,7 @@ public class BattleSystem implements Drawable {
 	//ターゲット選択モードをキャンセルして閉じる。アクション選択に戻る
 	public void cancelTargetSelect() {
 		targetSystem.unsetCurrent();
-		stage.setStage(Stage.CMD_SELECT);
+		stage.prev();
 	}
 
 	BattleMessageWindowSystem getMessageWindowSystem() {

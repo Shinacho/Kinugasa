@@ -218,11 +218,11 @@ public class PlayerCharacter implements BattleCharacter {
 			status.addEqip(i);
 		}
 		for (XMLElement ee : root.getElement("item")) {
-			Item i = ItemStorage.getInstance().get(ee.getAttributes().get("name").getValue());
+			Item i = ItemStorage.getInstance().get(ee.getAttributes().get("name").getValue()).clone();
 			status.getItemBag().add(i);
 		}
 		for (XMLElement ee : root.getElement("book")) {
-			Book b = BookStorage.getInstance().get(ee.getAttributes().get("name").getValue());
+			Book b = BookStorage.getInstance().get(ee.getAttributes().get("name").getValue()).clone();
 			status.getBookBag().add(b);
 		}
 
