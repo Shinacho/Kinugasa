@@ -91,12 +91,19 @@ public class ActionDescWindow extends PCStatusWindow {
 		List<Text> t = new ArrayList<>();
 		t.add(new Text("<---" + s.get(pcIdx).getName() + I18N.translate("S") + I18N.translate("ACTION") + "--->"));
 
-		for (CmdAction a : s.get(pcIdx).getActions().stream().filter(p -> p.isBattleUse()).sorted().collect(Collectors.toList())) {
+		for (CmdAction a
+				: s.get(pcIdx).getActions()
+						.stream()
+						.filter(p -> p.isBattleUse())
+						.sorted()
+						.collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
 			if (a.getType() == ActionType.ITEM) {
+				//•\Ž¦‚µ‚È‚¢
 				continue;
 			}
 			if (a.getType() == ActionType.OTHER) {
+				//•\Ž¦‚µ‚È‚¢
 				continue;
 			}
 			sb.append("  ")

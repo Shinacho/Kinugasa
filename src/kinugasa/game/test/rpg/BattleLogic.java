@@ -24,27 +24,14 @@
 package kinugasa.game.test.rpg;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import kinugasa.game.GameLogic;
 import kinugasa.game.GameManager;
 import kinugasa.game.GameTimeManager;
 import kinugasa.game.GraphicsContext;
-import kinugasa.game.field4.VehicleStorage;
-import kinugasa.game.input.GamePadButton;
 import kinugasa.game.input.InputState;
-import kinugasa.game.input.InputType;
-import kinugasa.game.system.OperationResult;
-import kinugasa.game.system.AfterMoveActionMessageWindow;
-import kinugasa.game.system.BattleCharacter;
 import kinugasa.game.system.BattleCommand;
-import kinugasa.game.system.BattleCommandMessageWindow;
-import kinugasa.game.system.BattleResult;
-import kinugasa.game.system.BattleResultValues;
 import kinugasa.game.system.BattleSystem;
-import kinugasa.game.system.BattleTargetSystem;
 import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.ItemStorage;
-import kinugasa.object.KVector;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundBuilder;
 

@@ -121,31 +121,32 @@ public class BattleMessageWindowSystem implements Drawable {
 		if (statusDescWPage >= 5) {
 			statusDescWPage = 0;
 		}
+		int pcIdx = statusDescW.getPcIdx();
 		switch (statusDescWPage) {
 			case 0:
 				statusDescW = new StatusDescWindow(
 						24 + 8,
-						24 + 8,
+						(int) (BattleStatusWindows.h + 1),
 						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
-						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60),
 						GameSystem.getInstance().getPartyStatus()
 				);
 				break;
 			case 1:
 				statusDescW = new AttrDescWindow(
 						24 + 8,
-						24 + 8,
+						(int) (BattleStatusWindows.h + 1),
 						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
-						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60),
 						GameSystem.getInstance().getPartyStatus()
 				);
 
 			case 2:
 				statusDescW = new EqipItemWindow(
 						24 + 8,
-						24 + 8,
+						(int) (BattleStatusWindows.h + 1),
 						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
-						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60),
 						GameSystem.getInstance().getPartyStatus()
 				);
 
@@ -153,24 +154,25 @@ public class BattleMessageWindowSystem implements Drawable {
 			case 3:
 				statusDescW = new ActionDescWindow(
 						24 + 8,
-						24 + 8,
+						(int) (BattleStatusWindows.h + 1),
 						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
-						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60),
 						GameSystem.getInstance().getPartyStatus()
 				);
 				break;
 			case 4:
 				statusDescW = new ConditionDescWindow(
 						24 + 8,
-						24 + 8,
+						(int) (BattleStatusWindows.h + 1),
 						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
-						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 48 - 32),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60),
 						GameSystem.getInstance().getPartyStatus()
 				);
 				break;
 			default:
 				throw new AssertionError();
 		}
+		statusDescW.setPcIdx(pcIdx);
 	}
 
 	void setItemDesc(Status user, Item i) {
@@ -394,6 +396,14 @@ public class BattleMessageWindowSystem implements Drawable {
 				actionResultW.setVisible(true);
 				break;
 			case SHOW_STATUS_DESC:
+				statusDescW = new StatusDescWindow(
+						24 + 8,
+						(int) (BattleStatusWindows.h + 1),
+						(int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 1.5),
+						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60),
+						GameSystem.getInstance().getPartyStatus()
+				);
+				cmdW.setVisible(true);
 				statusDescW.setVisible(true);
 				break;
 			case SHOW_ITEM_DESC:

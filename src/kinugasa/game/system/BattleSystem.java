@@ -160,13 +160,6 @@ public class BattleSystem implements Drawable {
 			prev = this.stage;
 			this.stage = s;
 			this.next = n;
-			if (this.stage == Stage.EXECUTING_ACTION) {
-				if (currentBAWaitTime == null) {
-					currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
-				}
-				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-				return;
-			}
 			if (this.stage == Stage.ITEM_CHOICE_USE) {
 				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ITEM_USE_SELECT);
 				return;
@@ -181,6 +174,10 @@ public class BattleSystem implements Drawable {
 			}
 			if (this.stage == Stage.SHOW_STATUS) {
 				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.SHOW_STATUS_DESC);
+				//ステータス表示
+				int i = 0;
+				for (; !currentCmd.getUser().getStatus().equals(GameSystem.getInstance().getPartyStatus().get(i)); i++);
+				messageWindowSystem.setStatusDescPCIDX(i);
 				return;
 			}
 			if (this.stage == Stage.CMD_SELECT) {
@@ -189,6 +186,13 @@ public class BattleSystem implements Drawable {
 			}
 			if (this.stage == Stage.BATLE_END) {
 				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
+				return;
+			}
+			if (this.stage == Stage.EXECUTING_ACTION) {
+				if (currentBAWaitTime == null) {
+					currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
+				}
+				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 				return;
 			}
 		}
@@ -335,12 +339,6 @@ public class BattleSystem implements Drawable {
 			}
 		},
 		PC_IS_COMMIT_MOVE {
-			@Override
-			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
-			}
-		},
-		PC_IS_SHOW_STATUS {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
 				return toString();
@@ -879,22 +877,22 @@ public class BattleSystem implements Drawable {
 		return currentCmd;
 	}
 
-	public OperationResult commitCmd() {
+	public void commitCmd() {
 		//移動後攻撃か通常攻撃かを判定
 		boolean afterMove = messageWindowSystem.getAfterMoveW().isVisible();
 		//コマンドウインドウまたは移動後攻撃ウインドウからアクションを取得
 		if (!afterMove) {
 			if (messageWindowSystem.getCmdW().getSelectedCmd() == null) {
-				return OperationResult.CANCEL;//使える魔法／アイテムがない
+				return;//使える魔法／アイテムがない
 			}
 		}
-		return execAction(afterMove
+		execAction(afterMove
 				? messageWindowSystem.getAfterMoveW().getSelectedCmd()
 				: messageWindowSystem.getCmdW().getSelectedCmd());
 	}
 
 	//アクション実行（コミット、窓口）
-	OperationResult execAction(CmdAction a) {
+	void execAction(CmdAction a) {
 		//PC,NPC問わず選択されたアクションを実行する。
 
 		//ウインドウ状態初期化・・・アクション実行前
@@ -908,7 +906,7 @@ public class BattleSystem implements Drawable {
 		if (user.getStatus().isConfu()) {
 			//ターゲットシステムのカレント起動しないで対象を取得する
 			ActionTarget tgt = BattleTargetSystem.instantTarget(user, a);
-			return execAction(a, tgt);
+			execAction(a, tgt);
 		}
 
 		//NPCの場合
@@ -928,19 +926,20 @@ public class BattleSystem implements Drawable {
 					messageWindowSystem.setVisible(
 							BattleMessageWindowSystem.Mode.ACTION);
 					stage.setStage(BattleSystem.Stage.EXECUTING_MOVE);
-					return OperationResult.SUCCESS;
+					return;
 				} else {
 					//移動できないので何もしない
-					return OperationResult.MISS;
+					return;
 				}
 			} else {
 				//ターゲットがいる場合は即時実行
-				return execAction(a, tgt);
+				execAction(a, tgt);
+				return;
 			}
 		}
 
 		//PCの処理
-		assert user.isPlayer() : "PC action, but action is not PC";
+		assert user.isPlayer() : "PC action, but action is not PC : " + user + " \r\n " + currentCmd;
 		assert user.getStatus().getActions().contains(a) : "user not have action";
 
 		//PCの特殊コマンドの処理
@@ -949,13 +948,15 @@ public class BattleSystem implements Drawable {
 				//回避・回避状態を付与する
 				user.getStatus().addCondition(BattleConfig.ConditionName.avoidance);
 				setMsg(MessageType.PC_USE_AVO, a, user.getStatus());
-				return OperationResult.SUCCESS;
+				stage.setStage(Stage.EXECUTING_ACTION);
+				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.defence)) {
 				//防御・防御状態を付与する
 				user.getStatus().addCondition(BattleConfig.ConditionName.defence);
 				setMsg(MessageType.PC_USE_DEFENCE, a, user.getStatus());
-				return OperationResult.SUCCESS;
+				stage.setStage(Stage.EXECUTING_ACTION);
+				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.move)) {
 				//移動開始・初期位置を格納
@@ -970,28 +971,20 @@ public class BattleSystem implements Drawable {
 				messageWindowSystem.getAfterMoveW().setActions(action);
 				//ターゲットシステムのエリア表示を有効化：値はMOV
 				targetSystem.setCurrent(user, a);
-				stage.setStage(BattleSystem.Stage.PLAYER_MOVE);
-				return OperationResult.MOVE;
+				stage.setStage(Stage.PLAYER_MOVE);
+				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.commit)) {
 				//移動終了・キャラクタの向きとターゲット座標のクリアをする
-				messageWindowSystem.setVisible(
-						BattleMessageWindowSystem.Mode.NOTHING);
 				user.unsetTarget();
 				user.to(FourDirection.WEST);
 				stage.setStage(BattleSystem.Stage.WAITING_EXEC_CMD);
-				return OperationResult.SUCCESS;
+				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.status)) {
 				//ステータス表示
-				int i = 0;
-				for (; !GameSystem.getInstance().getPartyStatus().equals(currentCmd.getUser().getStatus()); i++);
-				messageWindowSystem.setStatusDescPCIDX(i);
-				messageWindowSystem.setVisible(
-						BattleMessageWindowSystem.StatusVisible.ON,
-						BattleMessageWindowSystem.Mode.SHOW_STATUS_DESC);
-				stage.setStage(BattleSystem.Stage.SHOW_STATUS);
-				return OperationResult.SHOW_STATUS;
+				stage.setStage(Stage.SHOW_STATUS, Stage.CMD_SELECT);
+				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.escape)) {
 				//逃げる・逃げられるか判定
@@ -1009,7 +1002,7 @@ public class BattleSystem implements Drawable {
 					user.to(FourDirection.EAST);
 					setMsg(MessageType.PC_IS_ESCAPE, a, user.getStatus());
 					stage.setStage(BattleSystem.Stage.ESCAPING);
-					return OperationResult.SUCCESS;
+					return;
 				}
 				if (!battleFieldSystem.getBattleFieldAllArea().contains(w)) {
 					//逃走成功（←）
@@ -1018,7 +1011,7 @@ public class BattleSystem implements Drawable {
 					user.to(FourDirection.WEST);
 					setMsg(MessageType.PC_IS_ESCAPE, a, user.getStatus());
 					stage.setStage(BattleSystem.Stage.ESCAPING);
-					return OperationResult.SUCCESS;
+					return;
 				}
 //TODO:NPCの逃げはここでない。
 //				//NPCの場合、逃げる体制に入る
@@ -1031,7 +1024,7 @@ public class BattleSystem implements Drawable {
 				//逃げられない
 				setMsg(MessageType.PC_IS_ESCAPE_MISS, a, user.getStatus());
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
-				return OperationResult.CANCEL;
+				return;
 			}
 		}
 
@@ -1041,7 +1034,7 @@ public class BattleSystem implements Drawable {
 			//アイテムChoiceUseを開くだけ。
 			messageWindowSystem.openItemChoiceUse();
 			stage.setStage(BattleSystem.Stage.ITEM_CHOICE_USE);
-			return OperationResult.ITEM_CHOICE_USE;
+			return;
 		}
 
 		//ターゲットシステム起動要否判定
@@ -1061,23 +1054,24 @@ public class BattleSystem implements Drawable {
 			if (!BattleTargetSystem.instantTarget(user, a).hasAnyTargetChara()) {//魔法で現状ターゲットがいない場合もここで吸収される
 				setMsg(MessageType.NO_TARGET, a, user.getStatus());
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
-				return OperationResult.CANCEL;
+				return;
 			}
 			//ターゲット選択へ
 			setMsg(MessageType.TARGET_SELECT, a, user.getStatus());
 			targetSystem.setCurrent(user, a);
 			stage.setStage(BattleSystem.Stage.TARGET_SELECT);
-			return OperationResult.TO_TARGET_SELECT;
+			return;
 		}
 		targetSystem.setCurrent(user, a);
 		List<String> tgt = targetSystem.getSelected().getTarget().stream().map(p -> p.getName()).collect(Collectors.toList());
 		tgt.add(currentCmd.getUser().getName());
 		setMsg(MessageType.TARGET_SELECT, tgt);
-		return execAction(a, targetSystem.getSelected());
+		execAction(a, targetSystem.getSelected());
+		return;
 	}
 
 	//アクション実行（コミット、ターゲットあり）
-	OperationResult execAction(CmdAction ba, ActionTarget tgt) {
+	void execAction(CmdAction ba, ActionTarget tgt) {
 		//メッセージウインドウを初期化
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 		messageWindowSystem.getActionResultW().setText("");
@@ -1101,19 +1095,19 @@ public class BattleSystem implements Drawable {
 				List<String> shortageStatusDesc = simulateDamage.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList());
 				setMsg(MessageType.SPELL_BUT_SHORTAGE, ba, user.getStatus(), shortageStatusDesc);
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
-				return user.isPlayer() ? OperationResult.CANCEL : OperationResult.MISS;
+				return;
 			}
 			//ターゲット存在確認、現状でいない場合、空振り。発動時の再チェックがここ。
 			if (tgt.isEmpty() && !ba.battleEventIsOnly(SELF)) {
 				setMsg(MessageType.SPELL_BUT_NO_TARGET, ba, user.getStatus());
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
-				return user.isPlayer() ? OperationResult.CANCEL : OperationResult.MISS;
+				return;
 			}
 
 			if (ba.getSpellTime() > 0) {
 				//詠唱時間がある場合は詠唱開始
 				addSpelling(user, ba);//MSG、STAGEもこの中で行う。
-				return OperationResult.SUCCESS;
+				return;
 			}
 		}
 
@@ -1121,8 +1115,12 @@ public class BattleSystem implements Drawable {
 		if (tgt.isEmpty()) {
 			setMsg(MessageType.NO_TARGET, ba, user.getStatus());
 			currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
-			stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
-			return OperationResult.MISS;
+			if (user.isPlayer()) {
+				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
+			} else {
+				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+			}
+			return;
 		}
 		assert !tgt.isEmpty() : "target is empty(execAction)";
 		//ターゲット存在のため、アクション実行
@@ -1132,7 +1130,7 @@ public class BattleSystem implements Drawable {
 		animation.addAll(res.getAnimation());
 		currentBAWaitTime = new FrameTimeCounter(ba.getWaitTime());
 		stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
-		return OperationResult.SUCCESS;
+		return;
 
 	}
 
@@ -1312,16 +1310,28 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.getTgtW().prevSelect();
 	}
 
-	public void statusWindowNextPage() {
+	public void nextStatusWindowPage() {
 		messageWindowSystem.statusDescWindowNextPage();
 	}
 
-	public void statusWindowNextSelect() {
+	public void nextStatusWindowSelect() {
 		messageWindowSystem.statusDescWindowNextSelect();
 	}
 
-	public void statusWindowPrevSelect() {
+	public void prevStatusWindowSelect() {
 		messageWindowSystem.statusDescWindowPrevSelect();
+	}
+
+	public void nextStatusWindowChara() {
+		messageWindowSystem.getStatusDescW().nextPc();
+	}
+
+	public void prevStatusWindowChara() {
+		messageWindowSystem.getStatusDescW().prevPc();
+	}
+
+	public void cancelStatusDesc() {
+		stage.setStage(Stage.CMD_SELECT);
 	}
 
 	public void commitTargetSelect() {

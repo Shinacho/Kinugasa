@@ -263,13 +263,13 @@ public class Status implements Nameable {
 		}
 		actions = actions.stream().distinct().collect(Collectors.toList());
 
-		if (GameSystem.isDebugMode()) {
-			System.out.println("STATUS [" + getName() + "]s action update : ");
-			for (CmdAction a : actions) {
-				System.out.println(" " + a);
-			}
-			System.out.println("---");
-		}
+//		if (GameSystem.isDebugMode()) {
+//			System.out.println("STATUS [" + getName() + "]s action update : ");
+//			for (CmdAction a : actions) {
+//				System.out.println(" " + a);
+//			}
+//			System.out.println("---");
+//		}
 	}
 
 	public void clearEqip() {
