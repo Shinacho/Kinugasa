@@ -136,6 +136,8 @@ public class PlayerCharacter implements BattleCharacter {
 	@Override
 	public void move() {
 		sprite.move();
+		getSprite().getAnimation().update();
+		getSprite().setImage(getSprite().getAnimation().getCurrentImage());
 	}
 
 	@Override

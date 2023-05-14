@@ -140,7 +140,7 @@ public class BattleMessageWindowSystem implements Drawable {
 						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60),
 						GameSystem.getInstance().getPartyStatus()
 				);
-
+				break;
 			case 2:
 				statusDescW = new EqipItemWindow(
 						24 + 8,
@@ -149,7 +149,6 @@ public class BattleMessageWindowSystem implements Drawable {
 						(int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 32 - 60),
 						GameSystem.getInstance().getPartyStatus()
 				);
-
 				break;
 			case 3:
 				statusDescW = new ActionDescWindow(
@@ -384,6 +383,7 @@ public class BattleMessageWindowSystem implements Drawable {
 				tgtW.setVisible(true);
 				break;
 			case AFTER_MOVE:
+				afterMoveW.reset();
 				afterMoveW.setVisible(true);
 				break;
 			case ITEM_USE_SELECT:
@@ -412,8 +412,9 @@ public class BattleMessageWindowSystem implements Drawable {
 				break;
 			case BATTLE_RESULT:
 				battleResultW.setVisible(true);
+				break;
 			default:
-				throw new AssertionError();
+				throw new AssertionError("undefined BMWS case : " + m);
 		}
 	}
 

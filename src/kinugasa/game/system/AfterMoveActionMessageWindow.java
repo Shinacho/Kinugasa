@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import kinugasa.game.I18N;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
@@ -41,7 +44,7 @@ import kinugasa.game.ui.TextStorage;
 public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow implements CommandWindow {
 
 	public AfterMoveActionMessageWindow(int x, int y, int w, int h) {
-		super(x, y, w, h, 7, false);
+		super(x, y, w, h, 7, true);
 	}
 	private List<CmdAction> actions = new ArrayList();
 
@@ -51,25 +54,13 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 
 	@Override
 	public CmdAction getSelectedCmd() {
-		return actions.get(getSelectedIdx() - 1);
-	}
-
-	public void add(CmdAction... ba) {
-		actions.addAll(Arrays.asList(ba));
-		Collections.sort(actions);
-		updateText();
-	}
-
-	public void add(List<CmdAction> ba) {
-		actions.addAll(ba);
-		Collections.sort(actions);
-		updateText();
+		return actions.get(getSelectedIdx());
 	}
 
 	public void setActions(List<CmdAction> actions) {
 		this.actions = actions;
-		Collections.sort(actions);
 		updateText();
+		reset();
 	}
 
 	public void clear() {
@@ -82,10 +73,52 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 		if (actions.isEmpty()) {
 			throw new GameSystemException("AMCMW :  + actions is empty");
 		}
-
 		StringBuilder s = new StringBuilder();
 		for (int i = 0; i < actions.size(); i++) {
-			s.append(actions.get(i).getName()).append(Text.getLineSep());
+			ActionType type = actions.get(i).getType();
+			CmdAction b = actions.get(i);
+			String text = "";
+			switch (type) {
+				case ATTACK:
+					text += b.getName() + ":" + b.getDesc();
+					text += ("、")
+							+ (I18N.translate("ACTION_ATTR"))
+							+ (":");
+					text += (b.getBattleEvent()
+							.stream()
+							.filter(p -> !AttrDescWindow.getUnvisibleAttrName().contains(p.getAttr().getName()))
+							.map(p -> p.getAttr().getDesc())
+							.distinct()
+							.collect(Collectors.toList()));
+					text += ("、")
+							+ (I18N.translate("ACTION_EFFECT"))
+							+ (":");
+					//ENEMYが入っている場合、minを、そうでない場合はMAXを取る
+					if (b.getBattleEvent().stream().anyMatch(p -> p.getTargetType().toString().contains("ENEMY"))) {
+						text += (Math.abs(b.getBattleEvent()
+								.stream()
+								.mapToInt(p -> (int) (p.getValue()))
+								.min()
+								.getAsInt()));
+					} else {
+						text += (Math.abs(b.getBattleEvent()
+								.stream()
+								.mapToInt(p -> (int) (p.getValue()))
+								.max()
+								.getAsInt()));
+					}
+					break;
+				case ITEM:
+				case MAGIC:
+					//処理なし（入らない）
+					break;
+				case OTHER:
+					text += b.getName();
+					break;
+				default:
+					throw new AssertionError("BCMW undefined type");
+			}
+			s.append(text + Text.getLineSep());
 		}
 		setText(Text.split(new Text(s.toString())));
 		getWindow().allText();
@@ -93,13 +126,11 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 
 	public void nextAction() {
 		nextSelect();
-		updateText();
 		GameSystem.getInstance().getBattleSystem().getTargetSystem().setCurrent(this);
 	}
 
 	public void prevAction() {
 		prevSelect();
-		updateText();
 		GameSystem.getInstance().getBattleSystem().getTargetSystem().setCurrent(this);
 	}
 }

@@ -55,10 +55,10 @@ public class Text implements Nameable {
 		}
 		return new Text(sb.substring(0, sb.length() - 1));
 	}
-	
-	public static List<Text> split(Text t){
+
+	public static List<Text> split(Text t) {
 		List<Text> r = new ArrayList<>();
-		for(String v : t.getText().split(lineSep)){
+		for (String v : t.getText().split(lineSep)) {
 			r.add(new Text(v));
 		}
 		return r;
@@ -97,12 +97,12 @@ public class Text implements Nameable {
 	}
 
 	public Text(String text) {
-		this.name = autoId++ + "";
+		this.name = "TEXT_" + autoId++;
 		setText(text);
 	}
 
 	public Text(String text, TimeCounter tc) {
-		this.name = autoId++ + "";
+		this.name = "TEXT_" + autoId++;
 		setText(text);
 		this.tc = tc;
 		visibleIdx = 0;

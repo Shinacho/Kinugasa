@@ -112,6 +112,18 @@ public class BattleTargetSystem implements Drawable {
 		return result;
 	}
 
+	static BattleCharacter nearEnemys(BattleCharacter pc) {
+		float distance = Integer.MAX_VALUE;
+		BattleCharacter result = null;
+		for (BattleCharacter c : getInstance().allEnemies(pc.getSprite().getCenter(), Integer.MAX_VALUE)) {
+			if (pc.getSprite().getCenter().distance(c.getSprite().getCenter()) < distance) {
+				distance = (float) pc.getSprite().getCenter().distance(c.getSprite().getCenter());
+				result = c;
+			}
+		}
+		return result;
+	}
+
 	static ActionTarget instantTarget(BattleCharacter user, CmdAction i, int area, boolean enemy, boolean party) {
 		if (!enemy && !party) {
 			return new ActionTarget(user, i);
