@@ -281,6 +281,7 @@ public class BattleTargetSystem implements Drawable {
 				case RANDOM_ONE:
 					List<BattleCharacter> l1 = getInstance().all(center, area);
 					Collections.shuffle(l1);
+					l1.add(user);
 					if (!l1.isEmpty()) {
 						tgt.add(l1.get(0));
 					}
@@ -399,6 +400,14 @@ public class BattleTargetSystem implements Drawable {
 				.setSelfTarget(selfTarget);
 	}
 
+	public ActionTarget getSelectedInArea() {
+		return new ActionTarget(currentUser, currentBA)
+				.setFieldTarget(fieldSelect)
+				.setInField(false)
+				.setTarget(inArea)
+				.setSelfTarget(selfTarget);
+	}
+
 	public void randomSelect() {
 		selectedIdx = Random.randomAbsInt(inArea.size());
 		updateSelected();
@@ -468,6 +477,10 @@ public class BattleTargetSystem implements Drawable {
 		}
 	}
 
+	List<BattleCharacter> getInAreaDirect() {
+		return inArea;
+	}
+
 	void setCurrent(BattleCharacter pc, CmdAction a) {
 		selectedIdx = 0;
 		currentUser = pc;
@@ -509,6 +522,9 @@ public class BattleTargetSystem implements Drawable {
 		updateInArea();
 		updateSelected();
 		updateIcon();
+		if (GameSystem.isDebugMode()) {
+			System.out.println("TS : " + this);
+		}
 	}
 
 	void unsetCurrent() {
@@ -519,6 +535,7 @@ public class BattleTargetSystem implements Drawable {
 		inArea.clear();
 		currentArea.setVisible(false);
 		initialArea.setVisible(false);
+		icons.clear();
 	}
 
 	@LoopCall
@@ -575,19 +592,31 @@ public class BattleTargetSystem implements Drawable {
 			return;
 		}
 
-		//TargetTypeがONEの場合だけ、SELECTEDは更新される。
-		if (currentBA.hasBattleTT(TargetType.ONE_ENEMY) || currentBA.hasBattleTT(TargetType.ONE_PARTY)
-				|| currentBA.hasBattleTT(TargetType.RANDOM_ONE_ENEMY) || currentBA.hasBattleTT(TargetType.RANDOM_ONE_PARTY)) {
+		if (inArea.isEmpty()) {
+			return;
+		}
 
-			//INAREAがない場合、ターゲットもないので戻る
-			if (inArea.isEmpty()) {
-				return;
-			}
+		//ランダムの場合、INAREAをシャッフルして0番目を取る
+		if (currentBA.hasBattleTT(TargetType.RANDOM_ONE)) {
+			Collections.shuffle(inArea);
+			selected.add(inArea.get(0));
+		}
+		if (currentBA.hasBattleTT(TargetType.RANDOM_ONE_ENEMY)) {
+			Collections.shuffle(inArea);
+			selected.add(inArea.get(0));
+		}
+		if (currentBA.hasBattleTT(TargetType.RANDOM_ONE_PARTY)) {
+			Collections.shuffle(inArea);
+			selected.add(inArea.get(0));
+		}
+
+		//TargetTypeがONEの場合だけ、SELECTEDは更新される。
+		//パーティーの場合、INAREAをそのまま使うことができる
+		if (currentBA.hasBattleTT(TargetType.ONE_ENEMY) || currentBA.hasBattleTT(TargetType.ONE_PARTY)) {
 			assert selectedIdx >= 0 && selectedIdx < inArea.size() : "BTS : selectedIDX is missmatch : " + selected.size() + " / " + inArea.size() + " / " + selectedIdx;
 			//inAREAからTTとSELECTEDIDXに基づく対象をSELECTEDに追加
 			//inAREAはただしく更新されているので、SELECTEDIDXだけ見ればよい
 			selected.add(inArea.get(selectedIdx));
-
 			selected = selected.stream().distinct().collect(Collectors.toList());
 		}
 
@@ -616,63 +645,44 @@ public class BattleTargetSystem implements Drawable {
 				case ONE_ENEMY:
 					if (currentUser.isPlayer()) {
 						List<BattleCharacter> l = allEnemies(center, area);
-						if (!l.isEmpty()) {
-							inArea.add(l.get(0));
-						}
+						inArea.addAll(l);
 					} else {
 						List<BattleCharacter> l = allPCs(center, area);
-						if (!l.isEmpty()) {
-							inArea.add(l.get(0));
-						}
+						inArea.addAll(l);
 					}
 					break;
 				case ONE_PARTY:
 					if (currentUser.isPlayer()) {
 						List<BattleCharacter> l = allPCs(center, area);
-						if (!l.isEmpty()) {
-							inArea.add(l.get(0));
-						}
+						inArea.addAll(l);
+						inArea.add(currentUser);
 					} else {
 						List<BattleCharacter> l = allEnemies(center, area);
-						if (!l.isEmpty()) {
-							inArea.add(l.get(0));
-						}
+						inArea.addAll(l);
+						inArea.add(currentUser);
 					}
 					break;
 				case RANDOM_ONE:
 					List<BattleCharacter> l = all(center, area);
-					Collections.shuffle(l);
-					if (!l.isEmpty()) {
-						inArea.add(l.get(0));
-					}
+					inArea.addAll(l);
+					inArea.add(currentUser);
+					break;
 				case RANDOM_ONE_ENEMY:
 					if (currentUser.isPlayer()) {
 						List<BattleCharacter> l2 = allEnemies(center, area);
-						Collections.shuffle(l2);
-						if (!l2.isEmpty()) {
-							inArea.add(l2.get(0));
-						}
 					} else {
 						List<BattleCharacter> l2 = allPCs(center, area);
-						Collections.shuffle(l2);
-						if (!l2.isEmpty()) {
-							inArea.add(l2.get(0));
-						}
 					}
 					break;
 				case RANDOM_ONE_PARTY:
 					if (currentUser.isPlayer()) {
 						List<BattleCharacter> l2 = allPCs(center, area);
-						Collections.shuffle(l2);
-						if (!l2.isEmpty()) {
-							inArea.add(l2.get(0));
-						}
+						inArea.addAll(l2);
+						inArea.add(currentUser);
 					} else {
 						List<BattleCharacter> l2 = allEnemies(center, area);
-						Collections.shuffle(l2);
-						if (!l2.isEmpty()) {
-							inArea.add(l2.get(0));
-						}
+						inArea.addAll(l2);
+						inArea.add(currentUser);
 					}
 					break;
 				case TEAM_ENEMY:
@@ -758,6 +768,11 @@ public class BattleTargetSystem implements Drawable {
 
 	BattleActionAreaSprite getInitialArea() {
 		return initialArea;
+	}
+
+	@Override
+	public String toString() {
+		return "BattleTargetSystem{" + "currentUser=" + currentUser + ", currentBA=" + currentBA + ", selfTarget=" + selfTarget + ", inArea=" + inArea + ", selected=" + selected + ", fieldSelect=" + fieldSelect + ", selectedIdx=" + selectedIdx + '}';
 	}
 
 }

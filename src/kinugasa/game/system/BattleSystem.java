@@ -32,28 +32,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kinugasa.game.GameLog;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
 import kinugasa.game.NoLoopCall;
 import kinugasa.game.field4.PlayerCharacterSprite;
 import kinugasa.game.field4.VehicleStorage;
-import kinugasa.game.system.BattleCommand;
-import kinugasa.game.system.BattleFieldSystem;
-import kinugasa.game.system.BattleMessageWindowSystem;
-import kinugasa.game.system.BattleResultValues;
-import kinugasa.game.system.BattleSystem;
-import kinugasa.game.system.BattleTargetSystem;
-import kinugasa.game.system.ConditionManager;
-import kinugasa.game.system.EncountInfo;
-import kinugasa.game.system.Enemy;
-import kinugasa.game.system.EnemySet;
-import kinugasa.game.system.EnemySetStorage;
-import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.MagicSpell;
-import static kinugasa.game.system.TargetType.SELF;
-import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.Text;
 import kinugasa.object.AnimationSprite;
 import kinugasa.object.BasicSprite;
@@ -371,12 +355,6 @@ public class BattleSystem implements Drawable {
 			}
 
 		},
-		TARGET_SELECT {
-			@Override
-			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
-			}
-		},
 		EQIP_ITEM {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
@@ -440,14 +418,7 @@ public class BattleSystem implements Drawable {
 		ACTION_SUCCESS {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
-			}
-		},
-		BATTLE_RESULT {
-			@Override
-			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
-				//battleResultValueに結果が入っている
+				return toString() + " " + user.getName() + "->" + option + ", " + res;
 			}
 		},;
 
@@ -1058,46 +1029,80 @@ public class BattleSystem implements Drawable {
 			return;
 		}
 
-		//ターゲットシステム起動要否判定
-		boolean needTargetSystem = false;
-		if (user.isPlayer()) {
-			//ターゲット選択はプレイヤーのみ
-			if (a.getType() != ActionType.OTHER) {
-				//その他イベント以外はターゲット選択必要
-				needTargetSystem = true;
-			}
-			//ターゲットシステムが初期化状態の場合、ターゲット選択必要
-			needTargetSystem = targetSystem.isEmpty();
-		}
-		//ターゲットシステム起動
-		if (needTargetSystem) {
-			//ターゲットシステムを起動する前に、インスタントターゲットでターゲットがいるか確認する。いない場合キャンセルにする。
-			if (!BattleTargetSystem.instantTarget(user, a).hasAnyTargetChara()) {//魔法で現状ターゲットがいない場合もここで吸収される
-				setMsg(MessageType.NO_TARGET, a, user.getStatus());
-				//移動後攻撃から遷移してきた場合は空振りさせる
-				if (stage.getStage() == Stage.CMD_SELECT) {
-					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
-				} else {
-					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.WAITING_EXEC_CMD);
+		assert a.getType() == ActionType.MAGIC || a.getType() == ActionType.ATTACK : "actions are processed in the wrong order.";
+
+		targetSystem.setCurrent(user, a);
+		//ターゲット不在
+		if (targetSystem.getInAreaDirect().isEmpty()) {//魔法で現状ターゲットがいない場合もここで吸収される
+			setMsg(MessageType.NO_TARGET, a, user.getStatus());
+			//移動後攻撃から遷移してきた場合は空振りさせる
+			if (stage.getStage() == Stage.CMD_SELECT) {
+				if (GameSystem.isDebugMode()) {
+					System.out.println("no target(cmd)");
 				}
-				return;
+				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
+			} else {
+				if (GameSystem.isDebugMode()) {
+					System.out.println("no target(after)");
+				}
+				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.WAITING_EXEC_CMD);
 			}
-			//ターゲット選択へ
-			setMsg(MessageType.TARGET_SELECT, a, user.getStatus());
-			targetSystem.setCurrent(user, a);
-			stage.setStage(BattleSystem.Stage.TARGET_SELECT);
 			return;
 		}
-		targetSystem.setCurrent(user, a);
-		List<String> tgt = targetSystem.getSelected().getTarget().stream().map(p -> p.getName()).collect(Collectors.toList());
-		tgt.add(currentCmd.getUser().getName());
-		setMsg(MessageType.TARGET_SELECT, tgt);
-		execAction(a, targetSystem.getSelected());
-		return;
+		//ランダム1の場合、ターゲット選択できない（INAREAから適当に拾って使う
+		if (a.hasBattleTT(TargetType.RANDOM_ONE)
+				|| a.hasBattleTT(TargetType.RANDOM_ONE_ENEMY)
+				|| a.hasBattleTT(TargetType.RANDOM_ONE_PARTY)) {
+			//ランダム1体
+			ActionTarget tgt = targetSystem.getSelected();
+			execAction(a, tgt);
+			return;
+		}
+
+		//ALLの場合、ターゲット選択不要
+		if (a.hasBattleTT(TargetType.ALL)) {
+			ActionTarget tgt = targetSystem.getSelectedInArea();
+			execAction(a, tgt);
+			return;
+		}
+
+		//FIELDの場合、ターゲット選択不要
+		if (a.hasBattleTT(TargetType.FIELD)) {
+			ActionTarget tgt = targetSystem.getSelected();
+			execAction(a, tgt);
+			return;
+		}
+
+		//パーティーの場合ターゲット選択不要(INAREAすべて）
+		if (a.hasBattleTT(TargetType.TEAM_ENEMY) || a.hasBattleTT(TargetType.TEAM_PARTY)) {
+			//INAREA使用
+			ActionTarget tgt = targetSystem.getSelectedInArea();
+			execAction(a, tgt);
+			return;
+		}
+
+		//SELFのみの場合、ターゲット選択不要
+		if (a.battleEventIsOnly(TargetType.SELF)) {
+			ActionTarget tgt = targetSystem.getSelected();
+			execAction(a, tgt);
+			return;
+		}
+
+		//その他（ONE）の場合はターゲット選択必要
+		List<String> tgt = targetSystem.getInAreaDirect().stream().map(p -> p.getName()).collect(Collectors.toList());
+		List<Text> text = tgt.stream().map(p -> new Text(" " + p)).collect(Collectors.toList());
+		text.add(0, new Text(a.getName() + I18N.translate("WHO_TO")));
+		messageWindowSystem.getTgtW().setText(text);
+		messageWindowSystem.getTgtW().reset();
+		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.TGT_SELECT);
+		stage.setStage(BattleSystem.Stage.TARGET_SELECT);
 	}
 
 	//アクション実行（コミット、ターゲットあり）
 	void execAction(CmdAction ba, ActionTarget tgt) {
+		if (GameSystem.isDebugMode()) {
+			System.out.println("exec action TGT:" + tgt);
+		}
 		//メッセージウインドウを初期化
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 		messageWindowSystem.getActionResultW().setText("");
@@ -1124,9 +1129,9 @@ public class BattleSystem implements Drawable {
 				return;
 			}
 			//ターゲット存在確認、現状でいない場合、空振り。発動時の再チェックがここ。
-			if (tgt.isEmpty() && !ba.battleEventIsOnly(SELF)) {
+			if (tgt.isEmpty() && !ba.battleEventIsOnly(TargetType.SELF)) {
 				setMsg(MessageType.SPELL_BUT_NO_TARGET, ba, user.getStatus());
-				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.WAITING_EXEC_CMD);
 				return;
 			}
 
@@ -1140,12 +1145,13 @@ public class BattleSystem implements Drawable {
 		//ターゲット不在の場合、空振り（ミス）
 		if (tgt.isEmpty()) {
 			setMsg(MessageType.NO_TARGET, ba, user.getStatus());
-			currentBAWaitTime = new FrameTimeCounter(messageWaitTime);
 			if (user.isPlayer()) {
-				if (stage.getStage() == Stage.CMD_SELECT) {
+				if (stage.getStage() == Stage.TARGET_SELECT) {
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
+					return;
 				} else {
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.WAITING_EXEC_CMD);
+					return;
 				}
 			} else {
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
@@ -1308,7 +1314,6 @@ public class BattleSystem implements Drawable {
 					: i.getName() + I18N.translate("WHO_DO_USE");
 			tgt.add(0, msg);
 			messageWindowSystem.getTgtW().setText(tgt.stream().map(p -> new Text(p)).collect(Collectors.toList()));
-			setMsg(MessageType.TARGET_SELECT, tgt);
 			stage.setStage(BattleSystem.Stage.TARGET_SELECT);
 		}
 	}
@@ -1349,10 +1354,12 @@ public class BattleSystem implements Drawable {
 	}
 
 	public void nextTargetSelect() {
+		targetSystem.next();
 		messageWindowSystem.getTgtW().nextSelect();
 	}
 
 	public void prevTargetSelect() {
+		targetSystem.prev();
 		messageWindowSystem.getTgtW().prevSelect();
 	}
 
@@ -1382,6 +1389,7 @@ public class BattleSystem implements Drawable {
 
 	public void commitTargetSelect() {
 		if (itemChoiceMode != -1) {
+			assert messageWindowSystem.getCmdW().getSelectedCmd().getType() == ActionType.ITEM : "item use commit, but action is not item";
 			//パスor使う
 			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_USE) {
 				if (GameSystem.isDebugMode()) {
@@ -1432,8 +1440,14 @@ public class BattleSystem implements Drawable {
 			}
 			return;
 		}
-
-		//攻撃ターゲットセレクト
+		assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.ITEM : "atk commit, but action is item";
+		assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.OTHER : "atk commit, but action is other";
+		//攻撃ターゲットセレクト確定(ONEのみ
+		if (stage.getStage() == Stage.TARGET_SELECT) {
+			execAction(messageWindowSystem.getCmdW().getSelectedCmd(), targetSystem.getSelected());
+		} else {
+			execAction(messageWindowSystem.getAfterMoveW().getSelectedCmd(), targetSystem.getSelected());
+		}
 	}
 
 	/**
@@ -1547,7 +1561,6 @@ public class BattleSystem implements Drawable {
 			if (GameSystem.isDebugMode()) {
 				System.out.println(" this battle is ended");
 			}
-			setMsg(MessageType.BATTLE_RESULT);
 			stage.setStage(Stage.BATLE_END);
 		}
 
@@ -1618,7 +1631,6 @@ public class BattleSystem implements Drawable {
 						currentBGM.stop();
 						currentBGM.dispose();
 						winBGM.load().stopAndPlay();
-						setMsg(MessageType.BATTLE_RESULT);
 						stage.setStage(Stage.BATLE_END);
 						break;
 					}
@@ -1656,7 +1668,6 @@ public class BattleSystem implements Drawable {
 						currentBGM.stop();
 						currentBGM.dispose();
 						winBGM.load().stopAndPlay();
-						setMsg(MessageType.BATTLE_RESULT);
 						stage.setStage(Stage.BATLE_END);
 						break;
 					}

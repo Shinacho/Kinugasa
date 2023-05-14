@@ -195,11 +195,9 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 	public void nextSelect() {
 		pos++;
 		select++;
-		if (pos >= visibleLine - 1 + 1) {
+		if (pos >= visibleLine) {
 			pos--;
-			if (visibleIdx + visibleLine < size()) {
-				visibleIdx++;
-			}
+			visibleIdx++;
 		}
 		if (select == size()) {
 			pos = (line1select ? 0 : 1);
@@ -211,9 +209,13 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 	public void prevSelect() {
 		pos--;
 		select--;
-		if (pos <= 0 - 1) {
+		if (pos <= - 1) {
 			pos++;
 			visibleIdx--;
+			if (visibleIdx == 1 && !line1select) {
+				visibleIdx = 0;
+				pos = 1;
+			}
 		}
 		if (select == (line1select ? -1 : 0)) {
 			pos = visibleLine - 1;

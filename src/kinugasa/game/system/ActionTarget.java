@@ -152,7 +152,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 	}
 
 	public ActionTarget setTarget(List< BattleCharacter> target) {
-		this.target = target;
+		this.target = new ArrayList(target);
 		return this;
 	}
 
