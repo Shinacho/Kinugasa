@@ -27,10 +27,12 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
@@ -279,25 +281,25 @@ public class BattleSystem implements Drawable {
 		SPELL_BUT_NO_TARGET {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
+				return toString() + "/" + user + "/" + option;
 			}
 		},
 		SPELL_BUT_SHORTAGE {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
+				return toString() + "/" + user + "/" + option;
 			}
 		},
 		SPELL_SUCCESS {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
+				return toString() + "/" + user + "/" + option;
 			}
 		},
 		STOPING_BY_CONDITION {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
+				return toString() + "/" + user + "/" + option;
 			}
 		},
 		STOP_BECAUSE_CONFU {
@@ -309,7 +311,7 @@ public class BattleSystem implements Drawable {
 		IS_MOVED {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
+				return toString() + "/" + user + "/" + option;
 			}
 		},
 		PC_USE_AVO {
@@ -351,7 +353,7 @@ public class BattleSystem implements Drawable {
 		NO_TARGET {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
+				return toString() + "/" + user + "/" + option;
 			}
 
 		},
@@ -412,13 +414,13 @@ public class BattleSystem implements Drawable {
 		SPELL_START {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
+				return toString() + "/" + user + "/" + option;
 			}
 		},
 		ACTION_SUCCESS {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString() + " " + user.getName() + "->" + option + ", " + res;
+				return toString() + " /" + user + "/->" + option + ",/ " + res;
 			}
 		},;
 
@@ -670,6 +672,16 @@ public class BattleSystem implements Drawable {
 			}
 		}
 
+		//ユーザ名に対して1つのコマンドがあることを確認
+		Set<String> set = new HashSet<>();
+		for (BattleCommand cmd : commandsOfThisTurn) {
+			String name = cmd.getUser().getName();
+			if (set.contains(name)) {
+				throw new GameSystemException("duplicate command user:" + name);
+			}
+			set.add(name);
+		}
+
 		stage.setStage(BattleSystem.Stage.WAITING_EXEC_CMD);
 	}
 
@@ -711,16 +723,21 @@ public class BattleSystem implements Drawable {
 		//逃げたコンディションで非表示になっている場合表示する
 		//アイテムアクションを削除する
 		for (PlayerCharacter pc : GameSystem.getInstance().getParty()) {
-			//逃げた後死亡、死亡した後逃げるはできないので、これで問題ないはず
 			if (pc.getStatus().hasCondition(BattleConfig.ConditionName.escaped)) {
 				//逃げた人のスプライトを表示に戻す
 				pc.getSprite().setVisible(true);
 				//逃げたコンディションを外す
 				pc.getStatus().removeCondition(BattleConfig.ConditionName.escaped);
-				//アイテムアクションの削除
-				List<CmdAction> removeList = pc.getStatus().getActions().stream().filter(p -> p.getType() == ActionType.ITEM).collect(Collectors.toList());
-				pc.getStatus().getActions().removeAll(removeList);
 			}
+			//アイテムアクションの削除
+			List<CmdAction> removeList = pc.getStatus().getActions().stream().filter(p -> p.getType() == ActionType.ITEM).collect(Collectors.toList());
+			pc.getStatus().getActions().removeAll(removeList);
+			//詠唱中コンディションを外す
+			pc.getStatus().removeCondition(BattleConfig.ConditionName.casting);
+			//防御・回避コンディションを外す
+			pc.getStatus().removeCondition(BattleConfig.ConditionName.defence);
+			pc.getStatus().removeCondition(BattleConfig.ConditionName.avoidance);
+
 		}
 		//BGMの処理
 //		if (currentBGM != null) {
@@ -781,10 +798,13 @@ public class BattleSystem implements Drawable {
 		}
 
 		//状態異常で動けないときスキップ（メッセージは出す
+		//詠唱中の場合はのぞく
 		if (currentCmd.isStop()) {
-			setMsg(MessageType.STOPING_BY_CONDITION, null, user.getStatus(), List.of(user.getStatus().moveStopDesc().getKey().getDesc()));
-			stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
-			return currentCmd;
+			if (currentCmd.getUser().getStatus().getCondition().stream().filter(p -> p.getName().equals(BattleConfig.ConditionName.casting)).count() != 1) {
+				setMsg(MessageType.STOPING_BY_CONDITION, null, user.getStatus(), List.of(user.getStatus().moveStopDesc().getKey().getDesc()));
+				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+				return currentCmd;
+			}
 		}
 
 		//混乱で動けないときは、停止またはバトルアクションを適当に取得して自動実行する
@@ -809,8 +829,10 @@ public class BattleSystem implements Drawable {
 		//ここは「詠唱終了時」の処理。
 		if (currentCmd.isMagicSpell()) {
 			CmdAction ba = currentCmd.getFirstBattleAction();//1つしか入っていない
+			//詠唱中状態異常を外す
+			currentCmd.getUser().getStatus().removeCondition(BattleConfig.ConditionName.casting);
 			//現状でのターゲットを取得
-			ActionTarget target = BattleTargetSystem.instantTarget(currentCmd.getUser(), ba);
+			ActionTarget target = BattleTargetSystem.instantTarget(currentCmd.getUser(), ba).setSelfTarget(true);
 			//ターゲットがいない場合、詠唱失敗のメッセージ出す
 			if (target.isEmpty()) {
 				setMsg(MessageType.SPELL_BUT_NO_TARGET, ba, user.getStatus());
@@ -1110,9 +1132,19 @@ public class BattleSystem implements Drawable {
 		targetSystem.unsetCurrent();
 		//カレントユーザ
 		BattleCharacter user = currentCmd.getUser();
-
+		if (user.isPlayer()) {
+			if (ba.getName().equals(BattleConfig.ActionName.commit)) {
+				//移動終了・キャラクタの向きとターゲット座標のクリアをする
+				user.unsetTarget();
+				user.to(FourDirection.WEST);
+				stage.setStage(BattleSystem.Stage.WAITING_EXEC_CMD);
+				return;
+			}
+		}
 		//魔法詠唱開始の場合、詠唱中リストに追加して戻る。
-		if (ba.getType() == ActionType.MAGIC) {
+
+		if (ba.getType()
+				== ActionType.MAGIC) {
 			//現状のステータスで対価を支払えるか確認
 			//※実際に支払うのはexecしたとき。
 			Map<StatusKey, Integer> damage = ba.selfBattleDirectDamage();
@@ -1120,7 +1152,6 @@ public class BattleSystem implements Drawable {
 			StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
 			//ダメージがあって、-の項目がある場合、対価を支払えないため空振り
 			//この魔法の消費項目を取得
-			List<String> shortageKey = new ArrayList<>();
 			if (!damage.isEmpty() && simulateDamage.hasMinus()) {
 				//対象項目で1つでも0の項目があったら空振り
 				List<String> shortageStatusDesc = simulateDamage.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList());
@@ -1158,14 +1189,20 @@ public class BattleSystem implements Drawable {
 			}
 			return;
 		}
+
 		assert !tgt.isEmpty() : "target is empty(execAction)";
 		//ターゲット存在のため、アクション実行
-		tgt.getTarget().forEach(p -> p.getStatus().setDamageCalcPoint());
+		tgt.getTarget()
+				.forEach(p -> p.getStatus().setDamageCalcPoint());
 		ActionResult res = ba.exec(tgt);
+
 		setMsg(MessageType.ACTION_SUCCESS, ba, res);
+
 		animation.addAll(res.getAnimation());
 		currentBAWaitTime = new FrameTimeCounter(ba.getWaitTime());
+
 		stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+
 		return;
 
 	}
@@ -1203,6 +1240,8 @@ public class BattleSystem implements Drawable {
 			list.add(new MagicSpell(user, ba, user.isPlayer()));
 			magics.put(t, list);
 		}
+		//ユーザに詠唱中の状態異常を付与
+		currentCmd.getUser().getStatus().addCondition(BattleConfig.ConditionName.casting);
 		//詠唱を開始したを表示
 		setMsg(MessageType.SPELL_START, ba, user.getStatus());
 		stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
@@ -1440,12 +1479,14 @@ public class BattleSystem implements Drawable {
 			}
 			return;
 		}
-		assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.ITEM : "atk commit, but action is item";
-		assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.OTHER : "atk commit, but action is other";
 		//攻撃ターゲットセレクト確定(ONEのみ
-		if (stage.getStage() == Stage.TARGET_SELECT) {
+		if (messageWindowSystem.getCmdW().isVisible()) {
+			assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.ITEM : "atk commit, but action is item:" + messageWindowSystem.getCmdW().getSelectedCmd();
+			assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.OTHER : "atk commit, but action is other:" + messageWindowSystem.getCmdW().getSelectedCmd();
 			execAction(messageWindowSystem.getCmdW().getSelectedCmd(), targetSystem.getSelected());
 		} else {
+			assert messageWindowSystem.getAfterMoveW().getSelectedCmd().getType() != ActionType.ITEM : "atk commit(A), but action is item:" + messageWindowSystem.getAfterMoveW().getSelectedCmd();
+			//確定は入る
 			execAction(messageWindowSystem.getAfterMoveW().getSelectedCmd(), targetSystem.getSelected());
 		}
 	}

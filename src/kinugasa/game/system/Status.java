@@ -250,10 +250,12 @@ public class Status implements Nameable {
 			if (a.getType() == ActionType.MAGIC) {
 				if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
 					actions.add(a);
+					continue;
 				}
 			}
 			if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
 				actions.add(a);
+				continue;
 			}
 		}
 		if (itemAdd) {
@@ -351,7 +353,7 @@ public class Status implements Nameable {
 	// 発生中の効果に基づいて、このターン行動できるかを判定します
 	public boolean canMoveThisTurn() {
 		if (condition.isEmpty()) {
-			assert conditionTimes.isEmpty() : "conditionとeffectTimesの同期が取れていません";
+			assert conditionTimes.isEmpty() : "Condition and effectTimes are out of sync.";
 			return true;
 		}
 		for (ConditionValue v : condition) {
@@ -373,7 +375,7 @@ public class Status implements Nameable {
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
 		// すでに発生している効果の場合、何もしない
 		if (condition.contains(name)) {
-			assert conditionTimes.containsKey(v.getKey()) : "conditionとeffectTimesの同期が取れていません";
+			assert conditionTimes.containsKey(v.getKey()) : "Condition and effectTimes are out of sync.";
 			return;
 		}
 		//優先度計算

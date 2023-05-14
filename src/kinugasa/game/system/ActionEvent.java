@@ -119,8 +119,90 @@ public class ActionEvent implements Comparable<ActionEvent> {
 			ani.add(a);
 			return new ActionEventResult(resultTypePerTgt, ani);
 		}
-		//tt != FIELD,ターゲットタイプに基づくターゲットが引数に入っている前提。
+
 		ActionEventResult result = new ActionEventResult();
+		//セルフイベントの場合
+		if (targetType == TargetType.SELF) {
+			BattleCharacter c = tgt.getUser();
+			//実行可能
+			switch (parameterType) {
+				case NONE:
+					result.addResultTypePerTgt(ActionResultType.SUCCESS);
+					break;
+				case ADD_CONDITION:
+					c.getStatus().addCondition(tgtName);
+					result.addResultTypePerTgt(ActionResultType.SUCCESS);
+					break;
+				case ATTR_IN:
+					switch (damageCalcType) {
+						case DIRECT:
+							c.getStatus().getBaseAttrIn().get(tgtName).add(value);
+							break;
+						case PERCENT_OF_MAX:
+							float v1 = c.getStatus().getBaseAttrIn().get(tgtName).getMax() * value;
+							c.getStatus().getBaseAttrIn().get(tgtName).set(v1);
+							break;
+						case PERCENT_OF_NOW:
+							float v2 = c.getStatus().getBaseAttrIn().get(tgtName).getValue() * value;
+							c.getStatus().getBaseAttrIn().get(tgtName).set(v2);
+							break;
+						//ATTR_INではダメージ計算式は使えない
+						case USE_DAMAGE_CALC:
+							throw new GameSystemException("cant user damage calc model " + this);
+						default:
+							throw new AssertionError("undefined damageCalcType " + this);
+					}
+					result.addResultTypePerTgt(ActionResultType.SUCCESS);
+					if (hasAnimation()) {
+						result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
+					}
+					break;
+				case ITEM_LOST:
+					break;
+				case REMOVE_CONDITION:
+					c.getStatus().removeCondition(tgtName);
+					result.addResultTypePerTgt(ActionResultType.SUCCESS);
+					break;
+				case STATUS:
+					switch (damageCalcType) {
+						case DIRECT:
+							c.getStatus().getBaseStatus().get(tgtName).add(value);
+							result.addResultTypePerTgt(ActionResultType.SUCCESS);
+							if (hasAnimation()) {
+								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
+							}
+							break;
+						case PERCENT_OF_MAX:
+							float v3 = c.getStatus().getBaseStatus().get(tgtName).getMax() * value;
+							c.getStatus().getBaseStatus().get(tgtName).set(v3);
+							result.addResultTypePerTgt(ActionResultType.SUCCESS);
+							if (hasAnimation()) {
+								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
+							}
+							break;
+						case PERCENT_OF_NOW:
+							float v4 = c.getStatus().getBaseStatus().get(tgtName).getValue() * value;
+							c.getStatus().getBaseStatus().get(tgtName).set(v4);
+							result.addResultTypePerTgt(ActionResultType.SUCCESS);
+							if (hasAnimation()) {
+								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
+							}
+							break;
+						case USE_DAMAGE_CALC:
+							result.add(StatusDamageCalcModelStorage.getInstance().getCurrent().exec(tgt.getUser(), this, c));
+							break;
+						default:
+							throw new AssertionError("undefined damageCalcType " + this);
+					}
+					break;
+				default:
+					throw new AssertionError("indefined parameter type " + this);
+
+			}
+			return result;
+		}
+
+		//tt != FIELD,ターゲットタイプに基づくターゲットが引数に入っている前提。
 		for (BattleCharacter c : tgt) {
 			//P判定
 			if (!Random.percent(p)) {
@@ -131,8 +213,9 @@ public class ActionEvent implements Comparable<ActionEvent> {
 				continue;
 			}
 			if (GameSystem.isDebugMode()) {
-				System.out.println("ACTION:" + parameterType + ":" + damageCalcType);
+				System.out.println("ACTION:" + c.getName() + ":" + parameterType + ":" + damageCalcType + ":" + tgtName + ":" + value);
 			}
+
 			//実行可能
 			switch (parameterType) {
 				case NONE:
@@ -216,6 +299,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 
 			}
 		}
+
 		if (GameSystem.isDebugMode()) {
 			System.out.println("ACTION RESULT:" + result);
 		}

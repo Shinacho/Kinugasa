@@ -716,6 +716,18 @@ public class BattleTargetSystem implements Drawable {
 			icons.add(i);
 			return;
 		}
+		if (currentBA.hasBattleTT(TargetType.ALL)
+				|| currentBA.hasBattleTT(TargetType.TEAM_ENEMY)
+				|| currentBA.hasBattleTT(TargetType.TEAM_ENEMY)
+				|| currentBA.hasBattleTT(TargetType.TEAM_PARTY)) {
+			for (BattleCharacter c : getInAreaDirect()) {
+				float x = c.getSprite().getCenterX();
+				float y = c.getSprite().getCenterY() - iconMaster.getHeight() - 12;
+				Sprite i = iconMaster.clone();
+				i.setLocationByCenter(new Point2D.Float(x, y));
+				icons.add(i);
+			}
+		}
 		if (selected == null || selected.isEmpty()) {
 			return;
 		}

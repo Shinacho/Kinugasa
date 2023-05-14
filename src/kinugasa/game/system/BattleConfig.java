@@ -49,7 +49,7 @@ public class BattleConfig {
 
 	public static class ConditionName {
 
-		public static String spelling = "SPELLING";
+		public static String casting = "CASTING";
 		public static String escaped = "ESCAPED";
 		public static String defence = "DEFENCE";
 		public static String avoidance = "AVOIDANCE";
