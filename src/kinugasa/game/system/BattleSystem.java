@@ -420,7 +420,7 @@ public class BattleSystem implements Drawable {
 		ACTION_SUCCESS {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString() + " /" + user + "/->" + option + ",/ " + res;
+				return String.join(Text.getLineSep(), option);
 			}
 		},;
 
@@ -524,7 +524,7 @@ public class BattleSystem implements Drawable {
 			sb.append(e.getKey()).append(I18N.translate("WAS")).append(e.getValue()).append(I18N.translate("APPEARANCE")).append(Text.getLineSep());
 		}
 		//敵出現情報をセット
-		setMsg(MessageType.INITIAL_ENEMY_INFO, List.of(sb.toString()));
+		setMsg(MessageType.INITIAL_ENEMY_INFO, List.of(sb.toString().split(Text.getLineSep())));
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 
 		//リセット
@@ -1052,7 +1052,6 @@ public class BattleSystem implements Drawable {
 		}
 
 		assert a.getType() == ActionType.MAGIC || a.getType() == ActionType.ATTACK : "actions are processed in the wrong order.";
-
 		targetSystem.setCurrent(user, a);
 		//ターゲット不在
 		if (targetSystem.getInAreaDirect().isEmpty()) {//魔法で現状ターゲットがいない場合もここで吸収される
@@ -1067,7 +1066,7 @@ public class BattleSystem implements Drawable {
 				if (GameSystem.isDebugMode()) {
 					System.out.println("no target(after)");
 				}
-				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.WAITING_EXEC_CMD);
+				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.AFTER_MOVE_CMD_SELECT);
 			}
 			return;
 		}
@@ -1109,6 +1108,43 @@ public class BattleSystem implements Drawable {
 			execAction(a, tgt);
 			return;
 		}
+		//魔法詠唱開始の場合、詠唱中リストに追加して戻る。
+		if (a.getType() == ActionType.MAGIC) {
+			//現状のステータスで対価を支払えるか確認
+			//※実際に支払うのはexecしたとき。
+			Map<StatusKey, Integer> damage = a.selfBattleDirectDamage();
+			//ダメージを合算
+			StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
+			//ダメージがあって、-の項目がある場合、対価を支払えないため空振り
+			//この魔法の消費項目を取得
+			if (!damage.isEmpty() && simulateDamage.hasMinus()) {
+				//対象項目で1つでも0の項目があったら空振り
+				List<String> shortageStatusDesc = simulateDamage.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList());
+				setMsg(MessageType.SPELL_BUT_SHORTAGE, a, user.getStatus(), shortageStatusDesc);
+				if (user.isPlayer()) {
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
+				} else {
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+				}
+				return;
+			}
+			//ターゲット存在確認、現状でいない場合、空振り。発動時の再チェックがここ。
+			if (targetSystem.isEmpty() && !a.battleEventIsOnly(TargetType.SELF)) {
+				setMsg(MessageType.SPELL_BUT_NO_TARGET, a, user.getStatus());
+				if (user.isPlayer()) {
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
+				} else {
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+				}
+				return;
+			}
+
+			if (a.getSpellTime() > 0) {
+				//詠唱時間がある場合は詠唱開始
+				addSpelling(user, a);//MSG、STAGEもこの中で行う。
+				return;
+			}
+		}
 
 		//その他（ONE）の場合はターゲット選択必要
 		List<String> tgt = targetSystem.getInAreaDirect().stream().map(p -> p.getName()).collect(Collectors.toList());
@@ -1142,9 +1178,7 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		//魔法詠唱開始の場合、詠唱中リストに追加して戻る。
-
-		if (ba.getType()
-				== ActionType.MAGIC) {
+		if (ba.getType() == ActionType.MAGIC) {
 			//現状のステータスで対価を支払えるか確認
 			//※実際に支払うのはexecしたとき。
 			Map<StatusKey, Integer> damage = ba.selfBattleDirectDamage();
@@ -1156,13 +1190,21 @@ public class BattleSystem implements Drawable {
 				//対象項目で1つでも0の項目があったら空振り
 				List<String> shortageStatusDesc = simulateDamage.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList());
 				setMsg(MessageType.SPELL_BUT_SHORTAGE, ba, user.getStatus(), shortageStatusDesc);
-				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+				if (user.isPlayer()) {
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
+				} else {
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+				}
 				return;
 			}
 			//ターゲット存在確認、現状でいない場合、空振り。発動時の再チェックがここ。
 			if (tgt.isEmpty() && !ba.battleEventIsOnly(TargetType.SELF)) {
 				setMsg(MessageType.SPELL_BUT_NO_TARGET, ba, user.getStatus());
-				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.WAITING_EXEC_CMD);
+				if (user.isPlayer()) {
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
+				} else {
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
+				}
 				return;
 			}
 
@@ -1177,11 +1219,11 @@ public class BattleSystem implements Drawable {
 		if (tgt.isEmpty()) {
 			setMsg(MessageType.NO_TARGET, ba, user.getStatus());
 			if (user.isPlayer()) {
-				if (stage.getStage() == Stage.TARGET_SELECT) {
+				if (messageWindowSystem.getCmdW().isVisible()) {
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
 					return;
 				} else {
-					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.WAITING_EXEC_CMD);
+					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.AFTER_MOVE_CMD_SELECT);
 					return;
 				}
 			} else {
@@ -1192,11 +1234,48 @@ public class BattleSystem implements Drawable {
 
 		assert !tgt.isEmpty() : "target is empty(execAction)";
 		//ターゲット存在のため、アクション実行
-		tgt.getTarget()
-				.forEach(p -> p.getStatus().setDamageCalcPoint());
+		tgt.getTarget().forEach(p -> p.getStatus().setDamageCalcPoint());
 		ActionResult res = ba.exec(tgt);
+		//visibleStatusのリストを作成
+		//123 回復した ＊HPの場合は表示しない
+		//MP に 123 ダメージ
+		/*
+		TO=に
+		IS=は
+		HEALDAMAGE=回復した
+		SUB=減った
+		 */
+		List<String> text = new ArrayList<>();
+		//1行目
+		text.add(user.getName() + " " + I18N.translate("S") + " " + ba.getName() + " !!");//改行不要
 
-		setMsg(MessageType.ACTION_SUCCESS, ba, res);
+		//2行目以降
+		class Tgt {
+
+			String name;
+			Map<StatusKey, Float> damage;
+
+			Tgt(String name, Map<StatusKey, Float> damage) {
+				this.name = name;
+				this.damage = damage;
+			}
+
+		}
+		//☆
+		List<Tgt> map = tgt.getTarget().stream().map(p -> new Tgt(p.getName(), p.getStatus().calcDamage())).collect(Collectors.toList());
+		if (map.stream().flatMap(f -> f.damage.entrySet().stream()).count() >= 7) {
+			//平均モード
+
+			//ダメージ
+			//回復
+		} else {
+			//全行表示モード
+			for (Tgt t : map) {
+
+			}
+		}
+
+		setMsg(MessageType.ACTION_SUCCESS, ba, res, text);
 
 		animation.addAll(res.getAnimation());
 		currentBAWaitTime = new FrameTimeCounter(ba.getWaitTime());
@@ -1526,6 +1605,12 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.getActionResultW().allText();
 	}
 
+	private void setMsg(MessageType t, CmdAction a, ActionResult res, List<String> option) {
+		String s = t.get(a, null, option, res);
+		messageWindowSystem.getActionResultW().setText(s);
+		messageWindowSystem.getActionResultW().allText();
+	}
+
 	private void setMsg(MessageType t, CmdAction a, Status user) {
 		String s = t.get(a, user, null, null);
 		messageWindowSystem.getActionResultW().setText(s);
@@ -1650,7 +1735,12 @@ public class BattleSystem implements Drawable {
 				currentCmd.getUser().moveToTgt();
 
 				if (!currentCmd.getUser().isMoving()) {
+					//スプライトとステータスを非表示にする
+					int i = 0;
+					for (; GameSystem.getInstance().getPartyStatus().equals(currentCmd.getUser().getStatus()); i++);
 					currentCmd.getUser().getSprite().setVisible(false);
+					messageWindowSystem.getStatusW().getMw().get(i).setVisible(false);
+
 					//PC全員逃げ判定、全員逃げた場合、戦闘終了
 					if (party.stream().allMatch(p -> p.hasCondition(BattleConfig.ConditionName.escaped))) {
 						//全員逃げた
@@ -1688,10 +1778,10 @@ public class BattleSystem implements Drawable {
 								exp += (int) e.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.exp).getValue();
 								//ドロップアイテムの判定
 								List<DropItem> items = e.getDropItem();
-								for (DropItem i : items) {
+								for (DropItem ii : items) {
 									//ドロップアイテムの確率判定
-									if (Random.percent(i.getP())) {
-										dropItems.addAll(i.cloneN());
+									if (Random.percent(ii.getP())) {
+										dropItems.addAll(ii.cloneN());
 									}
 								}
 							}
@@ -1700,8 +1790,8 @@ public class BattleSystem implements Drawable {
 						String text = "---" + I18N.translate("BATTLE_RESULT") + "---" + Text.getLineSep() + I18N.translate("ENEMY_WAS_ESCAPED") + Text.getLineSep();
 						text += I18N.translate("GET_EXP") + ":" + exp + Text.getLineSep();
 						text += I18N.translate("DROP_ITEM") + ":" + Text.getLineSep();
-						for (Item i : dropItems) {
-							text += " " + i.getName() + Text.getLineSep();
+						for (Item ii : dropItems) {
+							text += " " + ii.getName() + Text.getLineSep();
 						}
 						messageWindowSystem.getBattleResultW().setText(text);
 						messageWindowSystem.getBattleResultW().allText();
@@ -1773,6 +1863,7 @@ public class BattleSystem implements Drawable {
 				ActionResult res = eba.exec(tgt);
 				updateCondition();
 				currentBAWaitTime = eba.createWaitTime();
+				//☆
 				setMsg(MessageType.ACTION_SUCCESS, eba, res);
 				animation.addAll(res.getAnimation());
 				//アクション実行中に入る

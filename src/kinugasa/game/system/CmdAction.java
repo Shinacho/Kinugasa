@@ -26,8 +26,10 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
@@ -55,11 +57,21 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 	private int sort;
 	private int spellTime;
 	private int actionCount = 1;
+	private Set<StatusKey> damageCalcStatusKey = new HashSet<>();
 
 	public CmdAction(ActionType type, String name, String desc) {
 		this.type = type;
 		this.name = name;
 		this.desc = desc;
+	}
+
+	public Set<StatusKey> getDamageCalcStatusKey() {
+		return damageCalcStatusKey;
+	}
+
+	public CmdAction setDamageCalcStatusKey(Set<StatusKey> damageCalcStatusKey) {
+		this.damageCalcStatusKey = damageCalcStatusKey;
+		return this;
 	}
 
 	public void setActionCount(int actionCount) {
@@ -284,6 +296,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 
 		return result;
 	}
+
 	public Map<StatusKey, Integer> selfBattleDirectDamage() {
 		Map<StatusKey, Integer> result = new HashMap<>();
 

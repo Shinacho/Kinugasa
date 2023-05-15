@@ -45,7 +45,6 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 	private AttributeValueSet eqAttr;
 	private ItemEqipmentSlot eqipmentSlot;
 	private WeaponMagicType weaponMagicType;
-	private Set<StatusKey> damageCalcStatusKey = new HashSet<>();
 	private int value;//ベース価値
 	private boolean canSale = true;//売れるかどうか
 	private int currentUpgrade = 0;
@@ -62,14 +61,6 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 		return this;
 	}
 
-	public Set<StatusKey> getDamageCalcStatusKey() {
-		return damageCalcStatusKey;
-	}
-
-	public Item setDamageCalcStatusKey(Set<StatusKey> damageCalcStatusKey) {
-		this.damageCalcStatusKey = damageCalcStatusKey;
-		return this;
-	}
 
 	public Item setValue(int v) {
 		this.value = v;

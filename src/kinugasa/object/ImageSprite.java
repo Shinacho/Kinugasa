@@ -224,6 +224,12 @@ public class ImageSprite extends BasicSprite {
 		return image.get();
 	}
 
+	public void setSizeByImage() {
+		int w = getImageWidth();
+		int h = getImageHeight();
+		setSize(w, h);
+	}
+
 	/**
 	 * 画像の幅を取得します. 画像のサイズは画像インスタンスに設定されている、ピクセル単位のサイズです。<br>
 	 * この値は描画モデルによっては無視され、実際のスプライトのサイズとは違う場合があります。<br>

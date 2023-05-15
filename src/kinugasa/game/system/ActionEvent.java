@@ -26,6 +26,7 @@ package kinugasa.game.system;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import kinugasa.graphics.Animation;
 import kinugasa.object.AnimationSprite;
 import kinugasa.object.KVector;
@@ -47,11 +48,13 @@ public class ActionEvent implements Comparable<ActionEvent> {
 	private float p;
 	private float spread;
 	private Animation animation;
-	private AnimationMoveType animationMoveType = AnimationMoveType.NONE;
+	private AnimationMoveType animationMoveType = AnimationMoveType.TGT;
+	private Set<StatusKey> damageCalcStatusKey;
 
-	public ActionEvent(TargetType tt, ParameterType pt) {
+	public ActionEvent(TargetType tt, ParameterType pt, Set<StatusKey> damageCalcStatusKey) {
 		this.targetType = tt;
 		this.parameterType = pt;
+		this.damageCalcStatusKey = damageCalcStatusKey;
 	}
 
 	public ActionEvent setTgtName(String tgtName) {
@@ -96,6 +99,19 @@ public class ActionEvent implements Comparable<ActionEvent> {
 	public ActionEvent setAnimationMoveType(AnimationMoveType animationMoveType) {
 		this.animationMoveType = animationMoveType;
 		return this;
+	}
+
+	public Set<StatusKey> getDamageCalcStatusKey() {
+		return damageCalcStatusKey;
+	}
+
+	public ActionEvent setDamageCalcStatusKey(Set<StatusKey> damageCalcStatusKey) {
+		this.damageCalcStatusKey = damageCalcStatusKey;
+		return this;
+	}
+
+	public AnimationMoveType getAnimationMoveType() {
+		return animationMoveType;
 	}
 
 	//この実行はダメージ計算式を使用しない

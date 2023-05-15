@@ -115,8 +115,8 @@ public class FieldMapResourceUtil {
 		}
 	}
 	public static void main(String[] args) {
-		String f1 = "D:/Project/FuzzyWorld/resource/data/map/raw/map05.csv";
-		String f2 = "D:/Project/FuzzyWorld/resource/data/map/map05.csv";
+		String f1 = "D:/Project/FuzzyWorld/resource/data/map/raw/map06.csv";
+		String f2 = "D:/Project/FuzzyWorld/resource/data/map/map06.csv";
 		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 48, 16);
 		
 	}

@@ -571,6 +571,11 @@ public class Status implements Nameable {
 	}
 
 	//前回検査時からの差分を自動算出する
+	/**
+	 * ダメージ計算ポイントからのダメージを自動計算して返します。
+	 *
+	 * @return 前回のダメージ計算ポイントからの差分。0でない場合だけキーが含まれる.
+	 */
 	public Map<StatusKey, Float> calcDamage() {
 		if (prevStatus == null) {
 			return Collections.emptyMap();

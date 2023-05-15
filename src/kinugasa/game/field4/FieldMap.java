@@ -528,8 +528,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				if (mode != BGMMode.NOTHING) {
 					String mapName = e.getAttributes().get("mapName").getValue();
 					String soundName = e.getAttributes().get("soundName").getValue();
-					if (mode == BGMMode.STOP || mode == BGMMode.STOP || mode == BGMMode.PAUSE) {
+					if (mode == BGMMode.STOP || mode == BGMMode.STOP || mode == BGMMode.PAUSE || mode == BGMMode.STOP_AND_PLAY) {
 						SoundStorage.getInstance().get(mapName).stopAll();
+						if (mode != BGMMode.PAUSE) {
+							SoundStorage.getInstance().get(mapName).dispose();
+						}
 					}
 					if (mode == BGMMode.STOP_AND_PLAY) {
 						bgm = SoundStorage.getInstance().get(mapName).get(soundName);
@@ -930,16 +933,21 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		//NPCが画面下半分にいる場合はメッセージウインドウを上に表示。上半分にいる場合は下に表示。
 		float buffer = 24;
 		float x = buffer;
-		float y = n == null || n.getCenterY() < GameOption.getInstance().getWindowSize().width / 2 ? GameOption.getInstance().getWindowSize().height / 2 + buffer * 2 : buffer;
-		float w = GameOption.getInstance().getWindowSize().width - (buffer * 2);
-		float h = GameOption.getInstance().getWindowSize().height / 3;
+		float y = n == null || n.getCenterY() < GameOption.getInstance().getWindowSize().width / 2
+				? GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 2 + buffer * 2
+				: buffer;
+		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - (buffer * 2);
+		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
 		Text t = n == null ? new Text(noNPCMessage) : textStorage.get(n.getTextID());
 		if (n != null) {
 			n.to(playerCharacter.get(0).getCurrentDir().reverse());
 		}
 		t.reset();
-
 		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), textStorage, t);
+
+		if (isDebugMode()) {
+			System.out.println("FM TALK:" + mw.getBounds() + " / " + t.getName());
+		}
 
 		return mw;
 	}

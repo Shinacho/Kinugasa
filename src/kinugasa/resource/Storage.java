@@ -94,7 +94,7 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 */
 	public T get(String key) throws NameNotFoundException {
 		if (!contains(key)) {
-			throw new NameNotFoundException("! > Storage(" + getClass() + ") : get : not found : key=[" + key.toString() + "]");
+			throw new NameNotFoundException("! > Storage(" + getClass() + ") : get : not found : key=[" + key + "]");
 		}
 		return map.get(key);
 	}

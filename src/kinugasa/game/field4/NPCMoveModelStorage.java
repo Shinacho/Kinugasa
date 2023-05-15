@@ -26,6 +26,7 @@ package kinugasa.game.field4;
 import java.awt.Point;
 import java.util.Collections;
 import java.util.stream.Collectors;
+import kinugasa.game.system.GameSystemException;
 import kinugasa.object.FourDirection;
 import kinugasa.resource.DuplicateNameException;
 import kinugasa.resource.Storage;
@@ -97,6 +98,9 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 					}
 					if (tgt.x >= map.getBaseLayer().getDataWidth() - 1 || tgt.y >= map.getBaseLayer().getDataHeight() - 1) {
 						continue;
+					}
+					if (n.getVehicle() == null) {
+						throw new GameSystemException("NPCs vehicle is null:" + n);
 					}
 					if (!n.getVehicle().isStepOn(map.getTile(tgt).getChip())) {
 						continue;

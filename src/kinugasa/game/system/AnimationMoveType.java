@@ -23,30 +23,180 @@
  */
 package kinugasa.game.system;
 
+import java.awt.geom.Point2D;
+import kinugasa.object.KVector;
+
 /**
  *
  * @vesion 1.0.0 - 2022/12/11_21:45:01<br>
  * @author Shinacho<br>
  */
 public enum AnimationMoveType {
-	NONE(0),
-	USER_TO_TGT_4(4),
-	TGT_TO_USER_4(4),
-	USER_TO_TGT_8(8),
-	TGT_TO_USER_8(8),
-	USER_TO_TGT_12(12),
-	TGT_TO_USER_12(12),
-	USER_TO_TGT_16(16),
-	TGT_TO_USER_16(16),
-	USER_TO_TGT_20(20),
-	TGT_TO_USER_20(20),
-	USER_TO_TGT_24(24),
-	TGT_TO_USER_24(24),
-	USER_TO_TGT_28(28),
-	TGT_TO_USER_28(28),
-	USER_TO_TGT_32(32),
-	TGT_TO_USER_32(32),;
+	TGT(0) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	USER(0) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	NONE(0) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	USER_TO_TGT_4(4) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(user, tgt);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	TGT_TO_USER_4(4) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(tgt, user);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	USER_TO_TGT_8(8) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(user, tgt);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	TGT_TO_USER_8(8) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(tgt, user);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	USER_TO_TGT_12(12) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(user, tgt);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	TGT_TO_USER_12(12) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(tgt, user);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	USER_TO_TGT_16(16) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(user, tgt);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	TGT_TO_USER_16(16) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(tgt, user);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	USER_TO_TGT_20(20) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(user, tgt);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	TGT_TO_USER_20(20) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(tgt, user);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	USER_TO_TGT_24(24) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(user, tgt);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	TGT_TO_USER_24(24) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(tgt, user);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	USER_TO_TGT_28(28) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(user, tgt);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	TGT_TO_USER_28(28) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(tgt, user);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	USER_TO_TGT_32(32) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(user, tgt);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	TGT_TO_USER_32(32) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(tgt, user);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},;
 	private float speed;
+
+	public abstract KVector createVector(Point2D.Float user, Point2D.Float tgt);
 
 	private AnimationMoveType(float speed) {
 		this.speed = speed;
