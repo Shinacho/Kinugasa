@@ -64,14 +64,14 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 		//¶‘¶ó‘Ô‚Ì”»’è
 		if (!exists) {
 			System.out.println("->, but this event is dead");
-			GameLog.printInfo("->, but this event is dead");
+//			GameLog.printInfo("->, but this event is dead");
 			return UserOperationRequire.CONTINUE;
 		}
 		//Term‚Ì”»’è
 		if (term != null) {
 			if (term.stream().anyMatch(p -> !p.canDoThis(GameSystem.getInstance().getPartyStatus(), this))) {
 				System.out.println("->, but this event is disable");
-				GameLog.printInfo("->, but this event is disable");
+//				GameLog.printInfo("->, but this event is disable");
 				return UserOperationRequire.CONTINUE;
 			}
 		}
@@ -83,7 +83,7 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 			exists = false;
 		}
 		System.out.println("->done");
-		GameLog.printInfo("->done");
+//		GameLog.printInfo("->done");
 		return u;
 	}
 

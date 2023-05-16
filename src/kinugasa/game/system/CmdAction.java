@@ -349,7 +349,6 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 				return new ActionResult(tgt, res, new FrameTimeCounter(missWaitTime), null);
 			}
 		}
-		playSound();
 		if (tgt.isInField()) {
 			//フィールド
 			if (fieldEvent == null || fieldEvent.isEmpty()) {

@@ -703,6 +703,14 @@ public class BattleTargetSystem implements Drawable {
 					throw new AssertionError("undefined target type " + e);
 			}
 		}
+		//アンターゲットの人を削除
+		List<BattleCharacter> removeList = new ArrayList<>();
+		for(BattleCharacter c : inArea){
+			if(c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())){
+				removeList.add(c);
+			}
+		}
+		inArea.removeAll(removeList);
 		inArea = inArea.stream().distinct().collect(Collectors.toList());
 
 	}

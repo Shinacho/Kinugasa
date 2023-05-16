@@ -24,6 +24,7 @@ package kinugasa.game.system;
  * THE SOFTWARE.
  */
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import kinugasa.object.AnimationSprite;
 
@@ -42,7 +43,7 @@ public class ActionEventResult {
 	}
 
 	public ActionEventResult(ActionResultType resultTypePerTgt, AnimationSprite animation) {
-		this(List.of(resultTypePerTgt), List.of(animation));
+		this(List.of(resultTypePerTgt), animation == null ? Collections.emptyList() : List.of(animation));
 	}
 
 	public ActionEventResult(List<ActionResultType> resultTypePerTgt, List<AnimationSprite> animation) {

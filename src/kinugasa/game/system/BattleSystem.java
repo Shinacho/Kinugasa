@@ -27,6 +27,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -1158,8 +1159,11 @@ public class BattleSystem implements Drawable {
 
 	//アクション実行（コミット、ターゲットあり）
 	void execAction(CmdAction ba, ActionTarget tgt) {
+		if (!ba.getName().equals(tgt.getAction().getName())) {
+			ba = tgt.getAction();
+		}
 		if (GameSystem.isDebugMode()) {
-			System.out.println("exec action TGT:" + tgt);
+			System.out.println("exec action ba=" + ba.getName() + " TGT:" + tgt);
 		}
 		//メッセージウインドウを初期化
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
@@ -1171,6 +1175,9 @@ public class BattleSystem implements Drawable {
 		if (user.isPlayer()) {
 			if (ba.getName().equals(BattleConfig.ActionName.commit)) {
 				//移動終了・キャラクタの向きとターゲット座標のクリアをする
+				if (GameSystem.isDebugMode()) {
+					System.out.println("commit move");
+				}
 				user.unsetTarget();
 				user.to(FourDirection.WEST);
 				stage.setStage(BattleSystem.Stage.WAITING_EXEC_CMD);
@@ -1236,19 +1243,50 @@ public class BattleSystem implements Drawable {
 		//ターゲット存在のため、アクション実行
 		tgt.getTarget().forEach(p -> p.getStatus().setDamageCalcPoint());
 		ActionResult res = ba.exec(tgt);
-		//visibleStatusのリストを作成
-		//123 回復した ＊HPの場合は表示しない
-		//MP に 123 ダメージ
-		/*
-		TO=に
-		IS=は
-		HEALDAMAGE=回復した
-		SUB=減った
-		 */
+		//HPが0になったときなどの状態異常を付与する
+		conditionManager.setCondition(GameSystem.getInstance().getPartyStatus());
+		conditionManager.setCondition(enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList()));
+		//スプライトの非表示化処理とアンターゲットコンディション発生中のユーザによるコマンドを除去
+		List<BattleCommand> removeList = new ArrayList<>();
+		Map<String, String> deadEnemyName = new HashMap<>();//これを表示する
+		for (BattleCommand cmd : commandsOfThisTurn) {
+			for (String conditionName : BattleConfig.getUntargetConditionNames()) {
+				ConditionKey k = ConditionValueStorage.getInstance().get(conditionName).getKey();
+				//アンターゲット状態異常を持っているか検査
+				if (cmd.getUser().getStatus().hasCondition(conditionName)) {
+					removeList.add(cmd);
+					cmd.getUser().getSprite().setVisible(false);
+					deadEnemyName.put(cmd.getUser().getName(), cmd.getUser().getName() + I18N.translate("IS") + k.getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+					if (cmd.getUser() instanceof Enemy) {
+						if (((Enemy) cmd.getUser()).getDeadSound() != null) {
+							((Enemy) cmd.getUser()).getDeadSound().load().stopAndPlay();
+						}
+					}
+					break;
+				}
+			}
+		}
+		commandsOfThisTurn.removeAll(removeList);
+		//アンターゲット状態異常になったキャラのスプライトを非表示にする
+		for (BattleCharacter c : GameSystem.getInstance().getParty()) {
+			for (String cndKey : BattleConfig.getUntargetConditionNames()) {
+				if (c.getStatus().hasCondition(cndKey)) {
+					c.getSprite().setVisible(false);
+					deadEnemyName.put(c.getName(), c.getName() + I18N.translate("IS") + ConditionValueStorage.getInstance().get(cndKey).getKey().getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+				}
+			}
+		}
+		for (BattleCharacter c : enemies) {
+			for (String cndKey : BattleConfig.getUntargetConditionNames()) {
+				if (c.getStatus().hasCondition(cndKey)) {
+					c.getSprite().setVisible(false);
+					deadEnemyName.put(c.getName(), c.getName() + I18N.translate("IS") + ConditionValueStorage.getInstance().get(cndKey).getKey().getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+				}
+			}
+		}
 		List<String> text = new ArrayList<>();
 		//1行目
 		text.add(user.getName() + " " + I18N.translate("S") + " " + ba.getName() + " !!");//改行不要
-
 		//2行目以降
 		class Tgt {
 
@@ -1261,35 +1299,70 @@ public class BattleSystem implements Drawable {
 			}
 
 		}
-		//☆
 		List<Tgt> map = tgt.getTarget().stream().map(p -> new Tgt(p.getName(), p.getStatus().calcDamage())).collect(Collectors.toList());
 		if (map.stream().flatMap(f -> f.damage.entrySet().stream()).count() >= 7) {
 			//平均モード
-
-			//ダメージ
-			//回復
+			for (String statusKey : BattleConfig.getVisibleStatus().stream().sorted().collect(Collectors.toList())) {
+				float avg = 0;
+				for (Tgt t : map) {
+					if (t.damage.containsKey(statusKey)) {
+						avg += t.damage.get(statusKey);
+					}
+				}
+				avg /= map.size();
+				String txt = I18N.translate("AVERAGE")
+						+ " " + Math.abs((int) avg) + " "
+						+ StatusKeyStorage.getInstance().get(statusKey).getDesc();
+				if (avg < 0) {
+					txt += " " + I18N.translate("GET_DAMAGE");
+				} else {
+					txt += " " + I18N.translate("HEALDAMAGE");
+				}
+				txt += " !";
+				text.add(txt);
+			}
+			for (String v : deadEnemyName.values()) {
+				text.add(v);
+			}
 		} else {
 			//全行表示モード
-			for (Tgt t : map) {
-
+			for (String statusKey : BattleConfig.getVisibleStatus().stream().sorted().collect(Collectors.toList())) {
+				for (Tgt t : map) {
+					if (t.damage.containsKey(statusKey)) {
+						//visibleStatusを3つまで表示
+						String txt = t.name + I18N.translate("S");
+						txt += " " + StatusKeyStorage.getInstance().get(statusKey).getDesc() + " " + I18N.translate("TO");
+						float v = t.damage.get(statusKey);
+						txt += (Math.abs((int) v)) + "";
+						if (v < 0) {
+							txt += " " + I18N.translate("GET_DAMAGE");
+						} else {
+							txt += " " + I18N.translate("HEALDAMAGE");
+						}
+						txt += " ! ";
+						if (deadEnemyName.containsKey(t.name)) {
+							txt += deadEnemyName.get(t.name);
+						}
+						text.add(txt);
+					}
+				}
 			}
 		}
-
+		if (text.size() > 7) {
+			text = text.subList(0, 8);
+		}
+		System.out.println(text);
 		setMsg(MessageType.ACTION_SUCCESS, ba, res, text);
-
 		animation.addAll(res.getAnimation());
 		currentBAWaitTime = new FrameTimeCounter(ba.getWaitTime());
-
 		stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
-
-		return;
 
 	}
 
 	public void commitPCsMove() {
 		//ターゲットシステムに値をセット
 		//AFTER_MOVE選択に入る
-		stage.setStage(Stage.AFTER_MOVE_CMD_SELECT, Stage.WAITING_EXEC_CMD);
+		stage.setStage(Stage.AFTER_MOVE_CMD_SELECT);
 	}
 
 	//PCの移動をキャンセルして、移動前の位置に戻す。確定は「commit」タイプのアクションから。
@@ -1559,6 +1632,7 @@ public class BattleSystem implements Drawable {
 			return;
 		}
 		//攻撃ターゲットセレクト確定(ONEのみ
+		assert stage.getStage() == Stage.TARGET_SELECT : "target select not yet :" + stage.getStage();
 		if (messageWindowSystem.getCmdW().isVisible()) {
 			assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.ITEM : "atk commit, but action is item:" + messageWindowSystem.getCmdW().getSelectedCmd();
 			assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.OTHER : "atk commit, but action is other:" + messageWindowSystem.getCmdW().getSelectedCmd();
@@ -1634,6 +1708,9 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.update();
 		targetSystem.update();
 		enemies.forEach(v -> v.update());
+		if (stage.getStage() == Stage.BATLE_END) {
+			return;
+		}
 
 		//ターゲットシステムのカレント表示位置更新
 		if (targetSystem.getCurrentArea().isVisible()) {
@@ -1673,8 +1750,7 @@ public class BattleSystem implements Drawable {
 				}
 			}
 			battleResultValue = new BattleResultValues(result, exp, dropItems, nextLogicName);
-			battleResultValue = new BattleResultValues(BattleResult.ESCAPE, exp, new ArrayList<>(), winLogicName);
-			String text = "---" + I18N.translate("BATTLE_RESULT") + "---" + Text.getLineSep() + I18N.translate("ENEMY_WAS_ESCAPED") + Text.getLineSep();
+			String text = "---" + I18N.translate("BATTLE_RESULT") + "---" + Text.getLineSep() + I18N.translate("WIN_BATTLE") + Text.getLineSep();
 			text += I18N.translate("GET_EXP") + ":" + exp + Text.getLineSep();
 			text += I18N.translate("DROP_ITEM") + ":" + Text.getLineSep();
 			for (Item i : dropItems) {
@@ -1843,7 +1919,8 @@ public class BattleSystem implements Drawable {
 					return;
 				}
 				//アクションを抽選・・・このステージに入るときは必ずENEMYなのでキャスト失敗しない
-				CmdAction eba = currentCmd.getBattleActionOf(((Enemy) currentCmd.getUser()).getAI(), ActionType.ATTACK);
+				Enemy user;
+				CmdAction eba = currentCmd.getBattleActionOf((user = (Enemy) currentCmd.getUser()).getAI(), ActionType.ATTACK);
 				if (eba == null) {
 					if (GameSystem.isDebugMode()) {
 						System.out.println(" enemy " + currentCmd.getUser().getStatus().getName() + " try afterMoveAttack, but dont have attackCMD");
@@ -1861,11 +1938,120 @@ public class BattleSystem implements Drawable {
 
 				//移動後攻撃実行
 				ActionResult res = eba.exec(tgt);
-				updateCondition();
-				currentBAWaitTime = eba.createWaitTime();
-				//☆
-				setMsg(MessageType.ACTION_SUCCESS, eba, res);
+				//HPが0になったときなどの状態異常を付与する
+				conditionManager.setCondition(GameSystem.getInstance().getPartyStatus());
+				conditionManager.setCondition(enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList()));
+				//スプライトの非表示化処理とアンターゲットコンディション発生中のユーザによるコマンドを除去
+				List<BattleCommand> removeList2 = new ArrayList<>();
+				Map<String, String> deadEnemyName = new HashMap<>();//これを表示する
+				for (BattleCommand cmd : commandsOfThisTurn) {
+					for (String conditionName : BattleConfig.getUntargetConditionNames()) {
+						ConditionKey k = ConditionValueStorage.getInstance().get(conditionName).getKey();
+						//アンターゲット状態異常を持っているか検査
+						if (cmd.getUser().getStatus().hasCondition(conditionName)) {
+							removeList2.add(cmd);
+							cmd.getUser().getSprite().setVisible(false);
+							deadEnemyName.put(cmd.getUser().getName(), cmd.getUser().getName() + I18N.translate("IS") + k.getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+							if (cmd.getUser() instanceof Enemy) {
+								if (((Enemy) cmd.getUser()).getDeadSound() != null) {
+									((Enemy) cmd.getUser()).getDeadSound().load().stopAndPlay();
+								}
+							}
+							break;
+						}
+					}
+				}
+				commandsOfThisTurn.removeAll(removeList2);
+				//アンターゲット状態異常になったキャラのスプライトを非表示にする
+				for (BattleCharacter c : GameSystem.getInstance().getParty()) {
+					for (String cndKey : BattleConfig.getUntargetConditionNames()) {
+						if (c.getStatus().hasCondition(cndKey)) {
+							c.getSprite().setVisible(false);
+							deadEnemyName.put(c.getName(), c.getName() + I18N.translate("IS") + ConditionValueStorage.getInstance().get(cndKey).getKey().getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+						}
+					}
+				}
+				for (BattleCharacter c : enemies) {
+					for (String cndKey : BattleConfig.getUntargetConditionNames()) {
+						if (c.getStatus().hasCondition(cndKey)) {
+							c.getSprite().setVisible(false);
+							deadEnemyName.put(c.getName(), c.getName() + I18N.translate("IS") + ConditionValueStorage.getInstance().get(cndKey).getKey().getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+						}
+					}
+				}
+				List<String> text = new ArrayList<>();
+				//1行目
+				text.add(user.getName() + " " + I18N.translate("S") + " " + eba.getName() + " !!");//改行不要
+
+				//2行目以降
+				class Tgt {
+
+					String name;
+					Map<StatusKey, Float> damage;
+
+					Tgt(String name, Map<StatusKey, Float> damage) {
+						this.name = name;
+						this.damage = damage;
+					}
+
+				}
+				List<Tgt> map = tgt.getTarget().stream().map(p -> new Tgt(p.getName(), p.getStatus().calcDamage())).collect(Collectors.toList());
+				if (map.stream().flatMap(f -> f.damage.entrySet().stream()).count() >= 7) {
+					//平均モード
+					for (String statusKey : BattleConfig.getVisibleStatus().stream().sorted().collect(Collectors.toList())) {
+						float avg = 0;
+						for (Tgt t : map) {
+							if (t.damage.containsKey(statusKey)) {
+								avg += t.damage.get(statusKey);
+							}
+						}
+						avg /= map.size();
+						String txt = I18N.translate("AVERAGE")
+								+ " " + Math.abs((int) avg) + " "
+								+ StatusKeyStorage.getInstance().get(statusKey).getDesc();
+						if (avg < 0) {
+							txt += " " + I18N.translate("GET_DAMAGE");
+						} else {
+							txt += " " + I18N.translate("HEALDAMAGE");
+						}
+						txt += " !";
+						text.add(txt);
+					}
+					for (String v : deadEnemyName.values()) {
+						text.add(v);
+					}
+				} else {
+					//全行表示モード
+					for (String statusKey : BattleConfig.getVisibleStatus().stream().sorted().collect(Collectors.toList())) {
+						for (Tgt t : map) {
+							if (t.damage.containsKey(statusKey)) {
+								//visibleStatusを3つまで表示
+								String txt = t.name + I18N.translate("S");
+								txt += " " + StatusKeyStorage.getInstance().get(statusKey).getDesc() + " " + I18N.translate("TO");
+								float v = t.damage.get(statusKey);
+								txt += (Math.abs((int) v)) + "";
+								if (v < 0) {
+									txt += " " + I18N.translate("GET_DAMAGE");
+								} else {
+									txt += " " + I18N.translate("HEALDAMAGE");
+								}
+								txt += " ! ";
+								if (deadEnemyName.containsKey(t.name)) {
+									txt += deadEnemyName.get(t.name);
+								}
+								text.add(txt);
+							}
+						}
+					}
+				}
+
+				if (text.size() > 7) {
+					text = text.subList(0, 8);
+				}
+
+				setMsg(MessageType.ACTION_SUCCESS, eba, res, text);
 				animation.addAll(res.getAnimation());
+				currentBAWaitTime = new FrameTimeCounter(eba.getWaitTime());
 				//アクション実行中に入る
 				stage.setStage(Stage.EXECUTING_ACTION);
 				break;

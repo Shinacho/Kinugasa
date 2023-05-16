@@ -35,6 +35,8 @@ import kinugasa.object.ImageSprite;
 import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Storage;
+import kinugasa.resource.sound.Sound;
+import kinugasa.resource.sound.SoundStorage;
 import kinugasa.resource.text.FileIOException;
 import kinugasa.resource.text.IllegalXMLFormatException;
 import kinugasa.resource.text.XMLElement;
@@ -83,6 +85,14 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 			Race race = RaceStorage.getInstance().get(e.getAttributes().get("race").getValue());
 			Vehicle vehicle = VehicleStorage.getInstance().get(e.getAttributes().get("vehicle").getValue());
 			EnemyAI ai = EnemyAIStorage.getInstance().get(e.getAttributes().get("ai").getValue());
+			Sound deadSound = null;
+			if(e.getAttributes().contains("deadSound")){
+				String mapName = e.getAttributes().get("deadSound").safeSplit("/")[0];
+				String soundName = e.getAttributes().get("deadSound").safeSplit("/")[1];
+				Sound s = SoundStorage.getInstance().get(mapName).get(soundName);
+				s.dispose();
+				deadSound = s;
+			}
 			StatusValueSet statusValueSet = new StatusValueSet();
 			statusValueSet.setAll(1);
 			for (XMLElement se : e.getElement("status")) {
@@ -155,7 +165,8 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 					new ImageSprite(0, 0, image.getWidth(), image.getHeight(), image),
 					actionList,
 					vehicle,
-					ai
+					ai,
+					deadSound
 			);
 			add(b);
 		}

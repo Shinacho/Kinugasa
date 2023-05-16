@@ -566,7 +566,7 @@ public class Status implements Nameable {
 	public void setDamageCalcPoint() {
 		prevStatus = status.clone();
 		if (GameSystem.isDebugMode()) {
-			System.out.println(getName() + " / SAVE DCP : " + prevStatus);
+			System.out.println("STATUS save DCP:" + getName());
 		}
 	}
 

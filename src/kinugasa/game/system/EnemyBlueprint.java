@@ -30,6 +30,7 @@ import java.util.Map;
 import kinugasa.game.field4.Vehicle;
 import kinugasa.object.ImageSprite;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.sound.Sound;
 
 /**
  *
@@ -86,6 +87,7 @@ public class EnemyBlueprint implements Nameable {
 	private List<CmdAction> actions;
 	private Vehicle vehicle;
 	private EnemyAI ai;
+	private Sound deadSound;
 
 	public EnemyBlueprint(String id,
 			String visibleName,
@@ -99,7 +101,7 @@ public class EnemyBlueprint implements Nameable {
 			ArrayList<DropItem> dropItems,
 			ImageSprite sprite,
 			List<CmdAction> actions,
-			Vehicle vehicle, EnemyAI ai) {
+			Vehicle vehicle, EnemyAI ai,Sound deadSound) {
 		this.id = id;
 		this.visibleName = visibleName;
 		this.statusValueSet = statusValueSet;
@@ -114,6 +116,7 @@ public class EnemyBlueprint implements Nameable {
 		this.actions = actions;
 		this.vehicle = vehicle;
 		this.ai = ai;
+		this.deadSound = deadSound;
 	}
 
 	public Enemy create() {
@@ -134,6 +137,6 @@ public class EnemyBlueprint implements Nameable {
 		}
 		actions.forEach(v -> s.getActions().add(v));
 
-		return new Enemy(id, s, (ArrayList<DropItem>) dropItems.clone(), sprite.clone(), vehicle, ai);
+		return new Enemy(id, s, (ArrayList<DropItem>) dropItems.clone(), sprite.clone(), vehicle, ai, deadSound);
 	}
 }

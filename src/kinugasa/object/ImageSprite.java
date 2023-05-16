@@ -225,6 +225,9 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	public void setSizeByImage() {
+		if (image == null) {
+			return;
+		}
 		int w = getImageWidth();
 		int h = getImageHeight();
 		setSize(w, h);

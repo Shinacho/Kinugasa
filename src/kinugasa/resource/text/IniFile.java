@@ -91,11 +91,13 @@ public class IniFile implements Input<IniFile>, Output {
 					throw new FileFormatException(file, line);
 				}
 				String[] val = line.split("=");
+				if (map.containsKey(val[0])) {
+					throw new FileFormatException("this ini files key is duplicated:" + file.getName() + " / " + val[0]);
+				}
 				map.put(val[0], new Value(val[1]));
 			}
 		} catch (IOException ex) {
 			throw new FileIOException(ex);
-
 		}
 		status = InputStatus.LOADED;
 

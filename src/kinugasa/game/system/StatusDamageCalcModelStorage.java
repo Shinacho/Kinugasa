@@ -122,7 +122,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 							if (GameSystem.isDebugMode()) {
 								System.out.println("damage calculation(ATK), calceled by AVO.");
 							}
-							return new ActionEventResult(ActionResultType.MISS, null);
+							return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 						}
 					}
 
@@ -173,6 +173,13 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					//value設定
 					value *= BattleConfig.damageMul;
 					value = (int) value;
+					if (value == 0) {
+						desc.append("VALUE is 0");
+						if (GameSystem.isDebugMode()) {
+							System.out.println(desc.toString());
+						}
+						return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
+					}
 					desc.append("result[" + value + "]");
 					tgt.getStatus().getBaseStatus().get(ba.getTgtName()).add(value);
 
@@ -181,6 +188,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					if (ba.hasAnimation()) {
 						//アニメーションスプライト
 						sprite = new AnimationSprite(ba.getAnimationClone());
+						sprite.update();
 						sprite.setSizeByImage();
 						sprite.getAnimation().setRepeat(false);//重要、アニメーションが消えなくなる
 						switch (ba.getAnimationMoveType()) {
@@ -228,7 +236,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						if (GameSystem.isDebugMode()) {
 							System.out.println("damage calculation(MGK), calceled by AVO.");
 						}
-						return new ActionEventResult(ActionResultType.MISS, null);
+						return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 					}
 				}
 
@@ -279,6 +287,13 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				//value設定
 				value *= BattleConfig.damageMul;
 				value = (int) value;
+				if (value == 0) {
+					desc.append("VALUE is 0");
+					if (GameSystem.isDebugMode()) {
+						System.out.println(desc.toString());
+					}
+					return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
+				}
 				desc.append("result[" + value + "]");
 				tgt.getStatus().getBaseStatus().get(ba.getTgtName()).add(value);
 
@@ -287,6 +302,8 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				if (ba.hasAnimation()) {
 					//アニメーションスプライト
 					sprite = new AnimationSprite(ba.getAnimationClone());
+					sprite.update();
+					sprite.setSizeByImage();
 					sprite.getAnimation().setRepeat(false);//重要、アニメーションが消えなくなる
 					switch (ba.getAnimationMoveType()) {
 						case NONE:

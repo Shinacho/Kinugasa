@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import kinugasa.game.GameLog;
 import kinugasa.game.field4.FieldEventParser;
+import kinugasa.game.system.GameSystem;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Storage;
@@ -127,8 +128,10 @@ public class TextStorage extends Storage<Text> implements Nameable {
 		}
 		data.dispose();
 
-		GameLog.printIfUsing(Level.ALL, getAll().toString());
-		printAll(System.out);
+		if (GameSystem.isDebugMode()) {
+//		GameLog.printIfUsing(Level.ALL, getAll().toString());
+			printAll(System.out);
+		}
 
 		return this;
 	}

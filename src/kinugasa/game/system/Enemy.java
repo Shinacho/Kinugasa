@@ -30,7 +30,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.field4.Vehicle;
@@ -45,6 +44,7 @@ import kinugasa.object.ImageSprite;
 import kinugasa.object.KVector;
 import kinugasa.object.Sprite;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.sound.Sound;
 
 /**
  *
@@ -62,6 +62,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 	private List<BattleCharacter> currentTgt;
 	private Vehicle vehicle;
 	private EnemyAI ai;
+	private Sound deadSound;
 
 	public static String getProgressBarKey() {
 		return progressBarKey;
@@ -85,7 +86,11 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 		return id;
 	}
 
-	Enemy(String id, Status status, ArrayList<DropItem> dropItem, ImageSprite sprite, Vehicle v, EnemyAI ai) {
+	public Sound getDeadSound() {
+		return deadSound;
+	}
+
+	Enemy(String id, Status status, ArrayList<DropItem> dropItem, ImageSprite sprite, Vehicle v, EnemyAI ai, Sound deadSound) {
 		this.id = id;
 		this.status = status;
 		this.dropItem = dropItem;
@@ -95,6 +100,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 			throw new GameSystemException(status.getName() + " s action is empty");
 		}
 		this.ai = ai;
+		this.deadSound = deadSound;
 	}
 
 	private Point2D.Float tgt;

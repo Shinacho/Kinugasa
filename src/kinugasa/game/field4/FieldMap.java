@@ -525,20 +525,20 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			if (root.hasElement("bgm")) {
 				XMLElement e = root.getElement("bgm").get(0);
 				BGMMode mode = BGMMode.valueOf(e.getAttributes().get("mode").getValue());
-				if (mode != BGMMode.NOTHING) {
-					String mapName = e.getAttributes().get("mapName").getValue();
-					String soundName = e.getAttributes().get("soundName").getValue();
-					if (mode == BGMMode.STOP || mode == BGMMode.STOP || mode == BGMMode.PAUSE || mode == BGMMode.STOP_AND_PLAY) {
-						SoundStorage.getInstance().get(mapName).stopAll();
-						if (mode != BGMMode.PAUSE) {
+				String mapName = e.getAttributes().get("mapName").getValue();
+				String soundName = e.getAttributes().get("soundName").getValue();
+				bgm = SoundStorage.getInstance().get(mapName).get(soundName);
+				if (mode == BGMMode.STOP || mode == BGMMode.STOP || mode == BGMMode.PAUSE || mode == BGMMode.STOP_AND_PLAY) {
+					SoundStorage.getInstance().get(mapName).stopAll();
+					if (mode != BGMMode.PAUSE && mode != BGMMode.NOTHING) {
+						if (!bgm.isPlaying()) {//êVÇµÇ¢BGMÇ™çƒê∂íÜÇÃèÍçáÇÕí‚é~ÇµÇ»Ç¢
 							SoundStorage.getInstance().get(mapName).dispose();
 						}
 					}
-					if (mode == BGMMode.STOP_AND_PLAY) {
-						bgm = SoundStorage.getInstance().get(mapName).get(soundName);
-						if (!bgm.isPlaying()) {
-							bgm.load().stopAndPlay();
-						}
+				}
+				if (mode == BGMMode.STOP_AND_PLAY) {
+					if (!bgm.isPlaying()) {
+						bgm.load().stopAndPlay();
 					}
 				}
 
@@ -946,7 +946,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), textStorage, t);
 
 		if (isDebugMode()) {
-			System.out.println("FM TALK:" + mw.getBounds() + " / " + t.getName());
+			System.out.println("FM TALK: textID[" + t.getName() + "]");
 		}
 
 		return mw;
