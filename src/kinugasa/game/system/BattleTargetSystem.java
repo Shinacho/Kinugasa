@@ -249,6 +249,14 @@ public class BattleTargetSystem implements Drawable {
 			}
 		}
 		tgt = tgt.stream().distinct().collect(Collectors.toList());
+		//アンターゲット状態のキャラを除去
+		List<BattleCharacter> removeList = new ArrayList<>();
+		for (BattleCharacter c : tgt) {
+			if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
+				removeList.add(c);
+			}
+		}
+		tgt.removeAll(removeList);
 		result.setTarget(tgt);
 
 		if (GameSystem.isDebugMode()) {
@@ -262,7 +270,9 @@ public class BattleTargetSystem implements Drawable {
 	//空のターゲットインスタンスを返す場合がある。
 	static ActionTarget instantTarget(BattleCharacter user, CmdAction a) {
 		Point2D.Float center = user.getSprite().getCenter();
-		int area = a.getAreaWithEqip(user.getStatus());
+		int area = a instanceof Item
+				? (int) user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2
+				: a.getAreaWithEqip(user.getStatus());
 		ActionTarget result = new ActionTarget(user, a);
 
 		List<BattleCharacter> tgt = new ArrayList<>();
@@ -360,6 +370,14 @@ public class BattleTargetSystem implements Drawable {
 			}
 		}
 		tgt = tgt.stream().distinct().collect(Collectors.toList());
+		//アンターゲット状態のキャラを除去
+		List<BattleCharacter> removeList = new ArrayList<>();
+		for (BattleCharacter c : tgt) {
+			if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
+				removeList.add(c);
+			}
+		}
+		tgt.removeAll(removeList);
 		result.setTarget(tgt);
 
 		if (GameSystem.isDebugMode()) {
@@ -705,8 +723,8 @@ public class BattleTargetSystem implements Drawable {
 		}
 		//アンターゲットの人を削除
 		List<BattleCharacter> removeList = new ArrayList<>();
-		for(BattleCharacter c : inArea){
-			if(c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())){
+		for (BattleCharacter c : inArea) {
+			if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
 				removeList.add(c);
 			}
 		}
@@ -729,6 +747,9 @@ public class BattleTargetSystem implements Drawable {
 				|| currentBA.hasBattleTT(TargetType.TEAM_ENEMY)
 				|| currentBA.hasBattleTT(TargetType.TEAM_PARTY)) {
 			for (BattleCharacter c : getInAreaDirect()) {
+				if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
+					continue;
+				}
 				float x = c.getSprite().getCenterX();
 				float y = c.getSprite().getCenterY() - iconMaster.getHeight() - 12;
 				Sprite i = iconMaster.clone();

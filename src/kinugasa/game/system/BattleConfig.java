@@ -65,6 +65,7 @@ public class BattleConfig {
 	
 	public static float atkDefPercent = 0.75f;//ƒ_ƒ[ƒWŒø—¦
 	public static float damageMul = 2.5f;
+	public static String weaponSlotName = "";
 
 	public static class ConditionName {
 

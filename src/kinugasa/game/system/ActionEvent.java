@@ -49,12 +49,10 @@ public class ActionEvent implements Comparable<ActionEvent> {
 	private float spread;
 	private Animation animation;
 	private AnimationMoveType animationMoveType = AnimationMoveType.TGT;
-	private Set<StatusKey> damageCalcStatusKey;
 
-	public ActionEvent(TargetType tt, ParameterType pt, Set<StatusKey> damageCalcStatusKey) {
+	public ActionEvent(TargetType tt, ParameterType pt) {
 		this.targetType = tt;
 		this.parameterType = pt;
-		this.damageCalcStatusKey = damageCalcStatusKey;
 	}
 
 	public ActionEvent setTgtName(String tgtName) {
@@ -98,15 +96,6 @@ public class ActionEvent implements Comparable<ActionEvent> {
 
 	public ActionEvent setAnimationMoveType(AnimationMoveType animationMoveType) {
 		this.animationMoveType = animationMoveType;
-		return this;
-	}
-
-	public Set<StatusKey> getDamageCalcStatusKey() {
-		return damageCalcStatusKey;
-	}
-
-	public ActionEvent setDamageCalcStatusKey(Set<StatusKey> damageCalcStatusKey) {
-		this.damageCalcStatusKey = damageCalcStatusKey;
 		return this;
 	}
 
@@ -342,17 +331,18 @@ public class ActionEvent implements Comparable<ActionEvent> {
 		Animation a = getAnimationClone();
 		AnimationSprite s = new AnimationSprite(animation);
 		if (animationMoveType == AnimationMoveType.NONE) {
+			s.setVisible(false);
+			return s;
+		}
+		if (animationMoveType == AnimationMoveType.TGT) {
 			s.setLocationByCenter(tgt);
 			return s;
 		}
-		KVector v = new KVector();
-		if (animationMoveType.toString().startsWith("TGT_TO")) {
-			v.setAngle(tgt, user);
-		} else if (animationMoveType.toString().startsWith("USER_TO")) {
-			v.setAngle(user, tgt);
+		if (animationMoveType == AnimationMoveType.USER) {
+			s.setLocationByCenter(user);
+			return s;
 		}
-		v.setSpeed(animationMoveType.getSpeed());
-		s.setVector(v);
+		s.setVector(animationMoveType.createVector(user, tgt));
 		return s;
 	}
 

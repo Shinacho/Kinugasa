@@ -25,15 +25,13 @@ package kinugasa.game.system;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.object.EmptySprite;
 import kinugasa.object.KVector;
-import kinugasa.object.Sprite;
 
 /**
  *
@@ -44,10 +42,64 @@ public enum StandardEnemyAI implements EnemyAI {
 	SIMPLE {
 		@Override
 		public CmdAction getNext(BattleCharacter user, List<CmdAction> list) {
+			assert user.isPlayer() == false : "ENEMY AI but user is not CPU";
+			//HPが半分以下かどうか
+			boolean hpIsUnderHarf = user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
+					< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax();
+			L1:
+			{
+				//回復アイテム（valueが＋でバトルユースできるアイテム）を持っているかどうか
+				//回復アイテム
+				Item healItem = (Item) getMax(user.getStatus().getItemBag().getItems());
+				if (healItem == null) {
+					break L1;
+				}
+				//回復アイテムインスタ
+				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healItem);
+				//自分のHPが半分以下またはインスタエリアの敵内にHPが半分以下がいる場合、そいつにアイテム使用
+				if (hpIsUnderHarf || instTgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
+						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).count() > 0) {
+					return healItem;
+				}
+			}
+
+			//回復魔法（valueが＋）持っている場合でHPが低い場合自分に使う
+			//回復アイテムを持っている場合でHPが低い場合自分に使う
+			L2:
+			{
+				CmdAction healMgk = getMax(list.stream().filter(p -> p.getType() == ActionType.MAGIC).collect(Collectors.toList()));
+				//回復魔法インスタ
+				if (healMgk == null) {
+					break L2;
+				}
+				//回復アイテムインスタ
+				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healMgk);
+				//自分のHPが半分以下またはインスタエリアの敵内にHPが半分以下がいる場合、そいつにアイテム使用
+				if (hpIsUnderHarf || instTgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
+						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).count() > 0) {
+					return healMgk;
+				}
+
+			}
+			//威力が最低の行動を返すが、足りない項目があって詠唱できない魔法である場合は別の行動を返す
 			//ランダムな行動を返す
-			List<CmdAction> l = new ArrayList<>(list);
-			Collections.shuffle(l);
-			return l.get(0);
+
+			final int CHUUSEN_KAISU = 12;
+			for (int i = 0; i < CHUUSEN_KAISU; i++) {
+				CmdAction kouho = getMin(list);
+				Map<StatusKey, Integer> damage = kouho.selfBattleDirectDamage();
+				//ダメージを合算
+				StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
+				//ダメージがあって、-の項目がある場合、対価を支払えないため空振り
+				//この魔法の消費項目を取得
+				if (!damage.isEmpty() && simulateDamage.hasMinus()) {
+					continue;
+				}
+				return kouho;
+			}
+			//ランダムな行動を返す
+			Collections.shuffle(list);
+			return list.get(0);
 		}
 
 		@Override
@@ -63,6 +115,8 @@ public enum StandardEnemyAI implements EnemyAI {
 
 			//userからpcまでの直線状に障害物があるか検査
 			EmptySprite s = new EmptySprite(user.getSprite().getCenter(), new Dimension(2, 2));
+			s.setX(s.getX() - 1);
+			s.setY(s.getY() - 1);
 			KVector v = new KVector();
 			v.setAngle(user.getCenter(), pc.getCenter());
 			v.setSpeed(1);
@@ -132,4 +186,120 @@ public enum StandardEnemyAI implements EnemyAI {
 		return toString();
 	}
 
+	//lからTTがパーティーでvalueが最大のものを返す（＋
+	//複数ある場合はランダムなものを返す
+	//ない場合はnullを返す
+	private static CmdAction getMax(List<? extends CmdAction> l) {
+		//敵の人数
+		int enemyNum = GameSystem.getInstance().getBattleSystem().getEnemies().size();
+		//味方の人数
+		int partyNum = GameSystem.getInstance().getParty().size();
+		Collections.shuffle(l);
+		Map<CmdAction, Integer> result = new HashMap<>();
+		for (CmdAction a : l) {
+			int sum = 0;
+			for (ActionEvent e : a.getBattleEvent()) {
+				switch (e.getTargetType()) {
+					case ALL:
+						sum += (enemyNum + partyNum) * e.getValue();
+						break;
+					case FIELD:
+						break;
+					case ONE_ENEMY:
+						sum += (partyNum) * e.getValue();
+						break;
+					case ONE_PARTY:
+						sum += (enemyNum) * e.getValue();
+						break;
+					case RANDOM_ONE:
+						sum += e.getValue();
+						break;
+					case RANDOM_ONE_ENEMY:
+						sum += e.getValue();
+						break;
+					case RANDOM_ONE_PARTY:
+						sum += e.getValue();
+						break;
+					case SELF:
+						sum += e.getValue();
+						break;
+					case TEAM_ENEMY:
+						sum += (partyNum) * e.getValue();
+						break;
+					case TEAM_PARTY:
+						sum += (enemyNum) * e.getValue();
+						break;
+					default:
+						throw new AssertionError();
+				}
+			}
+			result.put(a, sum);
+		}
+		if (result.isEmpty()) {
+			return null;
+		}
+		return result.entrySet().stream().sorted((p1, p2) -> {
+			return p2.getValue() - p1.getValue();
+		}
+		).map(p -> p.getKey()).collect(Collectors.toList()).get(0);
+
+	}
+
+	//lからTTがエネミーでvalueが最低のものを返す（ー
+	//複数ある場合はランダムなものを返す
+	//ない場合はnullを返す
+	private static CmdAction getMin(List<? extends CmdAction> l) {
+		//敵の人数
+		int enemyNum = GameSystem.getInstance().getBattleSystem().getEnemies().size();
+		//味方の人数
+		int partyNum = GameSystem.getInstance().getParty().size();
+		Collections.shuffle(l);
+		Map<CmdAction, Integer> result = new HashMap<>();
+		for (CmdAction a : l) {
+			int sum = 0;
+			for (ActionEvent e : a.getBattleEvent()) {
+				switch (e.getTargetType()) {
+					case ALL:
+						sum += (enemyNum + partyNum) * e.getValue();
+						break;
+					case FIELD:
+						break;
+					case ONE_ENEMY:
+						sum += (partyNum) * e.getValue();
+						break;
+					case ONE_PARTY:
+						sum += (enemyNum) * e.getValue();
+						break;
+					case RANDOM_ONE:
+						sum += e.getValue();
+						break;
+					case RANDOM_ONE_ENEMY:
+						sum += e.getValue();
+						break;
+					case RANDOM_ONE_PARTY:
+						sum += e.getValue();
+						break;
+					case SELF:
+						sum += e.getValue();
+						break;
+					case TEAM_ENEMY:
+						sum += (partyNum) * e.getValue();
+						break;
+					case TEAM_PARTY:
+						sum += (enemyNum) * e.getValue();
+						break;
+					default:
+						throw new AssertionError();
+				}
+			}
+			result.put(a, sum);
+		}
+		if (result.isEmpty()) {
+			return null;
+		}
+		return result.entrySet().stream().sorted((p1, p2) -> {
+			return p1.getValue() - p2.getValue();
+		}
+		).map(p -> p.getKey()).collect(Collectors.toList()).get(0);
+	}
 }

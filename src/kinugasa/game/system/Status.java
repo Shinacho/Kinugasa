@@ -378,6 +378,16 @@ public class Status implements Nameable {
 			assert conditionTimes.containsKey(v.getKey()) : "Condition and effectTimes are out of sync.";
 			return;
 		}
+		//耐性チェック
+		List<AttributeKey> set = AttributeKeyStorage.getInstance().stream().filter(p -> p.getName().contains("C_" + name)).collect(Collectors.toList());
+		if (!set.isEmpty()) {
+			assert set.size() == 1 : "condition name is duplicated : " + set;
+			if (!Random.percent(getEffectedAttrIn().get(set.get(0).getName()).getValue())) {
+				//設定しない
+				return;
+			}
+		}
+
 		//優先度計算
 		//優先度が同一の状態異常がある場合、後勝ちで削除
 		int pri = v.getKey().getPriority();
@@ -589,9 +599,9 @@ public class Status implements Nameable {
 				result.put(v.getKey(), val);
 			}
 		}
-		if (GameSystem.isDebugMode()) {
-			System.out.println("DCP<>DC[" + getName() + "] : " + result);
-		}
+//		if (GameSystem.isDebugMode()) {
+//			System.out.println("DCP<>DC[" + getName() + "] : " + result);
+//		}
 
 //		prevStatus = this.status;
 		return result;

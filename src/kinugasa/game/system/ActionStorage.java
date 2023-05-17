@@ -64,10 +64,10 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 	}
 	Map<String, Animation> animationMap = new HashMap<>();
 
-	private ActionEvent parseEvent(XMLElement e, Set<StatusKey> dcs) {
+	private ActionEvent parseEvent(XMLElement e) {
 		TargetType tt = e.getAttributes().get("tt").of(TargetType.class);
 		ParameterType pt = e.getAttributes().get("pt").of(ParameterType.class);
-		ActionEvent event = new ActionEvent(tt, pt, dcs == null ? Collections.emptySet() : dcs);
+		ActionEvent event = new ActionEvent(tt, pt);
 		if (e.hasAttribute("p")) {
 			event.setP(e.getAttributes().get("p").getFloatValue());
 		}
@@ -196,10 +196,10 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			}
 			//イベント
 			for (XMLElement ee : e.getElement("battleEvent")) {
-				i.addBattleEvent(parseEvent(ee, i.getDamageCalcStatusKey()));
+				i.addBattleEvent(parseEvent(ee));
 			}
 			for (XMLElement ee : e.getElement("fieldEvent")) {
-				i.addFieldEvent(parseEvent(ee, i.getDamageCalcStatusKey()));
+				i.addFieldEvent(parseEvent(ee));
 			}
 			//強化関連
 			if (e.hasElement("upgrade")) {
@@ -328,18 +328,12 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			if (e.hasAttribute("spellTime")) {
 				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
 			}
-			if (e.hasAttribute("dcs")) {
-				for (String statusName : e.getAttributes().get("dcs").safeSplit(",")) {
-					StatusKey key = StatusKeyStorage.getInstance().get(statusName);
-					a.getDamageCalcStatusKey().add(key);
-				}
-			}
 			//イベント
 			for (XMLElement ee : e.getElement("battleEvent")) {
-				a.addBattleEvent(parseEvent(ee, a.getDamageCalcStatusKey()));
+				a.addBattleEvent(parseEvent(ee));
 			}
 			for (XMLElement ee : e.getElement("fieldEvent")) {
-				a.addFieldEvent(parseEvent(ee, a.getDamageCalcStatusKey()));
+				a.addFieldEvent(parseEvent(ee));
 			}
 			getInstance().add(a);
 
@@ -371,18 +365,12 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			if (e.hasAttribute("spellTime")) {
 				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
 			}
-			if (e.hasAttribute("dcs")) {
-				for (String statusName : e.getAttributes().get("dcs").safeSplit(",")) {
-					StatusKey key = StatusKeyStorage.getInstance().get(statusName);
-					a.getDamageCalcStatusKey().add(key);
-				}
-			}
 			//イベント
 			for (XMLElement ee : e.getElement("battleEvent")) {
-				a.addBattleEvent(parseEvent(ee, a.getDamageCalcStatusKey()));
+				a.addBattleEvent(parseEvent(ee));
 			}
 			for (XMLElement ee : e.getElement("fieldEvent")) {
-				a.addFieldEvent(parseEvent(ee, a.getDamageCalcStatusKey()));
+				a.addFieldEvent(parseEvent(ee));
 			}
 			getInstance().add(a);
 		}
@@ -414,10 +402,10 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			}
 			//イベント
 			for (XMLElement ee : e.getElement("battleEvent")) {
-				a.addBattleEvent(parseEvent(ee, null));
+				a.addBattleEvent(parseEvent(ee));
 			}
 			for (XMLElement ee : e.getElement("fieldEvent")) {
-				a.addFieldEvent(parseEvent(ee, null));
+				a.addFieldEvent(parseEvent(ee));
 			}
 			getInstance().add(a);
 		}

@@ -87,7 +87,7 @@ public class ConditionDescWindow extends PCStatusWindow {
 	private void updateText() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<---");
-		sb.append(s.get(pcIdx).getName()).append(I18N.translate("S")).append(I18N.translate("CURRENT_CONDITION")).append("--->").append(Text.getLineSep());
+		sb.append(s.get(pcIdx).getName()).append(I18N.translate("S")).append(I18N.translate("CURRENT_CONDITION")).append("--->");
 		List<Text> l = new ArrayList<>();
 		l.add(new Text(sb.toString()));
 		l.addAll(s.get(pcIdx).getCondition().stream().map(p -> new Text(p.getKey().getDesc())).collect(Collectors.toList()));

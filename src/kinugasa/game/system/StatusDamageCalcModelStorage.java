@@ -92,9 +92,9 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				//魔法or攻撃
 				boolean isAtk = ba.getAttr().getOrder() < 10;
 				StringBuilder desc = new StringBuilder();
-				desc.append(user.getName()).append("->").append(tgt.getName()).append(":");
+				desc.append("SDCM : ").append(user.getName()).append("->").append(tgt.getName()).append(":");
 
-				//攻撃
+				//攻撃------------------------------------------------------------------------------------------------------------------------
 				if (isAtk) {
 					desc.append("ATK,");
 					//baのvalue * spread
@@ -128,14 +128,14 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 
 					//ATTR計算
 					value *= tgt.getStatus().getEffectedAttrIn().get(ba.getAttr().getName()).getValue();
-
-					//ダメージ計算ステータスキーがあるか検査
-					if (ba.getDamageCalcStatusKey() != null && !ba.getDamageCalcStatusKey().isEmpty()) {
-						//ダメージ計算ステータスの最大値に対する割合の平均を出す
+					//DCS
+					//ユーザの装備品に計算ステータスキーがあるか検査
+					Item weapon = user.getStatus().getEqipment().get(ItemEqipmentSlotStorage.getInstance().get(BattleConfig.weaponSlotName));
+					if (weapon != null) {
 						float ave = (float) user.getStatus()
 								.getEffectedStatus()
 								.stream()
-								.filter(p -> ba.getDamageCalcStatusKey().contains(p.getKey()))
+								.filter(p -> weapon.getDamageCalcStatusKey().contains(p.getKey()))
 								.mapToDouble(p -> p.getValue() / p.getKey().getMax())
 								.average()
 								.getAsDouble();
@@ -215,10 +215,16 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					return new ActionEventResult(ActionResultType.SUCCESS, sprite);
 
 				}
-				//魔法
+				//魔法----------------------------------------------------------------------------------------------
 				desc.append("MGK,");
 				//baのvalue * spread
-				float value = ba.getValue() * ba.getSpread();
+				float spread = (ba.getValue() * ba.getSpread());
+				float value = ba.getValue();
+				if (Random.percent(0.5f)) {
+					value += spread;
+				} else {
+					value -= spread;
+				}
 
 				//アクションクリティカル判定
 				boolean critical = Random.percent(user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.critMgk).getValue());
@@ -243,13 +249,14 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				//ATTR計算
 				value *= tgt.getStatus().getEffectedAttrIn().get(ba.getAttr().getName()).getValue();
 
-				//ダメージ計算ステータスキーがあるか検査
-				if (ba.getDamageCalcStatusKey() != null && !ba.getDamageCalcStatusKey().isEmpty()) {
-					//ダメージ計算ステータスの最大値に対する割合の平均を出す
+				//DCS
+				//ユーザの装備品に計算ステータスキーがあるか検査
+				Item weapon = user.getStatus().getEqipment().get(ItemEqipmentSlotStorage.getInstance().get(BattleConfig.weaponSlotName));
+				if (weapon != null) {
 					float ave = (float) user.getStatus()
 							.getEffectedStatus()
 							.stream()
-							.filter(p -> ba.getDamageCalcStatusKey().contains(p.getKey()))
+							.filter(p -> weapon.getDamageCalcStatusKey().contains(p.getKey()))
 							.mapToDouble(p -> p.getValue() / p.getKey().getMax())
 							.average()
 							.getAsDouble();
@@ -262,13 +269,13 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				float atk = user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.mgk).getValue()
 						/ user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.mgk).getKey().getMax();
 				float def = tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.defMgk).getValue()
-						/ tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.defMgk).getKey().getMax();//有効倍率
+						/ tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.defMgk).getKey().getMax();
 				//攻撃の割合-防御の割合
 				float atkSubDef = atk - def * BattleConfig.atkDefPercent;
-				desc.append("atk-def[" + atkSubDef + "],");
 				if (atkSubDef < 0) {
 					atkSubDef = 0;
 				}
+				desc.append("atk-def[" + atkSubDef + "],");
 				value *= atkSubDef;
 
 				//攻撃カット判定
