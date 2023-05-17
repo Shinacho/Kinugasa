@@ -48,7 +48,7 @@ public enum StandardEnemyAI implements EnemyAI {
 					< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax();
 			L1:
 			{
-				//回復アイテム（valueが＋でバトルユースできるアイテム）を持っているかどうか
+				//回復アイテム（valueが＋でバトル利用できるアイテム）を持っているかどうか
 				Item healItem = (Item) getMax(user.getStatus().getItemBag().getItems());
 				if (healItem == null) {
 					break L1;
@@ -56,6 +56,7 @@ public enum StandardEnemyAI implements EnemyAI {
 				//回復アイテムインスタ
 				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healItem);
 				//自分のHPが半分以下またはインスタエリアの敵内にHPが半分以下がいる場合、そいつにアイテム使用
+				//（ターゲットはBSで再計算する
 				if (hpIsUnderHarf || instTgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).count() > 0) {
 					return healItem;
@@ -72,6 +73,7 @@ public enum StandardEnemyAI implements EnemyAI {
 				//回復魔法インスタ
 				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healMgk);
 				//自分のHPが半分以下またはインスタエリアの敵内にHPが半分以下がいる場合、そいつにアイテム使用
+				//（ターゲットはBSで再計算する
 				if (hpIsUnderHarf || instTgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).count() > 0) {
 					return healMgk;
@@ -79,8 +81,6 @@ public enum StandardEnemyAI implements EnemyAI {
 
 			}
 			//威力が最低の行動を返すが、足りない項目があって詠唱できない魔法である場合は別の行動を返す
-			//ランダムな行動を返す
-
 			final int CHUUSEN_KAISU = 12;
 			for (int i = 0; i < CHUUSEN_KAISU; i++) {
 				CmdAction kouho = getMin(list);

@@ -276,8 +276,8 @@ public class FieldEventSystem implements Drawable {
 		item = null;
 		currentEvent = event.getFirst();
 		event.removeFirst();
-		System.out.print("start event : " + currentEvent);
-//		GameLog.printInfo("start event : " + currentEvent);
+//		System.out.print("start event : " + currentEvent);
+		GameLog.printInfo("start event : " + currentEvent);
 		if (currentEvent.getEventType() == FieldEventType.IF) {
 			return UserOperationRequire.CONTINUE;
 		}

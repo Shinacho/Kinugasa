@@ -67,6 +67,11 @@ public final class ImageUtil {
 	private static final GraphicsConfiguration gc
 			= GraphicsEnvironment.getLocalGraphicsEnvironment().
 					getDefaultScreenDevice().getDefaultConfiguration();
+	/**
+	 * ロードした画像をキャッシュするためのマップです.
+	 */
+	private static final HashMap<String, SoftReference<BufferedImage>> IMAGE_CACHE
+			= new HashMap<String, SoftReference<BufferedImage>>(32);
 
 	/**
 	 * メインスクリーンのデバイス設定を取得します。<br>
@@ -81,7 +86,6 @@ public final class ImageUtil {
 	 * ユーティリティクラスのためインスタンス化できません.
 	 */
 	private ImageUtil() {
-		ImageIO.setUseCache(false);
 	}
 
 	//------------------------------------------------------------------------------------------------------------
@@ -141,8 +145,19 @@ public final class ImageUtil {
 	 */
 	public static BufferedImage load(String filePath) throws FileNotFoundException, ContentsIOException {
 		StopWatch watch = new StopWatch().start();
+		SoftReference<BufferedImage> cacheRef = IMAGE_CACHE.get(filePath);
+		//キャッシュあり&GC未実行
+		if (cacheRef != null && cacheRef.get() != null) {
+			watch.stop();
+			GameLog.printInfoIfUsing("ImageUtil cached filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+			return cacheRef.get();
+		}
 		//GCが実行されているかキャッシュがなければ新しくロードしてキャッシュに追加する
 		File file = new File(filePath);
+		if (!file.exists()) {
+			watch.stop();
+			throw new FileNotFoundException("notfound : filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+		}
 		BufferedImage dst = null;
 		try {
 			dst = ImageIO.read(file);
@@ -158,6 +173,7 @@ public final class ImageUtil {
 		}
 		//互換画像に置換
 		dst = copy(dst, newImage(dst.getWidth(), dst.getHeight()));
+		IMAGE_CACHE.put(filePath, new SoftReference<BufferedImage>(dst));
 		watch.stop();
 		GameLog.printInfoIfUsing("ImageUtil loaded filePath=[" + filePath + "](" + watch.getTime() + " ms)");
 		return dst;

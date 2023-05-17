@@ -67,7 +67,6 @@ public class RaceStorage extends Storage<Race> implements XMLFileSupport {
 			getInstance().add(new Race(raceName, itemBagSize, bookBagSize, set));
 		}
 		file.dispose();
-		printAll(System.out);
 	}
 
 }

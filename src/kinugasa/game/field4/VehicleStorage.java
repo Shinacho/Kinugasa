@@ -70,7 +70,6 @@ public class VehicleStorage extends Storage<Vehicle> implements XMLFileSupport {
 			add(new Vehicle(name, speed, list));
 		}
 		GameLog.printIfUsing(Level.ALL, getAll().toString());
-		printAll(System.out);
 	}
 
 	private Vehicle currentVehicle;

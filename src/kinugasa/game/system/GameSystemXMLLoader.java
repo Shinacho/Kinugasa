@@ -242,7 +242,6 @@ public class GameSystemXMLLoader {
 			String when0 = e.getAttributes().contains("when0") ? e.getAttributes().get("when0").getValue() : null;
 			StatusKeyStorage.getInstance().add(new StatusKey(name, desc, order, min, max, when0));
 		}
-		StatusKeyStorage.getInstance().printAll(System.out);
 		f.dispose();
 	}
 
@@ -266,7 +265,6 @@ public class GameSystemXMLLoader {
 			int order = e.getAttributes().get("order").getIntValue();
 			AttributeKeyStorage.getInstance().add(new AttributeKey(name, desc, order));
 		}
-		AttributeKeyStorage.getInstance().printAll(System.out);
 		f.dispose();
 	}
 
@@ -345,7 +343,6 @@ public class GameSystemXMLLoader {
 			}
 			ConditionValueStorage.getInstance().add(new ConditionValue(key, list));
 		}
-		ConditionValueStorage.getInstance().printAll(System.out);
 
 		//フィールド状態マスタ
 		for (XMLElement e : root.getElement("fCondition")) {
@@ -400,7 +397,6 @@ public class GameSystemXMLLoader {
 			}
 			FieldConditionValueStorage.getInstance().add(new ConditionValue(key, list));
 		}
-		FieldConditionValueStorage.getInstance().printAll(System.out);
 
 		f.dispose();
 	}

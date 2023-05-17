@@ -70,7 +70,6 @@ public class BookStorage extends Storage<Book> implements XMLFileSupport {
 			}
 			BookPageStorage.getInstance().add(new BookPage(t, name, tgtName, value));
 		}
-		BookPageStorage.getInstance().printAll(System.out);
 
 		//ñ{ÇÃÉçÅ[Éh
 		for (XMLElement e : root.getElement("book")) {
@@ -100,7 +99,6 @@ public class BookStorage extends Storage<Book> implements XMLFileSupport {
 			}
 			getInstance().add(b);
 		}
-		printAll(System.out);
 		file.dispose();
 	}
 

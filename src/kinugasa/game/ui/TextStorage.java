@@ -129,8 +129,7 @@ public class TextStorage extends Storage<Text> implements Nameable {
 		data.dispose();
 
 		if (GameSystem.isDebugMode()) {
-//		GameLog.printIfUsing(Level.ALL, getAll().toString());
-			printAll(System.out);
+		GameLog.printIfUsing(Level.ALL, getAll().toString());
 		}
 
 		return this;

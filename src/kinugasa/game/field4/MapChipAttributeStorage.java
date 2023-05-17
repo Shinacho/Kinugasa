@@ -66,7 +66,6 @@ public class MapChipAttributeStorage extends Storage<MapChipAttribute> implement
 			getInstance().add(new MapChipAttribute(name, encountBaseValue));
 		}
 		GameLog.printIfUsing(Level.ALL, getAll().toString());
-		printAll(System.out);
 
 	}
 

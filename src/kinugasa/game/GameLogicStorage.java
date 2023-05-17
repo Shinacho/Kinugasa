@@ -72,6 +72,7 @@ public class GameLogicStorage extends Storage<GameLogic> {
 		}
 		if (current != null) {
 			current.dispose();
+			System.gc();
 		}
 		prev = current;
 		this.current = get(name);

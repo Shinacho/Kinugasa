@@ -59,7 +59,6 @@ public class ItemEqipmentSlotStorage extends Storage<ItemEqipmentSlot> implement
 			getInstance().add(new ItemEqipmentSlot(name));
 		}
 		file.dispose();
-		printAll(System.out);
 	}
 
 }

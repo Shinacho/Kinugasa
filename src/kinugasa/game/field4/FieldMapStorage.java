@@ -70,7 +70,7 @@ public class FieldMapStorage extends Storage<FieldMap> implements XMLFileSupport
 			add(new FieldMap(name, fieldMapDataFile));
 		}
 		GameLog.printIfUsing(Level.ALL, getAll().toString());
-		printAll(System.out);
+//		printAll(System.out);
 	}
 
 }

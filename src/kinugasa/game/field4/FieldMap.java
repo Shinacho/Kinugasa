@@ -528,18 +528,23 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				String mapName = e.getAttributes().get("mapName").getValue();
 				String soundName = e.getAttributes().get("soundName").getValue();
 				bgm = SoundStorage.getInstance().get(mapName).get(soundName);
-				if (mode == BGMMode.STOP || mode == BGMMode.STOP || mode == BGMMode.PAUSE) {
-					SoundStorage.getInstance().get(mapName).stopAll();
-					if (mode != BGMMode.PAUSE && mode != BGMMode.NOTHING ) {
-						if (!bgm.isPlaying()) {//êVÇµÇ¢BGMÇ™çƒê∂íÜÇÃèÍçáÇÕí‚é~ÇµÇ»Ç¢
-							SoundStorage.getInstance().get(mapName).dispose();
-						}
-					}
-				}
-				if (mode == BGMMode.STOP_AND_PLAY) {
-					if (!bgm.isPlaying()) {
+				switch (mode) {
+					case NOTHING:
+						break;
+					case PAUSE:
+						bgm.pause();
+						break;
+					case STOP:
+						SoundStorage.getInstance().get(mapName).stopAll();
+						SoundStorage.getInstance().get(mapName).dispose();
+						break;
+					case STOP_AND_PLAY:
+						SoundStorage.getInstance().get(mapName).stopAll();
+						SoundStorage.getInstance().get(mapName).dispose();
 						bgm.load().stopAndPlay();
-					}
+						break;
+					default:
+						throw new AssertionError("FM undefined bgm mode");
 				}
 
 			}
@@ -687,8 +692,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 			encountCounter.sub(x);
 			if (debugMode) {
-				System.out.print("FM MOVE " + currentIdx + " / EC=" + encountCounter.getCurrentTime());
-				kinugasa.game.GameLog.printInfo(" / " + getCurrentTile());
+				kinugasa.game.GameLog.printInfo("FM MOVE " + currentIdx + " /EC=" + encountCounter.getCurrentTime() + " /TILE=" + getCurrentTile());
 			}
 			prevLocationList.addFirst(prevIdx);
 			if (playerCharacter.size() <= prevLocationList.size()) {

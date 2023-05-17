@@ -75,9 +75,6 @@ public class SoundLoader {
 			}
 		});
 
-		if (GameSystem.isDebugMode()) {
-			map.printAll(System.out);
-		}
 		SoundStorage.getInstance().add(map);
 		return map;
 	}

@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import kinugasa.game.GameLog;
 import kinugasa.game.GameOption;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.ImageEditor;
@@ -113,7 +114,6 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			}
 			ActionTermStorage.getInstance().add(new ActionTerm(name, type, value));
 		}
-		ActionTermStorage.getInstance().printAll(System.out);
 
 		//アニメーションのパース
 		for (XMLElement e : root.getElement("animation")) {
@@ -128,9 +128,6 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			a.setRepeat(false);
 			animationMap.put(name, a);
 		}
-		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo(animationMap);
-		}
 
 		//サウンドのパース
 		Map<String, Sound> soundMap = new HashMap<>();
@@ -138,9 +135,6 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			String name = e.getAttributes().get("name").getValue();
 			Sound s = new SoundBuilder(e.getAttributes().get("file").getValue()).builde();
 			soundMap.put(name, s);
-		}
-		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo(soundMap);
 		}
 		//素材のパース
 		for (XMLElement e : root.getElement("material")) {
@@ -300,7 +294,6 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			}
 			ItemStorage.getInstance().add(i);
 		}
-		ItemStorage.getInstance().printAll(System.out);
 
 		//攻撃のパース
 		ActionType actionType = ActionType.ATTACK;
@@ -409,8 +402,6 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			}
 			getInstance().add(a);
 		}
-
-		printAll(System.out);
 
 		animationMap.clear();
 		file.dispose();

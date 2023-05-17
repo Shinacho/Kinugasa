@@ -62,7 +62,6 @@ public class TextStorageStorage extends Storage<TextStorage> implements XMLFileS
 		}
 		data.dispose();
 
-		printAll(System.out);
 
 	}
 	

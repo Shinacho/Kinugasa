@@ -1874,9 +1874,12 @@ public class BattleSystem implements Drawable {
 			if (result == BattleResult.LOSE) {
 				currentBGM.stop();
 				currentBGM.dispose();
+				prevBGM.stop();
+				prevBGM.dispose();
 				if (GameSystem.isDebugMode()) {
 					kinugasa.game.GameLog.printInfo(" this battle is ended");
 				}
+				battleResultValue = new BattleResultValues(result, 0, new ArrayList<>(), loseLogicName);
 				stage.setStage(Stage.BATLE_END);
 				return;
 			}

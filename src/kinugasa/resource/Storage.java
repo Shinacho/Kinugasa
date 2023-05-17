@@ -206,7 +206,6 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 			throw new NameNotFoundException("null key : " + this);
 		}
 		if (contains(val.getName())) {
-			printAll(System.out);
 			throw new DuplicateNameException("! > Storage : add : duplicate name : name=[" + val.getName() + "] : ");
 		}
 		map.put(val.getName(), val);

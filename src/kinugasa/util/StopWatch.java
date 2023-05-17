@@ -78,7 +78,6 @@ public class StopWatch {
 	public void stop(boolean print) {
 		stop();
 		if (print) {
-			print(System.out);
 			GameLog.printIfUsing(Level.ALL, this.toString());
 		}
 	}

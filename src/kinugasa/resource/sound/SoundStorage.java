@@ -63,6 +63,7 @@ public final class SoundStorage extends DynamicStorage<SoundMap> implements Inpu
 	@Override
 	public void dispose() {
 		super.dispose();
+		System.gc();
 	}
 
 	@Override

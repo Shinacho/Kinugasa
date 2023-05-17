@@ -46,7 +46,6 @@ public final class GameLog {
 	}
 	private static boolean using = false;
 	private static String logFilePath;
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS");
 
 	protected static void usingLog(String path) {
 		using = true;
@@ -62,22 +61,22 @@ public final class GameLog {
 	}
 
 	public static void print(Level lv, String message) {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, message);
+		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, message.replaceAll("\r\n", "").replaceAll("\n", "").replaceAll("\r", ""));
 	}
 
 	public static void print(Level lv, Throwable t) {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, t.toString());
+		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, t.toString().replaceAll("\r\n", "").replaceAll("\n", "").replaceAll("\r", ""));
 	}
 
 	public static void printIfUsing(Level lv, String message) {
 		if (using) {
-			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, message);
+			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, message.replaceAll("\r\n", "").replaceAll("\n", "").replaceAll("\r", ""));
 		}
 	}
 
 	public static void printIfUsing(Level lv, Throwable t) {
 		if (using) {
-			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, t.toString());
+			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, t.toString().replaceAll("\r\n", "").replaceAll("\n", "").replaceAll("\r", ""));
 		}
 	}
 
