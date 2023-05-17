@@ -100,10 +100,10 @@ public class FrameTimeEventManager implements XMLFileSupport {
 
 	public void print(){
 		// ƒCƒxƒ“ƒg“Š“üŠ®—¹
-		System.out.println("event list");
+		kinugasa.game.GameLog.printInfo("event list");
 		List<Long> key = new ArrayList<>(events.keySet());
 		Collections.sort(key);
-		for(Long l : key) System.out.println(l + ":" + events.get(l));
+		for(Long l : key) kinugasa.game.GameLog.printInfo(l + ":" + events.get(l));
 		
 	}
 	public boolean hasEvent(long frame){

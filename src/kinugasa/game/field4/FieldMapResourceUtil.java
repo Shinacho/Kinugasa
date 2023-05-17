@@ -96,7 +96,7 @@ public class FieldMapResourceUtil {
 		}
 		reader.dispose();
 		writer.save();
-		System.out.println("•ÏŠ·‚Í³í‚ÉI—¹‚µ‚Ü‚µ‚½");
+		kinugasa.game.GameLog.printInfo("•ÏŠ·‚Í³í‚ÉI—¹‚µ‚Ü‚µ‚½");
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class FieldMapResourceUtil {
 		List<String> keyList = new ArrayList<String>(map.keySet());
 		Collections.sort(keyList);
 		for (int i = 0, size = keyList.size(); i < size; i++) {
-			System.out.println(keyList.get(i));
+			kinugasa.game.GameLog.printInfo(keyList.get(i));
 		}
 	}
 	

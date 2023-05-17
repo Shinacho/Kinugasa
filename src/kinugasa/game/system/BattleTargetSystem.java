@@ -260,7 +260,7 @@ public class BattleTargetSystem implements Drawable {
 		result.setTarget(tgt);
 
 		if (GameSystem.isDebugMode()) {
-			System.out.println("TS instantTarget : " + result);
+			kinugasa.game.GameLog.printInfo("TS instantTarget : " + result);
 		}
 
 		return result;
@@ -381,7 +381,7 @@ public class BattleTargetSystem implements Drawable {
 		result.setTarget(tgt);
 
 		if (GameSystem.isDebugMode()) {
-			System.out.println("TS instantTarget : " + result);
+			kinugasa.game.GameLog.printInfo("TS instantTarget : " + result);
 		}
 
 		return result;
@@ -491,7 +491,7 @@ public class BattleTargetSystem implements Drawable {
 		updateSelected();
 		updateIcon();
 		if (GameSystem.isDebugMode()) {
-			System.out.println("TS current:" + currentBA);
+			kinugasa.game.GameLog.printInfo("TS current:" + currentBA);
 		}
 	}
 
@@ -541,7 +541,7 @@ public class BattleTargetSystem implements Drawable {
 		updateSelected();
 		updateIcon();
 		if (GameSystem.isDebugMode()) {
-			System.out.println("TS : " + this);
+			kinugasa.game.GameLog.printInfo("TS : " + this);
 		}
 	}
 

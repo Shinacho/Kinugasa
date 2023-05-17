@@ -414,7 +414,7 @@ public class GameSystemXMLLoader {
 	public boolean testStatus(String raceName) {
 		try {
 			Status s = new Status("name", RaceStorage.getInstance().get(raceName));
-			System.out.println(s);
+			kinugasa.game.GameLog.printInfo(s);
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();

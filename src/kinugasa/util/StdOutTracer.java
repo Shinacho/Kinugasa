@@ -367,7 +367,7 @@ public final class StdOutTracer {
 		try{
 			throw new Exception();
 		}catch(Exception ex){
-			System.out.println(ex.getStackTrace()[0].getClassName());
+			kinugasa.game.GameLog.printInfo(ex.getStackTrace()[0].getClassName());
 		}
 		
 

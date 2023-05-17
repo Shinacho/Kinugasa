@@ -90,7 +90,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			event.setAnimation(animationMap.get(e.getAttributes().get("animation").getValue()));
 		}
 		if (e.hasAttribute("animationMoveType")) {
-			event.setAnimationMoveType(e.getAttributes().get("amt").of(AnimationMoveType.class));
+			event.setAnimationMoveType(e.getAttributes().get("animationMoveType").of(AnimationMoveType.class));
 		}
 		return event;
 	}
@@ -129,7 +129,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			animationMap.put(name, a);
 		}
 		if (GameSystem.isDebugMode()) {
-			System.out.println(animationMap);
+			kinugasa.game.GameLog.printInfo(animationMap);
 		}
 
 		//サウンドのパース
@@ -140,7 +140,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			soundMap.put(name, s);
 		}
 		if (GameSystem.isDebugMode()) {
-			System.out.println(soundMap);
+			kinugasa.game.GameLog.printInfo(soundMap);
 		}
 		//素材のパース
 		for (XMLElement e : root.getElement("material")) {

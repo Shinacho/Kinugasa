@@ -142,7 +142,7 @@ public class BattleSystem implements Drawable {
 
 		public void setStage(Stage s, Stage n) {
 			if (GameSystem.isDebugMode()) {
-				System.out.println(" changeStage : [" + this.stage + "] to [" + s + "] and[" + n + "]");
+				kinugasa.game.GameLog.printInfo(" changeStage : [" + this.stage + "] to [" + s + "] and[" + n + "]");
 			}
 			prev = this.stage;
 			this.stage = s;
@@ -484,7 +484,7 @@ public class BattleSystem implements Drawable {
 	//------------------------------------初期化---------------------------------------
 	public void encountInit(EncountInfo enc) {
 		if (GameSystem.isDebugMode()) {
-			System.out.println(" -----------------BATTLE_START------------------------------------------------");
+			kinugasa.game.GameLog.printInfo(" -----------------BATTLE_START------------------------------------------------");
 		}
 		stage = new StageHolder();
 		stage.setStage(BattleSystem.Stage.STARTUP);
@@ -632,7 +632,7 @@ public class BattleSystem implements Drawable {
 	void turnStart() {
 		turn++;
 		if (GameSystem.isDebugMode()) {
-			System.out.println(" -----------------TURN[" + turn + "] START-----------------");
+			kinugasa.game.GameLog.printInfo(" -----------------TURN[" + turn + "] START-----------------");
 		}
 		//このターンのバトルコマンドを作成
 		List<BattleCharacter> list = getAllChara();
@@ -808,7 +808,7 @@ public class BattleSystem implements Drawable {
 		BattleCharacter user = currentCmd.getUser();
 
 		if (GameSystem.isDebugMode()) {
-			System.out.println(" currentCMD:" + currentCmd);
+			kinugasa.game.GameLog.printInfo(" currentCMD:" + currentCmd);
 		}
 
 		//ターゲットシステム初期化
@@ -817,7 +817,7 @@ public class BattleSystem implements Drawable {
 		//アンターゲット状態異常の場合、メッセージ出さずに次に送る
 		if (user.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
 			if (GameSystem.isDebugMode()) {
-				System.out.println(user.getStatus().getName() + " is bad condition");
+				kinugasa.game.GameLog.printInfo(user.getStatus().getName() + " is bad condition");
 			}
 			stage.setStage(BattleSystem.Stage.WAITING_EXEC_CMD);
 			return execCmd();
@@ -1126,12 +1126,12 @@ public class BattleSystem implements Drawable {
 			//移動後攻撃から遷移してきた場合は空振りさせる
 			if (stage.getStage() == Stage.CMD_SELECT) {
 				if (GameSystem.isDebugMode()) {
-					System.out.println("no target(cmd)");
+					kinugasa.game.GameLog.printInfo("no target(cmd)");
 				}
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
 			} else {
 				if (GameSystem.isDebugMode()) {
-					System.out.println("no target(after)");
+					kinugasa.game.GameLog.printInfo("no target(after)");
 				}
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.AFTER_MOVE_CMD_SELECT);
 			}
@@ -1229,7 +1229,7 @@ public class BattleSystem implements Drawable {
 			ba = tgt.getAction();
 		}
 		if (GameSystem.isDebugMode()) {
-			System.out.println("exec action ba=" + ba.getName() + " TGT:" + tgt);
+			kinugasa.game.GameLog.printInfo("exec action ba=" + ba.getName() + " TGT:" + tgt);
 		}
 		//メッセージウインドウを初期化
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
@@ -1242,7 +1242,7 @@ public class BattleSystem implements Drawable {
 			if (ba.getName().equals(BattleConfig.ActionName.commit)) {
 				//移動終了・キャラクタの向きとターゲット座標のクリアをする
 				if (GameSystem.isDebugMode()) {
-					System.out.println("commit move");
+					kinugasa.game.GameLog.printInfo("commit move");
 				}
 				user.unsetTarget();
 				user.to(FourDirection.WEST);
@@ -1547,7 +1547,7 @@ public class BattleSystem implements Drawable {
 			//パスor使う
 			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_USE) {
 				if (GameSystem.isDebugMode()) {
-					System.out.println("use item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
+					kinugasa.game.GameLog.printInfo("use item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
 				}
 				//ターゲットに対してアクションを実行
 				String tgtName = messageWindowSystem.getTgtW().getSelected().getText();
@@ -1574,7 +1574,7 @@ public class BattleSystem implements Drawable {
 			}
 			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS) {
 				if (GameSystem.isDebugMode()) {
-					System.out.println("pass item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
+					kinugasa.game.GameLog.printInfo("pass item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
 				}
 				//ターゲットに対してパスを実行
 				//PC,NPCから名前検索
@@ -1720,7 +1720,7 @@ public class BattleSystem implements Drawable {
 					messageWindowSystem.getStatusW().getMw().get(i).setVisible(false);
 
 					//PC全員逃げ判定、全員逃げた場合、戦闘終了
-					if (party.stream().allMatch(p -> p.hasCondition(BattleConfig.ConditionName.escaped))) {
+					if (party.stream().filter(p -> !p.hasConditions(false, BattleConfig.getUntargetConditionNames())).allMatch(p -> p.hasCondition(BattleConfig.ConditionName.escaped))) {
 						//全員逃げた
 						//アンターゲット状態異常付与（逃げる以外）の敵のEXPを合計して渡す
 						int exp = 0;
@@ -1744,7 +1744,7 @@ public class BattleSystem implements Drawable {
 						break;
 					}
 					//NPC全員逃げ判定
-					if (enemies.stream().allMatch(p -> p.getStatus().hasCondition(BattleConfig.ConditionName.escaped))) {
+					if (enemies.stream().filter(p -> !p.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())).allMatch(p -> p.getStatus().hasCondition(BattleConfig.ConditionName.escaped))) {
 						targetSystem.getCurrentArea().setArea(0);
 						targetSystem.getInitialArea().setArea(0);
 						//アンターゲット状態異常付与（逃げる以外）の敵のEXPを合計して渡す
@@ -1825,7 +1825,7 @@ public class BattleSystem implements Drawable {
 				CmdAction eba = currentCmd.getBattleActionOf((user = (Enemy) currentCmd.getUser()).getAI(), ActionType.ATTACK);
 				if (eba == null) {
 					if (GameSystem.isDebugMode()) {
-						System.out.println(" enemy " + currentCmd.getUser().getStatus().getName() + " try afterMoveAttack, but dont have attackCMD");
+						kinugasa.game.GameLog.printInfo(" enemy " + currentCmd.getUser().getStatus().getName() + " try afterMoveAttack, but dont have attackCMD");
 					}
 					break;
 				}
@@ -1875,7 +1875,7 @@ public class BattleSystem implements Drawable {
 				currentBGM.stop();
 				currentBGM.dispose();
 				if (GameSystem.isDebugMode()) {
-					System.out.println(" this battle is ended");
+					kinugasa.game.GameLog.printInfo(" this battle is ended");
 				}
 				stage.setStage(Stage.BATLE_END);
 				return;
@@ -1912,7 +1912,7 @@ public class BattleSystem implements Drawable {
 			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
 
 			if (GameSystem.isDebugMode()) {
-				System.out.println(" this battle is ended");
+				kinugasa.game.GameLog.printInfo(" this battle is ended");
 			}
 			stage.setStage(Stage.BATLE_END);
 		}
@@ -1972,6 +1972,9 @@ public class BattleSystem implements Drawable {
 				if (c.getStatus().hasCondition(cndKey)) {
 					c.getSprite().setVisible(false);
 					deadEnemyName.put(c.getName(), c.getName() + I18N.translate("IS") + ConditionValueStorage.getInstance().get(cndKey).getKey().getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+					if (((Enemy) c).getDeadSound() != null) {
+						((Enemy) c).getDeadSound().load().stopAndPlay();
+					}
 				}
 			}
 		}

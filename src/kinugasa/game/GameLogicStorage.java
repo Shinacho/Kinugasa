@@ -65,7 +65,7 @@ public class GameLogicStorage extends Storage<GameLogic> {
 
 	public void changeTo(String name, boolean load) {
 		if (GameSystem.isDebugMode()) {
-			System.out.println("kinugasa.game.GameLogicStorage.changeTo():" + name);
+			kinugasa.game.GameLog.printInfo("kinugasa.game.GameLogicStorage.changeTo():" + name);
 		}
 		if (!contains(name)) {
 			throw new NameNotFoundException("logic " + name + " is not found");

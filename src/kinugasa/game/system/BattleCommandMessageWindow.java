@@ -70,7 +70,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		type = ActionType.values()[typeIdx];
 		updateText();
 		if (GameSystem.isDebugMode()) {
-			System.out.println("BCMW :" + selected);
+			kinugasa.game.GameLog.printInfo("BCMW :" + selected);
 		}
 		setCurrent();
 	}
@@ -83,7 +83,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		type = ActionType.values()[typeIdx];
 		updateText();
 		if (GameSystem.isDebugMode()) {
-			System.out.println("BCMW :" + selected);
+			kinugasa.game.GameLog.printInfo("BCMW :" + selected);
 		}
 		setCurrent();
 	}
@@ -121,7 +121,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 	private void updateText() {
 		if (cmd == null) {
 			if (GameSystem.isDebugMode()) {
-				System.out.println("BCMW : cmd is null");
+				kinugasa.game.GameLog.printInfo("BCMW : cmd is null");
 			}
 			return;
 		}
@@ -235,7 +235,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		Collections.sort(actionList);
 		selected = actionList.get(getSelectedIdx() - 1);
 		if (GameSystem.isDebugMode()) {
-			System.out.println("MCMW :" + selected);
+			kinugasa.game.GameLog.printInfo("MCMW :" + selected);
 		}
 		setCurrent();
 	}
@@ -249,7 +249,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		Collections.sort(actionList);
 		selected = actionList.get(getSelectedIdx() - 1);
 		if (GameSystem.isDebugMode()) {
-			System.out.println("MCMW :" + selected);
+			kinugasa.game.GameLog.printInfo("MCMW :" + selected);
 		}
 		setCurrent();
 	}

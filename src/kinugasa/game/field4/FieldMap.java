@@ -528,9 +528,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				String mapName = e.getAttributes().get("mapName").getValue();
 				String soundName = e.getAttributes().get("soundName").getValue();
 				bgm = SoundStorage.getInstance().get(mapName).get(soundName);
-				if (mode == BGMMode.STOP || mode == BGMMode.STOP || mode == BGMMode.PAUSE || mode == BGMMode.STOP_AND_PLAY) {
+				if (mode == BGMMode.STOP || mode == BGMMode.STOP || mode == BGMMode.PAUSE) {
 					SoundStorage.getInstance().get(mapName).stopAll();
-					if (mode != BGMMode.PAUSE && mode != BGMMode.NOTHING) {
+					if (mode != BGMMode.PAUSE && mode != BGMMode.NOTHING ) {
 						if (!bgm.isPlaying()) {//êVÇµÇ¢BGMÇ™çƒê∂íÜÇÃèÍçáÇÕí‚é~ÇµÇ»Ç¢
 							SoundStorage.getInstance().get(mapName).dispose();
 						}
@@ -608,7 +608,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 //			g2.drawLine((int) p3.x, (int) p3.y, (int) p4.x, (int) p4.y);
 //			g2.dispose();
 ////			System.out.print("IDX : " + currentIdx);
-////			System.out.println("  FM_LOCATION : " + getBaseLayer().getLocation());
+////			kinugasa.game.GameLog.printInfo("  FM_LOCATION : " + getBaseLayer().getLocation());
 //		}
 	}
 
@@ -688,7 +688,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			encountCounter.sub(x);
 			if (debugMode) {
 				System.out.print("FM MOVE " + currentIdx + " / EC=" + encountCounter.getCurrentTime());
-				System.out.println(" / " + getCurrentTile());
+				kinugasa.game.GameLog.printInfo(" / " + getCurrentTile());
 			}
 			prevLocationList.addFirst(prevIdx);
 			if (playerCharacter.size() <= prevLocationList.size()) {
@@ -709,7 +709,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		boolean r = encountCounter.isReaching();
 		if (debugMode && r) {
-			System.out.println("ENCOUNT!");
+			kinugasa.game.GameLog.printInfo("ENCOUNT!");
 		}
 		if (r) {
 			resetEncountCounter();
@@ -946,7 +946,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), textStorage, t);
 
 		if (isDebugMode()) {
-			System.out.println("FM TALK: textID[" + t.getName() + "]");
+			kinugasa.game.GameLog.printInfo("FM TALK: textID[" + t.getName() + "]");
 		}
 
 		return mw;
@@ -1021,7 +1021,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			FieldMap.getPlayerCharacter().subList(1, getPlayerCharacter().size()).forEach(v -> v.setLocation(playerCharacter.get(0).getLocation()));
 		}
 		if (GameSystem.isDebugMode()) {
-			System.out.println("CHANGE_MAP: " + n);
+			kinugasa.game.GameLog.printInfo("CHANGE_MAP: " + n);
 		}
 		return fm;
 	}

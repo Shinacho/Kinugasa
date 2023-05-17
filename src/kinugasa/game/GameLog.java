@@ -88,4 +88,8 @@ public final class GameLog {
 	public static void printInfo(String string) {
 		print(Level.INFO, string);
 	}
+
+	public static void printInfo(Object string) {
+		print(Level.INFO, string.toString());
+	}
 }

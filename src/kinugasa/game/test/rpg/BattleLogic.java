@@ -78,13 +78,13 @@ public class BattleLogic extends GameLogic {
 		if (is.isPressed(GamePadButton.BACK, InputType.SINGLE)) {
 			battleSystem.setBattleResultValue(new BattleResultValues(BattleResult.WIN, 123, new ArrayList<>(), "FIELD"));
 			BattleResultValues result = GameSystem.getInstance().battleEnd();
-			System.out.println("戦闘強制終了：" + result);
+			kinugasa.game.GameLog.printInfo("戦闘強制終了：" + result);
 			gls.changeTo("FIELD");
 		}
 		//戦闘終了判定
 		if (battleSystem.isEnd()) {
 			BattleResultValues result = GameSystem.getInstance().battleEnd();
-			System.out.println("戦闘終了：" + result);
+			kinugasa.game.GameLog.printInfo("戦闘終了：" + result);
 			gls.changeTo("FIELD");
 		}
 
@@ -97,7 +97,7 @@ public class BattleLogic extends GameLogic {
 					lp = 0;
 				}
 				if (lp > 60 * 5) {
-					System.out.println(battleSystem.getStage());
+					kinugasa.game.GameLog.printInfo(battleSystem.getStage());
 				}
 				break;
 			case 1:

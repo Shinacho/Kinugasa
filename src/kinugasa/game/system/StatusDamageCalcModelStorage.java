@@ -85,7 +85,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 //				//PîªíËÇÕActionEventÇ≈é¿é{çœÇ›
 //				if (!Random.percent(ba.getP())) {
 //					if (GameSystem.isDebugMode()) {
-//						System.out.println("damage calculation, calceled by P.");
+//						kinugasa.game.GameLog.printInfo("damage calculation, calceled by P.");
 //					}
 //					return new ActionEventResult(ActionResultType.MISS, null);
 //				}
@@ -120,7 +120,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 							desc.append("AVO");
 							//âÒîê¨å˜
 							if (GameSystem.isDebugMode()) {
-								System.out.println("damage calculation(ATK), calceled by AVO.");
+								kinugasa.game.GameLog.printInfo("damage calculation(ATK), calceled by AVO.");
 							}
 							return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 						}
@@ -176,7 +176,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					if (value == 0) {
 						desc.append("VALUE is 0");
 						if (GameSystem.isDebugMode()) {
-							System.out.println(desc.toString());
+							kinugasa.game.GameLog.printInfo(desc.toString());
 						}
 						return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 					}
@@ -240,7 +240,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						desc.append("AVO");
 						//âÒîê¨å˜
 						if (GameSystem.isDebugMode()) {
-							System.out.println("damage calculation(MGK), calceled by AVO.");
+							kinugasa.game.GameLog.printInfo("damage calculation(MGK), calceled by AVO.");
 						}
 						return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 					}
@@ -297,7 +297,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				if (value == 0) {
 					desc.append("VALUE is 0");
 					if (GameSystem.isDebugMode()) {
-						System.out.println(desc.toString());
+						kinugasa.game.GameLog.printInfo(desc.toString());
 					}
 					return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 				}

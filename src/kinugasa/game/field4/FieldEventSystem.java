@@ -122,9 +122,9 @@ public class FieldEventSystem implements Drawable {
 		}
 
 //		if (GameSystem.isDebugMode() && !event.isEmpty()) {
-//			System.out.println("kinugasa.game.field4.FieldEventSystem.setEvent()");
+//			kinugasa.game.GameLog.printInfo("kinugasa.game.field4.FieldEventSystem.setEvent()");
 //			for (FieldEvent e : event) {
-//				System.out.println("> " + e);
+//				kinugasa.game.GameLog.printInfo("> " + e);
 //			}
 //		}
 	}
@@ -159,7 +159,7 @@ public class FieldEventSystem implements Drawable {
 			}
 		}
 		if (GameSystem.isDebugMode()) {
-			System.out.println("tmp flags commit is done.");
+			kinugasa.game.GameLog.printInfo("tmp flags commit is done.");
 		}
 		clearTmpFlags();
 	}
@@ -265,7 +265,7 @@ public class FieldEventSystem implements Drawable {
 		item = null;
 		executing = false;
 		if (GameSystem.isDebugMode()) {
-			System.out.println("--------ManualEndEvent");
+			kinugasa.game.GameLog.printInfo("--------ManualEndEvent");
 		}
 	}
 

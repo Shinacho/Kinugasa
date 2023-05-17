@@ -49,7 +49,6 @@ public enum StandardEnemyAI implements EnemyAI {
 			L1:
 			{
 				//回復アイテム（valueが＋でバトルユースできるアイテム）を持っているかどうか
-				//回復アイテム
 				Item healItem = (Item) getMax(user.getStatus().getItemBag().getItems());
 				if (healItem == null) {
 					break L1;
@@ -63,16 +62,14 @@ public enum StandardEnemyAI implements EnemyAI {
 				}
 			}
 
-			//回復魔法（valueが＋）持っている場合でHPが低い場合自分に使う
-			//回復アイテムを持っている場合でHPが低い場合自分に使う
 			L2:
 			{
+				//回復魔法（valueが＋）持っている場合でHPが低い場合自分に使う
 				CmdAction healMgk = getMax(list.stream().filter(p -> p.getType() == ActionType.MAGIC).collect(Collectors.toList()));
-				//回復魔法インスタ
 				if (healMgk == null) {
 					break L2;
 				}
-				//回復アイテムインスタ
+				//回復魔法インスタ
 				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healMgk);
 				//自分のHPが半分以下またはインスタエリアの敵内にHPが半分以下がいる場合、そいつにアイテム使用
 				if (hpIsUnderHarf || instTgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
@@ -233,6 +230,9 @@ public enum StandardEnemyAI implements EnemyAI {
 						throw new AssertionError();
 				}
 			}
+			if (sum < 0) {
+				continue;
+			}
 			result.put(a, sum);
 		}
 		if (result.isEmpty()) {
@@ -291,6 +291,9 @@ public enum StandardEnemyAI implements EnemyAI {
 					default:
 						throw new AssertionError();
 				}
+			}
+			if (sum > 0) {
+				continue;
 			}
 			result.put(a, sum);
 		}

@@ -107,7 +107,7 @@ public class BattleFieldSystem implements XMLFileSupport {
 
 	public void init(MapChipAttribute attr) {
 		if (GameSystem.isDebugMode()) {
-			System.out.println("BF : init, attr=" + attr + ", obMax:" + obstacleMax.get(attr));
+			kinugasa.game.GameLog.printInfo("BF : init, attr=" + attr + ", obMax:" + obstacleMax.get(attr));
 		}
 		if (fieldImage.containsKey(attr)) {
 			currentChipAttr = attr;

@@ -212,13 +212,13 @@ public class ActionEvent implements Comparable<ActionEvent> {
 			//PîªíË
 			if (!Random.percent(p)) {
 				if (GameSystem.isDebugMode()) {
-					System.out.println(this + " is no exec(P)");
+					kinugasa.game.GameLog.printInfo(this + " is no exec(P)");
 				}
 				result.addResultTypePerTgt(ActionResultType.MISS);
 				continue;
 			}
 			if (GameSystem.isDebugMode()) {
-				System.out.println("ACTION:" + c.getName() + ":" + parameterType + ":" + damageCalcType + ":" + tgtName + ":" + value);
+				kinugasa.game.GameLog.printInfo("ACTION:" + c.getName() + ":" + parameterType + ":" + damageCalcType + ":" + tgtName + ":" + value);
 			}
 
 			//é¿çsâ¬î\
@@ -306,7 +306,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 		}
 
 		if (GameSystem.isDebugMode()) {
-			System.out.println("ACTION RESULT:" + result);
+			kinugasa.game.GameLog.printInfo("ACTION RESULT:" + result);
 		}
 		return result;
 	}

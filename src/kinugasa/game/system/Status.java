@@ -221,7 +221,7 @@ public class Status implements Nameable {
 		tgt.itemBag.add(i);
 		tgt.actions.add(i);
 		if (GameSystem.isDebugMode()) {
-			System.out.println("STATUS item pass [" + getName() + "]s[" + i.getName() + "] to [" + tgt.getName() + "]");
+			kinugasa.game.GameLog.printInfo("STATUS item pass [" + getName() + "]s[" + i.getName() + "] to [" + tgt.getName() + "]");
 		}
 	}
 
@@ -266,11 +266,11 @@ public class Status implements Nameable {
 		actions = actions.stream().distinct().collect(Collectors.toList());
 
 //		if (GameSystem.isDebugMode()) {
-//			System.out.println("STATUS [" + getName() + "]s action update : ");
+//			kinugasa.game.GameLog.printInfo("STATUS [" + getName() + "]s action update : ");
 //			for (CmdAction a : actions) {
-//				System.out.println(" " + a);
+//				kinugasa.game.GameLog.printInfo(" " + a);
 //			}
-//			System.out.println("---");
+//			kinugasa.game.GameLog.printInfo("---");
 //		}
 	}
 
@@ -576,7 +576,7 @@ public class Status implements Nameable {
 	public void setDamageCalcPoint() {
 		prevStatus = status.clone();
 		if (GameSystem.isDebugMode()) {
-			System.out.println("STATUS save DCP:" + getName());
+			kinugasa.game.GameLog.printInfo("STATUS save DCP:" + getName());
 		}
 	}
 
@@ -600,7 +600,7 @@ public class Status implements Nameable {
 			}
 		}
 //		if (GameSystem.isDebugMode()) {
-//			System.out.println("DCP<>DC[" + getName() + "] : " + result);
+//			kinugasa.game.GameLog.printInfo("DCP<>DC[" + getName() + "] : " + result);
 //		}
 
 //		prevStatus = this.status;

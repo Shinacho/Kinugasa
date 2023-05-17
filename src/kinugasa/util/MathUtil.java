@@ -58,7 +58,7 @@ public final class MathUtil {
 
 	public static void init() {
 		if (GameSystem.isDebugMode()) {
-			System.out.println("kinugasa.util.MathUtil.init()");
+			kinugasa.game.GameLog.printInfo("kinugasa.util.MathUtil.init()");
 		}
 		for (int i = 0; i < sinTable.length; i++) {
 			sinTable[i] = (float) Math.sin(Math.toRadians((float) i / 2f));

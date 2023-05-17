@@ -145,7 +145,7 @@ public class XMLElement implements Nameable {
 	public List<XMLElement> getElement(String name) {
 		if (content.get(name) == null) {
 			if (GameSystem.isDebugMode()) {
-				System.out.println("! > XMLElement[" + name + "] is nothing : " + getName());
+				kinugasa.game.GameLog.printInfo("! > XMLElement[" + name + "] is nothing : " + getName());
 				GameLog.print(Level.WARNING, "! > XMLElement[" + name + "] is nothing : " + getName());
 			}
 			return Collections.emptyList();
