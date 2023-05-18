@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import kinugasa.game.GameLog;
 
 /**
- * ƒfƒoƒbƒO—p‚ÌŠÔ‚ğŒv‘ª‚·‚éƒNƒ‰ƒX‚Å‚·.
+ * ãƒ‡ãƒãƒƒã‚°ç”¨ã®æ™‚é–“ã‚’è¨ˆæ¸¬ã™ã‚‹ã‚¯ãƒ©ã‚¹ã§ã™.
  * <br>
  *
  * <br>
@@ -39,24 +39,24 @@ import kinugasa.game.GameLog;
 public class StopWatch {
 
 	/**
-	 * ˆ—‚ğŠJn‚µ‚½‚Å‚·.
+	 * å‡¦ç†ã‚’é–‹å§‹ã—ãŸæ™‚åˆ»ã§ã™.
 	 */
 	private long startTime;
 	/**
-	 * Œo‰ßŠÔ‚Å‚·.
+	 * çµŒéæ™‚é–“ã§ã™.
 	 */
 	private float time;
 
 	/**
-	 * V‚µ‚¢ƒXƒgƒbƒvƒEƒHƒbƒ`‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ã‚¹ãƒˆãƒƒãƒ—ã‚¦ã‚©ãƒƒãƒã‚’ä½œæˆã—ã¾ã™.
 	 */
 	public StopWatch() {
 	}
 
 	/**
-	 * Œ»İ‚Ì‚ğ•Û‘¶‚µAŒv‘ª‚ğŠJn‚µ‚Ü‚·.
+	 * ç¾åœ¨ã®æ™‚åˆ»ã‚’ä¿å­˜ã—ã€è¨ˆæ¸¬ã‚’é–‹å§‹ã—ã¾ã™.
 	 *
-	 * @return ‚±‚ÌƒXƒgƒbƒvƒEƒHƒbƒ`‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã“ã®ã‚¹ãƒˆãƒƒãƒ—ã‚¦ã‚©ãƒƒãƒã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public StopWatch start() {
 		startTime = System.nanoTime();
@@ -64,16 +64,16 @@ public class StopWatch {
 	}
 
 	/**
-	 * Œv‘ª‚ğI—¹‚µAŒo‰ßŠÔ‚ğ•Û‘¶‚µ‚Ü‚·.
+	 * è¨ˆæ¸¬ã‚’çµ‚äº†ã—ã€çµŒéæ™‚é–“ã‚’ä¿å­˜ã—ã¾ã™.
 	 */
 	public void stop() {
 		time = (float) (System.nanoTime() - startTime) / 1000000.f;
 	}
 
 	/**
-	 * Œv‘ª‚ğI—¹‚µAŒo‰ßŠÔ‚ğ•Û‘¶‚µ‚Ü‚·.
+	 * è¨ˆæ¸¬ã‚’çµ‚äº†ã—ã€çµŒéæ™‚é–“ã‚’ä¿å­˜ã—ã¾ã™.
 	 *
-	 * @param print true‚ğw’è‚·‚é‚ÆA•W€o—Í‚ÉŒo‰ßŠÔ‚ğ•\¦‚µ‚Ü‚·B<br>
+	 * @param print trueã‚’æŒ‡å®šã™ã‚‹ã¨ã€æ¨™æº–å‡ºåŠ›ã«çµŒéæ™‚é–“ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚<br>
 	 */
 	public void stop(boolean print) {
 		stop();
@@ -83,9 +83,9 @@ public class StopWatch {
 	}
 
 	/**
-	 * w’è‚³‚ê‚½ƒXƒgƒŠ[ƒ€‚ÉtoString‚ğ”­s‚µ‚Ü‚·.
+	 * æŒ‡å®šã•ã‚ŒãŸã‚¹ãƒˆãƒªãƒ¼ãƒ ã«toStringã‚’ç™ºè¡Œã—ã¾ã™.
 	 *
-	 * @param stream ‘—M‚·‚éƒXƒgƒŠ[ƒ€‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param stream é€ä¿¡ã™ã‚‹ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void print(PrintStream stream) {
 		stream.println(this);

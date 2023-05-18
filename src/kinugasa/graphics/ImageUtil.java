@@ -49,10 +49,10 @@ import kinugasa.resource.FileNotFoundException;
 import kinugasa.util.StopWatch;
 
 /**
- * ‰æ‘œ‚ÌIO‚âŠÈˆÕ•ÒW‚ğs‚¤ƒ†[ƒeƒBƒŠƒeƒBƒNƒ‰ƒX‚Å‚·.
+ * ç”»åƒã®IOã‚„ç°¡æ˜“ç·¨é›†ã‚’è¡Œã†ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ã‚¯ãƒ©ã‚¹ã§ã™.
  * <br>
- * ‚±‚ÌƒNƒ‰ƒX‚©‚çƒ[ƒh‚µ‚½‰æ‘œ‚ÍA’Êí‚Ì•û–@‚Åƒ[ƒh‚³‚ê‚½‰æ‘œ‚æ‚è‚à ‚‘¬‚É•`‰æ‚Å‚«‚é‰Â”\«‚ª‚ ‚è‚Ü‚·B
- * ‚Ü‚½A‚±‚ÌƒNƒ‰ƒX‚Ìƒ[ƒh‹@”\‚ÍA“¯‚¶ƒtƒ@ƒCƒ‹ƒpƒX‚ğw’è‚·‚é‚Æ “¯‚¶‰æ‘œƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã‹ã‚‰ãƒ­ãƒ¼ãƒ‰ã—ãŸç”»åƒã¯ã€é€šå¸¸ã®æ–¹æ³•ã§ãƒ­ãƒ¼ãƒ‰ã•ã‚ŒãŸç”»åƒã‚ˆã‚Šã‚‚ é«˜é€Ÿã«æç”»ã§ãã‚‹å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚
+ * ã¾ãŸã€ã“ã®ã‚¯ãƒ©ã‚¹ã®ãƒ­ãƒ¼ãƒ‰æ©Ÿèƒ½ã¯ã€åŒã˜ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’æŒ‡å®šã™ã‚‹ã¨ åŒã˜ç”»åƒã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/13_2:08:33<br>
@@ -62,63 +62,63 @@ import kinugasa.util.StopWatch;
 public final class ImageUtil {
 
 	/**
-	 * ƒfƒtƒHƒ‹ƒg‚ÌƒEƒCƒ“ƒhƒEƒVƒXƒeƒ€‚ªƒTƒ|[ƒg‚·‚é‰æ‘œ‚Ì¶¬‹@”\‚ğ‚Á‚½AƒOƒ‰ƒtƒBƒbƒNƒX‚Ìİ’è‚Å‚·.
+	 * ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚·ã‚¹ãƒ†ãƒ ãŒã‚µãƒãƒ¼ãƒˆã™ã‚‹ç”»åƒã®ç”Ÿæˆæ©Ÿèƒ½ã‚’æŒã£ãŸã€ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã®è¨­å®šã§ã™.
 	 */
 	private static final GraphicsConfiguration gc
 			= GraphicsEnvironment.getLocalGraphicsEnvironment().
 					getDefaultScreenDevice().getDefaultConfiguration();
 	/**
-	 * ƒ[ƒh‚µ‚½‰æ‘œ‚ğƒLƒƒƒbƒVƒ…‚·‚é‚½‚ß‚Ìƒ}ƒbƒv‚Å‚·.
+	 * ãƒ­ãƒ¼ãƒ‰ã—ãŸç”»åƒã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã™ã‚‹ãŸã‚ã®ãƒãƒƒãƒ—ã§ã™.
 	 */
 	private static final HashMap<String, SoftReference<BufferedImage>> IMAGE_CACHE
 			= new HashMap<String, SoftReference<BufferedImage>>(32);
 
 	/**
-	 * ƒƒCƒ“ƒXƒNƒŠ[ƒ“‚ÌƒfƒoƒCƒXİ’è‚ğæ“¾‚µ‚Ü‚·B<br>
+	 * ãƒ¡ã‚¤ãƒ³ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®ãƒ‡ãƒã‚¤ã‚¹è¨­å®šã‚’å–å¾—ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ƒfƒoƒCƒX‚Ìİ’èB‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚©‚ç‰æ‘œ‚ğì¬‚Å‚«‚Ü‚·B<br>
+	 * @return ãƒ‡ãƒã‚¤ã‚¹ã®è¨­å®šã€‚ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‹ã‚‰ç”»åƒã‚’ä½œæˆã§ãã¾ã™ã€‚<br>
 	 */
 	public static GraphicsConfiguration getGraphicsConfiguration() {
 		return gc;
 	}
 
 	/**
-	 * ƒ†[ƒeƒBƒŠƒeƒBƒNƒ‰ƒX‚Ì‚½‚ßƒCƒ“ƒXƒ^ƒ“ƒX‰»‚Å‚«‚Ü‚¹‚ñ.
+	 * ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ã‚¯ãƒ©ã‚¹ã®ãŸã‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã§ãã¾ã›ã‚“.
 	 */
 	private ImageUtil() {
 	}
 
 	//------------------------------------------------------------------------------------------------------------
 	/**
-	 * V‚µ‚¢‹ó‚ÌBufferedImage‚ğ¶¬‚µ‚Ü‚·. ì¬‚³‚ê‚½‰æ‘œ‚Í‘S‚Ä‚ÌƒsƒNƒZƒ‹‚ªŠ®‘S‚É“§–¾‚È•(0x00000000)‚Å‚·B<br>
+	 * æ–°ã—ã„ç©ºã®BufferedImageã‚’ç”Ÿæˆã—ã¾ã™. ä½œæˆã•ã‚ŒãŸç”»åƒã¯å…¨ã¦ã®ãƒ”ã‚¯ã‚»ãƒ«ãŒå®Œå…¨ã«é€æ˜ãªé»’(0x00000000)ã§ã™ã€‚<br>
 	 *
-	 * @param width ‰æ‘œ‚Ì•‚ğƒsƒNƒZƒ‹’PˆÊ‚Åw’è‚µ‚Ü‚·B<br>
-	 * @param height ‰æ‘œ‚Ì‚‚³‚ğƒsƒNƒZƒ‹’PˆÊ‚Åw’è‚µ‚Ü‚·B<br>
+	 * @param width ç”»åƒã®å¹…ã‚’ãƒ”ã‚¯ã‚»ãƒ«å˜ä½ã§æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param height ç”»åƒã®é«˜ã•ã‚’ãƒ”ã‚¯ã‚»ãƒ«å˜ä½ã§æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return BufferedImage‚ÌV‚µ‚¢ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return BufferedImageã®æ–°ã—ã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static BufferedImage newImage(int width, int height) {
 		return gc.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
 	}
 
 	/**
-	 * BufferedImage‚Ì•¡»‚ğV‚µ‚¢ƒCƒ“ƒXƒ^ƒ“ƒX‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.
+	 * BufferedImageã®è¤‡è£½ã‚’æ–°ã—ã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¨ã—ã¦è¿”ã—ã¾ã™.
 	 *
-	 * @param src ƒRƒs[‚·‚é‰æ‘œB<br>
+	 * @param src ã‚³ãƒ”ãƒ¼ã™ã‚‹ç”»åƒã€‚<br>
 	 *
-	 * @return src‚Æ“¯‚¶‰æ‘œ‚ÌV‚µ‚¢ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return srcã¨åŒã˜ç”»åƒã®æ–°ã—ã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static BufferedImage copy(BufferedImage src) {
 		return copy(src, (BufferedImage) null);
 	}
 
 	/**
-	 * BufferedImage‚Ì•¡»‚ğì¬‚µAdst‚ÉŠi”[‚µ‚Ü‚·.
+	 * BufferedImageã®è¤‡è£½ã‚’ä½œæˆã—ã€dstã«æ ¼ç´ã—ã¾ã™.
 	 *
-	 * @param src ƒRƒs[‚·‚é‰æ‘œB<br>
-	 * @param dst null‚Å‚È‚¢ê‡‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ÉŒ‹‰Ê‚ªŠi”[‚³‚ê‚éB<br>
+	 * @param src ã‚³ãƒ”ãƒ¼ã™ã‚‹ç”»åƒã€‚<br>
+	 * @param dst nullã§ãªã„å ´åˆã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã«çµæœãŒæ ¼ç´ã•ã‚Œã‚‹ã€‚<br>
 	 *
-	 * @return null‚Å‚È‚¢ê‡A‚±‚Ìˆø”‚ÉŒ‹‰Ê‚ªŠi”[‚³‚ê‚Ü‚·B<br>
+	 * @return nullã§ãªã„å ´åˆã€ã“ã®å¼•æ•°ã«çµæœãŒæ ¼ç´ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	public static BufferedImage copy(BufferedImage src, BufferedImage dst) {
 		if (dst == null || dst == src) {
@@ -132,27 +132,27 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BufferedImage‚ğƒtƒ@ƒCƒ‹‚©‚çì¬‚µ‚Ü‚·.
-	 * ‚±‚Ìƒƒ\ƒbƒh‚Í‚·‚Å‚Éˆê“x—v‹‚³‚ê‚½‰æ‘œ‚ğÄ“x—v‹‚µ‚½ê‡A“¯‚¶ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
-	 * ŠmÀ‚É•Ê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚·‚éê‡‚Í‚±‚Ìƒƒ\ƒbƒh‚Ì–ß‚è’l‚É‘Î‚µ‚Ä‚±‚ÌƒNƒ‰ƒX‚Ìcopyƒƒ\ƒbƒh‚ğg—p‚µ‚Ä‚­‚¾‚³‚¢B<br>
+	 * BufferedImageã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ä½œæˆã—ã¾ã™.
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã™ã§ã«ä¸€åº¦è¦æ±‚ã•ã‚ŒãŸç”»åƒã‚’å†åº¦è¦æ±‚ã—ãŸå ´åˆã€åŒã˜ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
+	 * ç¢ºå®Ÿã«åˆ¥ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã™ã‚‹å ´åˆã¯ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã®æˆ»ã‚Šå€¤ã«å¯¾ã—ã¦ã“ã®ã‚¯ãƒ©ã‚¹ã®copyãƒ¡ã‚½ãƒƒãƒ‰ã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚<br>
 	 *
-	 * @param filePath “Ç‚İ‚Şƒtƒ@ƒCƒ‹ƒpƒXB<br>
+	 * @param filePath èª­ã¿è¾¼ã‚€ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã€‚<br>
 	 *
-	 * @return “Ç‚İ‚Ü‚ê‚½‰æ‘œ.‚·‚Å‚Éˆê“x“Ç‚İ‚Ü‚ê‚Ä‚¢‚éê‡‚ÍƒLƒƒƒbƒVƒ…ƒf[ƒ^‚Ì“¯‚¶‰æ‘œƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚·B<br>
+	 * @return èª­ã¿è¾¼ã¾ã‚ŒãŸç”»åƒ.ã™ã§ã«ä¸€åº¦èª­ã¿è¾¼ã¾ã‚Œã¦ã„ã‚‹å ´åˆã¯ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ‡ãƒ¼ã‚¿ã®åŒã˜ç”»åƒã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã™ã€‚<br>
 	 *
-	 * @throws ContentsFileNotFoundException ƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚È‚¢ê‡‚É“Š‚°‚ç‚ê‚éB<br>
-	 * @throws ContentsIOException ƒtƒ@ƒCƒ‹‚ªƒ[ƒh‚Å‚«‚È‚¢ê‡‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @throws ContentsFileNotFoundException ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ãªã„å ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ã€‚<br>
+	 * @throws ContentsIOException ãƒ•ã‚¡ã‚¤ãƒ«ãŒãƒ­ãƒ¼ãƒ‰ã§ããªã„å ´åˆã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public static BufferedImage load(String filePath) throws FileNotFoundException, ContentsIOException {
 		StopWatch watch = new StopWatch().start();
 		SoftReference<BufferedImage> cacheRef = IMAGE_CACHE.get(filePath);
-		//ƒLƒƒƒbƒVƒ…‚ ‚è&GC–¢Às
+		//ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚ã‚Š&GCæœªå®Ÿè¡Œ
 		if (cacheRef != null && cacheRef.get() != null) {
 			watch.stop();
 			GameLog.printInfoIfUsing("ImageUtil cached filePath=[" + filePath + "](" + watch.getTime() + " ms)");
 			return cacheRef.get();
 		}
-		//GC‚ªÀs‚³‚ê‚Ä‚¢‚é‚©ƒLƒƒƒbƒVƒ…‚ª‚È‚¯‚ê‚ÎV‚µ‚­ƒ[ƒh‚µ‚ÄƒLƒƒƒbƒVƒ…‚É’Ç‰Á‚·‚é
+		//GCãŒå®Ÿè¡Œã•ã‚Œã¦ã„ã‚‹ã‹ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãŒãªã‘ã‚Œã°æ–°ã—ããƒ­ãƒ¼ãƒ‰ã—ã¦ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«è¿½åŠ ã™ã‚‹
 		File file = new File(filePath);
 		if (!file.exists()) {
 			watch.stop();
@@ -171,7 +171,7 @@ public final class ImageUtil {
 			GameLog.print(Level.WARNING, "image is null filePath=[" + filePath + "](" + watch.getTime() + " ms)");
 			throw new ContentsIOException("image is null");
 		}
-		//ŒİŠ·‰æ‘œ‚É’uŠ·
+		//äº’æ›ç”»åƒã«ç½®æ›
 		dst = copy(dst, newImage(dst.getWidth(), dst.getHeight()));
 		IMAGE_CACHE.put(filePath, new SoftReference<BufferedImage>(dst));
 		watch.stop();
@@ -180,12 +180,12 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BufferedImage‚ğƒtƒ@ƒCƒ‹‚É•Û‘¶‚µ‚Ü‚·. ‰æ‘œŒ`®‚Í“§‰ßPNG‰æ‘œ‚Æ‚È‚è‚Ü‚·B<br>
+	 * BufferedImageã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜ã—ã¾ã™. ç”»åƒå½¢å¼ã¯é€éPNGç”»åƒã¨ãªã‚Šã¾ã™ã€‚<br>
 	 *
-	 * @param filePath ‘‚«‚Şƒtƒ@ƒCƒ‹ƒpƒX.ã‘‚«‚ÍŠm”F‚³‚ê‚¸AŠg’£q‚à”CˆÓB<br>
-	 * @param image ‘‚«‚Ş‰æ‘œB<br>
+	 * @param filePath æ›¸ãè¾¼ã‚€ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹.ä¸Šæ›¸ãã¯ç¢ºèªã•ã‚Œãšã€æ‹¡å¼µå­ã‚‚ä»»æ„ã€‚<br>
+	 * @param image æ›¸ãè¾¼ã‚€ç”»åƒã€‚<br>
 	 *
-	 * @throws ContentsIOException ƒtƒ@ƒCƒ‹‚ª‘‚«‚ß‚È‚¢ê‡‚É“Š‚°‚ç‚ê‚éB<br>
+	 * @throws ContentsIOException ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ›¸ãè¾¼ã‚ãªã„å ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ã€‚<br>
 	 */
 	public static void save(String filePath, BufferedImage image) throws ContentsIOException {
 		save(new File(filePath), image);
@@ -200,22 +200,22 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BufferedImage‚ÌƒsƒNƒZƒ‹ƒf[ƒ^‚ğ”z—ñ‚Æ‚µ‚Äæ“¾‚µ‚Ü‚·.
+	 * BufferedImageã®ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’é…åˆ—ã¨ã—ã¦å–å¾—ã—ã¾ã™.
 	 *
-	 * @param image ƒsƒNƒZƒ‹ƒf[ƒ^‚ğæ“¾‚·‚é‰æ‘œ‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param image ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—ã™ã‚‹ç”»åƒã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return w’è‚³‚ê‚½‰æ‘œ‚ÌƒsƒNƒZƒ‹ƒf[ƒ^‚ğˆêŸŒ³”z—ñ‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·B ‚±‚Ì”z—ñ‚Í‰æ‘œ‚Éİ’è‚³‚ê‚Ä‚¢‚éƒsƒNƒZƒ‹‚ÌƒNƒ[ƒ“‚Å‚·B<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸç”»åƒã®ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’ä¸€æ¬¡å…ƒé…åˆ—ã¨ã—ã¦è¿”ã—ã¾ã™ã€‚ ã“ã®é…åˆ—ã¯ç”»åƒã«è¨­å®šã•ã‚Œã¦ã„ã‚‹ãƒ”ã‚¯ã‚»ãƒ«ã®ã‚¯ãƒ­ãƒ¼ãƒ³ã§ã™ã€‚<br>
 	 */
 	public static int[] getPixel(BufferedImage image) {
 		return image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
 	}
 
 	/**
-	 * BufferedImage‚ÌƒsƒNƒZƒ‹ƒf[ƒ^‚ğ“ñŸŒ³”z—ñ‚Æ‚µ‚Äæ“¾‚µ‚Ü‚·.
+	 * BufferedImageã®ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’äºŒæ¬¡å…ƒé…åˆ—ã¨ã—ã¦å–å¾—ã—ã¾ã™.
 	 *
-	 * @param image ƒsƒNƒZƒ‹ƒf[ƒ^‚ğæ“¾‚·‚é‰æ‘œ‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param image ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—ã™ã‚‹ç”»åƒã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return w’è‚³‚ê‚½‰æ‘œ‚ÌƒsƒNƒZƒ‹ƒf[ƒ^‚ğ“ñŸŒ³”z—ñ‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·B ‚±‚Ì”z—ñ‚Í‰æ‘œ‚Éİ’è‚³‚ê‚Ä‚¢‚éƒsƒNƒZƒ‹‚ÌƒNƒ[ƒ“‚Å‚·B<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸç”»åƒã®ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’äºŒæ¬¡å…ƒé…åˆ—ã¨ã—ã¦è¿”ã—ã¾ã™ã€‚ ã“ã®é…åˆ—ã¯ç”»åƒã«è¨­å®šã•ã‚Œã¦ã„ã‚‹ãƒ”ã‚¯ã‚»ãƒ«ã®ã‚¯ãƒ­ãƒ¼ãƒ³ã§ã™ã€‚<br>
 	 */
 	public static int[][] getPixel2D(BufferedImage image) {
 		int[] pix = getPixel(image);
@@ -227,22 +227,22 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BufferedImage‚ÉƒsƒNƒZƒ‹ƒf[ƒ^‚ğİ’è‚µ‚Ü‚·.
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ÍƒsƒNƒZƒ‹”‚Æ‰æ‘œ‚ÌÀÛ‚ÌƒsƒNƒZƒ‹”‚ªˆÙ‚È‚éê‡‚Ì“®ì‚Í’è‹`‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB<br>
+	 * BufferedImageã«ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’è¨­å®šã—ã¾ã™.
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ãƒ”ã‚¯ã‚»ãƒ«æ•°ã¨ç”»åƒã®å®Ÿéš›ã®ãƒ”ã‚¯ã‚»ãƒ«æ•°ãŒç•°ãªã‚‹å ´åˆã®å‹•ä½œã¯å®šç¾©ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚<br>
 	 *
-	 * @param image ƒsƒNƒZƒ‹ƒf[ƒ^‚ğİ’è‚·‚é‰æ‘œB<br>
-	 * @param pix İ’è‚·‚éƒsƒNƒZƒ‹ƒf[ƒ^B<br>
+	 * @param image ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’è¨­å®šã™ã‚‹ç”»åƒã€‚<br>
+	 * @param pix è¨­å®šã™ã‚‹ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã€‚<br>
 	 */
 	public static void setPixel(BufferedImage image, int[] pix) {
 		image.setRGB(0, 0, image.getWidth(), image.getHeight(), pix, 0, image.getWidth());
 	}
 
 	/**
-	 * BufferedImage‚ÉƒsƒNƒZƒ‹ƒf[ƒ^‚ğİ’è‚µ‚Ü‚·.
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ÍƒsƒNƒZƒ‹”‚Æ‰æ‘œ‚ÌÀÛ‚ÌƒsƒNƒZƒ‹”‚ªˆÙ‚È‚éê‡‚Ì“®ì‚Í’è‹`‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB<br>
+	 * BufferedImageã«ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’è¨­å®šã—ã¾ã™.
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ãƒ”ã‚¯ã‚»ãƒ«æ•°ã¨ç”»åƒã®å®Ÿéš›ã®ãƒ”ã‚¯ã‚»ãƒ«æ•°ãŒç•°ãªã‚‹å ´åˆã®å‹•ä½œã¯å®šç¾©ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚<br>
 	 *
-	 * @param image ‰æ‘œB<br>
-	 * @param pix İ’è‚·‚éƒsƒNƒZƒ‹ƒf[ƒ^B<br>
+	 * @param image ç”»åƒã€‚<br>
+	 * @param pix è¨­å®šã™ã‚‹ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã€‚<br>
 	 */
 	public static void setPixel2D(BufferedImage image, int[][] pix) {
 		int[] newPix = new int[getPixel(image).length];
@@ -257,12 +257,12 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * ‰æ‘œ‚É‘‚«‚Ş‚½‚ß‚ÌƒOƒ‰ƒtƒBƒNƒXƒRƒ“ƒeƒLƒXƒg‚ğì¬‚µ‚Ü‚·.
+	 * ç”»åƒã«æ›¸ãè¾¼ã‚€ãŸã‚ã®ã‚°ãƒ©ãƒ•ã‚£ã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param image ƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg‚ğæ“¾‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B <br>
-	 * @param renderingPolicy null‚Å‚È‚¢ê‡A‚±‚ÌƒŒƒ“ƒ_ƒŠƒ“ƒOİ’è‚ªƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg‚É“K—p‚³‚ê‚Ü‚·B<br>
+	 * @param image ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’å–å¾—ã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚ <br>
+	 * @param renderingPolicy nullã§ãªã„å ´åˆã€ã“ã®ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°è¨­å®šãŒã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã«é©ç”¨ã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @return w’è‚µ‚½‰æ‘œ‚É‘‚«‚Ş‚½‚ß‚ÌƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg‚ğì¬‚µ‚Ä•Ô‚µ‚Ü‚·B<br>
+	 * @return æŒ‡å®šã—ãŸç”»åƒã«æ›¸ãè¾¼ã‚€ãŸã‚ã®ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’ä½œæˆã—ã¦è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static Graphics2D createGraphics2D(BufferedImage image, RenderingQuality renderingPolicy) {
 		Graphics2D g = image.createGraphics();
@@ -274,16 +274,16 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BudderdImage‚Ì0, y ‚©‚çw, h‚ÌƒTƒCƒY‚Å‰¡•ûŒü‚É‰æ‘œ‚ğ•ªŠ„‚µA”z—ñ‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.
+	 * BudderdImageã®0, y ã‹ã‚‰w, hã®ã‚µã‚¤ã‚ºã§æ¨ªæ–¹å‘ã«ç”»åƒã‚’åˆ†å‰²ã—ã€é…åˆ—ã¨ã—ã¦è¿”ã—ã¾ã™.
 	 *
-	 * @param src ‰æ‘œB<br>
-	 * @param y YÀ•WB<br>
-	 * @param w Ø‚èo‚·•B<br>
-	 * @param h Ø‚èo‚·‚‚³B<br>
+	 * @param src ç”»åƒã€‚<br>
+	 * @param y Yåº§æ¨™ã€‚<br>
+	 * @param w åˆ‡ã‚Šå‡ºã™å¹…ã€‚<br>
+	 * @param h åˆ‡ã‚Šå‡ºã™é«˜ã•ã€‚<br>
 	 *
-	 * @return src‚ğ‰¡•ûŒü‚Éw‚Ì•‚ÅØ‚èo‚µ‚½•¡”–‡‚Ì‰æ‘œB<br>
+	 * @return srcã‚’æ¨ªæ–¹å‘ã«wã®å¹…ã§åˆ‡ã‚Šå‡ºã—ãŸè¤‡æ•°æšã®ç”»åƒã€‚<br>
 	 *
-	 * @throws RasterFormatException À•W‚Ü‚½‚ÍƒTƒCƒY‚ª•s³‚Èê‡‚É“Š‚°‚ç‚ê‚éB<br>
+	 * @throws RasterFormatException åº§æ¨™ã¾ãŸã¯ã‚µã‚¤ã‚ºãŒä¸æ­£ãªå ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ã€‚<br>
 	 */
 	public static BufferedImage[] rows(BufferedImage src, int y, int w, int h) throws RasterFormatException {
 		BufferedImage[] dst = new BufferedImage[src.getWidth() / w];
@@ -294,16 +294,16 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BudderdImage‚Ìx, 0 ‚©‚çw, h‚ÌƒTƒCƒY‚Åc•ûŒü‚É‰æ‘œ‚ğ•ªŠ„‚µA”z—ñ‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.
+	 * BudderdImageã®x, 0 ã‹ã‚‰w, hã®ã‚µã‚¤ã‚ºã§ç¸¦æ–¹å‘ã«ç”»åƒã‚’åˆ†å‰²ã—ã€é…åˆ—ã¨ã—ã¦è¿”ã—ã¾ã™.
 	 *
-	 * @param src ‰æ‘œB<br>
-	 * @param x XÀ•WB<br>
-	 * @param w Ø‚èo‚·•B<br>
-	 * @param h Ø‚èo‚·‚‚³B<br>
+	 * @param src ç”»åƒã€‚<br>
+	 * @param x Xåº§æ¨™ã€‚<br>
+	 * @param w åˆ‡ã‚Šå‡ºã™å¹…ã€‚<br>
+	 * @param h åˆ‡ã‚Šå‡ºã™é«˜ã•ã€‚<br>
 	 *
-	 * @return src‚ğc•ûŒü‚Éh‚Ì‚‚³‚ÅØ‚èo‚µ‚½•¡”–‡‚Ì‰æ‘œB<br>
+	 * @return srcã‚’ç¸¦æ–¹å‘ã«hã®é«˜ã•ã§åˆ‡ã‚Šå‡ºã—ãŸè¤‡æ•°æšã®ç”»åƒã€‚<br>
 	 *
-	 * @throws RasterFormatException À•W‚Ü‚½‚ÍƒTƒCƒY‚ª•s³‚Èê‡‚É“Š‚°‚ç‚ê‚éB<br>
+	 * @throws RasterFormatException åº§æ¨™ã¾ãŸã¯ã‚µã‚¤ã‚ºãŒä¸æ­£ãªå ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ã€‚<br>
 	 */
 	public static BufferedImage[] columns(BufferedImage src, int x, int w, int h) throws RasterFormatException {
 		BufferedImage[] dst = new BufferedImage[src.getHeight() / h];
@@ -314,17 +314,17 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BufferedImage‚Ì0, 0,‚©‚çw, h‚ÌƒTƒCƒY‚Å“ñŸŒ³‚É‰æ‘œ‚ğ•ªŠ„‚µAƒŠƒXƒg‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.
+	 * BufferedImageã®0, 0,ã‹ã‚‰w, hã®ã‚µã‚¤ã‚ºã§äºŒæ¬¡å…ƒã«ç”»åƒã‚’åˆ†å‰²ã—ã€ãƒªã‚¹ãƒˆã¨ã—ã¦è¿”ã—ã¾ã™.
 	 *
-	 * •Ô‚³‚ê‚éƒŠƒXƒg‚Í1ŸŒ³‚ÅA‰æ‘œ‚Ì¶ã‚©‚ç‰E•ûŒü‚Ö•À‚×‚ç‚ê‚Ü‚·B<br>
+	 * è¿”ã•ã‚Œã‚‹ãƒªã‚¹ãƒˆã¯1æ¬¡å…ƒã§ã€ç”»åƒã®å·¦ä¸Šã‹ã‚‰å³æ–¹å‘ã¸ä¸¦ã¹ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param src ‰æ‘œB<br>
-	 * @param w Ø‚èo‚·•B<br>
-	 * @param h Ø‚èo‚·‚‚³B<br>
+	 * @param src ç”»åƒã€‚<br>
+	 * @param w åˆ‡ã‚Šå‡ºã™å¹…ã€‚<br>
+	 * @param h åˆ‡ã‚Šå‡ºã™é«˜ã•ã€‚<br>
 	 *
-	 * @return src‚ğw’è‚³‚ê‚½ƒTƒCƒY‚ÅØ‚èo‚µ‚½•¡”–‡‚Ì‰æ‘œB<br>
+	 * @return srcã‚’æŒ‡å®šã•ã‚ŒãŸã‚µã‚¤ã‚ºã§åˆ‡ã‚Šå‡ºã—ãŸè¤‡æ•°æšã®ç”»åƒã€‚<br>
 	 *
-	 * @throws RasterFormatException À•W‚Ü‚½‚ÍƒTƒCƒY‚ª•s³‚Èê‡‚É“Š‚°‚ç‚ê‚éB<br>
+	 * @throws RasterFormatException åº§æ¨™ã¾ãŸã¯ã‚µã‚¤ã‚ºãŒä¸æ­£ãªå ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ã€‚<br>
 	 */
 	public static List<BufferedImage> splitAsList(BufferedImage src, int w, int h) throws RasterFormatException {
 		int columns = src.getHeight() / h;
@@ -336,15 +336,15 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BufferedImage‚Ì0, 0,‚©‚çw, h‚ÌƒTƒCƒY‚Å“ñŸŒ³‚É‰æ‘œ‚ğ•ªŠ„‚µA”z—ñ‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.
+	 * BufferedImageã®0, 0,ã‹ã‚‰w, hã®ã‚µã‚¤ã‚ºã§äºŒæ¬¡å…ƒã«ç”»åƒã‚’åˆ†å‰²ã—ã€é…åˆ—ã¨ã—ã¦è¿”ã—ã¾ã™.
 	 *
-	 * @param src ‰æ‘œB<br>
-	 * @param w Ø‚èo‚·•B<br>
-	 * @param h Ø‚èo‚·‚‚³B<br>
+	 * @param src ç”»åƒã€‚<br>
+	 * @param w åˆ‡ã‚Šå‡ºã™å¹…ã€‚<br>
+	 * @param h åˆ‡ã‚Šå‡ºã™é«˜ã•ã€‚<br>
 	 *
-	 * @return src‚ğw’è‚³‚ê‚½ƒTƒCƒY‚ÅØ‚èo‚µ‚½•¡”–‡‚Ì‰æ‘œB<br>
+	 * @return srcã‚’æŒ‡å®šã•ã‚ŒãŸã‚µã‚¤ã‚ºã§åˆ‡ã‚Šå‡ºã—ãŸè¤‡æ•°æšã®ç”»åƒã€‚<br>
 	 *
-	 * @throws RasterFormatException À•W‚Ü‚½‚ÍƒTƒCƒY‚ª•s³‚Èê‡‚É“Š‚°‚ç‚ê‚éB<br>
+	 * @throws RasterFormatException åº§æ¨™ã¾ãŸã¯ã‚µã‚¤ã‚ºãŒä¸æ­£ãªå ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ã€‚<br>
 	 */
 	public static BufferedImage[][] splitAsArray(BufferedImage src, int w, int h) throws RasterFormatException {
 		BufferedImage[][] dst = new BufferedImage[src.getHeight() / h][src.getWidth() / w];
@@ -355,17 +355,17 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BufferedImage‚Ì0, 0,‚©‚çw, h‚ÌƒTƒCƒY‚Å“ñŸŒ³‚É‰æ‘œ‚ğ•ªŠ„‚µAƒ}ƒbƒv‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.
-	 * Še—v‘f‚Ì–½–¼‹K‘¥‚Í0ƒx[ƒX‚Å[c‚Ì—v‘f”Ô†][‰¡‚Ì—v‘f”Ô†]‚Ì“ñ‚¯‚½‚Ì”š•¶š—ñ‚Æ‚È‚è‚Ü‚·B<br>
-	 * ‚½‚¾‚µ—v‘f‚ª2Œ…‚É–‚½‚È‚¢ê‡‚Í0n‚Ì‚æ‚¤‚É®Œ`‚³‚ê‚Ü‚·B<br>
+	 * BufferedImageã®0, 0,ã‹ã‚‰w, hã®ã‚µã‚¤ã‚ºã§äºŒæ¬¡å…ƒã«ç”»åƒã‚’åˆ†å‰²ã—ã€ãƒãƒƒãƒ—ã¨ã—ã¦è¿”ã—ã¾ã™.
+	 * å„è¦ç´ ã®å‘½åè¦å‰‡ã¯0ãƒ™ãƒ¼ã‚¹ã§[ç¸¦ã®è¦ç´ ç•ªå·][æ¨ªã®è¦ç´ ç•ªå·]ã®äºŒã‘ãŸã®æ•°å­—æ–‡å­—åˆ—ã¨ãªã‚Šã¾ã™ã€‚<br>
+	 * ãŸã ã—è¦ç´ ãŒ2æ¡ã«æº€ãŸãªã„å ´åˆã¯0nã®ã‚ˆã†ã«æ•´å½¢ã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param src ‰æ‘œB<br>
-	 * @param w Ø‚èo‚·•B<br>
-	 * @param h Ø‚èo‚·‚‚³B<br>
+	 * @param src ç”»åƒã€‚<br>
+	 * @param w åˆ‡ã‚Šå‡ºã™å¹…ã€‚<br>
+	 * @param h åˆ‡ã‚Šå‡ºã™é«˜ã•ã€‚<br>
 	 *
-	 * @return src‚ğw’è‚³‚ê‚½ƒTƒCƒY‚ÅØ‚èo‚µ‚½•¡”–‡‚Ì‰æ‘œB<br>
+	 * @return srcã‚’æŒ‡å®šã•ã‚ŒãŸã‚µã‚¤ã‚ºã§åˆ‡ã‚Šå‡ºã—ãŸè¤‡æ•°æšã®ç”»åƒã€‚<br>
 	 *
-	 * @throws RasterFormatException À•W‚Ü‚½‚ÍƒTƒCƒY‚ª•s³‚Èê‡‚É“Š‚°‚ç‚ê‚éB<br>
+	 * @throws RasterFormatException åº§æ¨™ã¾ãŸã¯ã‚µã‚¤ã‚ºãŒä¸æ­£ãªå ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ã€‚<br>
 	 */
 	public static Map<String, BufferedImage> splitAsMap(BufferedImage src, int w, int h) throws RasterFormatException {
 		HashMap<String, BufferedImage> dst = new HashMap<String, BufferedImage>(src.getWidth() / w * src.
@@ -388,18 +388,18 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * BufferedImage‚Ì0, 0,‚©‚çw, h‚ÌƒTƒCƒY‚Å“ñŸŒ³‚É‰æ‘œ‚ğ•ªŠ„‚µAƒ}ƒbƒv‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.
-	 * Še—v‘f‚Ì–½–¼‹K‘¥‚Í0ƒx[ƒX‚Å[c‚Ì—v‘f”Ô†][‰¡‚Ì—v‘f”Ô†]‚Ìdigit‚Ì”š•¶š—ñ‚Æ‚È‚è‚Ü‚·B<br>
-	 * ‚½‚¾‚µ—v‘f‚ª2Œ…‚É–‚½‚È‚¢ê‡‚Í0n‚Ì‚æ‚¤‚É®Œ`‚³‚ê‚Ü‚·B<br>
+	 * BufferedImageã®0, 0,ã‹ã‚‰w, hã®ã‚µã‚¤ã‚ºã§äºŒæ¬¡å…ƒã«ç”»åƒã‚’åˆ†å‰²ã—ã€ãƒãƒƒãƒ—ã¨ã—ã¦è¿”ã—ã¾ã™.
+	 * å„è¦ç´ ã®å‘½åè¦å‰‡ã¯0ãƒ™ãƒ¼ã‚¹ã§[ç¸¦ã®è¦ç´ ç•ªå·][æ¨ªã®è¦ç´ ç•ªå·]ã®digitã®æ•°å­—æ–‡å­—åˆ—ã¨ãªã‚Šã¾ã™ã€‚<br>
+	 * ãŸã ã—è¦ç´ ãŒ2æ¡ã«æº€ãŸãªã„å ´åˆã¯0nã®ã‚ˆã†ã«æ•´å½¢ã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param src ‰æ‘œB<br>
-	 * @param w Ø‚èo‚·•B<br>
-	 * @param h Ø‚èo‚·‚‚³B<br>
-	 * @param digit ‰æ‘œ–½–¼‚ÌƒCƒ“ƒfƒbƒNƒX‚ÌŒ…”B0–„‚ß‚³‚ê‚éB<br>
+	 * @param src ç”»åƒã€‚<br>
+	 * @param w åˆ‡ã‚Šå‡ºã™å¹…ã€‚<br>
+	 * @param h åˆ‡ã‚Šå‡ºã™é«˜ã•ã€‚<br>
+	 * @param digit ç”»åƒå‘½åæ™‚ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®æ¡æ•°ã€‚0åŸ‹ã‚ã•ã‚Œã‚‹ã€‚<br>
 	 *
-	 * @return src‚ğw’è‚³‚ê‚½ƒTƒCƒY‚ÅØ‚èo‚µ‚½•¡”–‡‚Ì‰æ‘œB<br>
+	 * @return srcã‚’æŒ‡å®šã•ã‚ŒãŸã‚µã‚¤ã‚ºã§åˆ‡ã‚Šå‡ºã—ãŸè¤‡æ•°æšã®ç”»åƒã€‚<br>
 	 *
-	 * @throws RasterFormatException À•W‚Ü‚½‚ÍƒTƒCƒY‚ª•s³‚Èê‡‚É“Š‚°‚ç‚ê‚éB<br>
+	 * @throws RasterFormatException åº§æ¨™ã¾ãŸã¯ã‚µã‚¤ã‚ºãŒä¸æ­£ãªå ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ã€‚<br>
 	 */
 	public static Map<String, BufferedImage> splitAsMapN(BufferedImage src, int w, int h, int digit) throws RasterFormatException {
 		HashMap<String, BufferedImage> dst = new HashMap<String, BufferedImage>(src.getWidth() / w * src.getHeight() / h);
@@ -421,14 +421,14 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * w’è‚³‚ê‚½—Ìˆæ‚ÌƒLƒƒƒvƒ`ƒƒ‚ğw’è‚³‚ê‚½ƒtƒ@ƒCƒ‹‚É•Û‘¶‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ÍV‚µ‚¢ƒXƒŒƒbƒh[kgf screen
-	 * shot]‚ğ‹N“®‚µA‚»‚ÌƒXƒŒƒbƒh“à‚Å‰æ‘œ‚ğì¬‚µ‚Ä•Û‘¶‚µ‚Ü‚·B<br>
-	 * ‰æ‘œ‚Ìã‘‚«Šm”F‚Ís‚í‚ê‚Ü‚¹‚ñB‹­§“I‚Éã‘‚«‚³‚ê‚Ü‚·B<br>
+	 * æŒ‡å®šã•ã‚ŒãŸé ˜åŸŸã®ã‚­ãƒ£ãƒ—ãƒãƒ£ã‚’æŒ‡å®šã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯æ–°ã—ã„ã‚¹ãƒ¬ãƒƒãƒ‰[kgf screen
+	 * shot]ã‚’èµ·å‹•ã—ã€ãã®ã‚¹ãƒ¬ãƒƒãƒ‰å†…ã§ç”»åƒã‚’ä½œæˆã—ã¦ä¿å­˜ã—ã¾ã™ã€‚<br>
+	 * ç”»åƒã®ä¸Šæ›¸ãç¢ºèªã¯è¡Œã‚ã‚Œã¾ã›ã‚“ã€‚å¼·åˆ¶çš„ã«ä¸Šæ›¸ãã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param FILE_PATH ƒtƒ@ƒCƒ‹ƒpƒX‚ğ‹Lq‚µ‚Ü‚·B<br>
-	 * @param BOUNDS ƒLƒƒƒvƒ`ƒƒ‚·‚é—Ìˆæ.ƒfƒoƒCƒX‚ÌƒOƒ[ƒoƒ‹À•W‚Åw’è‚µ‚Ü‚·B<br>
+	 * @param FILE_PATH ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’è¨˜è¿°ã—ã¾ã™ã€‚<br>
+	 * @param BOUNDS ã‚­ãƒ£ãƒ—ãƒãƒ£ã™ã‚‹é ˜åŸŸ.ãƒ‡ãƒã‚¤ã‚¹ã®ã‚°ãƒ­ãƒ¼ãƒãƒ«åº§æ¨™ã§æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @throws ContentsIOException ‰æ‘œ‚ª•Û‘¶‚Å‚«‚È‚¢ê‡‚¨‚æ‚ÑƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg‚ªæ“¾‚Å‚«‚È‚¢ê‡‚É “Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @throws ContentsIOException ç”»åƒãŒä¿å­˜ã§ããªã„å ´åˆãŠã‚ˆã³ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚·ãƒ§ãƒƒãƒˆãŒå–å¾—ã§ããªã„å ´åˆã« æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public static void screenShot(final String FILE_PATH, final Rectangle BOUNDS) throws ContentsIOException {
 		new Thread("kgf screen shot") {
@@ -437,7 +437,7 @@ public final class ImageUtil {
 				try {
 					BufferedImage image = new Robot().createScreenCapture(BOUNDS);
 					ImageUtil.save(FILE_PATH, image);
-					GameLog.printInfoIfUsing("ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg‚ğB‰e‚µ‚Ü‚µ‚½ FILE_PATH=[" + FILE_PATH + "]");
+					GameLog.printInfoIfUsing("ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚·ãƒ§ãƒƒãƒˆã‚’æ’®å½±ã—ã¾ã—ãŸ FILE_PATH=[" + FILE_PATH + "]");
 				} catch (AWTException ex) {
 					throw new ContentsIOException(ex);
 				}
@@ -446,14 +446,14 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * ƒ\[ƒX‰æ‘œ‚ğw’è‚³‚ê‚½”‚¾‚¯…•½•ûŒü‚É•À‚×‚½‰æ‘œ‚ğì¬‚µ‚Ü‚·.
+	 * ã‚½ãƒ¼ã‚¹ç”»åƒã‚’æŒ‡å®šã•ã‚ŒãŸæ•°ã ã‘æ°´å¹³æ–¹å‘ã«ä¸¦ã¹ãŸç”»åƒã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param src ƒ^ƒCƒŠƒ“ƒO‚·‚éƒ\[ƒX‰æ‘œ‚ğw’è‚µ‚Ü‚·B‚±‚Ì‰æ‘œ‚ÌƒsƒNƒZƒ‹ƒf[ƒ^‚Í‘€ì‚³‚ê‚Ü‚¹‚ñB<br>
-	 * @param dst null‚Å‚È‚¢ê‡A‚±‚Ìˆø”‚ÉŒ‹‰Ê‚ªŠi”[‚³‚ê‚Ü‚·B<br>
-	 * @param xNum X•ûŒü‚É•À‚×‚é”‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param yNum Y•ûŒü‚É•À‚×‚é”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param src ã‚¿ã‚¤ãƒªãƒ³ã‚°ã™ã‚‹ã‚½ãƒ¼ã‚¹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚ã“ã®ç”»åƒã®ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã¯æ“ä½œã•ã‚Œã¾ã›ã‚“ã€‚<br>
+	 * @param dst nullã§ãªã„å ´åˆã€ã“ã®å¼•æ•°ã«çµæœãŒæ ¼ç´ã•ã‚Œã¾ã™ã€‚<br>
+	 * @param xNum Xæ–¹å‘ã«ä¸¦ã¹ã‚‹æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param yNum Yæ–¹å‘ã«ä¸¦ã¹ã‚‹æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ƒ\[ƒX‰æ‘œ‚ğ2ŸŒ³‚ÉŒ„ŠÔ‚È‚­•À‚×‚½‰æ‘œ‚ğdst‚ÉŠi”[‚µ‚Ä•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚½ãƒ¼ã‚¹ç”»åƒã‚’2æ¬¡å…ƒã«éš™é–“ãªãä¸¦ã¹ãŸç”»åƒã‚’dstã«æ ¼ç´ã—ã¦è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static BufferedImage tiling(BufferedImage src, BufferedImage dst, int xNum, int yNum) {
 		if (dst == null || dst == src) {
@@ -470,15 +470,15 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * ƒ\[ƒX‰æ‘œ‚ğw’è‚³‚ê‚½”‚¾‚¯•À‚×‚½‰æ‘œ‚ğì¬‚µ‚Ü‚·.
+	 * ã‚½ãƒ¼ã‚¹ç”»åƒã‚’æŒ‡å®šã•ã‚ŒãŸæ•°ã ã‘ä¸¦ã¹ãŸç”»åƒã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param src ƒ^ƒCƒŠƒ“ƒO‚·‚éƒ\[ƒX‰æ‘œ‚ğw’è‚µ‚Ü‚·B‚±‚Ì‰æ‘œ‚ÌƒsƒNƒZƒ‹ƒf[ƒ^‚Í‘€ì‚³‚ê‚Ü‚¹‚ñB<br>
-	 * @param dst null‚Å‚È‚¢ê‡A‚±‚Ìˆø”‚ÉŒ‹‰Ê‚ªŠi”[‚³‚ê‚Ü‚·B<br>
-	 * @param xNum X•ûŒü‚É•À‚×‚é”‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param yNum Y•ûŒü‚É•À‚×‚é”‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param drawWidth ‰æ‘œ‚ğ•`‰æ‚·‚éÛ‚ÌƒTƒCƒY‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param drawHeight ‰æ‘œ‚ğ•`‰æ‚·‚éÛ‚ÌƒTƒCƒY‚ğw’è‚µ‚Ü‚·B<br>
-	 * @return ƒ\[ƒX‰æ‘œ‚ğ2ŸŒ³‚ÉŒ„ŠÔ‚È‚­•À‚×‚½‰æ‘œ‚ğdst‚ÉŠi”[‚µ‚Ä•Ô‚µ‚Ü‚·B<br>
+	 * @param src ã‚¿ã‚¤ãƒªãƒ³ã‚°ã™ã‚‹ã‚½ãƒ¼ã‚¹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚ã“ã®ç”»åƒã®ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ã¯æ“ä½œã•ã‚Œã¾ã›ã‚“ã€‚<br>
+	 * @param dst nullã§ãªã„å ´åˆã€ã“ã®å¼•æ•°ã«çµæœãŒæ ¼ç´ã•ã‚Œã¾ã™ã€‚<br>
+	 * @param xNum Xæ–¹å‘ã«ä¸¦ã¹ã‚‹æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param yNum Yæ–¹å‘ã«ä¸¦ã¹ã‚‹æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param drawWidth ç”»åƒã‚’æç”»ã™ã‚‹éš›ã®ã‚µã‚¤ã‚ºã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param drawHeight ç”»åƒã‚’æç”»ã™ã‚‹éš›ã®ã‚µã‚¤ã‚ºã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @return ã‚½ãƒ¼ã‚¹ç”»åƒã‚’2æ¬¡å…ƒã«éš™é–“ãªãä¸¦ã¹ãŸç”»åƒã‚’dstã«æ ¼ç´ã—ã¦è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static BufferedImage tiling(BufferedImage src, BufferedImage dst, int xNum, int yNum,
 			int drawWidth, int drawHeight) {
@@ -496,7 +496,7 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * w’è‚µ‚½—Ìˆæ‚Ì‰æ‘œ‚ğV‚µ‚¢ƒCƒ“ƒXƒ^ƒ“ƒX‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·B<br>
+	 * æŒ‡å®šã—ãŸé ˜åŸŸã®ç”»åƒã‚’æ–°ã—ã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¨ã—ã¦è¿”ã—ã¾ã™ã€‚<br>
 	 *
 	 * @param src
 	 * @param x
@@ -512,16 +512,16 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * 1‚Â‚Ì‰æ‘œ‚Ì“§‰ß“x‚ğinitialTp‚©‚çdecTp‚¸‚Â•ÏX‚µ‚½‰æ‘œ‚ğ”z—ñ‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.
-	 * ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍAƒ\[ƒX‰æ‘œ‚ÌŠ®‘S‚É“§–¾‚ÈƒsƒNƒZƒ‹‚Í‚»‚Ì‚Ü‚Ü“§–¾‚ÈƒsƒNƒZƒ‹‚Æ‚µ‚ÄƒRƒs[‚³‚ê‚Ü‚·B<br>
+	 * 1ã¤ã®ç”»åƒã®é€éåº¦ã‚’initialTpã‹ã‚‰decTpãšã¤å¤‰æ›´ã—ãŸç”»åƒã‚’é…åˆ—ã¨ã—ã¦è¿”ã—ã¾ã™.
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã€ã‚½ãƒ¼ã‚¹ç”»åƒã®å®Œå…¨ã«é€æ˜ãªãƒ”ã‚¯ã‚»ãƒ«ã¯ãã®ã¾ã¾é€æ˜ãªãƒ”ã‚¯ã‚»ãƒ«ã¨ã—ã¦ã‚³ãƒ”ãƒ¼ã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param image “§‰ß“x‚ğ•ÏX‚·‚éƒ\[ƒX‰æ‘œB<br>
-	 * @param initialTp “§‰ß“x‚Ì‰Šú’l‚Å‚·B
-	 * @param addTp “§‰ß“x‚É‰ÁZ‚·‚é’l‚Å‚·B’Êí‚Í•‰”‚ğg—p‚µ‚Ü‚·B<br>
+	 * @param image é€éåº¦ã‚’å¤‰æ›´ã™ã‚‹ã‚½ãƒ¼ã‚¹ç”»åƒã€‚<br>
+	 * @param initialTp é€éåº¦ã®åˆæœŸå€¤ã§ã™ã€‚
+	 * @param addTp é€éåº¦ã«åŠ ç®—ã™ã‚‹å€¤ã§ã™ã€‚é€šå¸¸ã¯è² æ•°ã‚’ä½¿ç”¨ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ƒ\[ƒX‰æ‘œ‚ÌA™X‚É“§‰ß“x‚ª•Ï‚í‚é‰æ‘œ‚ğ”z—ñ‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚½ãƒ¼ã‚¹ç”»åƒã®ã€å¾ã€…ã«é€éåº¦ãŒå¤‰ã‚ã‚‹ç”»åƒã‚’é…åˆ—ã¨ã—ã¦è¿”ã—ã¾ã™ã€‚<br>
 	 *
-	 * @throws IllegalArgumentException initailTp‚ª0–¢––”‚Í1‚ğ’´‚¦‚é‚Æ‚«‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @throws IllegalArgumentException initailTpãŒ0æœªæº€åˆã¯1ã‚’è¶…ãˆã‚‹ã¨ãã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public static BufferedImage[] transparentArray(BufferedImage image, float initialTp, float addTp)
 			throws IllegalArgumentException {
@@ -539,13 +539,13 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * ‰æ‘œ”z—ñ‚ğ…•½•ûŒü‚É•À‚×‚½V‚µ‚¢‰æ‘œ‚ğì¬‚µ‚Ä•Ô‚µ‚Ü‚·.
+	 * ç”»åƒé…åˆ—ã‚’æ°´å¹³æ–¹å‘ã«ä¸¦ã¹ãŸæ–°ã—ã„ç”»åƒã‚’ä½œæˆã—ã¦è¿”ã—ã¾ã™.
 	 *
-	 * @param images g—p‚·‚é‰æ‘œ‚ğ1‚ÂˆÈã‘—M‚µ‚Ü‚·B<br>
+	 * @param images ä½¿ç”¨ã™ã‚‹ç”»åƒã‚’1ã¤ä»¥ä¸Šé€ä¿¡ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return images‚ğ‚»‚Ì‡”Ô‚Å¶‚©‚ç…•½•ûŒü‚ÉŒ„ŠÔ‚È‚­•À‚×‚½V‚µ‚¢‰æ‘œ‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return imagesã‚’ãã®é †ç•ªã§å·¦ã‹ã‚‰æ°´å¹³æ–¹å‘ã«éš™é–“ãªãä¸¦ã¹ãŸæ–°ã—ã„ç”»åƒã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 *
-	 * @throws IllegalArgumentException images‚Ì’·‚³‚ª0‚Ì‚Æ‚«‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @throws IllegalArgumentException imagesã®é•·ã•ãŒ0ã®ã¨ãã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public static BufferedImage lineUp(BufferedImage... images)
 			throws IllegalArgumentException {

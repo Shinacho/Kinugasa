@@ -52,28 +52,28 @@ public class BattleMessageWindowSystem implements Drawable {
 	public static BattleMessageWindowSystem getInstance() {
 		return INSTANCE;
 	}
-	//ƒXƒe[ƒ^ƒXiã•”jƒyƒCƒ“
+	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ï¼ˆä¸Šéƒ¨ï¼‰ãƒšã‚¤ãƒ³
 	private BattleStatusWindows statusW;
-	//ƒRƒ}ƒ“ƒhƒEƒCƒ“ƒhƒE–{‘Ì
+	//ã‚³ãƒžãƒ³ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦æœ¬ä½“
 	private BattleCommandMessageWindow cmdW;
-	//ƒ^[ƒQƒbƒg–¼•\Ž¦ƒEƒCƒ“ƒhƒE(7)
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆåè¡¨ç¤ºã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦(7)
 	private ScrollSelectableMessageWindow tgtW;
-	//ƒAƒCƒeƒ€ChoiceUse(Choice
+	//ã‚¢ã‚¤ãƒ†ãƒ ChoiceUse(Choice
 	private MessageWindow itemChoiceUseW;
-	//ƒAƒCƒeƒ€ƒRƒ~ƒbƒgŒ‹‰Ê•\Ž¦
+	//ã‚¢ã‚¤ãƒ†ãƒ ã‚³ãƒŸãƒƒãƒˆçµæžœè¡¨ç¤º
 	private MessageWindow itemCommitResultW;
-	//ˆÚ“®ŒãƒRƒ}ƒ“ƒhƒEƒCƒ“ƒhƒE
+	//ç§»å‹•å¾Œã‚³ãƒžãƒ³ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦
 	private AfterMoveActionMessageWindow afterMoveW;
-	//ƒAƒNƒVƒ‡ƒ“ƒŠƒUƒ‹ƒgƒEƒCƒ“ƒhƒE
+	//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒªã‚¶ãƒ«ãƒˆã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦
 	private MessageWindow actionResultW;
-	//”Ä—pINFO‚Í•Ê‚ÌƒEƒCƒ“ƒhƒE‚Æ‹¤‘¶‚Å‚«‚é
+	//æ±Žç”¨INFOã¯åˆ¥ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã¨å…±å­˜ã§ãã‚‹
 	private MessageWindow infoW;
-	//ƒXƒe[ƒ^ƒXÚ×ƒEƒCƒ“ƒhƒE
+	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è©³ç´°ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦
 	private PCStatusWindow statusDescW;
 	private int statusDescWPage = 0;
-	//ƒAƒCƒeƒ€Ú×ƒEƒCƒ“ƒhƒE
+	//ã‚¢ã‚¤ãƒ†ãƒ è©³ç´°ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦
 	private MessageWindow itemDescW;
-	//ƒoƒgƒ‹ƒŠƒUƒ‹ƒg
+	//ãƒãƒˆãƒ«ãƒªã‚¶ãƒ«ãƒˆ
 	private MessageWindow battleResultW;
 
 	void init() {
@@ -175,7 +175,7 @@ public class BattleMessageWindowSystem implements Drawable {
 	}
 
 	void setItemDesc(Status user, Item i) {
-		//ƒAƒCƒeƒ€‚ÌÚ×‚ðƒTƒu‚É•\Ž¦
+		//ã‚¢ã‚¤ãƒ†ãƒ ã®è©³ç´°ã‚’ã‚µãƒ–ã«è¡¨ç¤º
 		StringBuilder sb = new StringBuilder();
 		sb.append(i.getName()).append(Text.getLineSep());
 
@@ -191,10 +191,10 @@ public class BattleMessageWindowSystem implements Drawable {
 			sb.append(" ").append(i.getDesc());
 			sb.append(Text.getLineSep());
 		}
-		//‰¿’l
+		//ä¾¡å€¤
 		sb.append(" ").append(I18N.translate("VALUE")).append(":").append(i.getValue());
 		sb.append(Text.getLineSep());
-		//‘•”õƒXƒƒbƒg
+		//è£…å‚™ã‚¹ãƒ­ãƒƒãƒˆ
 		sb.append(" ").append(I18N.translate("SLOT")).append(":").append(i.getEqipmentSlot() != null
 				? i.getEqipmentSlot().getName()
 				: I18N.translate("NONE"));
@@ -207,7 +207,7 @@ public class BattleMessageWindowSystem implements Drawable {
 		//area
 		int area = 0;
 		if (i.isEqipItem()) {
-			//”ÍˆÍ•\Ž¦‚·‚é‚Ì‚Í•Ší‚¾‚¯
+			//ç¯„å›²è¡¨ç¤ºã™ã‚‹ã®ã¯æ­¦å™¨ã ã‘
 			if (i.getWeaponMagicType() != null) {
 				area = i.getArea();
 			}
@@ -220,7 +220,7 @@ public class BattleMessageWindowSystem implements Drawable {
 			sb.append(" ").append(I18N.translate("AREA")).append(":").append(area);
 			sb.append(Text.getLineSep());
 		}
-		//ƒL[ƒAƒCƒeƒ€‘®«
+		//ã‚­ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ å±žæ€§
 		if (!i.canSale()) {
 			sb.append(" ").append(I18N.translate("CANT_SALE"));
 			sb.append(Text.getLineSep());
@@ -235,13 +235,13 @@ public class BattleMessageWindowSystem implements Drawable {
 			sb.append(" ").append(I18N.translate("DCS")).append(":").append(dcs);
 			sb.append(Text.getLineSep());
 		}
-		//í“¬’†ƒAƒNƒVƒ‡ƒ“
+		//æˆ¦é—˜ä¸­ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
 		if (i.getBattleEvent() != null && !i.getBattleEvent().isEmpty()) {
 			sb.append(" ").append(I18N.translate("CAN_USE_BATTLE"));
 			sb.append(Text.getLineSep());
 		}
 		if (i.isEqipItem()) {
-			//UŒ‚‰ñ”
+			//æ”»æ’ƒå›žæ•°
 			if (i.getActionCount() > 1) {
 				sb.append(" ").append(I18N.translate("ACTION_COUNT").replaceAll("n", i.getActionCount() + ""));
 				sb.append(Text.getLineSep());
@@ -254,7 +254,7 @@ public class BattleMessageWindowSystem implements Drawable {
 					}
 					String v;
 					if (s.getKey().getMax() <= 1f) {
-						v = (float) (s.getValue() * 100) + "%";//1%’PˆÊ
+						v = (float) (s.getValue() * 100) + "%";//1%å˜ä½
 					} else {
 						v = (int) s.getValue() + "";
 					}

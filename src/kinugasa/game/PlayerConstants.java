@@ -26,10 +26,10 @@ package kinugasa.game;
 import java.awt.Toolkit;
 
 /**
- * ƒvƒŒƒCƒ„[‚ÌÀsŠÂ‹«‚Ì’è”ƒtƒB[ƒ‹ƒh‚ÉƒAƒNƒZƒX‚·‚é‚½‚ß‚ÌƒNƒ‰ƒX‚Å‚·.
+ * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å®Ÿè¡Œç’°å¢ƒã®å®šæ•°ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ãŸã‚ã®ã‚¯ãƒ©ã‚¹ã§ã™.
  * <br>
- * ‚±‚ÌƒNƒ‰ƒX‚Ìî•ñ‚ÍASystem.getProperty‚¨‚æ‚ÑToolkit‚©‚çæ“¾‚³‚ê‚Ü‚·B<br>
- * ‚Ü‚½A‚±‚ÌƒNƒ‰ƒX‚ÍAƒvƒŒƒCƒ„[‚Ì“ü—ÍƒfƒoƒCƒX‚Ìg—pó‹µ‚ğŠi”[‚·‚é—Bˆê‚ÌêŠ‚Æ‚à‚È‚è‚Ü‚·B ‚»‚Ì’l‚ÍƒQ[ƒ€‚ÌŠJn‚Ì‚İw’è‚Å‚«‚Ü‚·B<br>
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã®æƒ…å ±ã¯ã€System.getPropertyãŠã‚ˆã³Toolkitã‹ã‚‰å–å¾—ã•ã‚Œã¾ã™ã€‚<br>
+ * ã¾ãŸã€ã“ã®ã‚¯ãƒ©ã‚¹ã¯ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å…¥åŠ›ãƒ‡ãƒã‚¤ã‚¹ã®ä½¿ç”¨çŠ¶æ³ã‚’æ ¼ç´ã™ã‚‹å”¯ä¸€ã®å ´æ‰€ã¨ã‚‚ãªã‚Šã¾ã™ã€‚ ãã®å€¤ã¯ã‚²ãƒ¼ãƒ ã®é–‹å§‹æ™‚ã®ã¿æŒ‡å®šã§ãã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/02/11_0:12:16<br>
@@ -47,52 +47,52 @@ public final class PlayerConstants {
 		USER_COUNTRY = System.getProperty("user.country");
 	}
 	/**
-	 * —Bˆê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Å‚·.
+	 * å”¯ä¸€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ã™.
 	 */
 	private static final PlayerConstants INSTANCE = new PlayerConstants();
 
 	/**
-	 * ƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚µ‚Ü‚·.
+	 * ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return —Bˆê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚µ‚Ü‚·.<br>
+	 * @return å”¯ä¸€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã—ã¾ã™.<br>
 	 */
 	public static PlayerConstants getInstance() {
 		return INSTANCE;
 	}
 	/**
-	 * ƒvƒŒƒCƒ„[‚ªg—p‚µ‚Ä‚¢‚é‰æ–Ê‚Ì•‚Å‚·.
+	 * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä½¿ç”¨ã—ã¦ã„ã‚‹ç”»é¢ã®å¹…ã§ã™.
 	 */
 	public final int SCREEN_WIDTH;
 	/**
-	 * ƒvƒŒƒCƒ„[‚ªg—p‚µ‚Ä‚¢‚é‰æ–Ê‚Ì‚‚³‚Å‚·.
+	 * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä½¿ç”¨ã—ã¦ã„ã‚‹ç”»é¢ã®é«˜ã•ã§ã™.
 	 */
 	public final int SCREEN_HEIGHT;
 	/**
-	 * OS‚Ì–¼‘O‚Å‚·.
+	 * OSã®åå‰ã§ã™.
 	 */
 	public final String OS_NAME;
 	/**
-	 * ƒvƒŒƒCƒ„[‚Ìƒz[ƒ€ƒfƒBƒŒƒNƒgƒŠ‚Å‚·.
+	 * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ›ãƒ¼ãƒ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã§ã™.
 	 */
 	public final String HOME_PATH;
 	/**
-	 * ƒvƒŒƒCƒ„[‚ÌOSƒAƒJƒEƒ“ƒg–¼‚Å‚·.
+	 * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®OSã‚¢ã‚«ã‚¦ãƒ³ãƒˆåã§ã™.
 	 */
 	public final String USER_NAME;
 	/**
-	 * ƒvƒŒƒCƒ„[‚ÌƒfƒXƒNƒgƒbƒv‚ÌƒpƒX‚Å‚·.
+	 * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—ã®ãƒ‘ã‚¹ã§ã™.
 	 */
 	public final String DESKTOP_PATH;
 	/**
-	 * ƒvƒŒƒCƒ„[‚Ì‘Ğ‚Å‚·.
+	 * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å›½ç±ã§ã™.
 	 */
 	public final String USER_COUNTRY;
 	/**
-	 * ƒ}ƒEƒX‚Ìg—pó‹µ‚Å‚·.
+	 * ãƒã‚¦ã‚¹ã®ä½¿ç”¨çŠ¶æ³ã§ã™.
 	 */
 	private boolean usingMouse;
 	/**
-	 * ƒL[ƒ{[ƒh‚Ìg—pó‹µ‚Å‚·.
+	 * ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ä½¿ç”¨çŠ¶æ³ã§ã™.
 	 */
 	private boolean usingKeyboard;
 
@@ -101,36 +101,36 @@ public final class PlayerConstants {
 	private int width, height;
 
 	/**
-	 * ƒQ[ƒ€ŠJn‚Ìİ’è‚É‚æ‚Á‚ÄƒL[ƒ{[ƒh‚ª g—p‚Å‚«‚éó‘Ô‚Å‚ ‚é‚©‚ğ’²‚×‚Ü‚·.
+	 * ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã®è¨­å®šã«ã‚ˆã£ã¦ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãŒ ä½¿ç”¨ã§ãã‚‹çŠ¶æ…‹ã§ã‚ã‚‹ã‹ã‚’èª¿ã¹ã¾ã™.
 	 *
-	 * @return ƒL[ƒ{[ƒh‚ğg—p‚·‚éİ’è‚ÅƒQ[ƒ€‚ğŠJn‚µ‚½ê‡‚Ítrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã‚’ä½¿ç”¨ã™ã‚‹è¨­å®šã§ã‚²ãƒ¼ãƒ ã‚’é–‹å§‹ã—ãŸå ´åˆã¯trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public boolean isUsingKeyboard() {
 		return usingKeyboard;
 	}
 
 	/**
-	 * ƒQ[ƒ€ŠJn‚Ìİ’è‚É‚æ‚Á‚Äƒ}ƒEƒX‚ª g—p‚Å‚«‚éó‘Ô‚Å‚ ‚é‚©‚ğ’²‚×‚Ü‚·.
+	 * ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã®è¨­å®šã«ã‚ˆã£ã¦ãƒã‚¦ã‚¹ãŒ ä½¿ç”¨ã§ãã‚‹çŠ¶æ…‹ã§ã‚ã‚‹ã‹ã‚’èª¿ã¹ã¾ã™.
 	 *
-	 * @return ƒ}ƒEƒX‚ğg—p‚·‚éİ’è‚ÅƒQ[ƒ€‚ğŠJn‚µ‚½ê‡‚Ítrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ãƒã‚¦ã‚¹ã‚’ä½¿ç”¨ã™ã‚‹è¨­å®šã§ã‚²ãƒ¼ãƒ ã‚’é–‹å§‹ã—ãŸå ´åˆã¯trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public boolean isUsingMouse() {
 		return usingMouse;
 	}
 
 	/**
-	 * ƒL[ƒ{[ƒh‚Ìg—p‰Â”Û‚ğİ’è‚µ‚Ü‚·.
+	 * ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ä½¿ç”¨å¯å¦ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param usingKeyboard g—p‰Â”\‚Èê‡‚Ítrue‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param usingKeyboard ä½¿ç”¨å¯èƒ½ãªå ´åˆã¯trueã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	void setUsingKeyboard(boolean usingKeyboard) {
 		this.usingKeyboard = usingKeyboard;
 	}
 
 	/**
-	 * ƒ}ƒEƒX‚Ìg—p‰Â”Û‚ğİ’è‚µ‚Ü‚·.
+	 * ãƒã‚¦ã‚¹ã®ä½¿ç”¨å¯å¦ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param usingMouse g—p‰Â”\‚Èê‡‚Ítrue‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param usingMouse ä½¿ç”¨å¯èƒ½ãªå ´åˆã¯trueã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	void setUsingMouse(boolean usingMouse) {
 		this.usingMouse = usingMouse;

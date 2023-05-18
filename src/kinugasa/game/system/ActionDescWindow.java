@@ -86,7 +86,7 @@ public class ActionDescWindow extends PCStatusWindow {
 	private static final int MAX_LINE = SimpleMessageWindowModel.maxLine - 1;
 
 	private void updateText() {
-		//SSMW‚É•¶š—ñ‚ğİ’è
+		//SSMWã«æ–‡å­—åˆ—ã‚’è¨­å®š
 
 		List<Text> t = new ArrayList<>();
 		t.add(new Text("<---" + s.get(pcIdx).getName() + I18N.translate("S") + I18N.translate("ACTION") + "--->"));
@@ -99,25 +99,25 @@ public class ActionDescWindow extends PCStatusWindow {
 						.collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
 			if (a.getType() == ActionType.ITEM) {
-				//•\¦‚µ‚È‚¢
+				//è¡¨ç¤ºã—ãªã„
 				continue;
 			}
 			if (a.getType() == ActionType.OTHER) {
-				//•\¦‚µ‚È‚¢
+				//è¡¨ç¤ºã—ãªã„
 				continue;
 			}
 			sb.append("  ")
 					.append(a.getName());
-			//–‚–@‚Í–‚–@ƒEƒCƒ“ƒhƒE‚ÅŒ©‚ê‚é‚Ì‚Å•\¦‚µ‚È‚¢
+			//é­”æ³•ã¯é­”æ³•ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã§è¦‹ã‚Œã‚‹ã®ã§è¡¨ç¤ºã—ãªã„
 			if (a.getType() != ActionType.MAGIC) {
-				sb.append("^");
+				sb.append("ï¼");
 				sb.append(a.getDesc());
 			}
 			sb.append("(")
 					.append(I18N.translate("AREA"))
 					.append(":")
 					.append(a.getAreaWithEqip(s.get(pcIdx)))
-					.append("A")
+					.append("ã€")
 					.append(I18N.translate("ACTION_ATTR"))
 					.append(":");
 			sb.append(a.getBattleEvent()
@@ -126,11 +126,11 @@ public class ActionDescWindow extends PCStatusWindow {
 					.map(p -> p.getAttr().getDesc())
 					.distinct()
 					.collect(Collectors.toList()));
-			sb.append("A")
+			sb.append("ã€")
 					.append(I18N.translate("ACTION_EFFECT"))
 					.append(":");
 
-			//ENEMY‚ª“ü‚Á‚Ä‚¢‚éê‡Amin‚ğA‚»‚¤‚Å‚È‚¢ê‡‚ÍMAX‚ğæ‚é
+			//ENEMYãŒå…¥ã£ã¦ã„ã‚‹å ´åˆã€minã‚’ã€ãã†ã§ãªã„å ´åˆã¯MAXã‚’å–ã‚‹
 			if (!a.getBattleEvent().isEmpty()) {
 				if (a.getBattleEvent().stream().anyMatch(p -> p.getTargetType().toString().contains("ENEMY"))) {
 					sb.append(Math.abs(a.getBattleEvent()

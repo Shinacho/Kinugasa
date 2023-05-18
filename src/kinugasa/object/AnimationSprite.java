@@ -27,12 +27,12 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.graphics.Animation;
 
 /**
- * ‰æ‘œ”z—ñ‚ğƒAƒjƒ[ƒVƒ‡ƒ“‚Æ‚µ‚Ä•\¦‚·‚é‚½‚ß‚Ì ImageSprite‚ÌŠg’£‚Å‚·.
+ * ç”»åƒé…åˆ—ã‚’ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã¨ã—ã¦è¡¨ç¤ºã™ã‚‹ãŸã‚ã® ImageSpriteã®æ‹¡å¼µã§ã™.
  * <br>
- * imageUpdateƒtƒ‰ƒO‚ªON‚Ì‚Æ‚«Adrawƒƒ\ƒbƒh“à‚Å©“®“I‚ÉƒAƒjƒ[ƒVƒ‡ƒ“‚ğXV‚µ‚Ü‚·B<Br>
- * ‚±‚Ì‘€ì‚ª•s—v‚Èê‡‚ÍAimageUpdate‚ğfalse‚Éİ’è‚µAAnimationSprite‚Ìupdateƒƒ\ƒbƒh‚ğ
- * ƒR[ƒ‹‚·‚é‚±‚Æ‚Å•\¦‚³‚ê‚é‰æ‘œ‚ğXV‚Å‚«‚Ü‚·B<br>
- * imageUpdate‚ÍƒfƒtƒHƒ‹ƒg‚Å‚Ítrue‚Éİ’è‚³‚ê‚Ä‚¢‚Ü‚·B<br>
+ * imageUpdateãƒ•ãƒ©ã‚°ãŒONã®ã¨ãã€drawãƒ¡ã‚½ãƒƒãƒ‰å†…ã§è‡ªå‹•çš„ã«ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ›´æ–°ã—ã¾ã™ã€‚<Br>
+ * ã“ã®æ“ä½œãŒä¸è¦ãªå ´åˆã¯ã€imageUpdateã‚’falseã«è¨­å®šã—ã€AnimationSpriteã®updateãƒ¡ã‚½ãƒƒãƒ‰ã‚’
+ * ã‚³ãƒ¼ãƒ«ã™ã‚‹ã“ã¨ã§è¡¨ç¤ºã•ã‚Œã‚‹ç”»åƒã‚’æ›´æ–°ã§ãã¾ã™ã€‚<br>
+ * imageUpdateã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã¯trueã«è¨­å®šã•ã‚Œã¦ã„ã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_20:49:20<br>
@@ -44,8 +44,8 @@ public class AnimationSprite extends ImageSprite {
 	private boolean imageUpdate = true;
 
 	/**
-	 * V‚µ‚¢ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·.
-	 * ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍA‰æ‘œ‚ªnull‚ÉA•`‰æƒ‚ƒfƒ‹‚ªIMAGE_BOUNDS_XY‚Éİ’è‚³‚ê‚Ü‚·B<br>
+	 * æ–°ã—ã„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™.
+	 * ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ç”»åƒãŒnullã«ã€æç”»ãƒ¢ãƒ‡ãƒ«ãŒIMAGE_BOUNDS_XYã«è¨­å®šã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	public AnimationSprite() {
 		super();
@@ -57,26 +57,26 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * V‚µ‚¢ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍA‰æ‘œ‚ªnull‚ÉA
-	 * •`‰æƒ‚ƒfƒ‹‚ªIMAGE_BOUNDS_XY‚Éİ’è‚³‚ê‚Ü‚·B<br>
+	 * æ–°ã—ã„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ç”»åƒãŒnullã«ã€
+	 * æç”»ãƒ¢ãƒ‡ãƒ«ãŒIMAGE_BOUNDS_XYã«è¨­å®šã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public AnimationSprite(float x, float y, float w, float h) {
 		super(x, y, w, h);
 	}
 
 	/**
-	 * V‚µ‚¢ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍA •`‰æƒ‚ƒfƒ‹‚ÍIMAGE_BOUNDS_XY‚Éİ’è‚³‚ê‚Ü‚·B<br>
+	 * æ–°ã—ã„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ æç”»ãƒ¢ãƒ‡ãƒ«ã¯IMAGE_BOUNDS_XYã«è¨­å®šã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param animation •\¦‚·‚éƒAƒjƒ[ƒVƒ‡ƒ“‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param animation è¡¨ç¤ºã™ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public AnimationSprite(float x, float y, float w, float h, Animation animation) {
 		super(x, y, w, h, animation.getCurrentImage());
@@ -84,14 +84,14 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * V‚µ‚¢ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param animation •\¦‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param model •`‰æ•û–@‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param animation è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param model æç”»æ–¹æ³•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public AnimationSprite(float x, float y, float w, float h, Animation animation, ImagePainter model) {
 		super(x, y, w, h, animation.getCurrentImage(), model);
@@ -99,16 +99,16 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * V‚µ‚¢ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 * @param vector
 	 * @param animation
-	 * @param mm ˆÚ“®ƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param dm •`‰æƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param mm ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param dm æç”»ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public AnimationSprite(float x, float y, float w, float h, KVector vector,
 			MovingModel mm, Animation animation, ImagePainter dm) {
@@ -117,14 +117,14 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * V‚µ‚¢ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÍƒNƒ[ƒjƒ“ƒO—p‚Ìƒ}ƒXƒ^ƒf[ƒ^‚ğì¬‚·‚éê‡‚É—L—p‚Å‚·B<br>
+	 * æ–°ã—ã„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã¯ã‚¯ãƒ­ãƒ¼ãƒ‹ãƒ³ã‚°ç”¨ã®ãƒã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã™ã‚‹å ´åˆã«æœ‰ç”¨ã§ã™ã€‚<br>
 	 *
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 * @param vector
 	 * @param animation
-	 * @param mm ˆÚ“®ƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param dm •`‰æƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param mm ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param dm æç”»ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public AnimationSprite(float w, float h, KVector vector,
 			MovingModel mm, Animation animation, ImagePainter dm) {
@@ -133,13 +133,13 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * V‚µ‚¢ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÍƒNƒ[ƒjƒ“ƒO—p‚Ìƒ}ƒXƒ^ƒf[ƒ^‚ğì¬‚·‚éê‡‚É—L—p‚Å‚·B<br>
-	 * “Á‚ÉƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒE‚ÌƒAƒCƒRƒ“‚È‚ÇÀ•W‚ğŒã‚©‚çİ’è‚µA‚»‚ÌŒãˆÚ“®‚·‚é‚±‚Æ‚Ì‚È‚¢ ƒXƒvƒ‰ƒCƒg‚ÉŒø‰Ê“I‚Å‚·B<br>
+	 * æ–°ã—ã„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã¯ã‚¯ãƒ­ãƒ¼ãƒ‹ãƒ³ã‚°ç”¨ã®ãƒã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã™ã‚‹å ´åˆã«æœ‰ç”¨ã§ã™ã€‚<br>
+	 * ç‰¹ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ã‚¢ã‚¤ã‚³ãƒ³ãªã©åº§æ¨™ã‚’å¾Œã‹ã‚‰è¨­å®šã—ã€ãã®å¾Œç§»å‹•ã™ã‚‹ã“ã¨ã®ãªã„ ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã«åŠ¹æœçš„ã§ã™ã€‚<br>
 	 *
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 * @param animation
-	 * @param dm •`‰æƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param dm æç”»ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public AnimationSprite(float w, float h, Animation animation, ImagePainter dm) {
 		super(0, 0, w, h, animation.getCurrentImage(), dm);
@@ -163,8 +163,8 @@ public class AnimationSprite extends ImageSprite {
 	}
 
 	/**
-	 * ƒAƒjƒ[ƒVƒ‡ƒ“‚ğXV‚µAÅV‚Ì‰æ‘œ‚ğ“K—p‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ÍAdrawƒƒ\ƒbƒh‚É‚æ‚é•`‰æ‚ÌŠ®—¹ŒãA©“®“I‚ÉƒR[ƒ‹‚³‚ê‚Ü‚·B<br>
-	 * İ’è‚³‚ê‚Ä‚¢‚éƒAƒjƒ[ƒVƒ‡ƒ“‚ªnull‚Ìê‡‚Í‰½‚às‚¢‚Ü‚¹‚ñB<br>
+	 * ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ›´æ–°ã—ã€æœ€æ–°ã®ç”»åƒã‚’é©ç”¨ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã€drawãƒ¡ã‚½ãƒƒãƒ‰ã«ã‚ˆã‚‹æç”»ã®å®Œäº†å¾Œã€è‡ªå‹•çš„ã«ã‚³ãƒ¼ãƒ«ã•ã‚Œã¾ã™ã€‚<br>
+	 * è¨­å®šã•ã‚Œã¦ã„ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒnullã®å ´åˆã¯ä½•ã‚‚è¡Œã„ã¾ã›ã‚“ã€‚<br>
 	 */
 	@Override
 	public void update() {

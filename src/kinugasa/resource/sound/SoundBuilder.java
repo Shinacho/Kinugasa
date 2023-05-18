@@ -29,9 +29,9 @@ import kinugasa.resource.Nameable;
 import kinugasa.resource.FileNotFoundException;
 
 /**
- * ƒLƒƒƒbƒVƒ…‚Â‚«ƒTƒEƒ“ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚·‚é‚½‚ß‚Ìƒrƒ‹ƒ_‚Å‚·.
+ * ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã¤ãã‚µã‚¦ãƒ³ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã™ã‚‹ãŸã‚ã®ãƒ“ãƒ«ãƒ€ã§ã™.
  * <br>
- * WAVEƒtƒ@ƒCƒ‹‚ğg—p‚·‚éÛ‚ÌAÅ‚àˆê”Ê“I‚È\’zƒNƒ‰ƒX‚Æ‚È‚è‚Ü‚·B<br>
+ * WAVEãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½¿ç”¨ã™ã‚‹éš›ã®ã€æœ€ã‚‚ä¸€èˆ¬çš„ãªæ§‹ç¯‰ã‚¯ãƒ©ã‚¹ã¨ãªã‚Šã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/13_18:48:59<br>
@@ -39,30 +39,30 @@ import kinugasa.resource.FileNotFoundException;
  */
 public final class SoundBuilder implements Serializable, Nameable {
 
-	/** ƒtƒ@ƒCƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX. */
+	/** ãƒ•ã‚¡ã‚¤ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹. */
 	private File file;
-	/** ƒ‹[ƒvİ’è. */
+	/** ãƒ«ãƒ¼ãƒ—è¨­å®š. */
 	private LoopPoint loopPoint = LoopPoint.NO_USE;
-	/** ƒŠƒo[ƒuİ’è. */
+	/** ãƒªãƒãƒ¼ãƒ–è¨­å®š. */
 	private ReverbModel reverbModel = ReverbModel.NO_USE;
-	/** ƒ}ƒXƒ^[ƒQƒCƒ“‚Ì’l. */
+	/** ãƒã‚¹ã‚¿ãƒ¼ã‚²ã‚¤ãƒ³ã®å€¤. */
 	private float masterGain = 1f;
-	/** ƒ{ƒŠƒ…[ƒ€. */
+	/** ãƒœãƒªãƒ¥ãƒ¼ãƒ . */
 	private float volume = 1f;
-	/** ƒpƒ“‚Ìİ’è. */
+	/** ãƒ‘ãƒ³ã®è¨­å®š. */
 	private float pan = 0f;
-	/** Ä¶‚ÌƒTƒ“ƒvƒ‹ƒŒ[ƒg. */
+	/** å†ç”Ÿæ™‚ã®ã‚µãƒ³ãƒ—ãƒ«ãƒ¬ãƒ¼ãƒˆ. */
 	private float sampleRate = 0f;
-	/** V‹KƒCƒ“ƒXƒ^ƒ“ƒX‚Åì¬‚·‚é‚©. */
+	/** æ–°è¦ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ä½œæˆã™ã‚‹ã‹. */
 	private boolean newFile = false;
 	private String name;
 
 	/**
-	 * V‚µ‚¢CachedSound‚ğì¬‚·‚é‚½‚ß‚Ìƒrƒ‹ƒ_‚ğ\’z‚µ‚Ü‚·.
+	 * æ–°ã—ã„CachedSoundã‚’ä½œæˆã™ã‚‹ãŸã‚ã®ãƒ“ãƒ«ãƒ€ã‚’æ§‹ç¯‰ã—ã¾ã™.
 	 * 
-	 * @param filePath ƒtƒ@ƒCƒ‹ƒpƒX.<br>
+	 * @param filePath ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹.<br>
 	 *
-	 * @throws ContentsFileNotFoundException ƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚È‚¢ê‡‚É“Š‚°‚ç‚ê‚é.<br>
+	 * @throws ContentsFileNotFoundException ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ãªã„å ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹.<br>
 	 */
 	public SoundBuilder(String filePath) throws FileNotFoundException {
 		File soundFile = new File(filePath);
@@ -74,11 +74,11 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	/**
-	 * ƒ‹[ƒvˆÊ’u‚ğİ’è‚µ‚Ü‚·.
+	 * ãƒ«ãƒ¼ãƒ—ä½ç½®ã‚’è¨­å®šã—ã¾ã™.
 	 * 
-	 * @param loopPoint ƒ‹[ƒvˆÊ’u.<br>
+	 * @param loopPoint ãƒ«ãƒ¼ãƒ—ä½ç½®.<br>
 	 *
-	 * @return ‚±‚Ìƒrƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ãƒ“ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	public SoundBuilder setLoopPoint(LoopPoint loopPoint) {
 		this.loopPoint = loopPoint;
@@ -86,12 +86,12 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	/**
-	 * ƒ‹[ƒvˆÊ’u‚ğİ’è‚µ‚Ü‚·.
+	 * ãƒ«ãƒ¼ãƒ—ä½ç½®ã‚’è¨­å®šã—ã¾ã™.
 	 * 
-	 * @param from ƒ‹[ƒvˆÊ’u.<br>
-	 * @param to   ƒ‹[ƒvˆÊ’u.<br>
+	 * @param from ãƒ«ãƒ¼ãƒ—ä½ç½®.<br>
+	 * @param to   ãƒ«ãƒ¼ãƒ—ä½ç½®.<br>
 	 *
-	 * @return ‚±‚Ìƒrƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ãƒ“ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	public SoundBuilder setLoopPoint(int from, int to) {
 		this.loopPoint = new LoopPoint(from, to);
@@ -99,12 +99,12 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	/**
-	 * ƒTƒEƒ“ƒh‚Ìƒ}ƒXƒ^[ƒQƒCƒ“‚ğİ’è‚µ‚Ü‚·.
-	 * ‚±‚ê‚Íƒ{ƒŠƒ…[ƒ€‚ªƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚È‚¢ŠÂ‹«‚Å‰¹—Ê‚ğİ’è‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·.<br>
+	 * ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒã‚¹ã‚¿ãƒ¼ã‚²ã‚¤ãƒ³ã‚’è¨­å®šã—ã¾ã™.
+	 * ã“ã‚Œã¯ãƒœãƒªãƒ¥ãƒ¼ãƒ ãŒã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„ç’°å¢ƒã§éŸ³é‡ã‚’è¨­å®šã™ã‚‹ã“ã¨ãŒã§ãã¾ã™.<br>
 	 * 
-	 * @param masterGain ƒQƒCƒ“‚Ì’l.0.0f‚Å–³‰¹‚É‚È‚é.<br>
+	 * @param masterGain ã‚²ã‚¤ãƒ³ã®å€¤.0.0fã§ç„¡éŸ³ã«ãªã‚‹.<br>
 	 *
-	 * @return ‚±‚Ìƒrƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ãƒ“ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	public SoundBuilder setMasterGain(float masterGain) {
 		this.masterGain = masterGain;
@@ -112,12 +112,12 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	/**
-	 * ƒXƒeƒŒƒIƒTƒEƒ“ƒh‚Ìƒpƒ“ˆÊ’u‚ğİ’è‚µ‚Ü‚·.
-	 * ‚±‚Ì‹@”\‚ÍƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚È‚¢‰Â”\«‚ª‚ ‚è‚Ü‚·.
+	 * ã‚¹ãƒ†ãƒ¬ã‚ªã‚µã‚¦ãƒ³ãƒ‰ã®ãƒ‘ãƒ³ä½ç½®ã‚’è¨­å®šã—ã¾ã™.
+	 * ã“ã®æ©Ÿèƒ½ã¯ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™.
 	 * 
-	 * @param pan ’†S‚ğ0.0A¶‰E‚ğ1.0‚Æ‚µ‚½ê‡‚Ìƒpƒ“ˆÊ’u.<br>
+	 * @param pan ä¸­å¿ƒã‚’0.0ã€å·¦å³ã‚’1.0ã¨ã—ãŸå ´åˆã®ãƒ‘ãƒ³ä½ç½®.<br>
 	 *
-	 * @return ‚±‚Ìƒrƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ãƒ“ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	public SoundBuilder setPan(float pan) {
 		this.pan = pan;
@@ -125,12 +125,12 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	/**
-	 * ƒTƒEƒ“ƒh‚Ì‰¹—Ê‚ğİ’è‚µ‚Ü‚·.
-	 * ‚±‚Ì‹@”\‚ÍƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚È‚¢‰Â”\«‚ª‚ ‚è‚Ü‚·.‰¹—Ê‚Ì’²ß‚Íƒ}ƒXƒ^[ƒQƒCƒ“‚ğg—p‚µ‚Ä‚­‚¾‚³‚¢.<br>
+	 * ã‚µã‚¦ãƒ³ãƒ‰ã®éŸ³é‡ã‚’è¨­å®šã—ã¾ã™.
+	 * ã“ã®æ©Ÿèƒ½ã¯ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™.éŸ³é‡ã®èª¿ç¯€ã¯ãƒã‚¹ã‚¿ãƒ¼ã‚²ã‚¤ãƒ³ã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„.<br>
 	 * 
-	 * @param volume ‰¹—Ê.<br>
+	 * @param volume éŸ³é‡.<br>
 	 *
-	 * @return ‚±‚Ìƒrƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ãƒ“ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	public SoundBuilder setVolume(float volume) {
 		this.volume = volume;
@@ -138,12 +138,12 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	/**
-	 * ƒTƒEƒ“ƒh‚ÌƒŠƒo[ƒu‚ğİ’è‚µ‚Ü‚·.
-	 * ‚±‚Ì‹@”\‚ÍƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚È‚¢‰Â”\«‚ª‚ ‚è‚Ü‚·.
+	 * ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒªãƒãƒ¼ãƒ–ã‚’è¨­å®šã—ã¾ã™.
+	 * ã“ã®æ©Ÿèƒ½ã¯ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™.
 	 * 
-	 * @param reverbModel ƒŠƒo[ƒu‚Ìİ’è.<br>
+	 * @param reverbModel ãƒªãƒãƒ¼ãƒ–ã®è¨­å®š.<br>
 	 *
-	 * @return ‚±‚Ìƒrƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ãƒ“ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	public SoundBuilder setReverbModel(ReverbModel reverbModel) {
 		this.reverbModel = reverbModel;
@@ -151,12 +151,12 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	/**
-	 * ƒTƒEƒ“ƒh‚ÌÄ¶‚ÌƒTƒ“ƒvƒ‹ƒŒ[ƒg‚ğİ’è‚µ‚Ü‚·.
-	 * ‚±‚Ì‹@”\‚ÍƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚È‚¢‰Â”\«‚ª‚ ‚è‚Ü‚·.
+	 * ã‚µã‚¦ãƒ³ãƒ‰ã®å†ç”Ÿæ™‚ã®ã‚µãƒ³ãƒ—ãƒ«ãƒ¬ãƒ¼ãƒˆã‚’è¨­å®šã—ã¾ã™.
+	 * ã“ã®æ©Ÿèƒ½ã¯ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™.
 	 * 
-	 * @param sampleRate Ä¶‚ÌƒTƒ“ƒvƒ‹ƒŒ[ƒg.<br>
+	 * @param sampleRate å†ç”Ÿæ™‚ã®ã‚µãƒ³ãƒ—ãƒ«ãƒ¬ãƒ¼ãƒˆ.<br>
 	 *
-	 * @return ‚±‚Ìƒrƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ãƒ“ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	public SoundBuilder setSampleRate(float sampleRate) {
 		this.sampleRate = sampleRate;
@@ -164,10 +164,10 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	/**
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ğŒÄ‚Ño‚·‚ÆCachedSound‚ÌƒLƒƒƒbƒVƒ…ƒf[ƒ^‚ğg—p‚¹‚¸A
-	 * V‚µ‚¢ƒTƒEƒ“ƒhƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚µ‚Ü‚·.<br>
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã™ã¨CachedSoundã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ‡ãƒ¼ã‚¿ã‚’ä½¿ç”¨ã›ãšã€
+	 * æ–°ã—ã„ã‚µã‚¦ãƒ³ãƒ‰ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã—ã¾ã™.<br>
 	 * 
-	 * @return ‚±‚Ìƒrƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ãƒ“ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	public SoundBuilder newFile() {
 		newFile = true;
@@ -180,82 +180,82 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	/**
-	 * ì¬‚³‚ê‚é—\’è‚ÌƒTƒEƒ“ƒh‚Ìƒtƒ@ƒCƒ‹‚ğæ“¾‚µ‚Ü‚·.
-	 * ‚±‚Ìƒƒ\ƒbƒh‚Ì–ß‚è’l‚Ìƒtƒ@ƒCƒ‹‚Í‘¶İ‚ª•ÛØ‚³‚ê‚Ü‚·.<br>
+	 * ä½œæˆã•ã‚Œã‚‹äºˆå®šã®ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–å¾—ã—ã¾ã™.
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã®æˆ»ã‚Šå€¤ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¯å­˜åœ¨ãŒä¿è¨¼ã•ã‚Œã¾ã™.<br>
 	 * 
-	 * @return ƒtƒ@ƒCƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ãƒ•ã‚¡ã‚¤ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	public File getFile() {
 		return file;
 	}
 
 	/**
-	 * İ’è‚³‚ê‚Ä‚¢‚é’l‚ğ•Ô‚µ‚Ü‚·.
+	 * è¨­å®šã•ã‚Œã¦ã„ã‚‹å€¤ã‚’è¿”ã—ã¾ã™.
 	 * 
-	 * @return ƒ‹[ƒvˆÊ’u.<br>
+	 * @return ãƒ«ãƒ¼ãƒ—ä½ç½®.<br>
 	 */
 	public LoopPoint getLoopPoint() {
 		return loopPoint;
 	}
 
 	/**
-	 * İ’è‚³‚ê‚Ä‚¢‚é’l‚ğ•Ô‚µ‚Ü‚·.
+	 * è¨­å®šã•ã‚Œã¦ã„ã‚‹å€¤ã‚’è¿”ã—ã¾ã™.
 	 * 
-	 * @return ƒQƒCƒ“‚Ì’l.<br>
+	 * @return ã‚²ã‚¤ãƒ³ã®å€¤.<br>
 	 */
 	public float getMasterGain() {
 		return masterGain;
 	}
 
 	/**
-	 * İ’è‚³‚ê‚Ä‚¢‚é’l‚ğ•Ô‚µ‚Ü‚·.
+	 * è¨­å®šã•ã‚Œã¦ã„ã‚‹å€¤ã‚’è¿”ã—ã¾ã™.
 	 * 
-	 * @return ƒLƒƒƒbƒVƒ…‚ğg—p‚¹‚¸‚ÉV‚µ‚¢ƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚·‚éê‡‚ÍTRUE‚ğ•Ô‚·.<br>
+	 * @return ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’ä½¿ç”¨ã›ãšã«æ–°ã—ã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã™ã‚‹å ´åˆã¯TRUEã‚’è¿”ã™.<br>
 	 */
 	public boolean isNewFile() {
 		return newFile;
 	}
 
 	/**
-	 * İ’è‚³‚ê‚Ä‚¢‚é’l‚ğ•Ô‚µ‚Ü‚·.
+	 * è¨­å®šã•ã‚Œã¦ã„ã‚‹å€¤ã‚’è¿”ã—ã¾ã™.
 	 * 
-	 * @return ƒpƒ“‚Ìİ’è.<br>
+	 * @return ãƒ‘ãƒ³ã®è¨­å®š.<br>
 	 */
 	public float getPan() {
 		return pan;
 	}
 
 	/**
-	 * İ’è‚³‚ê‚Ä‚¢‚é’l‚ğ•Ô‚µ‚Ü‚·.
+	 * è¨­å®šã•ã‚Œã¦ã„ã‚‹å€¤ã‚’è¿”ã—ã¾ã™.
 	 * 
-	 * @return ƒŠƒo[ƒu‚Ìİ’è.<br>
+	 * @return ãƒªãƒãƒ¼ãƒ–ã®è¨­å®š.<br>
 	 */
 	public ReverbModel getReverbModel() {
 		return reverbModel;
 	}
 
 	/**
-	 * İ’è‚³‚ê‚Ä‚¢‚é’l‚ğ•Ô‚µ‚Ü‚·.
+	 * è¨­å®šã•ã‚Œã¦ã„ã‚‹å€¤ã‚’è¿”ã—ã¾ã™.
 	 * 
-	 * @return Ä¶‚ÌƒTƒ“ƒvƒ‹ƒŒ[ƒg.<br>
+	 * @return å†ç”Ÿæ™‚ã®ã‚µãƒ³ãƒ—ãƒ«ãƒ¬ãƒ¼ãƒˆ.<br>
 	 */
 	public float getSampleRate() {
 		return sampleRate;
 	}
 
 	/**
-	 * İ’è‚³‚ê‚Ä‚¢‚é’l‚ğ•Ô‚µ‚Ü‚·.
+	 * è¨­å®šã•ã‚Œã¦ã„ã‚‹å€¤ã‚’è¿”ã—ã¾ã™.
 	 * 
-	 * @return ‰¹—Ê.<br>
+	 * @return éŸ³é‡.<br>
 	 */
 	public float getVolume() {
 		return volume;
 	}
 
 	/**
-	 * Œ»İ‚Ìİ’è‚ÅV‚µ‚¢CachedSound‚ğì¬‚µ‚Ü‚·.
+	 * ç¾åœ¨ã®è¨­å®šã§æ–°ã—ã„CachedSoundã‚’ä½œæˆã—ã¾ã™.
 	 * 
-	 * @return AudioData‚ÌÀ‘•‚ğ•Ô‚·.<br>
+	 * @return AudioDataã®å®Ÿè£…ã‚’è¿”ã™.<br>
 	 */
 	public CachedSound builde() {
 		return CachedSound.create(this);

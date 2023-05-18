@@ -50,7 +50,7 @@ public class TitleImage {
 		
 		f = new Font(Font.SERIF, Font.PLAIN, 32);
 		g.setFont(f);
-		g.drawString("-–‚–@g‚¢‚Æ•s€‚Ì”ép-", 38, 120);
+		g.drawString("-é­”æ³•ä½¿ã„ã¨ä¸æ­»ã®ç§˜è¡“-", 38, 120);
 		//16,85,240,85
 		g.drawLine(16, 85, 240, 85);
 

@@ -33,7 +33,7 @@ import kinugasa.util.TimeCounter;
 
 
 /**
- * ’Pƒ’Ç”öƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·.
+ * å˜ç´”è¿½å°¾ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™.
  * <br>
  *
  * <br>

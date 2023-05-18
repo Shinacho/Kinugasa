@@ -27,7 +27,7 @@ import java.awt.Shape;
 import java.awt.geom.Point2D;
 
 /**
- * ���̓f�o�C�X�̒l�ɂ���ăX�v���C�g���ړ�������@���`���܂�.
+ * 入力デバイスの値によってスプライトを移動する方法を定義します.
  * <br>
  *
  * <br>
@@ -38,23 +38,23 @@ import java.awt.geom.Point2D;
 public interface Controllable {
 
 	/**
-	 * ���̓f�o�C�X����̒l�ɂ���āA�I�u�W�F�N�g���ړ����܂�.
+	 * 入力デバイスからの値によって、オブジェクトを移動します.
 	 *
-	 * @param xValue -1.0~1.0�̊Ԃ̓��͒l.�L�[����ł�-1.0�܂���1.0�A�Q�[���p�b�h���g�p����Ɖς̒l�����M�����.<br>
-	 * @param yValue -1.0~1.0�̊Ԃ̓��͒l.�L�[����ł�-1.0�܂���1.0�A�Q�[���p�b�h���g�p����Ɖς̒l�����M�����.<br>
-	 * @param s ���̃I�u�W�F�N�g���ړ��\�ȗ̈�.null�łȂ��ꍇ�͂��̗̈悩��o�Ă͂Ȃ�Ȃ�.<br>
+	 * @param xValue -1.0~1.0の間の入力値.キー操作では-1.0または1.0、ゲームパッドを使用すると可変の値が送信される.<br>
+	 * @param yValue -1.0~1.0の間の入力値.キー操作では-1.0または1.0、ゲームパッドを使用すると可変の値が送信される.<br>
+	 * @param s このオブジェクトが移動可能な領域.nullでない場合はこの領域から出てはならない.<br>
 	 *
-	 * @return �ړ���̃I�u�W�F�N�g��s���ɑ��݂���ꍇ��true���As����o��(contains()��false)���߁A�ړ��ł��Ȃ������ꍇ��false��Ԃ�.<br>
+	 * @return 移動後のオブジェクトがs内に存在する場合はtrueを、sから出る(contains()がfalse)ため、移動できなかった場合はfalseを返す.<br>
 	 */
 	public boolean move(float xValue, float yValue, Shape s);
 
 	/**
-	 * ���̓f�o�C�X����̒l�ɂ���āA�I�u�W�F�N�g���ړ����܂�.
+	 * 入力デバイスからの値によって、オブジェクトを移動します.
 	 *
-	 * @param p -1.0~1.0�̊Ԃ�X�����Y���̓��͒l.�L�[����ł�-1.0�܂���1.0�A�Q�[���p�b�h���g�p����Ɖς̒l�����M�����.<br>
-	 * @param s ���̃I�u�W�F�N�g���ړ��\�ȗ̈�.null�łȂ��ꍇ�͂��̗̈悩��o�Ă͂Ȃ�Ȃ�.<br>
+	 * @param p -1.0~1.0の間のXおよびY軸の入力値.キー操作では-1.0または1.0、ゲームパッドを使用すると可変の値が送信される.<br>
+	 * @param s このオブジェクトが移動可能な領域.nullでない場合はこの領域から出てはならない.<br>
 	 *
-	 * @return �ړ���̃I�u�W�F�N�g��s���ɑ��݂���ꍇ��true���As����o��(contains()��false)���߁A�ړ��ł��Ȃ������ꍇ��false��Ԃ�.<br>
+	 * @return 移動後のオブジェクトがs内に存在する場合はtrueを、sから出る(contains()がfalse)ため、移動できなかった場合はfalseを返す.<br>
 	 */
 	public boolean move(Point2D.Float p, Shape s);
 }

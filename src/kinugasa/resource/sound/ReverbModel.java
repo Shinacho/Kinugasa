@@ -26,7 +26,7 @@ package kinugasa.resource.sound;
 import java.io.Serializable;
 
 /**
- * ƒTƒEƒ“ƒh‚ÌƒŠƒo[ƒu‚Ìİ’è‚ğƒJƒvƒZƒ‹‰»‚µ‚Ü‚·.
+ * ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒªãƒãƒ¼ãƒ–ã®è¨­å®šã‚’ã‚«ãƒ—ã‚»ãƒ«åŒ–ã—ã¾ã™.
  * <br>
  *
  * <br>
@@ -37,16 +37,16 @@ import java.io.Serializable;
 public class ReverbModel implements Serializable {
 
 	/**
-	 * ƒŠƒo[ƒu‚ğg—p‚µ‚È‚¢İ’è‚Å‚·.
+	 * ãƒªãƒãƒ¼ãƒ–ã‚’ä½¿ç”¨ã—ãªã„è¨­å®šã§ã™.
 	 */
 	public static ReverbModel NO_USE = new ReverbModel(false, 0, 0);
 	//
 	//
-	/** ƒŠƒo[ƒu‚ğg—p‚·‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO. */
+	/** ãƒªãƒãƒ¼ãƒ–ã‚’ä½¿ç”¨ã™ã‚‹ã‹ã©ã†ã‹ã®ãƒ•ãƒ©ã‚°. */
 	private boolean use;
-	/** ‘—M‘¤ƒŠƒo[ƒu. */
+	/** é€ä¿¡å´ãƒªãƒãƒ¼ãƒ–. */
 	private float send;
-	/** óM‘¤ƒŠƒo[ƒu. */
+	/** å—ä¿¡å´ãƒªãƒãƒ¼ãƒ–. */
 	private float ret;
 
 	public ReverbModel(boolean use, float send, float ret) {
@@ -56,26 +56,26 @@ public class ReverbModel implements Serializable {
 	}
 
 	/**
-	 * óM‘¤‚ÌƒŠƒo[ƒu‚ğæ“¾‚µ‚Ü‚·.
+	 * å—ä¿¡å´ã®ãƒªãƒãƒ¼ãƒ–ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return óM‘¤‚ÌƒŠƒo[ƒu’l‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return å—ä¿¡å´ã®ãƒªãƒãƒ¼ãƒ–å€¤ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public float getRet() {
 		return ret;
 	}
 
 	/**
-	 * ‘—M‘¤‚ÌƒŠƒo[ƒu‚ğæ“¾‚µ‚Ü‚·.
+	 * é€ä¿¡å´ã®ãƒªãƒãƒ¼ãƒ–ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ‘—M‘¤‚ÌƒŠƒo[ƒu’l‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return é€ä¿¡å´ã®ãƒªãƒãƒ¼ãƒ–å€¤ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public float getSend() {
 		return send;
 	}
 
 	/**
-	 * ƒŠƒo[ƒu‚ğg—p‚·‚é‚©‚Ç‚¤‚©‚ğŒˆ’è‚·‚éƒtƒ‰ƒO‚ğæ“¾‚µ‚Ü‚·.
-	 * @return ƒŠƒo[ƒu‚Ì—LŒøƒtƒ‰ƒO‚ğ•Ô‚µ‚Ü‚·Btrue‚Ì‚Æ‚«g—p‚µ‚Ü‚·B<br>
+	 * ãƒªãƒãƒ¼ãƒ–ã‚’ä½¿ç”¨ã™ã‚‹ã‹ã©ã†ã‹ã‚’æ±ºå®šã™ã‚‹ãƒ•ãƒ©ã‚°ã‚’å–å¾—ã—ã¾ã™.
+	 * @return ãƒªãƒãƒ¼ãƒ–ã®æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã‚’è¿”ã—ã¾ã™ã€‚trueã®ã¨ãä½¿ç”¨ã—ã¾ã™ã€‚<br>
 	 */
 	public boolean isUse() {
 		return use;

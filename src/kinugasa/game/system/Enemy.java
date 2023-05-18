@@ -216,7 +216,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 				}
 			}
 		}
-		//ƒ^[ƒQƒbƒg‚Æ‚Ì‹——£‚ªƒGƒŠƒA“à‚É‚È‚Á‚½‚çˆÚ“®‚ðI—¹
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ã®è·é›¢ãŒã‚¨ãƒªã‚¢å†…ã«ãªã£ãŸã‚‰ç§»å‹•ã‚’çµ‚äº†
 		if (targetInArea()) {
 			sprite.setSpeed(0);
 			moving = false;

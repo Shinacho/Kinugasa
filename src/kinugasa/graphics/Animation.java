@@ -33,10 +33,10 @@ import kinugasa.util.SimpleIndex;
 import kinugasa.util.TimeCounter;
 
 /**
- * �摜�z����A�j���[�V�����Ƃ��čĐ����邽�߂̉摜�ƃC���f�b�N�X��ێ����܂�.
+ * 画像配列をアニメーションとして再生するための画像とインデックスを保持します.
  * <br>
- * �A�j���[�V�����p�摜��null�������܂��B���ꂼ��̃��\�b�h�ł́A�A�j���[�V�����̗v�f�ƂȂ�
- * �摜��1���Ȃ��ꍇ�i�܂�null�̏ꍇ�j��null��Ԃ��܂��B<br>
+ * アニメーション用画像はnullを許可します。それぞれのメソッドでは、アニメーションの要素となる
+ * 画像が1つもない場合（つまりnullの場合）にnullを返します。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/13_1:39:19<br>
@@ -45,25 +45,25 @@ import kinugasa.util.TimeCounter;
 public class Animation implements Iterable<KImage>, Cloneable {
 
 	/**
-	 * �A�j���[�V������1�̗v�f���\������鎞�ԊԊu���w�肷��^�C���J�E���^�ł�.
+	 * アニメーションの1つの要素が表示される時間間隔を指定するタイムカウンタです.
 	 */
 	private TimeCounter visibleTime;
 	/**
-	 * �A�j���[�V�����̑J�ڏ������w�肷�邽�߂̔z��C���f�b�N�X�ł�.
+	 * アニメーションの遷移条件を指定するための配列インデックスです.
 	 */
 	private ArrayIndexModel index;
 	/**
-	 * �A�j���[�V�����Ƃ��čĐ������摜�̔z��ł�.
+	 * アニメーションとして再生される画像の配列です.
 	 */
 	private KImage[] images;
 	private boolean repeat = true;
 	private boolean stop;
 
 	/**
-	 * �V�����A�j���[�V�������\�z���܂�. ���̃R���X�g���N�^�ł́A�z��C���f�b�N�X�́{�����փ��[�v����V�[�P���V�����ȃ��f���ɂȂ�܂��B<br>
+	 * 新しいアニメーションを構築します. このコンストラクタでは、配列インデックスは＋方向へループするシーケンシャルなモデルになります。<br>
 	 *
-	 * @param visibleTime �A�j���[�V������1���̉摜�̕\�����Ԃ��`����^�C���J�E���^�ł��B<br>
-	 * @param images �\������摜��1�ȏ㑗�M���܂��B<br>
+	 * @param visibleTime アニメーションの1枚の画像の表示時間を定義するタイムカウンタです。<br>
+	 * @param images 表示する画像を1つ以上送信します。<br>
 	 */
 	public Animation(TimeCounter visibleTime, BufferedImage... images) {
 		this(visibleTime, new SimpleIndex(), images);
@@ -74,21 +74,21 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	}
 
 	/**
-	 * �V�����A�j���[�V�������\�z���܂�. ���̃R���X�g���N�^�ł́A�z��C���f�b�N�X�́{�����փ��[�v����V�[�P���V�����ȃ��f���ɂȂ�܂��B<br>
+	 * 新しいアニメーションを構築します. このコンストラクタでは、配列インデックスは＋方向へループするシーケンシャルなモデルになります。<br>
 	 *
-	 * @param visibleTime �A�j���[�V������1���̉摜�̕\�����Ԃ��`����^�C���J�E���^�ł��B<br>
-	 * @param images �\������摜��1�ȏ㑗�M���܂��B<br>
+	 * @param visibleTime アニメーションの1枚の画像の表示時間を定義するタイムカウンタです。<br>
+	 * @param images 表示する画像を1つ以上送信します。<br>
 	 */
 	public Animation(TimeCounter visibleTime, KImage... images) {
 		this(visibleTime, new SimpleIndex(), images);
 	}
 
 	/**
-	 * �V�����A�j���[�V�������\�z���܂�.
+	 * 新しいアニメーションを構築します.
 	 *
-	 * @param visibleTime �A�j���[�V������1���̉摜�̕\�����Ԃ��`����^�C���J�E���^�ł��B<br>
-	 * @param index �A�j���[�V�����̑J�ڏ������`����z��̃C���f�b�N�X�ł��B<br>
-	 * @param images �\������摜��1�ȏ㑗�M���܂��B<br>
+	 * @param visibleTime アニメーションの1枚の画像の表示時間を定義するタイムカウンタです。<br>
+	 * @param index アニメーションの遷移順序を定義する配列のインデックスです。<br>
+	 * @param images 表示する画像を1つ以上送信します。<br>
 	 */
 	public Animation(TimeCounter visibleTime, ArrayIndexModel index, BufferedImage... images) {
 		this.visibleTime = visibleTime;
@@ -100,11 +100,11 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	}
 
 	/**
-	 * �V�����A�j���[�V�������\�z���܂�.
+	 * 新しいアニメーションを構築します.
 	 *
-	 * @param visibleTime �A�j���[�V������1���̉摜�̕\�����Ԃ��`����^�C���J�E���^�ł��B<br>
-	 * @param index �A�j���[�V�����̑J�ڏ������`����z��̃C���f�b�N�X�ł��B<br>
-	 * @param images �\������摜��1�ȏ㑗�M���܂��B<br>
+	 * @param visibleTime アニメーションの1枚の画像の表示時間を定義するタイムカウンタです。<br>
+	 * @param index アニメーションの遷移順序を定義する配列のインデックスです。<br>
+	 * @param images 表示する画像を1つ以上送信します。<br>
 	 */
 	public Animation(TimeCounter visibleTime, ArrayIndexModel index, KImage... images) {
 		this.visibleTime = visibleTime;
@@ -113,23 +113,23 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	}
 
 	/**
-	 * ���̃A�j���[�V�����ɐݒ肳��Ă���摜���擾���܂�.
+	 * このアニメーションに設定されている画像を取得します.
 	 *
-	 * @return ���̃A�j���[�V�����̉摜�S�Ă��擾���܂��B���̔z��͖h��I�R�s�[����܂���B
-	 * �摜���ݒ肳��Ă��Ȃ��ꍇnull��Ԃ��܂��B<br>
+	 * @return このアニメーションの画像全てを取得します。この配列は防御的コピーされません。
+	 * 画像が設定されていない場合nullを返します。<br>
 	 */
 	public KImage[] getImages() {
 		return images;
 	}
 
 	/**
-	 * �w�肵���C���f�b�N�X�ʒu�̃A�j���[�V�����v�f���擾���܂�.
+	 * 指定したインデックス位置のアニメーション要素を取得します.
 	 *
-	 * @param index �C���f�b�N�X���w�肵�܂��B<br>
+	 * @param index インデックスを指定します。<br>
 	 *
-	 * @return �w�肵���C���f�b�N�X�ʒu�̃A�j���[�V�����v�f�ƂȂ�摜��Ԃ��܂��B �摜���ݒ肳��Ă��Ȃ��ꍇnull��Ԃ��܂��B<br>
+	 * @return 指定したインデックス位置のアニメーション要素となる画像を返します。 画像が設定されていない場合nullを返します。<br>
 	 *
-	 * @throws ArrayIndexOutOfBoundsException �s���ȃC���f�b�N�X�𑗐M�����ꍇ�ɓ������܂��B<br>
+	 * @throws ArrayIndexOutOfBoundsException 不正なインデックスを送信した場合に投げられます。<br>
 	 */
 	public KImage getImage(int index) throws ArrayIndexOutOfBoundsException {
 		if (images == null) {
@@ -139,18 +139,18 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	}
 
 	/**
-	 * ���̃A�j���[�V�����̉摜��ύX���܂�.
+	 * このアニメーションの画像を変更します.
 	 *
-	 * @param images �V�����摜�z��𑗐M���܂��B<br>
+	 * @param images 新しい画像配列を送信します。<br>
 	 */
 	public void setImages(KImage... images) {
 		this.images = images;
 	}
 
 	/**
-	 * ���̃A�j���[�V�����̉摜��ύX���܂�.
+	 * このアニメーションの画像を変更します.
 	 *
-	 * @param images �V�����摜�z��𑗐M���܂��B<br>
+	 * @param images 新しい画像配列を送信します。<br>
 	 */
 	public void setImages(BufferedImage... images) {
 		this.images = new KImage[images.length];
@@ -160,71 +160,71 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	}
 
 	/**
-	 * ���̃A�j���[�V�����̉摜��ύX���܂�.
+	 * このアニメーションの画像を変更します.
 	 *
-	 * @param index �A�j���[�V�����v�f��u��������ʒu�̃C���f�b�N�X���w�肵�܂��B<br>
-	 * @param image �V�����摜�𑗐M���܂��B<br>
+	 * @param index アニメーション要素を置き換える位置のインデックスを指定します。<br>
+	 * @param image 新しい画像を送信します。<br>
 	 *
-	 * @throws ArrayIndexOutOfBoundsException �s���ȃC���f�b�N�X�𑗐M�����ꍇ�ɓ������܂��B<br>
+	 * @throws ArrayIndexOutOfBoundsException 不正なインデックスを送信した場合に投げられます。<br>
 	 */
 	public void setImage(int index, BufferedImage image) throws ArrayIndexOutOfBoundsException {
 		setImage(index, new KImage(image));
 	}
 
 	/**
-	 * ���̃A�j���[�V�����̉摜��ύX���܂�.
+	 * このアニメーションの画像を変更します.
 	 *
-	 * @param index �A�j���[�V�����v�f��u��������ʒu�̃C���f�b�N�X���w�肵�܂��B<br>
-	 * @param image �V�����摜�𑗐M���܂��B<br>
+	 * @param index アニメーション要素を置き換える位置のインデックスを指定します。<br>
+	 * @param image 新しい画像を送信します。<br>
 	 *
-	 * @throws ArrayIndexOutOfBoundsException �s���ȃC���f�b�N�X�𑗐M�����ꍇ�ɓ������܂��B<br>
+	 * @throws ArrayIndexOutOfBoundsException 不正なインデックスを送信した場合に投げられます。<br>
 	 */
 	public void setImage(int index, KImage image) {
 		images[index] = image;
 	}
 
 	/**
-	 * �A�j���[�V�����̑J�ڏ�����ύX���܂�.
+	 * アニメーションの遷移順序を変更します.
 	 *
-	 * @param index �V�����J�ڃA���S���Y���𑗐M���܂��B<br>
+	 * @param index 新しい遷移アルゴリズムを送信します。<br>
 	 */
 	public void setIndex(ArrayIndexModel index) {
 		this.index = index;
 	}
 
 	/**
-	 * ���̃A�j���[�V�����ɐݒ肳��Ă���z��̃C���f�b�N�X���擾���܂�.
-	 * ���̃��\�b�h�́A�ݒ肳��Ă���C���f�b�N�X���f����ArrayIndexModel�Ƃ��ĕԂ��܂��B<br>
-	 * ���̃��\�b�h��p�ɂɎg���ꍇ�́A�L���X�g�����C���f�b�N�X��Ԃ���悤 �T�u�N���X���쐬���邱�Ƃ��ł��܂��B<br>
+	 * このアニメーションに設定されている配列のインデックスを取得します.
+	 * このメソッドは、設定されているインデックスモデルをArrayIndexModelとして返します。<br>
+	 * このメソッドを頻繁に使う場合は、キャストしたインデックスを返せるよう サブクラスを作成することができます。<br>
 	 *
-	 * @return ���̃A�j���[�V�����ɐݒ肳��Ă���C���f�b�N�X���f����Ԃ��܂��B<br>
+	 * @return このアニメーションに設定されているインデックスモデルを返します。<br>
 	 */
 	public ArrayIndexModel getIndex() {
 		return index;
 	}
 
 	/**
-	 * �A�j���[�V������1�̗v�f�̍Đ����Ԃ��w�肷�邽�߂̃^�C���J�E���^��ݒ肵�܂�.
+	 * アニメーションの1つの要素の再生時間を指定するためのタイムカウンタを設定します.
 	 *
-	 * @param visibleTime �V�����^�C���J�E���^�𑗐M���܂��B<br>
+	 * @param visibleTime 新しいタイムカウンタを送信します。<br>
 	 */
 	public void setVisibleTime(TimeCounter visibleTime) {
 		this.visibleTime = visibleTime;
 	}
 
 	/**
-	 * ���̃A�j���[�V�����ɐݒ肳��Ă���\�����ԃJ�E���^���擾���܂�.
-	 * ���̃��\�b�h�́A�ݒ肳��Ă���^�C���J�E���^��TimeCounter�Ƃ��ĕԂ��܂��B<br>
-	 * ���̃��\�b�h��p�ɂɎg���ꍇ�́A�L���X�g�����J�E���^��Ԃ���悤 �T�u�N���X���쐬���邱�Ƃ��ł��܂��B<br>
+	 * このアニメーションに設定されている表示時間カウンタを取得します.
+	 * このメソッドは、設定されているタイムカウンタをTimeCounterとして返します。<br>
+	 * このメソッドを頻繁に使う場合は、キャストしたカウンタを返せるよう サブクラスを作成することができます。<br>
 	 *
-	 * @return ���̃A�j���[�V�����ɐݒ肳��Ă���^�C���J�E���^��Ԃ��܂��B<br>
+	 * @return このアニメーションに設定されているタイムカウンタを返します。<br>
 	 */
 	public TimeCounter getVisibleTime() {
 		return visibleTime;
 	}
 
 	/**
-	 * �\�����Ԃ̔�����s���܂�. ���ݕ\�����̗v�f�̕\�����Ԃ��o�߂����ꍇ�ɂ́A �C���f�b�N�X���X�V���A�`�悷�ׂ��摜��ύX���܂��B<br>
+	 * 表示時間の判定を行います. 現在表示中の要素の表示時間が経過した場合には、 インデックスを更新し、描画すべき画像を変更します。<br>
 	 */
 	public void update() {
 		if (stop) {
@@ -264,27 +264,27 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	}
 
 	/**
-	 * ���̃A�j���[�V�����ŁA���ݕ\�����ׂ��摜��Ԃ��܂�.
+	 * このアニメーションで、現在表示すべき画像を返します.
 	 *
-	 * @return ���̃A�j���[�V�����Ō��ݕ\�������v�f��Ԃ��܂��B<br>
+	 * @return このアニメーションで現在表示される要素を返します。<br>
 	 */
 	public KImage getCurrentImage() {
 		return images == null ? null : images[index.getIndex()];
 	}
 
 	/**
-	 * ���̃A�j���[�V�����ŁA���ݕ\�����ׂ��摜��Ԃ��܂�.
+	 * このアニメーションで、現在表示すべき画像を返します.
 	 *
-	 * @return ���̃A�j���[�V�����Ō��ݕ\�������v�f��Ԃ��܂��B<br>
+	 * @return このアニメーションで現在表示される要素を返します。<br>
 	 */
 	public BufferedImage getCurrentBImage() {
 		return images == null ? null : images[index.getIndex()].get();
 	}
 
 	/**
-	 * �摜�z��̗v�f����Ԃ��܂�.
+	 * 画像配列の要素数を返します.
 	 *
-	 * @return �A�j���[�V�����Ƃ��čĐ������v�f�̐���Ԃ��܂��B<br>
+	 * @return アニメーションとして再生される要素の数を返します。<br>
 	 */
 	public int length() {
 		return images == null ? 0 : images.length;

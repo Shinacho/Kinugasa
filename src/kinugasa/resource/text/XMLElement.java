@@ -33,9 +33,9 @@ import kinugasa.game.system.GameSystem;
 import kinugasa.resource.Nameable;
 
 /**
- * "—v‘f"ƒNƒ‰ƒX‚ÍAXML‚Ì1‚Â‚ÌƒGƒŒƒƒ“ƒg‚É‘Î‰‚µ‚Ü‚·.
+ * "è¦ç´ "ã‚¯ãƒ©ã‚¹ã¯ã€XMLã®1ã¤ã®ã‚¨ãƒ¬ãƒ¡ãƒ³ãƒˆã«å¯¾å¿œã—ã¾ã™.
  * <br>
- * —v‘f‚Æ‚ÍŸ‚Ì‚æ‚¤‚È\¬‚Å‚·B<br>
+ * è¦ç´ ã¨ã¯æ¬¡ã®ã‚ˆã†ãªæ§‹æˆã§ã™ã€‚<br>
  * &lt;elementName attributeName=attributeValue&gt;<br>
  * &lt;contentElement&gt;<br>
  * &lt;/contentElement&gt;<br>
@@ -52,28 +52,28 @@ import kinugasa.resource.Nameable;
 public class XMLElement implements Nameable {
 
 	/**
-	 * ‚±‚Ì—v‘f‚Ì–¼‘O‚Å‚·.
+	 * ã“ã®è¦ç´ ã®åå‰ã§ã™.
 	 */
 	private String name;
 	/**
-	 * ‚±‚Ì—v‘f‚Ì“à•”‚Éİ’u‚³‚ê‚½—v‘f‚Ìƒ}ƒbƒv‚Å‚·,
+	 * ã“ã®è¦ç´ ã®å†…éƒ¨ã«è¨­ç½®ã•ã‚ŒãŸè¦ç´ ã®ãƒãƒƒãƒ—ã§ã™,
 	 */
 	private Map<String, List<XMLElement>> content;
 	/**
-	 * ‚±‚Ì—v‘f‚ª‚Â‘®«‚Å‚·.
+	 * ã“ã®è¦ç´ ãŒæŒã¤å±æ€§ã§ã™.
 	 */
 	private XMLAttributeStorage attributes;
 	/**
-	 * ‚±‚Ì—v‘f‚Ì“à•”‚É’¼Ú‘‚©‚ê‚½ƒeƒLƒXƒg‚Å‚·.
+	 * ã“ã®è¦ç´ ã®å†…éƒ¨ã«ç›´æ¥æ›¸ã‹ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã§ã™.
 	 */
 	private String value;
 
 	/**
-	 * q‚Ì—v‘f‚ğ‚½‚È‚¢—v‘f‚ğì¬‚µ‚Ü‚·.
+	 * å­ã®è¦ç´ ã‚’æŒãŸãªã„è¦ç´ ã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param name ‚±‚Ì—v‘f‚Ì–¼‘O‚Å‚·B<br>
-	 * @param attributes ‚±‚Ì—v‘f‚ª‚Â‘®«‚Å‚·B<br>
-	 * @param value ‚±‚Ì—v‘f‚ÌƒeƒLƒXƒg‚Å‚·B<br>
+	 * @param name ã“ã®è¦ç´ ã®åå‰ã§ã™ã€‚<br>
+	 * @param attributes ã“ã®è¦ç´ ãŒæŒã¤å±æ€§ã§ã™ã€‚<br>
+	 * @param value ã“ã®è¦ç´ ã®ãƒ†ã‚­ã‚¹ãƒˆã§ã™ã€‚<br>
 	 */
 	public XMLElement(String name, XMLAttributeStorage attributes, String value) {
 		this.name = name;
@@ -82,12 +82,12 @@ public class XMLElement implements Nameable {
 	}
 
 	/**
-	 * q—v‘f‚ğ‚Â—v‘f‚ğì¬‚µ‚Ü‚·.
+	 * å­è¦ç´ ã‚’æŒã¤è¦ç´ ã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param name ‚±‚Ì—v‘f‚Ì–¼‘O‚Å‚·B<br>
-	 * @param content ‚±‚ÌƒGƒŒƒƒ“ƒg‚ª‚Âq‚ÌƒGƒŒƒƒ“ƒg‚ğ‘—M‚µ‚Ü‚·B<br>
-	 * @param attributes ‚±‚Ì—v‘f‚ª‚Â‘®«‚Å‚·B<br>
-	 * @param value ‚±‚Ì—v‘f‚ÌƒeƒLƒXƒg‚Å‚·B<br>
+	 * @param name ã“ã®è¦ç´ ã®åå‰ã§ã™ã€‚<br>
+	 * @param content ã“ã®ã‚¨ãƒ¬ãƒ¡ãƒ³ãƒˆãŒæŒã¤å­ã®ã‚¨ãƒ¬ãƒ¡ãƒ³ãƒˆã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
+	 * @param attributes ã“ã®è¦ç´ ãŒæŒã¤å±æ€§ã§ã™ã€‚<br>
+	 * @param value ã“ã®è¦ç´ ã®ãƒ†ã‚­ã‚¹ãƒˆã§ã™ã€‚<br>
 	 */
 	public XMLElement(String name, Map<String, List<XMLElement>> content, XMLAttributeStorage attributes, String value) {
 		this.name = name;
@@ -97,27 +97,27 @@ public class XMLElement implements Nameable {
 	}
 
 	/**
-	 * ‚±‚Ì—v‘f‚ÌƒeƒLƒXƒg‚ğæ“¾‚µ‚Ü‚·.
+	 * ã“ã®è¦ç´ ã®ãƒ†ã‚­ã‚¹ãƒˆã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ‚±‚Ì—v‘f‚ª‚ÂƒeƒLƒXƒg‚ğ•Ô‚µ‚Ü‚·BƒeƒLƒXƒg‚ª‚È‚¢ê‡‚ÍANULL‚ª•Ô‚³‚ê‚Ü‚·B<br>
+	 * @return ã“ã®è¦ç´ ãŒæŒã¤ãƒ†ã‚­ã‚¹ãƒˆã‚’è¿”ã—ã¾ã™ã€‚ãƒ†ã‚­ã‚¹ãƒˆãŒãªã„å ´åˆã¯ã€NULLãŒè¿”ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * ‚±‚Ì—v‘f‚ªƒeƒLƒXƒg‚ğ‚Á‚Ä‚¢‚é‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * ã“ã®è¦ç´ ãŒãƒ†ã‚­ã‚¹ãƒˆã‚’æŒã£ã¦ã„ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @return ƒeƒLƒXƒg‚ğ‚Âê‡‚Ítrue‚ğ•Ô‚µ‚Ü‚·B‚±‚Ì–ß‚è’l‚ÍgetValue()!=null‚ğ‚Æ“¯‚¶‚Å‚·B<br>
+	 * @return ãƒ†ã‚­ã‚¹ãƒˆã‚’æŒã¤å ´åˆã¯trueã‚’è¿”ã—ã¾ã™ã€‚ã“ã®æˆ»ã‚Šå€¤ã¯getValue()!=nullã‚’ã¨åŒã˜ã§ã™ã€‚<br>
 	 */
 	public boolean hasValue() {
 		return value != null;
 	}
 
 	/**
-	 * ‚±‚Ì—v‘f‚Éİ’è‚³‚ê‚½‘®«‚ğæ“¾‚µ‚Ü‚·.
+	 * ã“ã®è¦ç´ ã«è¨­å®šã•ã‚ŒãŸå±æ€§ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ‘®«‚ğŠi”[‚µ‚½ƒXƒgƒŒ[ƒW‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return å±æ€§ã‚’æ ¼ç´ã—ãŸã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public XMLAttributeStorage getAttributes() {
 		return attributes;
@@ -128,19 +128,19 @@ public class XMLElement implements Nameable {
 	}
 
 	/**
-	 * ‚±‚Ì—v‘f‚ª‚Âq‚Ì—v‘f‚ğæ“¾‚µ‚Ü‚·.
+	 * ã“ã®è¦ç´ ãŒæŒã¤å­ã®è¦ç´ ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return q‚Ì—v‘f‚ğ•Ô‚µ‚Ü‚·Bq‚Ì—v‘f‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Ínull‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return å­ã®è¦ç´ ã‚’è¿”ã—ã¾ã™ã€‚å­ã®è¦ç´ ãŒè¨­å®šã•ã‚Œã¦ã„ãªã„å ´åˆã¯nullã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public Map<String, List<XMLElement>> getContent() {
 		return content;
 	}
 
 	/**
-	 * w’è‚µ‚½–¼‘O‚ğ‚Âq‚Ì—v‘f‚ğ•Ô‚µ‚Ü‚·.
+	 * æŒ‡å®šã—ãŸåå‰ã‚’æŒã¤å­ã®è¦ç´ ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param name —v‘f‚Ì–¼‘O‚ğw’è‚µ‚Ü‚·B<br>
-	 * @return w’è‚µ‚½–¼‘O‚Ì—v‘f‚ÌƒŠƒXƒg‚ğ•Ô‚µ‚Ü‚·B‘¶İ‚µ‚È‚¢–¼‘O‚ğw’è‚µ‚½ê‡‚Í null‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @param name è¦ç´ ã®åå‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @return æŒ‡å®šã—ãŸåå‰ã®è¦ç´ ã®ãƒªã‚¹ãƒˆã‚’è¿”ã—ã¾ã™ã€‚å­˜åœ¨ã—ãªã„åå‰ã‚’æŒ‡å®šã—ãŸå ´åˆã¯ nullã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public List<XMLElement> getElement(String name) {
 		if (content.get(name) == null) {
@@ -153,19 +153,19 @@ public class XMLElement implements Nameable {
 	}
 
 	/**
-	 * q‚Ì—v‘f‚ª‘¶İ‚·‚é‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * å­ã®è¦ç´ ãŒå­˜åœ¨ã™ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @param name —v‘f‚Ì–¼‘O.<br>
-	 * @return ‘¶İ‚·‚éê‡‚Ítrue‚ğ•Ô‚µ‚Ü‚·.<br>
+	 * @param name è¦ç´ ã®åå‰.<br>
+	 * @return å­˜åœ¨ã™ã‚‹å ´åˆã¯trueã‚’è¿”ã—ã¾ã™.<br>
 	 */
 	public boolean hasElement(String name) {
 		return content.containsKey(name);
 	}
 
 	/**
-	 * ‚±‚Ì—v‘f‚ğƒXƒgƒŠ[ƒ€‚Éo—Í‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ÍƒfƒoƒbƒO—p‚Å‚·B<br>
+	 * ã“ã®è¦ç´ ã‚’ã‚¹ãƒˆãƒªãƒ¼ãƒ ã«å‡ºåŠ›ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ãƒ‡ãƒãƒƒã‚°ç”¨ã§ã™ã€‚<br>
 	 *
-	 * @param stream o—Í‚·‚éƒXƒgƒŠ[ƒ€‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param stream å‡ºåŠ›ã™ã‚‹ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	public void printAll(PrintStream stream) {
 		stream.println(name + " " + attributes);

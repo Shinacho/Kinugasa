@@ -46,13 +46,13 @@ public class FieldMapResourceUtil {
 	/**
 	 * .
 	 * <br>
-	 * Type1‚©‚ÂAƒp[ƒc‚ª16bit‚Å‚ ‚é•K—v‚ª‚ ‚è‚Ü‚·B<br>
+	 * Type1ã‹ã¤ã€ãƒ‘ãƒ¼ãƒ„ãŒ16bitã§ã‚ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚<br>
 	 * <br>
 	 *
 	 * @param input
 	 * @param output
-	 * @param w ƒCƒ[ƒW‚Ìƒ^ƒCƒ‹”B
-	 * @param h ƒCƒ[ƒW‚Ìƒ^ƒCƒ‹”B
+	 * @param w ã‚¤ãƒ¡ãƒ¼ã‚¸ã®ã‚¿ã‚¤ãƒ«æ•°ã€‚
+	 * @param h ã‚¤ãƒ¡ãƒ¼ã‚¸ã®ã‚¿ã‚¤ãƒ«æ•°ã€‚
 	 * @throws ContentsIOException
 	 */
 	public static void platinumCsvType1ToKGCsv(File input, File output, int h, int w)
@@ -96,13 +96,13 @@ public class FieldMapResourceUtil {
 		}
 		reader.dispose();
 		writer.save();
-		kinugasa.game.GameLog.printInfo("•ÏŠ·‚Í³í‚ÉI—¹‚µ‚Ü‚µ‚½");
+		kinugasa.game.GameLog.printInfo("å¤‰æ›ã¯æ­£å¸¸ã«çµ‚äº†ã—ã¾ã—ãŸ");
 	}
 
 	/**
-	 * splitAsMapN(3Œ…)‚ÅØ‚èo‚¹‚é‰æ‘œ‚ÌID‚ÌƒZƒbƒg‚ğo—Í‚µ‚Ü‚·B ‚±‚ê‚Íƒ`ƒbƒvƒZƒbƒgXML‚ğ\’z‚·‚éÛ‚É—L—p‚Å‚·B<br>
+	 * splitAsMapN(3æ¡)ã§åˆ‡ã‚Šå‡ºã›ã‚‹ç”»åƒã®IDã®ã‚»ãƒƒãƒˆã‚’å‡ºåŠ›ã—ã¾ã™ã€‚ ã“ã‚Œã¯ãƒãƒƒãƒ—ã‚»ãƒƒãƒˆXMLã‚’æ§‹ç¯‰ã™ã‚‹éš›ã«æœ‰ç”¨ã§ã™ã€‚<br>
 	 *
-	 * @param filePath ƒ`ƒbƒvƒZƒbƒg‰æ‘œ‚ÌƒpƒX<br>
+	 * @param filePath ãƒãƒƒãƒ—ã‚»ãƒƒãƒˆç”»åƒã®ãƒ‘ã‚¹<br>
 	 */
 	public static void printImageId(String filePath, int w, int h) {
 		BufferedImage image = ImageUtil.load(filePath);

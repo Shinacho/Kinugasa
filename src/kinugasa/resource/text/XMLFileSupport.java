@@ -26,10 +26,10 @@ package kinugasa.resource.text;
 import kinugasa.resource.FileNotFoundException;
 
 /**
- * ���̃C���^�[�t�F�[�X�����������N���X�́A
- * XML�t�@�C������f�[�^�����[�h�ł��܂�.
+ * このインターフェースを実装したクラスは、
+ * XMLファイルからデータをロードできます.
  * <br>
- * �K�v�ł���΁AFreeable���������Ă��������B<br>
+ * 必要であれば、Freeableを実装してください。<br>
  * <br>
  * @version 1.0.0 - 2013/04/28_22:06:10<br>
  * @author Shinacho<br>
@@ -37,12 +37,12 @@ import kinugasa.resource.FileNotFoundException;
 public interface XMLFileSupport {
 
 	/**
-	 * �R���e���c��XML���烍�[�h���܂�.
-	 * �قƂ�ǂ̎����ł́A�X�g���[�W�ɑ΂���f�[�^�̒ǉ����s���܂��B<br>
-	 * @param filePath ���[�h����XML�t�@�C���̃p�X���w�肵�܂��B<br>
-	 * @throws IllegalXMLFormatException XML�t�H�[�}�b�g��DTD�ɓK�����Ȃ��ꍇ�Ȃǂɓ����邱�Ƃ��ł��܂��B<br>
-	 * @throws FileNotFoundException �w�肳�ꂽ�t�@�C�������݂��Ȃ��ꍇ�ɓ������܂��B<br>
-	 * @throws FileIOException �w�肳�ꂽ�t�@�C�������[�h�ł��Ȃ��ꍇ�ɓ������܂��B<br>
+	 * コンテンツをXMLからロードします.
+	 * ほとんどの実装では、ストレージに対するデータの追加を行います。<br>
+	 * @param filePath ロードするXMLファイルのパスを指定します。<br>
+	 * @throws IllegalXMLFormatException XMLフォーマットがDTDに適合しない場合などに投げることができます。<br>
+	 * @throws FileNotFoundException 指定されたファイルが存在しない場合に投げられます。<br>
+	 * @throws FileIOException 指定されたファイルがロードできない場合に投げられます。<br>
 	 */
 	public void readFromXML(String filePath)
 			throws IllegalXMLFormatException, FileNotFoundException,

@@ -28,7 +28,7 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.object.BasicSprite;
 
 /**
- * 1sƒeƒLƒXƒg•\¦—p‚ÌƒXƒvƒ‰ƒCƒg‚Å‚·.
+ * 1è¡Œãƒ†ã‚­ã‚¹ãƒˆè¡¨ç¤ºç”¨ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã§ã™.
  * <br>
  *
  * @version 1.0.0 - 2015/03/24<br>

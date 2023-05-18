@@ -114,7 +114,7 @@ public class BattleFieldSystem implements XMLFileSupport {
 		} else {
 			currentChipAttr = defaultChipAttr;
 		}
-		//áŠQ•¨‚Ìİ’è
+		//éšœå®³ç‰©ã®è¨­å®š
 		obstacle.clear();
 		int max = obstacleMax.containsKey(attr) ? obstacleMax.get(attr) : 0;
 		if (max <= 0) {
@@ -123,7 +123,7 @@ public class BattleFieldSystem implements XMLFileSupport {
 		max = Random.randomAbsInt(max);
 		String[] name = obstacleName.get(attr);
 		obstacle.addAll(BattleFieldObstacleStorage.getInstance().createN(max, name));
-		//áŠQ•¨‚Ì”z’uAáŠQ•¨“¯m‚ªd‚È‚ç‚È‚¢‚æ‚¤‚É‚·‚é
+		//éšœå®³ç‰©ã®é…ç½®ã€éšœå®³ç‰©åŒå£«ãŒé‡ãªã‚‰ãªã„ã‚ˆã†ã«ã™ã‚‹
 		List<Sprite> checkList = new ArrayList<>();
 		for (Sprite s : obstacle) {
 			float w = s.getWidth();
@@ -251,49 +251,49 @@ public class BattleFieldSystem implements XMLFileSupport {
 		return battleAreaAndNoPartyArea;
 	}
 
-	// ‚·‚×‚Ä‚Ìó‘ÔˆÙí‚ğæ‚èœ‚«‚Ü‚·
+	// ã™ã¹ã¦ã®çŠ¶æ…‹ç•°å¸¸ã‚’å–ã‚Šé™¤ãã¾ã™
 	public void clearCondition() {
 		condition.clear();
 		conditionTimes.clear();
 	}
 
-	//ó‘ÔˆÙí‚ğ’Ç‰Á‚µ‚Ü‚·
+	//çŠ¶æ…‹ç•°å¸¸ã‚’è¿½åŠ ã—ã¾ã™
 	public void addCondition(ConditionKey k) {
 		addCondition(k.getName());
 	}
 
-	//ó‘ÔˆÙí‚ğ’Ç‰Á‚µ‚Ü‚·
+	//çŠ¶æ…‹ç•°å¸¸ã‚’è¿½åŠ ã—ã¾ã™
 	public void addCondition(String name) {
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
-		// ‚·‚Å‚É”­¶‚µ‚Ä‚¢‚éŒø‰Ê‚Ìê‡A‰½‚à‚µ‚È‚¢
+		// ã™ã§ã«ç™ºç”Ÿã—ã¦ã„ã‚‹åŠ¹æœã®å ´åˆã€ä½•ã‚‚ã—ãªã„
 		if (condition.contains(name)) {
-			assert conditionTimes.containsKey(v.getKey()) : "condition‚ÆeffectTimes‚Ì“¯Šú‚ªæ‚ê‚Ä‚¢‚Ü‚¹‚ñ";
+			assert conditionTimes.containsKey(v.getKey()) : "conditionã¨effectTimesã®åŒæœŸãŒå–ã‚Œã¦ã„ã¾ã›ã‚“";
 			return;
 		}
-		//—Dæ“xŒvZ
-		//—Dæ“x‚ª“¯ˆê‚Ìó‘ÔˆÙí‚ª‚ ‚éê‡AŒãŸ‚¿‚Åíœ
+		//å„ªå…ˆåº¦è¨ˆç®—
+		//å„ªå…ˆåº¦ãŒåŒä¸€ã®çŠ¶æ…‹ç•°å¸¸ãŒã‚ã‚‹å ´åˆã€å¾Œå‹ã¡ã§å‰Šé™¤
 		int pri = v.getKey().getPriority();
 		if (!condition.asList().stream().filter(s -> s.getKey().getPriority() == pri).collect(Collectors.toList()).isEmpty()) {
 			condition.remove(name);
 			conditionTimes.remove(new ConditionKey(name, "", 0));
 		}
 		List<EffectMaster> effects = v.getEffects();
-		//ƒ^ƒCƒ€Zo
+		//ã‚¿ã‚¤ãƒ ç®—å‡º
 		List<EffectMaster> continueEffect = effects.stream().filter(a -> a.getContinueType() == EffectContinueType.CONTINUE).collect(Collectors.toList());
 		TimeCounter tc = continueEffect.isEmpty() ? TimeCounter.oneCounter() : continueEffect.get(0).createTimeCounter();
-		//”­¶’†‚ÌŒø‰Ê‚ÆƒGƒtƒFƒNƒgŒø‰ÊŠÔ‚É’Ç‰Á
+		//ç™ºç”Ÿä¸­ã®åŠ¹æœã¨ã‚¨ãƒ•ã‚§ã‚¯ãƒˆåŠ¹æœæ™‚é–“ã«è¿½åŠ 
 		condition.add(v);
 		conditionTimes.put(v.getKey(), tc);
 	}
 
-	// ó‘ÔˆÙí‚ğ‹­§“I‚Éæ‚èœ‚«‚Ü‚·
+	// çŠ¶æ…‹ç•°å¸¸ã‚’å¼·åˆ¶çš„ã«å–ã‚Šé™¤ãã¾ã™
 	public void removeCondition(String name) {
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
 		condition.remove(v);
 		conditionTimes.remove(v.getKey());
 	}
 
-	// ó‘ÔˆÙí‚ÌŒø‰ÊŠÔ‚ğã‘‚«‚µ‚Ü‚·Bó‘ÔˆÙí‚ª•t—^‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍƒZƒbƒg‚µ‚Ü‚·B
+	// çŠ¶æ…‹ç•°å¸¸ã®åŠ¹æœæ™‚é–“ã‚’ä¸Šæ›¸ãã—ã¾ã™ã€‚çŠ¶æ…‹ç•°å¸¸ãŒä»˜ä¸ã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
 	public void setConditionTime(String name, int time) {
 		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
@@ -304,7 +304,7 @@ public class BattleFieldSystem implements XMLFileSupport {
 		conditionTimes.put(key, new FrameTimeCounter(time));
 	}
 
-	// ó‘ÔˆÙí‚ÌŒø‰ÊŠÔ‚ğ’Ç‰Á‚µ‚Ü‚·Bó‘ÔˆÙí‚ª•t—^‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍƒZƒbƒg‚µ‚Ü‚·B
+	// çŠ¶æ…‹ç•°å¸¸ã®åŠ¹æœæ™‚é–“ã‚’è¿½åŠ ã—ã¾ã™ã€‚çŠ¶æ…‹ç•°å¸¸ãŒä»˜ä¸ã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
 	public void addConditionTime(String name, int time) {
 		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
@@ -316,9 +316,9 @@ public class BattleFieldSystem implements XMLFileSupport {
 		conditionTimes.put(key, new FrameTimeCounter(time));
 	}
 
-	// ƒRƒ“ƒfƒBƒVƒ‡ƒ“‚É‚æ‚éƒRƒ“ƒfƒBƒVƒ‡ƒ“”­¶‚ğİ’è‚·‚é
-	//P‚Ì”»’è‚ğs‚Á‚Ä‚¢‚é‚Ì‚ÅA–ˆ‰ñˆá‚¤Œ‹‰Ê‚É‚È‚é‰Â”\«‚ª‚ ‚éB
-	// ‚·‚Å‚É”­¶‚µ‚Ä‚¢‚éó‘ÔˆÙí‚Í•t—^‚µ‚È‚¢BŒø‰ÊŠÔ‚ÌƒŠƒZƒbƒg‚Í•Ê“rì¬‚·‚é‚±‚Æ
+	// ã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ã«ã‚ˆã‚‹ã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ç™ºç”Ÿã‚’è¨­å®šã™ã‚‹
+	//Pã®åˆ¤å®šã‚’è¡Œã£ã¦ã„ã‚‹ã®ã§ã€æ¯å›é•ã†çµæœã«ãªã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã€‚
+	// ã™ã§ã«ç™ºç”Ÿã—ã¦ã„ã‚‹çŠ¶æ…‹ç•°å¸¸ã¯ä»˜ä¸ã—ãªã„ã€‚åŠ¹æœæ™‚é–“ã®ãƒªã‚»ãƒƒãƒˆã¯åˆ¥é€”ä½œæˆã™ã‚‹ã“ã¨
 	public void updateCondition() {
 		List<ConditionValue> addList = new ArrayList<>();
 		for (ConditionValue v : condition) {
@@ -353,10 +353,10 @@ public class BattleFieldSystem implements XMLFileSupport {
 
 	}
 
-	// ”­¶’†‚ÌŒø‰Ê‚ÉŠî‚Ã‚¢‚ÄA‚±‚Ìƒ^[ƒ“s“®‚Å‚«‚é‚©‚ğ”»’è‚µ‚Ü‚·
+	// ç™ºç”Ÿä¸­ã®åŠ¹æœã«åŸºã¥ã„ã¦ã€ã“ã®ã‚¿ãƒ¼ãƒ³è¡Œå‹•ã§ãã‚‹ã‹ã‚’åˆ¤å®šã—ã¾ã™
 	public boolean canMoveThisTurn() {
 		if (condition.isEmpty()) {
-			assert conditionTimes.isEmpty() : "condition‚ÆeffectTimes‚Ì“¯Šú‚ªæ‚ê‚Ä‚¢‚Ü‚¹‚ñ";
+			assert conditionTimes.isEmpty() : "conditionã¨effectTimesã®åŒæœŸãŒå–ã‚Œã¦ã„ã¾ã›ã‚“";
 			return true;
 		}
 		for (ConditionValue v : condition) {
@@ -400,7 +400,7 @@ public class BattleFieldSystem implements XMLFileSupport {
 		}
 		XMLElement root = file.load().getFirst();
 
-		//áŠQ•¨‚Ìƒp[ƒX
+		//éšœå®³ç‰©ã®ãƒ‘ãƒ¼ã‚¹
 		for (XMLElement e : root.getElement("obstacle")) {
 			String name = e.getAttributes().get("name").getValue();
 			BufferedImage image = ImageUtil.load(e.getAttributes().get("image").getValue());
@@ -411,7 +411,7 @@ public class BattleFieldSystem implements XMLFileSupport {
 			BattleFieldObstacleStorage.getInstance().add(new BattleFieldObstacle(name, w, h, image));
 		}
 
-		//ƒoƒgƒ‹ƒtƒB[ƒ‹ƒh’è‹`‚Ìƒp[ƒX
+		//ãƒãƒˆãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰å®šç¾©ã®ãƒ‘ãƒ¼ã‚¹
 		for (XMLElement e : root.getElement("bf")) {
 			String chipName = e.getAttributes().get("chipAttrName").getValue();
 			var c = MapChipAttributeStorage.getInstance().get(chipName);
@@ -426,7 +426,7 @@ public class BattleFieldSystem implements XMLFileSupport {
 			getInstance().obstacleMax.put(c, obMax);
 			getInstance().obstacleName.put(c, obName);
 		}
-		//TODO:ƒtƒB[ƒ‹ƒhƒRƒ“ƒfƒBƒVƒ‡ƒ“‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚Ìƒp[ƒX‚±‚±
+		//TODO:ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ‘ãƒ¼ã‚¹ã“ã“
 
 		file.dispose();
 	}

@@ -29,13 +29,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * —”‚Æƒ_ƒCƒX‚ÌƒGƒ~ƒ…ƒŒ[ƒg‚ğ’ñ‹Ÿ‚µ‚Ü‚·.
+ * ä¹±æ•°ã¨ãƒ€ã‚¤ã‚¹ã®ã‚¨ãƒŸãƒ¥ãƒ¬ãƒ¼ãƒˆã‚’æä¾›ã—ã¾ã™.
  * <br>
- * —”ƒWƒFƒlƒŒ[ƒ^‚ğ—˜—p‚·‚é•û–@‚Í2‚Â‚ ‚è‚Ü‚·B<br>
- * 1‚Â‚ÍAƒV[ƒh‚ğw’è‚µ‚Ä‚©‚çA—”¶¬‹@”\‚ğg—p‚·‚é•û–@‚Å‚·B<br>
- * ƒV[ƒh‚ÍƒŠƒvƒŒƒC‚Ì•Û‘¶‚È‚Ç‚Ég—p‚·‚é‚½‚ßA‚»‚Ì‚æ‚¤‚ÈƒQ[ƒ€ƒfƒUƒCƒ“‚Ìê‡‚É‚ÍA “KØ‚Èƒ^ƒCƒ~ƒ“ƒO‚ÅƒV[ƒh‚ğ‰Šú‰»‚µ‚½‚èæ“¾‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B<br>
- * 2‚Â‚ß‚Ì•û–@‚ÍAƒV[ƒh‚ğw’è‚µ‚È‚¢‚Å—”¶¬‹@”\‚ğg—p‚·‚é‚±‚Æ‚Å‚·B<br>
- * ‚±‚Ìê‡‚É‚ÍAÅ‰‚É—”¶¬‹@”\(ƒV[ƒh‚Ìæ“¾(getSeed)‚ğŠÜ‚Ş)‚ğg—p‚µ‚½“_‚ÅA“K“–‚ÈƒV[ƒh‚ª“K—p‚³‚ê‚Ü‚·B<br>
+ * ä¹±æ•°ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ã‚’åˆ©ç”¨ã™ã‚‹æ–¹æ³•ã¯2ã¤ã‚ã‚Šã¾ã™ã€‚<br>
+ * 1ã¤ã¯ã€ã‚·ãƒ¼ãƒ‰ã‚’æŒ‡å®šã—ã¦ã‹ã‚‰ã€ä¹±æ•°ç”Ÿæˆæ©Ÿèƒ½ã‚’ä½¿ç”¨ã™ã‚‹æ–¹æ³•ã§ã™ã€‚<br>
+ * ã‚·ãƒ¼ãƒ‰ã¯ãƒªãƒ—ãƒ¬ã‚¤ã®ä¿å­˜ãªã©ã«ä½¿ç”¨ã™ã‚‹ãŸã‚ã€ãã®ã‚ˆã†ãªã‚²ãƒ¼ãƒ ãƒ‡ã‚¶ã‚¤ãƒ³ã®å ´åˆã«ã¯ã€ é©åˆ‡ãªã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ã‚·ãƒ¼ãƒ‰ã‚’åˆæœŸåŒ–ã—ãŸã‚Šå–å¾—ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚<br>
+ * 2ã¤ã‚ã®æ–¹æ³•ã¯ã€ã‚·ãƒ¼ãƒ‰ã‚’æŒ‡å®šã—ãªã„ã§ä¹±æ•°ç”Ÿæˆæ©Ÿèƒ½ã‚’ä½¿ç”¨ã™ã‚‹ã“ã¨ã§ã™ã€‚<br>
+ * ã“ã®å ´åˆã«ã¯ã€æœ€åˆã«ä¹±æ•°ç”Ÿæˆæ©Ÿèƒ½(ã‚·ãƒ¼ãƒ‰ã®å–å¾—(getSeed)ã‚’å«ã‚€)ã‚’ä½¿ç”¨ã—ãŸæ™‚ç‚¹ã§ã€é©å½“ãªã‚·ãƒ¼ãƒ‰ãŒé©ç”¨ã•ã‚Œã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/11_17:26:09<br>
@@ -46,34 +46,34 @@ public final class Random implements Serializable {
 	private static final long serialVersionUID = 4919268115768305696L;
 
 	/**
-	 * ƒCƒ“ƒXƒ^ƒ“ƒX‰»‚Å‚«‚Ü‚¹‚ñ.
+	 * ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã§ãã¾ã›ã‚“.
 	 */
 	private Random() {
 	}
 	/**
-	 * Œ»İg—p’†‚ÌƒV[ƒh‚Å‚·.
+	 * ç¾åœ¨ä½¿ç”¨ä¸­ã®ã‚·ãƒ¼ãƒ‰ã§ã™.
 	 */
 	private static long seed;
 	/**
-	 * —”ƒWƒFƒlƒŒ[ƒ^‚Å‚·.
+	 * ä¹±æ•°ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ã§ã™.
 	 */
 	private static java.util.Random random;
 
 	/**
-	 * ƒV[ƒh‚ğ“K“–‚È”’l‚Å‰Šú‰»‚µ‚Ü‚·.
+	 * ã‚·ãƒ¼ãƒ‰ã‚’é©å½“ãªæ•°å€¤ã§åˆæœŸåŒ–ã—ã¾ã™.
 	 *
-	 * @return “K—p‚³‚ê‚½ƒV[ƒh‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return é©ç”¨ã•ã‚ŒãŸã‚·ãƒ¼ãƒ‰ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static long initSeed() {
 		return initSeed(System.nanoTime());
 	}
 
 	/**
-	 * w’è‚³‚ê‚½ƒV[ƒh‚ğg—p‚µ‚ÄƒWƒFƒlƒŒ[ƒ^‚ğ‰Šú‰»‚µ‚Ü‚·.
+	 * æŒ‡å®šã•ã‚ŒãŸã‚·ãƒ¼ãƒ‰ã‚’ä½¿ç”¨ã—ã¦ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ã‚’åˆæœŸåŒ–ã—ã¾ã™.
 	 *
-	 * @param seed İ’è‚·‚éƒV[ƒh‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param seed è¨­å®šã™ã‚‹ã‚·ãƒ¼ãƒ‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return “K—p‚³‚ê‚½ƒV[ƒh‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return é©ç”¨ã•ã‚ŒãŸã‚·ãƒ¼ãƒ‰ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static long initSeed(long seed) {
 		random = new java.util.Random(Random.seed = seed);
@@ -81,11 +81,11 @@ public final class Random implements Serializable {
 	}
 
 	/**
-	 * g—p’†‚ÌƒV[ƒh‚ğ•Ô‚µ‚Ü‚·.
+	 * ä½¿ç”¨ä¸­ã®ã‚·ãƒ¼ãƒ‰ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * ƒWƒFƒlƒŒ[ƒ^‚ª‰Šú‰»‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍA“K“–‚ÈƒV[ƒh‚ğg—p‚µ‚Ä‰Šú‰»‚³‚ê‚Ü‚·B<br>
+	 * ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãŒåˆæœŸåŒ–ã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã€é©å½“ãªã‚·ãƒ¼ãƒ‰ã‚’ä½¿ç”¨ã—ã¦åˆæœŸåŒ–ã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @return g—p’†‚ÌƒV[ƒh‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ä½¿ç”¨ä¸­ã®ã‚·ãƒ¼ãƒ‰ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static long getSeed() {
 		if (random == null) {
@@ -95,11 +95,11 @@ public final class Random implements Serializable {
 	}
 
 	/**
-	 * 0‚©‚ç1‚Ü‚Å‚Ìƒ‰ƒ“ƒ_ƒ€‚Èfloat’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 0ã‹ã‚‰1ã¾ã§ã®ãƒ©ãƒ³ãƒ€ãƒ ãªfloatå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * Œ‹‰Ê‚É‚ÍA0‚ÍŠÜ‚Ü‚ê‚Ü‚·‚ªA1‚ÍŠÜ‚Ü‚ê‚Ü‚¹‚ñB<br>
+	 * çµæœã«ã¯ã€0ã¯å«ã¾ã‚Œã¾ã™ãŒã€1ã¯å«ã¾ã‚Œã¾ã›ã‚“ã€‚<br>
 	 *
-	 * @return 0‚©‚ç1‚Ü‚Å‚Ìƒ‰ƒ“ƒ_ƒ€‚Èfloat‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return 0ã‹ã‚‰1ã¾ã§ã®ãƒ©ãƒ³ãƒ€ãƒ ãªfloatã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static float randomFloat() {
 		if (random == null) {
@@ -109,13 +109,13 @@ public final class Random implements Serializable {
 	}
 
 	/**
-	 * 0‚©‚çmaxValue‚Ü‚Å‚Ìƒ‰ƒ“ƒ_ƒ€‚Èfloat’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 0ã‹ã‚‰maxValueã¾ã§ã®ãƒ©ãƒ³ãƒ€ãƒ ãªfloatå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * Œ‹‰Ê‚É‚ÍA0‚ÍŠÜ‚Ü‚ê‚Ü‚·‚ªAmaxValue‚ÍŠÜ‚Ü‚ê‚Ü‚¹‚ñB<br>
+	 * çµæœã«ã¯ã€0ã¯å«ã¾ã‚Œã¾ã™ãŒã€maxValueã¯å«ã¾ã‚Œã¾ã›ã‚“ã€‚<br>
 	 *
-	 * @param maxValue —”‚ÌÅ‘å’l‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param maxValue ä¹±æ•°ã®æœ€å¤§å€¤ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return 0‚©‚çmaxValue‚Ü‚Å‚Ìƒ‰ƒ“ƒ_ƒ€‚Èfloat‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return 0ã‹ã‚‰maxValueã¾ã§ã®ãƒ©ãƒ³ãƒ€ãƒ ãªfloatã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static float randomFloat(float maxValue) {
 		if (random == null) {
@@ -125,9 +125,9 @@ public final class Random implements Serializable {
 	}
 
 	/**
-	 * ƒ‰ƒ“ƒ_ƒ€‚Èint’l‚ğ•Ô‚µ‚Ü‚·B
+	 * ãƒ©ãƒ³ãƒ€ãƒ ãªintå€¤ã‚’è¿”ã—ã¾ã™ã€‚
 	 *
-	 * @return Int‚Ì‘S‚Ä‚Ì”ÍˆÍ‚Ìƒ‰ƒ“ƒ_ƒ€‚È’l‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return Intã®å…¨ã¦ã®ç¯„å›²ã®ãƒ©ãƒ³ãƒ€ãƒ ãªå€¤ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int randomInt() {
 		if (random == null) {
@@ -137,13 +137,13 @@ public final class Random implements Serializable {
 	}
 
 	/**
-	 * 0‚©‚çmaxValue‚Ü‚Å‚Ìƒ‰ƒ“ƒ_ƒ€‚Èint’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 0ã‹ã‚‰maxValueã¾ã§ã®ãƒ©ãƒ³ãƒ€ãƒ ãªintå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * Œ‹‰Ê‚É‚ÍA0‚ÍŠÜ‚Ü‚ê‚Ü‚·‚ªAmaxValue‚ÍŠÜ‚Ü‚ê‚Ü‚¹‚ñB<br>
+	 * çµæœã«ã¯ã€0ã¯å«ã¾ã‚Œã¾ã™ãŒã€maxValueã¯å«ã¾ã‚Œã¾ã›ã‚“ã€‚<br>
 	 *
-	 * @param maxValue —”‚ÌÅ‘å’l‚ğw’è‚µ‚Ü‚·B0ˆÈ‰º‚Ìê‡‚É‚Í0‚ÉØ‚è‹l‚ß‚ç‚ê‚Ü‚·B<br>
+	 * @param maxValue ä¹±æ•°ã®æœ€å¤§å€¤ã‚’æŒ‡å®šã—ã¾ã™ã€‚0ä»¥ä¸‹ã®å ´åˆã«ã¯0ã«åˆ‡ã‚Šè©°ã‚ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @return 0‚©‚çmaxValue‚Ü‚Å‚Ìƒ‰ƒ“ƒ_ƒ€‚Èint‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return 0ã‹ã‚‰maxValueã¾ã§ã®ãƒ©ãƒ³ãƒ€ãƒ ãªintã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int randomAbsInt(int maxValue) {
 		if (random == null) {
@@ -153,29 +153,29 @@ public final class Random implements Serializable {
 	}
 
 	/**
-	 * ƒ‰ƒ“ƒ_ƒ€‚È®”‚Ìint’l‚ğ•Ô‚µ‚Ü‚·.
+	 * ãƒ©ãƒ³ãƒ€ãƒ ãªæ•´æ•°ã®intå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @return ®”‚ÌInt‚Ìƒ‰ƒ“ƒ_ƒ€‚È’l‚ğ•Ô‚µ‚Ü‚·B0‚ğŠÜ‚İ‚Ü‚·B<br>
+	 * @return æ•´æ•°ã®Intã®ãƒ©ãƒ³ãƒ€ãƒ ãªå€¤ã‚’è¿”ã—ã¾ã™ã€‚0ã‚’å«ã¿ã¾ã™ã€‚<br>
 	 */
 	public static int randomAbsInt() {
 		return Math.abs(randomInt());
 	}
 
 	/**
-	 * FROM‚©‚çTO‚Ü‚Å‚Ìƒ‰ƒ“ƒ_ƒ€‚Èint‚ğ•Ô‚µ‚Ü‚·.
+	 * FROMã‹ã‚‰TOã¾ã§ã®ãƒ©ãƒ³ãƒ€ãƒ ãªintã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param from ŠJn”’l.
-	 * @param to I—¹”’l.
-	 * @return FROM?TO‚Ü‚Å‚Ìƒ‰ƒ“ƒ_ƒ€‚È’lBTO‚ÍŠÜ‚Ü‚È‚¢B
+	 * @param from é–‹å§‹æ•°å€¤.
+	 * @param to çµ‚äº†æ•°å€¤.
+	 * @return FROM?TOã¾ã§ã®ãƒ©ãƒ³ãƒ€ãƒ ãªå€¤ã€‚TOã¯å«ã¾ãªã„ã€‚
 	 */
 	public static int randomAbsInt(int from, int to) {
 		return from + randomAbsInt(to - from);
 	}
 
 	/**
-	 * ƒ‰ƒ“ƒ_ƒ€‚Èboolean‚ğ•Ô‚µ‚Ü‚·.
+	 * ãƒ©ãƒ³ãƒ€ãƒ ãªbooleanã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @return true–”‚Ífalse‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return trueåˆã¯falseã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static boolean randomBool() {
 		if (random == null) {
@@ -185,11 +185,11 @@ public final class Random implements Serializable {
 	}
 
 	/**
-	 * Šm—¦p‚ğ”»’è‚µ‚Ü‚·.
+	 * ç¢ºç‡pã‚’åˆ¤å®šã—ã¾ã™.
 	 *
-	 * @param p ”­¶‚·‚éŠm—¦‚ğ0‚©‚ç1‚Ìfloat‚Æ‚µ‚Äw’è‚µ‚Ü‚·B<br>
+	 * @param p ç™ºç”Ÿã™ã‚‹ç¢ºç‡ã‚’0ã‹ã‚‰1ã®floatã¨ã—ã¦æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return p*100(%)‚ÌŠm—¦‚Åtrue‚ğ•Ô‚µ‚Ü‚·B ‚½‚¾‚µp‚ª0ˆÈ‰º‚Ìê‡‚ÍfalseAp‚ª1ˆÈã‚Ìê‡‚Ítrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return p*100(%)ã®ç¢ºç‡ã§trueã‚’è¿”ã—ã¾ã™ã€‚ ãŸã ã—pãŒ0ä»¥ä¸‹ã®å ´åˆã¯falseã€pãŒ1ä»¥ä¸Šã®å ´åˆã¯trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static boolean percent(float p) {
 		if (p <= 0f) {
@@ -201,7 +201,7 @@ public final class Random implements Serializable {
 		return randomFloat() < p;
 	}
 
-	// spread%ã‰º‚µ‚½’l‚ğ•Ô‚µ‚Ü‚·B
+	// spread%ä¸Šä¸‹ã—ãŸå€¤ã‚’è¿”ã—ã¾ã™ã€‚
 	public static float percent(float num, float spread) {
 		if (spread >= 1) {
 			return num * spread;
@@ -238,133 +238,133 @@ public final class Random implements Serializable {
 	}
 
 	/**
-	 * ƒŒƒKƒV[‚Èƒ_ƒCƒXƒ[ƒ‹‚ğƒGƒ~ƒ…ƒŒ[ƒg‚·‚éƒƒ\ƒbƒh‚Å‚·.
+	 * ãƒ¬ã‚¬ã‚·ãƒ¼ãªãƒ€ã‚¤ã‚¹ãƒ­ãƒ¼ãƒ«ã‚’ã‚¨ãƒŸãƒ¥ãƒ¬ãƒ¼ãƒˆã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ã§ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B‚±‚Ìˆø”‚ª0‚Ìê‡A0‚ğ•Ô‚µ‚Ü‚·B<br>
-	 * @param sided ƒ_ƒCƒX‚Ì–Ê”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚ã“ã®å¼•æ•°ãŒ0ã®å ´åˆã€0ã‚’è¿”ã—ã¾ã™ã€‚<br>
+	 * @param sided ãƒ€ã‚¤ã‚¹ã®é¢æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D sided] ‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D sided] ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int dice(int num, int sided) {
 		return randomAbsInt(sided * num - num + 1) + (num);
 	}
 
 	/**
-	 * 3–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 3é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 3]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 3]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d3(int num) {
 		return dice(num, 3);
 	}
 
 	/**
-	 * 4–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 4é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 4]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 4]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d4(int num) {
 		return dice(num, 4);
 	}
 
 	/**
-	 * 6–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 6é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 6]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 6]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d6(int num) {
 		return dice(num, 6);
 	}
 
 	/**
-	 * 8–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 8é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 8]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 8]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d8(int num) {
 		return dice(num, 8);
 	}
 
 	/**
-	 * 10–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 10é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 10]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 10]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d10(int num) {
 		return dice(num, 10);
 	}
 
 	/**
-	 * 12–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 12é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 12]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 12]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d12(int num) {
 		return dice(num, 12);
 	}
 
 	/**
-	 * 20–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 20é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 20]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 20]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d20(int num) {
 		return dice(num, 20);
 	}
 
 	/**
-	 * 24–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 24é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 24]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 24]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d24(int num) {
 		return dice(num, 24);
 	}
 
 	/**
-	 * 30–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 30é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 30]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 30]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d30(int num) {
 		return dice(num, 30);
 	}
 
 	/**
-	 * 50–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 50é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 50]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 50]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d50(int num) {
 		return dice(num, 50);
 	}
 
 	/**
-	 * 100–Êƒ_ƒCƒX‚ğnum‰ñU‚Á‚½‡Œv’l‚ğ•Ô‚µ‚Ü‚·.
+	 * 100é¢ãƒ€ã‚¤ã‚¹ã‚’numå›æŒ¯ã£ãŸåˆè¨ˆå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param num ƒ_ƒCƒX‚ğU‚é‰ñ”‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param num ãƒ€ã‚¤ã‚¹ã‚’æŒ¯ã‚‹å›æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @return [num D 100]‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return [num D 100]ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static int d100(int num) {
 		return dice(num, 100);

@@ -27,7 +27,7 @@ import kinugasa.game.field4.MapChipAttribute;
 import kinugasa.resource.sound.Sound;
 
 /**
- * �G���J�E���g�����ۂ́A�G�Z�b�g�A��Q�����A����Ă���`�b�v�̏������N���X�ł��B
+ * エンカウントした際の、敵セット、障害物情報、乗っているチップの情報を持つクラスです。
  *
  * @vesion 1.0.0 - 2022/11/23_11:44:50<br>
  * @author Shinacho<br>

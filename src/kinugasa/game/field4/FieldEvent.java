@@ -61,13 +61,13 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 	}
 
 	public UserOperationRequire exec(FieldMap m) {
-		//¶‘¶ó‘Ô‚Ì”»’è
+		//ç”Ÿå­˜çŠ¶æ…‹ã®åˆ¤å®š
 		if (!exists) {
 			kinugasa.game.GameLog.printInfo("->, but this event is dead");
 //			GameLog.printInfo("->, but this event is dead");
 			return UserOperationRequire.CONTINUE;
 		}
-		//Term‚Ì”»’è
+		//Termã®åˆ¤å®š
 		if (term != null) {
 			if (term.stream().anyMatch(p -> !p.canDoThis(GameSystem.getInstance().getPartyStatus(), this))) {
 				kinugasa.game.GameLog.printInfo("->, but this event is disable");
@@ -75,10 +75,10 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 				return UserOperationRequire.CONTINUE;
 			}
 		}
-		//type•ÊŽÀs
+		//typeåˆ¥å®Ÿè¡Œ
 		UserOperationRequire u = eventType.exec(GameSystem.getInstance().getPartyStatus(), this);
-		//FieldEventScriptException‚ªo‚½‚ç‚±‚±‚Å—Ž‚¿‚éB
-		//ŽÀsŒã¶‘¶ó‘Ô‚ÌXV
+		//FieldEventScriptExceptionãŒå‡ºãŸã‚‰ã“ã“ã§è½ã¡ã‚‹ã€‚
+		//å®Ÿè¡Œå¾Œç”Ÿå­˜çŠ¶æ…‹ã®æ›´æ–°
 		if (disposeWhenExec) {
 			exists = false;
 		}

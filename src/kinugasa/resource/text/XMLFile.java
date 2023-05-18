@@ -44,9 +44,9 @@ import kinugasa.resource.OutputResult;
 import kinugasa.resource.FileNotFoundException;
 
 /**
- * XMLƒtƒ@ƒCƒ‹‚Ì“WŠJ‚Æƒf[ƒ^‚ÌŠÇ—‚ğs‚¢‚Ü‚·.
+ * XMLãƒ•ã‚¡ã‚¤ãƒ«ã®å±•é–‹ã¨ãƒ‡ãƒ¼ã‚¿ã®ç®¡ç†ã‚’è¡Œã„ã¾ã™.
  * <br>
- * XMLƒf[ƒ^‚ÍXMLElementƒNƒ‰ƒX‚ğg—p‚µA–Ø\‘¢‚Å•\Œ»‚³‚ê‚Ü‚·B ƒ[ƒh‚³‚ê‚½XMLReader‚ª‚Âƒm[ƒh‚ÍAƒ‹[ƒg‚Ì1‚Â‚Ì‚İ‚Å‚·B<br>
+ * XMLãƒ‡ãƒ¼ã‚¿ã¯XMLElementã‚¯ãƒ©ã‚¹ã‚’ä½¿ç”¨ã—ã€æœ¨æ§‹é€ ã§è¡¨ç¾ã•ã‚Œã¾ã™ã€‚ ãƒ­ãƒ¼ãƒ‰ã•ã‚ŒãŸXMLReaderãŒæŒã¤ãƒãƒ¼ãƒ‰ã¯ã€ãƒ«ãƒ¼ãƒˆã®1ã¤ã®ã¿ã§ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/03/15_11:48:01.<br>
@@ -126,13 +126,13 @@ public final class XMLFile implements Input<XMLFile>, Output, Nameable, Iterable
 
 	@Override
 	public OutputResult save() throws FileIOException {
-		//@XMLo—Í‚Í‚Ü‚¾‚Å‚«‚Ü‚¹‚ñB
+		//ã€€XMLå‡ºåŠ›ã¯ã¾ã ã§ãã¾ã›ã‚“ã€‚
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
 	public OutputResult saveTo(File f) throws FileIOException {
-		//@XMLo—Í‚Í‚Ü‚¾‚Å‚«‚Ü‚¹‚ñB
+		//ã€€XMLå‡ºåŠ›ã¯ã¾ã ã§ãã¾ã›ã‚“ã€‚
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

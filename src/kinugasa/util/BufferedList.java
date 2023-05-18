@@ -33,14 +33,14 @@ import java.util.ListIterator;
 import java.util.RandomAccess;
 
 /**
- * �v�f���o�b�t�@�����O���A�����I�ɍ폜�ł��郊�X�g�ł�.
+ * 要素をバッファリングし、効率的に削除できるリストです.
  * <br>
- * ���̃��X�g�́A�R�~�b�g���ꂽ���_�ō폜���s���܂��B
- * �폜������ۂɂ͐ݒ肳�ꂽ�^�C���J�E���^�̃N���b�N�����肳��܂��B<br>
- * �ǉ��͒����ɍs���܂��B<br>
+ * このリストは、コミットされた時点で削除を行います。
+ * 削除をする際には設定されたタイムカウンタのクロックが判定されます。<br>
+ * 追加は直ちに行われます。<br>
  * <br>
  *
- * @param <T> ���X�g�̌^���w�肵�܂��B<br>
+ * @param <T> リストの型を指定します。<br>
  *
  * @version 1.0.0 - 2013/02/10_0:06:34<br>
  * @author Shinacho<br>

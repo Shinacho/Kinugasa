@@ -103,13 +103,13 @@ public class ActionEvent implements Comparable<ActionEvent> {
 		return animationMoveType;
 	}
 
-	//‚±‚ÌÀs‚Íƒ_ƒ[ƒWŒvZ®‚ğg—p‚µ‚È‚¢
-	//ƒ^[ƒQƒbƒgƒVƒXƒeƒ€‚É‚æ‚èAREA“à‚Ì³‚µ‚¢“G‚ª“ü‚Á‚Ä‚¢‚é‘O’ñB
-	//FIELDƒ^[ƒQƒbƒg‚Ì¬”Û‚ÍARESULT‚©‚çæ‚ê‚éBƒAƒNƒVƒ‡ƒ“‚ÌDESC‚ğ•\¦‚Å‚«‚éB
+	//ã“ã®å®Ÿè¡Œã¯ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—å¼ã‚’ä½¿ç”¨ã—ãªã„
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚·ã‚¹ãƒ†ãƒ ã«ã‚ˆã‚ŠAREAå†…ã®æ­£ã—ã„æ•µãŒå…¥ã£ã¦ã„ã‚‹å‰æã€‚
+	//FIELDã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®æˆå¦ã¯ã€RESULTã‹ã‚‰å–ã‚Œã‚‹ã€‚ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®DESCã‚’è¡¨ç¤ºã§ãã‚‹ã€‚
 	public ActionEventResult exec(ActionTarget tgt) {
-		//ƒtƒB[ƒ‹ƒhƒ‚[ƒh‚Ìê‡AƒAƒjƒ[ƒVƒ‡ƒ“‚Í–³‹‚³‚ê‚éB
-		//‚·‚×‚Ä‚Ìtgt‚É‘Î‚µ‚Äs‚¤B‚»‚ÌŒ‹‰Ê‚ğType‚Æ‚µ‚Ä•Ô‚·
-		//ƒtƒB[ƒ‹ƒhƒAƒNƒVƒ‡ƒ“‚Ìê‡
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒ¢ãƒ¼ãƒ‰ã®å ´åˆã€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã¯ç„¡è¦–ã•ã‚Œã‚‹ã€‚
+		//ã™ã¹ã¦ã®tgtã«å¯¾ã—ã¦è¡Œã†ã€‚ãã®çµæœã‚’Typeã¨ã—ã¦è¿”ã™
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®å ´åˆ
 		if (tgt.isFieldTarget() && targetType == TargetType.FIELD) {
 			List<ActionResultType> resultTypePerTgt = new ArrayList<>();
 			List<AnimationSprite> ani = new ArrayList<>();
@@ -126,10 +126,10 @@ public class ActionEvent implements Comparable<ActionEvent> {
 		}
 
 		ActionEventResult result = new ActionEventResult();
-		//ƒZƒ‹ƒtƒCƒxƒ“ƒg‚Ìê‡
+		//ã‚»ãƒ«ãƒ•ã‚¤ãƒ™ãƒ³ãƒˆã®å ´åˆ
 		if (targetType == TargetType.SELF) {
 			BattleCharacter c = tgt.getUser();
-			//Às‰Â”\
+			//å®Ÿè¡Œå¯èƒ½
 			switch (parameterType) {
 				case NONE:
 					result.addResultTypePerTgt(ActionResultType.SUCCESS);
@@ -151,7 +151,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 							float v2 = c.getStatus().getBaseAttrIn().get(tgtName).getValue() * value;
 							c.getStatus().getBaseAttrIn().get(tgtName).set(v2);
 							break;
-						//ATTR_IN‚Å‚Íƒ_ƒ[ƒWŒvZ®‚Íg‚¦‚È‚¢
+						//ATTR_INã§ã¯ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—å¼ã¯ä½¿ãˆãªã„
 						case USE_DAMAGE_CALC:
 							throw new GameSystemException("cant user damage calc model " + this);
 						default:
@@ -207,9 +207,9 @@ public class ActionEvent implements Comparable<ActionEvent> {
 			return result;
 		}
 
-		//tt != FIELD,ƒ^[ƒQƒbƒgƒ^ƒCƒv‚ÉŠî‚Ã‚­ƒ^[ƒQƒbƒg‚ªˆø”‚É“ü‚Á‚Ä‚¢‚é‘O’ñB
+		//tt != FIELD,ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚¿ã‚¤ãƒ—ã«åŸºã¥ãã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒå¼•æ•°ã«å…¥ã£ã¦ã„ã‚‹å‰æã€‚
 		for (BattleCharacter c : tgt) {
-			//P”»’è
+			//Påˆ¤å®š
 			if (!Random.percent(p)) {
 				if (GameSystem.isDebugMode()) {
 					kinugasa.game.GameLog.printInfo(this + " is no exec(P)");
@@ -221,7 +221,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 				kinugasa.game.GameLog.printInfo("ACTION:" + c.getName() + ":" + parameterType + ":" + damageCalcType + ":" + tgtName + ":" + value);
 			}
 
-			//Às‰Â”\
+			//å®Ÿè¡Œå¯èƒ½
 			switch (parameterType) {
 				case NONE:
 					result.addResultTypePerTgt(ActionResultType.SUCCESS);
@@ -243,7 +243,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 							float v2 = c.getStatus().getBaseAttrIn().get(tgtName).getValue() * value;
 							c.getStatus().getBaseAttrIn().get(tgtName).set(v2);
 							break;
-						//ATTR_IN‚Å‚Íƒ_ƒ[ƒWŒvZ®‚Íg‚¦‚È‚¢
+						//ATTR_INã§ã¯ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—å¼ã¯ä½¿ãˆãªã„
 						case USE_DAMAGE_CALC:
 							throw new GameSystemException("cant user damage calc model " + this);
 						default:
@@ -255,7 +255,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 					}
 					break;
 				case ITEM_LOST:
-					//ƒAƒCƒeƒ€ƒƒXƒg‚Íg—p‘¤‚ÅÀ{‚·‚é‚±‚Æ
+					//ã‚¢ã‚¤ãƒ†ãƒ ãƒ­ã‚¹ãƒˆã¯ä½¿ç”¨å´ã§å®Ÿæ–½ã™ã‚‹ã“ã¨
 //					if (targetType == TargetType.SELF) {
 //						tgt.getUser().getStatus().getItemBag().drop(tgtName);
 //					} else {

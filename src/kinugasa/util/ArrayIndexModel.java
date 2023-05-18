@@ -26,7 +26,7 @@ package kinugasa.util;
 import kinugasa.object.Model;
 
 /**
- * �z��̃C���f�b�N�X�̑J�ڏ������`���܂�.
+ * 配列のインデックスの遷移順序を定義します.
  * <br>
  *
  * <br>
@@ -39,24 +39,24 @@ public abstract class ArrayIndexModel extends Model {
 	private static final long serialVersionUID = -6398853184708789620L;
 
 	/**
-	 * ����̃A���S���Y���ɂ��������āA�z��̃C���f�b�N�X��Ԃ��܂�.
+	 * 特定のアルゴリズムにしたがって、配列のインデックスを返します.
 	 *
-	 * ���̃��\�b�h�ł́A�C���f�b�N�X�̑J�ڂ������ōs���܂��B<br>
-	 * ���������āA���̌Ăяo���ł̓A���S���Y���ɉ�����
-	 * �u���̒l�v��Ԃ��܂��B<br>
+	 * このメソッドでは、インデックスの遷移を自動で行います。<br>
+	 * したがって、次の呼び出しではアルゴリズムに沿った
+	 * 「次の値」を返します。<br>
 	 *
-	 * @param arrayLength �z��̒���(length)�𑗐M���܂��B<br>
+	 * @param arrayLength 配列の長さ(length)を送信します。<br>
 	 *
-	 * @return �z��̃C���f�b�N�X��Ԃ��܂��B�C���f�b�N�X��0����arrayLength-1�ł���K�v������܂��B<br>
+	 * @return 配列のインデックスを返します。インデックスは0からarrayLength-1である必要があります。<br>
 	 */
 	public abstract int index(int arrayLength);
 
 	/**
-	 * ���݂̃C���f�b�N�X��Ԃ��܂�.
+	 * 現在のインデックスを返します.
 	 *
-	 * ���̃��\�b�h�ł́A�C���f�b�N�X��ύX�����ɁA���ݒl��Ԃ��܂��B<br>
+	 * このメソッドでは、インデックスを変更せずに、現在値を返します。<br>
 	 *
-	 * @return �C���f�b�N�X�̌��ݒl��Ԃ��܂��B<br>
+	 * @return インデックスの現在値を返します。<br>
 	 */
 	public abstract int getIndex();
 

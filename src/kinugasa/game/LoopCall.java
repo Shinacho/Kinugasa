@@ -27,7 +27,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 /**
- * ���̃A�m�e�[�V�������t����ꂽ���\�b�h�́A�Q�[�����[�v������ĂԂ��Ƃ��z�肳��܂��B
+ * このアノテーションが付けられたメソッドは、ゲームループ中毎回呼ぶことが想定されます。
  *
  * @author owner
  */

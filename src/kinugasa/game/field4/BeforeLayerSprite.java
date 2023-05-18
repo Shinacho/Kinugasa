@@ -40,10 +40,10 @@ import kinugasa.resource.TempFile;
 import kinugasa.resource.TempFileStorage;
 
 /**
- * ���̃N���X�́A��ʑO�ʂɉ_�̃G�t�F�N�g��\�����邽�߂̉摜�X�v���C�g�ł��B�_�ȊO�ɂ��g���邩������܂���B
+ * このクラスは、画面前面に雲のエフェクトを表示するための画像スプライトです。雲以外にも使えるかもしれません。
  * <br>
- * �_�摜��GIMP���g���ƊȒP�ɐ����ł��܂��B<br>
- * ���̃N���X�ɐݒ肵���摜�̓��[�v����A�`�掞�Ɏ����I�Ɉړ�����܂��B�܂��A�t�B�[���h�}�b�v�ւ̑��x��p�x�̕ύX�̉e�����󂯂܂���B
+ * 雲画像はGIMPを使うと簡単に生成できます。<br>
+ * このクラスに設定した画像はループされ、描画時に自動的に移動されます。また、フィールドマップへの速度や角度の変更の影響を受けません。
  *
  * @version 1.0.0 - 2015/06/16<br>
  * @author Shinacho<br>

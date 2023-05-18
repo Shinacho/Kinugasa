@@ -42,7 +42,7 @@ import kinugasa.resource.KImage;
 public final class ImagePainterStorage extends Storage<ImagePainter> {
 
 	/**
-	 * ���̃��f���͉����`�悵�܂���.
+	 * このモデルは何も描画しません.
 	 */
 	public static final ImagePainter NOT_DRAW = new ImagePainter("NOT_DRAW") {
 
@@ -52,8 +52,8 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		}
 	};
 	/**
-	 * ���̃��f���̓X�v���C�g�̍��W�ɉ摜���摜�̃T�C�Y�ŕ`�悵�܂�. ���������āA�摜�̈ʒu�̓X�v���C�g�̗̈�́h����h�ɌŒ肳��܂��B<br>
-	 * ���̃��f���͂����Ƃ������ɓ��삷�邽�߁A�X�v���C�g�Ɖ摜�̃T�C�Y����v����ꍇ�ɗL�p�ł��B<br>
+	 * このモデルはスプライトの座標に画像を画像のサイズで描画します. したがって、画像の位置はスプライトの領域の”左上”に固定されます。<br>
+	 * このモデルはもっとも高速に動作するため、スプライトと画像のサイズが一致する場合に有用です。<br>
 	 */
 	public static final ImagePainter IMAGE_BOUNDS_XY = new ImagePainter("IMAGE_BOUNDS_XY") {
 
@@ -63,7 +63,7 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		}
 	};
 	/**
-	 * ���̃��f���̓X�v���C�g�̒��S�Ɖ摜�̒��S���d�Ȃ�ʒu�ɉ摜�̃T�C�Y�ŕ`�悵�܂�.
+	 * このモデルはスプライトの中心と画像の中心が重なる位置に画像のサイズで描画します.
 	 */
 	public static final ImagePainter IMAGE_BOUNDS_CENTER = new ImagePainter("IMAGE_BOUNDS_CENTER") {
 
@@ -75,7 +75,7 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		}
 	};
 	/**
-	 * ���̃��f���͉摜�̃T�C�Y���X�v���C�g�̃T�C�Y�Ɋg�債�A�X�v���C�g�̗̈�𖄂߂�悤�ɕ`�悵�܂�.
+	 * このモデルは画像のサイズをスプライトのサイズに拡大し、スプライトの領域を埋めるように描画します.
 	 */
 	public static final ImagePainter SPRITE_BOUNDS = new ImagePainter("SPRITE_BOUNDS") {
 
@@ -86,7 +86,7 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		}
 	};
 	/**
-	 * ���̃��f���̓X�v���C�g�̈ړ��p�x�ɉ����ĉ摜����]���Ă���AIMAGE_BOUNDS_XY�ŕ`�悵�܂�.
+	 * このモデルはスプライトの移動角度に沿って画像を回転してから、IMAGE_BOUNDS_XYで描画します.
 	 */
 	public static final ImagePainter IMAGE_BOUNDS_XY_ROTATE = new ImagePainter("IMAGE_BOUNDS_XY_ROTATE") {
 		@Override
@@ -99,7 +99,7 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		}
 	};
 	/**
-	 * ���̃��f���̓X�v���C�g�̈ړ��p�x�ɉ����ĉ摜����]���Ă���AIMAGE_BOUNDS_CENTER�ŕ`�悵�܂�.
+	 * このモデルはスプライトの移動角度に沿って画像を回転してから、IMAGE_BOUNDS_CENTERで描画します.
 	 */
 	public static final ImagePainter IMAGE_BOUNDS_CENTER_ROTATE = new ImagePainter("IMAGE_BOUNDS_CENTER_ROTATE") {
 
@@ -115,7 +115,7 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		}
 	};
 	/**
-	 * ���̃��f���̓X�v���C�g�̈ړ��p�x�ɉ����ĉ摜����]���Ă���ASPRITE_BOUNDS�ŕ`�悵�܂�.
+	 * このモデルはスプライトの移動角度に沿って画像を回転してから、SPRITE_BOUNDSで描画します.
 	 */
 	public static final ImagePainter SPRITE_BOUNDS_ROTATE = new ImagePainter("SPRITE_BOUNDS_ROTATE") {
 
@@ -131,8 +131,8 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		}
 	};
 	/**
-	 * ���̃��f���́A�X�v���C�g�̗̈�Ɠ����蔻��̈�����ꂼ���`�ŕ`�悵�A�������܂�.
-	 * �̈�̐F��Color.GREEN���A�����蔻��̗̈��Color.RED���g�p����܂��B<br>
+	 * このモデルは、スプライトの領域と当たり判定領域をそれぞれ矩形で描画し、可視化します.
+	 * 領域の色はColor.GREENが、当たり判定の領域はColor.REDが使用されます。<br>
 	 */
 	public static final ImagePainter DEBUG_SPRITE_BOUNDS = new ImagePainter("DEBUG_SPRITE_BOUNDS") {
 
@@ -145,8 +145,8 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		}
 	};
 	/**
-	 * �O���t�B�b�N�X�R���e�L�X�g�̃N���b�s���O�̈�� ���{�̉摜��񎟌��Ɍ��ԂȂ����ׂĕ`�悵�܂�. ���̃��f���ł̕`��͔��Ɍ������������߁A
-	 * �^�C�����O�����摜�����炩���ߍ\�z���Ă����A�ʂ̃��f���ɂ���� �`�悷�邱�Ƃ𐄏����܂��B<br>
+	 * グラフィックスコンテキストのクリッピング領域に 等倍の画像を二次元に隙間なく並べて描画します. このモデルでの描画は非常に効率が悪いため、
+	 * タイリングした画像をあらかじめ構築しておき、別のモデルによって 描画することを推奨します。<br>
 	 */
 	public static final ImagePainter TITLING_CPLI_AREA = new ImagePainter("TILING_IMAGE_SIZE") {
 
@@ -167,8 +167,8 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		}
 	};
 	/**
-	 * �X�v���C�g�̗̈�ɓ��{�̉摜��񎟌��Ɍ��ԂȂ����ׂĕ`�悵�܂�. ���̃��f���ł̕`��͔��Ɍ������������߁A
-	 * �^�C�����O�����摜�����炩���ߍ\�z���Ă����A�ʂ̃��f���ɂ���� �`�悷�邱�Ƃ𐄏����܂��B<br>
+	 * スプライトの領域に等倍の画像を二次元に隙間なく並べて描画します. このモデルでの描画は非常に効率が悪いため、
+	 * タイリングした画像をあらかじめ構築しておき、別のモデルによって 描画することを推奨します。<br>
 	 */
 	public static final ImagePainter TILING_SPRITE_SIZE = new ImagePainter("TILING_SPRITE_SIZE") {
 
@@ -191,16 +191,16 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 	private static final long serialVersionUID = 2147787454213377482L;
 
 	/**
-	 * �C���X�^���X���擾���܂�.
+	 * インスタンスを取得します.
 	 *
-	 * @return ���̃N���X�̗B��̃C���X�^���X��Ԃ��܂��B<br>
+	 * @return このクラスの唯一のインスタンスを返します。<br>
 	 */
 	public static ImagePainterStorage getInstance() {
 		return INSTANCE;
 	}
 
 	/**
-	 * �V���O���g���N���X�ł�.
+	 * シングルトンクラスです.
 	 */
 	private ImagePainterStorage() {
 		super();
@@ -216,7 +216,7 @@ public final class ImagePainterStorage extends Storage<ImagePainter> {
 		add(TITLING_CPLI_AREA);
 	}
 	/**
-	 * ���̃N���X�̗B��̃C���X�^���X�ł�.
+	 * このクラスの唯一のインスタンスです.
 	 */
 	private static final ImagePainterStorage INSTANCE = new ImagePainterStorage();
 }

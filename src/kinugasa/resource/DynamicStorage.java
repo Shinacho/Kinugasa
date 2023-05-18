@@ -28,14 +28,14 @@ import java.util.function.Consumer;
 import kinugasa.util.ArrayUtil;
 
 /**
- * —v‘f‚Ìƒ[ƒh^ŠJ•ú‹@”\‚ğ’Ç‰Á‚µ‚½ƒXƒgƒŒ[ƒW‚ÌÀ‘•‚Å‚·.
+ * è¦ç´ ã®ãƒ­ãƒ¼ãƒ‰ï¼é–‹æ”¾æ©Ÿèƒ½ã‚’è¿½åŠ ã—ãŸã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã®å®Ÿè£…ã§ã™.
  * <br>
- * ‚±‚ÌƒXƒgƒŒ[ƒW‚ÌŠg’£‚ÍAFreeable‚ğÀ‘•‚µ‚Ü‚·BFreeable‚Ì‹@”\‚ÍA‘S‚Ä‚Ì—v‘f‚É“K—p‚³‚ê‚Ü‚·B
- * isLoaded‚Í1‚ÂˆÈã‚Ì—v‘f‚ªƒ[ƒh‚³‚ê‚Ä‚¢‚éê‡‚Étrue‚ğ•Ô‚µ‚Ü‚·B‘S‚Ä‚Ì—v‘f‚ªƒ[ƒh‚³‚ê‚Ä‚¢‚é‚©‚ğŒŸ¸‚·‚é‚É‚Í
- * isLoadedAll‚ğg—p‚µ‚Ü‚·B<br>
+ * ã“ã®ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã®æ‹¡å¼µã¯ã€Freeableã‚’å®Ÿè£…ã—ã¾ã™ã€‚Freeableã®æ©Ÿèƒ½ã¯ã€å…¨ã¦ã®è¦ç´ ã«é©ç”¨ã•ã‚Œã¾ã™ã€‚
+ * isLoadedã¯1ã¤ä»¥ä¸Šã®è¦ç´ ãŒãƒ­ãƒ¼ãƒ‰ã•ã‚Œã¦ã„ã‚‹å ´åˆã«trueã‚’è¿”ã—ã¾ã™ã€‚å…¨ã¦ã®è¦ç´ ãŒãƒ­ãƒ¼ãƒ‰ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’æ¤œæŸ»ã™ã‚‹ã«ã¯
+ * isLoadedAllã‚’ä½¿ç”¨ã—ã¾ã™ã€‚<br>
  * <br>
  *
- * @param <T> ‚±‚ÌƒXƒgƒŒ[ƒW‚ª•Û‘¶‚·‚é–½–¼‰Â”\‚ÅŠJ•ú‰Â”\‚ÈŒ^‚ğw’è‚µ‚Ü‚·B<br>
+ * @param <T> ã“ã®ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ãŒä¿å­˜ã™ã‚‹å‘½åå¯èƒ½ã§é–‹æ”¾å¯èƒ½ãªå‹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
  *
  * @version 1.0.0 - 2012/11/18_0:14:31<br>
  * @version 1.0.2 - 2013/01/12_22:16:16<br>
@@ -48,24 +48,24 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 		extends Storage<T> implements Input {
 
 	/**
-	 * V‚µ‚¢ƒXƒgƒŒ[ƒW‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param initialSize ƒXƒgƒŒ[ƒW‚Ì‰Šú—e—Ê‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param initialSize ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã®åˆæœŸå®¹é‡ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public DynamicStorage(int initialSize) {
 		super(initialSize);
 	}
 
 	/**
-	 * V‚µ‚¢ƒXƒgƒŒ[ƒW‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã‚’ä½œæˆã—ã¾ã™.
 	 */
 	public DynamicStorage() {
 	}
 
 	/**
-	 * ‘S‚Ä‚Ì—v‘f‚ğƒ[ƒh‚µ‚Ü‚·.
+	 * å…¨ã¦ã®è¦ç´ ã‚’ãƒ­ãƒ¼ãƒ‰ã—ã¾ã™.
 	 *
-	 * @return ‚±‚ÌƒXƒgƒŒ[ƒW‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã“ã®ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	@Override
 	public DynamicStorage<T> load() {
@@ -76,12 +76,12 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	}
 
 	/**
-	 * w’è‚µ‚½–¼‘O‚ğ‚ÂƒIƒuƒWƒFƒNƒg‚ğAƒ[ƒh‚µ‚Ä‚©‚çæ“¾‚µ‚Ü‚·.
+	 * æŒ‡å®šã—ãŸåå‰ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã€ãƒ­ãƒ¼ãƒ‰ã—ã¦ã‹ã‚‰å–å¾—ã—ã¾ã™.
 	 *
-	 * @param name ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚ğw’è‚µ‚Ü‚·B<br>
-	 * @return ƒ[ƒh‚³‚ê‚½ƒIƒuƒWƒFƒNƒg‚ğ•Ô‚µ‚Ü‚·B<br>
-	 * @throws NameNotFoundException w’è‚µ‚½–¼‘O‚ğ‚ÂƒIƒuƒWƒFƒNƒg‚ª‚±‚ÌƒXƒgƒŒ[ƒW‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚È‚¢
-	 * ‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @param name ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @return ãƒ­ãƒ¼ãƒ‰ã•ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿”ã—ã¾ã™ã€‚<br>
+	 * @throws NameNotFoundException æŒ‡å®šã—ãŸåå‰ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã“ã®ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã«å«ã¾ã‚Œã¦ã„ãªã„
+	 * æ™‚ã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public T load(String name) throws NameNotFoundException {
 		T obj = get(name);
@@ -90,7 +90,7 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	}
 
 	/**
-	 * ‘S‚Ä‚Ì—v‘f‚ğŠJ•ú‚µ‚Ü‚·.
+	 * å…¨ã¦ã®è¦ç´ ã‚’é–‹æ”¾ã—ã¾ã™.
 	 *
 	 */
 	@Override
@@ -101,12 +101,12 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	}
 
 	/**
-	 * w’è‚µ‚½–¼‘O‚ğ‚ÂƒIƒuƒWƒFƒNƒg‚ğAŠJ•ú‚©‚çæ“¾‚µ‚Ü‚·.
+	 * æŒ‡å®šã—ãŸåå‰ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã€é–‹æ”¾ã‹ã‚‰å–å¾—ã—ã¾ã™.
 	 *
-	 * @param name ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚ğw’è‚µ‚Ü‚·B<br>
-	 * @return ŠJ•ú‚³‚ê‚½ƒIƒuƒWƒFƒNƒg‚ğ•Ô‚µ‚Ü‚·B<br>
-	 * @throws NameNotFoundException w’è‚µ‚½–¼‘O‚ğ‚ÂƒIƒuƒWƒFƒNƒg‚ª‚±‚ÌƒXƒgƒŒ[ƒW‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚È‚¢
-	 * ‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @param name ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @return é–‹æ”¾ã•ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿”ã—ã¾ã™ã€‚<br>
+	 * @throws NameNotFoundException æŒ‡å®šã—ãŸåå‰ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã“ã®ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã«å«ã¾ã‚Œã¦ã„ãªã„
+	 * æ™‚ã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public T dispose(String name) throws NameNotFoundException {
 		T obj = get(name);
@@ -115,9 +115,9 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	}
 
 	/**
-	 * w’è‚³‚ê‚½‘S‚Ä‚Ì—v‘f‚ğƒ[ƒh‚µ‚Ü‚·.
+	 * æŒ‡å®šã•ã‚ŒãŸå…¨ã¦ã®è¦ç´ ã‚’ãƒ­ãƒ¼ãƒ‰ã—ã¾ã™.
 	 *
-	 * @param names ƒ[ƒh‚·‚é—v‘f‚Ì–¼‘O‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param names ãƒ­ãƒ¼ãƒ‰ã™ã‚‹è¦ç´ ã®åå‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void loadAll(String... names) {
 		for (T obj : this) {
@@ -128,9 +128,9 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	}
 
 	/**
-	 * w’è‚³‚ê‚½‘S‚Ä‚Ì—v‘f‚ğŠJ•ú‚µ‚Ü‚·.
+	 * æŒ‡å®šã•ã‚ŒãŸå…¨ã¦ã®è¦ç´ ã‚’é–‹æ”¾ã—ã¾ã™.
 	 *
-	 * @param names ŠJ•ú‚·‚é—v‘f‚Ì–¼‘O‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param names é–‹æ”¾ã™ã‚‹è¦ç´ ã®åå‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void freeAll(String... names) {
 		for (T obj : this) {
@@ -141,9 +141,9 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	}
 
 	/**
-	 * w’è‚³‚ê‚½–¼‘O‚ğ‚ÂƒIƒuƒWƒFƒNƒgˆÈŠO‚ğ‘S‚ÄŠJ•ú‚µ‚Ü‚·.
+	 * æŒ‡å®šã•ã‚ŒãŸåå‰ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä»¥å¤–ã‚’å…¨ã¦é–‹æ”¾ã—ã¾ã™.
 	 *
-	 * @param names ŠJ•ú‚µ‚È‚¢ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param names é–‹æ”¾ã—ãªã„ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	public void exFree(String... names) {
 		for (T obj : this) {
@@ -159,9 +159,9 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	}
 
 	/**
-	 * ‘S‚Ä‚Ì—v‘f‚ªƒ[ƒh‚³‚ê‚Ä‚¢‚é‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * å…¨ã¦ã®è¦ç´ ãŒãƒ­ãƒ¼ãƒ‰ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @return ‘S‚Ä‚Ì—v‘f‚ªƒ[ƒh‚³‚ê‚Ä‚¢‚éê‡‚Ítrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return å…¨ã¦ã®è¦ç´ ãŒãƒ­ãƒ¼ãƒ‰ã•ã‚Œã¦ã„ã‚‹å ´åˆã¯trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public boolean isLoadedAll() {
 		for (T obj : this) {
@@ -173,12 +173,12 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	}
 
 	/**
-	 * w’è‚µ‚½–¼‘O‚ğ‚ÂƒIƒuƒWƒFƒNƒg‚ªAƒ[ƒh‚³‚ê‚Ä‚¢‚é‚©‚ğ’²‚×‚Ü‚·.
+	 * æŒ‡å®šã—ãŸåå‰ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã€ãƒ­ãƒ¼ãƒ‰ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’èª¿ã¹ã¾ã™.
 	 *
-	 * @param name ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚ğw’è‚µ‚Ü‚·B<br>
-	 * @return w’è‚µ‚½–¼‘O‚ğ‚ÂƒIƒuƒWƒFƒNƒg‚ÌisLoaded‚ğ•Ô‚µ‚Ü‚·B<br>
-	 * @throws NameNotFoundException w’è‚µ‚½–¼‘O‚ğ‚ÂƒIƒuƒWƒFƒNƒg‚ª‚±‚ÌƒXƒgƒŒ[ƒW‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚È‚¢
-	 * ‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @param name ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @return æŒ‡å®šã—ãŸåå‰ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®isLoadedã‚’è¿”ã—ã¾ã™ã€‚<br>
+	 * @throws NameNotFoundException æŒ‡å®šã—ãŸåå‰ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã“ã®ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã«å«ã¾ã‚Œã¦ã„ãªã„
+	 * æ™‚ã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public boolean isLoaded(String name) throws NameNotFoundException {
 		return contains(name) ? get(name).getStatus() == InputStatus.LOADED : false;

@@ -28,9 +28,9 @@ import java.util.logging.Logger;
 import kinugasa.game.input.InputState;
 
 /**
- * ƒQ[ƒ€‚Ìis‚ğs‚¤ƒXƒŒƒbƒh‚ÌÀ‘•‚Å‚·.
+ * ã‚²ãƒ¼ãƒ ã®é€²è¡Œã‚’è¡Œã†ã‚¹ãƒ¬ãƒƒãƒ‰ã®å®Ÿè£…ã§ã™.
  * <br>
- * ‚±‚ÌƒNƒ‰ƒX‚ğƒQ[ƒ€ì¬Ò‚ªg—p‚·‚é‚±‚Æ‚Í‚ ‚è‚Ü‚¹‚ñB<br>
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã‚’ã‚²ãƒ¼ãƒ ä½œæˆè€…ãŒä½¿ç”¨ã™ã‚‹ã“ã¨ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_12:52:13<br>
@@ -40,28 +40,28 @@ import kinugasa.game.input.InputState;
 public final class GameLoop implements Runnable {
 
 	/**
-	 * ‚±‚ÌƒXƒŒƒbƒh‚ªXV‚·‚é‘ÎÛ‚ÌƒQ[ƒ€.
+	 * ã“ã®ã‚¹ãƒ¬ãƒƒãƒ‰ãŒæ›´æ–°ã™ã‚‹å¯¾è±¡ã®ã‚²ãƒ¼ãƒ .
 	 */
 	private GameManager game;
 	/**
-	 * FPS‚¨‚æ‚Ñ‘Ò‹@ŠÔ‚ÌŠÇ—.
+	 * FPSãŠã‚ˆã³å¾…æ©Ÿæ™‚é–“ã®ç®¡ç†.
 	 */
 	private GameTimeManager gtm;
 	/**
-	 * ‹N“®‚·‚éƒƒCƒ“‚ÌƒXƒŒƒbƒh.
+	 * èµ·å‹•ã™ã‚‹ãƒ¡ã‚¤ãƒ³ã®ã‚¹ãƒ¬ãƒƒãƒ‰.
 	 */
 	private Thread thread;
 	/**
-	 * ‹N“®ó‘Ô.
+	 * èµ·å‹•çŠ¶æ…‹.
 	 */
 	private volatile boolean exec = false;
 	private boolean updateIfNotActive;
 
 	/**
-	 * V‚µ‚¢ƒQ[ƒ€—pƒXƒŒƒbƒh‚ğì¬‚µ‚Ü‚·. ì¬‚µ‚½‚¾‚¯‚Å‚ÍA‹N“®‚³‚ê‚Ü‚¹‚ñ.<br>
+	 * æ–°ã—ã„ã‚²ãƒ¼ãƒ ç”¨ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ä½œæˆã—ã¾ã™. ä½œæˆã—ãŸã ã‘ã§ã¯ã€èµ·å‹•ã•ã‚Œã¾ã›ã‚“.<br>
 	 *
-	 * @param game ‘ÎÛ‚ÌƒQ[ƒ€ƒCƒ“ƒXƒ^ƒ“ƒX.<br>
-	 * @param gtm FPS‚¨‚æ‚Ñ‘Ò‹@ŠÔ‚ğŠÇ—‚·‚éGameTimeManager.<br>
+	 * @param game å¯¾è±¡ã®ã‚²ãƒ¼ãƒ ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
+	 * @param gtm FPSãŠã‚ˆã³å¾…æ©Ÿæ™‚é–“ã‚’ç®¡ç†ã™ã‚‹GameTimeManager.<br>
 	 */
 	GameLoop(GameManager game, GameTimeManager gtm) {
 		this.game = game;
@@ -70,10 +70,10 @@ public final class GameLoop implements Runnable {
 	}
 
 	/**
-	 * V‚µ‚¢ƒQ[ƒ€—pƒXƒŒƒbƒh‚ğì¬‚µ‚Ü‚·. ì¬‚µ‚½‚¾‚¯‚Å‚ÍA‹N“®‚³‚ê‚Ü‚¹‚ñ.<br>
+	 * æ–°ã—ã„ã‚²ãƒ¼ãƒ ç”¨ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ä½œæˆã—ã¾ã™. ä½œæˆã—ãŸã ã‘ã§ã¯ã€èµ·å‹•ã•ã‚Œã¾ã›ã‚“.<br>
 	 *
-	 * @param game ‘ÎÛ‚ÌƒQ[ƒ€ƒCƒ“ƒXƒ^ƒ“ƒX.<br>
-	 * @param gtm FPS‚¨‚æ‚Ñ‘Ò‹@ŠÔ‚ğŠÇ—‚·‚éGameTimeManager.<br>
+	 * @param game å¯¾è±¡ã®ã‚²ãƒ¼ãƒ ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
+	 * @param gtm FPSãŠã‚ˆã³å¾…æ©Ÿæ™‚é–“ã‚’ç®¡ç†ã™ã‚‹GameTimeManager.<br>
 	 */
 	GameLoop(GameManager game, GameTimeManager gtm, boolean updateIfNotActive) {
 		this.game = game;
@@ -82,7 +82,7 @@ public final class GameLoop implements Runnable {
 	}
 
 	/**
-	 * ƒƒCƒ“ƒ‹[ƒv‚ÌÀ‘•‚Å‚·.
+	 * ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—ã®å®Ÿè£…ã§ã™.
 	 */
 	@Override
 	public void run() {
@@ -104,7 +104,7 @@ public final class GameLoop implements Runnable {
 						gtm.sleep(startTime);
 					} else {
 						startTime = System.nanoTime();
-						try {//ƒ_ƒ~[ˆ—
+						try {//ãƒ€ãƒŸãƒ¼å‡¦ç†
 							Thread.sleep(1000 / gtm.getIdealFPS());
 						} catch (InterruptedException ex) {
 							Logger.getLogger(GameLoop.class.getName()).log(Level.SEVERE, null, ex);
@@ -128,16 +128,16 @@ public final class GameLoop implements Runnable {
 	}
 
 	/**
-	 * ƒƒCƒ“ƒ‹[ƒv‚ğI—¹‚µ‚Ü‚·.
+	 * ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—ã‚’çµ‚äº†ã—ã¾ã™.
 	 */
 	void end() {
 		exec = false;
 	}
 
 	/**
-	 * ƒXƒŒƒbƒh‚ğ‹N“®‚µAÄ•`‰æ‚âXV‚ğŠJn‚µ‚Ü‚·.
+	 * ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’èµ·å‹•ã—ã€å†æç”»ã‚„æ›´æ–°ã‚’é–‹å§‹ã—ã¾ã™.
 	 *
-	 * @throws IllegalStateException ‚·‚Å‚É‹N“®‚µ‚Ä‚¢‚éê‡‚É“Š‚°‚ç‚ê‚é.<br>
+	 * @throws IllegalStateException ã™ã§ã«èµ·å‹•ã—ã¦ã„ã‚‹å ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹.<br>
 	 */
 	void start() throws IllegalStateException {
 		if (isStarted()) {
@@ -149,9 +149,9 @@ public final class GameLoop implements Runnable {
 	}
 
 	/**
-	 * ƒXƒŒƒbƒh‚ª‹N“®‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * ã‚¹ãƒ¬ãƒƒãƒ‰ãŒèµ·å‹•ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @return start‚ªŒÄ‚Ño‚³‚êA‹N“®‚µ‚Ä‚¢‚éê‡‚Ítrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return startãŒå‘¼ã³å‡ºã•ã‚Œã€èµ·å‹•ã—ã¦ã„ã‚‹å ´åˆã¯trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	boolean isStarted() {
 		return thread != null;

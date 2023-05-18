@@ -142,22 +142,22 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 					nextStage();
 					break;
 				}
-				//‰Šú‰»
+				//åˆæœŸåŒ–
 				nextMoveFrameTime = new FrameTimeCounter(moveModel.nextMoveFrameTime(this, map));
 				targetIdx = moveModel.getNextTargetIdx(this, map);
 				nextStage();
 				break;
 			case 1:
-				//ˆÚ“®ƒtƒŒ[ƒ€”»’è
+				//ç§»å‹•ãƒ•ãƒ¬ãƒ¼ãƒ åˆ¤å®š
 				if (!nextMoveFrameTime.isReaching()) {
 					return;
 				}
 				nextStage();
 				break;
 			case 2:
-				//ˆÚ“®Às
+				//ç§»å‹•å®Ÿè¡Œ
 				if (getTargetIdx().equals(map.getCurrentIdx())) {
-					//ˆÚ“®•s”\‚Ì‚½‚ß–ß‚é
+					//ç§»å‹•ä¸èƒ½ã®ãŸã‚æˆ»ã‚‹
 					stage = 0;
 				}
 				float speed = vehicle == null ? 1f : vehicle.getSpeed() / 2;
@@ -206,13 +206,13 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 				if (currentIdx.equals(targetIdx)) {
 					nextStage();
 				}
-				//–Ú“I’n‚É‹ß‚Ã‚¢‚½‚çÄİ’è
+				//ç›®çš„åœ°ã«è¿‘ã¥ã„ãŸã‚‰å†è¨­å®š
 				if (new Rectangle2D.Float(targetIdx.x * getWidth(), targetIdx.y * getHeight(), map.getChipW(), map.getChipH()).contains(getLocation())) {
 					nextStage();
 				}
 				break;
 			case 3:
-				//NPC‚ÌˆÊ’uXV
+				//NPCã®ä½ç½®æ›´æ–°
 				lx = ly = 0;
 				float nx = map.getBaseLayer().getX() + getCurrentIdx().x * map.getChipW();
 				float ny = map.getBaseLayer().getY() + getCurrentIdx().y * map.getChipH();
@@ -221,7 +221,7 @@ public class NPC extends PlayerCharacterSprite implements Nameable {
 				nextStage();
 				break;
 			case 4:
-				//ˆÚ“®’â~’†‚Ìˆ—
+				//ç§»å‹•åœæ­¢ä¸­ã®å‡¦ç†
 				break;
 			default:
 				throw new AssertionError("undefined NPCs stage : " + this);

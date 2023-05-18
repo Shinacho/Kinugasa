@@ -26,7 +26,7 @@ package kinugasa.game.system;
 import kinugasa.resource.Storage;
 
 /**
- * �}�l�[�V�X�e���͕����̎�ނ̋��K�����Ă�A���z�Ǘ��V�X�e���ł��B
+ * マネーシステムは複数の種類の金銭を持てる、財布管理システムです。
  *
  * @vesion 1.0.0 - 2022/11/24_22:19:22<br>
  * @author Shinacho<br>

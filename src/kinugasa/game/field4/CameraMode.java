@@ -24,18 +24,18 @@
 package kinugasa.game.field4;
 
 /**
- * �t�B�[���h�}�b�v��\������J�����̒Ǐ]�ݒ�ł�.
+ * フィールドマップを表示するカメラの追従設定です.
  *
  * @vesion 1.0.0 - 2022/11/08_16:32:06<br>
  * @author Shinacho<br>
  */
 public enum CameraMode {
 	/**
-	 * �J�����̓v���C���[�L�����N�^�[�̈ړ��ɒǏ]���܂�.
+	 * カメラはプレイヤーキャラクターの移動に追従します.
 	 */
 	FOLLOW,
 	/**
-	 * �J�����̓L�����N�^��Ǐ]���܂���.
+	 * カメラはキャラクタを追従しません.
 	 */
 	NOT_FOLLOW,
 

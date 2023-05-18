@@ -32,7 +32,7 @@ import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
 
 /**
- * テキストストレージのパスを保管する唯一の場所です。
+ * 繝�繧ｭ繧ｹ繝医せ繝医Ξ繝ｼ繧ｸ縺ｮ繝代せ繧剃ｿ晉ｮ｡縺吶ｋ蜚ｯ荳縺ｮ蝣ｴ謇縺ｧ縺吶�
  *
  * @vesion 1.0.0 - 2022/11/08_21:29:42<br>
  * @author Shinacho<br>

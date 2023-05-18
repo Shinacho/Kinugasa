@@ -28,7 +28,7 @@ import kinugasa.object.MovingModel;
 
 
 /**
- * �X�v���C�g�ɐݒ肳��Ă���x�N�g�����g�p���Ē����I�Ɉړ������{�̈ړ��p�^�[���ł�.
+ * スプライトに設定されているベクトルを使用して直線的に移動する基本の移動パターンです.
  * <br>
  *
  * <br>

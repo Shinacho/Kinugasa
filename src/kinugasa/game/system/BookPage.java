@@ -27,7 +27,7 @@ import java.util.Objects;
 import kinugasa.resource.Nameable;
 
 /**
- * ƒuƒbƒNƒy[ƒW‚ÍA–{‚ğ\¬‚·‚éƒy[ƒW‚ÅA–‚–@Œø‰Ê‚©‡¬Œø‰Ê‚Ì‚Ç‚¿‚ç‚©‚ğ‚Á‚Ä‚¢‚Ü‚·B
+ * ãƒ–ãƒƒã‚¯ãƒšãƒ¼ã‚¸ã¯ã€æœ¬ã‚’æ§‹æˆã™ã‚‹ãƒšãƒ¼ã‚¸ã§ã€é­”æ³•åŠ¹æœã‹åˆæˆåŠ¹æœã®ã©ã¡ã‚‰ã‹ã‚’æŒã£ã¦ã„ã¾ã™ã€‚
  *
  * @vesion 1.0.0 - 2022/12/25_10:50:45<br>
  * @author Shinacho<br>
@@ -64,12 +64,12 @@ public class BookPage implements Nameable {
 	}
 	
 	public int getSaleValue(){
-		//TODO:‰¿Ši‚±‚±
+		//TODO:ä¾¡æ ¼ã“ã“
 		return 100;
 	}
 
 	public String getDesc() {
-		//’†‚ÅtoString‚âgetName‚ğg‚í‚È‚¢‚æ‚¤‚É’ˆÓIIIIIII
+		//ä¸­ã§toStringã‚„getNameã‚’ä½¿ã‚ãªã„ã‚ˆã†ã«æ³¨æ„ï¼ï¼ï¼ï¼ï¼ï¼ï¼
 		String s = name;
 		boolean percent = false;
 		switch (compositeType) {

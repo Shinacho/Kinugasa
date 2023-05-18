@@ -46,7 +46,7 @@ import javax.swing.filechooser.FileFilter;
 import kinugasa.game.GameLog;
 
 /**
- * •W€o—Í‚ğƒgƒŒ[ƒX‚·‚éƒfƒoƒbƒO—p‚ÌƒEƒCƒ“ƒhƒE‚Å‚·.
+ * æ¨™æº–å‡ºåŠ›ã‚’ãƒˆãƒ¬ãƒ¼ã‚¹ã™ã‚‹ãƒ‡ãƒãƒƒã‚°ç”¨ã®ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã§ã™.
  * <br>
  *
  * <br>
@@ -57,49 +57,49 @@ import kinugasa.game.GameLog;
 public final class StdOutTracer {
 
 	/**
-	 * —Bˆê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.
+	 * å”¯ä¸€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.
 	 */
 	private static StdOutTracer instance;
 	//
 	/**
-	 * •\¦‚·‚éƒtƒŒ[ƒ€.
+	 * è¡¨ç¤ºã™ã‚‹ãƒ•ãƒ¬ãƒ¼ãƒ .
 	 */
 	private JFrame frame;
 	/**
-	 * ÅãˆÊ‚Ìƒpƒlƒ‹.
+	 * æœ€ä¸Šä½ã®ãƒ‘ãƒãƒ«.
 	 */
 	private JPanel topPanel;
 	/**
-	 * textArea‚ğŠi”[‚·‚éƒXƒNƒ[ƒ‹ƒyƒCƒ“.
+	 * textAreaã‚’æ ¼ç´ã™ã‚‹ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒšã‚¤ãƒ³.
 	 */
 	private JScrollPane scrollPane;
 	/**
-	 * ƒgƒŒ[ƒX‹@”\‚ğ”õ‚¦‚½ƒeƒLƒXƒgƒGƒŠƒA.
+	 * ãƒˆãƒ¬ãƒ¼ã‚¹æ©Ÿèƒ½ã‚’å‚™ãˆãŸãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢.
 	 */
 	private StreamTextArea textArea;
 	/**
-	 * ƒ{ƒ^ƒ“‚ÌƒyƒCƒ“.
+	 * ãƒœã‚¿ãƒ³ã®ãƒšã‚¤ãƒ³.
 	 */
 	private JPanel southPanel;
 	/**
-	 * ƒtƒ@ƒCƒ‹”­sƒ{ƒ^ƒ“.
+	 * ãƒ•ã‚¡ã‚¤ãƒ«ç™ºè¡Œãƒœã‚¿ãƒ³.
 	 */
 	private JButton saveButton;
 	/**
-	 * ƒeƒLƒXƒgƒGƒŠƒAƒNƒŠƒAƒ{ƒ^ƒ“.
+	 * ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚¯ãƒªã‚¢ãƒœã‚¿ãƒ³.
 	 */
 	private JButton clearButton;
 	/**
-	 * ƒgƒŒ[ƒXƒEƒCƒ“ƒhƒEƒNƒ[ƒYƒ{ƒ^ƒ“.
+	 * ãƒˆãƒ¬ãƒ¼ã‚¹ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ­ãƒ¼ã‚ºãƒœã‚¿ãƒ³.
 	 */
 	private JButton closeButton;
 	/**
-	 * ƒVƒXƒeƒ€I—¹ƒ{ƒ^ƒ“.
+	 * ã‚·ã‚¹ãƒ†ãƒ çµ‚äº†ãƒœã‚¿ãƒ³.
 	 */
 	private JButton exitButton;
 
 	/**
-	 * V‚µ‚¢ƒEƒCƒ“ƒhƒE‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆã—ã¾ã™.
 	 */
 	private StdOutTracer() {
 		frame = new JFrame("stdout/stderr");
@@ -137,7 +137,7 @@ public final class StdOutTracer {
 		frame.add(topPanel);
 	}
 	/**
-	 * ƒEƒCƒ“ƒhƒE‚ğ•Â‚¶‚é‚½‚ß‚ÌƒAƒNƒVƒ‡ƒ“‚Å‚·.
+	 * ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹ãŸã‚ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã§ã™.
 	 */
 	private ActionListener closeButtonActionListener = new ActionListener() {
 		@Override
@@ -151,7 +151,7 @@ public final class StdOutTracer {
 		}
 	};
 	/**
-	 * ƒVƒXƒeƒ€‚ğI—¹‚³‚¹‚é‚½‚ß‚ÌƒAƒNƒVƒ‡ƒ“‚Å‚·.
+	 * ã‚·ã‚¹ãƒ†ãƒ ã‚’çµ‚äº†ã•ã›ã‚‹ãŸã‚ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã§ã™.
 	 */
 	private ActionListener exitButtonActionListener = new ActionListener() {
 		@Override
@@ -163,7 +163,7 @@ public final class StdOutTracer {
 		}
 	};
 	/**
-	 * ƒeƒLƒXƒgƒGƒŠƒA‚ğƒNƒŠƒA‚·‚é‚½‚ß‚ÌƒAƒNƒVƒ‡ƒ“‚Å‚·.
+	 * ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹ãŸã‚ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã§ã™.
 	 */
 	private ActionListener clearButtonActionListener = new ActionListener() {
 		@Override
@@ -172,7 +172,7 @@ public final class StdOutTracer {
 		}
 	};
 	/**
-	 * ƒ_ƒ“ƒv‚·‚é‚½‚ß‚ÌƒAƒNƒVƒ‡ƒ“‚Å‚·.
+	 * ãƒ€ãƒ³ãƒ—ã™ã‚‹ãŸã‚ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã§ã™.
 	 */
 	private ActionListener saveButtonActionListener = new ActionListener() {
 		@Override
@@ -185,10 +185,10 @@ public final class StdOutTracer {
 		}
 
 		/**
-		 * w’è‚³‚ê‚½ƒtƒ@ƒCƒ‹‚ÉAw’è‚³‚ê‚½•¶š—ñ‚ğƒeƒLƒXƒgƒtƒ@ƒCƒ‹‚Æ‚µ‚Ä•Û‘¶‚µ‚Ü‚·.
+		 * æŒ‡å®šã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ã«ã€æŒ‡å®šã•ã‚ŒãŸæ–‡å­—åˆ—ã‚’ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã¨ã—ã¦ä¿å­˜ã—ã¾ã™.
 		 *
-		 * @param file •Û‘¶‚·‚éƒtƒ@ƒCƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-		 * @param text •Û‘¶‚·‚é•¶š—ñ‚ğw’è‚µ‚Ü‚·B<br>
+		 * @param file ä¿å­˜ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+		 * @param text ä¿å­˜ã™ã‚‹æ–‡å­—åˆ—ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 		 */
 		private void save(File file, String text) {
 			FileWriter fr = null;
@@ -210,12 +210,12 @@ public final class StdOutTracer {
 			}
 		}
 		/**
-		 * ƒtƒ@ƒCƒ‹‚ğ”­s‚·‚éƒfƒtƒHƒ‹ƒg‚ÌƒpƒX‚Å‚·. ƒfƒXƒNƒgƒbƒv‚ÌLOG_[Unix].txt‚Æ‚È‚è‚Ü‚·B
+		 * ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç™ºè¡Œã™ã‚‹ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒ‘ã‚¹ã§ã™. ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—ã®LOG_[Unixæ™‚åˆ»].txtã¨ãªã‚Šã¾ã™ã€‚
 		 */
 		private final String defaultPath = System.getProperty("user.home") + "/Desktop/LOG_" + System.currentTimeMillis() + ".txt";
 
 		/**
-		 * ƒtƒ@ƒCƒ‹‚ğ•Û‘¶‚·‚é‚½‚ß‚Ìƒ`ƒ…[ƒU‚ğ•\¦‚µA•Û‘¶‚·‚éƒtƒ@ƒCƒ‹‚ğ‘I‘ğ‚µ‚Ü‚·.
+		 * ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¿å­˜ã™ã‚‹ãŸã‚ã®ãƒãƒ¥ãƒ¼ã‚¶ã‚’è¡¨ç¤ºã—ã€ä¿å­˜ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é¸æŠã—ã¾ã™.
 		 */
 		private File selectFile() {
 			File defaultFile = new File(defaultPath);
@@ -229,7 +229,7 @@ public final class StdOutTracer {
 			return chooser.getSelectedFile();
 		}
 		/**
-		 * ƒƒO‚ğ•Û‘¶‚·‚éÛ‚Ég—p‚·‚éƒeƒLƒXƒgƒtƒ@ƒCƒ‹—p‚Ìƒtƒ@ƒCƒ‹ƒtƒBƒ‹ƒ^‚ÌÀ‘•‚Å‚·.
+		 * ãƒ­ã‚°ã‚’ä¿å­˜ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ç”¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚£ãƒ«ã‚¿ã®å®Ÿè£…ã§ã™.
 		 */
 		private final FileFilter TXT_FILE_FILTER = new FileFilter() {
 			@Override
@@ -239,15 +239,15 @@ public final class StdOutTracer {
 
 			@Override
 			public String getDescription() {
-				return "ƒeƒLƒXƒgƒtƒ@ƒCƒ‹(*.txt)";
+				return "ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«(*.txt)";
 			}
 		};
 	};
 
 	/**
-	 * ‹@”\‚ğ—LŒø‰»‚µ‚Ü‚·.
+	 * æ©Ÿèƒ½ã‚’æœ‰åŠ¹åŒ–ã—ã¾ã™.
 	 * <br>
-	 * <b>’ˆÓFOpenGLƒpƒCƒvƒ‰ƒCƒ“‚ğg—p‚·‚éê‡‚ÍAStdOutTracer‚ğ—LŒø‰»‚µ‚Ä‚©‚çOpenGL‚ğ—LŒø‰»‚µ‚Ü‚·.</b>
+	 * <b>æ³¨æ„ï¼šOpenGLãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã€StdOutTracerã‚’æœ‰åŠ¹åŒ–ã—ã¦ã‹ã‚‰OpenGLã‚’æœ‰åŠ¹åŒ–ã—ã¾ã™.</b>
 	 */
 	public static void use() {
 		if (instance == null) {
@@ -274,7 +274,7 @@ public final class StdOutTracer {
 	}
 
 	/**
-	 * ƒXƒgƒŠ[ƒ€‚Ìƒf[ƒ^‚ğ•\¦‚·‚é‚½‚ß‚ÌƒeƒLƒXƒgƒGƒŠƒA‚ÌÀ‘•‚Å‚·.
+	 * ã‚¹ãƒˆãƒªãƒ¼ãƒ ã®ãƒ‡ãƒ¼ã‚¿ã‚’è¡¨ç¤ºã™ã‚‹ãŸã‚ã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã®å®Ÿè£…ã§ã™.
 	 * <br>
 	 *
 	 * <br>
@@ -286,12 +286,12 @@ public final class StdOutTracer {
 
 		private static final long serialVersionUID = -978306416238062009L;
 		/**
-		 * ŠÄ‹‚·‚éƒXƒgƒŠ[ƒ€.
+		 * ç›£è¦–ã™ã‚‹ã‚¹ãƒˆãƒªãƒ¼ãƒ .
 		 */
 		private PrintStream stream;
 
 		/**
-		 * V‚µ‚¢ƒeƒLƒXƒgƒGƒŠƒA‚ğ\’z‚µ‚Ü‚·.
+		 * æ–°ã—ã„ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’æ§‹ç¯‰ã—ã¾ã™.
 		 */
 		private StreamTextArea() {
 			setEditable(false);
@@ -301,9 +301,9 @@ public final class StdOutTracer {
 		}
 
 		/**
-		 * ƒeƒLƒXƒgƒGƒŠƒA‚ÉƒeƒLƒXƒg‚ğ’Ç‰Á‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ÍEDTã‚ÅƒeƒLƒXƒg‚ğ’Ç‰Á‚µ‚Ü‚·.<Br>
+		 * ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã«ãƒ†ã‚­ã‚¹ãƒˆã‚’è¿½åŠ ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯EDTä¸Šã§ãƒ†ã‚­ã‚¹ãƒˆã‚’è¿½åŠ ã—ã¾ã™.<Br>
 		 *
-		 * @param str ’Ç‰Á‚·‚éƒeƒLƒXƒg.<br>
+		 * @param str è¿½åŠ ã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆ.<br>
 		 */
 		public void addText(final String str) {
 			SwingUtilities.invokeLater(new Runnable() {
@@ -316,7 +316,7 @@ public final class StdOutTracer {
 	}
 
 	/**
-	 * ƒeƒLƒXƒgƒGƒŠƒA‚Éƒf[ƒ^‚ğ‘—M‚·‚é‚½‚ß‚ÌƒXƒgƒŠ[ƒ€‚ÌÀ‘•‚Å‚·.
+	 * ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã«ãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡ã™ã‚‹ãŸã‚ã®ã‚¹ãƒˆãƒªãƒ¼ãƒ ã®å®Ÿè£…ã§ã™.
 	 * <br>
 	 *
 	 * <br>
@@ -327,14 +327,14 @@ public final class StdOutTracer {
 	private static class VisualStream extends ByteArrayOutputStream {
 
 		/**
-		 * ‘—Mæ‚ÌƒeƒLƒXƒgƒGƒŠƒA.
+		 * é€ä¿¡å…ˆã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢.
 		 */
 		private StreamTextArea tArea;
 
 		/**
-		 * V‚µ‚¢ƒXƒgƒŠ[ƒ€‚ğ\’z‚µ‚Ü‚·.
+		 * æ–°ã—ã„ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’æ§‹ç¯‰ã—ã¾ã™.
 		 *
-		 * @param tArea ‘—Mæ‚ÌƒeƒLƒXƒgƒGƒŠƒA.<Br>
+		 * @param tArea é€ä¿¡å…ˆã®ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢.<Br>
 		 */
 		private VisualStream(StreamTextArea tArea) {
 			this.tArea = tArea;

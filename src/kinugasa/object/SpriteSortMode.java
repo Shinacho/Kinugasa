@@ -27,7 +27,7 @@ import java.util.Comparator;
 import kinugasa.util.Random;
 
 /**
- * CompositeSprite‚Ìƒ\[ƒg•ûŒü‚ğw’è‚·‚éƒRƒ“ƒpƒŒ[ƒ^‚Å‚·.
+ * CompositeSpriteã®ã‚½ãƒ¼ãƒˆæ–¹å‘ã‚’æŒ‡å®šã™ã‚‹ã‚³ãƒ³ãƒ‘ãƒ¬ãƒ¼ã‚¿ã§ã™.
  * <br>
  *
  * <br>
@@ -37,24 +37,24 @@ import kinugasa.util.Random;
  */
 public enum SpriteSortMode implements Comparator<Sprite> {
 
-	/** ‚±‚Ì—ñ‹“‚ğw’è‚·‚é‚ÆA•`‰æ‡‚ÍZ²À•W‚Ì‘å‚«‚¢‡‚É‚È‚è‚Ü‚·.
-	 * ‚µ‚½‚ª‚Á‚ÄAZ²À•W‚Ì¬‚³‚ÈƒXƒvƒ‰ƒCƒg‚ªè‘O‚É•\¦‚³‚ê‚Ü‚·. */
+	/** ã“ã®åˆ—æŒ™ã‚’æŒ‡å®šã™ã‚‹ã¨ã€æç”»é †ã¯Zè»¸åº§æ¨™ã®å¤§ãã„é †ã«ãªã‚Šã¾ã™.
+	 * ã—ãŸãŒã£ã¦ã€Zè»¸åº§æ¨™ã®å°ã•ãªã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãŒæ‰‹å‰ã«è¡¨ç¤ºã•ã‚Œã¾ã™. */
 	FRONT_TO_BACK {
 		@Override
 		public int compare(Sprite s1, Sprite s2) {
 			return java.lang.Float.compare(s2.getZ(), s1.getZ());
 		}
 	},
-	/** ‚±‚Ì—ñ‹“‚ğw’è‚·‚é‚ÆA•`‰æ‡‚ÍZ²À•W‚Ì¬‚³‚¢‡‚É‚È‚è‚Ü‚·.
-	 * ‚µ‚½‚ª‚Á‚ÄAZ²À•W‚Ì‘å‚«‚ÈƒXƒvƒ‰ƒCƒg‚ªè‘O‚É•\¦‚³‚ê‚Ü‚·. */
+	/** ã“ã®åˆ—æŒ™ã‚’æŒ‡å®šã™ã‚‹ã¨ã€æç”»é †ã¯Zè»¸åº§æ¨™ã®å°ã•ã„é †ã«ãªã‚Šã¾ã™.
+	 * ã—ãŸãŒã£ã¦ã€Zè»¸åº§æ¨™ã®å¤§ããªã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãŒæ‰‹å‰ã«è¡¨ç¤ºã•ã‚Œã¾ã™. */
 	BACK_TO_FRONT {
 		@Override
 		public int compare(Sprite s1, Sprite s2) {
 			return java.lang.Float.compare(s1.getZ(), s2.getZ());
 		}
 	},
-	/** ‚±‚Ì—ñ‹“‚ğw’è‚·‚é‚ÆAg—p‚·‚é‚½‚Ñ‚ÉˆÙ‚È‚é–Å’ƒ‹ê’ƒ‚È‡”Ô‚É•À‚Ñ‘Ö‚¦‚Ü‚·.
-	 * ‚±‚Ì—ñ‹“‚Í21—”ƒWƒFƒlƒŒ[ƒ^itwoone.util.Randomj‚ğg—p‚µ‚Ü‚·. */
+	/** ã“ã®åˆ—æŒ™ã‚’æŒ‡å®šã™ã‚‹ã¨ã€ä½¿ç”¨ã™ã‚‹ãŸã³ã«ç•°ãªã‚‹æ»…èŒ¶è‹¦èŒ¶ãªé †ç•ªã«ä¸¦ã³æ›¿ãˆã¾ã™.
+	 * ã“ã®åˆ—æŒ™ã¯21ä¹±æ•°ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ï¼ˆtwoone.util.Randomï¼‰ã‚’ä½¿ç”¨ã—ã¾ã™. */
 	RANDOM {
 		@Override
 		public int compare(Sprite s1, Sprite s2) {

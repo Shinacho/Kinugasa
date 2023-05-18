@@ -24,44 +24,44 @@
 package kinugasa.game.system;
 
 /**
- * �o�g���A�N�V�����̌��ʑΏۂł��B
+ * バトルアクションの効果対象です。
  *
  * @vesion 1.0.0 - 2022/11/16_10:48:45<br>
  * @author Shinacho<br>
  */
 public enum TargetType {
 	/**
-	 * ���g�̂݁B
+	 * 自身のみ。
 	 */
 	SELF,
 	/**
-	 * �Ώۈ�l�B�B
+	 * 対象一人。。
 	 */
 	ONE_ENEMY,
 	ONE_PARTY,
 	/**
-	 * �G�S�̂܂��͖����S�́B
+	 * 敵全体または味方全体。
 	 */
 	TEAM_PARTY,
 	TEAM_ENEMY,
 	/**
-	 * �G�����S�́B
+	 * 敵味方全体。
 	 */
 	ALL,
 	/**
-	 * �t�B�[���h�B����ȍ�p�ł��B
+	 * フィールド。特殊な作用です。
 	 */
 	FIELD,
 	/**
-	 * �����_���ȕW�I�i�����܂ށB
+	 * ランダムな標的（味方含む。
 	 */
 	RANDOM_ONE,
 	/**
-	 * �����_���ȕW�I�i�G�̂݁B����𕡐���`���邱�ƂŐ��̂ւ̍U���������ł��邾�낤
+	 * ランダムな標的（敵のみ。これを複数定義することで数体への攻撃が実装できるだろう
 	 */
 	RANDOM_ONE_ENEMY,
 	/**
-	 * �����_���ȃp�[�e�B�����o�[
+	 * ランダムなパーティメンバー
 	 */
 	RANDOM_ONE_PARTY,;
 

@@ -39,7 +39,7 @@ import kinugasa.game.ui.DialogOption;
 import kinugasa.game.ui.GameLauncher;
 
 /**
- * ƒQ[ƒ€‹N“®‚Ì‰æ–ÊƒTƒCƒY‚È‚Ç‚Ìİ’è‚Å‚·BƒQ[ƒ€‹N“®Œã‚É‚±‚ÌƒNƒ‰ƒX‚ğ•ÏX‚µ‚Ä‚àA”½‰f‚³‚ê‚Ü‚¹‚ñB
+ * ã‚²ãƒ¼ãƒ èµ·å‹•æ™‚ã®ç”»é¢ã‚µã‚¤ã‚ºãªã©ã®è¨­å®šã§ã™ã€‚ã‚²ãƒ¼ãƒ èµ·å‹•å¾Œã«ã“ã®ã‚¯ãƒ©ã‚¹ã‚’å¤‰æ›´ã—ã¦ã‚‚ã€åæ˜ ã•ã‚Œã¾ã›ã‚“ã€‚
  *
  * @vesion 1.0.0 - 2021/08/17_5:42:55<br>
  * @author Shinacho<br>
@@ -224,7 +224,7 @@ public class GameOption {
 			Thread.sleep(300);
 		} catch (InterruptedException ex) {
 		}
-		//GL•\¦’†‚Í‚±‚ÌƒXƒŒƒbƒh‚ğ~‚ß‚é
+		//GLè¡¨ç¤ºä¸­ã¯ã“ã®ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’æ­¢ã‚ã‚‹
 		while (gl.isVisible()) {
 			try {
 				Thread.sleep(300);

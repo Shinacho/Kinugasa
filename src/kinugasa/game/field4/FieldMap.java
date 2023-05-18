@@ -131,8 +131,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	//------------------------------------------------
 	private FieldMapCamera camera;
 	//------------------------------------------------
-	private int chipW, chipH;//1ƒ^ƒCƒ‹‚ÌƒTƒCƒY
-	private D2Idx currentIdx;// ©ƒLƒƒƒ‰ƒNƒ^•\¦ƒf[ƒ^À•W
+	private int chipW, chipH;//1ã‚¿ã‚¤ãƒ«ã®ã‚µã‚¤ã‚º
+	private D2Idx currentIdx;// è‡ªã‚­ãƒ£ãƒ©ã‚¯ã‚¿è¡¨ç¤ºãƒ‡ãƒ¼ã‚¿åº§æ¨™
 	//------------------------------------------------
 	private static boolean debugMode = false;
 	//
@@ -258,13 +258,13 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
 		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
 
-		//–‘O‚É•Êİ’è‚³‚ê‚½ƒeƒLƒXƒgƒXƒgƒŒ[ƒW‚Ìæ“¾
-		//ƒeƒLƒXƒg‚Ì‚È‚¢ƒ}ƒbƒv‚Ìê‡Aƒ[ƒh‚µ‚È‚¢‚±‚Æ‚ğ‹–‰Â‚·‚é
+		//äº‹å‰ã«åˆ¥è¨­å®šã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã®å–å¾—
+		//ãƒ†ã‚­ã‚¹ãƒˆã®ãªã„ãƒãƒƒãƒ—ã®å ´åˆã€ãƒ­ãƒ¼ãƒ‰ã—ãªã„ã“ã¨ã‚’è¨±å¯ã™ã‚‹
 		if (root.getAttributes().contains("textStorageName")) {
 			String textStorageName = root.getAttributes().get("textStorageName").getValue();
 			textStorage = TextStorageStorage.getInstance().get(textStorageName).build();
 		}
-		//ƒtƒB[ƒ‹ƒhƒCƒxƒ“ƒgƒXƒgƒŒ[ƒW‚Ìì¬
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚¤ãƒ™ãƒ³ãƒˆã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã®ä½œæˆ
 		if (root.getAttributes().contains("eventStorageName")) {
 			String fieldEventStorageName = root.getAttributes().get("eventStorageName").getValue();
 			fieldEventStorage = FieldEventStorageStorage.getInstance().contains("fieldEventStorageName")
@@ -272,11 +272,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 					: new FieldEventStorage(fieldEventStorageName);
 		}
 
-		//ƒGƒ“ƒJƒEƒ“ƒgƒ}ƒbƒv‚Ì–¼‘O
+		//ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆãƒãƒƒãƒ—ã®åå‰
 		enemyStorageName = root.getAttributes().contains("esName") ? root.getAttributes().get("esName").getValue() : null;
 
-		//ƒGƒ“ƒJƒEƒ“ƒgƒJƒEƒ“ƒ^[‚Ìˆ—
-		//’è‹`‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍƒGƒ“ƒJƒEƒ“ƒg‚µ‚È‚¢
+		//ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆã‚«ã‚¦ãƒ³ã‚¿ãƒ¼ã®å‡¦ç†
+		//å®šç¾©ã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆã—ãªã„
 		if (root.getAttributes().contains("encountCounterDefault")) {
 			this.encountCounter = new ManualTimeCounter(root.getAttributes().get("encountCounterDefault").getIntValue());
 			int r = encountCounter.getCurrentTime();
@@ -288,13 +288,13 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			this.encountCounter = ManualTimeCounter.FALSE;
 		}
 
-		//FM•`‰æ”{—¦‚ğæ“¾
+		//FMæç”»å€ç‡ã‚’å–å¾—
 		mg = 1;
 		if (root.hasAttribute("mg")) {
 			mg = root.getAttributes().get("mg").getFloatValue();
 		}
 
-		// ƒoƒbƒNƒOƒ‰ƒEƒ“ƒhƒŒƒCƒ„[
+		// ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ãƒ¬ã‚¤ãƒ¤ãƒ¼
 		{
 			if (root.getElement("background").size() >= 2) {
 				throw new FieldMapDataException("background must be 0 or 1 : " + data);
@@ -316,7 +316,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 		}
 
-		//o“ü‚èŒûƒm[ƒh
+		//å‡ºå…¥ã‚Šå£ãƒãƒ¼ãƒ‰
 		{
 			for (XMLElement e : root.getElement("inOutNode")) {
 				String name = e.getAttributes().get("name").getValue();
@@ -336,7 +336,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				nodeStorage.add(node);
 			}
 		}
-		//oŒûê—pƒm[ƒh
+		//å‡ºå£å°‚ç”¨ãƒãƒ¼ãƒ‰
 		{
 			for (XMLElement e : root.getElement("outNode")) {
 				String name = e.getAttributes().get("name").getValue();
@@ -349,9 +349,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 
 		}
-		// ƒoƒbƒNƒŒƒCƒ„[
+		// ãƒãƒƒã‚¯ãƒ¬ã‚¤ãƒ¤ãƒ¼
 		{
-			//	ƒoƒbƒNƒŒƒCƒ„[‚ª1‚ÂˆÈã‚È‚¢ê‡ƒGƒ‰[
+			//	ãƒãƒƒã‚¯ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒ1ã¤ä»¥ä¸Šãªã„å ´åˆã‚¨ãƒ©ãƒ¼
 			if (root.getElement("backLayer").isEmpty()) {
 				throw new FieldMapDataException("backLayer is need 1 or more");
 			}
@@ -375,7 +375,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 
 		}
-		// ƒtƒƒ“ƒgƒŒƒCƒ„[
+		// ãƒ•ãƒ­ãƒ³ãƒˆãƒ¬ã‚¤ãƒ¤ãƒ¼
 		{
 			for (XMLElement e : root.getElement("frontLayer")) {
 				MapChipSet chipset = MapChipSetStorage.getInstance().get(e.getAttributes().get("chipSet").getValue());
@@ -398,7 +398,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 		}
 
-		//ƒrƒtƒHƒAƒŒƒCƒ„[
+		//ãƒ“ãƒ•ã‚©ã‚¢ãƒ¬ã‚¤ãƒ¤ãƒ¼
 		{
 			for (XMLElement e : root.getElement("before")) {
 				String name = e.getAttributes().get("name").getValue();
@@ -418,11 +418,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 
 		}
-		// ƒ`ƒbƒvƒTƒCƒY‚Ìæ“¾
+		// ãƒãƒƒãƒ—ã‚µã‚¤ã‚ºã®å–å¾—
 		chipW = (int) (getBaseLayer().getChip(0, 0).getImage().getWidth() * mg);
 		chipH = (int) (getBaseLayer().getChip(0, 0).getImage().getHeight() * mg);
 
-		//ƒAƒjƒ[ƒVƒ‡ƒ“
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 		{
 			for (XMLElement e : root.getElement("animation")) {
 				int x = e.getAttributes().get("x").getIntValue();
@@ -439,7 +439,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 
 		}
-		//ƒCƒxƒ“ƒg
+		//ã‚¤ãƒ™ãƒ³ãƒˆ
 		{
 			for (XMLElement e : root.getElement("event")) {
 				int x = e.getAttributes().get("x").getIntValue();
@@ -452,14 +452,14 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 		data.dispose();
 
-		// ƒJƒƒ‰‰Šú‰»
+		// ã‚«ãƒ¡ãƒ©åˆæœŸåŒ–
 		camera = new FieldMapCamera(this);
 
 		//NPC
 		{
 			for (XMLElement e : root.getElement("npc")) {
 				String name = e.getAttributes().get("name").getValue();
-				//íœ‚³‚ê‚½NPC‚Ìê‡‚Í’Ç‰Á‚µ‚È‚¢
+				//å‰Šé™¤ã•ã‚ŒãŸNPCã®å ´åˆã¯è¿½åŠ ã—ãªã„
 				if (removedNPC.containsKey(this.getName())) {
 					if (removedNPC.get(getName()).contains(name)) {
 						continue;
@@ -467,7 +467,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				}
 				String initialIdxStr = e.getAttributes().get("initialIdx").getValue();
 				D2Idx idx = new D2Idx(Integer.parseInt(initialIdxStr.split(",")[0]), Integer.parseInt(initialIdxStr.split(",")[1]));
-				// —Ìˆæ‚Ìƒ`ƒFƒbƒN
+				// é ˜åŸŸã®ãƒã‚§ãƒƒã‚¯
 				if (!getBaseLayer().include(idx)) {
 					throw new FieldMapDataException("npc : " + name + " is out of bounds");
 				}
@@ -511,13 +511,13 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				float y = getBaseLayer().getY() + idx.y * chipH;
 				npcStorage.add(new NPC(name, currentIdx, moveModel, v, this, textID, x, y, w, h, idx, anime, initialDir));
 			}
-			//’Ç‰ÁNPC‚ğİ’è
+			//è¿½åŠ NPCã‚’è¨­å®š
 			if (addedNPC.containsKey(getName())) {
 				npcStorage.addAll(addedNPC.get(getName()));
 			}
 		}
 
-		//BGM‚Ìˆ—
+		//BGMã®å‡¦ç†
 		{
 			if (root.getElement("bgm").size() >= 2) {
 				throw new FieldMapDataException("bgm must be 0 or 1 : " + data);
@@ -685,7 +685,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		D2Idx prevIdx = currentIdx.clone();
 		camera.move();
 		if (!prevIdx.equals(currentIdx)) {
-			//V‚µ‚¢ƒ`ƒbƒv‚Éæ‚Á‚½ê‡AƒGƒ“ƒJƒEƒ“ƒgƒJƒEƒ“ƒ^[‚Ìˆ—
+			//æ–°ã—ã„ãƒãƒƒãƒ—ã«ä¹—ã£ãŸå ´åˆã€ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆã‚«ã‚¦ãƒ³ã‚¿ãƒ¼ã®å‡¦ç†
 			int x = 0;
 			for (MapChip c : getCurrentTile().getChip()) {
 				x += c.getAttr().getEncountBaseValue();
@@ -792,18 +792,18 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	}
 
 	/**
-	 * ƒvƒŒƒCƒ„[‚ÌÀ•W‚ğXV‚µ‚Ü‚·Bx,y‚ª’†SiƒvƒŒƒCƒ„[ƒƒP[ƒVƒ‡ƒ“j‚É‚È‚é‚æ‚¤‚Éƒ}ƒbƒv‚Ì•\¦À•W‚ğİ’è‚µ‚Ü‚·B
-	 * ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍAˆÚ“®‰Â”\‚©‚Ç‚¤‚©‚Ì”»’è‚Ís‚¢‚Ü‚¹‚ñBˆÚ“®”»’è‚ÍgetTile‚©‚çs‚Á‚Ä‚­‚¾‚³‚¢B
+	 * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åº§æ¨™ã‚’æ›´æ–°ã—ã¾ã™ã€‚x,yãŒä¸­å¿ƒï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ­ã‚±ãƒ¼ã‚·ãƒ§ãƒ³ï¼‰ã«ãªã‚‹ã‚ˆã†ã«ãƒãƒƒãƒ—ã®è¡¨ç¤ºåº§æ¨™ã‚’è¨­å®šã—ã¾ã™ã€‚
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã€ç§»å‹•å¯èƒ½ã‹ã©ã†ã‹ã®åˆ¤å®šã¯è¡Œã„ã¾ã›ã‚“ã€‚ç§»å‹•åˆ¤å®šã¯getTileã‹ã‚‰è¡Œã£ã¦ãã ã•ã„ã€‚
 	 *
-	 * @param idx ƒ}ƒbƒvƒf[ƒ^‚ÌƒCƒ“ƒfƒbƒNƒXB
+	 * @param idx ãƒãƒƒãƒ—ãƒ‡ãƒ¼ã‚¿ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã€‚
 	 */
 	public void setCurrentIdx(D2Idx idx) {
 		if (!idx.equals(currentIdx)) {
 			if (fieldEventStorage != null) {
-				//ƒCƒxƒ“ƒg‚ÌÀs
+				//ã‚¤ãƒ™ãƒ³ãƒˆã®å®Ÿè¡Œ
 				List<FieldEvent> e = fieldEventStorage.get(idx);
 				Collections.sort(e);
-				//©“®”­“®ƒCƒxƒ“ƒg‚Ìİ’è
+				//è‡ªå‹•ç™ºå‹•ã‚¤ãƒ™ãƒ³ãƒˆã®è¨­å®š
 				FieldEventSystem.getInstance().setEvent(new LinkedList<>(e));
 			}
 		}
@@ -812,13 +812,13 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	}
 
 	/**
-	 * ƒtƒB[ƒ‹ƒhƒ}ƒbƒv‚ÌƒLƒƒƒ‰ƒNƒ^‚ÆƒrƒtƒHƒAƒŒƒCƒ„[ˆÈŠO‚ğ•`‰æ‚µ‚½‰æ‘œ‚ğ¶¬‚µ‚Ü‚·B
-	 * ƒoƒbƒNƒOƒ‰ƒEƒ“ƒh‹y‚Ñƒtƒƒ“ƒgƒAƒjƒ[ƒVƒ‡ƒ“‚ÍAŒ»İ‚Ìó‘Ô‚ªg—p‚³‚ê‚Ü‚·B NPC‹y‚ÑƒLƒƒƒ‰ƒNƒ^‚Í•\¦‚³‚ê‚Ü‚¹‚ñB
+	 * ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒãƒƒãƒ—ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã¨ãƒ“ãƒ•ã‚©ã‚¢ãƒ¬ã‚¤ãƒ¤ãƒ¼ä»¥å¤–ã‚’æç”»ã—ãŸç”»åƒã‚’ç”Ÿæˆã—ã¾ã™ã€‚
+	 * ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰åŠã³ãƒ•ãƒ­ãƒ³ãƒˆã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã¯ã€ç¾åœ¨ã®çŠ¶æ…‹ãŒä½¿ç”¨ã•ã‚Œã¾ã™ã€‚ NPCåŠã³ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã¯è¡¨ç¤ºã•ã‚Œã¾ã›ã‚“ã€‚
 	 *
-	 * @param w •ƒsƒNƒZƒ‹
-	 * @param h ‚‚³ƒsƒNƒZƒ‹
-	 * @param pcLocation PC‚ÌˆÊ’u‚É“_‚ğ‘Å‚Â‚©B
-	 * @return w’è‚ÌŠg‘å—¦‚Å•`‰æ‚³‚ê‚½‰æ‘œB
+	 * @param w å¹…ãƒ”ã‚¯ã‚»ãƒ«
+	 * @param h é«˜ã•ãƒ”ã‚¯ã‚»ãƒ«
+	 * @param pcLocation PCã®ä½ç½®ã«ç‚¹ã‚’æ‰“ã¤ã‹ã€‚
+	 * @return æŒ‡å®šã®æ‹¡å¤§ç‡ã§æç”»ã•ã‚ŒãŸç”»åƒã€‚
 	 */
 	public KImage createMiniMap(int w, int h, boolean pcLocation) {
 
@@ -840,7 +840,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 		for (int i = 0, y = 0; y < baseImage.length; y++) {
 			for (int x = 0; x < baseImage[y].length; x++) {
-				//ƒx[ƒXƒCƒ[ƒWyx‚É“§–¾ƒ^ƒCƒ‹‚ª‚ ‚éê‡‚Í‚±‚Ìƒ^ƒCƒ‹‚ğƒXƒLƒbƒv‚·‚é
+				//ãƒ™ãƒ¼ã‚¹ã‚¤ãƒ¡ãƒ¼ã‚¸yxã«é€æ˜ã‚¿ã‚¤ãƒ«ãŒã‚ã‚‹å ´åˆã¯ã“ã®ã‚¿ã‚¤ãƒ«ã‚’ã‚¹ã‚­ãƒƒãƒ—ã™ã‚‹
 				if (ImageUtil.hasClaerPixcel(baseImage[y][x])) {
 					i++;
 					continue;
@@ -862,7 +862,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		ImageUtil.setPixel(image, pix);
 		baseImage = null;
 
-		//ƒXƒP[ƒ‹ŒvZ
+		//ã‚¹ã‚±ãƒ¼ãƒ«è¨ˆç®—
 		float ws = w / image.getWidth();
 		float hs = h / image.getHeight();
 
@@ -872,7 +872,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 	public boolean canTalk() {
 		D2Idx idx = playerDirIdx();
-		// ”ÍˆÍŠO‚Ìƒ`ƒFƒbƒN
+		// ç¯„å›²å¤–ã®ãƒã‚§ãƒƒã‚¯
 		if (idx.x < 0 || idx.y < 0) {
 			return false;
 		}
@@ -880,11 +880,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			return false;
 		}
 
-		//NPC‚ª‚¢‚é‚©‚Ç‚¤‚©‚ğ•Ô‚·
+		//NPCãŒã„ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã™
 		return getTile(idx).getNpc() != null;
 	}
 
-	//ƒvƒŒƒCƒ„[‚ÌŒü‚¢‚Ä‚¢‚é•ûŒü‚ÌD2IDX‚ğ•Ô‚µ‚Ü‚·B
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã„ã¦ã„ã‚‹æ–¹å‘ã®D2IDXã‚’è¿”ã—ã¾ã™ã€‚
 	public D2Idx playerDirIdx() {
 		D2Idx idx = this.currentIdx.clone();
 		FourDirection currentDir = playerCharacter.get(0).getCurrentDir();
@@ -922,11 +922,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private MessageWindow mw;
 
 	/**
-	 * ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^‚ÌŒü‚¢‚Ä‚¢‚é•ûŒü‚É‚¢‚éNPC‚É‘Î‚µ‚ÄA‚¢‚¢Š´‚¶‚ÌˆÊ’u‚ÉƒƒbƒZ-[ƒEƒCƒ“ƒhƒE‚ğ•\¦‚µ‚Ü‚·B
-	 * ƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒE‚Ìƒ‚ƒfƒ‹‚ÍSimpleMessageWindowModel‚ªg—p‚³‚ê‚Ü‚·B
+	 * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã®å‘ã„ã¦ã„ã‚‹æ–¹å‘ã«ã„ã‚‹NPCã«å¯¾ã—ã¦ã€ã„ã„æ„Ÿã˜ã®ä½ç½®ã«ãƒ¡ãƒƒã‚»-ãƒ¼ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
+	 * ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒ¢ãƒ‡ãƒ«ã¯SimpleMessageWindowModelãŒä½¿ç”¨ã•ã‚Œã¾ã™ã€‚
 	 *
 	 * @return
-	 * ƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒEBNPC‚ª‚¢‚È‚¢ê‡‚ÍnoNPCMessage‚ğ•\¦‚µ‚Ü‚·B‚½‚¾‚µA‚±‚ê‚Í—áŠOˆ’u“I‚È‚à‚Ì‚ÅA‚±‚Ì§Œä‚ÍAƒQ[ƒ€ƒ}ƒl[ƒWƒƒ‘¤‚Ås‚¤‚×‚«‚Å‚·B
+	 * ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã€‚NPCãŒã„ãªã„å ´åˆã¯noNPCMessageã‚’è¡¨ç¤ºã—ã¾ã™ã€‚ãŸã ã—ã€ã“ã‚Œã¯ä¾‹å¤–å‡¦ç½®çš„ãªã‚‚ã®ã§ã€ã“ã®åˆ¶å¾¡ã¯ã€ã‚²ãƒ¼ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£å´ã§è¡Œã†ã¹ãã§ã™ã€‚
 	 */
 	public MessageWindow talk() {
 		D2Idx idx = playerDirIdx();
@@ -934,7 +934,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (n != null) {
 			n.notMove();
 		}
-		//NPC‚ª‰æ–Ê‰º”¼•ª‚É‚¢‚éê‡‚ÍƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒE‚ğã‚É•\¦Bã”¼•ª‚É‚¢‚éê‡‚Í‰º‚É•\¦B
+		//NPCãŒç”»é¢ä¸‹åŠåˆ†ã«ã„ã‚‹å ´åˆã¯ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’ä¸Šã«è¡¨ç¤ºã€‚ä¸ŠåŠåˆ†ã«ã„ã‚‹å ´åˆã¯ä¸‹ã«è¡¨ç¤ºã€‚
 		float buffer = 24;
 		float x = buffer;
 		float y = n == null || n.getCenterY() < GameOption.getInstance().getWindowSize().width / 2
@@ -957,7 +957,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	}
 
 	/**
-	 * ƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒE‚ğ•Â‚¶‚Ü‚·B‚Â‚¢‚Å‚ÉNPC‚ÌˆÚ“®‚ğ‰ğœ‚µ‚Ü‚·B
+	 * ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã¾ã™ã€‚ã¤ã„ã§ã«NPCã®ç§»å‹•ã‚’è§£é™¤ã—ã¾ã™ã€‚
 	 */
 	public void closeMessagWindow() {
 		if (mw == null) {
@@ -979,14 +979,14 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	}
 
 	/**
-	 * NPC‚ÌˆÚ“®‚ğˆêŠ‡’â~‚µ‚Ü‚·B
+	 * NPCã®ç§»å‹•ã‚’ä¸€æ‹¬åœæ­¢ã—ã¾ã™ã€‚
 	 */
 	public void NPCMoveStop() {
 		npcStorage.forEach(c -> c.notMove());
 	}
 
 	/**
-	 * NPC‚ÌˆÚ“®’â~‚ğˆêŠ‡‰ğœ‚µ‚Ü‚·B
+	 * NPCã®ç§»å‹•åœæ­¢ã‚’ä¸€æ‹¬è§£é™¤ã—ã¾ã™ã€‚
 	 */
 	public void NPCMoveStart() {
 		npcStorage.forEach(c -> c.canMove());

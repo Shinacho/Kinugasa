@@ -30,7 +30,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 /**
- * ”z—ñ‚Ì‘€ì‚â—v‘f‚ÌŒŸ¸ƒ†[ƒeƒBƒŠƒeƒB‚Å‚·.
+ * é…åˆ—ã®æ“ä½œã‚„è¦ç´ ã®æ¤œæŸ»ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ã§ã™.
  * <br>
  *
  * <br>
@@ -41,17 +41,17 @@ import java.io.PrintWriter;
 public final class ArrayUtil {
 
 	/**
-	 * ƒCƒ“ƒXƒ^ƒ“ƒX‰»‚Å‚«‚Ü‚¹‚ñ.
+	 * ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã§ãã¾ã›ã‚“.
 	 */
 	private ArrayUtil() {
 	}
 
 	/**
-	 * ”z—ñ‚ÌÅ‰‚ÌNULL—v‘f‚ÌƒCƒ“ƒfƒbƒNƒX‚ğ•Ô‚µ‚Ü‚·.
+	 * é…åˆ—ã®æœ€åˆã®NULLè¦ç´ ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param <T> ”z—ñ‚ÌŒ^‚Å‚·B<br>
-	 * @param array ”z—ñ‚ğ‘—M‚µ‚Ü‚·B<br>
-	 * @return Å‰‚É”­Œ©‚³‚ê‚½null—v‘f‚ÌˆÊ’u‚ğ•Ô‚µ‚Ü‚·B null—v‘f‚ª”­Œ©‚Å‚«‚È‚©‚Á‚½ê‡‚Í-1‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @param <T> é…åˆ—ã®å‹ã§ã™ã€‚<br>
+	 * @param array é…åˆ—ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
+	 * @return æœ€åˆã«ç™ºè¦‹ã•ã‚ŒãŸnullè¦ç´ ã®ä½ç½®ã‚’è¿”ã—ã¾ã™ã€‚ nullè¦ç´ ãŒç™ºè¦‹ã§ããªã‹ã£ãŸå ´åˆã¯-1ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static <T> int firstNull(T[] array) {
 		for (int i = 0; i < array.length; i++) {
@@ -63,12 +63,12 @@ public final class ArrayUtil {
 	}
 
 	/**
-	 * —v‘f‚ª”z—ñ‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚é‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * è¦ç´ ãŒé…åˆ—ã«å«ã¾ã‚Œã¦ã„ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @param <T> ”z—ñ‚ÌŒ^‚Å‚·B<br>
-	 * @param array ”z—ñ‚ğ‘—M‚µ‚Ü‚·B<br>
-	 * @param obj ŒŸõ‚·‚éƒIƒuƒWƒFƒNƒg‚Å‚·B<br>
-	 * @return obj‚ªarray“à‚É‘¶İ‚·‚éê‡‚ÍtrueA‚»‚¤‚Å‚È‚¢ê‡‚Ífalse‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @param <T> é…åˆ—ã®å‹ã§ã™ã€‚<br>
+	 * @param array é…åˆ—ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
+	 * @param obj æ¤œç´¢ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã§ã™ã€‚<br>
+	 * @return objãŒarrayå†…ã«å­˜åœ¨ã™ã‚‹å ´åˆã¯trueã€ãã†ã§ãªã„å ´åˆã¯falseã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static <T> boolean contains(T[] array, T obj) {
 		for (T array1 : array) {

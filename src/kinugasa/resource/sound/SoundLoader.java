@@ -31,10 +31,10 @@ import kinugasa.resource.text.CSVFile;
 import kinugasa.resource.FileNotFoundException;
 
 /**
- * BGM���t�H���_����T�E���h�}�b�v�Ɉꊇ�ݒ肷��N���X�ł��B. �w�肵���t�@�C���ɋL�ڂ���Ă���BGM���ꊇ�ݒ肵�܂��B
- * �t�@�C���`���́ACSV�ŁA�t�@�C�����A�}�X�^�[�Q�C���A���[�v�|�C���gFROM�ATO�̏���1���R�[�h1���̌`���ł��B
- * �T�E���h�}�b�v�̖��O�́uBGM�v�ɂȂ�܂��B<br>
- * �쐬���ꂽ�T�E���h�}�b�v�̓T�E���h�X�g���[�W�ɒǉ�����܂��B<br>
+ * BGMをフォルダからサウンドマップに一括設定するクラスです。. 指定したファイルに記載されているBGMを一括設定します。
+ * ファイル形式は、CSVで、ファイル名、マスターゲイン、ループポイントFROM、TOの順で1レコード1件の形式です。
+ * サウンドマップの名前は「BGM」になります。<br>
+ * 作成されたサウンドマップはサウンドストレージに追加されます。<br>
  *
  * @vesion 1.0.0 - 2022/11/07_10:06:46<br>
  * @author Shinacho<br>

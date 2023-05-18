@@ -27,9 +27,9 @@ import java.awt.Point;
 import java.awt.Shape;
 
 /**
- * �}�E�X�ɂ����͏�Ԃ��i�[���܂�.
+ * マウスによる入力状態を格納します.
  * <br>
- * AnyInput���胁�\�b�h�ł́A�}�E�X�J�[�\���̈ʒu��0,0�łȂ��ꍇ�� ���͂���Ɣ��肳��܂��B<br>
+ * AnyInput判定メソッドでは、マウスカーソルの位置が0,0でない場合も 入力ありと判定されます。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_14:08:38<br>
@@ -40,16 +40,16 @@ public final class MouseState extends InputDeviceState {
 	private static final long serialVersionUID = -7984070482396918667L;
 
 	/**
-	 * �}�E�X�̏�Ԃ��쐬���܂�.
+	 * マウスの状態を作成します.
 	 *
-	 * @param LEFT_BUTTON ���{�^���̓��͏�Ԃł��B<br>
-	 * @param RIGHT_BUTTON �E�{�^���̓��͏�Ԃł��B<br>
-	 * @param WHEEL_BUTTON �z�C�[���{�^���̓��͏�Ԃł��B<br>
-	 * @param IN_WINDOW �E�C���h�E�̈���ɂ���ꍇ��true�𑗐M���܂��B<br>
-	 * @param DRAG_NOW �h���b�O���̏ꍇ��true�𑗐M���܂��B<br>
-	 * @param WHEEL_VALUE ���O�ɓ��͂��ꂽ�z�C�[���̉�]�ʂł��B<br>
-	 * @param location �E�C���h�E��̃J�[�\���̈ʒu�ł��B<br>
-	 * @param locationOnScreen �B<br>
+	 * @param LEFT_BUTTON 左ボタンの入力状態です。<br>
+	 * @param RIGHT_BUTTON 右ボタンの入力状態です。<br>
+	 * @param WHEEL_BUTTON ホイールボタンの入力状態です。<br>
+	 * @param IN_WINDOW ウインドウ領域内にある場合はtrueを送信します。<br>
+	 * @param DRAG_NOW ドラッグ中の場合はtrueを送信します。<br>
+	 * @param WHEEL_VALUE 直前に入力されたホイールの回転量です。<br>
+	 * @param location ウインドウ上のカーソルの位置です。<br>
+	 * @param locationOnScreen 。<br>
 	 */
 	MouseState(
 			boolean LEFT_BUTTON,
@@ -73,39 +73,39 @@ public final class MouseState extends InputDeviceState {
 
 	}
 	/**
-	 * ���{�^���̓��͏�Ԃł�.
+	 * 左ボタンの入力状態です.
 	 */
 	public final boolean LEFT_BUTTON;
 	/**
-	 * �E�{�^���̓��͏�Ԃł�.
+	 * 右ボタンの入力状態です.
 	 */
 	public final boolean RIGHT_BUTTON;
 	/**
-	 * �z�C�[���{�^���̓��͏�Ԃł�.
+	 * ホイールボタンの入力状態です.
 	 */
 	public final boolean WHEEL_BUTTON;
 	/**
-	 * �E�C���h�E�̈���ɂ���ꍇ��true�𑗐M���܂�.
+	 * ウインドウ領域内にある場合はtrueを送信します.
 	 */
 	public final boolean IN_WINDOW;
 	/**
-	 * �h���b�O���̏ꍇ��true�𑗐M���܂�.
+	 * ドラッグ中の場合はtrueを送信します.
 	 */
 	public final boolean DRAG_NOW;
 	/**
-	 * ���O�ɓ��͂��ꂽ�z�C�[���̉�]�ʂł�.
+	 * 直前に入力されたホイールの回転量です.
 	 */
 	public final int WHEEL_VALUE;
 	/**
-	 * �E�C���h�E��̃J�[�\���̈ʒu�ł�.
+	 * ウインドウ上のカーソルの位置です.
 	 */
 	private Point location;
 	/**
-	 * �X�N���[����̃J�[�\���̈ʒu�ł�.
+	 * スクリーン上のカーソルの位置です.
 	 */
 	private Point locationOnScreen;
 	/**
-	 * 0,0��\�����W�ł�.
+	 * 0,0を表す座標です.
 	 */
 	private static final Point ZERO_POINT = new Point(0, 0);
 	private Point draggedLocation;
@@ -136,76 +136,76 @@ public final class MouseState extends InputDeviceState {
 	}
 
 	/**
-	 * �}�E�X�̃E�C���h�E��̈ʒu���擾���܂�.
-	 * ���̍��W�̓^�C�g���o�[���܂߂����W�ƂȂ�܂��̂ŁA���ۂɂ͂��̕␳���K�v�ł��B<br>
-	 * �␳�́AGame.gerWindow����s���܂��B<br>
+	 * マウスのウインドウ上の位置を取得します.
+	 * この座標はタイトルバーを含めた座標となりますので、実際にはその補正が必要です。<br>
+	 * 補正は、Game.gerWindowから行います。<br>
 	 *
-	 * @return �E�C���h�E��̈ʒu�̃N���[���ł��B<br>
+	 * @return ウインドウ上の位置のクローンです。<br>
 	 */
 	public Point getLocation() {
 		return (Point) location.clone();
 	}
 
 	/**
-	 * �E�C���h�E��̍��W���擾���܂�.
+	 * ウインドウ上の座標を取得します.
 	 *
-	 * @return �E�C���h�E�̈ʒu�����X�ʒu��Ԃ��܂��B
+	 * @return ウインドウの位置からのX位置を返します。
 	 */
 	public int getX() {
 		return location.x;
 	}
 
 	/**
-	 * �E�C���h�E��̍��W���擾���܂�.
+	 * ウインドウ上の座標を取得します.
 	 *
-	 * @return �E�C���h�E�̈ʒu�����Y�u��Ԃ��܂��B
+	 * @return ウインドウの位置からのY置を返します。
 	 */
 	public int getY() {
 		return location.y;
 	}
 
 	/**
-	 * �}�E�X�̃X�N���[����̈ʒu���擾���܂�.
+	 * マウスのスクリーン上の位置を取得します.
 	 *
-	 * @return �X�N���[����̈ʒu�̃N���[���ł��B<br>
+	 * @return スクリーン上の位置のクローンです。<br>
 	 */
 	public Point getLocationOnScreen() {
 		return (Point) locationOnScreen.clone();
 	}
 
 	/**
-	 * �X�N���[����̈ʒu���擾���܂�.
+	 * スクリーン上の位置を取得します.
 	 *
-	 * @return �X�N���[���̍��ォ���X�ʒu��Ԃ��܂��B
+	 * @return スクリーンの左上からのX位置を返します。
 	 */
 	public int getXOnScreen() {
 		return locationOnScreen.x;
 	}
 
 	/**
-	 * �X�N���[����̈ʒu���擾���܂�.
+	 * スクリーン上の位置を取得します.
 	 *
-	 * @return �X�N���[���̍��ォ���Y�ʒu��Ԃ��܂��B
+	 * @return スクリーンの左上からのY位置を返します。
 	 */
 	public int getYOnScreen() {
 		return locationOnScreen.y;
 	}
 
 	/**
-	 * �E�C���h�E��̃}�E�X�̈ʒu���Ashape���ɂ��邩�𒲂ׂ܂�.
+	 * ウインドウ上のマウスの位置が、shape内にあるかを調べます.
 	 *
-	 * @param shape ���肷��̈�𑗐M���܂��B<br>
-	 * @return �E�C���h�E��̃J�[�\���ʒu��shape���ɂ���ꍇ��true��Ԃ��܂��B<br>
+	 * @param shape 判定する領域を送信します。<br>
+	 * @return ウインドウ上のカーソル位置がshape内にある場合はtrueを返します。<br>
 	 */
 	public boolean contains(Shape shape) {
 		return shape == null ? false : LEFT_BUTTON & shape.contains(location);
 	}
 
 	/**
-	 * �}�E�X�{�^����������Ă��邩���������܂�.
+	 * マウスボタンが押されているかを検査します.
 	 *
-	 * @param button ��������{�^�����w�肵�܂��B<br>
-	 * @return �w�肳�ꂽ�{�^����������Ă���ꍇ��true��Ԃ��܂��B<br>
+	 * @param button 検査するボタンを指定します。<br>
+	 * @return 指定されたボタンが押されている場合にtrueを返します。<br>
 	 */
 	public boolean isPressed(MouseButtons button) {
 		switch (button) {

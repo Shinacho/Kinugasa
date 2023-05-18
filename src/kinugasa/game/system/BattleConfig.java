@@ -45,7 +45,7 @@ public class BattleConfig {
 		public static String move = "MOV";
 		public static String exp = "EXP";
 		public static String str = "STR";
-		//ƒ_ƒ[ƒWŒvZ
+		//ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—
 		public static String critAtk = "CRT_P";
 		public static String critMgk = "M_CRT_P";
 		public static String critAtkVal = "CRT_V";
@@ -63,7 +63,7 @@ public class BattleConfig {
 		
 	}
 	
-	public static float atkDefPercent = 0.75f;//ƒ_ƒ[ƒWŒø—¦
+	public static float atkDefPercent = 0.75f;//ãƒ€ãƒ¡ãƒ¼ã‚¸åŠ¹ç‡
 	public static float damageMul = 2.5f;
 	public static String weaponSlotName = "";
 

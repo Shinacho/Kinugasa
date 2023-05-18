@@ -27,11 +27,11 @@ import kinugasa.object.Model;
 
 
 /**
- * ���̓f�o�C�X�̏�Ԃ��i�[���郂�f���̃X�[�p�[�N���X�ł�.
+ * 入力デバイスの状態を格納するモデルのスーパークラスです.
  * <br>
- * ���̓f�o�C�X�̏�Ԃ́A�N���[�j���O�\�ł��B
+ * 入力デバイスの状態は、クローニング可能です。
  * <br>
- * ��Ԃ͕ύX����Ȃ��悤�ɁA�f�[�^���J�v�Z��������K�v������܂��B<br>
+ * 状態は変更されないように、データをカプセル化する必要があります。<br>
  * <br>
  * @version 1.0.0 - 2013/04/20_21:27:02<br>
  * @author Shinacho<br>
@@ -39,35 +39,35 @@ import kinugasa.object.Model;
 public abstract class InputDeviceState extends Model {
 
 	/**
-	 * �T�u�N���X����̂݃C���X�^���X���ł��܂�.
+	 * サブクラスからのみインスタンス化できます.
 	 */
 	protected InputDeviceState() {
 	}
 
 	/**
-	 * �������_�ŁA���炩�̓��͂����邩�𒲂ׂ܂�.
+	 * 検査時点で、何らかの入力があるかを調べます.
 	 *
-	 * ���̃��\�b�h�ɂ���Č��������A�f�o�C�X�̗v�f�́A�����ɂ���ĈقȂ�܂��B<br>
+	 * このメソッドによって検査される、デバイスの要素は、実装によって異なります。<br>
 	 *
-	 * @return ���炩�̓��͂�����ꍇ��true��Ԃ��܂��B<br>
+	 * @return 何らかの入力がある場合にtrueを返します。<br>
 	 */
 	public abstract boolean isAnyInput();
 
 	/**
-	 * �������_�ŁA���炩�̃{�^����������Ă��邩�𒲂ׂ܂�.
+	 * 検査時点で、何らかのボタンが押されているかを調べます.
 	 *
-	 * ���̃��\�b�h�ɂ���Č��������A�f�o�C�X�̗v�f�́A�����ɂ���ĈقȂ�܂��B<br>
+	 * このメソッドによって検査される、デバイスの要素は、実装によって異なります。<br>
 	 *
-	 * @return ���炩�̃{�^����������Ă���ꍇ��true��Ԃ��܂��B<br>
+	 * @return 何らかのボタンが押されている場合はtrueを返します。<br>
 	 */
 	public abstract boolean isAnyButtonInput();
 
 	/**
-	 * �������_�ŁA�������͂���Ă��Ȃ����𒲂ׂ܂�.
+	 * 検査時点で、何も入力されていないかを調べます.
 	 *
-	 * ���̃��\�b�h�ɂ���Č��������A�f�o�C�X�̗v�f�́A�����ɂ���ĈقȂ�܂��B<br>
+	 * このメソッドによって検査される、デバイスの要素は、実装によって異なります。<br>
 	 *
-	 * @return �������͂���Ă��Ȃ��ꍇ��true��Ԃ��܂��B<br>
+	 * @return 何も入力されていない場合にtrueを返します。<br>
 	 */
 	public abstract boolean isEmptyInput();
 

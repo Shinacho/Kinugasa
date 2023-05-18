@@ -43,20 +43,20 @@ public enum StandardEnemyAI implements EnemyAI {
 		@Override
 		public CmdAction getNext(BattleCharacter user, List<CmdAction> list) {
 			assert user.isPlayer() == false : "ENEMY AI but user is not CPU";
-			//HP‚ª”¼•ªˆÈ‰º‚©‚Ç‚¤‚©
+			//HPãŒåŠåˆ†ä»¥ä¸‹ã‹ã©ã†ã‹
 			boolean hpIsUnderHarf = user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 					< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax();
 			L1:
 			{
-				//‰ñ•œƒAƒCƒeƒ€ivalue‚ª{‚Åƒoƒgƒ‹—˜—p‚Å‚«‚éƒAƒCƒeƒ€j‚ğ‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
+				//å›å¾©ã‚¢ã‚¤ãƒ†ãƒ ï¼ˆvalueãŒï¼‹ã§ãƒãƒˆãƒ«åˆ©ç”¨ã§ãã‚‹ã‚¢ã‚¤ãƒ†ãƒ ï¼‰ã‚’æŒã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
 				Item healItem = (Item) getMax(user.getStatus().getItemBag().getItems());
 				if (healItem == null) {
 					break L1;
 				}
-				//‰ñ•œƒAƒCƒeƒ€ƒCƒ“ƒXƒ^
+				//å›å¾©ã‚¢ã‚¤ãƒ†ãƒ ã‚¤ãƒ³ã‚¹ã‚¿
 				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healItem);
-				//©•ª‚ÌHP‚ª”¼•ªˆÈ‰º‚Ü‚½‚ÍƒCƒ“ƒXƒ^ƒGƒŠƒA‚Ì“G“à‚ÉHP‚ª”¼•ªˆÈ‰º‚ª‚¢‚éê‡A‚»‚¢‚Â‚ÉƒAƒCƒeƒ€g—p
-				//iƒ^[ƒQƒbƒg‚ÍBS‚ÅÄŒvZ‚·‚é
+				//è‡ªåˆ†ã®HPãŒåŠåˆ†ä»¥ä¸‹ã¾ãŸã¯ã‚¤ãƒ³ã‚¹ã‚¿ã‚¨ãƒªã‚¢ã®æ•µå†…ã«HPãŒåŠåˆ†ä»¥ä¸‹ãŒã„ã‚‹å ´åˆã€ãã„ã¤ã«ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨
+				//ï¼ˆã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¯BSã§å†è¨ˆç®—ã™ã‚‹
 				if (hpIsUnderHarf || instTgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).count() > 0) {
 					return healItem;
@@ -65,52 +65,52 @@ public enum StandardEnemyAI implements EnemyAI {
 
 			L2:
 			{
-				//‰ñ•œ–‚–@ivalue‚ª{j‚Á‚Ä‚¢‚éê‡‚ÅHP‚ª’á‚¢ê‡©•ª‚Ég‚¤
+				//å›å¾©é­”æ³•ï¼ˆvalueãŒï¼‹ï¼‰æŒã£ã¦ã„ã‚‹å ´åˆã§HPãŒä½ã„å ´åˆè‡ªåˆ†ã«ä½¿ã†
 				CmdAction healMgk = getMax(list.stream().filter(p -> p.getType() == ActionType.MAGIC).collect(Collectors.toList()));
 				if (healMgk == null) {
 					break L2;
 				}
-				//‰ñ•œ–‚–@ƒCƒ“ƒXƒ^
+				//å›å¾©é­”æ³•ã‚¤ãƒ³ã‚¹ã‚¿
 				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healMgk);
-				//©•ª‚ÌHP‚ª”¼•ªˆÈ‰º‚Ü‚½‚ÍƒCƒ“ƒXƒ^ƒGƒŠƒA‚Ì“G“à‚ÉHP‚ª”¼•ªˆÈ‰º‚ª‚¢‚éê‡A‚»‚¢‚Â‚ÉƒAƒCƒeƒ€g—p
-				//iƒ^[ƒQƒbƒg‚ÍBS‚ÅÄŒvZ‚·‚é
+				//è‡ªåˆ†ã®HPãŒåŠåˆ†ä»¥ä¸‹ã¾ãŸã¯ã‚¤ãƒ³ã‚¹ã‚¿ã‚¨ãƒªã‚¢ã®æ•µå†…ã«HPãŒåŠåˆ†ä»¥ä¸‹ãŒã„ã‚‹å ´åˆã€ãã„ã¤ã«ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨
+				//ï¼ˆã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¯BSã§å†è¨ˆç®—ã™ã‚‹
 				if (hpIsUnderHarf || instTgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).count() > 0) {
 					return healMgk;
 				}
 
 			}
-			//ˆĞ—Í‚ªÅ’á‚Ìs“®‚ğ•Ô‚·‚ªA‘«‚è‚È‚¢€–Ú‚ª‚ ‚Á‚Ä‰r¥‚Å‚«‚È‚¢–‚–@‚Å‚ ‚éê‡‚Í•Ê‚Ìs“®‚ğ•Ô‚·
+			//å¨åŠ›ãŒæœ€ä½ã®è¡Œå‹•ã‚’è¿”ã™ãŒã€è¶³ã‚Šãªã„é …ç›®ãŒã‚ã£ã¦è© å”±ã§ããªã„é­”æ³•ã§ã‚ã‚‹å ´åˆã¯åˆ¥ã®è¡Œå‹•ã‚’è¿”ã™
 			final int CHUUSEN_KAISU = 12;
 			for (int i = 0; i < CHUUSEN_KAISU; i++) {
 				CmdAction kouho = getMin(list);
 				Map<StatusKey, Integer> damage = kouho.selfBattleDirectDamage();
-				//ƒ_ƒ[ƒW‚ğ‡Z
+				//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’åˆç®—
 				StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
-				//ƒ_ƒ[ƒW‚ª‚ ‚Á‚ÄA-‚Ì€–Ú‚ª‚ ‚éê‡A‘Î‰¿‚ğx•¥‚¦‚È‚¢‚½‚ß‹óU‚è
-				//‚±‚Ì–‚–@‚ÌÁ”ï€–Ú‚ğæ“¾
+				//ãƒ€ãƒ¡ãƒ¼ã‚¸ãŒã‚ã£ã¦ã€-ã®é …ç›®ãŒã‚ã‚‹å ´åˆã€å¯¾ä¾¡ã‚’æ”¯æ‰•ãˆãªã„ãŸã‚ç©ºæŒ¯ã‚Š
+				//ã“ã®é­”æ³•ã®æ¶ˆè²»é …ç›®ã‚’å–å¾—
 				if (!damage.isEmpty() && simulateDamage.hasMinus()) {
 					continue;
 				}
 				return kouho;
 			}
-			//ƒ‰ƒ“ƒ_ƒ€‚Ès“®‚ğ•Ô‚·
+			//ãƒ©ãƒ³ãƒ€ãƒ ãªè¡Œå‹•ã‚’è¿”ã™
 			Collections.shuffle(list);
 			return list.get(0);
 		}
 
 		@Override
 		public Point2D.Float targetLocation(BattleCharacter user) {
-			//Å‚à‹ß‚¢PC‚ğ•Ô‚·
-			//‚½‚¾‚µ‘«áŠQ•¨‚ª‚ ‚éê‡‚ÍáŠQ•¨‚ğ‚æ‚¯‚éƒR[ƒX‚ÅáŠQ•¨‚Ü‚Å‚ÌˆÊ’u‚ğ•Ô‚·
+			//æœ€ã‚‚è¿‘ã„PCã‚’è¿”ã™
+			//ãŸã ã—è¶³éšœå®³ç‰©ãŒã‚ã‚‹å ´åˆã¯éšœå®³ç‰©ã‚’ã‚ˆã‘ã‚‹ã‚³ãƒ¼ã‚¹ã§éšœå®³ç‰©ã¾ã§ã®ä½ç½®ã‚’è¿”ã™
 
-			//Å‚à‹ß‚¢PC‚ğŒŸõ
+			//æœ€ã‚‚è¿‘ã„PCã‚’æ¤œç´¢
 			BattleCharacter pc = BattleTargetSystem.nearPCs(user);
 
-			//Œ»İ‚ÌáŠQ•¨ƒŠƒXƒg‚ğæ“¾
+			//ç¾åœ¨ã®éšœå®³ç‰©ãƒªã‚¹ãƒˆã‚’å–å¾—
 			List<BattleFieldObstacle> oList = GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getObstacle();
 
-			//user‚©‚çpc‚Ü‚Å‚Ì’¼üó‚ÉáŠQ•¨‚ª‚ ‚é‚©ŒŸ¸
+			//userã‹ã‚‰pcã¾ã§ã®ç›´ç·šçŠ¶ã«éšœå®³ç‰©ãŒã‚ã‚‹ã‹æ¤œæŸ»
 			EmptySprite s = new EmptySprite(user.getSprite().getCenter(), new Dimension(2, 2));
 			s.setX(s.getX() - 1);
 			s.setY(s.getY() - 1);
@@ -121,26 +121,26 @@ public enum StandardEnemyAI implements EnemyAI {
 
 			while (true) {
 				Point2D.Float next = s.simulateMove();
-				//PC‚ÉÕ“ËEEEPC‚ÌˆÊ’u‚ğ•Ô‚·
+				//PCã«è¡çªãƒ»ãƒ»ãƒ»PCã®ä½ç½®ã‚’è¿”ã™
 				if (pc.getSprite().contains(next)) {
 					return pc.getCenter();
 				}
-				//ƒGƒŠƒA‚©‚ço‚½EEEˆÚ“®‚Å‚«‚é‚Æ‚±‚ë‚Ü‚Å‚ÌÀ•W‚ğ•Ô‚·
-				//ƒ^[ƒQƒbƒg‚ªƒGƒŠƒAŠO‚É‚¢‚éê‡‚É”­¶‚·‚é‚ªA•’Ê”­¶‚µ‚È‚¢B
+				//ã‚¨ãƒªã‚¢ã‹ã‚‰å‡ºãŸãƒ»ãƒ»ãƒ»ç§»å‹•ã§ãã‚‹ã¨ã“ã‚ã¾ã§ã®åº§æ¨™ã‚’è¿”ã™
+				//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã‚¨ãƒªã‚¢å¤–ã«ã„ã‚‹å ´åˆã«ç™ºç”Ÿã™ã‚‹ãŒã€æ™®é€šç™ºç”Ÿã—ãªã„ã€‚
 				if (!GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getBattleFieldAllArea().contains(next)) {
 					return s.getCenter();
 				}
-				//áŠQ•¨ÚG”»’è
+				//éšœå®³ç‰©æ¥è§¦åˆ¤å®š
 				for (int j = 0; j < oList.size(); j++) {
 					BattleFieldObstacle o = oList.get(j);
-					//áŠQ•¨o‚ÉÕ“Ë
+					//éšœå®³ç‰©oã«è¡çª
 					if (o.hit(s)) {
-						//”ğ‚¯Šp“x‚ğİ’è
+						//é¿ã‘è§’åº¦ã‚’è¨­å®š
 						float d = (float) Point2D.Float.distance(user.getCenter().x, user.getCenter().y, o.getCenterX(), o.getCenterY());
-						//Œ»İ‚ÌŠp“x{[i‚ÅA‹——£d‚ªƒqƒbƒg‚µ‚È‚­‚È‚éŠp“x‚ğŒvZ‚·‚é
+						//ç¾åœ¨ã®è§’åº¦ï¼‹ãƒ¼iã§ã€è·é›¢dãŒãƒ’ãƒƒãƒˆã—ãªããªã‚‹è§’åº¦ã‚’è¨ˆç®—ã™ã‚‹
 						float ang1 = v.getAngle();
 						float ang2 = ang1;
-						boolean sw = true;//{‚·‚é‚©-‚·‚é‚©
+						boolean sw = true;//ï¼‹ã™ã‚‹ã‹-ã™ã‚‹ã‹
 						for (int i = 0;; i++) {
 							if (sw) {
 								ang1 = ang2 + i;
@@ -148,17 +148,17 @@ public enum StandardEnemyAI implements EnemyAI {
 								ang1 = ang2 - i;
 							}
 
-							//+=i‚µ‚½Šp“x‚ğZo
+							//+=iã—ãŸè§’åº¦ã‚’ç®—å‡º
 							KVector kv = new KVector();
 							kv.setAngle(ang1);
 							kv.setSpeed(d);
 
-							//Šp“x‚ğ‹ó‚ÌƒXƒvƒ‰ƒCƒg‚Éİ’èA‹——£‚Íd‚Å1‰ñ“®‚©‚·
+							//è§’åº¦ã‚’ç©ºã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã«è¨­å®šã€è·é›¢ã¯dã§1å›å‹•ã‹ã™
 							EmptySprite es = new EmptySprite(user.getSprite().getX(), user.getSprite().getY(), 2, 2);
 							es.setVector(kv);
 							es.move();
 
-							//ƒqƒbƒg‚µ‚Ä‚¢‚È‚¯‚ê‚Î‚»‚ÌÀ•W‚ğ•Ô‚·
+							//ãƒ’ãƒƒãƒˆã—ã¦ã„ãªã‘ã‚Œã°ãã®åº§æ¨™ã‚’è¿”ã™
 							if (!o.hit(es)) {
 								return es.getCenter();
 							}
@@ -166,7 +166,7 @@ public enum StandardEnemyAI implements EnemyAI {
 						}
 					}
 				}
-				//–â‘è‚È‚¢‚½‚ßˆÚ“®‚ğƒRƒ~ƒbƒg
+				//å•é¡Œãªã„ãŸã‚ç§»å‹•ã‚’ã‚³ãƒŸãƒƒãƒˆ
 				s.move();
 			}
 
@@ -183,13 +183,13 @@ public enum StandardEnemyAI implements EnemyAI {
 		return toString();
 	}
 
-	//l‚©‚çTT‚ªƒp[ƒeƒB[‚Åvalue‚ªÅ‘å‚Ì‚à‚Ì‚ğ•Ô‚·i{
-	//•¡”‚ ‚éê‡‚Íƒ‰ƒ“ƒ_ƒ€‚È‚à‚Ì‚ğ•Ô‚·
-	//‚È‚¢ê‡‚Ínull‚ğ•Ô‚·
+	//lã‹ã‚‰TTãŒãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ã§valueãŒæœ€å¤§ã®ã‚‚ã®ã‚’è¿”ã™ï¼ˆï¼‹
+	//è¤‡æ•°ã‚ã‚‹å ´åˆã¯ãƒ©ãƒ³ãƒ€ãƒ ãªã‚‚ã®ã‚’è¿”ã™
+	//ãªã„å ´åˆã¯nullã‚’è¿”ã™
 	private static CmdAction getMax(List<? extends CmdAction> l) {
-		//“G‚Ìl”
+		//æ•µã®äººæ•°
 		int enemyNum = GameSystem.getInstance().getBattleSystem().getEnemies().size();
-		//–¡•û‚Ìl”
+		//å‘³æ–¹ã®äººæ•°
 		int partyNum = GameSystem.getInstance().getParty().size();
 		Collections.shuffle(l);
 		Map<CmdAction, Integer> result = new HashMap<>();
@@ -245,13 +245,13 @@ public enum StandardEnemyAI implements EnemyAI {
 
 	}
 
-	//l‚©‚çTT‚ªƒGƒlƒ~[‚Åvalue‚ªÅ’á‚Ì‚à‚Ì‚ğ•Ô‚·i[
-	//•¡”‚ ‚éê‡‚Íƒ‰ƒ“ƒ_ƒ€‚È‚à‚Ì‚ğ•Ô‚·
-	//‚È‚¢ê‡‚Ínull‚ğ•Ô‚·
+	//lã‹ã‚‰TTãŒã‚¨ãƒãƒŸãƒ¼ã§valueãŒæœ€ä½ã®ã‚‚ã®ã‚’è¿”ã™ï¼ˆãƒ¼
+	//è¤‡æ•°ã‚ã‚‹å ´åˆã¯ãƒ©ãƒ³ãƒ€ãƒ ãªã‚‚ã®ã‚’è¿”ã™
+	//ãªã„å ´åˆã¯nullã‚’è¿”ã™
 	private static CmdAction getMin(List<? extends CmdAction> l) {
-		//“G‚Ìl”
+		//æ•µã®äººæ•°
 		int enemyNum = GameSystem.getInstance().getBattleSystem().getEnemies().size();
-		//–¡•û‚Ìl”
+		//å‘³æ–¹ã®äººæ•°
 		int partyNum = GameSystem.getInstance().getParty().size();
 		Collections.shuffle(l);
 		Map<CmdAction, Integer> result = new HashMap<>();

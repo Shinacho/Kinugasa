@@ -56,7 +56,7 @@ public class BookStorage extends Storage<Book> implements XMLFileSupport {
 			throw new FileNotFoundException(file.getFile());
 		}
 		XMLElement root = file.load().getFirst();
-		//ƒy[ƒW’P‘Ì‚Ìƒ[ƒh
+		//ãƒšãƒ¼ã‚¸å˜ä½“ã®ãƒ­ãƒ¼ãƒ‰
 		for (XMLElement e : root.getElement("page")) {
 			MagicCompositeType t = e.getAttributes().get("mct").of(MagicCompositeType.class);
 			String name = e.getAttributes().get("name").getValue();
@@ -71,7 +71,7 @@ public class BookStorage extends Storage<Book> implements XMLFileSupport {
 			BookPageStorage.getInstance().add(new BookPage(t, name, tgtName, value));
 		}
 
-		//–{‚Ìƒ[ƒh
+		//æœ¬ã®ãƒ­ãƒ¼ãƒ‰
 		for (XMLElement e : root.getElement("book")) {
 			String name = e.getAttributes().get("name").getValue();
 			String desc = e.getAttributes().get("desc").getValue();
@@ -93,7 +93,7 @@ public class BookStorage extends Storage<Book> implements XMLFileSupport {
 						value = ee.getAttributes().get("value").getFloatValue();
 					}
 					BookPage p = new BookPage(t, name2, tgtName, value);
-					pages.add(p);//–{‚Éİ’è‚·‚é‚¾‚¯‚ÅƒXƒgƒŒ[ƒW‚É‚Í“ü‚ê‚È‚¢BƒXƒgƒŒ[ƒW‚Í”Ì”„‚â•ó” ƒQƒbƒg‚ğ‘z’è‚µ‚Ä‚¢‚éB
+					pages.add(p);//æœ¬ã«è¨­å®šã™ã‚‹ã ã‘ã§ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã«ã¯å…¥ã‚Œãªã„ã€‚ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã¯è²©å£²ã‚„å®ç®±ã‚²ãƒƒãƒˆã‚’æƒ³å®šã—ã¦ã„ã‚‹ã€‚
 				}
 				b.setPages(pages);
 			}

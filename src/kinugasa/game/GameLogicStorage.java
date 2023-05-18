@@ -48,7 +48,7 @@ public class GameLogicStorage extends Storage<GameLogic> {
 	private GameLogic prev;
 
 	/**
-	 * startUp�Ŏ��s����ꍇ�̓E�C���h�E���܂�����������Ă��Ȃ��_�ɒ��ӂ��Ă��������B
+	 * startUpで実行する場合はウインドウがまだ初期化されていない点に注意してください。
 	 *
 	 * @param name
 	 */
@@ -57,7 +57,7 @@ public class GameLogicStorage extends Storage<GameLogic> {
 	}
 
 	/**
-	 * startUp�Ŏ��s����ꍇ�̓E�C���h�E���܂�����������Ă��Ȃ��_�ɒ��ӂ��Ă��������B
+	 * startUpで実行する場合はウインドウがまだ初期化されていない点に注意してください。
 	 *
 	 * @param name
 	 * @param load

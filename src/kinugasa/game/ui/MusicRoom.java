@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import kinugasa.resource.sound.SoundMap;
 
 /**
- * BGM�̈ꗗ��\�����A�Đ��\�ɂ����ʕ\���̎����ł��B�A�N�V�����e�L�X�g�X�v���C�g�O���[�v���g�p���Ă��܂��B
+ * BGMの一覧を表示し、再生可能にする画面表示の実装です。アクションテキストスプライトグループを使用しています。
  *
  * @vesion 1.0.0 - 2022/11/13_0:36:02<br>
  * @author Shinacho<br>

@@ -28,7 +28,7 @@ import java.awt.image.RasterFormatException;
 import kinugasa.object.Model;
 
 /**
- * ƒXƒvƒ‰ƒCƒgƒV[ƒg‚ÌØ‚èo‚µƒAƒ‹ƒSƒŠƒYƒ€‚ğƒJƒvƒZƒ‹‰»‚µ‚Ü‚·.
+ * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚·ãƒ¼ãƒˆã®åˆ‡ã‚Šå‡ºã—ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’ã‚«ãƒ—ã‚»ãƒ«åŒ–ã—ã¾ã™.
  * <br>
  *
  * <br>
@@ -41,13 +41,13 @@ public abstract class SpriteSheetCutter extends Model {
 	private static final long serialVersionUID = -1630361870659622865L;
 
 	/**
-	 * ‰æ‘œ‚ğ“Á’è‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚É]‚Á‚ÄØ‚èo‚µ‚Ü‚·.
+	 * ç”»åƒã‚’ç‰¹å®šã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã«å¾“ã£ã¦åˆ‡ã‚Šå‡ºã—ã¾ã™.
 	 *
-	 * @param base ‚±‚Ì‰æ‘œ‚ğ‚à‚Æ‚ÉA‰æ‘œ‚ğØ‚èo‚µ‚Ü‚·B‚±‚Ì‰æ‘œ‚Í•ÏX‚³‚ê‚Ä‚Í‚È‚è‚Ü‚¹‚ñB<br>
+	 * @param base ã“ã®ç”»åƒã‚’ã‚‚ã¨ã«ã€ç”»åƒã‚’åˆ‡ã‚Šå‡ºã—ã¾ã™ã€‚ã“ã®ç”»åƒã¯å¤‰æ›´ã•ã‚Œã¦ã¯ãªã‚Šã¾ã›ã‚“ã€‚<br>
 	 *
-	 * @return Ø‚èo‚³‚ê‚½‰æ‘œ‚ğAƒŠƒXƒgŒ`®‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·B<br>
+	 * @return åˆ‡ã‚Šå‡ºã•ã‚ŒãŸç”»åƒã‚’ã€ãƒªã‚¹ãƒˆå½¢å¼ã¨ã—ã¦è¿”ã—ã¾ã™ã€‚<br>
 	 *
-	 * @throws RasterFormatException ƒx[ƒX‰æ‘œ‚ÌƒTƒCƒY‚ªA‚±‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚É“KØ‚Å‚È‚¢ê‡‚É“Š‚°‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B<br>
+	 * @throws RasterFormatException ãƒ™ãƒ¼ã‚¹ç”»åƒã®ã‚µã‚¤ã‚ºãŒã€ã“ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã«é©åˆ‡ã§ãªã„å ´åˆã«æŠ•ã’ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚<br>
 	 */
 	public abstract BufferedImage[] cut(BufferedImage base) throws RasterFormatException;
 

@@ -39,151 +39,151 @@ import java.awt.Rectangle;
 public interface GameWindow {
 
 	/**
-	 * �E�C���h�E��X���W��ݒ肵�܂�.
+	 * ウインドウのX座標を設定します.
 	 *
-	 * @param x X���W.<br>
+	 * @param x X座標.<br>
 	 */
 	public void setX(int x);
 
 	/**
-	 * �E�C���h�E��X���W��ݒ肵�܂�.
+	 * ウインドウのX座標を設定します.
 	 *
-	 * @param y Y���W.<br>
+	 * @param y Y座標.<br>
 	 */
 	public void setY(int y);
 
 	/**
-	 * �E�C���h�E��X���W���擾���܂�.
+	 * ウインドウのX座標を取得します.
 	 *
-	 * @return �E�C���h�E��X���W.<br>
+	 * @return ウインドウのX座標.<br>
 	 */
 	public int getX();
 
 	/**
-	 * �E�C���h�E��Y���W���擾���܂�.
+	 * ウインドウのY座標を取得します.
 	 *
-	 * @return �E�C���h�E��Y���W.<br>
+	 * @return ウインドウのY座標.<br>
 	 */
 	public int getY();
 
 	/**
-	 * �E�C���h�E�̕����擾���܂�.
+	 * ウインドウの幅を取得します.
 	 *
-	 * @return �E�C���h�E�̕�.<Br>
+	 * @return ウインドウの幅.<Br>
 	 */
 	public int getWidth();
 
 	/**
-	 * �E�C���h�E�̍������擾���܂�.
+	 * ウインドウの高さを取得します.
 	 *
-	 * @return �E�C���h�E�̍���.<Br>
+	 * @return ウインドウの高さ.<Br>
 	 */
 	public int getHeight();
 
 	/**
-	 * �E�C���h�E�̈ʒu��ݒ肵�܂�.
+	 * ウインドウの位置を設定します.
 	 *
-	 * @param x �E�C���h�E��X���W.<br>
-	 * @param y �E�C���h�E��Y���W.<br>
+	 * @param x ウインドウのX座標.<br>
+	 * @param y ウインドウのY座標.<br>
 	 */
 	public void setLocation(int x, int y);
 
 	/**
-	 * �E�C���h�E�̈ʒu��ݒ肵�܂�.
+	 * ウインドウの位置を設定します.
 	 *
-	 * @param p �E�C���h�E�̍��W.<br>
+	 * @param p ウインドウの座標.<br>
 	 */
 	public void setLocation(Point p);
 
 	/**
-	 * �E�C���h�E�̈ʒu���擾���܂�.
+	 * ウインドウの位置を取得します.
 	 *
-	 * @return �E�C���h�E�̈ʒu.<br>
+	 * @return ウインドウの位置.<br>
 	 */
 	public Point getLocation();
 
 	/**
-	 * �E�C���h�E�̗̈���擾���܂�. ���̃��\�b�h�ł́A�E�C���h�E�̃{�[�_���܂񂾃E�C���h�E�S�̗̂̈��Ԃ��܂��B<br>
+	 * ウインドウの領域を取得します. このメソッドでは、ウインドウのボーダを含んだウインドウ全体の領域を返します。<br>
 	 *
-	 * @return �E�C���h�E�̈ʒu����уT�C�Y��Ԃ��܂��B<br>
+	 * @return ウインドウの位置およびサイズを返します。<br>
 	 */
 	public Rectangle getBounds();
 
 	/**
-	 * �E�C���h�E�̎g�p�\�ȓ����̈���擾���܂�. ���̃��\�b�h�ł́A�E�C���h�E�̃{�[�_���܂܂�Ȃ����ۂɕ`��\�ȗ̈悪�Ԃ���܂��B<br>
-	 * �ʏ�A���̗̈�̈ʒu��0,0�ɒ�������Ԃ���܂��B<br>
+	 * ウインドウの使用可能な内部領域を取得します. このメソッドでは、ウインドウのボーダが含まれない実際に描画可能な領域が返されます。<br>
+	 * 通常、この領域の位置は0,0に調整され返されます。<br>
 	 *
-	 * @return �E�C���h�E���̎g�p�\�ȗ̈��Ԃ��܂��B<br>
+	 * @return ウインドウ内の使用可能な領域を返します。<br>
 	 */
 	public Rectangle getInternalBounds();
 
 	/**
-	 * �E�C���h�E�̘g�̕���Ԃ��܂�.
+	 * ウインドウの枠の幅を返します.
 	 *
-	 * @return �E�C���h�E�̃{�[�_�̕���Ԃ��܂��B<Br>
+	 * @return ウインドウのボーダの幅を返します。<Br>
 	 */
 	public Insets getInsets();
 
 	/**
-	 * �E�C���h�E�̔w�i�F��ݒ肵�܂�.
+	 * ウインドウの背景色を設定します.
 	 *
-	 * @param color �w�i�F�B<br>
+	 * @param color 背景色。<br>
 	 */
 	public void setBackground(Color color);
 
 	/**
-	 * �E�C���h�E�̔w�i�F���擾���܂��B<br>
+	 * ウインドウの背景色を取得します。<br>
 	 *
-	 * @return �E�C���h�E�̔w�i�F�B<br>
+	 * @return ウインドウの背景色。<br>
 	 */
 	public Color getBackground();
 
 	/**
-	 * �E�C���h�E�ɐݒ肳��Ă���A�C�R�����擾���܂�.
+	 * ウインドウに設定されているアイコンを取得します.
 	 *
-	 * @return �E�C���h�E�̃A�C�R���B<br>
+	 * @return ウインドウのアイコン。<br>
 	 */
 	public Image getIconImage();
 
 	/**
-	 * �E�C���h�E�̃A�C�R����ύX���܂�.
+	 * ウインドウのアイコンを変更します.
 	 *
-	 * @param image �E�C���h�E�̃A�C�R���B<br>
+	 * @param image ウインドウのアイコン。<br>
 	 */
 	public void setIconImage(Image image);
 
 	/**
-	 * �E�C���h�E�̃^�C�g���o�[�̕�������擾���܂�.
+	 * ウインドウのタイトルバーの文字列を取得します.
 	 *
-	 * @return �E�C���h�E�̃^�C�g���o�[�ɕ\������Ă��镶�����Ԃ��܂��B<br>
+	 * @return ウインドウのタイトルバーに表示されている文字列を返します。<br>
 	 */
 	public String getTitle();
 
 	/**
-	 * �E�C���h�E�̃^�C�g���o�[��ݒ肵�܂�.
+	 * ウインドウのタイトルバーを設定します.
 	 *
-	 * @param title �E�C���h�E�̃^�C�g���o�[�ɕ\�����镶������w�肵�܂��B<br>
+	 * @param title ウインドウのタイトルバーに表示する文字列を指定します。<br>
 	 */
 	public void setTitle(String title);
 
 	/**
-	 * �E�C���h�E���I������Ă���A�\�����ł��邩���������܂�. �ʏ�A�E�C���h�E���A�N�e�B�u�łȂ��ꍇ�̓Q�[���̐i�s�͒�~���܂��B<br>
+	 * ウインドウが選択されており、表示中であるかを検査します. 通常、ウインドウがアクティブでない場合はゲームの進行は停止します。<br>
 	 *
-	 * @return �E�C���h�E���A�N�e�B�u�ł���ꍇ��true��Ԃ��܂��B<br>
+	 * @return ウインドウがアクティブである場合はtrueを返します。<br>
 	 */
 	public boolean isActive();
 
 	/**
-	 * �}�E�X�J�[�\����ݒ肵�܂�.
+	 * マウスカーソルを設定します.
 	 *
-	 * @param cursor �V�����J�[�\�����w�肵�܂��B<br>
+	 * @param cursor 新しいカーソルを指定します。<br>
 	 */
 	public void setCursor(Cursor cursor);
 
 	/**
-	 * ���݂̃}�E�X�J�[�\�����擾���܂�.
+	 * 現在のマウスカーソルを取得します.
 	 *
-	 * @return �g�p���̃}�E�X�J�[�\�����Ԃ���܂��B<br>
+	 * @return 使用中のマウスカーソルが返されます。<br>
 	 */
 	public Cursor getCursor();
 

@@ -29,10 +29,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * XML�̃^�O�⑮����W�J���郆�[�e�B���e�B�ł�.
+ * XMLのタグや属性を展開するユーティリティです.
  * <br>
- * ������API��DOM���x�[�X�ɐ݌v����Ă��܂��B���̃N���X�ł́ADOM�C���X�^���X��
- * �t���[�����[�N�Ŏg�p���邽�߂ɕϊ�����@�\��񋟂��܂��B<br>
+ * これらのAPIはDOMをベースに設計されています。このクラスでは、DOMインスタンスを
+ * フレームワークで使用するために変換する機能を提供します。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/03/15_13:01:50.<br>
@@ -42,25 +42,25 @@ import org.w3c.dom.NodeList;
 public final class XMLParserUtil {
 
 	/**
-	 * ���[�e�B���e�B���N���X�ł�.
+	 * ユーティリティうクラスです.
 	 */
 	private XMLParserUtil() {
 	}
 
 	/**
-	 * DOM�m�[�h�C���^�[�t�F�[�XXMLElement�N���X�ɕϊ����܂�.
-	 * ���̃��\�b�h�͍ċA�I�ɏ�������܂��B����m�[�h�����q�m�[�h��
-	 * �ȉ��̂悤�ɓW�J����܂��B<br>
+	 * DOMノードインターフェースXMLElementクラスに変換します.
+	 * このメソッドは再帰的に処理されます。あるノードが持つ子ノードは
+	 * 以下のように展開されます。<br>
 	 * <br>
-	 * �m�[�h�^�C�v��TEXT_NODE�̏ꍇ(NodeName��"#text"�̏ꍇ)�͂��̃m�[�h������TextContent�̒l��
-	 * �߂�l�ƂȂ�G�������g��value�ɐݒ肳��܂��B<br>
+	 * ノードタイプがTEXT_NODEの場合(NodeNameが"#text"の場合)はそのノードが持つTextContentの値が
+	 * 戻り値となるエレメントのvalueに設定されます。<br>
 	 * <br>
-	 * ����ȊO�̃m�[�h�^�C�v�ł́A���̃m�[�h�����q�m�[�h�Ƒ�����
-	 * �߂�l�ƂȂ�G�������g�ɐݒ肳��܂��B<br>
+	 * それ以外のノードタイプでは、そのノードが持つ子ノードと属性が
+	 * 戻り値となるエレメントに設定されます。<br>
 	 *
-	 * @param node �ϊ�����m�[�h���w�肵�܂��B�ʏ�̓��[�g�m�[�h(DOM�h�L�������g��LastChild)�ł��B<br>
+	 * @param node 変換するノードを指定します。通常はルートノード(DOMドキュメントのLastChild)です。<br>
 	 *
-	 * @return DOM�m�[�h������\�z���ꂽXMLElemtn�N���X��Ԃ��܂��B<br>
+	 * @return DOMノードがから構築されたXMLElemtnクラスを返します。<br>
 	 */
 	public static XMLElement createElement(Node node) {
 		String nodeName = node.getNodeName();
@@ -87,11 +87,11 @@ public final class XMLParserUtil {
 	}
 
 	/**
-	 * �m�[�h�̑����ƂȂ�NamedNodeMap��XMLAttribute�̃��X�g�ɕϊ����܂�.
+	 * ノードの属性となるNamedNodeMapをXMLAttributeのリストに変換します.
 	 *
-	 * @param nodeMap �m�[�h���������𑗐M���܂��BNode�N���X��getAttribute�ł��B<br>
+	 * @param nodeMap ノードが持つ属性を送信します。NodeクラスのgetAttributeです。<br>
 	 *
-	 * @return �w�肳�ꂽNameNodeMap����������XMLAttribute�N���X�̃��X�g�Ƃ��ĕԂ��܂��B<br>
+	 * @return 指定されたNameNodeMapが持つ属性をXMLAttributeクラスのリストとして返します。<br>
 	 */
 	public static List<XMLAttribute> getAttributes(NamedNodeMap nodeMap) {
 		if (nodeMap == null) {

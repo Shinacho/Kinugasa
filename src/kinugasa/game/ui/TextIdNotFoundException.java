@@ -28,7 +28,7 @@ import kinugasa.resource.NotFoundException;
 
 
 /**
- * �e�L�X�g�Z�b�g�Œ�`���ꂽNextID�������e�L�X�g�Z�b�g���ɑ��݂��Ȃ��ꍇ�̗�O�ł�.
+ * テキストセットで定義されたNextIDが同じテキストセット内に存在しない場合の例外です.
  * <br>
  *
  * @version 1.0.0 - 2015/03/21<br>

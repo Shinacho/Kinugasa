@@ -34,14 +34,14 @@ import kinugasa.game.system.QuestLineStorage;
 import kinugasa.game.system.Status;
 
 /**
- * ƒXƒe[ƒ^ƒX‚âƒQ[ƒ€ƒVƒXƒeƒ€‚Æ–§Ú‚ÉŒ‹‚Ñ‚Â‚¢‚½ƒCƒxƒ“ƒg‚Ì”­¶ğŒ‚Å‚·B
+ * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚„ã‚²ãƒ¼ãƒ ã‚·ã‚¹ãƒ†ãƒ ã¨å¯†æ¥ã«çµã³ã¤ã„ãŸã‚¤ãƒ™ãƒ³ãƒˆã®ç™ºç”Ÿæ¡ä»¶ã§ã™ã€‚
  *
  * @vesion 1.0.0 - 2022/12/11_17:09:05<br>
  * @author Shinacho<br>
  */
 public enum EventTermType {
 
-	//TGT‚ÌƒLƒƒƒ‰‚ªvalue‚ÌƒAƒCƒeƒ€‚ğ‚Á‚Ä‚¢‚é‚±‚Æ‚ğŠm”F‚·‚é
+	//TGTã®ã‚­ãƒ£ãƒ©ãŒvalueã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’æŒã£ã¦ã„ã‚‹ã“ã¨ã‚’ç¢ºèªã™ã‚‹
 	TGT_HAS_ITEM {
 		@Override
 		public boolean canExec(List<Status> party, EventTerm t) {
@@ -74,7 +74,7 @@ public enum EventTermType {
 			return party.stream().map(p -> p.getItemBag()).allMatch(p -> !p.contains(t.getValue()));
 		}
 	},
-	//tgtName‚ÌƒLƒƒƒ‰‚ª‚¢‚é‚©‚Ç‚¤‚©
+	//tgtNameã®ã‚­ãƒ£ãƒ©ãŒã„ã‚‹ã‹ã©ã†ã‹
 	PARTY_CONTAINS {
 		@Override
 		public boolean canExec(List<Status> party, EventTerm t) {

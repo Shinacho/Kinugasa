@@ -271,13 +271,13 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 							value += a.getValue();
 							break;
 						case PERCENT_OF_MAX:
-							//ŒvZ•s”\
+							//è¨ˆç®—ä¸èƒ½
 							break;
 						case PERCENT_OF_NOW:
-							//ŒvZ•s”\
+							//è¨ˆç®—ä¸èƒ½
 							break;
 						case USE_DAMAGE_CALC:
-							//ŒvZ•s”\
+							//è¨ˆç®—ä¸èƒ½
 							break;
 					}
 					if (value != 0) {
@@ -310,13 +310,13 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 							value += a.getValue();
 							break;
 						case PERCENT_OF_MAX:
-							//ŒvZ•s”\
+							//è¨ˆç®—ä¸èƒ½
 							break;
 						case PERCENT_OF_NOW:
-							//ŒvZ•s”\
+							//è¨ˆç®—ä¸èƒ½
 							break;
 						case USE_DAMAGE_CALC:
-							//ŒvZ•s”\
+							//è¨ˆç®—ä¸èƒ½
 							break;
 					}
 					if (value != 0) {
@@ -350,7 +350,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 			}
 		}
 		if (tgt.isInField()) {
-			//ƒtƒB[ƒ‹ƒh
+			//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 			if (fieldEvent == null || fieldEvent.isEmpty()) {
 				throw new GameSystemException("this event is cant exec : " + this);
 			}
@@ -367,7 +367,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 			return new ActionResult(tgt, result, createWaitTime(), new ArrayList<>());
 		}
 
-		//ƒoƒgƒ‹
+		//ãƒãƒˆãƒ«
 		if (battleEvent == null || battleEvent.isEmpty()) {
 			throw new GameSystemException("this event is cant exec : " + this);
 		}

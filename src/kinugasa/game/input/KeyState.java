@@ -26,10 +26,10 @@ package kinugasa.game.input;
 import java.util.BitSet;
 
 /**
- * ƒL[“ü—Í‚Ìó‘Ô‚ğŠi”[‚µ‚Ü‚·.
+ * ã‚­ãƒ¼å…¥åŠ›ã®çŠ¶æ…‹ã‚’æ ¼ç´ã—ã¾ã™.
  * <br>
- * ƒL[‚Ìó‘Ô‚ÍBitSetƒNƒ‰ƒX‚ğg—p‚µ‚ÄŠi”[‚³‚ê‚Ü‚·B<br>
- * ‚ ‚éƒL[‚Ìó‘Ô‚ÉƒAƒNƒZƒX‚·‚é‚½‚ß‚ÌƒCƒ“ƒfƒbƒNƒX‚ÍAWTƒL[ƒR[ƒh‚Ü‚½‚Í ‚»‚ê‚ğƒ‰ƒbƒv‚·‚éKeys—ñ‹“‚ğg—p‚µ‚Ü‚·B<br>
+ * ã‚­ãƒ¼ã®çŠ¶æ…‹ã¯BitSetã‚¯ãƒ©ã‚¹ã‚’ä½¿ç”¨ã—ã¦æ ¼ç´ã•ã‚Œã¾ã™ã€‚<br>
+ * ã‚ã‚‹ã‚­ãƒ¼ã®çŠ¶æ…‹ã«ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ãŸã‚ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã¯AWTã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ã¾ãŸã¯ ãã‚Œã‚’ãƒ©ãƒƒãƒ—ã™ã‚‹Keysåˆ—æŒ™ã‚’ä½¿ç”¨ã—ã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_13:16:01<br>
@@ -38,36 +38,36 @@ import java.util.BitSet;
 public class KeyState extends InputDeviceState {
 
 	/**
-	 * ƒL[‚Ìó‘Ô‚ğŠi”[‚·‚é”z—ñ.
+	 * ã‚­ãƒ¼ã®çŠ¶æ…‹ã‚’æ ¼ç´ã™ã‚‹é…åˆ—.
 	 */
 	private BitSet keySet;
 
 	/**
-	 * ƒpƒbƒP[ƒWƒAƒNƒZƒX.
+	 * ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã‚¢ã‚¯ã‚»ã‚¹.
 	 *
-	 * @param state ƒL[‚Ìó‘Ô.ƒfƒB[ƒvƒRƒs[‚ğì¬‚·‚é.<br>
+	 * @param state ã‚­ãƒ¼ã®çŠ¶æ…‹.ãƒ‡ã‚£ãƒ¼ãƒ—ã‚³ãƒ”ãƒ¼ã‚’ä½œæˆã™ã‚‹.<br>
 	 */
 	KeyState(BitSet state) {
 		this.keySet = (BitSet) state.clone();
 	}
 
 	/**
-	 * ƒL[‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·. 1‰ñ‚¾‚¯‚Ì”»’è‚Íu‘O‰ñ‚ÌŒŸ¸ó‘Ôv‚ğ•Û‚µ‚Ä‚¨‚­‚±‚Æ‚ÅÀŒ»‰Â”\‚Å‚·.<br>
+	 * ã‚­ãƒ¼ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™. 1å›ã ã‘ã®åˆ¤å®šã¯ã€Œå‰å›ã®æ¤œæŸ»çŠ¶æ…‹ã€ã‚’ä¿æŒã—ã¦ãŠãã“ã¨ã§å®Ÿç¾å¯èƒ½ã§ã™.<br>
 	 *
-	 * @param k ƒL[.<br>
+	 * @param k ã‚­ãƒ¼.<br>
 	 *
-	 * @return ‰Ÿ‚³‚ê‚Ä‚¢‚é‚Æ‚«TRUE‚ğ•Ô‚·.<br>
+	 * @return æŠ¼ã•ã‚Œã¦ã„ã‚‹ã¨ãTRUEã‚’è¿”ã™.<br>
 	 */
 	public boolean isPressed(Keys k) {
 		return keySet.get(k.getKeyCode());
 	}
 
 	/**
-	 * ƒL[‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ÍAisPressed(Keys)‚æ‚è‚à‚‘¬‚É“®ì‚·‚é‚±‚Æ‚ª‚ ‚è‚Ü‚·.<br>
+	 * ã‚­ãƒ¼ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã€isPressed(Keys)ã‚ˆã‚Šã‚‚é«˜é€Ÿã«å‹•ä½œã™ã‚‹ã“ã¨ãŒã‚ã‚Šã¾ã™.<br>
 	 *
-	 * @param index ƒL[‚ÌƒCƒ“ƒfƒbƒNƒXBKeyEventƒNƒ‰ƒX‚Ì’è”‚ğg—p‚µ‚Ä‚­‚¾‚³‚¢B<br>
+	 * @param index ã‚­ãƒ¼ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã€‚KeyEventã‚¯ãƒ©ã‚¹ã®å®šæ•°ã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚<br>
 	 *
-	 * @return ‰Ÿ‚³‚ê‚Ä‚¢‚é‚Æ‚«‚ÉTRUE‚ğ•Ô‚·.<br>
+	 * @return æŠ¼ã•ã‚Œã¦ã„ã‚‹ã¨ãã«TRUEã‚’è¿”ã™.<br>
 	 */
 	public boolean isPressed(int index) {
 		return keySet.size() <= index ? false : keySet.get(index);

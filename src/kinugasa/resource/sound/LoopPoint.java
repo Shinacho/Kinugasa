@@ -24,7 +24,7 @@
 package kinugasa.resource.sound;
 
 /**
- * ƒTƒEƒ“ƒh‚Ìƒ‹[ƒvˆÊ’u‚ğŒˆ’è‚·‚é‚½‚ß‚ÌƒtƒŒ[ƒ€”‚ğƒJƒvƒZƒ‹‰»‚µ‚Ü‚·.
+ * ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒ«ãƒ¼ãƒ—ä½ç½®ã‚’æ±ºå®šã™ã‚‹ãŸã‚ã®ãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã‚’ã‚«ãƒ—ã‚»ãƒ«åŒ–ã—ã¾ã™.
  * <br>
  * <br>
  *
@@ -35,25 +35,25 @@ public class LoopPoint {
 
 	public static final int EOF = -1;
 	/**
-	 * ƒTƒEƒ“ƒh‚ÌŠJn‚ğ•\‚·’è”‚Å‚·. ‚±‚ê‚Í0‚Æ“¯’l‚Å‚·B<br>
+	 * ã‚µã‚¦ãƒ³ãƒ‰ã®é–‹å§‹ã‚’è¡¨ã™å®šæ•°ã§ã™. ã“ã‚Œã¯0ã¨åŒå€¤ã§ã™ã€‚<br>
 	 */
 	public static final int START = 0;
 	//
 	/**
-	 * ƒtƒ@ƒCƒ‹‚ÌI’[‚Ü‚ÅÄ¶‚µ‚½ŒãAÅ‰‚É–ß‚éİ’è‚Å‚·.
+	 * ãƒ•ã‚¡ã‚¤ãƒ«ã®çµ‚ç«¯ã¾ã§å†ç”Ÿã—ãŸå¾Œã€æœ€åˆã«æˆ»ã‚‹è¨­å®šã§ã™.
 	 */
 	public static final LoopPoint END_TO_START = new LoopPoint(EOF, START);
 	/**
-	 * ƒ‹[ƒv‚ğg—p‚µ‚È‚¢İ’è‚Å‚·.
+	 * ãƒ«ãƒ¼ãƒ—ã‚’ä½¿ç”¨ã—ãªã„è¨­å®šã§ã™.
 	 */
 	public static final LoopPoint NO_USE = null;
 
 	/**
-	 * •¶š—ñ‚ğ‚à‚Æ‚ÉLoopPoint—v‘f‚Æ‚µ‚Äg—p‚Å‚«‚éint’l‚ğ•Ô‚µ‚Ü‚·.
+	 * æ–‡å­—åˆ—ã‚’ã‚‚ã¨ã«LoopPointè¦ç´ ã¨ã—ã¦ä½¿ç”¨ã§ãã‚‹intå€¤ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @param valueString "EOF"–”‚Í"START"‚Ü‚½‚Íint‚ğ‘—M‚µ‚Ü‚·B ‘å•¶š¬•¶š‚Í‹æ•Ê‚³‚ê‚Ü‚¹‚ñB<br>
-	 * @return@‘Î‰‚·‚éint’l‚ğ•Ô‚µ‚Ü‚·B<br>
-	 * @throws NumberFormatException ”»’è‚Å‚«‚È‚¢•¶š—ñ‚ğ‘—M‚³‚ê‚½ê‡‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @param valueString "EOF"åˆã¯"START"ã¾ãŸã¯intã‚’é€ä¿¡ã—ã¾ã™ã€‚ å¤§æ–‡å­—å°æ–‡å­—ã¯åŒºåˆ¥ã•ã‚Œã¾ã›ã‚“ã€‚<br>
+	 * @returnã€€å¯¾å¿œã™ã‚‹intå€¤ã‚’è¿”ã—ã¾ã™ã€‚<br>
+	 * @throws NumberFormatException åˆ¤å®šã§ããªã„æ–‡å­—åˆ—ã‚’é€ä¿¡ã•ã‚ŒãŸå ´åˆã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public static int valueOf(String valueString)
 			throws NumberFormatException {
@@ -67,31 +67,31 @@ public class LoopPoint {
 	}
 
 	/**
-	 * ŠÔ‚ğƒtƒŒ[ƒ€”‚É•ÏŠ·‚·‚é. –ß‚è’l‚Íint‚ÉŠÛ‚ß‚ç‚ê‚Ü‚·.<br>
+	 * æ™‚é–“ã‚’ãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã«å¤‰æ›ã™ã‚‹. æˆ»ã‚Šå€¤ã¯intã«ä¸¸ã‚ã‚‰ã‚Œã¾ã™.<br>
 	 *
-	 * @param sec ŠÔ‚ğ•b’PˆÊ‚Åw’è.<br>
-	 * @param freq ü”g”.‚±‚ÌƒNƒ‰ƒX‚Ì’è”‚ğg—p‚Å‚«‚é.<br>
+	 * @param sec æ™‚é–“ã‚’ç§’å˜ä½ã§æŒ‡å®š.<br>
+	 * @param freq å‘¨æ³¢æ•°.ã“ã®ã‚¯ãƒ©ã‚¹ã®å®šæ•°ã‚’ä½¿ç”¨ã§ãã‚‹.<br>
 	 *
-	 * @return w’è‚³‚ê‚½•b”‚ÌƒtƒŒ[ƒ€”.<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸç§’æ•°ã®ãƒ•ãƒ¬ãƒ¼ãƒ æ•°.<br>
 	 */
 	public static int secToFrame(double sec, int freq) {
 		return (int) (sec * freq);
 	}
 	//
 	/**
-	 * ƒ‹[ƒvŠJnˆÊ’u.
+	 * ãƒ«ãƒ¼ãƒ—é–‹å§‹ä½ç½®.
 	 */
 	private int from;
 	/**
-	 * ƒ‹[ƒv‚É–ß‚Á‚½æ‚ÌˆÊ’u.
+	 * ãƒ«ãƒ¼ãƒ—æ™‚ã«æˆ»ã£ãŸå…ˆã®ä½ç½®.
 	 */
 	private int to;
 
 	/**
-	 * ƒ‹[ƒvˆÊ’u‚ğì¬.
+	 * ãƒ«ãƒ¼ãƒ—ä½ç½®ã‚’ä½œæˆ.
 	 *
-	 * @param from ƒ‹[ƒvŠJnˆÊ’u.<br>
-	 * @param to ƒ‹[ƒv‚É–ß‚Á‚½æ‚ÌˆÊ’u.<br>
+	 * @param from ãƒ«ãƒ¼ãƒ—é–‹å§‹ä½ç½®.<br>
+	 * @param to ãƒ«ãƒ¼ãƒ—æ™‚ã«æˆ»ã£ãŸå…ˆã®ä½ç½®.<br>
 	 */
 	public LoopPoint(int from, int to) {
 		this.from = from;
@@ -99,18 +99,18 @@ public class LoopPoint {
 	}
 
 	/**
-	 * ƒ‹[ƒvŠJnˆÊ’u‚ğæ“¾.
+	 * ãƒ«ãƒ¼ãƒ—é–‹å§‹ä½ç½®ã‚’å–å¾—.
 	 *
-	 * @return ƒ‹[ƒvŠJnˆÊ’u.<br>
+	 * @return ãƒ«ãƒ¼ãƒ—é–‹å§‹ä½ç½®.<br>
 	 */
 	public int getFrom() {
 		return from;
 	}
 
 	/**
-	 * ƒ‹[ƒv‚É–ß‚éˆÊ’u‚ğæ“¾.
+	 * ãƒ«ãƒ¼ãƒ—æ™‚ã«æˆ»ã‚‹ä½ç½®ã‚’å–å¾—.
 	 *
-	 * @return ƒ‹[ƒv‚É–ß‚éˆÊ’u.<br>
+	 * @return ãƒ«ãƒ¼ãƒ—æ™‚ã«æˆ»ã‚‹ä½ç½®.<br>
 	 */
 	public int getTo() {
 		return to;

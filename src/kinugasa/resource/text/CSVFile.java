@@ -50,12 +50,12 @@ public class CSVFile implements Input<CSVFile>, Output, Nameable, Iterable<Strin
 
 	public CSVFile(File file) {
 		this.file = file;
-		charset = Charset.forName("MS932");
+		charset = Charset.forName("UTF-8");
 	}
 
 	public CSVFile(String path) {
 		this.file = new File(path);
-		charset = Charset.forName("MS932");
+		charset = Charset.forName("UTF-8");
 
 	}
 

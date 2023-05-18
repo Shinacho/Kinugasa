@@ -34,7 +34,7 @@ import java.util.Collections;
 public enum RenderingQuality {
 
 	/**
-	 * ƒŒƒ“ƒ_ƒŠƒ“ƒOƒqƒ“ƒg‚ğ‘S‚­İ’è‚µ‚Ü‚¹‚ñ. ‘S‚Ä‚Ìİ’è‚Í‹K’è’l‚Æ‚È‚è‚Ü‚·B<br>
+	 * ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ãƒ’ãƒ³ãƒˆã‚’å…¨ãè¨­å®šã—ã¾ã›ã‚“. å…¨ã¦ã®è¨­å®šã¯è¦å®šå€¤ã¨ãªã‚Šã¾ã™ã€‚<br>
 	 */
 	NOT_USE {
 		@Override
@@ -46,7 +46,7 @@ public enum RenderingQuality {
 		}
 	},
 	/**
-	 * ‘¬“x‚ğ—Dæ‚·‚éİ’è‚Å‚·.
+	 * é€Ÿåº¦ã‚’å„ªå…ˆã™ã‚‹è¨­å®šã§ã™.
 	 */
 	SPEED {
 		@Override
@@ -63,7 +63,7 @@ public enum RenderingQuality {
 		}
 	},
 	/**
-	 * •`‰æ•i¿‚ğ—Dæ‚·‚éİ’è‚Å‚·.
+	 * æç”»å“è³ªã‚’å„ªå…ˆã™ã‚‹è¨­å®šã§ã™.
 	 */
 	QUALITY {
 		@Override
@@ -80,7 +80,7 @@ public enum RenderingQuality {
 		}
 	},
 	/**
-	 * „§İ’è‚Å‚·.“Á‚Éİ’è‚µ‚È‚¢ê‡‚Ì‹K’è’l‚Æ‚È‚è‚Ü‚·.
+	 * æ¨å¥¨è¨­å®šã§ã™.ç‰¹ã«è¨­å®šã—ãªã„å ´åˆã®è¦å®šå€¤ã¨ãªã‚Šã¾ã™.
 	 */
 	DEFAULT {
 		@Override

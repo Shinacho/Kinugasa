@@ -28,7 +28,7 @@ import kinugasa.graphics.ColorChanger;
 import kinugasa.graphics.GraphicsUtil;
 
 /**
- * ’PFƒtƒF[ƒhƒCƒ“^ƒtƒF[ƒhƒAƒEƒgŒø‰Ê‚ÌƒGƒtƒFƒNƒg‚ÌÀ‘•‚Å‚·.
+ * å˜è‰²ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ï¼ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆåŠ¹æœã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®å®Ÿè£…ã§ã™.
  * <br>
  *
  * <br>

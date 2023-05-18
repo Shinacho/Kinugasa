@@ -35,9 +35,9 @@ import java.util.List;
 import kinugasa.game.GraphicsContext;
 
 /**
- * �����̃X�v���C�g���܂Ƃ߂ĕ`�悵����A�\�[�g�ł���N���X�ł�.
+ * 複数のスプライトをまとめて描画したり、ソートできるクラスです.
  * <br>
- * ���̃N���X�̂��Ƃ�"�����X�v���C�g"�ƌĂт܂��B<br>
+ * このクラスのことを"複合スプライト"と呼びます。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_20:45:45<br>
@@ -45,30 +45,30 @@ import kinugasa.game.GraphicsContext;
  */
 public class CompositeSprite extends BasicSprite {
 
-	/** ���̕����X�v���C�g�����X�v���C�g�̃��X�g�ł�. */
+	/** この複合スプライトが持つスプライトのリストです. */
 	private ArrayList<Sprite> sprites;
 
 	/**
-	 * �V���������X�v���C�g���쐬���܂�.
-	 * ���̃R���X�g���N�^�ł́A�X�v���C�g���X�g�̏����e�ʂ�0�ɂȂ�܂��B<br>
+	 * 新しい複合スプライトを作成します.
+	 * このコンストラクタでは、スプライトリストの初期容量は0になります。<br>
 	 */
 	public CompositeSprite() {
 		this(Collections.<Sprite>emptyList());
 	}
 
 	/**
-	 * �V���������X�v���C�g���쐬���܂�.
+	 * 新しい複合スプライトを作成します.
 	 *
-	 * @param spr �����X�v���C�g�ɒǉ�����X�v���C�g���w�肵�܂��B<br>
+	 * @param spr 複合スプライトに追加するスプライトを指定します。<br>
 	 */
 	public CompositeSprite(Sprite... spr) {
 		this(Arrays.asList(spr));
 	}
 
 	/**
-	 * �V���������X�v���C�g���쐬���܂�.
+	 * 新しい複合スプライトを作成します.
 	 *
-	 * @param spr �����X�v���C�g�ɒǉ�����X�v���C�g���w�肵�܂��B<br>
+	 * @param spr 複合スプライトに追加するスプライトを指定します。<br>
 	 */
 	public CompositeSprite(List<Sprite> spr) {
 		this.sprites = new ArrayList<Sprite>(spr.size());
@@ -76,16 +76,16 @@ public class CompositeSprite extends BasicSprite {
 	}
 
 	/**
-	 * ���̕����X�v���C�g�ɐV�����X�v���C�g��ǉ����܂�.
-	 * �V�����X�v���C�g�̓X�v���C�g���X�g�̍Ō���ɒǉ�����܂��B<br>
-	 * Z�����W�͎�����������܂���B<br>
+	 * この複合スプライトに新しいスプライトを追加します.
+	 * 新しいスプライトはスプライトリストの最後尾に追加されます。<br>
+	 * Z軸座標は自動調整されません。<br>
 	 *
-	 * @param spr �ǉ�����X�v���C�g���w�肵�܂��B<br>
+	 * @param spr 追加するスプライトを指定します。<br>
 	 *
-	 * @throws IllegalArgumentException �ǉ�����X�v���C�g��this�̂Ƃ��A�܂��́A�ǉ�����X�v���C�g��CompositeSprite��
-	 * ���̕����X�v���C�g���ێ�����X�v���C�g���X�g����this�܂��͐e�̃X�v���C�g������ꍇ�ɓ������܂��B<br>
-	 * �����X�v���C�g�̐e�����̕����X�v���C�g�������ׂĂ̎q�̐e�Əz�Q�ƂɂȂ��Ă��邩�̃`�F�b�N��
-	 * �V�����X�v���C�g��ǉ����邽�тɍċA�I�ɍs���܂��B<br>
+	 * @throws IllegalArgumentException 追加するスプライトがthisのとき、または、追加するスプライトがCompositeSpriteで
+	 * その複合スプライトが保持するスプライトリスト内にthisまたは親のスプライトがある場合に投げられます。<br>
+	 * 複合スプライトの親がその複合スプライトが持つすべての子の親と循環参照になっているかのチェックは
+	 * 新しいスプライトを追加するたびに再帰的に行われます。<br>
 	 */
 	public void add(Sprite spr) throws IllegalArgumentException {
 		if (spr instanceof CompositeSprite) {
@@ -95,16 +95,16 @@ public class CompositeSprite extends BasicSprite {
 	}
 
 	/**
-	 * ���̕����X�v���C�g�ɐV�����X�v���C�g��ǉ����܂�.
-	 * �V�����X�v���C�g�̓X�v���C�g���X�g�̍Ō���Ɏw�肳�ꂽ�����Œǉ�����܂��B<br>
-	 * Z�����W�͎�����������܂���B<br>
+	 * この複合スプライトに新しいスプライトを追加します.
+	 * 新しいスプライトはスプライトリストの最後尾に指定された順序で追加されます。<br>
+	 * Z軸座標は自動調整されません。<br>
 	 *
-	 * @param spr �ǉ�����X�v���C�g���w�肵�܂��B<br>
+	 * @param spr 追加するスプライトを指定します。<br>
 	 *
-	 * @throws IllegalArgumentException �ǉ�����X�v���C�g��this���܂܂��Ƃ��A�܂��́A�ǉ�����X�v���C�g��CompositeSprite��
-	 * ���̕����X�v���C�g���ێ�����X�v���C�g���X�g����this�܂��͐e�̃X�v���C�g������ꍇ�ɓ������܂��B<br>
-	 * �����X�v���C�g�̐e�����̕����X�v���C�g�������ׂĂ̎q�̐e�Əz�Q�ƂɂȂ��Ă��邩�̃`�F�b�N��
-	 * �V�����X�v���C�g��ǉ����邽�тɍċA�I�ɍs���܂��B<br>
+	 * @throws IllegalArgumentException 追加するスプライトにthisが含まれるとき、または、追加するスプライトがCompositeSpriteで
+	 * その複合スプライトが保持するスプライトリスト内にthisまたは親のスプライトがある場合に投げられます。<br>
+	 * 複合スプライトの親がその複合スプライトが持つすべての子の親と循環参照になっているかのチェックは
+	 * 新しいスプライトを追加するたびに再帰的に行われます。<br>
 	 */
 	public void addAll(Sprite... spr) throws IllegalArgumentException {
 		for (Sprite s : spr) {
@@ -113,60 +113,60 @@ public class CompositeSprite extends BasicSprite {
 	}
 
 	/**
-	 * ���̕����X�v���C�g�ɐV�����X�v���C�g��ǉ����܂�.
-	 * �V�����X�v���C�g�̓X�v���C�g���X�g�̍Ō���Ɏw�肳�ꂽ�����Œǉ�����܂��B<br>
-	 * Z�����W�͎�����������܂���B<br>
+	 * この複合スプライトに新しいスプライトを追加します.
+	 * 新しいスプライトはスプライトリストの最後尾に指定された順序で追加されます。<br>
+	 * Z軸座標は自動調整されません。<br>
 	 *
-	 * @param spr �ǉ�����X�v���C�g���w�肵�܂��B<br>
+	 * @param spr 追加するスプライトを指定します。<br>
 	 *
-	 * @throws IllegalArgumentException �ǉ�����X�v���C�g��this���܂܂��Ƃ��A�܂��́A�ǉ�����X�v���C�g��CompositeSprite��
-	 * ���̕����X�v���C�g���ێ�����X�v���C�g���X�g����this�܂��͐e�̃X�v���C�g������ꍇ�ɓ������܂��B<br>
-	 * �����X�v���C�g�̐e�����̕����X�v���C�g�������ׂĂ̎q�̐e�Əz�Q�ƂɂȂ��Ă��邩�̃`�F�b�N��
-	 * �V�����X�v���C�g��ǉ����邽�тɍċA�I�ɍs���܂��B<br>
+	 * @throws IllegalArgumentException 追加するスプライトにthisが含まれるとき、または、追加するスプライトがCompositeSpriteで
+	 * その複合スプライトが保持するスプライトリスト内にthisまたは親のスプライトがある場合に投げられます。<br>
+	 * 複合スプライトの親がその複合スプライトが持つすべての子の親と循環参照になっているかのチェックは
+	 * 新しいスプライトを追加するたびに再帰的に行われます。<br>
 	 */
 	public void addAll(List<Sprite> spr) throws IllegalArgumentException {
 		addAll(spr.toArray(new Sprite[spr.size()]));
 	}
 
 	/**
-	 * �w�肵���X�v���C�g���A���̕����X�v���C�g�Ɋ܂܂�Ă���ꍇ�A���̃X�v���C�g�����̕����X�v���C�g����폜���܂�.
+	 * 指定したスプライトが、この複合スプライトに含まれている場合、そのスプライトをこの複合スプライトから削除します.
 	 *
-	 * @param spr �폜����X�v���C�g���w�肵�܂��B<br>
+	 * @param spr 削除するスプライトを指定します。<br>
 	 */
 	public void remove(Sprite spr) {
 		sprites.remove(spr);
 	}
 
 	/**
-	 * �w�肵���X�v���C�g���A���̕����X�v���C�g�Ɋ܂܂�Ă���ꍇ�A���̃X�v���C�g�����̕����X�v���C�g����폜���܂�.
+	 * 指定したスプライトが、この複合スプライトに含まれている場合、そのスプライトをこの複合スプライトから削除します.
 	 *
-	 * @param spr �폜����X�v���C�g���w�肵�܂��B<br>
+	 * @param spr 削除するスプライトを指定します。<br>
 	 */
 	public void removeAll(Sprite... spr) {
 		sprites.removeAll(Arrays.asList(spr));
 	}
 
 	/**
-	 * �w�肵���X�v���C�g���A���̕����X�v���C�g�Ɋ܂܂�Ă���ꍇ�A���̃X�v���C�g�����̕����X�v���C�g����폜���܂�.
+	 * 指定したスプライトが、この複合スプライトに含まれている場合、そのスプライトをこの複合スプライトから削除します.
 	 *
-	 * @param spr �폜����X�v���C�g���w�肵�܂��B<br>
+	 * @param spr 削除するスプライトを指定します。<br>
 	 */
 	public void removeAll(List<Sprite> spr) {
 		removeAll(spr.toArray(new Sprite[spr.size()]));
 	}
 
 	/**
-	 * �w�肵���X�v���C�g�����̕����X�v���C�g�Ɋ܂܂�Ă��邩���������܂�.
+	 * 指定したスプライトがこの複合スプライトに含まれているかを検査します.
 	 *
-	 * @param spr ��������X�v���C�g���w�肵�܂��B<br>
+	 * @param spr 検査するスプライトを指定します。<br>
 	 *
-	 * @return spr�����̕����X�v���C�g�̃X�v���C�g���X�g�Ɋ܂܂�Ă���ꍇtrue�A�����łȂ��ꍇfalse��Ԃ��܂��B<br>
+	 * @return sprがこの複合スプライトのスプライトリストに含まれている場合true、そうでない場合falseを返します。<br>
 	 */
 	public boolean contains(Sprite spr) {
 		return sprites.contains(spr);
 	}
 	/*
-	 * TODO:�ǉ����郁�\�b�h
+	 * TODO:追加するメソッド
 	 * public boolean containsAll(Sprite... spr);
 	 * public boolean containsAll(List<Sprite> spr);
 	 * public boolean deepContains(Sprite spr );
@@ -175,12 +175,12 @@ public class CompositeSprite extends BasicSprite {
 	 */
 
 	/**
-	 * �X�v���C�g���X�g���̂��ׂẴX�v���C�g���A���̏�����Z�����W�ɕ��ׂ܂�.
+	 * スプライトリスト内のすべてのスプライトを、その順序でZ軸座標に並べます.
 	 *
-	 * @param minZ ���X�g��0�Ԗڂɐݒ肳���z���W���w�肵�܂��B<br>
-	 * @param maxZ ���X�g�̍Ō�̗v�f�ɐݒ肳���z���W���w�肵�܂��B<br>
+	 * @param minZ リストの0番目に設定されるz座標を指定します。<br>
+	 * @param maxZ リストの最後の要素に設定されるz座標を指定します。<br>
 	 *
-	 * @throws IllegalArgumentException minZ &gt; maxZ�̂Ƃ��ɓ������܂��B<br>
+	 * @throws IllegalArgumentException minZ &gt; maxZのときに投げられます。<br>
 	 */
 	public void sortZ(float minZ, float maxZ) throws IllegalArgumentException {
 		if (minZ > maxZ) {
@@ -195,55 +195,55 @@ public class CompositeSprite extends BasicSprite {
 	}
 
 	/**
-	 * �X�v���C�g���X�g���̂��ׂẴX�v���C�g���폜���܂�.
+	 * スプライトリスト内のすべてのスプライトを削除します.
 	 */
 	public void clear() {
 		sprites.clear();
 	}
 
 	/**
-	 * ���̕����X�v���C�g�����X�v���C�g���X�g���擾���܂�.
-	 * ���X�g�͎Q�Ƃ�ێ����܂��B���X�g�ɑ΂��鑀��͕����X�v���C�g�ɓK�p����܂��B<br>
+	 * この複合スプライトが持つスプライトリストを取得します.
+	 * リストは参照を保持します。リストに対する操作は複合スプライトに適用されます。<br>
 	 *
-	 * @return ���̕����X�v���C�g�̃X�v���C�g���X�g���Ԃ���܂��B<br>
+	 * @return この複合スプライトのスプライトリストが返されます。<br>
 	 */
 	public List<Sprite> getSprites() {
 		return sprites;
 	}
 
 	/**
-	 * �X�v���C�g���X�g�̎w�肵���C���f�b�N�X�Ɋi�[����Ă���X�v���C�g���擾���܂�.
+	 * スプライトリストの指定したインデックスに格納されているスプライトを取得します.
 	 *
-	 * @param idx �擾����X�v���C�g�̃C���f�b�N�X���w�肵�܂�.<Br>
+	 * @param idx 取得するスプライトのインデックスを指定します.<Br>
 	 *
-	 * @return �w�肵���C���f�b�N�X�̃X�v���C�g���Ԃ���܂�.<br>
+	 * @return 指定したインデックスのスプライトが返されます.<br>
 	 *
-	 * @throws IndexOutOfBoundsException �s���ȃC���f�b�N�X�̏ꍇ�ɓ������܂��B<br>
+	 * @throws IndexOutOfBoundsException 不正なインデックスの場合に投げられます。<br>
 	 */
 	public Sprite getSprite(int idx) throws IndexOutOfBoundsException {
 		return sprites.get(idx);
 	}
 
 	/**
-	 * ���̕����X�v���C�g�����X�v���C�g�̐����擾���܂�.
+	 * この複合スプライトが持つスプライトの数を取得します.
 	 *
-	 * @return �X�v���C�g���X�g�̗v�f����Ԃ��܂��B<br>
+	 * @return スプライトリストの要素数を返します。<br>
 	 */
 	public int size() {
 		return sprites.size();
 	}
 
 	/**
-	 * �����X�v���C�g�ɒǉ�����Ă���X�v���C�g�̈ˑ��֌W�𒲍����܂�.
+	 * 複合スプライトに追加されているスプライトの依存関係を調査します.
 	 *
-	 * ���̃��\�b�h�͍ċA�I�ɌĂяo����܂��B<br>
+	 * このメソッドは再帰的に呼び出されます。<br>
 	 *
-	 * @param parents ���o���ꂽ���ׂĂ̕����X�v���C�g���i�[����Ă��郊�X�g�ł��B<br>
-	 * ���̃��X�g�ɂ�this���܂݂܂��B<br>
-	 * @param sprites ���o���ꂽ���ׂẴX�v���C�g���i�[����Ă��郊�X�g�ł��B<br>
-	 * ���̃��X�g�ɂ͕����X�v���C�g���܂܂�Ă��܂��B<br>
+	 * @param parents 検出されたすべての複合スプライトが格納されているリストです。<br>
+	 * このリストにはthisを含みます。<br>
+	 * @param sprites 検出されたすべてのスプライトが格納されているリストです。<br>
+	 * このリストには複合スプライトも含まれています。<br>
 	 *
-	 * @throws IllegalArgumentException �X�v���C�g�̈ˑ��֌W�ɏz�Q�Ƃ��������ꂽ�Ƃ��ɓ������܂��B<br>
+	 * @throws IllegalArgumentException スプライトの依存関係に循環参照が発見されたときに投げられます。<br>
 	 */
 	private void checkInstance(List<CompositeSprite> parents, List<Sprite> sprites)
 			throws IllegalArgumentException {
@@ -266,11 +266,11 @@ public class CompositeSprite extends BasicSprite {
 	}
 
 	/**
-	 * �ǉ�����Ă��邷�ׂẴX�v���C�g�����̏����ŕ`�悵�܂�.
-	 * ���̃��\�b�h�ł́A���̕����X�v���C�g�̉���ԂƐ�����Ԃ��l������܂��B<br>
-	 * �e�X�v���C�g�́A���ꂼ��̉���ԂƐ�����Ԃ���э��W���g�p����܂��B<br>
+	 * 追加されているすべてのスプライトをその順序で描画します.
+	 * このメソッドでは、この複合スプライトの可視状態と生存状態が考慮されます。<br>
+	 * 各スプライトは、それぞれの可視状態と生存状態および座標が使用されます。<br>
 	 *
-	 * @param g �������ރO���t�B�b�N�X�R���e�L�X�g�𑗐M���܂��B<br>
+	 * @param g 書き込むグラフィックスコンテキストを送信します。<br>
 	 */
 	@Override
 	public void draw(GraphicsContext g) {
@@ -283,14 +283,14 @@ public class CompositeSprite extends BasicSprite {
 	}
 
 	/**
-	 * �ǉ�����Ă��邷�ׂẴX�v���C�g���\�[�g���Ă���`�悵�܂�.
-	 * ���̃��\�b�h�ł́A���̕����X�v���C�g�̉���ԂƐ�����Ԃ��l������܂��B<br>
-	 * �e�X�v���C�g�́A���ꂼ��̉���ԂƐ�����Ԃ���э��W���g�p����܂��B<br>
-	 * ���̃��\�b�h�ł́A�X�v���C�g���X�g���ɕ����X�v���C�g�����݂���ꍇ�́A
-	 * ���̕����X�v���C�g���ċA�I�Ƀ\�[�g���܂��B<br>
+	 * 追加されているすべてのスプライトをソートしてから描画します.
+	 * このメソッドでは、この複合スプライトの可視状態と生存状態が考慮されます。<br>
+	 * 各スプライトは、それぞれの可視状態と生存状態および座標が使用されます。<br>
+	 * このメソッドでは、スプライトリスト内に複合スプライトが存在する場合は、
+	 * その複合スプライトを再帰的にソートします。<br>
 	 *
-	 * @param g �������ރO���t�B�b�N�X�R���e�L�X�g�𑗐M���܂��B<br>
-	 * @param sortMode �\�[�g���@���w�肵�܂��BSpriteSortMode���w��ł��܂��B<br>
+	 * @param g 書き込むグラフィックスコンテキストを送信します。<br>
+	 * @param sortMode ソート方法を指定します。SpriteSortModeを指定できます。<br>
 	 */
 	public void draw(GraphicsContext g, Comparator<Sprite> sortMode) {
 		sort(sortMode);
@@ -298,34 +298,34 @@ public class CompositeSprite extends BasicSprite {
 	}
 
 	/**
-	 * �X�v���C�g���X�g���\�[�g���܂�.
-	 * ���̃��\�b�h�ł́A�X�v���C�g���X�g���ɕ����X�v���C�g�����݂���ꍇ�́A
-	 * ���̕����X�v���C�g���ċA�I�Ƀ\�[�g���܂��B<br>
+	 * スプライトリストをソートします.
+	 * このメソッドでは、スプライトリスト内に複合スプライトが存在する場合は、
+	 * その複合スプライトを再帰的にソートします。<br>
 	 *
-	 * @param sortMode �\�[�g���@���w�肵�܂��BSpriteSortMode���w��ł��܂��B<br>
+	 * @param sortMode ソート方法を指定します。SpriteSortModeを指定できます。<br>
 	 */
 	public void sort(Comparator<Sprite> sortMode) {
 		deepSort(sprites, sortMode);
 	}
 
 	/**
-	 * �X�v���C�g���X�g���\�[�g���܂�.
-	 * ���̃��\�b�h�ł́ASpriteSortMode��BACK_TO_FRONT���g�p����܂��B<br>
-	 * ���̃��\�b�h�ł́A�X�v���C�g���X�g���ɕ����X�v���C�g�����݂���ꍇ�́A
-	 * ���̕����X�v���C�g���ċA�I�Ƀ\�[�g���܂��B<br>
+	 * スプライトリストをソートします.
+	 * このメソッドでは、SpriteSortModeのBACK_TO_FRONTが使用されます。<br>
+	 * このメソッドでは、スプライトリスト内に複合スプライトが存在する場合は、
+	 * その複合スプライトを再帰的にソートします。<br>
 	 */
 	public void sort() {
 		sort(SpriteSortMode.BACK_TO_FRONT);
 	}
 
 	/**
-	 * �X�v���C�g���X�g���ċA�I�Ƀ\�[�g���܂�.
-	 * ���̃��\�b�h�ł́A�X�v���C�g���X�g���ɕ����X�v���C�g�����݂���ꍇ�́A
-	 * ���̕����X�v���C�g���ċA�I�Ƀ\�[�g���܂��B<br>
-	 * ���̃��\�b�h�͍ċA�I�ɏ�������܂��B<br>
+	 * スプライトリストを再帰的にソートします.
+	 * このメソッドでは、スプライトリスト内に複合スプライトが存在する場合は、
+	 * その複合スプライトを再帰的にソートします。<br>
+	 * このメソッドは再帰的に処理されます。<br>
 	 *
-	 * @param sprs �\�[�g����X�v���C�g���X�g���w�肵�܂��B<br>
-	 * @param sortMode �\�[�g���@���w�肵�܂��BSpriteSortMode���w��ł��܂��B<br>
+	 * @param sprs ソートするスプライトリストを指定します。<br>
+	 * @param sortMode ソート方法を指定します。SpriteSortModeを指定できます。<br>
 	 */
 	private void deepSort(List<Sprite> sprs, Comparator<Sprite> sortMode) {
 		Sprite spr;
@@ -354,19 +354,19 @@ public class CompositeSprite extends BasicSprite {
 		}
 	}
 
-	//���̕����X�v���C�g���̂�Z��ݒ肷��
+	//この複合スプライト自体のZを設定する
 	@Override
 	public void setZ(float z) {
 		super.setZ(z);
 	}
 
 	/**
-	 * �X�v���C�g���X�g�̗v�fidx�Ԗڂ̃X�v���C�g��Z�����W��ݒ肵�܂�.
+	 * スプライトリストの要素idx番目のスプライトのZ軸座標を設定します.
 	 *
-	 * @param z �ݒ肷����W���w�肵�܂��B<br>
-	 * @param idx Z���W��ݒ肷��X�v���C�g�̃C���f�b�N�X���w�肵�܂��B<br>
+	 * @param z 設定する座標を指定します。<br>
+	 * @param idx Z座標を設定するスプライトのインデックスを指定します。<br>
 	 *
-	 * @throws IndexOutOfBoundsException �s���ȃC���f�b�N�X�̏ꍇ�ɓ������܂��B<br>
+	 * @throws IndexOutOfBoundsException 不正なインデックスの場合に投げられます。<br>
 	 */
 	public void setZ(float z, int idx) throws IndexOutOfBoundsException {
 		sprites.get(idx).setZ(z);
@@ -485,11 +485,11 @@ public class CompositeSprite extends BasicSprite {
 	}
 
 	/**
-	 * �X�v���C�g�̎����Ńt�B���^�����O���A�T�u���X�g���쐬���܂�.
-	 * @param <T> �X�v���C�g�̊g���N���X���w�肵�܂��B<br>
-	 * @param type ��������^���w�肵�܂��B<br>
-	 * @return �w�肵���^�̗v�f��V�������X�g�Ɋi�[���ĕԂ��܂��B���Ԃ�
-	 * ���̕����X�v���C�g�Ɋi�[����Ă���h�������ꂽ���ԁh�ł��B<br>
+	 * スプライトの実装でフィルタリングし、サブリストを作成します.
+	 * @param <T> スプライトの拡張クラスを指定します。<br>
+	 * @param type 検索する型を指定します。<br>
+	 * @return 指定した型の要素を新しいリストに格納して返します。順番は
+	 * この複合スプライトに格納されている”発見された順番”です。<br>
 	 */
 	public <T extends Sprite> List<Sprite> subList(Class<T> type) {
 		List<Sprite> result = new ArrayList<Sprite>();

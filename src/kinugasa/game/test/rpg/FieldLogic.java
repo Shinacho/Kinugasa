@@ -90,7 +90,7 @@ public class FieldLogic extends GameLogic {
 
 	@Override
 	public void load() {
-		fm = FieldMap.getCurrentInstance() == null ? FieldMapStorage.getInstance().get("ƒYƒV") : FieldMap.getCurrentInstance();
+		fm = FieldMap.getCurrentInstance() == null ? FieldMapStorage.getInstance().get("ã‚ºã‚·") : FieldMap.getCurrentInstance();
 		c = FieldMap.getPlayerCharacter().get(0);
 		fm.getCamera().updateToCenter();
 		//
@@ -133,7 +133,7 @@ public class FieldLogic extends GameLogic {
 				return;
 			}
 		}
-		//FMƒCƒxƒ“ƒgˆ—
+		//FMã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†
 		if (FieldEventSystem.getInstance().hasEvent()) {
 			UserOperationRequire r = FieldEventSystem.getInstance().exec();
 			switch (r) {
@@ -157,11 +157,11 @@ public class FieldLogic extends GameLogic {
 					break;
 			}
 		}
-		//ƒ†[ƒUƒIƒyƒŒ[ƒVƒ‡ƒ“‰Â”ÛŠm”F
+		//ãƒ¦ãƒ¼ã‚¶ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³å¯å¦ç¢ºèª
 		if (!FieldEventSystem.getInstance().isUserOperation()) {
 			return;
 		}
-		//mwˆ—
+		//mwå‡¦ç†
 		if (mw != null) {
 			mw.update();
 		}
@@ -206,10 +206,10 @@ public class FieldLogic extends GameLogic {
 				mw.prevSelect();
 			}
 		}
-		//ƒ}ƒbƒvØ‘Öˆ—
+		//ãƒãƒƒãƒ—åˆ‡æ›¿å‡¦ç†
 		switch (stage) {
-			case 0://‘€ì‰Â”\
-				//ƒeƒXƒg—pƒJƒƒ‰ˆ—
+			case 0://æ“ä½œå¯èƒ½
+				//ãƒ†ã‚¹ãƒˆç”¨ã‚«ãƒ¡ãƒ©å‡¦ç†
 				if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
 					fm.getCamera().setMode(FieldMapCameraMode.FOLLOW_TO_CENTER);
 				}
@@ -222,13 +222,13 @@ public class FieldLogic extends GameLogic {
 					}
 				}
 
-				//ƒtƒB[ƒ‹ƒhƒ}ƒbƒv‚ÌƒJƒƒ‰ˆÚ“®EEEƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒE‚ª•\¦‚³‚ê‚Ä‚¢‚éŠÔ‚ÍˆÚ“®•s‰Â‚Æ‚·‚é
+				//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒãƒƒãƒ—ã®ã‚«ãƒ¡ãƒ©ç§»å‹•ãƒ»ãƒ»ãƒ»ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹é–“ã¯ç§»å‹•ä¸å¯ã¨ã™ã‚‹
 				if (mw == null || !mw.isVisible()) {
 					float speed = VehicleStorage.getInstance().getCurrentVehicle().getSpeed();
 					fm.setVector(new KVector(is.getGamePadState().sticks.LEFT.getLocation(speed)));
 					fm.move();
 				}
-				//ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[‚ÌŒü‚«XV
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®å‘ãæ›´æ–°
 				if (mw == null || !mw.isVisible()) {
 					if (fm.getCamera().getMode() == FieldMapCameraMode.FOLLOW_TO_CENTER) {
 						if (!is.getGamePadState().sticks.LEFT.getLocation().equals(GamePadStick.NOTHING)) {
@@ -245,7 +245,7 @@ public class FieldLogic extends GameLogic {
 						}
 					}
 				}
-				//ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒgŒn‚Ìˆ—
+				//ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚·ãƒ§ãƒƒãƒˆç³»ã®å‡¦ç†
 //				if (is.isPressed(Keys.M, InputType.SINGLE)) {
 //					KImage image = fm.createMiniMap(0.25f, true, true);
 //					ImageUtil.save("resource/test/miniMap.png", image.get());
@@ -255,9 +255,9 @@ public class FieldLogic extends GameLogic {
 					ImageUtil.screenShot("resource/test/screenShot.png", gm.getWindow().getBounds());
 					screenShot.stopAndPlay();
 				}
-				//ƒGƒ“ƒJƒEƒ“ƒgˆ—
+				//ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆå‡¦ç†
 				if (fm.isEncount()) {
-					SoundStorage.getInstance().get("SE").get("Œø‰Ê‰¹Qí“¬ŠJn.wav").load().stopAndPlay();
+					SoundStorage.getInstance().get("SE").get("åŠ¹æœéŸ³ï¼¿æˆ¦é—˜é–‹å§‹.wav").load().stopAndPlay();
 					battle = true;
 					effect = new FadeEffect(gm.getWindow().getInternalBounds().width, gm.getWindow().getInternalBounds().height,
 							new ColorChanger(

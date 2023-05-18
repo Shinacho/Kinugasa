@@ -94,7 +94,7 @@ public class Stage2Logic extends GameLogic {
 		last=null;
 		gm.getWindow().setBackground(Color.DARK_GRAY);
 		DELETE_AREA = new Rectangle(-9, -9, gm.getWindow().getWidth() + 18, gm.getWindow().getHeight() + 18);
-		bgm = new SoundBuilder("resource/ƒVƒ…[ƒeƒBƒ“ƒOEƒXƒe[ƒW‚Q.wav").setLoopPoint(LoopPoint.END_TO_START).builde().load();
+		bgm = new SoundBuilder("resource/ã‚·ãƒ¥ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ãƒ»ã‚¹ãƒ†ãƒ¼ã‚¸ï¼’.wav").setLoopPoint(LoopPoint.END_TO_START).builde().load();
 		bgm.play();
 
 		stage1 = new TextLabelSprite("STAGE 2", new SimpleTextLabelModel(FontModel.DEFAULT.clone().setFontSize(32)), 24, 24);
@@ -115,7 +115,7 @@ public class Stage2Logic extends GameLogic {
 		tama.clear();
 		tekiList.clear();
 
-		//‹Ê‚ğ‘Å‚Â“G‚Ì’Ç‰Á
+		//ç‰ã‚’æ‰“ã¤æ•µã®è¿½åŠ 
 		em.add(new FrameTimeEvent<Teki_1>(860) {
 			@Override
 			public Teki_1 exec() {
@@ -162,12 +162,12 @@ public class Stage2Logic extends GameLogic {
 	
 	@Override
 	public void update(GameTimeManager gtm, InputState is) {
-		// ƒtƒŒ[ƒ€”ƒŠƒZƒbƒg
+		// ãƒ•ãƒ¬ãƒ¼ãƒ æ•°ãƒªã‚»ãƒƒãƒˆ
 		if (first) {
 			gtm.resetTotalFrame();
 			first = false;
 		}
-		// ƒXƒe[ƒWƒ‰ƒxƒ‹‚Ìˆ—
+		// ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ©ãƒ™ãƒ«ã®å‡¦ç†
 		if (trMode) {
 			stage1.getLabelModel().getFontConfig().addAlpha(-2);
 			if (stage1.getLabelModel().getFontConfig().getColor().getAlpha() == 0) {
@@ -178,13 +178,13 @@ public class Stage2Logic extends GameLogic {
 			trMode = true;
 		}
 
-		//¯‚Ìˆ—
+		//æ˜Ÿã®å‡¦ç†
 		stares.forEach(Star::update);
 
-		//FPSƒ‰ƒxƒ‹‚Ìˆ—
+		//FPSãƒ©ãƒ™ãƒ«ã®å‡¦ç†
 		fps.setText("FPS:" + gtm.getFPSStr(2));
 
-		//ƒXƒeƒBƒbƒN“ü—Í‚ÆˆÚ“®”»’è
+		//ã‚¹ãƒ†ã‚£ãƒƒã‚¯å…¥åŠ›ã¨ç§»å‹•åˆ¤å®š
 		ship.setVector(new KVector(InputState.getInstance().getGamePadState().sticks.LEFT.getLocation(4.5f)));
 		ship.move();
 		if (ship.getX() <= 0) {
@@ -200,7 +200,7 @@ public class Stage2Logic extends GameLogic {
 			ship.setY(gm.getWindow().getInternalBounds().height - ship.getHeight() - 1);
 		}
 
-		//‹Ê”­Ë
+		//ç‰ç™ºå°„
 		if (InputState.getInstance().getGamePadState().buttons.A) {
 			if (tamaTc.isReaching()) {
 				Tama t1 = new Tama(ship.getX() + 26, ship.getY() + 22, 8, 8, "resource/tama.png");
@@ -213,10 +213,10 @@ public class Stage2Logic extends GameLogic {
 			}
 		}
 
-		//‹ÊˆÚ“®
+		//ç‰ç§»å‹•
 		tama.forEach(BasicSprite::move);
 
-		//‹Ê‚Æ“G‚Ì‚ ‚½‚è”»’è
+		//ç‰ã¨æ•µã®ã‚ãŸã‚Šåˆ¤å®š
 		for (BasicSprite s : tama) {
 			for (BasicSprite t : tekiList) {
 				if (t.contains(s.getCenter())) {
@@ -227,7 +227,7 @@ public class Stage2Logic extends GameLogic {
 			}
 		}
 
-		//‹Êíœ
+		//ç‰å‰Šé™¤
 		for (Sprite s : tama) {
 			if (!s.isExist()) {
 				deleteList.add(s);
@@ -236,7 +236,7 @@ public class Stage2Logic extends GameLogic {
 		tama.removeAll(deleteList);
 		deleteList.clear();
 
-		//ƒCƒxƒ“ƒgˆ—
+		//ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†
 		if (em.hasEvent(gtm.getTotalFrame())) {
 			List<FrameTimeEvent<?>> eList = em.getEvents(gtm.getTotalFrame());
 
@@ -253,7 +253,7 @@ public class Stage2Logic extends GameLogic {
 			}
 		}
 
-		//“Gˆ—
+		//æ•µå‡¦ç†
 		List<ImageSprite> addList = new ArrayList<>();
 		for (BasicSprite t : tekiList) {
 			if (!t.isExist()) {
@@ -261,7 +261,7 @@ public class Stage2Logic extends GameLogic {
 				continue;
 			}
 			t.move();
-			// “G‚Ì‹Ê”­Ëˆ—iƒCƒxƒ“ƒg‚Í1‰ñA‹Ê‚¤‚¿‚Í–ˆ‰ñÀs‚·‚é•K—v‚ª‚ ‚éj
+			// æ•µã®ç‰ç™ºå°„å‡¦ç†ï¼ˆã‚¤ãƒ™ãƒ³ãƒˆã¯1å›ã€ç‰ã†ã¡ã¯æ¯å›å®Ÿè¡Œã™ã‚‹å¿…è¦ãŒã‚ã‚‹ï¼‰
 			if (t instanceof Teki_1) {
 				addList.addAll(((Teki_1) t).shoot());
 			}
@@ -275,7 +275,7 @@ public class Stage2Logic extends GameLogic {
 		tekiList.addAll(addList);
 		addList.clear();
 
-		// “G‚Æ‚¶‚«‚Ì“–‚½‚è”»’è
+		// æ•µã¨ã˜ãã®å½“ãŸã‚Šåˆ¤å®š
 		for (BasicSprite t : tekiList) {
 			if (t.contains(ship.getCenter())) {
 				gls.changeTo("GAMEOVER");
@@ -283,7 +283,7 @@ public class Stage2Logic extends GameLogic {
 			}
 		}
 		
-		// ƒQ[ƒ€¬Œ÷”»’è
+		// ã‚²ãƒ¼ãƒ æˆåŠŸåˆ¤å®š
 		if(last != null && !last.isExist()){
 			text1.setVisible(true);
 			if(clearCounter.isReaching()){

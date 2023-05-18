@@ -33,9 +33,9 @@ import java.util.Map;
 import kinugasa.game.GameLog;
 
 /**
- * 1‚Â‚Ì‰æ‘œƒŠƒ\[ƒX‚ğØ‚èo‚µ‚ÄA•¡”‚Ì‰æ‘œƒCƒ“ƒXƒ^ƒ“ƒX‚ğ\’z‚·‚é‚½‚ß‚Ìƒrƒ‹ƒ_‚Å‚·.
+ * 1ã¤ã®ç”»åƒãƒªã‚½ãƒ¼ã‚¹ã‚’åˆ‡ã‚Šå‡ºã—ã¦ã€è¤‡æ•°ã®ç”»åƒã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æ§‹ç¯‰ã™ã‚‹ãŸã‚ã®ãƒ“ãƒ«ãƒ€ã§ã™.
  * <br>
- * “¯ˆê‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚Å•¡”‚ÌƒXƒvƒ‰ƒCƒgƒV[ƒg‚ğ\’z‚·‚éê‡‚ÍSpriteSheetCutter‚ğg—p‚µ‚Ä‚­‚¾‚³‚¢B<br>
+ * åŒä¸€ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§è¤‡æ•°ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚·ãƒ¼ãƒˆã‚’æ§‹ç¯‰ã™ã‚‹å ´åˆã¯SpriteSheetCutterã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/13_13:00:09<br>
@@ -45,25 +45,25 @@ import kinugasa.game.GameLog;
 public class SpriteSheet {
 
 	/**
-	 * ‰æ‘œ‚ğØ‚èo‚·ƒx[ƒX‚Æ‚È‚é‰æ‘œ‚Å‚·. ‚±‚Ì‰æ‘œ‚Í•ÏX‚³‚ê‚Ü‚¹‚ñB
+	 * ç”»åƒã‚’åˆ‡ã‚Šå‡ºã™ãƒ™ãƒ¼ã‚¹ã¨ãªã‚‹ç”»åƒã§ã™. ã“ã®ç”»åƒã¯å¤‰æ›´ã•ã‚Œã¾ã›ã‚“ã€‚
 	 */
 	private BufferedImage baseImage;
 	/**
-	 * Ø‚èo‚µ‚½‰æ‘œ‚ª’Ç‰Á‚³‚ê‚éƒŠƒXƒg‚Å‚·.
+	 * åˆ‡ã‚Šå‡ºã—ãŸç”»åƒãŒè¿½åŠ ã•ã‚Œã‚‹ãƒªã‚¹ãƒˆã§ã™.
 	 */
 	private ArrayList<BufferedImage> subImages;
 
 	/**
-	 * ‹ó‚ÌƒXƒvƒ‰ƒCƒgƒV[ƒg‚ğì¬‚µ‚Ü‚·.
+	 * ç©ºã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚·ãƒ¼ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 */
 	public SpriteSheet() {
 		subImages = new ArrayList<BufferedImage>(32);
 	}
 
 	/**
-	 * V‚µ‚¢ƒXƒvƒ‰ƒCƒgƒV[ƒg‚ğ\’z‚µ‚Ü‚·.
+	 * æ–°ã—ã„ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚·ãƒ¼ãƒˆã‚’æ§‹ç¯‰ã—ã¾ã™.
 	 *
-	 * @param filePath ƒ[ƒh‚·‚é‰æ‘œ‚ÌƒpƒX‚ğw’è‚µ‚Ü‚·B ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍAImageUtil‚Ìloadƒƒ\ƒbƒh‚ğg—p‚µ‚Ä‰æ‘œ‚ªƒ[ƒh‚³‚ê‚Ü‚·B<br>
+	 * @param filePath ãƒ­ãƒ¼ãƒ‰ã™ã‚‹ç”»åƒã®ãƒ‘ã‚¹ã‚’æŒ‡å®šã—ã¾ã™ã€‚ ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ImageUtilã®loadãƒ¡ã‚½ãƒƒãƒ‰ã‚’ä½¿ç”¨ã—ã¦ç”»åƒãŒãƒ­ãƒ¼ãƒ‰ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	public SpriteSheet(String filePath) {
 		baseImage = ImageUtil.load(filePath);
@@ -71,9 +71,9 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * V‚µ‚¢ƒXƒvƒ‰ƒCƒgƒV[ƒg‚ğ\’z‚µ‚Ü‚·.
+	 * æ–°ã—ã„ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚·ãƒ¼ãƒˆã‚’æ§‹ç¯‰ã—ã¾ã™.
 	 *
-	 * @param baseImage ƒx[ƒX‚Æ‚È‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param baseImage ãƒ™ãƒ¼ã‚¹ã¨ãªã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public SpriteSheet(BufferedImage baseImage) {
 		this.baseImage = baseImage;
@@ -81,16 +81,16 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * ƒx[ƒX‰æ‘œ‚Ìw’è‚³‚ê‚½—Ìˆæ‚ğØ‚èo‚µ‚ÄV‚µ‚¢‰æ‘œ‚Æ‚µ‚Ü‚·.
+	 * ãƒ™ãƒ¼ã‚¹ç”»åƒã®æŒ‡å®šã•ã‚ŒãŸé ˜åŸŸã‚’åˆ‡ã‚Šå‡ºã—ã¦æ–°ã—ã„ç”»åƒã¨ã—ã¾ã™.
 	 *
-	 * @param x XÀ•W.<br>
-	 * @param y YÀ•W.<br>
-	 * @param width •.<br>
-	 * @param height ‚‚³.<br>
+	 * @param x Xåº§æ¨™.<br>
+	 * @param y Yåº§æ¨™.<br>
+	 * @param width å¹….<br>
+	 * @param height é«˜ã•.<br>
 	 *
-	 * @return ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX©‘Ì‚ª•Ô‚é.<br>
+	 * @return ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è‡ªä½“ãŒè¿”ã‚‹.<br>
 	 *
-	 * @throws RasterFormatException ‰æ‘œ‚Ì”ÍˆÍŠO‚ÉƒAƒNƒZƒX‚µ‚½‚Æ‚«‚É“Š‚°‚ç‚ê‚é.<br>
+	 * @throws RasterFormatException ç”»åƒã®ç¯„å›²å¤–ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ãŸã¨ãã«æŠ•ã’ã‚‰ã‚Œã‚‹.<br>
 	 */
 	public SpriteSheet cut(int x, int y, int width, int height) throws RasterFormatException {
 		subImages.add(baseImage.getSubimage(x, y, width, height));
@@ -98,13 +98,13 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * ƒx[ƒX‰æ‘œ‚Ìw’è‚³‚ê‚½—Ìˆæ‚ğØ‚èo‚µ‚ÄV‚µ‚¢‰æ‘œ‚Æ‚µ‚Ü‚·.
+	 * ãƒ™ãƒ¼ã‚¹ç”»åƒã®æŒ‡å®šã•ã‚ŒãŸé ˜åŸŸã‚’åˆ‡ã‚Šå‡ºã—ã¦æ–°ã—ã„ç”»åƒã¨ã—ã¾ã™.
 	 *
-	 * @param rectangle —Ìˆæ.<br>
+	 * @param rectangle é ˜åŸŸ.<br>
 	 *
-	 * @return ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX©‘Ì‚ª•Ô‚é.<br>
+	 * @return ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è‡ªä½“ãŒè¿”ã‚‹.<br>
 	 *
-	 * @throws RasterFormatException ‰æ‘œ‚Ì”ÍˆÍŠO‚ÉƒAƒNƒZƒX‚µ‚½‚Æ‚«‚É“Š‚°‚ç‚ê‚é.<br>
+	 * @throws RasterFormatException ç”»åƒã®ç¯„å›²å¤–ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ãŸã¨ãã«æŠ•ã’ã‚‰ã‚Œã‚‹.<br>
 	 */
 	public SpriteSheet cut(Rectangle rectangle) throws RasterFormatException {
 		return cut(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
@@ -118,13 +118,13 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * Ø‚èo‚µƒAƒ‹ƒSƒŠƒYƒ€‚ÉŠî‚Ã‚¢‚ÄA‚±‚ÌƒV[ƒg‚ğØ‚èo‚µ‚Ü‚·.
+	 * åˆ‡ã‚Šå‡ºã—ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã«åŸºã¥ã„ã¦ã€ã“ã®ã‚·ãƒ¼ãƒˆã‚’åˆ‡ã‚Šå‡ºã—ã¾ã™.
 	 *
-	 * @param cutter “Á’è‚ÌØ‚èo‚µİ’èƒAƒ‹ƒSƒŠƒYƒ€.<br>
+	 * @param cutter ç‰¹å®šã®åˆ‡ã‚Šå‡ºã—è¨­å®šã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ .<br>
 	 *
-	 * @return ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX©‘Ì‚ª•Ô‚é.<br>
+	 * @return ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è‡ªä½“ãŒè¿”ã‚‹.<br>
 	 *
-	 * @throws RasterFormatException ‰æ‘œ‚Ì”ÍˆÍŠO‚ÉƒAƒNƒZƒX‚µ‚½‚Æ‚«‚É“Š‚°‚ç‚ê‚é.<br>
+	 * @throws RasterFormatException ç”»åƒã®ç¯„å›²å¤–ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ãŸã¨ãã«æŠ•ã’ã‚‰ã‚Œã‚‹.<br>
 	 */
 	public SpriteSheet cut(SpriteSheetCutter cutter) throws RasterFormatException {
 		addAll(cutter.cut(baseImage));
@@ -132,16 +132,16 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * À•W0,0‚©‚çwidth,height‚ÌƒTƒCƒY‚Å“ñŸŒ³‚É‰Â”\‚È”‚¾‚¯•ªŠ„‚µA‘S‚Ä‚Ì•”•ª‰æ‘œ‚ğƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚·.
+	 * åº§æ¨™0,0ã‹ã‚‰width,heightã®ã‚µã‚¤ã‚ºã§äºŒæ¬¡å…ƒã«å¯èƒ½ãªæ•°ã ã‘åˆ†å‰²ã—ã€å…¨ã¦ã®éƒ¨åˆ†ç”»åƒã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ ã—ã¾ã™.
 	 *
 	 * <br>
 	 *
-	 * @param width •.<br>
-	 * @param height ‚‚³.<br>
+	 * @param width å¹….<br>
+	 * @param height é«˜ã•.<br>
 	 *
-	 * @return ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX©‘Ì‚ª•Ô‚é.<br>
+	 * @return ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è‡ªä½“ãŒè¿”ã‚‹.<br>
 	 *
-	 * @throws RasterFormatException ‰æ‘œ‚Ì”ÍˆÍŠO‚ÉƒAƒNƒZƒX‚µ‚½‚Æ‚«‚É“Š‚°‚ç‚ê‚é.<br>
+	 * @throws RasterFormatException ç”»åƒã®ç¯„å›²å¤–ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ãŸã¨ãã«æŠ•ã’ã‚‰ã‚Œã‚‹.<br>
 	 */
 	public SpriteSheet split(int width, int height) throws RasterFormatException {
 		BufferedImage[][] images = ImageUtil.splitAsArray(baseImage, width, height);
@@ -152,15 +152,15 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * À•W0,y‚©‚çwidth,height‚ÌƒTƒCƒY‚ÅX•ûŒü‚É‰Â”\‚È”‚¾‚¯‰æ‘œ‚ğ•ªŠ„‚µA‘S‚Ä‚Ì•”•ª‰æ‘œ‚ğƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚·.
+	 * åº§æ¨™0,yã‹ã‚‰width,heightã®ã‚µã‚¤ã‚ºã§Xæ–¹å‘ã«å¯èƒ½ãªæ•°ã ã‘ç”»åƒã‚’åˆ†å‰²ã—ã€å…¨ã¦ã®éƒ¨åˆ†ç”»åƒã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ ã—ã¾ã™.
 	 *
-	 * @param y YÀ•W.<br>
-	 * @param width •.<br>
-	 * @param height ‚‚³.<br>
+	 * @param y Yåº§æ¨™.<br>
+	 * @param width å¹….<br>
+	 * @param height é«˜ã•.<br>
 	 *
-	 * @return ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX©‘Ì‚ª•Ô‚é.<br>
+	 * @return ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è‡ªä½“ãŒè¿”ã‚‹.<br>
 	 *
-	 * @throws RasterFormatException ‰æ‘œ‚Ì”ÍˆÍŠO‚ÉƒAƒNƒZƒX‚µ‚½‚Æ‚«‚É“Š‚°‚ç‚ê‚é.<br>
+	 * @throws RasterFormatException ç”»åƒã®ç¯„å›²å¤–ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ãŸã¨ãã«æŠ•ã’ã‚‰ã‚Œã‚‹.<br>
 	 */
 	public SpriteSheet rows(int y, int width, int height) throws RasterFormatException {
 		subImages.addAll(Arrays.asList(ImageUtil.rows(baseImage, y, width, height)));
@@ -168,15 +168,15 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * À•Wx,0‚©‚çwidth,height‚ÌƒTƒCƒY‚ÅY•ûŒü‚É‰Â”\‚È”‚¾‚¯‰æ‘œ‚ğ•ªŠ„‚µA‘S‚Ä‚Ì•”•ª‰æ‘œ‚ğƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚·.
+	 * åº§æ¨™x,0ã‹ã‚‰width,heightã®ã‚µã‚¤ã‚ºã§Yæ–¹å‘ã«å¯èƒ½ãªæ•°ã ã‘ç”»åƒã‚’åˆ†å‰²ã—ã€å…¨ã¦ã®éƒ¨åˆ†ç”»åƒã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ ã—ã¾ã™.
 	 *
-	 * @param x XÀ•W.<br>
-	 * @param width •.<br>
-	 * @param height ‚‚³.<br>
+	 * @param x Xåº§æ¨™.<br>
+	 * @param width å¹….<br>
+	 * @param height é«˜ã•.<br>
 	 *
-	 * @return ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX©‘Ì‚ª•Ô‚é.<br>
+	 * @return ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è‡ªä½“ãŒè¿”ã‚‹.<br>
 	 *
-	 * @throws RasterFormatException ‰æ‘œ‚Ì”ÍˆÍŠO‚ÉƒAƒNƒZƒX‚µ‚½‚Æ‚«‚É“Š‚°‚ç‚ê‚é.<br>
+	 * @throws RasterFormatException ç”»åƒã®ç¯„å›²å¤–ã«ã‚¢ã‚¯ã‚»ã‚¹ã—ãŸã¨ãã«æŠ•ã’ã‚‰ã‚Œã‚‹.<br>
 	 */
 	public SpriteSheet columns(int x, int width, int height) throws RasterFormatException {
 		subImages.addAll(Arrays.asList(ImageUtil.columns(baseImage, x, width, height)));
@@ -184,11 +184,11 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * w’è‚³‚ê‚½‰æ‘œ‚ğ’Ç‰Á‚µ‚Ü‚·.
+	 * æŒ‡å®šã•ã‚ŒãŸç”»åƒã‚’è¿½åŠ ã—ã¾ã™.
 	 *
-	 * @param image ‰æ‘œ.<br>
+	 * @param image ç”»åƒ.<br>
 	 *
-	 * @return ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX©‘Ì‚ª•Ô‚é.<br>
+	 * @return ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è‡ªä½“ãŒè¿”ã‚‹.<br>
 	 */
 	public SpriteSheet add(BufferedImage image) {
 		subImages.add(image);
@@ -196,11 +196,11 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * w’è‚³‚ê‚½0ŒÂˆÈã‚Ì‰æ‘œ‚ğ‘S‚Ä‚»‚Ì‡˜‚ÅƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚·.
+	 * æŒ‡å®šã•ã‚ŒãŸ0å€‹ä»¥ä¸Šã®ç”»åƒã‚’å…¨ã¦ãã®é †åºã§ãƒªã‚¹ãƒˆã«è¿½åŠ ã—ã¾ã™.
 	 *
-	 * @param images ‰æ‘œ.<br>
+	 * @param images ç”»åƒ.<br>
 	 *
-	 * @return ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX©‘Ì‚ª•Ô‚é.<br>
+	 * @return ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è‡ªä½“ãŒè¿”ã‚‹.<br>
 	 */
 	public SpriteSheet addAll(BufferedImage... images) {
 		subImages.addAll(Arrays.asList(images));
@@ -208,9 +208,9 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * ƒx[ƒX‰æ‘œ–{‘Ì‚ğƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚·.
+	 * ãƒ™ãƒ¼ã‚¹ç”»åƒæœ¬ä½“ã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ ã—ã¾ã™.
 	 *
-	 * @return ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX©‘Ì‚ª•Ô‚é.<br>
+	 * @return ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è‡ªä½“ãŒè¿”ã‚‹.<br>
 	 */
 	public SpriteSheet baseImage() {
 		subImages.add(baseImage);
@@ -218,9 +218,9 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * ‘€ì‚ğŠm’è‚µA’Ç‰Á‚³‚ê‚Ä‚¢‚é‘S‚Ä‚Ì‰æ‘œ‚ğ’Ç‰Á‚³‚ê‚½‡˜‚Ì”z—ñ‚Æ‚µ‚Äæ“¾‚µ‚Ü‚·. ‚±‚Ì‘€ì‚Å‚ÍAnullƒCƒ“ƒXƒ^ƒ“ƒX‚ÌsubImage‚ÍØ‚èÌ‚Ä‚ç‚ê‚Ü‚·B<br>
+	 * æ“ä½œã‚’ç¢ºå®šã—ã€è¿½åŠ ã•ã‚Œã¦ã„ã‚‹å…¨ã¦ã®ç”»åƒã‚’è¿½åŠ ã•ã‚ŒãŸé †åºã®é…åˆ—ã¨ã—ã¦å–å¾—ã—ã¾ã™. ã“ã®æ“ä½œã§ã¯ã€nullã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®subImageã¯åˆ‡ã‚Šæ¨ã¦ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @return ’Ç‰Á‚³‚ê‚Ä‚¢‚é‰æ‘œ‚Ì”z—ñ.<br>
+	 * @return è¿½åŠ ã•ã‚Œã¦ã„ã‚‹ç”»åƒã®é…åˆ—.<br>
 	 */
 	public BufferedImage[] images() {
 		subImages.trimToSize();
@@ -233,9 +233,9 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * ‘€ì‚ğŠm’è‚µA’Ç‰Á‚³‚ê‚Ä‚¢‚é‘S‚Ä‚Ì‰æ‘œ‚ğ’Ç‰Á‚³‚ê‚½‡˜‚Ì˜A”Ô‚ğƒL[‚Æ‚µ‚½ƒ}ƒbƒv‚Æ‚µ‚Äæ“¾‚µ‚Ü‚·.
+	 * æ“ä½œã‚’ç¢ºå®šã—ã€è¿½åŠ ã•ã‚Œã¦ã„ã‚‹å…¨ã¦ã®ç”»åƒã‚’è¿½åŠ ã•ã‚ŒãŸé †åºã®é€£ç•ªã‚’ã‚­ãƒ¼ã¨ã—ãŸãƒãƒƒãƒ—ã¨ã—ã¦å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ’Ç‰Á‚³‚ê‚Ä‚¢‚é‰æ‘œ‚Ìƒ}ƒbƒvB<br>
+	 * @return è¿½åŠ ã•ã‚Œã¦ã„ã‚‹ç”»åƒã®ãƒãƒƒãƒ—ã€‚<br>
 	 */
 	public Map<String, BufferedImage> toMap() {
 		Map<String, BufferedImage> result = new HashMap<String, BufferedImage>(subImages.size());

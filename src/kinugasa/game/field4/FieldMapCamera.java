@@ -30,8 +30,8 @@ import kinugasa.object.KVector;
 import kinugasa.object.BasicSprite;
 
 /**
- * ƒtƒB[ƒ‹ƒhƒ}ƒbƒv‚Ì‹“_‚ğƒJƒvƒZƒ‹‰»‚·‚éƒNƒ‰ƒX‚Å‚·B ‚±‚ÌƒNƒ‰ƒX‚É‚æ‚èAƒtƒB[ƒ‹ƒhƒ}ƒbƒv‚ÌŠeƒŒƒCƒ„[‚ªˆÚ“®‚³‚ê‚Ü‚·B
- * ‚½‚¾‚µAƒrƒtƒHƒAƒŒƒCƒ„[‚ÍˆÚ“®‚³‚ê‚Ü‚¹‚ñB
+ * ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒãƒƒãƒ—ã®è¦–ç‚¹ã‚’ã‚«ãƒ—ã‚»ãƒ«åŒ–ã™ã‚‹ã‚¯ãƒ©ã‚¹ã§ã™ã€‚ ã“ã®ã‚¯ãƒ©ã‚¹ã«ã‚ˆã‚Šã€ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒãƒƒãƒ—ã®å„ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç§»å‹•ã•ã‚Œã¾ã™ã€‚
+ * ãŸã ã—ã€ãƒ“ãƒ•ã‚©ã‚¢ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯ç§»å‹•ã•ã‚Œã¾ã›ã‚“ã€‚
  *
  * @vesion 1.0.0 - 2022/11/10_16:43:45<br>
  * @author Shinacho<br>
@@ -46,7 +46,7 @@ public class FieldMapCamera {
 
 	public FieldMapCamera(FieldMap map) {
 		this.map = map;
-		// ‰æ–ÊƒTƒCƒY‚Æƒ`ƒbƒvƒTƒCƒY‚©‚çƒLƒƒƒ‰ƒNƒ^•\¦ƒCƒ“ƒfƒbƒNƒX‚ğŒvZ
+		// ç”»é¢ã‚µã‚¤ã‚ºã¨ãƒãƒƒãƒ—ã‚µã‚¤ã‚ºã‹ã‚‰ã‚­ãƒ£ãƒ©ã‚¯ã‚¿è¡¨ç¤ºã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’è¨ˆç®—
 		int chipW = map.getChipW();
 		int chipH = map.getChipH();
 		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
@@ -69,7 +69,7 @@ public class FieldMapCamera {
 
 	void setTargetIdx(D2Idx idx, float speed) {
 		this.targetIdx = idx;
-		//current‚©‚çtgt‚Ö‚ÌŠp“xZo
+		//currentã‹ã‚‰tgtã¸ã®è§’åº¦ç®—å‡º
 		KVector v = new KVector(currentCenter.asPoint2D(), targetIdx.asPoint2D());
 		v.setSpeed(speed);
 		map.setVector(v);
@@ -90,9 +90,9 @@ public class FieldMapCamera {
 	public static String cameraCantMoveDesc;
 
 	public void move() {
-		//’Ç]ƒ‚[ƒh‚ÅŸ‚Ìƒ`ƒbƒv‚ªæ‚ê‚È‚¢ê‡ˆÚ“®‚µ‚È‚¢
+		//è¿½å¾“ãƒ¢ãƒ¼ãƒ‰ã§æ¬¡ã®ãƒãƒƒãƒ—ãŒä¹—ã‚Œãªã„å ´åˆç§»å‹•ã—ãªã„
 		if (mode == FieldMapCameraMode.FOLLOW_TO_CENTER) {
-			//ŸƒtƒŒ[ƒ€‚ÌÀ•Wæ“¾
+			//æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ ã®åº§æ¨™å–å¾—
 			int chipW = map.getChipW();
 			int chipH = map.getChipH();
 			BasicSprite base = map.getBaseLayer();
@@ -101,7 +101,7 @@ public class FieldMapCamera {
 			int x = (int) (playerLocationBuf.x + fieldMapX);
 			int y = (int) (playerLocationBuf.y + fieldMapY);
 
-			//—ÌˆæŠO‚Ì”»’è
+			//é ˜åŸŸå¤–ã®åˆ¤å®š
 			if (x < 1 || y < 1) {
 				cameraCantMoveDesc = "[1]x < 1 || y < 1";
 				return;
@@ -111,13 +111,13 @@ public class FieldMapCamera {
 				return;
 			}
 
-			//NPCÕ“Ë”»’è
+			//NPCè¡çªåˆ¤å®š
 			if (map.getNpcStorage().get(new D2Idx(x, y)) != null) {
 				cameraCantMoveDesc = "[1]NPC hit[" + map.getNpcStorage().get(new D2Idx(x, y)) + "]";
 				return;
 			}
 
-			//æ‚ê‚éƒ`ƒbƒv‚©‚Ì”»’è
+			//ä¹—ã‚Œã‚‹ãƒãƒƒãƒ—ã‹ã®åˆ¤å®š
 			if (!VehicleStorage.getInstance().getCurrentVehicle().isStepOn(map.getTile(new D2Idx(x, y)).getChip())) {
 				cameraCantMoveDesc = "[1]cant step[" + map.getTile(new D2Idx(x, y)).getChip() + "]";
 				return;
@@ -130,7 +130,7 @@ public class FieldMapCamera {
 		}
 		map.getBacklLayeres().forEach(e -> e.move());
 		if (mode != FieldMapCameraMode.FOLLOW_TO_CENTER) {
-			//’Ç]ƒ‚[ƒh‚¶‚á‚È‚¢ê‡‚Í“¯‚¶ƒxƒNƒgƒ‹‚ÅˆÚ“®
+			//è¿½å¾“ãƒ¢ãƒ¼ãƒ‰ã˜ã‚ƒãªã„å ´åˆã¯åŒã˜ãƒ™ã‚¯ãƒˆãƒ«ã§ç§»å‹•
 			FieldMap.getPlayerCharacter().get(0).move();
 
 		} else {
@@ -142,8 +142,8 @@ public class FieldMapCamera {
 		map.getNpcStorage().forEach(e -> e.move());
 		map.getFrontlLayeres().forEach(e -> e.move());
 		map.getFrontAnimation().forEach(e -> e.move());
-		//ˆÚ“®Œã‚ÌÀ•WÄŒvZ
-		//NPC‚ÌˆÊ’uXV
+		//ç§»å‹•å¾Œã®åº§æ¨™å†è¨ˆç®—
+		//NPCã®ä½ç½®æ›´æ–°
 		int chipW = map.getChipW();
 		int chipH = map.getChipH();
 //		for (NPC n : map.getNpcStorage()) {
@@ -159,10 +159,10 @@ public class FieldMapCamera {
 		currentCenter = new D2Idx(x, y);
 		switch (mode) {
 			case FOLLOW_TO_CENTER:
-				//’Ç]ƒ‚[ƒh‚Ìê‡AƒLƒƒƒ‰ƒNƒ^‚ÌÀ•W‚ğÄŒvZ‚·‚é
-				//ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[i’†SjIDXXV
+				//è¿½å¾“ãƒ¢ãƒ¼ãƒ‰ã®å ´åˆã€ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã®åº§æ¨™ã‚’å†è¨ˆç®—ã™ã‚‹
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ï¼ˆä¸­å¿ƒï¼‰IDXæ›´æ–°
 
-				//—ÌˆæŠO‚Ì”»’è
+				//é ˜åŸŸå¤–ã®åˆ¤å®š
 				if (x < 1 || y < 1) {
 					cameraCantMoveDesc = "[2]x < 1 || y < 1";
 					return;
@@ -171,13 +171,13 @@ public class FieldMapCamera {
 					cameraCantMoveDesc = "[2]x > dataWidth || y > dataHeight";
 					return;
 				}
-				//NPCÕ“Ë”»’è
+				//NPCè¡çªåˆ¤å®š
 				if (map.getNpcStorage().get(new D2Idx(x, y)) != null) {
 					cameraCantMoveDesc = "[2]NPC hit[" + map.getNpcStorage().get(new D2Idx(x, y)) + "]";
 					return;
 				}
 
-				//æ‚ê‚éƒ`ƒbƒv‚©‚Ì”»’è
+				//ä¹—ã‚Œã‚‹ãƒãƒƒãƒ—ã‹ã®åˆ¤å®š
 				if (!VehicleStorage.getInstance().getCurrentVehicle().isStepOn(map.getTile(new D2Idx(x, y)).getChip())) {
 					cameraCantMoveDesc = "[2]cant step[" + map.getTile(new D2Idx(x, y)).getChip() + "]";
 					return;
@@ -186,9 +186,9 @@ public class FieldMapCamera {
 				map.setCurrentIdx(new D2Idx(x, y));
 				break;
 			case FREE:
-				// ƒtƒŠ[ƒ‚[ƒh‚Ìê‡ƒJƒƒ‰‚Ì‚İ‚ğ‚ğ“®‚©‚µA‰½‚à‚µ‚È‚¢
+				// ãƒ•ãƒªãƒ¼ãƒ¢ãƒ¼ãƒ‰ã®å ´åˆã‚«ãƒ¡ãƒ©ã®ã¿ã‚’ã‚’å‹•ã‹ã—ã€ä½•ã‚‚ã—ãªã„
 				if (currentCenter.equals(targetIdx)) {
-					//ƒI[ƒgƒ€[ƒuI—¹
+					//ã‚ªãƒ¼ãƒˆãƒ ãƒ¼ãƒ–çµ‚äº†
 					targetIdx = null;
 					map.setVector(new KVector(0, 0));
 				}
@@ -290,7 +290,7 @@ public class FieldMapCamera {
 	}
 
 	/**
-	 * ƒtƒB[ƒ‹ƒhƒ}ƒbƒv‚ÌƒJƒŒƒ“ƒgIDX‚ğ’†S‚É•\¦‚·‚é‚æ‚¤AƒJƒƒ‰ˆÊ’u‚ğXV‚µ‚Ü‚·B
+	 * ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒãƒƒãƒ—ã®ã‚«ãƒ¬ãƒ³ãƒˆIDXã‚’ä¸­å¿ƒã«è¡¨ç¤ºã™ã‚‹ã‚ˆã†ã€ã‚«ãƒ¡ãƒ©ä½ç½®ã‚’æ›´æ–°ã—ã¾ã™ã€‚
 	 */
 	public void updateToCenter() {
 		D2Idx currentIdx = map.getCurrentIdx();
@@ -298,13 +298,13 @@ public class FieldMapCamera {
 		int chipH = map.getChipH();
 		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
 		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
-		//•\¦ˆÊ’u’†S-‰æ–ÊƒTƒCƒY
+		//è¡¨ç¤ºä½ç½®ï¼ä¸­å¿ƒ-ç”»é¢ã‚µã‚¤ã‚º
 		int x = currentIdx.x * chipW - (screenW / 2);
 		int y = currentIdx.y * chipH - (screenH / 2);
 		x += chipW / 2;
 		y += chipH / 2;
 		setLocation(-x, -y);
-		//ƒLƒƒƒ‰ƒNƒ^‚ÌˆÊ’uC³
+		//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã®ä½ç½®ä¿®æ­£
 		int charaW = FieldMap.getPlayerCharacter().get(0).getImageWidth();
 		int charaH = FieldMap.getPlayerCharacter().get(0).getImageHeight();
 
@@ -312,13 +312,13 @@ public class FieldMapCamera {
 		float cy = screenH / 2 - (charaH / 2);
 		FieldMap.getPlayerCharacter().forEach(v -> v.setLocation(cx, cy));
 
-		//NPC‚ÌˆÊ’uXV
+		//NPCã®ä½ç½®æ›´æ–°
 		for (NPC n : map.getNpcStorage()) {
 			float nx = map.getBaseLayer().getX() + n.getCurrentIdx().x * chipW;
 			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;
 			n.setLocation(nx, ny);
 		}
-		//PC‚ÌˆÊ’uXV
+		//PCã®ä½ç½®æ›´æ–°
 		for (PlayerCharacterSprite c : FieldMap.getPlayerCharacter().subList(1, FieldMap.getPlayerCharacter().size())) {
 			if (c.getCurrentIdx() != null) {
 				float nx = map.getBaseLayer().getX() + c.getCurrentIdx().x * chipW;
@@ -330,21 +330,21 @@ public class FieldMapCamera {
 
 	}
 
-	//PC‚ª‚¢‚È‚¢ƒ}ƒbƒv‚Í‚±‚¿‚ç‚ğg—p‚·‚é
+	//PCãŒã„ãªã„ãƒãƒƒãƒ—ã¯ã“ã¡ã‚‰ã‚’ä½¿ç”¨ã™ã‚‹
 	public void updateToCenterNoPC() {
 		D2Idx currentIdx = map.getCurrentIdx();
 		int chipW = map.getChipW();
 		int chipH = map.getChipH();
 		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
 		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
-		//•\¦ˆÊ’u’†S-‰æ–ÊƒTƒCƒY
+		//è¡¨ç¤ºä½ç½®ï¼ä¸­å¿ƒ-ç”»é¢ã‚µã‚¤ã‚º
 		int x = currentIdx.x * chipW - (screenW / 2);
 		int y = currentIdx.y * chipH - (screenH / 2);
 		x += chipW / 2;
 		y += chipH / 2;
 		setLocation(-x, -y);
 
-		//NPC‚ÌˆÊ’uXV
+		//NPCã®ä½ç½®æ›´æ–°
 		for (NPC n : map.getNpcStorage()) {
 			float nx = map.getBaseLayer().getX() + n.getCurrentIdx().x * chipW;
 			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;

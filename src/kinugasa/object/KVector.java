@@ -28,7 +28,7 @@ import java.awt.geom.Point2D;
 import kinugasa.util.MathUtil;
 
 /**
- * ƒxƒNƒgƒ‹‚ÆŠp“x^‘¬“x‚ğƒJƒvƒZƒ‹‰»‚µ‚Ü‚·.
+ * ãƒ™ã‚¯ãƒˆãƒ«ã¨è§’åº¦ï¼é€Ÿåº¦ã‚’ã‚«ãƒ—ã‚»ãƒ«åŒ–ã—ã¾ã™.
  * <br>
  *
  * <br>
@@ -44,35 +44,35 @@ import kinugasa.util.MathUtil;
 public class KVector implements Cloneable {
 
 	/**
-	 * “Œ‚ğ•\‚·’è”‚Å‚·.
+	 * æ±ã‚’è¡¨ã™å®šæ•°ã§ã™.
 	 */
 	public static final float EAST = 90f;
 	/**
-	 * “ì“Œ‚ğ•\‚·’è”‚Å‚·.
+	 * å—æ±ã‚’è¡¨ã™å®šæ•°ã§ã™.
 	 */
 	public static final float SOUTH_EAST = 135f;
 	/**
-	 * “ì‚ğ•\‚·’è”‚Å‚·.
+	 * å—ã‚’è¡¨ã™å®šæ•°ã§ã™.
 	 */
 	public static final float SOUTH = 180f;
 	/**
-	 * “ì¼‚ğ•\‚·’è”‚Å‚·.
+	 * å—è¥¿ã‚’è¡¨ã™å®šæ•°ã§ã™.
 	 */
 	public static final float SOUTH_WEST = 225f;
 	/**
-	 * ¼‚ğ•\‚·’è”‚Å‚·.
+	 * è¥¿ã‚’è¡¨ã™å®šæ•°ã§ã™.
 	 */
 	public static final float WEST = 270f;
 	/**
-	 * –k¼‚ğ•\‚·’è”‚Å‚·.
+	 * åŒ—è¥¿ã‚’è¡¨ã™å®šæ•°ã§ã™.
 	 */
 	public static final float NORTH_WEST = 315f;
 	/**
-	 * –k‚ğ•\‚·’è”‚Å‚·.
+	 * åŒ—ã‚’è¡¨ã™å®šæ•°ã§ã™.
 	 */
 	public static final float NORTH = 0f;
 	/**
-	 * –k“Œ‚ğ•\‚·’è”‚Å‚·.
+	 * åŒ—æ±ã‚’è¡¨ã™å®šæ•°ã§ã™.
 	 */
 	public static final float NORTH_EAST = 45f;
 	public float angle;
@@ -173,12 +173,12 @@ public class KVector implements Cloneable {
 		return speed * MathUtil.sin(angle);
 	}
 
-	//À•WŒn‚ªAY²”½“]‚¾‚©‚ç‘¬“x‚ğ-‚É‚·‚é
+	//åº§æ¨™ç³»ãŒã€Yè»¸åè»¢ã ã‹ã‚‰é€Ÿåº¦ã‚’-ã«ã™ã‚‹
 	public float getY() {
 		return -speed * MathUtil.cos(angle);
 	}
 
-	//‚±‚Ìƒƒ\ƒbƒh‚ÍAƒˆ‚ÈˆÊ’u‚ğ•Ô‚·BY²‚ğ”½“]‚µ‚½‚Ù‚¤‚ª‚¢‚¢‚¾‚ë‚¤
+	//ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã€ç´”ç²‹ãªä½ç½®ã‚’è¿”ã™ã€‚Yè»¸ã‚’åè»¢ã—ãŸã»ã†ãŒã„ã„ã ã‚ã†
 	public Point2D.Float getLocation() {
 		return new Point2D.Float(getX(), getY());
 	}
@@ -214,12 +214,12 @@ public class KVector implements Cloneable {
 	}
 
 	/**
-	 * ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Ì•\‚·Šp“x‚ªcenterDeg+-openDeg/2‚Ì”ÍˆÍ“à‚©‚ğ’²‚×‚é.
+	 * ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®è¡¨ã™è§’åº¦ãŒcenterDeg+-openDeg/2ã®ç¯„å›²å†…ã‹ã‚’èª¿ã¹ã‚‹.
 	 *
-	 * @param centerDeg ŒXŒü‚Ì’†‰›.<br>
-	 * @param openDeg •ª•zˆæ.<br>
+	 * @param centerDeg å‚¾å‘ã®ä¸­å¤®.<br>
+	 * @param openDeg åˆ†å¸ƒåŸŸ.<br>
 	 *
-	 * @return w’è‚µ‚½”ÍˆÍ“à‚É‚ ‚éê‡‚Ítrue‚ğ•Ô‚·.<br>
+	 * @return æŒ‡å®šã—ãŸç¯„å›²å†…ã«ã‚ã‚‹å ´åˆã¯trueã‚’è¿”ã™.<br>
 	 */
 	public boolean checkRange(float centerDeg, float openDeg) {
 		float ang = clamp(angle);
@@ -229,12 +229,12 @@ public class KVector implements Cloneable {
 	}
 
 	/**
-	 * ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Ì•\‚·Šp“x‚ªcenterDeg+-openDeg/2‚Ì”ÍˆÍ“à‚©‚ğ’²‚×‚é.
+	 * ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®è¡¨ã™è§’åº¦ãŒcenterDeg+-openDeg/2ã®ç¯„å›²å†…ã‹ã‚’èª¿ã¹ã‚‹.
 	 *
-	 * @param centerDeg ŒXŒü‚Ì’†‰›.<br>
-	 * @param openDeg •ª•zˆæ.<br>
+	 * @param centerDeg å‚¾å‘ã®ä¸­å¤®.<br>
+	 * @param openDeg åˆ†å¸ƒåŸŸ.<br>
 	 *
-	 * @return w’è‚µ‚½”ÍˆÍ“à‚É‚ ‚éê‡‚Ítrue‚ğ•Ô‚·.<br>
+	 * @return æŒ‡å®šã—ãŸç¯„å›²å†…ã«ã‚ã‚‹å ´åˆã¯trueã‚’è¿”ã™.<br>
 	 */
 	public boolean checkRange(KVector centerDeg, float openDeg) {
 		return checkRange(centerDeg.getAngle(), openDeg);
@@ -250,45 +250,45 @@ public class KVector implements Cloneable {
 	}
 
 	/**
-	 * ‚±‚ÌŠp“x‚ÌƒTƒCƒ“‚ğæ“¾.
+	 * ã“ã®è§’åº¦ã®ã‚µã‚¤ãƒ³ã‚’å–å¾—.
 	 *
-	 * @return ƒTƒCƒ“.<br>
+	 * @return ã‚µã‚¤ãƒ³.<br>
 	 */
 	public float sin() {
 		return MathUtil.sin(clamp(angle));
 	}
 
 	/**
-	 * ‚±‚ÌŠp“x‚ÌƒRƒTƒCƒ“‚ğæ“¾.<br>
+	 * ã“ã®è§’åº¦ã®ã‚³ã‚µã‚¤ãƒ³ã‚’å–å¾—.<br>
 	 *
-	 * @return ƒRƒTƒCƒ“.<br>
+	 * @return ã‚³ã‚µã‚¤ãƒ³.<br>
 	 */
 	public float cos() {
 		return MathUtil.cos(clamp(angle));
 	}
 
 	/**
-	 * ‚±‚ÌŠp“x‚ÉŠp“x‚ğ‰ÁZ.<br>
+	 * ã“ã®è§’åº¦ã«è§’åº¦ã‚’åŠ ç®—.<br>
 	 *
-	 * @param a ‰ÁZ‚·‚é’l.<br>
+	 * @param a åŠ ç®—ã™ã‚‹å€¤.<br>
 	 */
 	public void addAngle(float a) {
 		angle += a;
 	}
 
 	/**
-	 * ‚±‚ÌŠp“x‚ÉŠp“x‚ğ‰ÁZ.<br>
+	 * ã“ã®è§’åº¦ã«è§’åº¦ã‚’åŠ ç®—.<br>
 	 *
-	 * @param v ‰ÁZ‚·‚éŠp“x.<br>
+	 * @param v åŠ ç®—ã™ã‚‹è§’åº¦.<br>
 	 */
 	public void addAngle(KVector v) {
 		addAngle(v.angle);
 	}
 
 	/**
-	 * ‚±‚ÌŠp“x‚ğwidth/2‚ÌŠp“x‚¾‚¯ƒ‰ƒ“ƒ_ƒ€‚É•â³‚·‚é.
+	 * ã“ã®è§’åº¦ã‚’width/2ã®è§’åº¦ã ã‘ãƒ©ãƒ³ãƒ€ãƒ ã«è£œæ­£ã™ã‚‹.
 	 *
-	 * @param width •â³Šp“x.<br>
+	 * @param width è£œæ­£è§’åº¦.<br>
 	 */
 	public void spreadAngle(float width) {
 		angle -= width / 2;
@@ -296,10 +296,10 @@ public class KVector implements Cloneable {
 	}
 
 	/**
-	 * •ûŒü‚ğİ’è. À•Wp1‚©‚çp2‚Ö‚ÌŠp“x‚ğİ’è‚µ‚Ü‚·.<br>
+	 * æ–¹å‘ã‚’è¨­å®š. åº§æ¨™p1ã‹ã‚‰p2ã¸ã®è§’åº¦ã‚’è¨­å®šã—ã¾ã™.<br>
 	 *
-	 * @param p1 Œ»İˆÊ’u.<br>
-	 * @param p2 –Ú“I’n.<br>
+	 * @param p1 ç¾åœ¨ä½ç½®.<br>
+	 * @param p2 ç›®çš„åœ°.<br>
 	 */
 	public void setAngle(Point2D.Float p1, Point2D.Float p2) {
 		angle = (float) Math.toDegrees((Math.atan2(p2.y - p1.y, p2.x - p1.x))
@@ -307,11 +307,11 @@ public class KVector implements Cloneable {
 	}
 
 	/**
-	 * “x”–@‚ÌŠp“x‚ğ0“x‚©‚ç359“x‚Ü‚Å‚É®Œ`‚µ‚Ü‚·.
+	 * åº¦æ•°æ³•ã®è§’åº¦ã‚’0åº¦ã‹ã‚‰359åº¦ã¾ã§ã«æ•´å½¢ã—ã¾ã™.
 	 *
-	 * @param deg “x”–@‚ÌŠp“x.<br>
+	 * @param deg åº¦æ•°æ³•ã®è§’åº¦.<br>
 	 *
-	 * @return 0‚©‚ç359“x‚É®Œ`‚³‚ê‚½“x”–@‚ÌŠp“x.<br>
+	 * @return 0ã‹ã‚‰359åº¦ã«æ•´å½¢ã•ã‚ŒãŸåº¦æ•°æ³•ã®è§’åº¦.<br>
 	 */
 	public static float clamp(float deg) {
 		while (deg >= 360.0f) {

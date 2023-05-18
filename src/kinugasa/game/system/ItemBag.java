@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * キャラクタ一人のアイテムを定義するクラスです。
+ * 繧ｭ繝｣繝ｩ繧ｯ繧ｿ荳莠ｺ縺ｮ繧｢繧､繝�繝繧貞ｮ夂ｾｩ縺吶ｋ繧ｯ繝ｩ繧ｹ縺ｧ縺吶�
  *
  * @vesion 1.0.0 - 2022/11/16_11:59:31<br>
  * @author Shinacho<br>

@@ -35,11 +35,11 @@ import kinugasa.resource.Disposable;
 import kinugasa.util.TimeCounter;
 
 /**
- * ”wŒi—pƒAƒjƒ[ƒVƒ‡ƒ“‚ğ•\¦‚·‚éƒŒƒCƒ„‚Å‚·.
+ * èƒŒæ™¯ç”¨ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’è¡¨ç¤ºã™ã‚‹ãƒ¬ã‚¤ãƒ¤ã§ã™.
  * <br>
- * ”wŒiƒŒƒCƒ„‚ÍˆÚ“®”»’è‚Ég—p‚³‚ê‚Ü‚¹‚ñB<br>
+ * èƒŒæ™¯ãƒ¬ã‚¤ãƒ¤ã¯ç§»å‹•åˆ¤å®šã«ä½¿ç”¨ã•ã‚Œã¾ã›ã‚“ã€‚<br>
  * <br>
- * ”wŒi‚Í1‚ÂˆÈã‚Ì‰æ‘œ‚ğƒ^ƒCƒŠƒ“ƒO‚µ‚Ä\’z‚³‚ê‚Ü‚·Bƒ[ƒh‚·‚é‚ÆA‚ ‚ç‚©‚¶‚ßİ’è‚³‚ê‚Ä‚¢‚é ‰æ‘œ‚ğƒ^ƒCƒŠƒ“ƒO‚µ‚½•`‰æ—pƒAƒjƒ[ƒVƒ‡ƒ“‚ªİ’è‚³‚ê‚Ü‚·B<br>
+ * èƒŒæ™¯ã¯1ã¤ä»¥ä¸Šã®ç”»åƒã‚’ã‚¿ã‚¤ãƒªãƒ³ã‚°ã—ã¦æ§‹ç¯‰ã•ã‚Œã¾ã™ã€‚ãƒ­ãƒ¼ãƒ‰ã™ã‚‹ã¨ã€ã‚ã‚‰ã‹ã˜ã‚è¨­å®šã•ã‚Œã¦ã„ã‚‹ ç”»åƒã‚’ã‚¿ã‚¤ãƒªãƒ³ã‚°ã—ãŸæç”»ç”¨ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒè¨­å®šã•ã‚Œã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/05/02_23:03:55<br>
@@ -55,7 +55,7 @@ public class BackgroundLayerSprite extends AnimationSprite implements Disposable
 	}
 
 	public void build(TimeCounter tc, BufferedImage... images) {
-		//‰æ–ÊƒTƒCƒY‚Ü‚Åƒ^ƒCƒŠƒ“ƒO‚µ‚½‰æ‘œ‚ğ¶¬
+		//ç”»é¢ã‚µã‚¤ã‚ºã¾ã§ã‚¿ã‚¤ãƒªãƒ³ã‚°ã—ãŸç”»åƒã‚’ç”Ÿæˆ
 		BufferedImage[] images2 = new BufferedImage[images.length];
 		for (int i = 0; i < images2.length; i++) {
 			images2[i] = ImageUtil.tiling(images[i], null,

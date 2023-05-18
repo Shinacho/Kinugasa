@@ -104,7 +104,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 		}
 
 		XMLElement root = file.load().getFirst();
-		//”­“®ğŒ‚Ìƒp[ƒX
+		//ç™ºå‹•æ¡ä»¶ã®ãƒ‘ãƒ¼ã‚¹
 		for (XMLElement e : root.getElement("term")) {
 			String name = e.getAttributes().get("name").getValue();
 			TermType type = TermType.valueOf(e.getAttributes().get("tt").getValue());
@@ -115,7 +115,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			ActionTermStorage.getInstance().add(new ActionTerm(name, type, value));
 		}
 
-		//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ìƒp[ƒX
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ‘ãƒ¼ã‚¹
 		for (XMLElement e : root.getElement("animation")) {
 			String name = e.getAttributes().get("name").getValue();
 			int w = e.getAttributes().get("w").getIntValue();
@@ -129,21 +129,21 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			animationMap.put(name, a);
 		}
 
-		//ƒTƒEƒ“ƒh‚Ìƒp[ƒX
+		//ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒ‘ãƒ¼ã‚¹
 		Map<String, Sound> soundMap = new HashMap<>();
 		for (XMLElement e : root.getElement("sound")) {
 			String name = e.getAttributes().get("name").getValue();
 			Sound s = new SoundBuilder(e.getAttributes().get("file").getValue()).builde();
 			soundMap.put(name, s);
 		}
-		//‘fŞ‚Ìƒp[ƒX
+		//ç´ æã®ãƒ‘ãƒ¼ã‚¹
 		for (XMLElement e : root.getElement("material")) {
 			String name = e.getAttributes().get("name").getValue();
 			int value = e.getAttributes().get("value").getIntValue();
 			MaterialStorage.getInstance().add(new Material(name, value));
 		}
 
-		//ƒAƒCƒeƒ€‚Ìƒp[ƒX
+		//ã‚¢ã‚¤ãƒ†ãƒ ã®ãƒ‘ãƒ¼ã‚¹
 		for (XMLElement e : root.getElement("item")) {
 			String name = e.getAttributes().get("name").getValue();
 			String desc = e.getAttributes().get("desc").getValue();
@@ -188,14 +188,14 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			if (e.hasAttribute("canSale")) {
 				i.setCanSale(e.getAttributes().get("canSale").getBool());
 			}
-			//ƒCƒxƒ“ƒg
+			//ã‚¤ãƒ™ãƒ³ãƒˆ
 			for (XMLElement ee : e.getElement("battleEvent")) {
 				i.addBattleEvent(parseEvent(ee));
 			}
 			for (XMLElement ee : e.getElement("fieldEvent")) {
 				i.addFieldEvent(parseEvent(ee));
 			}
-			//‹­‰»ŠÖ˜A
+			//å¼·åŒ–é–¢é€£
 			if (e.hasElement("upgrade")) {
 				for (XMLElement ee : e.getElement("upgrade")) {
 					int order = ee.getAttributes().get("order").getIntValue();
@@ -228,11 +228,11 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 					i.addUpgrade(up);
 				}
 			}
-			//UŒ‚‰ñ”EEE‰Šú’l‚P
+			//æ”»æ’ƒå›æ•°ãƒ»ãƒ»ãƒ»åˆæœŸå€¤ï¼‘
 			if (e.hasAttribute("count")) {
 				i.setActionCount(e.getAttributes().get("count").getIntValue());
 			}
-			//‘•”õğŒEEE•¡”“ü‚Á‚Ä‚¢‚éê‡‚ÍAND‚É‚È‚é
+			//è£…å‚™æ¡ä»¶ãƒ»ãƒ»ãƒ»è¤‡æ•°å…¥ã£ã¦ã„ã‚‹å ´åˆã¯ANDã«ãªã‚‹
 			if (e.hasElement("eqipTerm")) {
 				for (XMLElement ee : e.getElement("eqipTerm")) {
 					String type = ee.getAttributes().get("type").getValue();
@@ -255,7 +255,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			} else {
 				i.getEqipTerm().add(ItemEqipTerm.ANY);
 			}
-			//‰ğ‘Ì
+			//è§£ä½“
 			if (e.hasElement("disassembly")) {
 				Map<Material, Integer> dissase = new HashMap<>();
 				for (XMLElement eee : e.getElement("disassembly").get(0).getElement("material")) {
@@ -268,7 +268,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 				}
 				i.setDisasseMaterials(dissase);
 			}
-			//ƒAƒCƒeƒ€‘•”õŒø‰ÊiƒXƒe[ƒ^ƒXj
+			//ã‚¢ã‚¤ãƒ†ãƒ è£…å‚™åŠ¹æœï¼ˆã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ï¼‰
 			if (i.isEqipItem()) {
 				StatusValueSet s = new StatusValueSet();
 				s.forEach(p -> p.set(0));
@@ -277,11 +277,11 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 				for (XMLElement ee : e.getElement("eqStatus")) {
 					String tgt = ee.getAttributes().get("tgt").getValue();
 					float value = ee.getAttributes().get("value").getFloatValue();
-					s.get(tgt).set(value);//ŒãŸ‚¿
+					s.get(tgt).set(value);//å¾Œå‹ã¡
 				}
 				i.setEqStatus(s);
 			}
-			//ƒAƒCƒeƒ€‘•”õŒø‰Êi‘Ï«j
+			//ã‚¢ã‚¤ãƒ†ãƒ è£…å‚™åŠ¹æœï¼ˆè€æ€§ï¼‰
 			if (i.isEqipItem()) {
 				AttributeValueSet a = new AttributeValueSet();
 				a.forEach(p -> p.set(0));
@@ -295,7 +295,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			ItemStorage.getInstance().add(i);
 		}
 
-		//UŒ‚‚Ìƒp[ƒX
+		//æ”»æ’ƒã®ãƒ‘ãƒ¼ã‚¹
 		ActionType actionType = ActionType.ATTACK;
 		for (XMLElement e : root.getElement("attack")) {
 			String name = e.getAttributes().get("name").getValue();
@@ -321,7 +321,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			if (e.hasAttribute("spellTime")) {
 				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
 			}
-			//ƒCƒxƒ“ƒg
+			//ã‚¤ãƒ™ãƒ³ãƒˆ
 			for (XMLElement ee : e.getElement("battleEvent")) {
 				a.addBattleEvent(parseEvent(ee));
 			}
@@ -332,7 +332,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 
 		}
 
-		//–‚–@‚Ìƒp[ƒX
+		//é­”æ³•ã®ãƒ‘ãƒ¼ã‚¹
 		actionType = ActionType.MAGIC;
 		for (XMLElement e : root.getElement("magic")) {
 			String name = e.getAttributes().get("name").getValue();
@@ -358,7 +358,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			if (e.hasAttribute("spellTime")) {
 				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
 			}
-			//ƒCƒxƒ“ƒg
+			//ã‚¤ãƒ™ãƒ³ãƒˆ
 			for (XMLElement ee : e.getElement("battleEvent")) {
 				a.addBattleEvent(parseEvent(ee));
 			}
@@ -367,7 +367,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			}
 			getInstance().add(a);
 		}
-		//‚»‚Ì‘¼s“®‚Ìƒp[ƒX(ESCAPEƒCƒxƒ“ƒg
+		//ãã®ä»–è¡Œå‹•ã®ãƒ‘ãƒ¼ã‚¹(ESCAPEã‚¤ãƒ™ãƒ³ãƒˆ
 		actionType = ActionType.OTHER;
 		for (XMLElement e : root.getElement("other")) {
 			String name = e.getAttributes().get("name").getValue();
@@ -393,7 +393,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			if (e.hasAttribute("spellTime")) {
 				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
 			}
-			//ƒCƒxƒ“ƒg
+			//ã‚¤ãƒ™ãƒ³ãƒˆ
 			for (XMLElement ee : e.getElement("battleEvent")) {
 				a.addBattleEvent(parseEvent(ee));
 			}

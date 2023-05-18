@@ -24,8 +24,8 @@
 package kinugasa.resource;
 
 /**
- * ƒŠƒtƒŒƒNƒVƒ‡ƒ“‚ğg—p‚µ‚ÄƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚·‚éÛ‚ÉA
- * –¼‘O‰ğŒˆ‚Å‚«‚È‚©‚Á‚½‚Æ‚«‚É“Š‚°‚ç‚ê‚Ü‚·.
+ * ãƒªãƒ•ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ã‚’ä½¿ç”¨ã—ã¦ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã™ã‚‹éš›ã«ã€
+ * åå‰è§£æ±ºã§ããªã‹ã£ãŸã¨ãã«æŠ•ã’ã‚‰ã‚Œã¾ã™.
  * <br>
  *
  * <br>
@@ -37,22 +37,22 @@ public class ReflectionClassNotFoundException extends NotFoundException {
 	private static final long serialVersionUID = -3047090270187251461L;
 
 	/**
-	 * V‚µ‚¢ ReflectionClassNotFoundException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ ReflectionClassNotFoundException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã—ã¾ã™.
 	 */
 	public ReflectionClassNotFoundException() {
 	}
 
 	/**
-	 * V‚µ‚¢ ReflectionClassNotFoundException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚µ‚Ü‚·.
-	 * @param msg ‚±‚Ì—áŠO‚ÌƒƒbƒZ[ƒW‚ğw’è‚µ‚Ü‚·B<br>
+	 * æ–°ã—ã„ ReflectionClassNotFoundException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã—ã¾ã™.
+	 * @param msg ã“ã®ä¾‹å¤–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ReflectionClassNotFoundException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Throwable‚ğƒ‰ƒbƒv‚·‚éClassNameNotFoundException‚ğì¬‚µ‚Ü‚·.
-	 * @param t “Š‚°‚ç‚ê‚½—áŠO‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * Throwableã‚’ãƒ©ãƒƒãƒ—ã™ã‚‹ClassNameNotFoundExceptionã‚’ä½œæˆã—ã¾ã™.
+	 * @param t æŠ•ã’ã‚‰ã‚ŒãŸä¾‹å¤–ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	public ReflectionClassNotFoundException(Throwable t) {
 		super(t);

@@ -82,27 +82,27 @@ public class GameLauncher extends javax.swing.JFrame {
         args = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("ƒIƒvƒVƒ‡ƒ“");
+        setTitle("ã‚ªãƒ—ã‚·ãƒ§ãƒ³");
         setModalExclusionType(java.awt.Dialog.ModalExclusionType.TOOLKIT_EXCLUDE);
         setResizable(false);
 
-        jLabel1.setText("ƒEƒCƒ“ƒhƒEƒTƒCƒY");
+        jLabel1.setText("ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º");
 
         jToolBar1.setRollover(true);
 
         lockFileDelete.setSelected(true);
-        lockFileDelete.setText("ƒƒbƒNƒtƒ@ƒCƒ‹‚ğíœ‚·‚éiƒQ[ƒ€‚ª³íI—¹‚µ‚È‚©‚Á‚½ê‡‚É‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢j");
-        lockFileDelete.setToolTipText("OFF‚É‚·‚é‚ÆAƒQ[ƒ€‚ğ‘½d‹N“®‚Å‚«‚È‚­‚È‚è‚Ü‚·BƒQ[ƒ€‚ª³í‚ÉI—¹‚µ‚È‚©‚Á‚½ê‡‚ÍƒƒbƒNƒtƒ@ƒCƒ‹‚ªc‚Á‚Ä‚¢‚é‚½‚ßAON‚É‚µ‚Ä‚­‚¾‚³‚¢B");
+        lockFileDelete.setText("ãƒ­ãƒƒã‚¯ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤ã™ã‚‹ï¼ˆã‚²ãƒ¼ãƒ ãŒæ­£å¸¸çµ‚äº†ã—ãªã‹ã£ãŸå ´åˆã«é¸æŠã—ã¦ãã ã•ã„ï¼‰");
+        lockFileDelete.setToolTipText("OFFã«ã™ã‚‹ã¨ã€ã‚²ãƒ¼ãƒ ã‚’å¤šé‡èµ·å‹•ã§ããªããªã‚Šã¾ã™ã€‚ã‚²ãƒ¼ãƒ ãŒæ­£å¸¸ã«çµ‚äº†ã—ãªã‹ã£ãŸå ´åˆã¯ãƒ­ãƒƒã‚¯ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ®‹ã£ã¦ã„ã‚‹ãŸã‚ã€ONã«ã—ã¦ãã ã•ã„ã€‚");
 
-        jLabel3.setText("ƒƒOƒtƒ@ƒCƒ‹");
+        jLabel3.setText("ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«");
 
-        jLabel4.setText("“ü—ÍƒfƒoƒCƒX");
+        jLabel4.setText("å…¥åŠ›ãƒ‡ãƒã‚¤ã‚¹");
 
         jLabel5.setText("FPS");
 
-        jLabel6.setText("ƒŒƒ“ƒ_ƒŠƒ“ƒO•i¿");
+        jLabel6.setText("ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°å“è³ª");
 
-        jLabel7.setText("Œ¾Œê/Language");
+        jLabel7.setText("è¨€èª/Language");
 
         windowSize.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "720/480", "1080/720", "1440/960" }));
         windowSize.setSelectedIndex(2);
@@ -113,7 +113,7 @@ public class GameLauncher extends javax.swing.JFrame {
         });
 
         logFile.setEditable(false);
-        logFile.setToolTipText("ƒƒOƒtƒ@ƒCƒ‹‚ÌŠi”[êŠ‚ğw’è‚µ‚Ü‚·BƒƒOƒtƒ@ƒCƒ‹‚ÍAƒQ[ƒ€‚ÌI—¹ŒãÁ‚µ‚Ä‚à•½‹C‚Å‚·B");
+        logFile.setToolTipText("ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã®æ ¼ç´å ´æ‰€ã‚’æŒ‡å®šã—ã¾ã™ã€‚ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã¯ã€ã‚²ãƒ¼ãƒ ã®çµ‚äº†å¾Œæ¶ˆã—ã¦ã‚‚å¹³æ°—ã§ã™ã€‚");
         logFile.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         logFile.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -126,18 +126,18 @@ public class GameLauncher extends javax.swing.JFrame {
             }
         });
 
-        mouse.setText("ƒ}ƒEƒX");
+        mouse.setText("ãƒã‚¦ã‚¹");
 
         keyboard.setSelected(true);
-        keyboard.setText("ƒL[ƒ{[ƒh");
+        keyboard.setText("ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰");
 
         gamepad.setSelected(true);
-        gamepad.setText("ƒRƒ“ƒgƒ[ƒ‰[");
+        gamepad.setText("ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼");
 
-        rendering.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "‘¬“xi„§j", "•i¿", "ƒoƒ‰ƒ“ƒX" }));
+        rendering.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "é€Ÿåº¦ï¼ˆæ¨å¥¨ï¼‰", "å“è³ª", "ãƒãƒ©ãƒ³ã‚¹" }));
 
         jButton1.setFont(new java.awt.Font("MS UI Gothic", 0, 24)); // NOI18N
-        jButton1.setText("‹N“®");
+        jButton1.setText("èµ·å‹•");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -152,11 +152,11 @@ public class GameLauncher extends javax.swing.JFrame {
         fps.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "50", "60" }));
         fps.setSelectedIndex(1);
 
-        debugMode.setText("ƒfƒoƒbƒOƒ‚[ƒh‚ğ—LŒø‚É‚·‚é");
+        debugMode.setText("ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰ã‚’æœ‰åŠ¹ã«ã™ã‚‹");
 
-        jLabel2.setText("ARGSF");
+        jLabel2.setText("ARGSï¼š");
 
-        args.setToolTipText("“Á•Ê‚Èˆø”‚ª‚ ‚éê‡A‚±‚±‚É”¼ŠpƒXƒy[ƒX‹æØ‚è‚Å“ü—Í‚µ‚Ü‚·B");
+        args.setToolTipText("ç‰¹åˆ¥ãªå¼•æ•°ãŒã‚ã‚‹å ´åˆã€ã“ã“ã«åŠè§’ã‚¹ãƒšãƒ¼ã‚¹åŒºåˆ‡ã‚Šã§å…¥åŠ›ã—ã¾ã™ã€‚");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -254,7 +254,7 @@ public class GameLauncher extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
 		if (!keyboard.isSelected() && !mouse.isSelected() && !gamepad.isSelected()) {
-			JOptionPane.showConfirmDialog(null, "‚¢‚¸‚ê‚©‚Ì“ü—ÍƒfƒoƒCƒX‚Í•K—v‚Å‚·", "‹N“®¸”s", JOptionPane.DEFAULT_OPTION);
+			JOptionPane.showConfirmDialog(null, "ã„ãšã‚Œã‹ã®å…¥åŠ›ãƒ‡ãƒã‚¤ã‚¹ã¯å¿…è¦ã§ã™", "èµ·å‹•å¤±æ•—", JOptionPane.DEFAULT_OPTION);
 			return;
 		}
 		option = new GameOption(getTitle());
@@ -299,17 +299,17 @@ public class GameLauncher extends javax.swing.JFrame {
 		option.setUseKeyboard(keyboard.isSelected());
 		option.setUseGamePad(gamepad.isSelected());
 
-		if (fps.getSelectedItem().toString().equals("120iƒeƒXƒg—pj")) {
+		if (fps.getSelectedItem().toString().equals("120ï¼ˆãƒ†ã‚¹ãƒˆç”¨ï¼‰")) {
 			option.setFps(120);
 		} else {
 			option.setFps(Integer.parseInt(fps.getSelectedItem().toString()));
 		}
 
-		if (rendering.getSelectedItem().toString().equals("‘¬“xi„§j")) {
+		if (rendering.getSelectedItem().toString().equals("é€Ÿåº¦ï¼ˆæ¨å¥¨ï¼‰")) {
 			option.setRenderingQuality(RenderingQuality.SPEED);
-		} else if (rendering.getSelectedItem().toString().equals("•i¿")) {
+		} else if (rendering.getSelectedItem().toString().equals("å“è³ª")) {
 			option.setRenderingQuality(RenderingQuality.QUALITY);
-		} else if (rendering.getSelectedItem().toString().equals("ƒoƒ‰ƒ“ƒX")) {
+		} else if (rendering.getSelectedItem().toString().equals("ãƒãƒ©ãƒ³ã‚¹")) {
 			option.setRenderingQuality(RenderingQuality.DEFAULT);
 		}
 
@@ -339,7 +339,7 @@ public class GameLauncher extends javax.swing.JFrame {
 
 			@Override
 			public String getDescription() {
-				return "ƒeƒLƒXƒgƒtƒ@ƒCƒ‹(*.log,*.txt)";
+				return "ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«(*.log,*.txt)";
 			}
 		});
 		fileChooser.setAcceptAllFileFilterUsed(true);
@@ -410,24 +410,24 @@ public class GameLauncher extends javax.swing.JFrame {
 	}
 
 	private void init(String name) {
-		//ƒAƒCƒRƒ“‚Ìİ’è
+		//ã‚¢ã‚¤ã‚³ãƒ³ã®è¨­å®š
 		setIconImage(new ImageIcon(getClass().getResource("icon.png")).getImage());
 
-		//ƒƒOƒtƒ@ƒCƒ‹‚ÌƒfƒtƒHƒ‹ƒgƒpƒX‹L“ü
+		//ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ‘ã‚¹è¨˜å…¥
 		logFile.setText(new File("KinugasaGame.log").getAbsolutePath());
 
-		//–|–óƒtƒ@ƒCƒ‹‚Ì‘I‘ğˆ’Ç‰Á
+		//ç¿»è¨³ãƒ•ã‚¡ã‚¤ãƒ«ã®é¸æŠè‚¢è¿½åŠ 
 		for (File f : new File("./translate/").listFiles(p -> p.getName().toLowerCase().endsWith(".ini"))) {
 			language.addItem(f.getName());
 		}
 
-		//ƒEƒCƒ“ƒhƒEˆÊ’u‚Ì•ÏX
+		//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ä½ç½®ã®å¤‰æ›´
 		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
 		center.x -= getWidth() / 2;
 		center.y -= getHeight() / 2;
 		setLocation(center);
 
-		//ƒEƒCƒ“ƒhƒEƒTƒCƒY‚Ì‰Šú‘I‘ğ
+		//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºã®åˆæœŸé¸æŠ
 		GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		if (e.getMaximumWindowBounds().width > 1440 && e.getMaximumWindowBounds().height > 960) {
 			windowSize.setSelectedIndex(2);
@@ -439,7 +439,7 @@ public class GameLauncher extends javax.swing.JFrame {
 
 		jButton1.grabFocus();
 
-		//ƒEƒCƒ“ƒhƒEƒ^ƒCƒgƒ‹‚Ìİ’è
+		//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚¿ã‚¤ãƒˆãƒ«ã®è¨­å®š
 		setTitle(name);
 	}
 

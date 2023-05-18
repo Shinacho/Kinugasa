@@ -28,9 +28,9 @@ import kinugasa.game.input.InputState;
 import kinugasa.util.Random;
 
 /**
- * ‚±‚ÌƒNƒ‰ƒX‚ğg—p‚µ‚ÄAƒ‰ƒ“ƒ_ƒ€ƒV[ƒh‚Æ“ü—Íó‘Ô‚ğ”­s^•œŒ³‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·.
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã‚’ä½¿ç”¨ã—ã¦ã€ãƒ©ãƒ³ãƒ€ãƒ ã‚·ãƒ¼ãƒ‰ã¨å…¥åŠ›çŠ¶æ…‹ã‚’ç™ºè¡Œï¼å¾©å…ƒã™ã‚‹ã“ã¨ãŒå‡ºæ¥ã¾ã™.
  * <br>
- * ƒŠƒvƒŒƒC‚Ìƒf[ƒ^—Ê‚Í“ü—Í‚Ì‘½‚³‚É”ä—á‚µ‚Ä‘½‚­‚È‚è‚Ü‚·B<br>
+ * ãƒªãƒ—ãƒ¬ã‚¤ã®ãƒ‡ãƒ¼ã‚¿é‡ã¯å…¥åŠ›ã®å¤šã•ã«æ¯”ä¾‹ã—ã¦å¤šããªã‚Šã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/20_18:24:22<br>
@@ -39,33 +39,33 @@ import kinugasa.util.Random;
 public final class ReplayData extends Storage<ReplayInputState> implements Serializable {
 
 	private static final long serialVersionUID = -7860006069807950463L;
-	/** g—p‚³‚ê‚Ä‚¢‚½ƒV[ƒh‚Å‚·. */
+	/** ä½¿ç”¨ã•ã‚Œã¦ã„ãŸã‚·ãƒ¼ãƒ‰ã§ã™. */
 	private long seed;
 
 	/**
-	 * V‚µ‚¢ƒŠƒvƒŒƒC‚ğì¬‚µ‚Ü‚·.
-	 * FPS‚Í60AŠÔ‚Í5•ª‚É‚È‚è‚Ü‚·B<br>
+	 * æ–°ã—ã„ãƒªãƒ—ãƒ¬ã‚¤ã‚’ä½œæˆã—ã¾ã™.
+	 * FPSã¯60ã€æ™‚é–“ã¯5åˆ†ã«ãªã‚Šã¾ã™ã€‚<br>
 	 */
 	public ReplayData() {
 		this(60, 5);
 	}
 
 	/**
-	 * V‚µ‚¢ƒŠƒvƒŒƒC‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ãƒªãƒ—ãƒ¬ã‚¤ã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param fps    Às’†‚ÌƒQ[ƒ€‚ÌÅ‘åFSP‚ğw’è‚µ‚Ü‚·B‰Šúƒf[ƒ^—Ê‚É‰e‹¿‚µ‚Ü‚·B<br>
-	 * @param minute ƒQ[ƒ€‚ÌÀsŠÔ‚ğw’è‚µ‚Ü‚·B‰Šúƒf[ƒ^—Ê‚É‰e‹¿‚µ‚Ü‚·B<br>
+	 * @param fps    å®Ÿè¡Œä¸­ã®ã‚²ãƒ¼ãƒ ã®æœ€å¤§FSPã‚’æŒ‡å®šã—ã¾ã™ã€‚åˆæœŸãƒ‡ãƒ¼ã‚¿é‡ã«å½±éŸ¿ã—ã¾ã™ã€‚<br>
+	 * @param minute ã‚²ãƒ¼ãƒ ã®å®Ÿè¡Œæ™‚é–“ã‚’æŒ‡å®šã—ã¾ã™ã€‚åˆæœŸãƒ‡ãƒ¼ã‚¿é‡ã«å½±éŸ¿ã—ã¾ã™ã€‚<br>
 	 */
 	public ReplayData(int fps, float minute) {
 		super((int) (fps * minute));
 	}
 
 	/**
-	 * ƒV[ƒh‚ğ‰Šú‰»‚µAƒŠƒvƒŒƒC‚Ì•Û‘¶‚ğŠJn‚µ‚Ü‚·.
+	 * ã‚·ãƒ¼ãƒ‰ã‚’åˆæœŸåŒ–ã—ã€ãƒªãƒ—ãƒ¬ã‚¤ã®ä¿å­˜ã‚’é–‹å§‹ã—ã¾ã™.
 	 *
-	 * @param seed ƒV[ƒh‚ğw’è‚µ‚Ü‚·Bkinugasa RandomƒNƒ‰ƒX‚ÌƒV[ƒh‚ª‰Šú‰»‚³‚ê‚Ü‚·B<br>
+	 * @param seed ã‚·ãƒ¼ãƒ‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚kinugasa Randomã‚¯ãƒ©ã‚¹ã®ã‚·ãƒ¼ãƒ‰ãŒåˆæœŸåŒ–ã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @return thisƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return thisã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public ReplayData recStart(long seed) {
 		Random.initSeed(this.seed = seed);
@@ -73,38 +73,38 @@ public final class ReplayData extends Storage<ReplayInputState> implements Seria
 	}
 
 	/**
-	 * “K“–‚ÈƒV[ƒh‚ğg—p‚µ‚ÄƒŠƒvƒŒƒC‚Ì•Û‘¶‚ğŠJn‚µ‚Ü‚·.
+	 * é©å½“ãªã‚·ãƒ¼ãƒ‰ã‚’ä½¿ç”¨ã—ã¦ãƒªãƒ—ãƒ¬ã‚¤ã®ä¿å­˜ã‚’é–‹å§‹ã—ã¾ã™.
 	 *
-	 * @return thisƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return thisã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public ReplayData recStart() {
 		return recStart(System.nanoTime());
 	}
 
 	/**
-	 * •Û‘¶‚³‚ê‚½ƒV[ƒh‚ğg—p‚µ‚ÄAƒ‰ƒ“ƒ_ƒ€ƒNƒ‰ƒX‚ğ‰Šú‰»‚µAƒŠƒvƒŒƒC‚ÌÄ¶‚ğŠJn‚µ‚Ü‚·.
+	 * ä¿å­˜ã•ã‚ŒãŸã‚·ãƒ¼ãƒ‰ã‚’ä½¿ç”¨ã—ã¦ã€ãƒ©ãƒ³ãƒ€ãƒ ã‚¯ãƒ©ã‚¹ã‚’åˆæœŸåŒ–ã—ã€ãƒªãƒ—ãƒ¬ã‚¤ã®å†ç”Ÿã‚’é–‹å§‹ã—ã¾ã™.
 	 */
 	public void playStart() {
 		Random.initSeed(seed);
 	}
 
 	/**
-	 * ƒtƒŒ[ƒ€”‚Æ“ü—Íó‘Ô‚ğw’è‚µ‚ÄA“ü—ÍƒCƒxƒ“ƒg‚ğ“o˜^‚µ‚Ü‚·.
-	 * ‚±‚Ìƒƒ\ƒbƒh‚Íadd(new ReplayInputState(frame, inputState))‚Æ“¯‚¶“®ì‚ğ‚µ‚Ü‚·B<br>
+	 * ãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã¨å…¥åŠ›çŠ¶æ…‹ã‚’æŒ‡å®šã—ã¦ã€å…¥åŠ›ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™»éŒ²ã—ã¾ã™.
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯add(new ReplayInputState(frame, inputState))ã¨åŒã˜å‹•ä½œã‚’ã—ã¾ã™ã€‚<br>
 	 *
-	 * @param frame      “ü—Í‚ªŒŸ’m‚³‚ê‚½ƒtƒŒ[ƒ€‚ğw’è‚µ‚Ü‚·BGameTimeManager‚©‚çæ“¾‚Å‚«‚Ü‚·B<br>
-	 * @param inputState “ü—Íó‘Ô‚ğ‘—M‚µ‚Ü‚·BReplayInputState‚ÅƒNƒ[ƒjƒ“ƒO‚³‚ê‚Ü‚·B<br>
+	 * @param frame      å…¥åŠ›ãŒæ¤œçŸ¥ã•ã‚ŒãŸãƒ•ãƒ¬ãƒ¼ãƒ ã‚’æŒ‡å®šã—ã¾ã™ã€‚GameTimeManagerã‹ã‚‰å–å¾—ã§ãã¾ã™ã€‚<br>
+	 * @param inputState å…¥åŠ›çŠ¶æ…‹ã‚’é€ä¿¡ã—ã¾ã™ã€‚ReplayInputStateã§ã‚¯ãƒ­ãƒ¼ãƒ‹ãƒ³ã‚°ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	public void add(long frame, InputState inputState) {
 		super.add(new ReplayInputState(frame, inputState));
 	}
 
 	/**
-	 * Œ»İ‚ÌƒtƒŒ[ƒ€‚Å“ü—Í‚³‚ê‚½ó‘Ô‚ğ•œŒ³‚µ‚Ü‚·.
+	 * ç¾åœ¨ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§å…¥åŠ›ã•ã‚ŒãŸçŠ¶æ…‹ã‚’å¾©å…ƒã—ã¾ã™.
 	 *
-	 * @param frame “ü—Í‚ğs‚¤ƒtƒŒ[ƒ€‚ğw’è‚µ‚Ü‚·BGameTimeManager‚©‚çæ“¾‚Å‚«‚Ü‚·B<br>
+	 * @param frame å…¥åŠ›ã‚’è¡Œã†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’æŒ‡å®šã—ã¾ã™ã€‚GameTimeManagerã‹ã‚‰å–å¾—ã§ãã¾ã™ã€‚<br>
 	 *
-	 * @return w’è‚³‚ê‚½ƒtƒŒ[ƒ€‚Ì“ü—Íó‘Ô‚ğ•Ô‚µ‚Ü‚·B‚±‚ÌƒtƒŒ[ƒ€‚É“ü—Í‚ª–³‚©‚Á‚½ê‡‚Ínull‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸãƒ•ãƒ¬ãƒ¼ãƒ ã®å…¥åŠ›çŠ¶æ…‹ã‚’è¿”ã—ã¾ã™ã€‚ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã«å…¥åŠ›ãŒç„¡ã‹ã£ãŸå ´åˆã¯nullã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public InputState get(long frame) {
 		ReplayInputState state = super.getIfContains(Long.toString(frame));

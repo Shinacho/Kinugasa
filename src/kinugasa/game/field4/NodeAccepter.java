@@ -28,11 +28,11 @@ import kinugasa.resource.Nameable;
 
 
 /**
- * ƒm[ƒh‚ª—LŒø‚Å‚ ‚é‚©‚ğ”»’è‚·‚éƒNƒ‰ƒX‚Å‚·.
+ * ãƒãƒ¼ãƒ‰ãŒæœ‰åŠ¹ã§ã‚ã‚‹ã‹ã‚’åˆ¤å®šã™ã‚‹ã‚¯ãƒ©ã‚¹ã§ã™.
  * <br>
- * ‚±‚ÌƒNƒ‰ƒX‚ÍAhƒAƒCƒeƒ€‚ğŠ‚µ‚Ä‚¢‚È‚¢‚Æ’Ê‰ß‚Å‚«‚È‚¢h‚È‚Ç‚Ì
- * ƒm[ƒh‚Ì”»’è‹@”\‚ğ’ñ‹Ÿ‚µ‚Ü‚·B<br>
- * ì¬‚µ‚½NodeAccepter‚Í©“®“I‚ÉNodeAccepterStorage‚É’Ç‰Á‚³‚ê‚Ü‚·B<br>
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã¯ã€â€ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ‰€æŒã—ã¦ã„ãªã„ã¨é€šéã§ããªã„â€ãªã©ã®
+ * ãƒãƒ¼ãƒ‰ã®åˆ¤å®šæ©Ÿèƒ½ã‚’æä¾›ã—ã¾ã™ã€‚<br>
+ * ä½œæˆã—ãŸNodeAccepterã¯è‡ªå‹•çš„ã«NodeAccepterStorageã«è¿½åŠ ã•ã‚Œã¾ã™ã€‚<br>
  * <br>
  * @version 1.0.0 - 2013/04/29_12:30:52<br>
  * @author Shinacho<br>
@@ -40,12 +40,12 @@ import kinugasa.resource.Nameable;
 public abstract class NodeAccepter extends Model implements Nameable {
 
 	private static final long serialVersionUID = -4859183748031650028L;
-	/** ˆêˆÓ“I‚È–¼‘O‚Å‚·. */
+	/** ä¸€æ„çš„ãªåå‰ã§ã™. */
 	private String name;
 
 	/**
-	 * V‚µ‚¢NodeAccepter‚ğì¬‚µ‚Ü‚·.
-	 * @param name ˆêˆÓ“I‚È–¼‘O‚ğw’è‚µ‚Ü‚·B<br>
+	 * æ–°ã—ã„NodeAccepterã‚’ä½œæˆã—ã¾ã™.
+	 * @param name ä¸€æ„çš„ãªåå‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public NodeAccepter(String name) {
 		this.name = name;
@@ -53,7 +53,7 @@ public abstract class NodeAccepter extends Model implements Nameable {
 	}
 
 	/**
-	 * NodeAccepterStorage‚ÉthisƒCƒ“ƒXƒ^ƒ“ƒX‚ğ’Ç‰Á‚µ‚Ü‚·.
+	 * NodeAccepterStorageã«thisã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿½åŠ ã—ã¾ã™.
 	 */
 	private void putThis() {
 		NodeAccepterStorage.getInstance().put(this);
@@ -65,8 +65,8 @@ public abstract class NodeAccepter extends Model implements Nameable {
 	}
 
 	/**
-	 * ‚±‚ÌNodeAccepter‚ğ‚Âƒm[ƒh‚ªg—p‰Â”\‚Å‚ ‚é‚©‚ğ”»’è‚µ‚Ü‚·.
-	 * @return ƒvƒŒƒCƒ„[‚ª‚±‚Ìƒm[ƒh‚ğg—p‚Å‚«‚é‚Æ‚«‚Étrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * ã“ã®NodeAccepterã‚’æŒã¤ãƒãƒ¼ãƒ‰ãŒä½¿ç”¨å¯èƒ½ã§ã‚ã‚‹ã‹ã‚’åˆ¤å®šã—ã¾ã™.
+	 * @return ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã“ã®ãƒãƒ¼ãƒ‰ã‚’ä½¿ç”¨ã§ãã‚‹ã¨ãã«trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public abstract boolean accept();
 

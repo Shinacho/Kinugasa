@@ -33,9 +33,9 @@ import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.TimeCounter;
 
 /**
- * �A�N�V�����e�L�X�g�X�v���C�g���O���[�v�����A����ɑI�𒆃A�C�R�����ݒu���邱�ƂŁA�P��̃A�N�V�����e�L�X�g�X�v���C�g��I���ł���悤�ɂ���t�h�ł��B
- * �I�𒆃A�C�R���͗v�f�̍��ɕ\������܂��B�I���ł���̂�1�����ł��B�܂胉�W�I�{�^���I�Ȃt�h�ƂȂ�܂��B �I�𒆃A�C�R���̍��W�͎����ݒ肳��܂��B
- * �v�f�́A�ǉ�����Ă��鏇�ɕ��ёւ��炦�܂��B�����Ƃ���̑I�����̍��W�̓R���X�g���N�^�Ŏw�肷��K�v������܂��B
+ * アクションテキストスプライトをグループ化し、さらに選択中アイコンも設置することで、単一のアクションテキストスプライトを選択できるようにするＵＩです。
+ * 選択中アイコンは要素の左に表示されます。選択できるのは1つだけです。つまりラジオボタン的なＵＩとなります。 選択中アイコンの座標は自動設定されます。
+ * 要素は、追加されている順に並び替えらえます。もっとも上の選択肢の座標はコンストラクタで指定する必要があります。
  *
  * @vesion 1.0.0 - 2022/11/12_22:35:09<br>
  * @author Shinacho<br>
@@ -59,7 +59,7 @@ public class ActionTextSpriteGroup implements Drawable {
 	}
 
 	public void updateLocation(float x, float y) {
-		//�v�f�̍��W����
+		//要素の座標調整
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).setLocation(x, y + i * list.get(0).getHeight() + i * (buffer * 2));
 		}
@@ -75,7 +75,7 @@ public class ActionTextSpriteGroup implements Drawable {
 		updateSelectIcon();
 	}
 
-	// ���X�g��ύX�����ꍇ�͑I�𒆃A�C�R���̍��W�X�V�����s���邱��
+	// リストを変更した場合は選択中アイコンの座標更新を実行すること
 	public List<ActionTextSprite> getList() {
 		return list;
 	}

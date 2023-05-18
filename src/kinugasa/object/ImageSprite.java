@@ -29,10 +29,10 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.resource.KImage;
 
 /**
- * ’Pˆê‚Ì‰æ‘œ‚ğ•\¦‚·‚éŠî–{ƒXƒvƒ‰ƒCƒg‚ÌÀ‘•‚Å‚·.
+ * å˜ä¸€ã®ç”»åƒã‚’è¡¨ç¤ºã™ã‚‹åŸºæœ¬ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å®Ÿè£…ã§ã™.
  * <br>
- * ‰æ‘œƒXƒvƒ‰ƒCƒg‚Éİ’è‚³‚ê‚é‰æ‘œ‚ÍASerializableImage‚Éƒ‰ƒbƒv‚³‚ê‚Ü‚·B<br>
- * ‚±‚Ì‰æ‘œŒ^‚ÍƒXƒvƒ‰ƒCƒg‚²‚ÆƒVƒŠƒAƒ‰ƒCƒY‚Å‚«‚Ü‚·B<br>
+ * ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã«è¨­å®šã•ã‚Œã‚‹ç”»åƒã¯ã€SerializableImageã«ãƒ©ãƒƒãƒ—ã•ã‚Œã¾ã™ã€‚<br>
+ * ã“ã®ç”»åƒå‹ã¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã”ã¨ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã§ãã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_20:21:03<br>
@@ -45,7 +45,7 @@ public class ImageSprite extends BasicSprite {
 	private ImagePainter painter;
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍA‰æ‘œ‚ªnull‚ÉA •`‰æƒ‚ƒfƒ‹‚ªIMAGE_BOUNDS_XY‚Éİ’è‚³‚ê‚Ü‚·B<br>
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ç”»åƒãŒnullã«ã€ æç”»ãƒ¢ãƒ‡ãƒ«ãŒIMAGE_BOUNDS_XYã«è¨­å®šã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	public ImageSprite() {
 		super();
@@ -54,12 +54,12 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍA‰æ‘œ‚ªnull‚ÉA •`‰æƒ‚ƒfƒ‹‚ªIMAGE_BOUNDS_XY‚Éİ’è‚³‚ê‚Ü‚·B<br>
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ç”»åƒãŒnullã«ã€ æç”»ãƒ¢ãƒ‡ãƒ«ãŒIMAGE_BOUNDS_XYã«è¨­å®šã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ImageSprite(float x, float y, float w, float h) {
 		super(x, y, w, h);
@@ -68,13 +68,13 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍA •`‰æƒ‚ƒfƒ‹‚ÍIMAGE_BOUNDS_XY‚Éİ’è‚³‚ê‚Ü‚·B<br>
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ æç”»ãƒ¢ãƒ‡ãƒ«ã¯IMAGE_BOUNDS_XYã«è¨­å®šã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param image •\¦‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param image è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ImageSprite(float x, float y, float w, float h, KImage image) {
 		super(x, y, w, h);
@@ -83,14 +83,14 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param image •\¦‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param model •`‰æ•û–@‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param image è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param model æç”»æ–¹æ³•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ImageSprite(float x, float y, float w, float h, KImage image, ImagePainter model) {
 		super(x, y, w, h);
@@ -99,16 +99,16 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param vector ˆÚ“®ƒxƒNƒgƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param mm ˆÚ“®ƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param image •\¦‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param dm •`‰æƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param vector ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param mm ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param image è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param dm æç”»ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ImageSprite(float x, float y, float w, float h, KVector vector,
 			MovingModel mm, KImage image, ImagePainter dm) {
@@ -118,14 +118,14 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÍƒNƒ[ƒjƒ“ƒO—p‚Ìƒ}ƒXƒ^ƒf[ƒ^‚ğì¬‚·‚éê‡‚É—L—p‚Å‚·B<br>
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã¯ã‚¯ãƒ­ãƒ¼ãƒ‹ãƒ³ã‚°ç”¨ã®ãƒã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã™ã‚‹å ´åˆã«æœ‰ç”¨ã§ã™ã€‚<br>
 	 *
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param vector ˆÚ“®ƒxƒNƒgƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param mm ˆÚ“®ƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param image •\¦‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param dm •`‰æƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param vector ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param mm ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param image è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param dm æç”»ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ImageSprite(float w, float h, KVector vector,
 			MovingModel mm, KImage image, ImagePainter dm) {
@@ -135,13 +135,13 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍA •`‰æƒ‚ƒfƒ‹‚ÍIMAGE_BOUNDS_XY‚Éİ’è‚³‚ê‚Ü‚·B<br>
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ æç”»ãƒ¢ãƒ‡ãƒ«ã¯IMAGE_BOUNDS_XYã«è¨­å®šã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param image •\¦‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param image è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ImageSprite(float x, float y, float w, float h, BufferedImage image) {
 		super(x, y, w, h);
@@ -150,14 +150,14 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param image •\¦‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param model •`‰æ•û–@‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param image è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param model æç”»æ–¹æ³•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ImageSprite(float x, float y, float w, float h, BufferedImage image, ImagePainter model) {
 		super(x, y, w, h);
@@ -166,16 +166,16 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param x ƒXƒvƒ‰ƒCƒg‚ÌXÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param y ƒXƒvƒ‰ƒCƒg‚ÌYÀ•W‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param vector ˆÚ“®ƒxƒNƒgƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param mm ˆÚ“®ƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param image •\¦‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param dm •`‰æƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param x ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Xåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param y ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Yåº§æ¨™ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param vector ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param mm ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param image è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param dm æç”»ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ImageSprite(float x, float y, float w, float h, KVector vector,
 			MovingModel mm, BufferedImage image, ImagePainter dm) {
@@ -189,14 +189,14 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * V‚µ‚¢‰æ‘œƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÍƒNƒ[ƒjƒ“ƒO—p‚Ìƒ}ƒXƒ^ƒf[ƒ^‚ğì¬‚·‚éê‡‚É—L—p‚Å‚·B<br>
+	 * æ–°ã—ã„ç”»åƒã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã¯ã‚¯ãƒ­ãƒ¼ãƒ‹ãƒ³ã‚°ç”¨ã®ãƒã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã™ã‚‹å ´åˆã«æœ‰ç”¨ã§ã™ã€‚<br>
 	 *
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param vector ˆÚ“®ƒxƒNƒgƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param mm ˆÚ“®ƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param image •\¦‚·‚é‰æ‘œ‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param dm •`‰æƒ‚ƒfƒ‹‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param vector ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param mm ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param image è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param dm æç”»ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ImageSprite(float w, float h, KVector vector,
 			MovingModel mm, BufferedImage image, ImagePainter dm) {
@@ -234,27 +234,27 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * ‰æ‘œ‚Ì•‚ğæ“¾‚µ‚Ü‚·. ‰æ‘œ‚ÌƒTƒCƒY‚Í‰æ‘œƒCƒ“ƒXƒ^ƒ“ƒX‚Éİ’è‚³‚ê‚Ä‚¢‚éAƒsƒNƒZƒ‹’PˆÊ‚ÌƒTƒCƒY‚Å‚·B<br>
-	 * ‚±‚Ì’l‚Í•`‰æƒ‚ƒfƒ‹‚É‚æ‚Á‚Ä‚Í–³‹‚³‚êAÀÛ‚ÌƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒY‚Æ‚Íˆá‚¤ê‡‚ª‚ ‚è‚Ü‚·B<br>
+	 * ç”»åƒã®å¹…ã‚’å–å¾—ã—ã¾ã™. ç”»åƒã®ã‚µã‚¤ã‚ºã¯ç”»åƒã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã«è¨­å®šã•ã‚Œã¦ã„ã‚‹ã€ãƒ”ã‚¯ã‚»ãƒ«å˜ä½ã®ã‚µã‚¤ã‚ºã§ã™ã€‚<br>
+	 * ã“ã®å€¤ã¯æç”»ãƒ¢ãƒ‡ãƒ«ã«ã‚ˆã£ã¦ã¯ç„¡è¦–ã•ã‚Œã€å®Ÿéš›ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚ºã¨ã¯é•ã†å ´åˆãŒã‚ã‚Šã¾ã™ã€‚<br>
 	 *
-	 * @return ‰æ‘œ‚Ì•‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ç”»åƒã®å¹…ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public int getImageWidth() {
 		return image.getWidth();
 	}
 
 	/**
-	 * ‰æ‘œ‚Ì‚‚³‚ğæ“¾‚µ‚Ü‚·. ‰æ‘œ‚ÌƒTƒCƒY‚Í‰æ‘œƒCƒ“ƒXƒ^ƒ“ƒX‚Éİ’è‚³‚ê‚Ä‚¢‚éAƒsƒNƒZƒ‹’PˆÊ‚ÌƒTƒCƒY‚Å‚·B<br>
-	 * ‚±‚Ì’l‚Í•`‰æƒ‚ƒfƒ‹‚É‚æ‚Á‚Ä‚Í–³‹‚³‚êAÀÛ‚ÌƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒY‚Æ‚Íˆá‚¤ê‡‚ª‚ ‚è‚Ü‚·B<br>
+	 * ç”»åƒã®é«˜ã•ã‚’å–å¾—ã—ã¾ã™. ç”»åƒã®ã‚µã‚¤ã‚ºã¯ç”»åƒã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã«è¨­å®šã•ã‚Œã¦ã„ã‚‹ã€ãƒ”ã‚¯ã‚»ãƒ«å˜ä½ã®ã‚µã‚¤ã‚ºã§ã™ã€‚<br>
+	 * ã“ã®å€¤ã¯æç”»ãƒ¢ãƒ‡ãƒ«ã«ã‚ˆã£ã¦ã¯ç„¡è¦–ã•ã‚Œã€å®Ÿéš›ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚ºã¨ã¯é•ã†å ´åˆãŒã‚ã‚Šã¾ã™ã€‚<br>
 	 *
-	 * @return ‰æ‘œ‚Ì‚‚³‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ç”»åƒã®é«˜ã•ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public int getImageHeight() {
 		return image.getHeight();
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚É•\¦‚·‚é‰æ‘œ‚ğİ’è‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã«è¡¨ç¤ºã™ã‚‹ç”»åƒã‚’è¨­å®šã—ã¾ã™.
 	 *
 	 * @param image
 	 */
@@ -267,24 +267,24 @@ public class ImageSprite extends BasicSprite {
 	}
 
 	/**
-	 * •`‰æƒ‚ƒfƒ‹‚ğæ“¾‚µ‚Ü‚·.
+	 * æç”»ãƒ¢ãƒ‡ãƒ«ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return İ’è’†‚Ì•`‰æƒ‚ƒfƒ‹‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return è¨­å®šä¸­ã®æç”»ãƒ¢ãƒ‡ãƒ«ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public ImagePainter getPainter() {
 		return painter;
 	}
 
 	/**
-	 * •`‰æƒ‚ƒfƒ‹‚ğİ’è‚µ‚Ü‚·.
+	 * æç”»ãƒ¢ãƒ‡ãƒ«ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param painter İ’è‚·‚é•`‰æƒ‚ƒfƒ‹B<br>
+	 * @param painter è¨­å®šã™ã‚‹æç”»ãƒ¢ãƒ‡ãƒ«ã€‚<br>
 	 */
 	public void setPainter(ImagePainter painter) {
 		this.painter = painter;
 	}
 
-	//Painter‚ÌƒNƒ[ƒ“‚Í‚µ‚È‚­‚Ä‚à‚æ‚¢
+	//Painterã®ã‚¯ãƒ­ãƒ¼ãƒ³ã¯ã—ãªãã¦ã‚‚ã‚ˆã„
 	@Override
 	public ImageSprite clone() {
 		ImageSprite sprite = (ImageSprite) super.clone();

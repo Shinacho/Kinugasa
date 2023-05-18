@@ -28,10 +28,10 @@ import kinugasa.object.Model;
 import kinugasa.object.Statable;
 
 /**
- * F‚ÌARGB‚ÌŠe—v‘f‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğ’è‹`‚µ‚Ü‚·.
+ * è‰²ã®ARGBã®å„è¦ç´ ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’å®šç¾©ã—ã¾ã™.
  * <br>
- * F—v‘f‚Í0‚©‚ç255‚Ì®”‚Æ‚µ‚Ä•\‚³‚ê‚Ü‚·B
- * 1‚Â‚ÌF‚ÍARGB–”‚ÍRGBA‚ÌColorTransitionModel‚©‚ç\¬‚³‚ê‚Ü‚·B<br>
+ * è‰²è¦ç´ ã¯0ã‹ã‚‰255ã®æ•´æ•°ã¨ã—ã¦è¡¨ã•ã‚Œã¾ã™ã€‚
+ * 1ã¤ã®è‰²ã¯ã€RGBåˆã¯RGBAã®ColorTransitionModelã‹ã‚‰æ§‹æˆã•ã‚Œã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/12_18:59:50<br>
@@ -40,17 +40,17 @@ import kinugasa.object.Statable;
 public abstract class ColorTransitionModel extends Model implements Statable {
 
 	private static final long serialVersionUID = -5301732826729025440L;
-	/** ƒJƒEƒ“ƒ^‚Æ‚µ‚Äg—p‰Â”\‚ÈÅ¬‚Ì’l(0)‚Å‚·. */
+	/** ã‚«ã‚¦ãƒ³ã‚¿ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ãªæœ€å°ã®å€¤(0)ã§ã™. */
 	public static final int MIN = 0;
-	/** ƒJƒEƒ“ƒ^‚Æ‚µ‚Äg—p‰Â”\‚ÈÅ‘å‚Ì’l(255)‚Å‚·. */
+	/** ã‚«ã‚¦ãƒ³ã‚¿ã¨ã—ã¦ä½¿ç”¨å¯èƒ½ãªæœ€å¤§ã®å€¤(255)ã§ã™. */
 	public static final int MAX = 255;
-	/** Œ»İ‚Ì’l‚Å‚·. */
+	/** ç¾åœ¨ã®å€¤ã§ã™. */
 	protected int value;
 
 	/**
-	 * ‰Šú’l‚ğw’è‚µ‚ÄA‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğ’è‹`‚µ‚Ü‚·.
-	 * @param value ‚±‚Ìƒ‚ƒfƒ‹‚ª•\‚·F—v‘f‚Ì‰Šú’l‚ğw’è‚µ‚Ü‚·B<br>
-	 * @throws IllegalArgumentException ‰Šú’l‚ªF—v‘f‚Æ‚µ‚Ä—LŒø‚È’l‚Å‚È‚¢‚Æ‚«‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * åˆæœŸå€¤ã‚’æŒ‡å®šã—ã¦ã€é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’å®šç¾©ã—ã¾ã™.
+	 * @param value ã“ã®ãƒ¢ãƒ‡ãƒ«ãŒè¡¨ã™è‰²è¦ç´ ã®åˆæœŸå€¤ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @throws IllegalArgumentException åˆæœŸå€¤ãŒè‰²è¦ç´ ã¨ã—ã¦æœ‰åŠ¹ãªå€¤ã§ãªã„ã¨ãã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public ColorTransitionModel(int value) throws IllegalArgumentException {
 		if (value < 0 || value > 255) {
@@ -59,12 +59,12 @@ public abstract class ColorTransitionModel extends Model implements Statable {
 		this.value = value;
 	}
 
-	//ƒJƒEƒ“ƒg‚µ‚È‚¢ŒÅ’èƒJƒEƒ“ƒ^‚ğ•Ô‚·B‚±‚Ì–ß‚è’l‚ÍStaable‚Æ‚µ‚Ä‚ÍI‚í‚ç‚È‚¢
+	//ã‚«ã‚¦ãƒ³ãƒˆã—ãªã„å›ºå®šã‚«ã‚¦ãƒ³ã‚¿ã‚’è¿”ã™ã€‚ã“ã®æˆ»ã‚Šå€¤ã¯Staableã¨ã—ã¦ã¯çµ‚ã‚ã‚‰ãªã„
 	/**
-	 * ’l‚ª•ÏX‚³‚ê‚È‚¢ƒAƒ‹ƒSƒŠƒYƒ€‚ğì¬‚µ‚Ü‚·.
-	 * @param value F—v‘f‚Ì’l‚ğw’è‚µ‚Ü‚·B<br>
-	 * @return w’è‚µ‚½F—v‘f‚Ì’l‚ª•ÏX‚³‚ê‚È‚¢ƒ‚ƒfƒ‹‚ğ•Ô‚µ‚Ü‚·B<br>
-	 * @throws IllegalArgumentException ‰Šú’l‚ªF—v‘f‚Æ‚µ‚Ä—LŒø‚È’l‚Å‚È‚¢‚Æ‚«‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * å€¤ãŒå¤‰æ›´ã•ã‚Œãªã„ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’ä½œæˆã—ã¾ã™.
+	 * @param value è‰²è¦ç´ ã®å€¤ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @return æŒ‡å®šã—ãŸè‰²è¦ç´ ã®å€¤ãŒå¤‰æ›´ã•ã‚Œãªã„ãƒ¢ãƒ‡ãƒ«ã‚’è¿”ã—ã¾ã™ã€‚<br>
+	 * @throws IllegalArgumentException åˆæœŸå€¤ãŒè‰²è¦ç´ ã¨ã—ã¦æœ‰åŠ¹ãªå€¤ã§ãªã„ã¨ãã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public static ColorTransitionModel valueOf(int value) throws IllegalArgumentException {
 		return new ColorTransitionModel(value) {
@@ -93,26 +93,26 @@ public abstract class ColorTransitionModel extends Model implements Statable {
 	public abstract boolean isRunning();
 
 	/**
-	 * “Á’è‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚É‚µ‚½‚ª‚Á‚ÄA’l(value)‚ğ•ÏX‚µ‚Ü‚·.
-	 * ’l‚ªA—LŒø”ÍˆÍ(0-255)‚©‚ço‚éê‡A—LŒø”ÍˆÍ“à‚ÉØ‚è‹l‚ß‚é•K—v‚ª‚ ‚è‚Ü‚·B<br>
-	 * ‚Ü‚½AŠJn‚¨‚æ‚ÑI—¹ó‘Ô‚Ì•ÏX‚às‚¤•K—v‚ª‚ ‚è‚Ü‚·B<br>
+	 * ç‰¹å®šã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã«ã—ãŸãŒã£ã¦ã€å€¤(value)ã‚’å¤‰æ›´ã—ã¾ã™.
+	 * å€¤ãŒã€æœ‰åŠ¹ç¯„å›²(0-255)ã‹ã‚‰å‡ºã‚‹å ´åˆã€æœ‰åŠ¹ç¯„å›²å†…ã«åˆ‡ã‚Šè©°ã‚ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚<br>
+	 * ã¾ãŸã€é–‹å§‹ãŠã‚ˆã³çµ‚äº†çŠ¶æ…‹ã®å¤‰æ›´ã‚‚è¡Œã†å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚<br>
 	 */
 	public abstract void update();
 
 	/**
-	 * ’l‚ÌŒ»İ’l‚ğæ“¾‚µ‚Ü‚·.
-	 * ‚±‚Ìƒƒ\ƒbƒh‚É‚æ‚Á‚Ä•Ô‚³‚ê‚é’l‚ÍAŸ‚Éupdate‚ªŒÄ‚Î‚ê‚é‚Ü‚Å
-	 * •ÏX‚³‚ê‚Ä‚Í‚È‚è‚Ü‚¹‚ñB<br>
-	 * @return Œ»İ’l‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * å€¤ã®ç¾åœ¨å€¤ã‚’å–å¾—ã—ã¾ã™.
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã«ã‚ˆã£ã¦è¿”ã•ã‚Œã‚‹å€¤ã¯ã€æ¬¡ã«updateãŒå‘¼ã°ã‚Œã‚‹ã¾ã§
+	 * å¤‰æ›´ã•ã‚Œã¦ã¯ãªã‚Šã¾ã›ã‚“ã€‚<br>
+	 * @return ç¾åœ¨å€¤ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public int getValue() {
 		return value;
 	}
 
 	/**
-	 * ’l‚ğİ’è‚·.
-	 * @param value V‚µ‚¢’l‚ğ‘—M‚µ‚Ü‚·B0ˆÈã255ˆÈ‰º‚ğw’è‚µ‚Ü‚·B<br
-	 * @throws IllegalArgumentException ‰Šú’l‚ªF—v‘f‚Æ‚µ‚Ä—LŒø‚È’l‚Å‚È‚¢‚Æ‚«‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * å€¤ã‚’è¨­å®šã™.
+	 * @param value æ–°ã—ã„å€¤ã‚’é€ä¿¡ã—ã¾ã™ã€‚0ä»¥ä¸Š255ä»¥ä¸‹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br
+	 * @throws IllegalArgumentException åˆæœŸå€¤ãŒè‰²è¦ç´ ã¨ã—ã¦æœ‰åŠ¹ãªå€¤ã§ãªã„ã¨ãã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public void setValue(int value) throws IllegalArgumentException {
 		if (value < 0 || value > 255) {
@@ -122,11 +122,11 @@ public abstract class ColorTransitionModel extends Model implements Statable {
 	}
 
 	/**
-	 * RGB‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ÌŒ»İ‚Ì’l‚ğg—p‚µ‚ÄAF‚ğ\’z‚µ‚Ü‚·.
-	 * @param r Ô—v‘f‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param g —Î‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param b Â‘f‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @return w’è‚³‚ê‚½ƒAƒ‹ƒSƒŠƒYƒ€‚ÌŒ»İ‚Ì’l‚©‚ç\’z‚³‚ê‚½F‚ğ•Ô‚µ‚Ü‚·BƒAƒ‹ƒtƒ@¬•ª‚Í255‚Æ‚È‚è‚Ü‚·B<br>
+	 * RGBã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã®ç¾åœ¨ã®å€¤ã‚’ä½¿ç”¨ã—ã¦ã€è‰²ã‚’æ§‹ç¯‰ã—ã¾ã™.
+	 * @param r èµ¤è¦ç´ ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param g ç·‘ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param b é’ç´ ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã®ç¾åœ¨ã®å€¤ã‹ã‚‰æ§‹ç¯‰ã•ã‚ŒãŸè‰²ã‚’è¿”ã—ã¾ã™ã€‚ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã¯255ã¨ãªã‚Šã¾ã™ã€‚<br>
 	 */
 	public static Color createColor(ColorTransitionModel r,
 			ColorTransitionModel g,
@@ -135,12 +135,12 @@ public abstract class ColorTransitionModel extends Model implements Statable {
 	}
 
 	/**
-	 * RGBA‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ÌŒ»İ‚Ì’l‚ğg—p‚µ‚ÄAF‚ğ\’z‚µ‚Ü‚·.
-	 * @param r Ô—v‘f‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param g —Î‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param b Â‘f‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param a ƒAƒ‹ƒtƒ@¬•ª‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @return w’è‚³‚ê‚½ƒAƒ‹ƒSƒŠƒYƒ€‚ÌŒ»İ‚Ì’l‚©‚ç\’z‚³‚ê‚½F‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * RGBAé·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã®ç¾åœ¨ã®å€¤ã‚’ä½¿ç”¨ã—ã¦ã€è‰²ã‚’æ§‹ç¯‰ã—ã¾ã™.
+	 * @param r èµ¤è¦ç´ ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param g ç·‘ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param b é’ç´ ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param a ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã®ç¾åœ¨ã®å€¤ã‹ã‚‰æ§‹ç¯‰ã•ã‚ŒãŸè‰²ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static Color createColor(ColorTransitionModel r,
 			ColorTransitionModel g,

@@ -24,7 +24,7 @@
 package kinugasa.game.field4;
 
 /**
- * ƒtƒB[ƒ‹ƒhƒ}ƒbƒv‚Ìó‘Ô‚É‚æ‚éAƒ†[ƒU‘€ì‚ð—v‹‚µ‚Ü‚·B
+ * ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒžãƒƒãƒ—ã®çŠ¶æ…‹ã«ã‚ˆã‚‹ã€ãƒ¦ãƒ¼ã‚¶æ“ä½œã‚’è¦æ±‚ã—ã¾ã™ã€‚
  *
  * @vesion 1.0.0 - 2022/12/12_18:04:27<br>
  * @author Shinacho<br>
@@ -32,38 +32,38 @@ package kinugasa.game.field4;
 public enum UserOperationRequire {
 
 	/**
-	 * ƒCƒxƒ“ƒg‚ðŽÀs‚µ‚Ü‚·‚Ì‚ÅA‘€ì‚ðŽó‚¯•t‚¯‚¸‚É‘Ò‹@‚µ‚Ä‚­‚¾‚³‚¢BFMupdateA move‚ðŽÀs‚µ‘±‚¯‚Ä‚­‚¾‚³‚¢B
-	 * FieldEventSystem‚ª‘€ì‰Â”\‚É‚È‚é‚Ü‚Å‘Ò‹@‚µ‚Ä‚­‚¾‚³‚¢B
+	 * ã‚¤ãƒ™ãƒ³ãƒˆã‚’å®Ÿè¡Œã—ã¾ã™ã®ã§ã€æ“ä½œã‚’å—ã‘ä»˜ã‘ãšã«å¾…æ©Ÿã—ã¦ãã ã•ã„ã€‚FMupdateã€ moveã‚’å®Ÿè¡Œã—ç¶šã‘ã¦ãã ã•ã„ã€‚
+	 * FieldEventSystemãŒæ“ä½œå¯èƒ½ã«ãªã‚‹ã¾ã§å¾…æ©Ÿã—ã¦ãã ã•ã„ã€‚
 	 */
 	WAIT_FOR_EVENT,
 	/**
-	 * í“¬ƒVƒXƒeƒ€‚Ì‹N“®‚ª—v‹‚³‚ê‚Ü‚µ‚½Bí“¬ƒƒWƒbƒN‚ÉØ‚è‘Ö‚¦‚Ä‚­‚¾‚³‚¢B ƒGƒ“ƒJƒEƒ“ƒgî•ñ‚ÍƒtƒB[ƒ‹ƒhƒCƒxƒ“ƒgƒVƒXƒeƒ€‚©‚çŽæ“¾‚µ‚Ä‚­‚¾‚³‚¢B
+	 * æˆ¦é—˜ã‚·ã‚¹ãƒ†ãƒ ã®èµ·å‹•ãŒè¦æ±‚ã•ã‚Œã¾ã—ãŸã€‚æˆ¦é—˜ãƒ­ã‚¸ãƒƒã‚¯ã«åˆ‡ã‚Šæ›¿ãˆã¦ãã ã•ã„ã€‚ ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆæƒ…å ±ã¯ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚¤ãƒ™ãƒ³ãƒˆã‚·ã‚¹ãƒ†ãƒ ã‹ã‚‰å–å¾—ã—ã¦ãã ã•ã„ã€‚
 	 */
 	TO_BATTLE,
 	/**
-	 * ƒQ[ƒ€ƒI[ƒo[‚ª—v‹‚³‚ê‚Ü‚µ‚½B
+	 * ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ãŒè¦æ±‚ã•ã‚Œã¾ã—ãŸã€‚
 	 */
 	GAME_OVER,
 	/**
-	 * ƒ}ƒbƒv•ÏX‚ª—v‹‚³‚ê‚Ü‚µ‚½B
+	 * ãƒžãƒƒãƒ—å¤‰æ›´ãŒè¦æ±‚ã•ã‚Œã¾ã—ãŸã€‚
 	 */
 	CHANGE_MAP,
 	/**
-	 * ƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒE‚Ì•\Ž¦‚ª—v‹‚³‚ê‚Ü‚µ‚½BƒeƒLƒXƒg‚ðFieldEventSystem‚©‚çŽæ“¾‚µ‚Ä•\Ž¦‚µ‚Ä‚­‚¾‚³‚¢B
+	 * ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®è¡¨ç¤ºãŒè¦æ±‚ã•ã‚Œã¾ã—ãŸã€‚ãƒ†ã‚­ã‚¹ãƒˆã‚’FieldEventSystemã‹ã‚‰å–å¾—ã—ã¦è¡¨ç¤ºã—ã¦ãã ã•ã„ã€‚
 	 */
 	SHOW_MESSAGE,
 	CLOSE_MESSAGE,
 	GET_ITEAM,
 	/**
-	 * ’Êí‚ÌƒtƒB[ƒ‹ƒhƒ}ƒbƒvˆÚ“®‚ð‘±s‚µ‚Ä‚­‚¾‚³‚¢B
+	 * é€šå¸¸ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒžãƒƒãƒ—ç§»å‹•ã‚’ç¶šè¡Œã—ã¦ãã ã•ã„ã€‚
 	 */
 	CONTINUE,
 	/**
-	 * ƒtƒF[ƒhƒAƒEƒg‚ª—v‹‚³‚ê‚Ü‚µ‚½BƒtƒF[ƒhƒAƒEƒgƒGƒtƒFƒNƒg‚ðÄ¶‚µ‚ÄAI—¹‚µ‚½‚çŽŸ‚ÌƒCƒxƒ“ƒg‚ðŽÀs‚µ‚Ä‚­‚¾‚³‚¢B
+	 * ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆãŒè¦æ±‚ã•ã‚Œã¾ã—ãŸã€‚ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’å†ç”Ÿã—ã¦ã€çµ‚äº†ã—ãŸã‚‰æ¬¡ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’å®Ÿè¡Œã—ã¦ãã ã•ã„ã€‚
 	 */
 	FADE_OUT,
 	/**
-	 * ƒtƒF[ƒhƒCƒ“‚ª—v‹‚³‚ê‚Ü‚µ‚½BƒtƒF[ƒhƒCƒ“ƒGƒtƒFƒNƒg‚ðÄ¶‚µ‚ÄAI—¹‚µ‚½‚çŽŸ‚ÌƒCƒxƒ“ƒg‚ðŽÀs‚µ‚Ä‚­‚¾‚³‚¢B
+	 * ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ãŒè¦æ±‚ã•ã‚Œã¾ã—ãŸã€‚ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’å†ç”Ÿã—ã¦ã€çµ‚äº†ã—ãŸã‚‰æ¬¡ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’å®Ÿè¡Œã—ã¦ãã ã•ã„ã€‚
 	 */
 	FADE_IN,
 	BLACKOUT,

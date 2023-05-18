@@ -24,12 +24,12 @@
 package kinugasa.object;
 
 /**
- * �N���[�j���O�\�ȓ���̃A���S���Y�����Ԃ��J�v�Z�������邽�߂̒��ۃN���X�ł�.
+ * クローニング可能な特定のアルゴリズムや状態をカプセル化するための抽象クラスです.
  * <br>
- * �S�Ẵ��f���̎����́Aclone���\�b�h��K�؂ɃI�[�o�[���C�h����K�v������܂��B<br>
+ * 全てのモデルの実装は、cloneメソッドを適切にオーバーライドする必要があります。<br>
  * <br>
- * �قƂ�ǂ̃��f���ł́A���f�������v�f�ɂ���āA���̃C���X�^���X�Ƃ̔�r���o���邱�Ƃ����҂���܂��B<br>
- * queals�����hashCode��K�؂ɃI�[�o�[���C�h����K�v������܂��B<br>
+ * ほとんどのモデルでは、モデルが持つ要素によって、他のインスタンスとの比較が出来ることが期待されます。<br>
+ * quealsおよびhashCodeを適切にオーバーライドする必要があります。<br>
  * <br>
  *
  * @version 1.0.0 - 2012/07/14_16:58:06.<br>
@@ -39,17 +39,17 @@ package kinugasa.object;
 public abstract class Model implements Cloneable {
 
 	/**
-	 * �V�������f�����쐬���܂�.
+	 * 新しいモデルを作成します.
 	 */
 	public Model() {
 	}
 
 	/**
-	 * ���̃��f���̃N���[����Ԃ��܂�.
-	 * �N���[����Object�N���X�̋@�\���g���čs���܂��B<br>
-	 * �S�Ẵ��f���̎����́Aclone���\�b�h��K�؂ɃI�[�o�[���C�h����K�v������܂��B<br>
+	 * このモデルのクローンを返します.
+	 * クローンはObjectクラスの機能を使って行われます。<br>
+	 * 全てのモデルの実装は、cloneメソッドを適切にオーバーライドする必要があります。<br>
 	 *
-	 * @return ���̃��f���Ɠ����N���X�̐V�����C���X�^���X��Ԃ��܂��B<br>
+	 * @return このモデルと同じクラスの新しいインスタンスを返します。<br>
 	 */
 	@Override
 	public Model clone() {
@@ -61,12 +61,12 @@ public abstract class Model implements Cloneable {
 	}
 
 	/**
-	 * ���郂�f��obj�̃N���[����Ԃ��܂�.�����obj.clone()�Ɠ�������ł�.
+	 * あるモデルobjのクローンを返します.これはobj.clone()と同じ動作です.
 	 *
-	 * @param <T> �N���[������N���X�ł��B<br>
-	 * @param obj �N���[�����郂�f�����w�肵�܂��B<br>
+	 * @param <T> クローンするクラスです。<br>
+	 * @param obj クローンするモデルを指定します。<br>
 	 *
-	 * @return obj�̃N���[����Ԃ��܂��B<br>
+	 * @return objのクローンを返します。<br>
 	 */
 	public static <T extends Model> T clone(T obj) {
 		return (T) obj.clone();

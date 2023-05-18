@@ -65,17 +65,17 @@ public class BattleTargetSystem implements Drawable {
 	private BattleActionAreaSprite initialArea;
 	private Color currentAreaColor = Color.GREEN;
 	private Color initialAreaColor = Color.BLUE;
-	//ƒLƒƒƒbƒVƒ…
+	//ã‚­ãƒ£ãƒƒã‚·ãƒ¥
 	private List<BattleCharacter> inArea = new ArrayList<>();
 	private List<BattleCharacter> selected = new ArrayList<>();
 	private boolean fieldSelect = false;
 	//
-	//‘I‘ğ’†ƒ^[ƒQƒbƒg‚Ì‘I‘ğƒAƒCƒRƒ““_–ÅŠÔ
+	//é¸æŠä¸­ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®é¸æŠã‚¢ã‚¤ã‚³ãƒ³ç‚¹æ»…æ™‚é–“
 	private int blinkTime = 8;
 	private FrameTimeCounter iconBlinkTC = new FrameTimeCounter(blinkTime);
-	//‘I‘ğ’†ƒAƒCƒRƒ“‚Ìƒ}ƒXƒ^
+	//é¸æŠä¸­ã‚¢ã‚¤ã‚³ãƒ³ã®ãƒã‚¹ã‚¿
 	private Sprite iconMaster;
-	//‘I‘ğ’†ƒAƒCƒRƒ“‚ÌÀ‘Ô
+	//é¸æŠä¸­ã‚¢ã‚¤ã‚³ãƒ³ã®å®Ÿæ…‹
 	private List<Sprite> icons = new ArrayList<>();
 	//
 	private int selectedIdx;
@@ -83,8 +83,8 @@ public class BattleTargetSystem implements Drawable {
 	@OneceTime
 	void init() {
 		iconBlinkTC = new FrameTimeCounter(blinkTime);
-		//ƒAƒCƒRƒ“ƒ}ƒXƒ^‚ğ‚İ‚¦‚È‚¢ˆÊ’u‚É”z’u
-		iconMaster = new TextLabelSprite("«", new SimpleTextLabelModel(FontModel.DEFAULT.clone().setColor(Color.BLACK).setFontStyle(Font.BOLD)), -123, -123, 12, 12);
+		//ã‚¢ã‚¤ã‚³ãƒ³ãƒã‚¹ã‚¿ã‚’ã¿ãˆãªã„ä½ç½®ã«é…ç½®
+		iconMaster = new TextLabelSprite("â†“", new SimpleTextLabelModel(FontModel.DEFAULT.clone().setColor(Color.BLACK).setFontStyle(Font.BOLD)), -123, -123, 12, 12);
 		selectedIdx = 0;
 		currentArea = new BattleActionAreaSprite(currentAreaColor);
 		currentArea.setVisible(false);
@@ -99,7 +99,7 @@ public class BattleTargetSystem implements Drawable {
 	//
 	//-------------------------------static-------------------------------------
 	//
-	//e‚©‚çÅ‚à‹ß‚¢PC‚ğ•Ô‚·B
+	//eã‹ã‚‰æœ€ã‚‚è¿‘ã„PCã‚’è¿”ã™ã€‚
 	static BattleCharacter nearPCs(BattleCharacter e) {
 		float distance = Integer.MAX_VALUE;
 		BattleCharacter result = null;
@@ -138,7 +138,7 @@ public class BattleTargetSystem implements Drawable {
 					result.setFieldTarget(true);
 					break;
 				case SELF:
-					//SELF‚Ìê‡‚Íƒtƒ‰ƒO‚ğON‚É‚·‚é
+					//SELFã®å ´åˆã¯ãƒ•ãƒ©ã‚°ã‚’ONã«ã™ã‚‹
 					result.setSelfTarget(true);
 					break;
 				case ALL:
@@ -249,7 +249,7 @@ public class BattleTargetSystem implements Drawable {
 			}
 		}
 		tgt = tgt.stream().distinct().collect(Collectors.toList());
-		//ƒAƒ“ƒ^[ƒQƒbƒgó‘Ô‚ÌƒLƒƒƒ‰‚ğœ‹
+		//ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆçŠ¶æ…‹ã®ã‚­ãƒ£ãƒ©ã‚’é™¤å»
 		List<BattleCharacter> removeList = new ArrayList<>();
 		for (BattleCharacter c : tgt) {
 			if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
@@ -266,8 +266,8 @@ public class BattleTargetSystem implements Drawable {
 		return result;
 	}
 
-	//ƒJƒŒƒ“ƒg‚ğİ’è‚¹‚¸‚ÉAƒ^[ƒQƒbƒg‚ğ•ªÍ‚·‚éB
-	//‹ó‚Ìƒ^[ƒQƒbƒgƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚·ê‡‚ª‚ ‚éB
+	//ã‚«ãƒ¬ãƒ³ãƒˆã‚’è¨­å®šã›ãšã«ã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’åˆ†æã™ã‚‹ã€‚
+	//ç©ºã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã™å ´åˆãŒã‚ã‚‹ã€‚
 	static ActionTarget instantTarget(BattleCharacter user, CmdAction a) {
 		Point2D.Float center = user.getSprite().getCenter();
 		int area = a instanceof Item
@@ -282,7 +282,7 @@ public class BattleTargetSystem implements Drawable {
 					result.setFieldTarget(true);
 					break;
 				case SELF:
-					//SELF‚Ìê‡‚Íƒtƒ‰ƒO‚ğON‚É‚·‚é
+					//SELFã®å ´åˆã¯ãƒ•ãƒ©ã‚°ã‚’ONã«ã™ã‚‹
 					result.setSelfTarget(true);
 					break;
 				case ALL:
@@ -370,7 +370,7 @@ public class BattleTargetSystem implements Drawable {
 			}
 		}
 		tgt = tgt.stream().distinct().collect(Collectors.toList());
-		//ƒAƒ“ƒ^[ƒQƒbƒgó‘Ô‚ÌƒLƒƒƒ‰‚ğœ‹
+		//ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆçŠ¶æ…‹ã®ã‚­ãƒ£ãƒ©ã‚’é™¤å»
 		List<BattleCharacter> removeList = new ArrayList<>();
 		for (BattleCharacter c : tgt) {
 			if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
@@ -391,7 +391,7 @@ public class BattleTargetSystem implements Drawable {
 	//-------------------------------non-static---------------------------------
 	//
 	public void next() {
-		//inArea‚ğæ‚Á‚½‚Æ‚«‚Ì‡”Ô‚Í“¯ˆê‚É‚È‚é‚Ì‚Å‚»‚ê‚ğ—˜—p‚·‚éBinArea‚ÍLoopCall
+		//inAreaã‚’å–ã£ãŸã¨ãã®é †ç•ªã¯åŒä¸€ã«ãªã‚‹ã®ã§ãã‚Œã‚’åˆ©ç”¨ã™ã‚‹ã€‚inAreaã¯LoopCall
 		selectedIdx++;
 		if (selectedIdx >= inArea.size()) {
 			selectedIdx = 0;
@@ -401,7 +401,7 @@ public class BattleTargetSystem implements Drawable {
 	}
 
 	public void prev() {
-		//inArea‚ğæ‚Á‚½‚Æ‚«‚Ì‡”Ô‚Í“¯ˆê‚É‚È‚é‚Ì‚Å‚»‚ê‚ğ—˜—p‚·‚éBinArea‚ÍLoopCall
+		//inAreaã‚’å–ã£ãŸã¨ãã®é †ç•ªã¯åŒä¸€ã«ãªã‚‹ã®ã§ãã‚Œã‚’åˆ©ç”¨ã™ã‚‹ã€‚inAreaã¯LoopCall
 		selectedIdx--;
 		if (selectedIdx < 0) {
 			selectedIdx = inArea.size() - 1;
@@ -452,8 +452,8 @@ public class BattleTargetSystem implements Drawable {
 			throw new GameSystemException("TS setCurrent(Window), but user is null");
 		}
 		if (w.getSelectedCmd() == null) {
-			//–‚–@‚âƒAƒCƒeƒ€‚ª‚È‚¢ê‡B
-			//ƒGƒŠƒA‰Šú‰»‚Ì‚İ
+			//é­”æ³•ã‚„ã‚¢ã‚¤ãƒ†ãƒ ãŒãªã„å ´åˆã€‚
+			//ã‚¨ãƒªã‚¢åˆæœŸåŒ–ã®ã¿
 			currentArea.setArea(0);
 			initialArea.setArea(0);
 			currentArea.setVisible(false);
@@ -464,9 +464,9 @@ public class BattleTargetSystem implements Drawable {
 		initialArea.setArea(0);
 		currentBA = w.getSelectedCmd();
 		selfTarget = currentBA.getBattleEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.SELF);
-		//ƒJƒŒƒ“ƒgƒGƒŠƒA‚ÌXV
-		//ƒAƒCƒeƒ€‚Ìê‡‚ÍMOV/2
-		//–hŒäA‰ñ”ğAó‘Ô‚ÍƒGƒŠƒA•\¦‚µ‚È‚¢
+		//ã‚«ãƒ¬ãƒ³ãƒˆã‚¨ãƒªã‚¢ã®æ›´æ–°
+		//ã‚¢ã‚¤ãƒ†ãƒ ã®å ´åˆã¯MOV/2
+		//é˜²å¾¡ã€å›é¿ã€çŠ¶æ…‹ã¯ã‚¨ãƒªã‚¢è¡¨ç¤ºã—ãªã„
 		int area = 0;
 		if (currentBA.getName().equals(BattleConfig.ActionName.avoidance)
 				|| currentBA.getName().equals(BattleConfig.ActionName.defence)
@@ -506,18 +506,18 @@ public class BattleTargetSystem implements Drawable {
 		selfTarget = a.getBattleEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.SELF);
 
 		if (a.getName().equals(BattleConfig.ActionName.move)) {
-			//ƒJƒŒƒ“ƒgƒGƒŠƒA‚ÌXV
+			//ã‚«ãƒ¬ãƒ³ãƒˆã‚¨ãƒªã‚¢ã®æ›´æ–°
 			int area = (int) (pc.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue());
 			currentArea.setArea(area);
 			currentArea.setLocationByCenter(pc.getSprite().getCenter());
 			currentArea.setVisible(true);
 
-			//‰ŠúƒGƒŠƒA‚ÌXV
+			//åˆæœŸã‚¨ãƒªã‚¢ã®æ›´æ–°
 			initialArea.setArea(area);
 			initialArea.setLocationByCenter(pc.getSprite().getCenter());
 			initialArea.setVisible(true);
 		} else {
-			//ƒJƒŒƒ“ƒgƒGƒŠƒA‚ÌXV
+			//ã‚«ãƒ¬ãƒ³ãƒˆã‚¨ãƒªã‚¢ã®æ›´æ–°
 			int area = 0;
 			if (currentBA.getName().equals(BattleConfig.ActionName.avoidance)
 					|| currentBA.getName().equals(BattleConfig.ActionName.defence)
@@ -532,7 +532,7 @@ public class BattleTargetSystem implements Drawable {
 			currentArea.setLocationByCenter(pc.getSprite().getCenter());
 			currentArea.setVisible(true);
 
-			//‰ŠúƒGƒŠƒA‚ÌXV
+			//åˆæœŸã‚¨ãƒªã‚¢ã®æ›´æ–°
 			initialArea.setArea(area);
 			initialArea.setLocationByCenter(pc.getSprite().getCenter());
 			initialArea.setVisible(true);
@@ -558,12 +558,12 @@ public class BattleTargetSystem implements Drawable {
 
 	@LoopCall
 	void update() {
-		//“_–Å‚ğ§Œä
+		//ç‚¹æ»…ã‚’åˆ¶å¾¡
 		if (iconBlinkTC.isReaching()) {
 			iconBlinkTC = new FrameTimeCounter(blinkTime);
 			icons.forEach(v -> v.switchVisible());
 		}
-		//ƒJƒŒƒ“ƒgƒLƒƒƒ‰‚ÌˆÚ“®‚É‡‚í‚¹‚ÄinAreaXV
+		//ã‚«ãƒ¬ãƒ³ãƒˆã‚­ãƒ£ãƒ©ã®ç§»å‹•ã«åˆã‚ã›ã¦inAreaæ›´æ–°
 		if (currentUser == null) {
 			return;
 		}
@@ -576,7 +576,7 @@ public class BattleTargetSystem implements Drawable {
 	//---------------------------------private----------------------------------
 	//
 	private void updateArea() {
-		//ƒJƒŒƒ“ƒg‚ÉŠî‚Ã‚¢‚ÄƒGƒŠƒA‚ğXV‚·‚é
+		//ã‚«ãƒ¬ãƒ³ãƒˆã«åŸºã¥ã„ã¦ã‚¨ãƒªã‚¢ã‚’æ›´æ–°ã™ã‚‹
 		int area = 0;
 		if (currentBA.getName().equals(BattleConfig.ActionName.avoidance)
 				|| currentBA.getName().equals(BattleConfig.ActionName.defence)
@@ -591,21 +591,21 @@ public class BattleTargetSystem implements Drawable {
 		currentArea.setLocationByCenter(currentUser.getSprite().getCenter());
 	}
 
-	//INAREA‚É‚Í³‚µ‚¢‘ÎÛ‚ª“ü‚Á‚Ä‚¢‚éB
+	//INAREAã«ã¯æ­£ã—ã„å¯¾è±¡ãŒå…¥ã£ã¦ã„ã‚‹ã€‚
 	private void updateSelected() {
-		//ƒJƒŒƒ“ƒg‚ÉŠî‚Ã‚¢‚ÄSELECTED‚ğXV‚·‚éAæ‚ÉINAREA‚ğXV‚µ‚Ä‚¨‚­‚±‚Æ		
+		//ã‚«ãƒ¬ãƒ³ãƒˆã«åŸºã¥ã„ã¦SELECTEDã‚’æ›´æ–°ã™ã‚‹ã€å…ˆã«INAREAã‚’æ›´æ–°ã—ã¦ãŠãã“ã¨		
 		selected.clear();
 		if (currentBA.getType() == ActionType.ITEM || currentBA.getType() == ActionType.OTHER) {
 			return;
 		}
-		//SELF‚Ìê‡SELECTED•K—v‚È‚µ
+		//SELFã®å ´åˆSELECTEDå¿…è¦ãªã—
 		if (currentBA.hasBattleTT(TargetType.SELF)) {
 			selfTarget = true;
 		}
 		if (currentBA.battleEventIsOnly(TargetType.SELF)) {
 			return;
 		}
-		//ƒAƒ“ƒZƒbƒg‚³‚ê‚Ä‚¢‚éê‡Aselected‚ğ‹ó‚É‚µ‚½‚¾‚¯‚Å–ß‚é
+		//ã‚¢ãƒ³ã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã‚‹å ´åˆã€selectedã‚’ç©ºã«ã—ãŸã ã‘ã§æˆ»ã‚‹
 		if (selectedIdx < 0) {
 			return;
 		}
@@ -614,7 +614,7 @@ public class BattleTargetSystem implements Drawable {
 			return;
 		}
 
-		//ƒ‰ƒ“ƒ_ƒ€‚Ìê‡AINAREA‚ğƒVƒƒƒbƒtƒ‹‚µ‚Ä0”Ô–Ú‚ğæ‚é
+		//ãƒ©ãƒ³ãƒ€ãƒ ã®å ´åˆã€INAREAã‚’ã‚·ãƒ£ãƒƒãƒ•ãƒ«ã—ã¦0ç•ªç›®ã‚’å–ã‚‹
 		if (currentBA.hasBattleTT(TargetType.RANDOM_ONE)) {
 			Collections.shuffle(inArea);
 			selected.add(inArea.get(0));
@@ -628,12 +628,12 @@ public class BattleTargetSystem implements Drawable {
 			selected.add(inArea.get(0));
 		}
 
-		//TargetType‚ªONE‚Ìê‡‚¾‚¯ASELECTED‚ÍXV‚³‚ê‚éB
-		//ƒp[ƒeƒB[‚Ìê‡AINAREA‚ğ‚»‚Ì‚Ü‚Üg‚¤‚±‚Æ‚ª‚Å‚«‚é
+		//TargetTypeãŒONEã®å ´åˆã ã‘ã€SELECTEDã¯æ›´æ–°ã•ã‚Œã‚‹ã€‚
+		//ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ã®å ´åˆã€INAREAã‚’ãã®ã¾ã¾ä½¿ã†ã“ã¨ãŒã§ãã‚‹
 		if (currentBA.hasBattleTT(TargetType.ONE_ENEMY) || currentBA.hasBattleTT(TargetType.ONE_PARTY)) {
 			assert selectedIdx >= 0 && selectedIdx < inArea.size() : "BTS : selectedIDX is missmatch : " + selected.size() + " / " + inArea.size() + " / " + selectedIdx;
-			//inAREA‚©‚çTT‚ÆSELECTEDIDX‚ÉŠî‚Ã‚­‘ÎÛ‚ğSELECTED‚É’Ç‰Á
-			//inAREA‚Í‚½‚¾‚µ‚­XV‚³‚ê‚Ä‚¢‚é‚Ì‚ÅASELECTEDIDX‚¾‚¯Œ©‚ê‚Î‚æ‚¢
+			//inAREAã‹ã‚‰TTã¨SELECTEDIDXã«åŸºã¥ãå¯¾è±¡ã‚’SELECTEDã«è¿½åŠ 
+			//inAREAã¯ãŸã ã—ãæ›´æ–°ã•ã‚Œã¦ã„ã‚‹ã®ã§ã€SELECTEDIDXã ã‘è¦‹ã‚Œã°ã‚ˆã„
 			selected.add(inArea.get(selectedIdx));
 			selected = selected.stream().distinct().collect(Collectors.toList());
 		}
@@ -641,7 +641,7 @@ public class BattleTargetSystem implements Drawable {
 	}
 
 	private void updateInArea() {
-		//ƒJƒŒƒ“ƒg‚ÉŠî‚Ã‚¢‚ÄINAREA‚ğXV‚·‚é
+		//ã‚«ãƒ¬ãƒ³ãƒˆã«åŸºã¥ã„ã¦INAREAã‚’æ›´æ–°ã™ã‚‹
 		inArea.clear();
 
 		if (currentBA.getType() == ActionType.ITEM || currentBA.getType() == ActionType.OTHER) {
@@ -658,7 +658,7 @@ public class BattleTargetSystem implements Drawable {
 					break;
 				case SELF:
 				case FIELD:
-					//INAREA‚È‚µ
+					//INAREAãªã—
 					break;
 				case ONE_ENEMY:
 					if (currentUser.isPlayer()) {
@@ -721,7 +721,7 @@ public class BattleTargetSystem implements Drawable {
 					throw new AssertionError("undefined target type " + e);
 			}
 		}
-		//ƒAƒ“ƒ^[ƒQƒbƒg‚Ìl‚ğíœ
+		//ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®äººã‚’å‰Šé™¤
 		List<BattleCharacter> removeList = new ArrayList<>();
 		for (BattleCharacter c : inArea) {
 			if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
@@ -734,7 +734,7 @@ public class BattleTargetSystem implements Drawable {
 	}
 
 	private void updateIcon() {
-		//ƒJƒŒƒ“ƒg‚ÉŠî‚Ã‚¢‚ÄƒAƒCƒRƒ“‚ğİ’è‚·‚é
+		//ã‚«ãƒ¬ãƒ³ãƒˆã«åŸºã¥ã„ã¦ã‚¢ã‚¤ã‚³ãƒ³ã‚’è¨­å®šã™ã‚‹
 		icons.clear();
 		if (fieldSelect) {
 			Sprite i = iconMaster.clone();

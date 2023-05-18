@@ -60,7 +60,7 @@ import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.Random;
 
 /**
- * ƒQ[ƒ€‚ÌƒeƒXƒgÀ‘•‚Å‚·.
+ * ã‚²ãƒ¼ãƒ ã®ãƒ†ã‚¹ãƒˆå®Ÿè£…ã§ã™.
  *
  * @author shin211
  */
@@ -89,7 +89,7 @@ public class Test extends GameManager {
 				.addMapChipSet("resource/field/data/chipSet/01.xml")
 				.addMapChipSet("resource/field/data/chipSet/02.xml")
 				.addFieldMapStorage("resource/field/data/mapBuilder/builder.xml")
-				.setInitialFieldMapName("ƒYƒV")
+				.setInitialFieldMapName("ã‚ºã‚·")
 				.setInitialLocation(new D2Idx(9, 9))
 				.load();
 		new GameSystemXMLLoader()
@@ -105,7 +105,7 @@ public class Test extends GameManager {
 				.addEnemySet("resource/field/data/enemy/enemySet.xml")
 				.addBookList("resource/field/data/item/bookList.xml")
 				.load();
-		// ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[‚Ì•\¦À•WŒvZ
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®è¡¨ç¤ºåº§æ¨™è¨ˆç®—
 		int screenW = (int) (GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize());
 		int screenH = (int) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize());
 		float x = screenW / 2 - 16;
@@ -148,10 +148,10 @@ public class Test extends GameManager {
 		);
 		List<PlayerCharacter> pcList = new ArrayList<>();
 
-		Status s1 = new Status("ƒƒ“ƒo‚P", RaceStorage.getInstance().get("lŠÔ"));
-		Status s2 = new Status("ƒƒ“ƒo‚Q", RaceStorage.getInstance().get("lŠÔ"));
-		Status s3 = new Status("ƒƒ“ƒo‚R", RaceStorage.getInstance().get("lŠÔ"));
-		Status s4 = new Status("ƒƒ“ƒo‚S", RaceStorage.getInstance().get("lŠÔ"));
+		Status s1 = new Status("ãƒ¡ãƒ³ãƒï¼‘", RaceStorage.getInstance().get("äººé–“"));
+		Status s2 = new Status("ãƒ¡ãƒ³ãƒï¼’", RaceStorage.getInstance().get("äººé–“"));
+		Status s3 = new Status("ãƒ¡ãƒ³ãƒï¼“", RaceStorage.getInstance().get("äººé–“"));
+		Status s4 = new Status("ãƒ¡ãƒ³ãƒï¼”", RaceStorage.getInstance().get("äººé–“"));
 		s1.setPartyLocation(PartyLocation.BACK);
 		s4.setPartyLocation(PartyLocation.BACK);
 		pcList.add(new PlayerCharacter(s1, c1));
@@ -160,50 +160,50 @@ public class Test extends GameManager {
 		pcList.add(new PlayerCharacter(s4, c4));
 		GameSystem.getInstance().initBattleSystem(pcList);
 		GameSystem.getInstance().initFieldSystem(pcList);
-		s1.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("“S‚ÌŒ•"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("”j×‚ÌŒ•"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("”j×‚ÌŒ•"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("”j×‚ÌŒ•"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("”j×‚ÌŒ•"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("‚»‚Î’cq"));
-		s1.getItemBag().add(ItemStorage.getInstance().get("•S–¼ŠÛ"));
-		s2.getItemBag().add(ItemStorage.getInstance().get("•S–¼ŠÛ"));
-		s3.getItemBag().add(ItemStorage.getInstance().get("•S–¼ŠÛ"));
-		s4.getItemBag().add(ItemStorage.getInstance().get("•S–¼ŠÛ"));
-		s1.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
-		s2.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
-		s3.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
-		s4.addEqip(ItemStorage.getInstance().get("“S‚ÌŒ•"));
-		s1.getBookBag().add(BookStorage.getInstance().get("‰Î‰Š‚Ì‘"));
-		s2.getBookBag().add(BookStorage.getInstance().get("‰Î‰Š‚Ì‘"));
-		s3.getBookBag().add(BookStorage.getInstance().get("‰Î‰Š‚Ì‘"));
-		s4.getBookBag().add(BookStorage.getInstance().get("‰Î‰Š‚Ì‘"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("é‰„ã®å‰£"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("é‰„ã®å‰£"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("é‰„ã®å‰£"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("é‰„ã®å‰£"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("ç ´é‚ªã®å‰£"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("ç ´é‚ªã®å‰£"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("ç ´é‚ªã®å‰£"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("ç ´é‚ªã®å‰£"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("ãã°å›£å­"));
+		s1.getItemBag().add(ItemStorage.getInstance().get("ç™¾åä¸¸"));
+		s2.getItemBag().add(ItemStorage.getInstance().get("ç™¾åä¸¸"));
+		s3.getItemBag().add(ItemStorage.getInstance().get("ç™¾åä¸¸"));
+		s4.getItemBag().add(ItemStorage.getInstance().get("ç™¾åä¸¸"));
+		s1.addEqip(ItemStorage.getInstance().get("é‰„ã®å‰£"));
+		s2.addEqip(ItemStorage.getInstance().get("é‰„ã®å‰£"));
+		s3.addEqip(ItemStorage.getInstance().get("é‰„ã®å‰£"));
+		s4.addEqip(ItemStorage.getInstance().get("é‰„ã®å‰£"));
+		s1.getBookBag().add(BookStorage.getInstance().get("ç«ç‚ã®æ›¸"));
+		s2.getBookBag().add(BookStorage.getInstance().get("ç«ç‚ã®æ›¸"));
+		s3.getBookBag().add(BookStorage.getInstance().get("ç«ç‚ã®æ›¸"));
+		s4.getBookBag().add(BookStorage.getInstance().get("ç«ç‚ã®æ›¸"));
 		s1.getBaseStatus().get("HP").set(123);
 		s2.getBaseStatus().get("HP").set(123);
 		s3.getBaseStatus().get("HP").set(123);
@@ -221,10 +221,10 @@ public class Test extends GameManager {
 		s2.getBaseStatus().get("MOV").set(Random.randomAbsInt(128) + 98);
 		s3.getBaseStatus().get("MOV").set(Random.randomAbsInt(128) + 98);
 		s4.getBaseStatus().get("MOV").set(Random.randomAbsInt(128) + 98);
-		//ƒeƒXƒg—p‚É‚·‚×‚Ä‚ÌƒAƒNƒVƒ‡ƒ“‚ğ’Ç‰Á
+		//ãƒ†ã‚¹ãƒˆç”¨ã«ã™ã¹ã¦ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’è¿½åŠ 
 		for (BattleCharacter pc : GameSystem.getInstance().getParty()) {
-			//Šm’èƒAƒNƒVƒ‡ƒ“‚ğ‚Ì‚¼‚­
-			pc.getStatus().getActions().addAll(ActionStorage.getInstance().stream().filter(p -> !p.getName().equals("Šm’è")).collect(Collectors.toList()));
+			//ç¢ºå®šã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’ã®ãã
+			pc.getStatus().getActions().addAll(ActionStorage.getInstance().stream().filter(p -> !p.getName().equals("ç¢ºå®š")).collect(Collectors.toList()));
 
 		}
 
@@ -237,19 +237,19 @@ public class Test extends GameManager {
 		BattleConfig.StatusKey.move = "MOV";
 		BattleConfig.StatusKey.exp = "EXP";
 
-		BattleConfig.ActionName.avoidance = "‰ñ”ğ";
-		BattleConfig.ActionName.escape = "“¦‚°‚é";
-		BattleConfig.ActionName.defence = "–hŒä";
-		BattleConfig.ActionName.move = "ˆÚ“®";
-		BattleConfig.ActionName.commit = "Šm’è";
-		BattleConfig.ActionName.status = "ó‘Ô";
+		BattleConfig.ActionName.avoidance = "å›é¿";
+		BattleConfig.ActionName.escape = "é€ƒã’ã‚‹";
+		BattleConfig.ActionName.defence = "é˜²å¾¡";
+		BattleConfig.ActionName.move = "ç§»å‹•";
+		BattleConfig.ActionName.commit = "ç¢ºå®š";
+		BattleConfig.ActionName.status = "çŠ¶æ…‹";
 
 		BattleConfig.addUntargetConditionNames("DEAD");
 		BattleConfig.addUntargetConditionNames("DESTROY");
 		BattleConfig.addUntargetConditionNames("ESCAPED");
 		BattleConfig.undeadDebugMode = true;
 		BattleConfig.addWinLoseLogic((List<Status> party, List<Status> enemy) -> {
-			// ƒp[ƒeƒB‚ÌƒRƒ“ƒfƒBƒVƒ‡ƒ“‚ğŠm”F
+			// ãƒ‘ãƒ¼ãƒ†ã‚£ã®ã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ã‚’ç¢ºèª
 			boolean lose = true;
 			for (Status s : party) {
 				lose &= (s.hasCondition("DEAD") || s.hasCondition("DESTROY"));

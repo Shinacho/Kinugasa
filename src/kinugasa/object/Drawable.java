@@ -28,7 +28,7 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.LoopCall;
 
 /**
- * ���̃C���^�[�t�F�[�X�����������N���X�́A�O���t�B�b�N�X�R���e�L�X�g�ɕ`��ł���悤�ɂȂ�܂�.
+ * このインターフェースを実装したクラスは、グラフィックスコンテキストに描画できるようになります.
  * <br>
  *
  * <br>

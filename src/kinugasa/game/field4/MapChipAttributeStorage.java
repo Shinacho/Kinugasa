@@ -34,7 +34,7 @@ import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
 
 /**
- * �}�b�v�`�b�v�̑����̗B��̕ۊǌɂł��B���̃N���X�̓V���O���g���ł��B
+ * マップチップの属性の唯一の保管庫です。このクラスはシングルトンです。
  *
  * @vesion 1.0.0 - 2022/11/08_16:12:11<br>
  * @author Shinacho<br>

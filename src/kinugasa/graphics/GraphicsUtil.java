@@ -64,13 +64,13 @@ public class GraphicsUtil {
 	}
 
 	/**
-	 * ƒCƒ“ƒXƒ^ƒ“ƒX‰»‚Å‚«‚Ü‚¹‚ñ.
+	 * ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã§ãã¾ã›ã‚“.
 	 */
 	private GraphicsUtil() {
 	}
 
 	/**
-	 * Java2D‚ÌOpenGLƒpƒCƒvƒ‰ƒCƒ“‚ğ—LŒø‰»‚µ‚Ü‚·. ŠÂ‹«‚É‚æ‚Á‚Ä‚ÍA•`‰æƒpƒtƒH[ƒ}ƒ“ƒX‚ªŒüã‚·‚éê‡‚ª‚ ‚è‚Ü‚·B<br>
+	 * Java2Dã®OpenGLãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚’æœ‰åŠ¹åŒ–ã—ã¾ã™. ç’°å¢ƒã«ã‚ˆã£ã¦ã¯ã€æç”»ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ãŒå‘ä¸Šã™ã‚‹å ´åˆãŒã‚ã‚Šã¾ã™ã€‚<br>
 	 */
 	public static void useOpenGL() {
 		System.setProperty("sun.java2d.opengl", "true");
@@ -78,69 +78,69 @@ public class GraphicsUtil {
 	}
 
 	/**
-	 * OpenGLƒpƒCƒvƒ‰ƒCƒ“‚ğg—p‚µ‚Ä‚¢‚é‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * OpenGLãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚’ä½¿ç”¨ã—ã¦ã„ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @return OpenGLƒpƒCƒvƒ‰ƒCƒ“‚ğg—p‚µ‚Ä‚¢‚éê‡‚ÍAtrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return OpenGLãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚’ä½¿ç”¨ã—ã¦ã„ã‚‹å ´åˆã¯ã€trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static boolean isUseOpenGL() {
 		return System.getProperty("sun.java2d.opengl").equals("true");
 	}
 
 	/**
-	 * Rectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğg—p‚µ‚ÄAclearRect‚ğÀs‚µ‚Ü‚·.
+	 * Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½¿ç”¨ã—ã¦ã€clearRectã‚’å®Ÿè¡Œã—ã¾ã™.
 	 *
-	 * @param g ‘‚«‚ŞƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param r •`‰æ”ÍˆÍ‚Æ‚È‚éRectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param g æ›¸ãè¾¼ã‚€ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param r æç”»ç¯„å›²ã¨ãªã‚‹Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public static void clearRect(GraphicsContext g, Rectangle2D r) {
 		g.clearRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 
 	/**
-	 * Rectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğg—p‚µ‚ÄAdrawRect‚ğÀs‚µ‚Ü‚·.
+	 * Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½¿ç”¨ã—ã¦ã€drawRectã‚’å®Ÿè¡Œã—ã¾ã™.
 	 *
-	 * @param g ‘‚«‚ŞƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param r •`‰æ”ÍˆÍ‚Æ‚È‚éRectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param g æ›¸ãè¾¼ã‚€ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param r æç”»ç¯„å›²ã¨ãªã‚‹Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public static void drawRect(GraphicsContext g, Rectangle2D r) {
 		g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 
 	/**
-	 * Rectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğg—p‚µ‚ÄAdrawRect‚ğÀs‚µ‚Ü‚·.
+	 * Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½¿ç”¨ã—ã¦ã€drawRectã‚’å®Ÿè¡Œã—ã¾ã™.
 	 *
-	 * @param g ‘‚«‚ŞƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param r •`‰æ”ÍˆÍ‚Æ‚È‚éRectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param g æ›¸ãè¾¼ã‚€ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param r æç”»ç¯„å›²ã¨ãªã‚‹Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public static void drawRect(Graphics2D g, Rectangle2D r) {
 		g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 
 	/**
-	 * Rectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğg—p‚µ‚ÄAfillRect‚ğÀs‚µ‚Ü‚·.
+	 * Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½¿ç”¨ã—ã¦ã€fillRectã‚’å®Ÿè¡Œã—ã¾ã™.
 	 *
-	 * @param g ‘‚«‚ŞƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param r •`‰æ”ÍˆÍ‚Æ‚È‚éRectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param g æ›¸ãè¾¼ã‚€ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param r æç”»ç¯„å›²ã¨ãªã‚‹Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public static void fillRect(GraphicsContext g, Rectangle2D r) {
 		g.fillRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 
 	/**
-	 * Rectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğg—p‚µ‚ÄAdrawOval‚ğÀs‚µ‚Ü‚·.
+	 * Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½¿ç”¨ã—ã¦ã€drawOvalã‚’å®Ÿè¡Œã—ã¾ã™.
 	 *
-	 * @param g ‘‚«‚ŞƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param r •`‰æ”ÍˆÍ‚Æ‚È‚éRectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param g æ›¸ãè¾¼ã‚€ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param r æç”»ç¯„å›²ã¨ãªã‚‹Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public static void drawOval(GraphicsContext g, Rectangle2D r) {
 		g.drawOval((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 
 	/**
-	 * Rectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğg—p‚µ‚ÄAfillOval‚ğÀs‚µ‚Ü‚·.
+	 * Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½¿ç”¨ã—ã¦ã€fillOvalã‚’å®Ÿè¡Œã—ã¾ã™.
 	 *
-	 * @param g ‘‚«‚ŞƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param r •`‰æ”ÍˆÍ‚Æ‚È‚éRectangle2DƒCƒ“ƒXƒ^ƒ“ƒX‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param g æ›¸ãè¾¼ã‚€ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param r æç”»ç¯„å›²ã¨ãªã‚‹Rectangle2Dã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public static void fillOval(GraphicsContext g, Rectangle2D r) {
 		g.fillOval((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());

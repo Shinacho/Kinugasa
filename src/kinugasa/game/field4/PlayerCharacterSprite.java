@@ -127,14 +127,14 @@ public class PlayerCharacterSprite extends AnimationSprite {
 		update();
 		switch (stage) {
 			case 0:
-				//‰Šú‰»
+				//åˆæœŸåŒ–
 				if (!tgt.equals(currentIdx)) {
 					targetIdx = tgt.clone();
 					nextStage();
 				}
 				break;
 			case 1:
-				//ˆÚ“®Às
+				//ç§»å‹•å®Ÿè¡Œ
 				float speed = getSpeed();
 				if (speed == 0) {
 					setSpeed(VehicleStorage.getInstance().getCurrentVehicle().getSpeed());
@@ -154,7 +154,7 @@ public class PlayerCharacterSprite extends AnimationSprite {
 				}
 				break;
 			case 2:
-				//PC‚ÌˆÊ’uXV
+				//PCã®ä½ç½®æ›´æ–°
 				lx = ly = 0;
 				setSpeed(0);
 				setAngle(0);
@@ -162,7 +162,7 @@ public class PlayerCharacterSprite extends AnimationSprite {
 				nextStage();
 				break;
 			case 3:
-				//ˆÚ“®’â~’†‚Ìˆ—
+				//ç§»å‹•åœæ­¢ä¸­ã®å‡¦ç†
 				break;
 			default:
 				throw new AssertionError("undefined PCs stage : " + this);

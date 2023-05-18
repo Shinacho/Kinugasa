@@ -27,30 +27,30 @@ import java.util.Collection;
 import kinugasa.resource.Storage;
 
 /**
- * ‘S‚Ä‚ÌNodeAccepter‚ğ•ÛŠÇ‚·‚éƒXƒgƒŒ[ƒW‚Å‚·.
+ * å…¨ã¦ã®NodeAccepterã‚’ä¿ç®¡ã™ã‚‹ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã§ã™.
  * <br>
- * ì¬‚³‚ê‚½NodeAccepter‚Í‚±‚ÌƒXƒgƒŒ[ƒW‚É©“®’Ç‰Á‚³‚ê‚Ü‚·B<br>
+ * ä½œæˆã•ã‚ŒãŸNodeAccepterã¯ã“ã®ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã«è‡ªå‹•è¿½åŠ ã•ã‚Œã¾ã™ã€‚<br>
  * <br>
- * ‚±‚ÌƒXƒgƒŒ[ƒW‚É‚ÍAˆÈ‰º‚Ì—v‘f‚ª©“®’Ç‰Á‚³‚ê‚Ü‚·B<br>
+ * ã“ã®ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã«ã¯ã€ä»¥ä¸‹ã®è¦ç´ ãŒè‡ªå‹•è¿½åŠ ã•ã‚Œã¾ã™ã€‚<br>
  * <li>"TRUE"</li>
- * ‚±‚Ìƒ‚ƒfƒ‹‚Ìacceptƒƒ\ƒbƒh‚Í•K‚¸true‚ğ•Ô‚µ‚Ü‚·B<br>
+ * ã“ã®ãƒ¢ãƒ‡ãƒ«ã®acceptãƒ¡ã‚½ãƒƒãƒ‰ã¯å¿…ãštrueã‚’è¿”ã—ã¾ã™ã€‚<br>
  * <br>
  * <li>"FALSE"</li>
- * ‚±‚Ìƒ‚ƒfƒ‹‚Ìacceptƒƒ\ƒbƒh‚Í•K‚¸false‚ğ•Ô‚µ‚Ü‚·B<br>
+ * ã“ã®ãƒ¢ãƒ‡ãƒ«ã®acceptãƒ¡ã‚½ãƒƒãƒ‰ã¯å¿…ãšfalseã‚’è¿”ã—ã¾ã™ã€‚<br>
  * <br>
- * ‚±‚ê‚ç‚ÌƒIƒuƒWƒFƒNƒg‚ÍAíœ‚âƒNƒŠƒAŒã‚ÉÄİ’è‚³‚ê‚Ü‚·B<br>
+ * ã“ã‚Œã‚‰ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯ã€å‰Šé™¤ã‚„ã‚¯ãƒªã‚¢å¾Œã«å†è¨­å®šã•ã‚Œã¾ã™ã€‚<br>
  * <br>
  * @version 1.0.0 - 2013/04/29_12:34:16<br>
  * @author Shinacho<br>
  */
 public final class NodeAccepterStorage extends Storage<NodeAccepter> {
 
-	/** —Bˆê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Å‚·. */
+	/** å”¯ä¸€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ã™. */
 	private static final NodeAccepterStorage INSTANCE = new NodeAccepterStorage();
 
 	/**
-	 * ƒVƒ“ƒOƒ‹ƒgƒ“ƒNƒ‰ƒX‚Å‚·.
-	 * getInstance‚ğg—p‚µ‚Ä‚­‚¾‚³‚¢B<br>
+	 * ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¯ãƒ©ã‚¹ã§ã™.
+	 * getInstanceã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚<br>
 	 */
 	private NodeAccepterStorage() {
 	}
@@ -60,7 +60,7 @@ public final class NodeAccepterStorage extends Storage<NodeAccepter> {
 	}
 
 	/**
-	 * "TRUE"‚¨‚æ‚Ñ"FALSE"‚ğ’Ç‰Á‚µ‚Ü‚·.
+	 * "TRUE"ãŠã‚ˆã³"FALSE"ã‚’è¿½åŠ ã—ã¾ã™.
 	 */
 	private static void addDefaultObject() {
 		new NodeAccepter("TRUE") {
@@ -82,8 +82,8 @@ public final class NodeAccepterStorage extends Storage<NodeAccepter> {
 	}
 
 	/**
-	 * ƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚µ‚Ü‚·.
-	 * @return NodeAccepterStorage‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã—ã¾ã™.
+	 * @return NodeAccepterStorageã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static NodeAccepterStorage getInstance() {
 		return INSTANCE;

@@ -37,7 +37,7 @@ import kinugasa.util.*;
 import kinugasa.resource.*;
 
 /**
- * ƒLƒƒƒ‰ƒNƒ^‚â“G‚ÌƒXƒe[ƒ^ƒXA‚¿•¨Aí“¬’†æ‚ê‚és“®‚ğ‚ÂƒNƒ‰ƒX‚Å‚·B
+ * ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã‚„æ•µã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã€æŒã¡ç‰©ã€æˆ¦é—˜ä¸­å–ã‚Œã‚‹è¡Œå‹•ã‚’æŒã¤ã‚¯ãƒ©ã‚¹ã§ã™ã€‚
  *
  * @vesion 1.0.0 - 2022/11/15_11:57:27<br>
  * @author Shinacho<br>
@@ -46,30 +46,30 @@ public class Status implements Nameable {
 
 	public static String canMagicStatusName = "CAN_MAGIC";
 	public static String canMagicStatusValue = "1";
-	//–¼‘O
+	//åå‰
 	private String name;
-	//ƒXƒe[ƒ^ƒX–{‘Ì
+	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹æœ¬ä½“
 	private StatusValueSet status = new StatusValueSet();
 	private StatusValueSet prevStatus;
-	// ‘®«‚Æó‘ÔˆÙí‚É‘Î‚·‚é‘Ï«
+	// å±æ€§ã¨çŠ¶æ…‹ç•°å¸¸ã«å¯¾ã™ã‚‹è€æ€§
 	private AttributeValueSet attrIn = new AttributeValueSet();
-	//”­¶’†‚ÌŒø‰Ê
+	//ç™ºç”Ÿä¸­ã®åŠ¹æœ
 	private final CharacterConditionValueSet condition = new CharacterConditionValueSet();
-	// ƒGƒtƒFƒNƒg‚ÌŒø‰ÊŠÔ
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®åŠ¹æœæ™‚é–“
 	private final HashMap<ConditionKey, TimeCounter> conditionTimes = new HashMap<>();
-	// lí
+	// äººç¨®
 	private final Race race;
-	//‚Á‚Ä‚¢‚éƒAƒCƒeƒ€
+	//æŒã£ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ 
 	private ItemBag itemBag = new ItemBag();
-	//‚Á‚Ä‚¢‚é–‚p‘
+	//æŒã£ã¦ã„ã‚‹é­”è¡“æ›¸
 	private BookBag bookBag = new BookBag();
-	//‘•”õ•i
+	//è£…å‚™å“
 	private final HashMap<ItemEqipmentSlot, Item> eqipment = new HashMap<>();
-	//æ‚ê‚és“®
+	//å–ã‚Œã‚‹è¡Œå‹•
 	private List<CmdAction> actions = new ArrayList<>();
-	//‘O‰qEŒã‰q
+	//å‰è¡›ãƒ»å¾Œè¡›
 	private PartyLocation partyLocation = PartyLocation.FRONT;
-	//¶‘¶ó‘Ô
+	//ç”Ÿå­˜çŠ¶æ…‹
 	private boolean exists = true;
 
 	public Status(String name, Race race) {
@@ -193,7 +193,7 @@ public class Status implements Nameable {
 		return actions.stream().anyMatch(p -> p.getName().equals(name));
 	}
 
-	//Šî‘bƒXƒe[ƒ^ƒX‚ğæ“¾‚µ‚Ü‚·B’ÊíAƒŒƒxƒ‹ƒAƒbƒv“™ˆÈŠO‚Å‚Í‚±‚Ì’l‚Í•Ï‚í‚è‚Ü‚¹‚ñB
+	//åŸºç¤ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’å–å¾—ã—ã¾ã™ã€‚é€šå¸¸ã€ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ç­‰ä»¥å¤–ã§ã¯ã“ã®å€¤ã¯å¤‰ã‚ã‚Šã¾ã›ã‚“ã€‚
 	public StatusValueSet getBaseStatus() {
 		return status;
 	}
@@ -329,7 +329,7 @@ public class Status implements Nameable {
 		return false;
 	}
 
-	//¬—‚Ìó‘ÔˆÙí‚ª•t—^‚³‚ê‚Ä‚¢‚é‚©‚ğŒŸ¸‚µ‚Ü‚·
+	//æ··ä¹±ã®çŠ¶æ…‹ç•°å¸¸ãŒä»˜ä¸ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™
 	public boolean isConfu() {
 		for (ConditionValue v : condition) {
 			for (EffectMaster e : v.getEffects()) {
@@ -350,7 +350,7 @@ public class Status implements Nameable {
 		return moveStopDesc;
 	}
 
-	// ”­¶’†‚ÌŒø‰Ê‚ÉŠî‚Ã‚¢‚ÄA‚±‚Ìƒ^[ƒ“s“®‚Å‚«‚é‚©‚ğ”»’è‚µ‚Ü‚·
+	// ç™ºç”Ÿä¸­ã®åŠ¹æœã«åŸºã¥ã„ã¦ã€ã“ã®ã‚¿ãƒ¼ãƒ³è¡Œå‹•ã§ãã‚‹ã‹ã‚’åˆ¤å®šã—ã¾ã™
 	public boolean canMoveThisTurn() {
 		if (condition.isEmpty()) {
 			assert conditionTimes.isEmpty() : "Condition and effectTimes are out of sync.";
@@ -370,52 +370,52 @@ public class Status implements Nameable {
 		return true;
 	}
 
-	//ó‘ÔˆÙí‚ğ’Ç‰Á‚µ‚Ü‚·
+	//çŠ¶æ…‹ç•°å¸¸ã‚’è¿½åŠ ã—ã¾ã™
 	public void addCondition(String name) {
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
-		// ‚·‚Å‚É”­¶‚µ‚Ä‚¢‚éŒø‰Ê‚Ìê‡A‰½‚à‚µ‚È‚¢
+		// ã™ã§ã«ç™ºç”Ÿã—ã¦ã„ã‚‹åŠ¹æœã®å ´åˆã€ä½•ã‚‚ã—ãªã„
 		if (condition.contains(name)) {
 			assert conditionTimes.containsKey(v.getKey()) : "Condition and effectTimes are out of sync.";
 			return;
 		}
-		//‘Ï«ƒ`ƒFƒbƒN
+		//è€æ€§ãƒã‚§ãƒƒã‚¯
 		List<AttributeKey> set = AttributeKeyStorage.getInstance().stream().filter(p -> p.getName().contains("C_" + name)).collect(Collectors.toList());
 		if (!set.isEmpty()) {
 			assert set.size() == 1 : "condition name is duplicated : " + set;
 			if (!Random.percent(getEffectedAttrIn().get(set.get(0).getName()).getValue())) {
-				//İ’è‚µ‚È‚¢
+				//è¨­å®šã—ãªã„
 				return;
 			}
 		}
 
-		//—Dæ“xŒvZ
-		//—Dæ“x‚ª“¯ˆê‚Ìó‘ÔˆÙí‚ª‚ ‚éê‡AŒãŸ‚¿‚Åíœ
+		//å„ªå…ˆåº¦è¨ˆç®—
+		//å„ªå…ˆåº¦ãŒåŒä¸€ã®çŠ¶æ…‹ç•°å¸¸ãŒã‚ã‚‹å ´åˆã€å¾Œå‹ã¡ã§å‰Šé™¤
 		int pri = v.getKey().getPriority();
 		if (!condition.asList().stream().filter(s -> s.getKey().getPriority() == pri).collect(Collectors.toList()).isEmpty()) {
 			condition.remove(name);
 			conditionTimes.remove(new ConditionKey(name, "", 0));
 		}
 		List<EffectMaster> effects = v.getEffects();
-		//ƒ^ƒCƒ€Zo
+		//ã‚¿ã‚¤ãƒ ç®—å‡º
 		List<EffectMaster> continueEffect = effects.stream().filter(a -> a.getContinueType() == EffectContinueType.CONTINUE).collect(Collectors.toList());
 		TimeCounter tc = continueEffect.isEmpty() ? TimeCounter.oneCounter() : continueEffect.get(0).createTimeCounter();
-		//”­¶’†‚ÌŒø‰Ê‚ÆƒGƒtƒFƒNƒgŒø‰ÊŠÔ‚É’Ç‰Á
+		//ç™ºç”Ÿä¸­ã®åŠ¹æœã¨ã‚¨ãƒ•ã‚§ã‚¯ãƒˆåŠ¹æœæ™‚é–“ã«è¿½åŠ 
 		condition.add(v);
 		conditionTimes.put(v.getKey(), tc);
 	}
 
-	//ó‘ÔˆÙí‚ğ’Ç‰Á‚µ‚Ü‚·
+	//çŠ¶æ…‹ç•°å¸¸ã‚’è¿½åŠ ã—ã¾ã™
 	public void addCondition(ConditionKey k) {
 		addCondition(k.getName());
 	}
 
-	//ƒGƒtƒFƒNƒg‚ÌŒø‰ÊŠÔ‚ğˆø‚­
-	//I—¹‚µ‚½ƒGƒtƒFƒNƒg‚ÍAƒGƒtƒFƒNƒgƒ^ƒCƒ€‚ÆƒRƒ“ƒfƒBƒVƒ‡ƒ“‚©‚çæ‚èœ‚­B
+	//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®åŠ¹æœæ™‚é–“ã‚’å¼•ã
+	//çµ‚äº†ã—ãŸã‚¨ãƒ•ã‚§ã‚¯ãƒˆã¯ã€ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ ã¨ã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ã‹ã‚‰å–ã‚Šé™¤ãã€‚
 	private Set<EffectMaster> execEffect = new HashSet<>();
 
 	@NoLoopCall
 	public void update() {
-		//ó‘ÔˆÙí‚É‚æ‚éŒø‰Ê‚ÌÀs
+		//çŠ¶æ…‹ç•°å¸¸ã«ã‚ˆã‚‹åŠ¹æœã®å®Ÿè¡Œ
 		List<EffectMaster> addList = new ArrayList<>();
 		for (int i = 0; i < condition.size(); i++) {
 			ConditionValue v = condition.asList().get(i);
@@ -439,7 +439,7 @@ public class Status implements Nameable {
 		for (ConditionKey k : deleteList) {
 			conditionTimes.remove(k);
 			condition.remove(k.getName());
-			//Œø‰Ê‚ªI—¹‚µ‚½ƒGƒtƒFƒNƒg‚ÌONCEÀsÏ‚İƒtƒ‰ƒO‚ğœ‹‚·‚é
+			//åŠ¹æœãŒçµ‚äº†ã—ãŸã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ONCEå®Ÿè¡Œæ¸ˆã¿ãƒ•ãƒ©ã‚°ã‚’é™¤å»ã™ã‚‹
 			ConditionValue v = ConditionValueStorage.getInstance().get(k.getName());
 			for (EffectMaster e : v.getEffects()) {
 				if (execEffect.contains(e)) {
@@ -450,20 +450,20 @@ public class Status implements Nameable {
 
 	}
 
-	// ‚·‚×‚Ä‚Ìó‘ÔˆÙí‚ğæ‚èœ‚«‚Ü‚·
+	// ã™ã¹ã¦ã®çŠ¶æ…‹ç•°å¸¸ã‚’å–ã‚Šé™¤ãã¾ã™
 	public void clearCondition() {
 		condition.clear();
 		conditionTimes.clear();
 	}
 
-	// ó‘ÔˆÙí‚ğ‹­§“I‚Éæ‚èœ‚«‚Ü‚·
+	// çŠ¶æ…‹ç•°å¸¸ã‚’å¼·åˆ¶çš„ã«å–ã‚Šé™¤ãã¾ã™
 	public void removeCondition(String name) {
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
 		condition.remove(v);
 		conditionTimes.remove(v.getKey());
 	}
 
-	// ó‘ÔˆÙí‚ÌŒø‰ÊŠÔ‚ğã‘‚«‚µ‚Ü‚·Bó‘ÔˆÙí‚ª•t—^‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍƒZƒbƒg‚µ‚Ü‚·B
+	// çŠ¶æ…‹ç•°å¸¸ã®åŠ¹æœæ™‚é–“ã‚’ä¸Šæ›¸ãã—ã¾ã™ã€‚çŠ¶æ…‹ç•°å¸¸ãŒä»˜ä¸ã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
 	public void setConditionTime(String name, int time) {
 		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
@@ -474,7 +474,7 @@ public class Status implements Nameable {
 		conditionTimes.put(key, new FrameTimeCounter(time));
 	}
 
-	// ó‘ÔˆÙí‚ÌŒø‰ÊŠÔ‚ğ’Ç‰Á‚µ‚Ü‚·Bó‘ÔˆÙí‚ª•t—^‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍƒZƒbƒg‚µ‚Ü‚·B
+	// çŠ¶æ…‹ç•°å¸¸ã®åŠ¹æœæ™‚é–“ã‚’è¿½åŠ ã—ã¾ã™ã€‚çŠ¶æ…‹ç•°å¸¸ãŒä»˜ä¸ã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
 	public void addConditionTime(String name, int time) {
 		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
 		ConditionValue v = ConditionValueStorage.getInstance().get(name);
@@ -486,9 +486,9 @@ public class Status implements Nameable {
 		conditionTimes.put(key, new FrameTimeCounter(time));
 	}
 
-	// conditionValueSet‚É‚æ‚éŒø‰Ê‚ğ“K—p‚³‚¹‚½’l‚ğ•Ô‹p
-	//’ˆÓFƒx[ƒX‚ğ‚¤‚í‚ª‚©‚È‚¢‚æ‚¤‚ÉQÆ‚ğ•Ê‚É‚·‚é‚±‚ÆB
-	//P‚Ì”»’è‚ğs‚Á‚Ä‚¢‚é‚Ì‚ÅA–ˆ‰ñˆá‚¤Œ‹‰Ê‚É‚È‚é‰Â”\«‚ª‚ ‚éB
+	// conditionValueSetã«ã‚ˆã‚‹åŠ¹æœã‚’é©ç”¨ã•ã›ãŸå€¤ã‚’è¿”å´
+	//æ³¨æ„ï¼šãƒ™ãƒ¼ã‚¹ã‚’ã†ã‚ãŒã‹ãªã„ã‚ˆã†ã«å‚ç…§ã‚’åˆ¥ã«ã™ã‚‹ã“ã¨ã€‚
+	//Pã®åˆ¤å®šã‚’è¡Œã£ã¦ã„ã‚‹ã®ã§ã€æ¯å›é•ã†çµæœã«ãªã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã€‚
 	public StatusValueSet getEffectedStatus() {
 		StatusValueSet r = status.clone();
 
@@ -530,9 +530,9 @@ public class Status implements Nameable {
 		return r;
 	}
 
-	// conditionValueSet‚É‚æ‚éŒø‰Ê‚ğ“K—p‚³‚¹‚½’l‚ğ•Ô‹p
-	//’ˆÓFƒx[ƒX‚ğ‚¤‚í‚ª‚©‚È‚¢‚æ‚¤‚ÉQÆ‚ğ•Ê‚É‚·‚é‚±‚ÆB
-	//P‚Ì”»’è‚ğs‚Á‚Ä‚¢‚é‚Ì‚ÅA–ˆ‰ñˆá‚¤Œ‹‰Ê‚É‚È‚é‰Â”\«‚ª‚ ‚éB
+	// conditionValueSetã«ã‚ˆã‚‹åŠ¹æœã‚’é©ç”¨ã•ã›ãŸå€¤ã‚’è¿”å´
+	//æ³¨æ„ï¼šãƒ™ãƒ¼ã‚¹ã‚’ã†ã‚ãŒã‹ãªã„ã‚ˆã†ã«å‚ç…§ã‚’åˆ¥ã«ã™ã‚‹ã“ã¨ã€‚
+	//Pã®åˆ¤å®šã‚’è¡Œã£ã¦ã„ã‚‹ã®ã§ã€æ¯å›é•ã†çµæœã«ãªã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã€‚
 	public AttributeValueSet getEffectedAttrIn() {
 		AttributeValueSet r = attrIn.clone();
 
@@ -572,7 +572,7 @@ public class Status implements Nameable {
 		return r;
 	}
 
-	//calcDamage‚ÌPREV‚ğXV‚·‚é
+	//calcDamageã®PREVã‚’æ›´æ–°ã™ã‚‹
 	public void setDamageCalcPoint() {
 		prevStatus = status.clone();
 		if (GameSystem.isDebugMode()) {
@@ -580,11 +580,11 @@ public class Status implements Nameable {
 		}
 	}
 
-	//‘O‰ñŒŸ¸‚©‚ç‚Ì·•ª‚ğ©“®Zo‚·‚é
+	//å‰å›æ¤œæŸ»æ™‚ã‹ã‚‰ã®å·®åˆ†ã‚’è‡ªå‹•ç®—å‡ºã™ã‚‹
 	/**
-	 * ƒ_ƒ[ƒWŒvZƒ|ƒCƒ“ƒg‚©‚ç‚Ìƒ_ƒ[ƒW‚ğ©“®ŒvZ‚µ‚Ä•Ô‚µ‚Ü‚·B
+	 * ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—ãƒã‚¤ãƒ³ãƒˆã‹ã‚‰ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’è‡ªå‹•è¨ˆç®—ã—ã¦è¿”ã—ã¾ã™ã€‚
 	 *
-	 * @return ‘O‰ñ‚Ìƒ_ƒ[ƒWŒvZƒ|ƒCƒ“ƒg‚©‚ç‚Ì·•ªB0‚Å‚È‚¢ê‡‚¾‚¯ƒL[‚ªŠÜ‚Ü‚ê‚é.
+	 * @return å‰å›ã®ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—ãƒã‚¤ãƒ³ãƒˆã‹ã‚‰ã®å·®åˆ†ã€‚0ã§ãªã„å ´åˆã ã‘ã‚­ãƒ¼ãŒå«ã¾ã‚Œã‚‹.
 	 */
 	public Map<StatusKey, Float> calcDamage() {
 		if (prevStatus == null) {

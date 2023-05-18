@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import kinugasa.resource.Nameable;
 
 /**
- * 2�����z��̍��W���J�v�Z��������N���X�ł�. ����́A�\�����W�Ƌ�ʂ��邽�߂Ɏg�p����܂��B
+ * 2次元配列の座標をカプセル化するクラスです. これは、表示座標と区別するために使用されます。
  *
  * @vesion 1.0.0 - 2022/11/09_18:18:35<br>
  * @author Shinacho<br>

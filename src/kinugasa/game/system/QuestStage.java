@@ -61,7 +61,7 @@ public class QuestStage {
 	public boolean is(int a) {
 		return value == a;
 	}
-	//TODO:removeNPCî•ñ‚±‚±
+	//TODO:removeNPCæƒ…å ±ã“ã“
 
 	@Override
 	public String toString() {

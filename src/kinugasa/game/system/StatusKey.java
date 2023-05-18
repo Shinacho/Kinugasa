@@ -26,7 +26,7 @@ package kinugasa.game.system;
 import kinugasa.resource.Nameable;
 
 /**
- * ƒXƒe[ƒ^ƒX1€–Ú‚Ì–¼‘O‚Æà–¾‚Å‚·
+ * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹1é …ç›®ã®åå‰ã¨èª¬æ˜ã§ã™
  *
  * @vesion 1.0.0 - 2022/11/15_11:11:32<br>
  * @author Shinacho<br>

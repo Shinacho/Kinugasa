@@ -27,9 +27,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * �����́A�Ăяo���񐔃x�[�X�̑ҋ@���Ԃ����Ԃɕ]������TimeCounter�̎����ł�.
+ * 複数の、呼び出し回数ベースの待機時間を順番に評価するTimeCounterの実装です.
  * <br>
- * ���̃N���X�́ATimeCounter�̊�{�̎����ł��B���Ƃ��΁ASTG�ɂ�����ˌ��Ԋu�̐���ȂǂɎg�p���܂��B<br>
+ * このクラスは、TimeCounterの基本の実装です。たとえば、STGにおける射撃間隔の制御などに使用します。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/11_18:35:20<br>
@@ -39,36 +39,36 @@ public class FrameTimeCounter extends TimeCounter {
 
 	private static final long serialVersionUID = 8128288858943550667L;
 	/**
-	 * ���݂̃C���f�b�N�X�̑҂����Ԃ̃J�E���^�ł�. ���̒l�����ۂɌv�Z����܂��B
+	 * 現在のインデックスの待ち時間のカウンタです. この値が実際に計算されます。
 	 */
 	private int timeCount;
 	/**
-	 * �J�E���^��������l�ł�.
+	 * カウンタから引く値です.
 	 */
 	private int speed;
 	/**
-	 * �J�ڂ���C���f�b�N�X�̃��f���ł�.
+	 * 遷移するインデックスのモデルです.
 	 */
 	private ArrayIndexModel index;
 	/**
-	 * �ŏ��ɐݒ肳��Ă�����Ԃ̃C���f�b�N�X�̃��f���ł�.
+	 * 最初に設定されていた状態のインデックスのモデルです.
 	 */
 	private ArrayIndexModel initialIndex;
 	/**
-	 * �҂����Ԃ��i�[����z��ł�.
+	 * 待ち時間を格納する配列です.
 	 */
 	private int[] waitTime;
 	/**
-	 * ���s���ł��邩�𔻒肷��t���O�ł�.
+	 * 実行中であるかを判定するフラグです.
 	 */
 	private boolean running;
 
 	/**
-	 * �҂����Ԃ��w�肵�āA�V�����J�E���^���쐬���܂�.
-	 * ���̃R���X�g���N�^�ł́A���x��1�A�C���f�b�N�X�͒ʏ�̃V�[�P���V�����ȃC���f�b�N�X���ݒ肳��܂��B<br>
+	 * 待ち時間を指定して、新しいカウンタを作成します.
+	 * このコンストラクタでは、速度は1、インデックスは通常のシーケンシャルなインデックスが設定されます。<br>
 	 *
-	 * @param waitTime �ҋ@���Ԃ��w�肵�܂��B0���w�肷��ƁA���true��Ԃ����f�����A1���w�肷��ƁA2��ڂ̌Ăяo��������݂�
-	 * true��Ԃ����f�����쐬����܂��B�����w�肵�Ȃ��ꍇ�́A0�ɂȂ�܂��B<br>
+	 * @param waitTime 待機時間を指定します。0を指定すると、常にtrueを返すモデルが、1を指定すると、2回目の呼び出しから交互に
+	 * trueを返すモデルが作成されます。何も指定しない場合は、0になります。<br>
 	 */
 	public FrameTimeCounter(int... waitTime) {
 		this(1, (waitTime.length == 0 ? new int[]{0} : waitTime));
@@ -87,37 +87,37 @@ public class FrameTimeCounter extends TimeCounter {
 	}
 
 	/**
-	 * ���x�Ƒ҂����Ԃ��w�肵�āA�V�����J�E���^���쐬���܂�.
-	 * ���̃R���X�g���N�^�ł́A�C���f�b�N�X�͒ʏ�̃V�[�P���V�����ȃC���f�b�N�X���ݒ肳��܂��B<br>
+	 * 速度と待ち時間を指定して、新しいカウンタを作成します.
+	 * このコンストラクタでは、インデックスは通常のシーケンシャルなインデックスが設定されます。<br>
 	 *
-	 * @param speed �҂����Ԃɑ΂���J�ڑ��x���w�肵�܂��B���Ƃ��΁A2���w�肷��Ƒ҂����Ԃ��猟���̂��т�2��������A
-	 * 0�ȉ��ɂȂ����ꍇ�Ɂu���Ԑ؂�v�Ɣ��肳��܂��B<br>
-	 * @param waitTime �ҋ@���Ԃ��w�肵�܂��B0���w�肷��ƁA���true��Ԃ����f�����A1���w�肷��ƁA2��ڂ̌Ăяo��������݂�
-	 * true��Ԃ����f�����쐬����܂��B�����w�肵�Ȃ��ꍇ�́A0�ɂȂ�܂��B<br>
+	 * @param speed 待ち時間に対する遷移速度を指定します。たとえば、2を指定すると待ち時間から検査のたびに2が引かれ、
+	 * 0以下になった場合に「時間切れ」と判定されます。<br>
+	 * @param waitTime 待機時間を指定します。0を指定すると、常にtrueを返すモデルが、1を指定すると、2回目の呼び出しから交互に
+	 * trueを返すモデルが作成されます。何も指定しない場合は、0になります。<br>
 	 */
 	public FrameTimeCounter(int speed, int[] waitTime) {
 		this(speed, new SimpleIndex(), waitTime);
 	}
 
 	/**
-	 * �C���f�b�N�X���f���Ƒ҂����Ԃ��w�肵�āA�V�����J�E���^���쐬���܂�. ���̃R���X�g���N�^�ł́A���x��1���ݒ肳��܂��B<br>
+	 * インデックスモデルと待ち時間を指定して、新しいカウンタを作成します. このコンストラクタでは、速度は1が設定されます。<br>
 	 *
-	 * @param index �҂����Ԃ̔z��ɑ΂���C���f�b�N�X�̑J�ڃ��f�����w�肵�܂��B<br>
-	 * @param waitTime �ҋ@���Ԃ��w�肵�܂��B0���w�肷��ƁA���true��Ԃ����f�����A1���w�肷��ƁA2��ڂ̌Ăяo��������݂�
-	 * true��Ԃ����f�����쐬����܂��B�����w�肵�Ȃ��ꍇ�́A0�ɂȂ�܂��B<br>
+	 * @param index 待ち時間の配列に対するインデックスの遷移モデルを指定します。<br>
+	 * @param waitTime 待機時間を指定します。0を指定すると、常にtrueを返すモデルが、1を指定すると、2回目の呼び出しから交互に
+	 * trueを返すモデルが作成されます。何も指定しない場合は、0になります。<br>
 	 */
 	public FrameTimeCounter(ArrayIndexModel index, int... waitTime) {
 		this(1, index, waitTime);
 	}
 
 	/**
-	 * ���x�A�C���f�b�N�X���f���A�҂����Ԃ��w�肵�ĐV�����J�E���^���쐬���܂�.
+	 * 速度、インデックスモデル、待ち時間を指定して新しいカウンタを作成します.
 	 *
-	 * @param speed �҂����Ԃɑ΂���J�ڑ��x���w�肵�܂��B���Ƃ��΁A2���w�肷��Ƒ҂����Ԃ��猟���̂��т�2��������A
-	 * 0�ȉ��ɂȂ����ꍇ�Ɂu���Ԑ؂�v�Ɣ��肳��܂��B<br>
-	 * @param index �҂����Ԃ̔z��ɑ΂���C���f�b�N�X�̑J�ڃ��f�����w�肵�܂��B<br>
-	 * @param waitTime �ҋ@���Ԃ��w�肵�܂��B0���w�肷��ƁA���true��Ԃ����f�����A1���w�肷��ƁA2��ڂ̌Ăяo��������݂�
-	 * true��Ԃ����f�����쐬����܂��B�����w�肵�Ȃ��ꍇ�́A0�ɂȂ�܂��B<br>
+	 * @param speed 待ち時間に対する遷移速度を指定します。たとえば、2を指定すると待ち時間から検査のたびに2が引かれ、
+	 * 0以下になった場合に「時間切れ」と判定されます。<br>
+	 * @param index 待ち時間の配列に対するインデックスの遷移モデルを指定します。<br>
+	 * @param waitTime 待機時間を指定します。0を指定すると、常にtrueを返すモデルが、1を指定すると、2回目の呼び出しから交互に
+	 * trueを返すモデルが作成されます。何も指定しない場合は、0になります。<br>
 	 */
 	public FrameTimeCounter(int speed, ArrayIndexModel index, int... waitTime) {
 		if (waitTime.length == 0) {

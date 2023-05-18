@@ -24,7 +24,7 @@
 package kinugasa.object;
 
 /**
- * ƒx[ƒVƒbƒNƒXƒvƒ‰ƒCƒg‚ÌˆÚ“®ƒAƒ‹ƒSƒŠƒYƒ€‚ðƒJƒvƒZƒ‹‰»‚µ‚Ü‚·.
+ * ãƒ™ãƒ¼ã‚·ãƒƒã‚¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ç§»å‹•ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’ã‚«ãƒ—ã‚»ãƒ«åŒ–ã—ã¾ã™.
  * <br>
  *
  * <br>

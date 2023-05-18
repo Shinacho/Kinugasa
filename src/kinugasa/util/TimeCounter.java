@@ -27,9 +27,9 @@ import kinugasa.object.Model;
 import kinugasa.object.Statable;
 
 /**
- * Œo‰ßŠÔ‚ğŒv‘ª‚µAğŒ”»’è‚ğ‚·‚é‚½‚ß‚Ì‹@”\‚ğ’è‹`‚µ‚Ü‚·.
+ * çµŒéæ™‚é–“ã‚’è¨ˆæ¸¬ã—ã€æ¡ä»¶åˆ¤å®šã‚’ã™ã‚‹ãŸã‚ã®æ©Ÿèƒ½ã‚’å®šç¾©ã—ã¾ã™.
  * <br>
- * ‚Ù‚Æ‚ñ‚Ç‚ÌƒJƒEƒ“ƒ^‚ÌÀ‘•‚Å‚ÍAisReaching‚ªtrue‚ğ•Ô‚·ê‡Areset‚ğ©“®“I‚ÉƒR[ƒ‹‚·‚é‚±‚Æ‚ÅA Ÿ‚ÌŒÄ‚Ño‚µ‚É”õ‚¦‚Ü‚·B<br>
+ * ã»ã¨ã‚“ã©ã®ã‚«ã‚¦ãƒ³ã‚¿ã®å®Ÿè£…ã§ã¯ã€isReachingãŒtrueã‚’è¿”ã™å ´åˆã€resetã‚’è‡ªå‹•çš„ã«ã‚³ãƒ¼ãƒ«ã™ã‚‹ã“ã¨ã§ã€ æ¬¡ã®å‘¼ã³å‡ºã—ã«å‚™ãˆã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/11_17:07:17.<br>
@@ -40,9 +40,9 @@ public abstract class TimeCounter extends Model implements Statable {
 	private static final long serialVersionUID = -7448317548464780917L;
 
 	/**
-	 * İ’è‚³‚ê‚½ŠÔ‚ªŒo‰ß‚µ‚½‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * è¨­å®šã•ã‚ŒãŸæ™‚é–“ãŒçµŒéã—ãŸã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @return İ’è‚³‚ê‚½ŠÔ‚ªŒo‰ß‚µ‚½ê‡‚ÉtrueA‚»‚¤‚Å‚È‚¢ê‡‚Éfalse‚ğ•Ô‚µ‚Ü‚·.<br>
+	 * @return è¨­å®šã•ã‚ŒãŸæ™‚é–“ãŒçµŒéã—ãŸå ´åˆã«trueã€ãã†ã§ãªã„å ´åˆã«falseã‚’è¿”ã—ã¾ã™.<br>
 	 */
 	public abstract boolean isReaching();
 
@@ -60,11 +60,11 @@ public abstract class TimeCounter extends Model implements Statable {
 	public abstract int getCurrentTime();
 
 	/**
-	 * ŒŸ¸‚Ìó‘Ô‚ğ‰Šú‰»‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ğŒÄ‚Ño‚·‚±‚Æ‚ÅAÅ‰‚Éİ’è‚³‚ê‚½ŠÔ‚âó‘Ô‚ğ •œŒ³‚µAÄ“xŒŸ¸‰Â”\‚É‚µ‚Ü‚·B<br>
+	 * æ¤œæŸ»ã®çŠ¶æ…‹ã‚’åˆæœŸåŒ–ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã™ã“ã¨ã§ã€æœ€åˆã«è¨­å®šã•ã‚ŒãŸæ™‚é–“ã‚„çŠ¶æ…‹ã‚’ å¾©å…ƒã—ã€å†åº¦æ¤œæŸ»å¯èƒ½ã«ã—ã¾ã™ã€‚<br>
 	 */
 	public abstract void reset();
 	/**
-	 * ‚±‚Ìƒ‚ƒfƒ‹‚ÍAí‚É"true"‚ğ•Ô‚µ‚Ü‚·. ‚±‚Ìƒ‚ƒfƒ‹‚ğƒNƒ[ƒjƒ“ƒO‚·‚éˆÓ–¡‚Í‚ ‚è‚Ü‚¹‚ñB<br>
+	 * ã“ã®ãƒ¢ãƒ‡ãƒ«ã¯ã€å¸¸ã«"true"ã‚’è¿”ã—ã¾ã™. ã“ã®ãƒ¢ãƒ‡ãƒ«ã‚’ã‚¯ãƒ­ãƒ¼ãƒ‹ãƒ³ã‚°ã™ã‚‹æ„å‘³ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚<br>
 	 */
 	public static final TimeCounter TRUE = new TimeCounter() {
 		private static final long serialVersionUID = -8736923481731071986L;
@@ -95,7 +95,7 @@ public abstract class TimeCounter extends Model implements Statable {
 
 	};
 	/**
-	 * ‚±‚Ìƒ‚ƒfƒ‹‚ÍAí‚É"false"‚ğ•Ô‚µ‚Ü‚·. ‚±‚Ìƒ‚ƒfƒ‹‚ğƒNƒ[ƒjƒ“ƒO‚·‚éˆÓ–¡‚Í‚ ‚è‚Ü‚¹‚ñB<br>
+	 * ã“ã®ãƒ¢ãƒ‡ãƒ«ã¯ã€å¸¸ã«"false"ã‚’è¿”ã—ã¾ã™. ã“ã®ãƒ¢ãƒ‡ãƒ«ã‚’ã‚¯ãƒ­ãƒ¼ãƒ‹ãƒ³ã‚°ã™ã‚‹æ„å‘³ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚<br>
 	 */
 	public static final TimeCounter FALSE = new TimeCounter() {
 		private static final long serialVersionUID = -8736923481731071986L;

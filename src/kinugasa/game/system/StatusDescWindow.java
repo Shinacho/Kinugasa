@@ -130,7 +130,7 @@ public class StatusDescWindow extends PCStatusWindow {
 				} else {
 					int val = (int) v.getValue();
 					int max = (int) v.getMax();
-					sb.append(v.getKey().getDesc()).append(":").append(val).append('Å^').append(max).append(Text.getLineSep());
+					sb.append(v.getKey().getDesc()).append(":").append(val).append('Ôºè').append(max).append(Text.getLineSep());
 				}
 			} else {
 				if (v.getKey().getMax() == 1f) {

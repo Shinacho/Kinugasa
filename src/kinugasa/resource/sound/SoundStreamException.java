@@ -25,7 +25,7 @@ package kinugasa.resource.sound;
 
 
 /**
- * ƒTƒEƒ“ƒh‚ÌÄ¶‚âƒ[ƒh‚ÉŠÖ‚·‚é—áŠO‚Å‚·.
+ * ã‚µã‚¦ãƒ³ãƒ‰ã®å†ç”Ÿã‚„ãƒ­ãƒ¼ãƒ‰ã«é–¢ã™ã‚‹ä¾‹å¤–ã§ã™.
  * <br>
  *
  * <br>
@@ -37,23 +37,23 @@ public class SoundStreamException extends RuntimeException {
 
 
 	/**
-	 * V‚µ‚¢ SoundStreamException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
+	 * æ–°ã—ã„ SoundStreamException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
 	 */
 	public SoundStreamException() {
 	}
 
 	/**
-	 * V‚µ‚¢ SoundStreamException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
+	 * æ–°ã—ã„ SoundStreamException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
 	 *
-	 * @param msg ‚±‚Ì—áŠO‚ÌƒƒbƒZ[ƒW.<br>
+	 * @param msg ã“ã®ä¾‹å¤–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.<br>
 	 */
 	public SoundStreamException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Throwable‚ğƒ‰ƒbƒv‚·‚éSoundStreamException‚ğì¬‚µ‚Ü‚·.
-	 * @param thrwbl  “Š‚°‚ç‚ê‚½—áŠO‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * Throwableã‚’ãƒ©ãƒƒãƒ—ã™ã‚‹SoundStreamExceptionã‚’ä½œæˆã—ã¾ã™.
+	 * @param thrwbl  æŠ•ã’ã‚‰ã‚ŒãŸä¾‹å¤–ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	public SoundStreamException(Throwable thrwbl) {
 		super(thrwbl);

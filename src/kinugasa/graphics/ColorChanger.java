@@ -28,10 +28,10 @@ import kinugasa.object.Model;
 import kinugasa.object.Statable;
 
 /**
- * ARGBŠe—v‘f‚ÌColorTransitionModel‚ğ‚Ü‚Æ‚ß‚éƒNƒ‰ƒX‚Å‚·.
+ * ARGBå„è¦ç´ ã®ColorTransitionModelã‚’ã¾ã¨ã‚ã‚‹ã‚¯ãƒ©ã‚¹ã§ã™.
  * <br>
- * ‚±‚ÌƒNƒ‰ƒX‚ÍRGB‚ÆƒAƒ‹ƒtƒ@¬•ª‚Ì4‚Â‚ÌColorTransitionModel‚ğ‚à‚¿A‚»‚ê‚ç‘S‚Ä‚ğ
- * XV‚µ‚½‚èAŒ»İ‚Ì’l‚ğg—p‚µ‚ÄF‚ğ\’z‚Å‚«‚Ü‚·B<br>
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã¯RGBã¨ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®4ã¤ã®ColorTransitionModelã‚’ã‚‚ã¡ã€ãã‚Œã‚‰å…¨ã¦ã‚’
+ * æ›´æ–°ã—ãŸã‚Šã€ç¾åœ¨ã®å€¤ã‚’ä½¿ç”¨ã—ã¦è‰²ã‚’æ§‹ç¯‰ã§ãã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/12_19:23:37<br>
@@ -40,21 +40,21 @@ import kinugasa.object.Statable;
 public class ColorChanger extends Model implements Statable {
 
 	private static final long serialVersionUID = 7119780668500645887L;
-	/** Ô‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·. */
+	/** èµ¤ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™. */
 	private ColorTransitionModel red;
-	/** —Î‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·. */
+	/** ç·‘ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™. */
 	private ColorTransitionModel green;
-	/** Â‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·. */
+	/** é’ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™. */
 	private ColorTransitionModel blue;
-	/** ƒAƒ‹ƒtƒ@¬•ª‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·. */
+	/** ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™. */
 	private ColorTransitionModel alpha;
 
 	/**
-	 * RGB‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğw’è‚µ‚ÄAV‚µ‚¢ColorChanger‚ğì¬‚µ‚Ü‚·.
-	 * ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍAƒAƒ‹ƒtƒ@¬•ª‚Í255ŒÅ’è‚Æ‚È‚è‚Ü‚·B<br>
-	 * @param red Ô‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param green —Î‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param blue Â‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
+	 * RGBã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’æŒ‡å®šã—ã¦ã€æ–°ã—ã„ColorChangerã‚’ä½œæˆã—ã¾ã™.
+	 * ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã¯255å›ºå®šã¨ãªã‚Šã¾ã™ã€‚<br>
+	 * @param red èµ¤ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param green ç·‘ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param blue é’ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
 	 */
 	public ColorChanger(ColorTransitionModel red,
 			ColorTransitionModel green,
@@ -63,11 +63,11 @@ public class ColorChanger extends Model implements Statable {
 	}
 
 	/**
-	 * RGBA‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğw’è‚µ‚ÄAV‚µ‚¢ColorChanger‚ğì¬‚µ‚Ü‚·.
-	 * @param red Ô‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param green —Î‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param blue Â‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
-	 * @param alpha ƒAƒ‹ƒtƒ@¬•ª‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚Å‚·B<br>
+	 * RGBAã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’æŒ‡å®šã—ã¦ã€æ–°ã—ã„ColorChangerã‚’ä½œæˆã—ã¾ã™.
+	 * @param red èµ¤ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param green ç·‘ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param blue é’ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
+	 * @param alpha ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ã™ã€‚<br>
 	 */
 	public ColorChanger(ColorTransitionModel red,
 			ColorTransitionModel green,
@@ -80,64 +80,64 @@ public class ColorChanger extends Model implements Statable {
 	}
 
 	/**
-	 * ƒAƒ‹ƒtƒ@¬•ª‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğû˜^‚µ‚Ü‚·.
-	 * @return ƒAƒ‹ƒtƒ@¬•ª‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’åéŒ²ã—ã¾ã™.
+	 * @return ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public ColorTransitionModel getAlpha() {
 		return alpha;
 	}
 
 	/**
-	 * Â‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğû˜^‚µ‚Ü‚·.
-	 * @return Â‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * é’ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’åéŒ²ã—ã¾ã™.
+	 * @return é’ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public ColorTransitionModel getBlue() {
 		return blue;
 	}
 
 	/**
-	 * —Î‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğû˜^‚µ‚Ü‚·.
-	 * @return —Î‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * ç·‘ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’åéŒ²ã—ã¾ã™.
+	 * @return ç·‘ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public ColorTransitionModel getGreen() {
 		return green;
 	}
 
 	/**
-	 * Ô‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğû˜^‚µ‚Ü‚·.
-	 * @return Ô‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * èµ¤ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’åéŒ²ã—ã¾ã™.
+	 * @return èµ¤ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public ColorTransitionModel getRed() {
 		return red;
 	}
 
 	/**
-	 * ƒAƒ‹ƒtƒ@¬•ª‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğ•ÏX‚µ‚Ü‚·.
-	 * @param alpha ƒAƒ‹ƒtƒ@¬•ª‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğw’è‚µ‚Ü‚·B<br>
+	 * ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’å¤‰æ›´ã—ã¾ã™.
+	 * @param alpha ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void setAlpha(ColorTransitionModel alpha) {
 		this.alpha = alpha;
 	}
 
 	/**
-	 * Â‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğ•ÏX‚µ‚Ü‚·.
-	 * @param blue Â‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğw’è‚µ‚Ü‚·B<br>
+	 * é’ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’å¤‰æ›´ã—ã¾ã™.
+	 * @param blue é’ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void setBlue(ColorTransitionModel blue) {
 		this.blue = blue;
 	}
 
 	/**
-	 * —Î‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğ•ÏX‚µ‚Ü‚·.
-	 * @param green —Î‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğw’è‚µ‚Ü‚·B<br>
+	 * ç·‘ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’å¤‰æ›´ã—ã¾ã™.
+	 * @param green ç·‘ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void setGreen(ColorTransitionModel green) {
 		this.green = green;
 	}
 
 	/**
-	 * Ô‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğ•ÏX‚µ‚Ü‚·.
-	 * @param red Ô‚Ì‘JˆÚƒAƒ‹ƒSƒŠƒYƒ€‚ğw’è‚µ‚Ü‚·B<br>
+	 * èµ¤ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’å¤‰æ›´ã—ã¾ã™.
+	 * @param red èµ¤ã®é·ç§»ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void setRed(ColorTransitionModel red) {
 		this.red = red;
@@ -152,12 +152,12 @@ public class ColorChanger extends Model implements Statable {
 		result.alpha = this.alpha.clone();
 		return result;
 	}
-	/** I—¹‚µ‚Ä‚¢‚é‚©‚ğ”»’è‚·‚é‚½‚ß‚Ìƒtƒ‰ƒO‚Å‚·. */
+	/** çµ‚äº†ã—ã¦ã„ã‚‹ã‹ã‚’åˆ¤å®šã™ã‚‹ãŸã‚ã®ãƒ•ãƒ©ã‚°ã§ã™. */
 	private boolean ended = false;
 
 	/**
-	 * ‘S‚Ä‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğXV‚µ‚Ü‚·.
-	 * ‘S‚Ä‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ªuI—¹ó‘Ôv‚É‚È‚Á‚½‚Æ‚«A‚±‚ÌColorChanger‚àI—¹ó‘Ô‚Æ‚È‚è‚Ü‚·B<br>
+	 * å…¨ã¦ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’æ›´æ–°ã—ã¾ã™.
+	 * å…¨ã¦ã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ãŒã€Œçµ‚äº†çŠ¶æ…‹ã€ã«ãªã£ãŸã¨ãã€ã“ã®ColorChangerã‚‚çµ‚äº†çŠ¶æ…‹ã¨ãªã‚Šã¾ã™ã€‚<br>
 	 */
 	public void update() {
 		red.update();
@@ -178,8 +178,8 @@ public class ColorChanger extends Model implements Statable {
 	}
 
 	/**
-	 * RGBA‚ÌŒ»İ‚Ì’l‚ğg—p‚µ‚ÄAF‚ğ\’z‚µ‚Ü‚·.
-	 * @return Œ»İ‚Ì’l‚©‚çì¬‚³‚ê‚½F‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * RGBAã®ç¾åœ¨ã®å€¤ã‚’ä½¿ç”¨ã—ã¦ã€è‰²ã‚’æ§‹ç¯‰ã—ã¾ã™.
+	 * @return ç¾åœ¨ã®å€¤ã‹ã‚‰ä½œæˆã•ã‚ŒãŸè‰²ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public Color createColor() {
 		return ColorTransitionModel.createColor(red, green, blue, alpha);

@@ -33,7 +33,7 @@ import java.io.Serializable;
 import kinugasa.game.GameLog;
 
 /**
- * �Z�[�u�\�ȃR���e���c��IO�@�\��񋟂��܂�.
+ * セーブ可能なコンテンツのIO機能を提供します.
  * <br>
  *
  * <br>
@@ -47,14 +47,14 @@ public final class ContentsIO {
 	}
 
 	/**
-	 * �R���e���c���w�肳�ꂽ�t�@�C���p�X�ɔ��s���܂�.
+	 * コンテンツを指定されたファイルパスに発行します.
 	 *
-	 * @param <T> ���s�\�ȃN���X���w�肵�܂��B<br>
-	 * @param obj ���s����I�u�W�F�N�g���w�肵�܂��B<br>
-	 * @param filePath ���s����t�@�C���p�X���w�肵�܂��B<br>
+	 * @param <T> 発行可能なクラスを指定します。<br>
+	 * @param obj 発行するオブジェクトを指定します。<br>
+	 * @param filePath 発行するファイルパスを指定します。<br>
 	 *
-	 * @throws FileNotFoundException ���s�ł��Ȃ��t�@�C���p�X���w�肵���ꍇ�ɓ������܂��B<br>
-	 * @throws ContentsIOException ���̑��̗��R�ɂ���Ĕ��s�ł��Ȃ������ꍇ�ɓ������܂��B <br>
+	 * @throws FileNotFoundException 発行できないファイルパスを指定した場合に投げられます。<br>
+	 * @throws ContentsIOException その他の理由によって発行できなかった場合に投げられます。 <br>
 	 */
 	public static <T extends Serializable> void save(T obj, String filePath)
 			throws FileNotFoundException, ContentsIOException {
@@ -62,14 +62,14 @@ public final class ContentsIO {
 	}
 
 	/**
-	 * �R���e���c���w�肳�ꂽ�t�@�C���ɔ��s���܂�.
+	 * コンテンツを指定されたファイルに発行します.
 	 *
-	 * @param <T> ���s�\�ȃN���X���w�肵�܂��B<br>
-	 * @param obj ���s����I�u�W�F�N�g���w�肵�܂��B<br>
-	 * @param file ���s����t�@�C�����w�肵�܂��B<br>
+	 * @param <T> 発行可能なクラスを指定します。<br>
+	 * @param obj 発行するオブジェクトを指定します。<br>
+	 * @param file 発行するファイルを指定します。<br>
 	 *
-	 * @throws FileNotFoundException ���s�ł��Ȃ��t�@�C���p�X���w�肵���ꍇ�ɓ������܂��B<br>
-	 * @throws ContentsIOException ���̑��̗��R�ɂ���Ĕ��s�ł��Ȃ������ꍇ�ɓ������܂��B <br>
+	 * @throws FileNotFoundException 発行できないファイルパスを指定した場合に投げられます。<br>
+	 * @throws ContentsIOException その他の理由によって発行できなかった場合に投げられます。 <br>
 	 */
 	public static <T extends Serializable> void save(T obj, File file)
 			throws FileNotFoundException, ContentsIOException {
@@ -93,17 +93,17 @@ public final class ContentsIO {
 	}
 
 	/**
-	 * �R���e���c���w�肳�ꂽ�t�@�C���p�X����ǂݍ��݁A��Ԃ𕜌����܂�.
+	 * コンテンツを指定されたファイルパスから読み込み、状態を復元します.
 	 *
-	 * @param <T> ���s�\�ȃN���X���w�肵�܂��B<br>
-	 * @param type �ǂݍ��ތ^���w�肵�܂��B<br>
-	 * @param filePath �ǂݍ��ރt�@�C���p�X���w�肵�܂��B<br>
+	 * @param <T> 発行可能なクラスを指定します。<br>
+	 * @param type 読み込む型を指定します。<br>
+	 * @param filePath 読み込むファイルパスを指定します。<br>
 	 *
-	 * @return �ǂݍ��܂ꂽ�R���e���c��Ԃ��܂��B<br>
+	 * @return 読み込まれたコンテンツを返します。<br>
 	 *
-	 * @throws FileNotFoundException �ǂݍ��߂Ȃ��t�@�C���p�X���w�肵���ꍇ�ɓ������܂��B<br>
-	 * @throws ContentsIOException ���̑��̗��R�ɂ���Ĕ��s�ł��Ȃ������ꍇ�ɓ������܂��B
-	 * �^T���ǂݍ��܂ꂽ���ۂ̌^�ƈقȂ�ꍇ���������܂��B<br>
+	 * @throws FileNotFoundException 読み込めないファイルパスを指定した場合に投げられます。<br>
+	 * @throws ContentsIOException その他の理由によって発行できなかった場合に投げられます。
+	 * 型Tが読み込まれた実際の型と異なる場合も投げられます。<br>
 	 */
 	public static <T extends Serializable> T load(Class<T> type, String filePath)
 			throws FileNotFoundException, ContentsIOException {
@@ -111,17 +111,17 @@ public final class ContentsIO {
 	}
 
 	/**
-	 * �R���e���c���w�肳�ꂽ�t�@�C���p�X����ǂݍ��݁A��Ԃ𕜌����܂�.
+	 * コンテンツを指定されたファイルパスから読み込み、状態を復元します.
 	 *
-	 * @param <T> ���s�\�ȃN���X���w�肵�܂��B<br>
-	 * @param type �ǂݍ��ތ^���w�肵�܂��B<br>
-	 * @param file �ǂݍ��ރt�@�C���p�X���w�肵�܂��B<br>
+	 * @param <T> 発行可能なクラスを指定します。<br>
+	 * @param type 読み込む型を指定します。<br>
+	 * @param file 読み込むファイルパスを指定します。<br>
 	 *
-	 * @return �ǂݍ��܂ꂽ�R���e���c��Ԃ��܂��B<br>
+	 * @return 読み込まれたコンテンツを返します。<br>
 	 *
-	 * @throws FileNotFoundException �ǂݍ��߂Ȃ��t�@�C���p�X���w�肵���ꍇ�ɓ������܂��B<br>
-	 * @throws ContentsIOException ���̑��̗��R�ɂ���Ĕ��s�ł��Ȃ������ꍇ�ɓ������܂��B
-	 * �^T���ǂݍ��܂ꂽ���ۂ̌^�ƈقȂ�ꍇ���������܂��B<br>
+	 * @throws FileNotFoundException 読み込めないファイルパスを指定した場合に投げられます。<br>
+	 * @throws ContentsIOException その他の理由によって発行できなかった場合に投げられます。
+	 * 型Tが読み込まれた実際の型と異なる場合も投げられます。<br>
 	 */
 	public static <T extends Serializable> T load(Class<T> type, File file)
 			throws FileNotFoundException, ContentsIOException {

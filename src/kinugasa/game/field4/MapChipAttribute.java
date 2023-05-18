@@ -26,7 +26,7 @@ package kinugasa.game.field4;
 import kinugasa.resource.Nameable;
 
 /**
- * ‚±‚ÌƒNƒ‰ƒX‚ÍAƒ}ƒbƒvƒ`ƒbƒv1–‡‚ª‚Â‘®«‚ğ’è‹`‚µ‚Ü‚·B‘®«‚É‚ÍAu•½’nvu‘Œ´vuRv“™‚ª‚ ‚è‚Ü‚·B ƒ`ƒbƒv‚Ì‘®«‚ÍA•à”ƒGƒ“ƒJƒEƒ“ƒg‚ÌŠî–{’l‚ğ‚¿‚Ü‚·B
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã¯ã€ãƒãƒƒãƒ—ãƒãƒƒãƒ—1æšãŒæŒã¤å±æ€§ã‚’å®šç¾©ã—ã¾ã™ã€‚å±æ€§ã«ã¯ã€ã€Œå¹³åœ°ã€ã€Œè‰åŸã€ã€Œå±±ã€ç­‰ãŒã‚ã‚Šã¾ã™ã€‚ ãƒãƒƒãƒ—ã®å±æ€§ã¯ã€æ­©æ•°ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆã®åŸºæœ¬å€¤ã‚’æŒã¡ã¾ã™ã€‚
  *
  * @vesion 1.0.0 - 2022/11/08_16:04:58<br>
  * @author Shinacho<br>
@@ -37,10 +37,10 @@ public class MapChipAttribute implements Nameable {
 	private int encountBaseValue;
 
 	/**
-	 * ƒ`ƒbƒv‚ğ’è‹`‚µ‚Ü‚·.
+	 * ãƒãƒƒãƒ—ã‚’å®šç¾©ã—ã¾ã™.
 	 *
-	 * @param name ‚±‚Ìƒ`ƒbƒv‚Ì‘®«–¼.
-	 * @param encountBaseValue •à”ƒGƒ“ƒJƒEƒ“ƒg‚ÌŠî–{’l.
+	 * @param name ã“ã®ãƒãƒƒãƒ—ã®å±æ€§å.
+	 * @param encountBaseValue æ­©æ•°ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆã®åŸºæœ¬å€¤.
 	 */
 	public MapChipAttribute(String name, int encountBaseValue) {
 		this.name = name;
@@ -48,9 +48,9 @@ public class MapChipAttribute implements Nameable {
 	}
 
 	/**
-	 * ƒGƒ“ƒJƒEƒ“ƒg‚µ‚È‚¢ƒ`ƒbƒv‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆã—ãªã„ãƒãƒƒãƒ—ã‚’å®šç¾©ã—ã¾ã™.
 	 *
-	 * @param name ‚±‚Ìƒ`ƒbƒv‚Ì‘®«–¼.
+	 * @param name ã“ã®ãƒãƒƒãƒ—ã®å±æ€§å.
 	 */
 	public MapChipAttribute(String name) {
 		this(name, 0);

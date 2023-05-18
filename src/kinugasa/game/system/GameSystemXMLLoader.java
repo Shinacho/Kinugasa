@@ -276,27 +276,27 @@ public class GameSystemXMLLoader {
 
 		XMLElement root = f.load().getFirst();
 
-		// ƒLƒƒƒ‰ƒNƒ^ó‘ÔˆÙíƒ}ƒXƒ^
+		// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿çŠ¶æ…‹ç•°å¸¸ãƒã‚¹ã‚¿
 		for (XMLElement e : root.getElement("cCondition")) {
 			String name = e.getAttributes().get("name").getValue();
 			String desc = e.getAttributes().get("desc").getValue();
 			int priority = e.getAttributes().get("pri").getIntValue();
 			ConditionKey key = new ConditionKey(name, desc, priority);
-			// ƒGƒtƒFƒNƒg‚ª“ü‚Á‚Ä‚¢‚È‚¢ê‡ƒGƒ‰[
+			// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒå…¥ã£ã¦ã„ãªã„å ´åˆã‚¨ãƒ©ãƒ¼
 			if (!e.hasElement("effect")) {
 				throw new IllegalXMLFormatException("nCondition " + e + " is not have <effect>");
 			}
 			List<EffectMaster> list = new ArrayList<>();
 			for (XMLElement ee : e.getElement("effect")) {
 				EffectContinueType ect = EffectContinueType.valueOf(ee.getAttributes().get("ect").getValue());
-				//NONEƒGƒtƒFƒNƒg‚Ìê‡A’Ç‰Á‚µ‚ÄŸ
+				//NONEã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®å ´åˆã€è¿½åŠ ã—ã¦æ¬¡
 				if (ect == EffectContinueType.NONE) {
 					list.add(new EffectMaster(key));
 					continue;
 				}
 				EffectTargetType targetType = EffectTargetType.valueOf(ee.getAttributes().get("ett").getValue());
 				float p = ee.getAttributes().get("p").getFloatValue();
-				//ETT‚ªSTOPACONFUAADDQCONDITION‚Ìê‡Aˆê•”ƒpƒ‰ƒƒ^‚ğÈ—ª‚µ‚Ä’Ç‰Á‚µAŸ
+				//ETTãŒSTOPã€CONFUã€ADDï¼¿CONDITIONã®å ´åˆã€ä¸€éƒ¨ãƒ‘ãƒ©ãƒ¡ã‚¿ã‚’çœç•¥ã—ã¦è¿½åŠ ã—ã€æ¬¡
 				int min = 0, max = 0;
 				if (ee.hasAttribute("time")) {
 					String time = ee.getAttributes().get("time").getValue();
@@ -321,7 +321,7 @@ public class GameSystemXMLLoader {
 					list.add(new EffectMaster(key, ect, targetType, targetName, p));
 					continue;
 				}
-				// NONE‚Å‚àSTOP‚Å‚à‚È‚¢ê‡AŠe—v‘f‚ğæ“¾
+				// NONEã§ã‚‚STOPã§ã‚‚ãªã„å ´åˆã€å„è¦ç´ ã‚’å–å¾—
 
 				if (targetType == EffectTargetType.CONFU) {
 					list.add(new EffectMaster(key, ect, targetType, min, max, p));
@@ -332,7 +332,7 @@ public class GameSystemXMLLoader {
 				float value = ee.getAttributes().get("value").getFloatValue();
 				list.add(new EffectMaster(key, ect, targetType, est, targetName, value, p, min, max));
 			}
-			//ƒGƒtƒFƒNƒg‚Ìƒ^ƒCƒ€ŒŸ¸
+			//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ã‚¿ã‚¤ãƒ æ¤œæŸ»
 			List<EffectMaster> continueEffect = list.stream().filter(a -> a.getContinueType() == EffectContinueType.CONTINUE).collect(Collectors.toList());
 			if (!continueEffect.isEmpty()) {
 				for (int i = 0, min = continueEffect.get(0).getMinTime(), max = continueEffect.get(0).getMaxTime(); i > continueEffect.size(); i++) {
@@ -344,7 +344,7 @@ public class GameSystemXMLLoader {
 			ConditionValueStorage.getInstance().add(new ConditionValue(key, list));
 		}
 
-		//ƒtƒB[ƒ‹ƒhó‘Ôƒ}ƒXƒ^
+		//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰çŠ¶æ…‹ãƒã‚¹ã‚¿
 		for (XMLElement e : root.getElement("fCondition")) {
 			String name = e.getAttributes().get("name").getValue();
 			String desc = e.getAttributes().get("desc").getValue();
@@ -353,14 +353,14 @@ public class GameSystemXMLLoader {
 			List<EffectMaster> list = new ArrayList<>();
 			for (XMLElement ee : e.getElement("effect")) {
 				EffectContinueType ect = EffectContinueType.valueOf(ee.getAttributes().get("ect").getValue());
-				//NONEƒGƒtƒFƒNƒg‚Ìê‡A’Ç‰Á‚µ‚ÄŸ
+				//NONEã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®å ´åˆã€è¿½åŠ ã—ã¦æ¬¡
 				if (ect == EffectContinueType.NONE) {
 					list.add(new EffectMaster(key));
 					continue;
 				}
 				EffectTargetType targetType = EffectTargetType.valueOf(ee.getAttributes().get("ett").getValue());
 				float p = ee.getAttributes().get("p").getFloatValue();
-				//ETT‚ªSTOPACONFUAADDQCONDITION‚Ìê‡Aˆê•”ƒpƒ‰ƒƒ^‚ğÈ—ª‚µ‚Ä’Ç‰Á‚µAŸ
+				//ETTãŒSTOPã€CONFUã€ADDï¼¿CONDITIONã®å ´åˆã€ä¸€éƒ¨ãƒ‘ãƒ©ãƒ¡ã‚¿ã‚’çœç•¥ã—ã¦è¿½åŠ ã—ã€æ¬¡
 				int min = 0, max = 0;
 				if (ee.hasAttribute("time")) {
 					String time = ee.getAttributes().get("time").getValue();
@@ -385,7 +385,7 @@ public class GameSystemXMLLoader {
 					list.add(new EffectMaster(key, ect, targetType, targetName, p));
 					continue;
 				}
-				// NONE‚Å‚àSTOP‚Å‚à‚È‚¢ê‡AŠe—v‘f‚ğæ“¾
+				// NONEã§ã‚‚STOPã§ã‚‚ãªã„å ´åˆã€å„è¦ç´ ã‚’å–å¾—
 				if (targetType == EffectTargetType.CONFU) {
 					list.add(new EffectMaster(key, ect, targetType, min, max, p));
 					continue;
@@ -402,10 +402,10 @@ public class GameSystemXMLLoader {
 	}
 
 	/**
-	 * ƒXƒe[ƒ^ƒX‚Ìì¬‚ğƒeƒXƒg‚µ‚Ü‚·B‚±‚ê‚ÍƒeƒXƒg—pƒƒ\ƒbƒh‚Å‚·B
+	 * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®ä½œæˆã‚’ãƒ†ã‚¹ãƒˆã—ã¾ã™ã€‚ã“ã‚Œã¯ãƒ†ã‚¹ãƒˆç”¨ãƒ¡ã‚½ãƒƒãƒ‰ã§ã™ã€‚
 	 *
-	 * @param raceName lí‚Ì–¼ÌB
-	 * @return –â‘è‚È‚­ì¬‚Å‚«‚½ê‡true‚ğ•Ô‚µ‚Ü‚·B
+	 * @param raceName äººç¨®ã®åç§°ã€‚
+	 * @return å•é¡Œãªãä½œæˆã§ããŸå ´åˆtrueã‚’è¿”ã—ã¾ã™ã€‚
 	 */
 	public boolean testStatus(String raceName) {
 		try {

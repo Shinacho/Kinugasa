@@ -33,10 +33,10 @@ import java.util.Arrays;
 import static kinugasa.graphics.ImageUtil.*;
 
 /**
- * BufferedImage�ɑ΂��鍂�x�ȕҏW�@�\��񋟂��郆�[�e�B���e�B�N���X�ł�.
+ * BufferedImageに対する高度な編集機能を提供するユーティリティクラスです.
  * <br>
- * ���̃N���X�ł́A�u�\�[�X�摜�v�̃s�N�Z���f�[�^���A���ڕύX�����\���̂���@�\����`����Ă��܂��B<br>
- * ���̃N���X�ɒ�`���ꂽ���\�b�h�́A�Q�[�����ɂ����Ďg�p�����ׂ��ł͂���܂���B���\�[�X�Ƃ��ď��������ق����p�t�H�[�}���X�����サ�܂��B<br>
+ * このクラスでは、「ソース画像」のピクセルデータが、直接変更される可能性のある機能が定義されています。<br>
+ * このクラスに定義されたメソッドは、ゲーム中において使用されるべきではありません。リソースとして準備したほうがパフォーマンスが向上します。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/13_2:18:18<br>
@@ -45,20 +45,20 @@ import static kinugasa.graphics.ImageUtil.*;
 public final class ImageEditor {
 
 	/**
-	 * ���[�e�B���e�B�N���X�̂��߃C���X�^���X���ł��܂���.
+	 * ユーティリティクラスのためインスタンス化できません.
 	 */
 	private ImageEditor() {
 	}
 
 	/**
-	 * �FtgtARGB��newARGB�Œu���������V�����摜��dst�Ɋi�[���ĕԂ��܂�.
+	 * 色tgtARGBをnewARGBで置き換えた新しい画像をdstに格納して返します.
 	 *
-	 * @param src �F��u������\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���͕ύX����܂���B<br>
-	 * @param tgtARGB src���̒u���̑ΏۂƂȂ�F��ARGB�J���[�Ŏw�肵�܂��B<br>
-	 * @param newARGB �u����̐F��ARGB�J���[�Ŏw�肵�܂��B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 色を置換するソース画像を指定します。この画像のピクセルは変更されません。<br>
+	 * @param tgtARGB src中の置換の対象となる色をARGBカラーで指定します。<br>
+	 * @param newARGB 置換後の色をARGBカラーで指定します。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src����tgtARGB�̃s�N�Z����newARGB�ɒu���������摜��Ԃ��܂��B<br>
+	 * @return src中のtgtARGBのピクセルをnewARGBに置き換えた画像を返します。<br>
 	 */
 	public static BufferedImage replaceColor(BufferedImage src, int tgtARGB, int newARGB, BufferedImage dst) {
 		if (dst == null || dst == src) {
@@ -75,13 +75,13 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * src���O���C�X�P�[���ϊ������摜��dst�Ɋi�[���ĕԂ��܂�. ���̃��\�b�h�̓s�N�Z����RGB���ς����̂܂ܐݒ肵�܂��B
-	 * NTSC�n���d���ϖ@�͎g�p���܂���B<br>
+	 * srcをグレイスケール変換した画像をdstに格納して返します. このメソッドはピクセルのRGB平均をそのまま設定します。
+	 * NTSC系加重平均法は使用しません。<br>
 	 *
-	 * @param src �F��u������\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���͕ύX����܂���B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 色を置換するソース画像を指定します。この画像のピクセルは変更されません。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src�̃s�N�Z���𖾈Â����ɒu�������摜��Ԃ��܂��B<br>
+	 * @return srcのピクセルを明暗だけに置換した画像を返します。<br>
 	 */
 	public static BufferedImage grayScale(BufferedImage src, BufferedImage dst) {
 		if (dst == null || dst == src) {
@@ -100,12 +100,12 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * NTSC���d���ϖ@��K�p�����O���C�X�P�[���ϊ����s���܂�.
+	 * NTSC加重平均法を適用したグレイスケール変換を行います.
 	 *
-	 * @param src �F��u������\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���͕ύX����܂���B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 色を置換するソース画像を指定します。この画像のピクセルは変更されません。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src�̃s�N�Z���𖾈Â����ɒu�������摜��Ԃ��܂��B<br>
+	 * @return srcのピクセルを明暗だけに置換した画像を返します。<br>
 	 */
 	public static BufferedImage weightedGrayScale(BufferedImage src, BufferedImage dst) {
 		if (dst == null || dst == src) {
@@ -127,15 +127,15 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * src�𔒍����m�N���[���ϊ������摜��dst�Ɋi�[���ĕԂ��܂�.
+	 * srcを白黒モノクローム変換した画像をdstに格納して返します.
 	 *
-	 * @param src �F��u������\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���͕ύX����܂���B<br>
-	 * @param center ��ƂȂ閾�x��0����255�Ŏw�肵�܂��B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 色を置換するソース画像を指定します。この画像のピクセルは変更されません。<br>
+	 * @param center 基準となる明度を0から255で指定します。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src���̖��x��center�𒴂���s�N�Z���𔒂ɁA�����łȂ��s�N�Z�������ɒu���������摜��Ԃ��܂��B<br>
+	 * @return src中の明度がcenterを超えるピクセルを白に、そうでないピクセルを黒に置き換えた画像を返します。<br>
 	 *
-	 * @throws IllegalArgumentException center��0�����܂���255�𒴂���ꍇ�ɓ������܂��B<br>
+	 * @throws IllegalArgumentException centerが0未満または255を超える場合に投げられます。<br>
 	 */
 	public static BufferedImage monochrome(BufferedImage src, int center, BufferedImage dst)
 			throws IllegalArgumentException {
@@ -157,15 +157,15 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * src���̃s�N�Z���̖��x��(right*100)%�ɕϊ������摜��dst�Ɋi�[���ĕԂ��܂�.
+	 * src中のピクセルの明度を(right*100)%に変換した画像をdstに格納して返します.
 	 *
-	 * @param src �F��u������\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���͕ύX����܂���B<br>
-	 * @param right ���x�̕ύX����銄�����w�肵�܂��B0�������w�肷�邱�Ƃ͂ł��܂���B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 色を置換するソース画像を指定します。この画像のピクセルは変更されません。<br>
+	 * @param right 明度の変更される割合を指定します。0未満を指定することはできません。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src�̃s�N�Z���̖��x��(right*100)%�ɕϊ������摜��Ԃ��܂��B<br>
+	 * @return srcのピクセルの明度を(right*100)%に変換した画像を返します。<br>
 	 *
-	 * @throws IllegalArgumentException right��0�����̂Ƃ��ɓ������܂��B<br>
+	 * @throws IllegalArgumentException rightが0未満のときに投げられます。<br>
 	 */
 	public static BufferedImage brightness(BufferedImage src, float right, BufferedImage dst)
 			throws IllegalArgumentException {
@@ -207,12 +207,12 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * src�̐F�𔽓]�����摜��dst�Ɋi�[���ĕԂ��܂�.
+	 * srcの色を反転した画像をdstに格納して返します.
 	 *
-	 * @param src �F��u������\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���͕ύX����܂���B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 色を置換するソース画像を指定します。この画像のピクセルは変更されません。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src���̃s�N�Z���̐F���𔽓]�����摜��Ԃ��܂��B<br>
+	 * @return src中のピクセルの色情報を反転した画像を返します。<br>
 	 */
 	public static BufferedImage reverseColor(BufferedImage src, BufferedImage dst) {
 		if (dst == null || dst == src) {
@@ -232,16 +232,16 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * src�ɊȈՓI�ȃ��U�C�N�������{�����摜��dst�Ɋi�[���ĕԂ��܂�.
+	 * srcに簡易的なモザイク処理を施した画像をdstに格納して返します.
 	 *
-	 * @param src �F��u������\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���͕ύX����܂���B<br>
-	 * @param size ���U�C�N�̃^�C���̃T�C�Y���s�N�Z���P�ʂŎw�肵�܂��B1�������w�肷�邱�Ƃ͂ł��܂���B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 色を置換するソース画像を指定します。この画像のピクセルは変更されません。<br>
+	 * @param size モザイクのタイルのサイズをピクセル単位で指定します。1未満を指定することはできません。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src��size�s�N�Z�����Ƃɋ�؂����̈�����̗̈�̂����Ƃ�����̃s�N�Z���̐F�œh��Ԃ����摜��Ԃ��܂��B<br>
+	 * @return srcをsizeピクセルごとに区切った領域をその領域のもっとも左上のピクセルの色で塗りつぶした画像を返します。<br>
 	 *
-	 * @throws IllegalArgumentException size��1�����̏ꍇ�ɓ������܂��B<br>
-	 * @throws RasterFormatException size���摜�����傫���ꍇ�ɓ������܂��B<br>
+	 * @throws IllegalArgumentException sizeが1未満の場合に投げられます。<br>
+	 * @throws RasterFormatException sizeが画像よりも大きい場合に投げられます。<br>
 	 */
 	public static BufferedImage mosaic(BufferedImage src, int size, BufferedImage dst)
 			throws IllegalArgumentException, RasterFormatException {
@@ -272,14 +272,14 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * src�����v����deg�x��]�����摜��dst�Ɋi�[���ĕԂ��܂�.
+	 * srcを時計回りにdeg度回転した画像をdstに格納して返します.
 	 *
-	 * @param src �F��u������\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���͕ύX����܂���B<br>
-	 * @param deg ��]�p�x��x���@�Ŏw�肵�܂��B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 色を置換するソース画像を指定します。この画像のピクセルは変更されません。<br>
+	 * @param deg 回転角度を度数法で指定します。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src����]�����摜��Ԃ��܂��Bdeg��1�̂Ƃ���src�̃R�s�[���Ԃ���܂��B��]���ɉ摜���̈��
-	 * �O�ɏo��ꍇ�A�󂢂��̈�͍�(Color.BLACK)�ƂȂ�܂��B<br>
+	 * @return srcを回転した画像を返します。degが1のときはsrcのコピーが返されます。回転時に画像が領域の
+	 * 外に出る場合、空いた領域は黒(Color.BLACK)となります。<br>
 	 */
 	public static BufferedImage rotate(BufferedImage src, float deg, BufferedImage dst) {
 		if (deg == 0) {
@@ -299,15 +299,15 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * �\�[�X�摜�̑S�Ẵs�N�Z���̓��ߓx��tp�����Z�����摜��Ԃ��܂�.
-	 * ���̃��\�b�h�ł̓s�N�Z���̓��ߓx��0��������255�𒴂���ꍇ�͗L���͈͓��ɐ؂�l�߂��܂��B<br>
-	 * tp��0�̏ꍇ�A���ߓx��ύX����K�v���Ȃ����߁A�P����src�̃R�s�[��dst�Ɋi�[���ĕԂ��܂��B<br>
+	 * ソース画像の全てのピクセルの透過度にtpを加算した画像を返します.
+	 * このメソッドではピクセルの透過度が0未満又は255を超える場合は有効範囲内に切り詰められます。<br>
+	 * tpが0の場合、透過度を変更する必要がないため、単純にsrcのコピーをdstに格納して返します。<br>
 	 *
-	 * @param src ���ߓx��ύX����\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���f�[�^�͑��삳��܂���B<br>
-	 * @param tp ���Z���铧�ߓx���w�肵�܂��B���������e���܂��B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 透過度を変更するソース画像を指定します。この画像のピクセルデータは操作されません。<br>
+	 * @param tp 加算する透過度を指定します。負数を許容します。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src�̑S�Ẵs�N�Z���̓��ߓx��tp�����Z����dst�Ɋi�[���ĉ摜��Ԃ��܂��B<br>
+	 * @return srcの全てのピクセルの透過度にtpを加算したdstに格納して画像を返します。<br>
 	 */
 	public static BufferedImage addTransparent(BufferedImage src, int tp, BufferedImage dst) {
 		if (tp == 0) {
@@ -332,14 +332,14 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * �摜�̊e�s�N�Z�����w�肳�ꂽ�T�C�Y�����������ɃV�t�g���č\�z�����摜��Ԃ��܂��B<br>
+	 * 画像の各ピクセルを指定されたサイズだけ横方向にシフトして構築した画像を返します。<br>
 	 *
-	 * @param src �摜�B<br>
-	 * @param dst null�łȂ��ꍇ���̃C���X�^���X�ɕҏW���ʂ��i�[�����B<br>
-	 * @param shiftPixNum �c�̊e�s�N�Z���̃V�t�g��.src�̍����ɖ����Ȃ��ꍇ�͂���𖞂����܂ŌJ��Ԃ����.�������w��ł���<br>
-	 * @param insertARGB �V�t�g��������,�󂢂��̈�ɑ}�������F��ARBG�`���Ŏw�肷��B<br>
+	 * @param src 画像。<br>
+	 * @param dst nullでない場合このインスタンスに編集結果が格納される。<br>
+	 * @param shiftPixNum 縦の各ピクセルのシフト幅.srcの高さに満たない場合はそれを満たすまで繰り返される.負数を指定できる<br>
+	 * @param insertARGB シフトした結果,空いた領域に挿入される色をARBG形式で指定する。<br>
 	 *
-	 * @return null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @return nullでない場合、この引数に結果が格納されます。<br>
 	 */
 	public static BufferedImage rasterScroll(BufferedImage src, BufferedImage dst, int[] shiftPixNum, int insertARGB) {
 		if (dst == null || dst == src) {
@@ -376,30 +376,30 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * ��������ѐ��������Ƀu���[�G�t�F�N�g�������摜��Ԃ��܂�.
+	 * 水平および垂直方向にブラーエフェクトかけた画像を返します.
 	 *
-	 * @param src ���ʂ�������\�[�X�摜�ł��B���̉摜�̃s�N�Z���f�[�^�͑��삳��܂���B<br>
-	 * @param width ���������̃u���[�͈͂𑗐M���܂��B1�ȏ�̒l�𑗐M�ł��A�傫�Ȓl�قǕs�N���Ȍ��ʂɂȂ�܂��B<br>
-	 * @param height ���������̃u���[�͈͂��w�肵�܂��B1�ȏ�̒l�𑗐M�ł��A�傫�Ȓl�قǕs�N���Ȍ��ʂɂȂ�܂��B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 効果をかけるソース画像です。この画像のピクセルデータは操作されません。<br>
+	 * @param width 水平方向のブラー範囲を送信します。1以上の値を送信でき、大きな値ほど不鮮明な効果になります。<br>
+	 * @param height 垂直方向のブラー範囲を指定します。1以上の値を送信でき、大きな値ほど不鮮明な効果になります。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return ��������ѐ��������Ƀu���[�G�t�F�N�g���������摜��dst�Ɋi�[���ĕԂ��܂��B<br>
+	 * @return 水平および垂直方向にブラーエフェクトをかけた画像をdstに格納して返します。<br>
 	 */
 	public static BufferedImage blur2D(BufferedImage src, int width, int height, BufferedImage dst) {
 		return blur(blur(src, width, false, dst), height, true, null);
 	}
 
 	/**
-	 * �摜�̐������͐��������Ƀu���[���ʂ������܂�.
+	 * 画像の水平又は垂直方向にブラー効果をかけます.
 	 *
-	 * @param src ���ʂ�������\�[�X�摜�ł��B���̉摜�̃s�N�Z���f�[�^�͑��삳��܂���B<br>
-	 * @param rad 1�̃s�N�Z���ɑ΂���A�u���[�̌��ʔ͈͂��w�肵�܂��B1�ȏ�̒l�𑗐M�ł��A�傫�Ȓl�قǕs�N���Ȍ��ʂɂȂ�܂��B<br>
-	 * @param hrz true�̂Ƃ��u���[�̕����������ɂȂ�܂��B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 効果をかけるソース画像です。この画像のピクセルデータは操作されません。<br>
+	 * @param rad 1つのピクセルに対する、ブラーの効果範囲を指定します。1以上の値を送信でき、大きな値ほど不鮮明な効果になります。<br>
+	 * @param hrz trueのときブラーの方向が水平になります。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return �������͐��������Ƀu���[�G�t�F�N�g���������摜��dst�Ɋi�[���ĕԂ��܂��B<br>
+	 * @return 水平又は垂直方向にブラーエフェクトをかけた画像をdstに格納して返します。<br>
 	 *
-	 * @throws IllegalArgumentException rad��1�����̏ꍇ�ɓ������܂��B<br>
+	 * @throws IllegalArgumentException radが1未満の場合に投げられます。<br>
 	 */
 	public static BufferedImage blur(BufferedImage src, int rad, boolean hrz, BufferedImage dst)
 			throws IllegalArgumentException {
@@ -432,22 +432,22 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * �\�[�X�摜�̓��ߓx��ύX�����摜��Ԃ��܂�. ���̃��\�b�h�͉摜�̑S�Ẵs�N�Z���̃A���t�@�l���ψ��tp*100%�ɕύX���܂��B<br>
-	 * �������\�[�X�摜�̊��S�ɓ����ȃs�N�Z���͂��̂܂܊��S�ɓ����ȃs�N�Z���Ƃ��ăR�s�[����܂��B<br>
+	 * ソース画像の透過度を変更した画像を返します. このメソッドは画像の全てのピクセルのアルファ値を均一にtp*100%に変更します。<br>
+	 * ただしソース画像の完全に透明なピクセルはそのまま完全に透明なピクセルとしてコピーされます。<br>
 	 *
-	 * @param src ���ߓx��ύX����\�[�X�摜���w�肵�܂��B���̉摜�̃s�N�Z���f�[�^�͑��삳��܂���B<br>
-	 * @param tp �ύX��̓��ߓx�̌W�����w�肵�܂��B0.0f����1.0f�̒l���w��ł��܂��B<br>
-	 * @param dst null�łȂ��ꍇ�A���̈����Ɍ��ʂ��i�[����܂��B<br>
+	 * @param src 透過度を変更するソース画像を指定します。この画像のピクセルデータは操作されません。<br>
+	 * @param tp 変更後の透過度の係数を指定します。0.0fから1.0fの値を指定できます。<br>
+	 * @param dst nullでない場合、この引数に結果が格納されます。<br>
 	 *
-	 * @return src�̊��S�ɓ����łȂ��s�N�Z���̓��ߓx��tp*100%�ɕύX�����摜��dst�Ɋi�[���ĕԂ��܂��B<br>
+	 * @return srcの完全に透明でないピクセルの透過度をtp*100%に変更した画像をdstに格納して返します。<br>
 	 *
-	 * @throws IllegalArgumentException tp��1�𒴂���ꍇ����0�����̏ꍇ�ɓ������܂��B<br>
+	 * @throws IllegalArgumentException tpが1を超える場合又は0未満の場合に投げられます。<br>
 	 */
 	public static BufferedImage transparent(
 			BufferedImage src, float tp, BufferedImage dst)
 			throws IllegalArgumentException {
 		if (tp > 1f || tp < 0f) {
-			throw new IllegalArgumentException("���ߒl�������ł� [tp > 1 || tp < 0]�ł���K�v������܂� tp=[" + tp + "]");
+			throw new IllegalArgumentException("透過値が無効です [tp > 1 || tp < 0]である必要があります tp=[" + tp + "]");
 		}
 		if (dst == null || dst == src) {
 			dst = copy(src);
@@ -464,12 +464,12 @@ public final class ImageEditor {
 	}
 
 	/**
-	 * �w�肳�ꂽ�摜���g��^�k�������V�����摜��Ԃ��܂��B<br>
+	 * 指定された画像を拡大／縮小した新しい画像を返します。<br>
 	 *
-	 * @param src �\�[�X�摜�B<br>
-	 * @param scale �g��X�P�[��.1.0f���w�肵���ꍇ�́Asrc�̃R�s�[���Ԃ�B<br>
+	 * @param src ソース画像。<br>
+	 * @param scale 拡大スケール.1.0fを指定した場合は、srcのコピーが返る。<br>
 	 *
-	 * @return �\�[�X�摜�̃X�P�[�����O���ʂ�Ԃ�.�X�P�[�����O�W����1.0f�̂Ƃ��̓\�[�X�摜�̃R�s�[��Ԃ��B<br>
+	 * @return ソース画像のスケーリング結果を返す.スケーリング係数が1.0fのときはソース画像のコピーを返す。<br>
 	 */
 	public static BufferedImage resize(BufferedImage src, float scale) {
 		if (Float.compare(scale, 1.0f) == 0) {

@@ -39,9 +39,9 @@ public class I18N {
 	private static IniFile ini;
 
 	/**
-	 * I18Nƒ}ƒbƒv‚ğ‰Šú‰»‚µ‚Ü‚·BgameStart‚É©“®‚ÅÀs‚³‚ê‚é‚½‚ßA’Êí‚ÍŒÄ‚Ño‚·•K—v‚Í‚ ‚è‚Ü‚¹‚ñB
+	 * I18Nãƒãƒƒãƒ—ã‚’åˆæœŸåŒ–ã—ã¾ã™ã€‚gameStartæ™‚ã«è‡ªå‹•ã§å®Ÿè¡Œã•ã‚Œã‚‹ãŸã‚ã€é€šå¸¸ã¯å‘¼ã³å‡ºã™å¿…è¦ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚
 	 *
-	 * @param lang ƒƒP[ƒ‹‚ÌŒ¾ŒêB
+	 * @param lang ãƒ­ã‚±ãƒ¼ãƒ«ã®è¨€èªã€‚
 	 */
 	public static void init(String lang) {
 		ini = new IniFile("translate/" + lang + ".ini").load();

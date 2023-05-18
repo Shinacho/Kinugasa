@@ -25,8 +25,8 @@ package kinugasa.resource;
 
 
 /**
- * �w�肳�ꂽ���O�����I�u�W�F�N�g��������Ȃ��ꍇ��
- * ���������O�ł�.
+ * 指定された名前を持つオブジェクトが見つからない場合に
+ * 投げられる例外です.
  * <br>
  *
  * <br>
@@ -37,22 +37,22 @@ public class NameNotFoundException extends NotFoundException {
 
 
 	/**
-	 * �V���� NameNotFoundException �̃C���X�^���X���쐬���܂�.
+	 * 新しい NameNotFoundException のインスタンスを作成します.
 	 */
 	public NameNotFoundException() {
 	}
 
 	/**
-	 * �V���� NameNotFoundException �̃C���X�^���X���쐬���܂�.
-	 * @param msg ���̗�O�̃��b�Z�[�W���w�肵�܂��B<br>
+	 * 新しい NameNotFoundException のインスタンスを作成します.
+	 * @param msg この例外のメッセージを指定します。<br>
 	 */
 	public NameNotFoundException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Throwable�����b�v����NameNotFoundException���쐬���܂�.
-	 * @param t ������ꂽ��O�𑗐M���܂��B<br>
+	 * ThrowableをラップするNameNotFoundExceptionを作成します.
+	 * @param t 投げられた例外を送信します。<br>
 	 */
 	public NameNotFoundException(Throwable t) {
 		super(t);

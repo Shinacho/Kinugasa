@@ -123,7 +123,7 @@ public class MagicWindow extends BasicSprite {
 			case CHOICE_USE:
 			case WAIT_MSG_CLOSE_TO_CU:
 			case WAIT_MSG_CLOSE_TO_MUS:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				break;
 		}
 	}
@@ -144,7 +144,7 @@ public class MagicWindow extends BasicSprite {
 			case CHOICE_USE:
 			case WAIT_MSG_CLOSE_TO_CU:
 			case WAIT_MSG_CLOSE_TO_MUS:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				break;
 		}
 	}
@@ -171,7 +171,7 @@ public class MagicWindow extends BasicSprite {
 			case CHOICE_USE:
 				switch (choiceUse.getSelect()) {
 					case USE:
-						//ƒtƒB[ƒ‹ƒh‚Å‚Íg‚¦‚È‚¢ê‡
+						//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã§ã¯ä½¿ãˆãªã„å ´åˆ
 						if (!a.isFieldUse()) {
 							StringBuilder sb = new StringBuilder();
 							sb.append(getSelectedPC().getName());
@@ -187,9 +187,9 @@ public class MagicWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
-						//SELF‚Ì‚İ‚Ìê‡‘¦Às
+						//SELFã®ã¿ã®å ´åˆå³æ™‚å®Ÿè¡Œ
 						if (a.fieldEventIsOnly(TargetType.SELF)) {
-							//‘ã‚ªx•¥‚¦‚é‚©‚Ìƒ`ƒFƒbƒN
+							//ä»£å„ŸãŒæ”¯æ‰•ãˆã‚‹ã‹ã®ãƒã‚§ãƒƒã‚¯
 							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 							if (vs.hasMinus()) {
@@ -204,7 +204,7 @@ public class MagicWindow extends BasicSprite {
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
 							}
-							//‘¦Às‚µ‚ÄƒTƒu‚ÉŒø‰Ê‚ğo—Í
+							//å³æ™‚å®Ÿè¡Œã—ã¦ã‚µãƒ–ã«åŠ¹æœã‚’å‡ºåŠ›
 							Status tgt = getSelectedPC();
 							tgt.setDamageCalcPoint();
 							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true).setSelfTarget(true));
@@ -212,8 +212,8 @@ public class MagicWindow extends BasicSprite {
 							sb.append(tgt.getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
 							sb.append(Text.getLineSep());
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
-								//¬Œ÷
-								//Œø‰Ê‘ª’è
+								//æˆåŠŸ
+								//åŠ¹æœæ¸¬å®š
 								Map<StatusKey, Float> map = tgt.calcDamage();
 								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 									if (e.getValue() < 0f) {
@@ -229,7 +229,7 @@ public class MagicWindow extends BasicSprite {
 									}
 								}
 							} else {
-								//¸”s
+								//å¤±æ•—
 								sb.append(I18N.translate("BUT"));
 								sb.append(I18N.translate("NO_EFFECT"));
 							}
@@ -239,9 +239,9 @@ public class MagicWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
 						}
-						//ƒ^[ƒQƒbƒgƒ^ƒCƒvƒ‰ƒ“ƒ_ƒ€‚Ìê‡‚Í‘¦Às
+						//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚¿ã‚¤ãƒ—ãƒ©ãƒ³ãƒ€ãƒ ã®å ´åˆã¯å³æ™‚å®Ÿè¡Œ
 						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.RANDOM_ONE_PARTY)) {
-							//‘ã‚ªx•¥‚¦‚é‚©‚Ìƒ`ƒFƒbƒN
+							//ä»£å„ŸãŒæ”¯æ‰•ãˆã‚‹ã‹ã®ãƒã‚§ãƒƒã‚¯
 							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 							if (vs.hasMinus()) {
@@ -256,8 +256,8 @@ public class MagicWindow extends BasicSprite {
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
 							}
-							//‘¦Às‚µ‚ÄƒTƒu‚ÉŒø‰Ê‚ğo—Í
-							//ƒ^[ƒQƒbƒg‚ğŒˆ’è
+							//å³æ™‚å®Ÿè¡Œã—ã¦ã‚µãƒ–ã«åŠ¹æœã‚’å‡ºåŠ›
+							//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’æ±ºå®š
 
 							Status tgt = Random.random(GameSystem.getInstance().getPartyStatus());
 							tgt.setDamageCalcPoint();
@@ -266,8 +266,8 @@ public class MagicWindow extends BasicSprite {
 							sb.append(tgt.getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
 							sb.append(Text.getLineSep());
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
-								//¬Œ÷
-								//Œø‰Ê‘ª’è
+								//æˆåŠŸ
+								//åŠ¹æœæ¸¬å®š
 								Map<StatusKey, Float> map = tgt.calcDamage();
 								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 									if (e.getValue() < 0f) {
@@ -283,7 +283,7 @@ public class MagicWindow extends BasicSprite {
 									}
 								}
 							} else {
-								//¸”s
+								//å¤±æ•—
 								sb.append(I18N.translate("BUT"));
 								sb.append(I18N.translate("NO_EFFECT"));
 							}
@@ -293,9 +293,9 @@ public class MagicWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
 						}
-						//ƒ`[ƒ€‚ª“ü‚Á‚Ä‚¢‚éê‡‘¦Às
+						//ãƒãƒ¼ãƒ ãŒå…¥ã£ã¦ã„ã‚‹å ´åˆå³æ™‚å®Ÿè¡Œ
 						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.TEAM_PARTY)) {
-							//‘ã‚ªx•¥‚¦‚é‚©‚Ìƒ`ƒFƒbƒN
+							//ä»£å„ŸãŒæ”¯æ‰•ãˆã‚‹ã‹ã®ãƒã‚§ãƒƒã‚¯
 							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 							if (vs.hasMinus()) {
@@ -310,7 +310,7 @@ public class MagicWindow extends BasicSprite {
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
 							}
-							//‘¦Às‚µ‚ÄƒTƒu‚ÉŒø‰Ê‚ğo—Í
+							//å³æ™‚å®Ÿè¡Œã—ã¦ã‚µãƒ–ã«åŠ¹æœã‚’å‡ºåŠ›
 							List<Status> tgt = GameSystem.getInstance().getPartyStatus();
 							tgt.forEach(p -> p.setDamageCalcPoint());
 							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
@@ -319,8 +319,8 @@ public class MagicWindow extends BasicSprite {
 								sb.append(s.getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
 								sb.append(Text.getLineSep());
 								if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
-									//¬Œ÷
-									//Œø‰Ê‘ª’è
+									//æˆåŠŸ
+									//åŠ¹æœæ¸¬å®š
 									Map<StatusKey, Float> map = s.calcDamage();
 									for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 										if (e.getValue() < 0f) {
@@ -336,7 +336,7 @@ public class MagicWindow extends BasicSprite {
 										}
 									}
 								} else {
-									//¸”s
+									//å¤±æ•—
 									sb.append(I18N.translate("BUT"));
 									sb.append(I18N.translate("NO_EFFECT"));
 								}
@@ -347,7 +347,7 @@ public class MagicWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
 						}
-						//‘ã‚ªx•¥‚¦‚é‚©‚Ìƒ`ƒFƒbƒN
+						//ä»£å„ŸãŒæ”¯æ‰•ãˆã‚‹ã‹ã®ãƒã‚§ãƒƒã‚¯
 						Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 						StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 						if (vs.hasMinus()) {
@@ -362,7 +362,7 @@ public class MagicWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
-						//‚»‚Ì‘¼‚Ìê‡‚Íƒ^[ƒQƒbƒg‘I‘ğ‚Ö
+						//ãã®ä»–ã®å ´åˆã¯ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠã¸
 						List<Text> option1 = new ArrayList<>();
 						option1.addAll(GameSystem.getInstance().getPartyStatus().stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
 						tgtSelect.setText(new Choice(option1, "MAGIC_WINDOW_SUB", a.getName() + I18N.translate("WHO_DO_USE")));
@@ -385,7 +385,7 @@ public class MagicWindow extends BasicSprite {
 							sb.append(" ").append(a.getDesc());
 							sb.append(Text.getLineSep());
 						}
-						//ƒCƒxƒ“ƒgÚ×
+						//ã‚¤ãƒ™ãƒ³ãƒˆè©³ç´°
 						sb.append("--").append(I18N.translate("BATTLE_ACTION")).append(Text.getLineSep());
 						if (a.isBattleUse()) {
 							//SPELL_TIME
@@ -565,9 +565,9 @@ public class MagicWindow extends BasicSprite {
 		CmdAction a = getSelectedAction();
 		Status tgt = GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect());
 
-		//g—pÒ‚ÌMPŒvZ‚Ì‚½‚ßDCPİ’è
+		//ä½¿ç”¨è€…ã®MPè¨ˆç®—ã®ãŸã‚DCPè¨­å®š
 		getSelectedPC().setDamageCalcPoint();
-		//g—pÒ‚Æƒ^[ƒQƒbƒg‚ªˆá‚¤ê‡‚Íƒ^[ƒQƒbƒg‚àDCPİ’è
+		//ä½¿ç”¨è€…ã¨ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒé•ã†å ´åˆã¯ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚‚DCPè¨­å®š
 		if (!getSelectedPC().equals(tgt)) {
 			tgt.setDamageCalcPoint();
 		}
@@ -576,8 +576,8 @@ public class MagicWindow extends BasicSprite {
 		sb.append(tgt.getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
 		sb.append(Text.getLineSep());
 		if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
-			//¬Œ÷
-			//ƒ^[ƒQƒbƒg‚Ö‚ÌŒø‰Ê‘ª’è
+			//æˆåŠŸ
+			//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¸ã®åŠ¹æœæ¸¬å®š
 			Map<StatusKey, Float> map = getSelectedPC().calcDamage();
 			for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 				if (e.getValue() < 0f) {
@@ -592,7 +592,7 @@ public class MagicWindow extends BasicSprite {
 					sb.append(Text.getLineSep());
 				}
 			}
-			//SELF‚Ö‚Ìƒ_ƒ[ƒW
+			//SELFã¸ã®ãƒ€ãƒ¡ãƒ¼ã‚¸
 			//TODO:
 
 			if (map.isEmpty()) {
@@ -600,7 +600,7 @@ public class MagicWindow extends BasicSprite {
 				sb.append(Text.getLineSep());
 			}
 		} else {
-			//¸”s
+			//å¤±æ•—
 			sb.append(I18N.translate("BUT"));
 			sb.append(I18N.translate("NO_EFFECT"));
 			sb.append(Text.getLineSep());
@@ -644,9 +644,9 @@ public class MagicWindow extends BasicSprite {
 		main.update();
 	}
 
-	//1‚Â‘O‚Ì‰æ–Ê‚É–ß‚é
+	//1ã¤å‰ã®ç”»é¢ã«æˆ»ã‚‹
 	public boolean close() {
-		//IUS•\¦’†‚Ìê‡‚Í–ß‚é‚Í‘SÁ‚µ
+		//IUSè¡¨ç¤ºä¸­ã®å ´åˆã¯æˆ»ã‚‹ã¯å…¨æ¶ˆã—
 		if (group.getWindows().stream().allMatch(p -> !p.isVisible())) {
 			mode = Mode.MAGIC_AND_USER_SELECT;
 			return true;

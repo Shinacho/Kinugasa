@@ -34,7 +34,7 @@ import java.util.stream.IntStream;
 import kinugasa.resource.*;
 
 /**
- * ƒAƒCƒeƒ€‚Ì–¼Ì‚ÆAŒø‰Ê‚ğ•Û‚·‚éƒNƒ‰ƒX‚Å‚·B
+ * ã‚¢ã‚¤ãƒ†ãƒ ã®åç§°ã¨ã€åŠ¹æœã‚’ä¿æŒã™ã‚‹ã‚¯ãƒ©ã‚¹ã§ã™ã€‚
  *
  * @vesion 1.0.0 - 2022/11/16_11:58:36<br>
  * @author Shinacho<br>
@@ -45,11 +45,11 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 	private AttributeValueSet eqAttr;
 	private ItemEqipmentSlot eqipmentSlot;
 	private WeaponMagicType weaponMagicType;
-	private int value;//ƒx[ƒX‰¿’l
-	private boolean canSale = true;//”„‚ê‚é‚©‚Ç‚¤‚©
+	private int value;//ãƒ™ãƒ¼ã‚¹ä¾¡å€¤
+	private boolean canSale = true;//å£²ã‚Œã‚‹ã‹ã©ã†ã‹
 	private int currentUpgrade = 0;
-	private List<ItemUpgrade> upgradeMaterials = new ArrayList<>();//‹­‰»‚É•K—v‚È‘Œ¹
-	private Map<Material, Integer> dissasseMaterials = new HashMap<>();//‰ğ‘Ì‚É“¾‚ç‚ê‚é‘Œ¹
+	private List<ItemUpgrade> upgradeMaterials = new ArrayList<>();//å¼·åŒ–ã«å¿…è¦ãªè³‡æº
+	private Map<Material, Integer> dissasseMaterials = new HashMap<>();//è§£ä½“æ™‚ã«å¾—ã‚‰ã‚Œã‚‹è³‡æº
 	private List<ItemEqipTerm> eqipTerm = new ArrayList<>();
 
 	public Item(String name, String desc) {
@@ -67,7 +67,7 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 		return this;
 	}
 
-	//ƒ}ƒeƒŠƒAƒ‹‚Æ‹àŠz‚Í•Ê“r”»’è‚·‚é‚±‚Æ
+	//ãƒãƒ†ãƒªã‚¢ãƒ«ã¨é‡‘é¡ã¯åˆ¥é€”åˆ¤å®šã™ã‚‹ã“ã¨
 	public boolean canUpgrade() {
 		return currentUpgrade < upgradeMaterials.size();
 	}
@@ -84,7 +84,7 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 		return eqipTerm;
 	}
 
-	//’ˆÓF–ß‚è’l‚ªƒAƒbƒvƒOƒŒ[ƒh‚³‚ê‚½ƒAƒCƒeƒ€
+	//æ³¨æ„ï¼šæˆ»ã‚Šå€¤ãŒã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰ã•ã‚ŒãŸã‚¢ã‚¤ãƒ†ãƒ 
 	public Item doUpgrade() {
 		if (!canUpgrade()) {
 			throw new GameSystemException("this item is cant be upgrade : " + this);

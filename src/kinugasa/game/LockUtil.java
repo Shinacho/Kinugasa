@@ -34,11 +34,11 @@ import java.util.logging.Level;
 import kinugasa.resource.ContentsIOException;
 
 /**
- * ���d�N���h�~�p�̃��b�N�t�@�C���Ɋւ��郆�[�e�B���e�B.
+ * 多重起動防止用のロックファイルに関するユーティリティ.
  * <br>
- * ���b�N�t�@�C���̐����͂ł��܂���B �폜�͂ł��܂��B<br>
+ * ロックファイルの生成はできません。 削除はできます。<br>
  * <br>
- * ���b�N�t�@�C���́A"./"�ɍ쐬����܂��B �܂��A���b�N�t�@�C���̓Q�[�����s���͍폜�ł��܂���B
+ * ロックファイルは、"./"に作成されます。 また、ロックファイルはゲーム実行中は削除できません。
  * <br>
  *
  * @version 1.0.0 - 2015/01/04<br>
@@ -71,8 +71,8 @@ public final class LockUtil {
 	}
 
 	/**
-	 * ���b�N�t�@�C���������I�ɍ폜���܂�. ���̃��\�b�h�͓r���ŋ����I������\���̂���e�X�g���̎��s�ɍœK�ł��B<br>
-	 * �ʏ�̏I����i�igameExit��E�C���h�E���j�ŏI�����ꂽ�ꍇ�ɂ́A���b�N�t�@�C���͎����I�ɍ폜����܂��B<br>
+	 * ロックファイルを強制的に削除します. このメソッドは途中で強制終了する可能性のあるテスト時の実行に最適です。<br>
+	 * 通常の終了手段（gameExitやウインドウ閉じ）で終了された場合には、ロックファイルは自動的に削除されます。<br>
 	 */
 	public static void deleteAllLockFile() {
 		File[] list = new File("./").listFiles(TEMP_FN_FILTER);

@@ -25,7 +25,7 @@ package kinugasa.resource;
 
 
 /**
- * w’è‚³‚ê‚½ƒIƒuƒWƒFƒNƒg‚ª‘¶İ‚µ‚È‚©‚Á‚½‚±‚Æ‚ğ’Ê’m‚·‚é—áŠO‚Å‚·.
+ * æŒ‡å®šã•ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒå­˜åœ¨ã—ãªã‹ã£ãŸã“ã¨ã‚’é€šçŸ¥ã™ã‚‹ä¾‹å¤–ã§ã™.
  * <br>
  *
  * <br>
@@ -37,22 +37,22 @@ public abstract class NotFoundException extends ContentsIOException {
 	private static final long serialVersionUID = -951498720683908364L;
 
 	/**
-	 * V‚µ‚¢ NotFoundException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
+	 * æ–°ã—ã„ NotFoundException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
 	 */
 	public NotFoundException() {
 	}
 
 	/**
-	 * V‚µ‚¢ NotFoundException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
-	 * @param msg ‚±‚Ì—áŠO‚ÌƒƒbƒZ[ƒW.<br>
+	 * æ–°ã—ã„ NotFoundException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
+	 * @param msg ã“ã®ä¾‹å¤–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.<br>
 	 */
 	public NotFoundException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Throwable‚ğƒ‰ƒbƒv‚·‚é—áŠO‚ğì¬‚µ‚Ü‚·.
-	 * @param thrwbl “Š‚°‚ç‚ê‚½—áŠO‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * Throwableã‚’ãƒ©ãƒƒãƒ—ã™ã‚‹ä¾‹å¤–ã‚’ä½œæˆã—ã¾ã™.
+	 * @param thrwbl æŠ•ã’ã‚‰ã‚ŒãŸä¾‹å¤–ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	public NotFoundException(Throwable thrwbl) {
 		super(thrwbl);

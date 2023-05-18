@@ -99,7 +99,7 @@ public class FrameTimeEventManager implements XMLFileSupport {
 	}
 
 	public void print(){
-		// ƒCƒxƒ“ƒg“Š“üŠ®—¹
+		// ã‚¤ãƒ™ãƒ³ãƒˆæŠ•å…¥å®Œäº†
 		kinugasa.game.GameLog.printInfo("event list");
 		List<Long> key = new ArrayList<>(events.keySet());
 		Collections.sort(key);

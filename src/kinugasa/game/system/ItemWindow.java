@@ -48,7 +48,7 @@ public class ItemWindow extends BasicSprite {
 
 	private List<Status> list;
 	private MessageWindow main;
-	private MessageWindow choiceUse, dropConfirm, disasseConfirm, tgtSelect, msg;//msg‚Íƒ{ƒ^ƒ“‘€ì‚Å‘¦•Â‚¶‚é
+	private MessageWindow choiceUse, dropConfirm, disasseConfirm, tgtSelect, msg;//msgã¯ãƒœã‚¿ãƒ³æ“ä½œã§å³é–‰ã˜ã‚‹
 	private MessageWindowGroup group;
 
 	public ItemWindow(float x, float y, float w, float h) {
@@ -76,28 +76,28 @@ public class ItemWindow extends BasicSprite {
 
 	public enum Mode {
 		/**
-		 * ‚Ç‚ÌƒAƒCƒeƒ€‚É‚·‚é‚©‚ğ‘I‘ğ’†B
+		 * ã©ã®ã‚¢ã‚¤ãƒ†ãƒ ã«ã™ã‚‹ã‹ã‚’é¸æŠä¸­ã€‚
 		 */
 		ITEM_AND_USER_SELECT,
 		/**
-		 * ƒAƒCƒeƒ€g—p“à—e‚ğ‘I‘ğ’†B
+		 * ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨å†…å®¹ã‚’é¸æŠä¸­ã€‚
 		 */
 		CHOICE_USE,
 		/**
-		 * MSG•\¦‚µAI—¹‘Ò‚¿BI—¹‚µ‚½‚çITEMQANDQUSERQSELECT‚É“ü‚éB
+		 * MSGè¡¨ç¤ºã—ã€çµ‚äº†å¾…ã¡ã€‚çµ‚äº†ã—ãŸã‚‰ITEMï¼¿ANDï¼¿USERï¼¿SELECTã«å…¥ã‚‹ã€‚
 		 */
 		WAIT_MSG_CLOSE_TO_IUS,
 		WAIT_MSG_CLOSE_TO_CU,
 		/**
-		 * g‚¤E“n‚·‘ÎÛ‚ğ‘I‘ğ’†B
+		 * ä½¿ã†ãƒ»æ¸¡ã™å¯¾è±¡ã‚’é¸æŠä¸­ã€‚
 		 */
 		TARGET_SELECT,
 		/**
-		 * Ì‚Ä‚Ä‚à‚æ‚¢‚©Šm”F’†B
+		 * æ¨ã¦ã¦ã‚‚ã‚ˆã„ã‹ç¢ºèªä¸­ã€‚
 		 */
 		DROP_CONFIRM,
 		/**
-		 * ‰ğ‘Ì‚µ‚Ä‚à‚æ‚¢‚©Šm”F’†B
+		 * è§£ä½“ã—ã¦ã‚‚ã‚ˆã„ã‹ç¢ºèªä¸­ã€‚
 		 */
 		DISASSE_CONFIRM,
 	}
@@ -125,7 +125,7 @@ public class ItemWindow extends BasicSprite {
 			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				return;
 		}
 	}
@@ -150,7 +150,7 @@ public class ItemWindow extends BasicSprite {
 			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				return;
 		}
 	}
@@ -169,7 +169,7 @@ public class ItemWindow extends BasicSprite {
 			case DISASSE_CONFIRM:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				return;
 			case TARGET_SELECT:
 				tgtSelect.nextSelect();
@@ -191,7 +191,7 @@ public class ItemWindow extends BasicSprite {
 			case DISASSE_CONFIRM:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				return;
 			case TARGET_SELECT:
 				tgtSelect.prevSelect();
@@ -242,12 +242,12 @@ public class ItemWindow extends BasicSprite {
 				mode = Mode.CHOICE_USE;
 				break;
 			case CHOICE_USE:
-				//‘I‚Î‚ê‚½‘I‘ğˆ‚É‚æ‚è•ªŠò
+				//é¸ã°ã‚ŒãŸé¸æŠè‚¢ã«ã‚ˆã‚Šåˆ†å²
 				switch (choiceUse.getSelect()) {
 					case USE:
-						//ƒAƒCƒeƒ€‚ªƒtƒB[ƒ‹ƒh‚Åg‚¦‚é‚È‚ç‘ÎÛÒ‘I‘ğ‚Ö
+						//ã‚¢ã‚¤ãƒ†ãƒ ãŒãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã§ä½¿ãˆã‚‹ãªã‚‰å¯¾è±¡è€…é¸æŠã¸
 						if (!i.isFieldUse()) {
-							//ƒtƒB[ƒ‹ƒh‚Å‚Íg‚¦‚Ü‚¹‚ñ
+							//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã§ã¯ä½¿ãˆã¾ã›ã‚“
 							StringBuilder sb = new StringBuilder();
 							sb.append(getSelectedPC().getName());
 							sb.append(I18N.translate("IS"));
@@ -262,9 +262,9 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
-						//“G‘ÎÛ‚ÌƒAƒCƒeƒ€‚Ìê‡g—p‚Å‚«‚È‚¢i‚±‚Ì‚æ‚¤‚ÈƒAƒCƒeƒ€‚Í‘¶İ‚µ‚È‚¢‚Í‚¸‚¾‚ª”O‚Ì‚½‚ßj
+						//æ•µå¯¾è±¡ã®ã‚¢ã‚¤ãƒ†ãƒ ã®å ´åˆä½¿ç”¨ã§ããªã„ï¼ˆã“ã®ã‚ˆã†ãªã‚¢ã‚¤ãƒ†ãƒ ã¯å­˜åœ¨ã—ãªã„ã¯ãšã ãŒå¿µã®ãŸã‚ï¼‰
 						if (i.fieldEventIsOnly(TargetType.ONE_ENEMY) || i.fieldEventIsOnly(TargetType.RANDOM_ONE_ENEMY) || i.fieldEventIsOnly(TargetType.RANDOM_ONE_ENEMY)) {
-							//g‚Á‚Ä‚àŒø‰Ê‚ª‚È‚¢‚æ
+							//ä½¿ã£ã¦ã‚‚åŠ¹æœãŒãªã„ã‚ˆ
 							StringBuilder sb = new StringBuilder();
 							sb.append(getSelectedPC().getName());
 							sb.append(I18N.translate("IS"));
@@ -279,13 +279,13 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
-						//ƒ^[ƒQƒbƒgŠm”F
-						//SELF‚Ì‚İ‚Ìê‡‘¦Às
-						//ƒ^[ƒQƒbƒgƒ^ƒCƒvƒ‰ƒ“ƒ_ƒ€‚Ìê‡‚Í‘¦Às
-						//ƒ`[ƒ€‚ª“ü‚Á‚Ä‚¢‚éê‡‘¦Às
+						//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç¢ºèª
+						//SELFã®ã¿ã®å ´åˆå³æ™‚å®Ÿè¡Œ
+						//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚¿ã‚¤ãƒ—ãƒ©ãƒ³ãƒ€ãƒ ã®å ´åˆã¯å³æ™‚å®Ÿè¡Œ
+						//ãƒãƒ¼ãƒ ãŒå…¥ã£ã¦ã„ã‚‹å ´åˆå³æ™‚å®Ÿè¡Œ
 						if (i.fieldEventIsOnly(TargetType.SELF) || i.fieldEventIsOnly(TargetType.RANDOM_ONE) || i.fieldEventIsOnly(TargetType.RANDOM_ONE_PARTY)
 								|| i.fieldEventIsOnly(TargetType.TEAM_PARTY)) {
-							//‘¦Às‚µ‚ÄƒTƒu‚ÉŒø‰Ê‚ğo—Í
+							//å³æ™‚å®Ÿè¡Œã—ã¦ã‚µãƒ–ã«åŠ¹æœã‚’å‡ºåŠ›
 							Status tgt = getSelectedPC();
 							tgt.setDamageCalcPoint();
 							ActionResult r = i.exec(ActionTarget.instantTarget(getSelectedPC(), i).setInField(true));
@@ -293,8 +293,8 @@ public class ItemWindow extends BasicSprite {
 							sb.append(tgt.getName()).append(I18N.translate("IS")).append(i.getName()).append(I18N.translate("USE_ITEM"));
 							sb.append(Text.getLineSep());
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
-								//¬Œ÷
-								//Œø‰Ê‘ª’è
+								//æˆåŠŸ
+								//åŠ¹æœæ¸¬å®š
 								Map<StatusKey, Float> map = tgt.calcDamage();
 								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 									if (e.getValue() > 0) {
@@ -304,7 +304,7 @@ public class ItemWindow extends BasicSprite {
 									}
 								}
 							} else {
-								//¸”s
+								//å¤±æ•—
 								sb.append(I18N.translate("BUT"));
 								sb.append(I18N.translate("NO_EFFECT"));
 							}
@@ -313,7 +313,7 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 							return;
 						}
-						//‚»‚Ì‘¼‚Ìê‡‚Íƒ^[ƒQƒbƒg‘I‘ğ‚Ö
+						//ãã®ä»–ã®å ´åˆã¯ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠã¸
 						List<Text> options3 = new ArrayList<>();
 						options3.addAll(list.stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
 						tgtSelect.setText(new Choice(options3, "ITEM_WINDOW_SUB", i.getName() + I18N.translate("WHO_DO_USE")));
@@ -322,9 +322,9 @@ public class ItemWindow extends BasicSprite {
 						mode = Mode.TARGET_SELECT;
 						break;
 					case EQIP:
-						//‘•”õ‚Å‚«‚éƒAƒCƒeƒ€‚©‚Ç‚¤‚©‚Å•ªŠò
+						//è£…å‚™ã§ãã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‹ã©ã†ã‹ã§åˆ†å²
 						if (getSelectedPC().getEqipment().values().contains(i)) {
-							//‚·‚Å‚É‘•”õ‚µ‚Ä‚¢‚é‚ÍŠO‚·
+							//ã™ã§ã«è£…å‚™ã—ã¦ã„ã‚‹æ™‚ã¯å¤–ã™
 							getSelectedPC().getEqipment().put(i.getEqipmentSlot(), null);
 							getSelectedPC().updateAction();
 							msg.setText(i.getName() + I18N.translate("REMOVE_EQUP"));
@@ -332,7 +332,7 @@ public class ItemWindow extends BasicSprite {
 							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else if (getSelectedPC().canEqip(i)) {
-							//‘•”õ‚·‚é
+							//è£…å‚™ã™ã‚‹
 							getSelectedPC().addEqip(i);
 							getSelectedPC().updateAction();
 							msg.setText(i.getName() + I18N.translate("IS_EQIP"));
@@ -340,7 +340,7 @@ public class ItemWindow extends BasicSprite {
 							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
-							//‘•”õ‚Å‚«‚È‚¢
+							//è£…å‚™ã§ããªã„
 							msg.setText(i.getName() + I18N.translate("NOT_EQIP"));
 							msg.allText();
 							group.show(msg);
@@ -348,7 +348,7 @@ public class ItemWindow extends BasicSprite {
 						}
 						break;
 					case PASS:
-						//ƒpƒXƒ^[ƒQƒbƒg‚ÉˆÚ“®
+						//ãƒ‘ã‚¹ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«ç§»å‹•
 						List<Text> options2 = new ArrayList<>();
 						options2.addAll(list.stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
 						tgtSelect.setText(new Choice(options2, "ITEM_WINDOW_SUB", i.getName() + I18N.translate("WHO_DO_PASS")));
@@ -357,8 +357,8 @@ public class ItemWindow extends BasicSprite {
 						mode = Mode.TARGET_SELECT;
 						break;
 					case CHECK:
-						//CHECKƒ‚[ƒh‚Å‚Í‰¿’lAƒL[ƒAƒCƒeƒ€‘®«AƒXƒƒbƒgAUŒ‚—ÍADCS‚ğ•\¦‚·‚é‚±‚ÆI
-						//ƒAƒCƒeƒ€‚ÌÚ×‚ğƒTƒu‚É•\¦
+						//CHECKãƒ¢ãƒ¼ãƒ‰ã§ã¯ä¾¡å€¤ã€ã‚­ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ å±æ€§ã€ã‚¹ãƒ­ãƒƒãƒˆã€æ”»æ’ƒåŠ›ã€DCSã‚’è¡¨ç¤ºã™ã‚‹ã“ã¨ï¼
+						//ã‚¢ã‚¤ãƒ†ãƒ ã®è©³ç´°ã‚’ã‚µãƒ–ã«è¡¨ç¤º
 						StringBuilder sb = new StringBuilder();
 						sb.append(i.getName()).append(Text.getLineSep());
 
@@ -374,10 +374,10 @@ public class ItemWindow extends BasicSprite {
 							sb.append(" ").append(i.getDesc());
 							sb.append(Text.getLineSep());
 						}
-						//‰¿’l
+						//ä¾¡å€¤
 						sb.append(" ").append(I18N.translate("VALUE")).append(":").append(i.getValue());
 						sb.append(Text.getLineSep());
-						//‘•”õƒXƒƒbƒg
+						//è£…å‚™ã‚¹ãƒ­ãƒƒãƒˆ
 						sb.append(" ").append(I18N.translate("SLOT")).append(":").append(i.getEqipmentSlot() != null
 								? i.getEqipmentSlot().getName()
 								: I18N.translate("NONE"));
@@ -390,7 +390,7 @@ public class ItemWindow extends BasicSprite {
 						//area
 						int area = 0;
 						if (i.isEqipItem()) {
-							//”ÍˆÍ•\¦‚·‚é‚Ì‚Í•Ší‚¾‚¯
+							//ç¯„å›²è¡¨ç¤ºã™ã‚‹ã®ã¯æ­¦å™¨ã ã‘
 							if (i.getWeaponMagicType() != null) {
 								area = i.getArea();
 							}
@@ -403,7 +403,7 @@ public class ItemWindow extends BasicSprite {
 							sb.append(" ").append(I18N.translate("AREA")).append(":").append(area);
 							sb.append(Text.getLineSep());
 						}
-						//ƒL[ƒAƒCƒeƒ€‘®«
+						//ã‚­ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ å±æ€§
 						if (!i.canSale()) {
 							sb.append(" ").append(I18N.translate("CANT_SALE"));
 							sb.append(Text.getLineSep());
@@ -418,18 +418,18 @@ public class ItemWindow extends BasicSprite {
 							sb.append(" ").append(I18N.translate("DCS")).append(":").append(dcs);
 							sb.append(Text.getLineSep());
 						}
-						//í“¬’†ƒAƒNƒVƒ‡ƒ“
+						//æˆ¦é—˜ä¸­ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
 						if (i.getBattleEvent() != null && !i.getBattleEvent().isEmpty()) {
 							sb.append(" ").append(I18N.translate("CAN_USE_BATTLE"));
 							sb.append(Text.getLineSep());
 						}
-						//ƒtƒB[ƒ‹ƒhƒAƒNƒVƒ‡ƒ“
+						//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
 						if (i.getFieldEvent() != null && !i.getFieldEvent().isEmpty()) {
 							sb.append(" ").append(I18N.translate("CAN_USE_FIELD"));
 							sb.append(Text.getLineSep());
 						}
 						if (i.isEqipItem()) {
-							//UŒ‚‰ñ”
+							//æ”»æ’ƒå›æ•°
 							if (i.getActionCount() > 1) {
 								sb.append(" ").append(I18N.translate("ACTION_COUNT").replaceAll("n", i.getActionCount() + ""));
 								sb.append(Text.getLineSep());
@@ -442,7 +442,7 @@ public class ItemWindow extends BasicSprite {
 									}
 									String v;
 									if (s.getKey().getMax() <= 1f) {
-										v = (float) (s.getValue() * 100) + "%";//1%’PˆÊ
+										v = (float) (s.getValue() * 100) + "%";//1%å˜ä½
 									} else {
 										v = (int) s.getValue() + "";
 									}
@@ -464,7 +464,7 @@ public class ItemWindow extends BasicSprite {
 									}
 								}
 							}
-							//‹­‰»
+							//å¼·åŒ–
 							if (i.canUpgrade()) {
 								sb.append(" ");
 								sb.append(I18N.translate("CAN_UPGRADE").replaceAll("n", i.getUpgradeMaterials().size() + ""));
@@ -474,7 +474,7 @@ public class ItemWindow extends BasicSprite {
 								sb.append(I18N.translate("THIS_ITEM_CANT_UPGRADE"));
 								sb.append(Text.getLineSep());
 							}
-							//‰ğ‘Ì
+							//è§£ä½“
 							if (!i.getDisasseMaterials().isEmpty()) {
 								sb.append(" ");
 								sb.append(I18N.translate("IF_DISASSEMBLY_GET"));
@@ -496,7 +496,7 @@ public class ItemWindow extends BasicSprite {
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						break;
 					case DROP:
-						//dropŠm”FƒEƒCƒ“ƒhƒE‚ğ—LŒø‰»
+						//dropç¢ºèªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’æœ‰åŠ¹åŒ–
 						if (!i.canSale()) {
 							msg.setText(I18N.translate("CANT_SALE"));
 							msg.allText();
@@ -514,7 +514,7 @@ public class ItemWindow extends BasicSprite {
 						}
 						break;
 					case DISASSEMBLY:
-						//‰ğ‘Ì‚Å‚«‚éƒAƒCƒeƒ€‚©”»’è
+						//è§£ä½“ã§ãã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‹åˆ¤å®š
 						if (!i.canSale() || !i.canDisasse()) {
 							msg.setText(I18N.translate("CANT_DISASSEMBLY"));
 							msg.allText();
@@ -536,18 +536,18 @@ public class ItemWindow extends BasicSprite {
 				}
 				break;
 			case TARGET_SELECT:
-				//tgtƒEƒCƒ“ƒhƒE‚©‚ç‘I‘ğ‚³‚ê‚½‘ÎÛÒ‚ğ‚à‚Æ‚ÉUSE‚Ü‚½‚ÍPASS‚ğÀs
+				//tgtã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‹ã‚‰é¸æŠã•ã‚ŒãŸå¯¾è±¡è€…ã‚’ã‚‚ã¨ã«USEã¾ãŸã¯PASSã‚’å®Ÿè¡Œ
 				//use or pass
 				assert choiceUse.getSelect() == USE || choiceUse.getSelect() == PASS : "ITEMWINDOW : choice user select is missmatch";
 				if (choiceUse.getSelect() == USE) {
 					commitUse();
 					group.show(msg);
-					mode = Mode.WAIT_MSG_CLOSE_TO_IUS;//use‚µ‚½‚çÁ‚¦‚Ä‚¢‚é‰Â”\«‚ª‚ ‚é‚½‚ßIUS
+					mode = Mode.WAIT_MSG_CLOSE_TO_IUS;//useã—ãŸã‚‰æ¶ˆãˆã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ãŸã‚IUS
 					break;
 				}
 				if (choiceUse.getSelect() == PASS) {
-					//ƒpƒXƒ^‚Ì‘Šè‚ª‚±‚êˆÈã•¨‚ğ‚Ä‚È‚¢ê‡¸”s
-					//TODO:ŒğŠ·‹@”\‚ª•K—v
+					//ãƒ‘ã‚¹ã‚¿ã®ç›¸æ‰‹ãŒã“ã‚Œä»¥ä¸Šç‰©ã‚’æŒã¦ãªã„å ´åˆå¤±æ•—
+					//TODO:äº¤æ›æ©Ÿèƒ½ãŒå¿…è¦
 					if (!GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect()).getItemBag().canAdd()) {
 						String m = GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect()).getName() + I18N.translate("IS") + I18N.translate("CANT_HAVE");
 						this.msg.setText(m);
@@ -560,7 +560,7 @@ public class ItemWindow extends BasicSprite {
 					commitPass();
 					boolean self = itemBagSize == getSelectedPC().getItemBag().size();
 					group.show(msg);
-					//©•ª©g‚É“n‚µ‚½ê‡CU‚ÖA‚»‚¤‚Å‚È‚¢ê‡‚ÍIUS‚É–ß‚é
+					//è‡ªåˆ†è‡ªèº«ã«æ¸¡ã—ãŸå ´åˆCUã¸ã€ãã†ã§ãªã„å ´åˆã¯IUSã«æˆ»ã‚‹
 					if (self) {
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 					} else {
@@ -569,17 +569,17 @@ public class ItemWindow extends BasicSprite {
 				}
 				break;
 			case DROP_CONFIRM:
-				//dropŠm”FƒEƒCƒ“ƒhƒE‚Ì‘I‘ğˆ‚É‚æ‚è•ªŠò
+				//dropç¢ºèªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®é¸æŠè‚¢ã«ã‚ˆã‚Šåˆ†å²
 				switch (dropConfirm.getSelect()) {
 					case 0:
-						//‚¢‚¢‚¦
-						//—p“r‘I‘ğ‚É–ß‚é
+						//ã„ã„ãˆ
+						//ç”¨é€”é¸æŠã«æˆ»ã‚‹
 						group.show(choiceUse);
 						mode = Mode.CHOICE_USE;
 						break;
 					case 1:
-						//‚Í‚¢
-						//drop‚µ‚ÄƒAƒCƒeƒ€‘I‘ğ‚É–ß‚é
+						//ã¯ã„
+						//dropã—ã¦ã‚¢ã‚¤ãƒ†ãƒ é¸æŠã«æˆ»ã‚‹
 						commitDrop();
 						group.show(msg);
 						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
@@ -587,16 +587,16 @@ public class ItemWindow extends BasicSprite {
 				}
 				break;
 			case DISASSE_CONFIRM:
-				//‰ğ‘ÌŠm”FƒEƒCƒ“ƒhƒE‚Ì‘I‘ğˆ‚É‚æ‚è•ªŠò
+				//è§£ä½“ç¢ºèªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®é¸æŠè‚¢ã«ã‚ˆã‚Šåˆ†å²
 				switch (disasseConfirm.getSelect()) {
 					case 0:
-						//‚¢‚¢‚¦
-						//—p“r‘I‘ğ‚É–ß‚é
+						//ã„ã„ãˆ
+						//ç”¨é€”é¸æŠã«æˆ»ã‚‹
 						group.show(choiceUse);
 						mode = Mode.CHOICE_USE;
 						break;
 					case 1:
-						//‚Í‚¢
+						//ã¯ã„
 						commitDisasse();
 						group.show(msg);
 						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
@@ -604,7 +604,7 @@ public class ItemWindow extends BasicSprite {
 				}
 				break;
 			case WAIT_MSG_CLOSE_TO_IUS:
-				//drop‚Ìê‡‚ÍIUS‚É–ß‚é
+				//dropã®å ´åˆã¯IUSã«æˆ»ã‚‹
 				group.closeAll();
 				mode = Mode.ITEM_AND_USER_SELECT;
 				break;
@@ -625,8 +625,8 @@ public class ItemWindow extends BasicSprite {
 		sb.append(tgt.getName()).append(I18N.translate("IS")).append(i.getName()).append(I18N.translate("USE_ITEM"));
 		sb.append(Text.getLineSep());
 		if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
-			//¬Œ÷
-			//Œø‰Ê‘ª’è
+			//æˆåŠŸ
+			//åŠ¹æœæ¸¬å®š
 			Map<StatusKey, Float> map = tgt.calcDamage();
 			for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 				if (e.getValue() < 0) {
@@ -646,7 +646,7 @@ public class ItemWindow extends BasicSprite {
 				sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
 				sb.append(Text.getLineSep());
 			}
-			//DROP_ITEMƒCƒxƒ“ƒg‚Ì”»’è
+			//DROP_ITEMã‚¤ãƒ™ãƒ³ãƒˆã®åˆ¤å®š
 			for (ActionEvent e : i.getFieldEvent()) {
 				if (e.getParameterType() == ParameterType.ITEM_LOST) {
 					if (e.getP() >= 1f || Random.percent(e.getP())) {
@@ -657,7 +657,7 @@ public class ItemWindow extends BasicSprite {
 				}
 			}
 		} else {
-			//¸”s
+			//å¤±æ•—
 			sb.append(I18N.translate("BUT"));
 			sb.append(I18N.translate("NO_EFFECT"));
 			sb.append(Text.getLineSep());
@@ -746,7 +746,7 @@ public class ItemWindow extends BasicSprite {
 		dropConfirm.close();
 		Item i = getSelectedItem();
 		assert i.canSale() : "item is cant disassembly : " + i;
-		//1ŒÂ‚µ‚©‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç‘•”õ‚ğŠO‚·
+		//1å€‹ã—ã‹æŒã£ã¦ã„ãªã‹ã£ãŸã‚‰è£…å‚™ã‚’å¤–ã™
 		if (getSelectedPC().isEqip(i.getName()) && getSelectedPC().getItemBag().getItems().stream().filter(p -> p.equals(i)).count() == 1) {
 			getSelectedPC().removeEqip(i);
 		}
@@ -762,7 +762,7 @@ public class ItemWindow extends BasicSprite {
 		Item i = getSelectedItem();
 		assert i.canDisasse() : "item is cant disassembly : " + i;
 		assert i.canSale() : "item is cant disassembly : " + i;
-		//1ŒÂ‚µ‚©‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç‘•”õ‚ğŠO‚·
+		//1å€‹ã—ã‹æŒã£ã¦ã„ãªã‹ã£ãŸã‚‰è£…å‚™ã‚’å¤–ã™
 		if (getSelectedPC().isEqip(i.getName()) && getSelectedPC().getItemBag().getItems().stream().filter(p -> p.equals(i)).count() == 1) {
 			getSelectedPC().removeEqip(i);
 		}
@@ -784,7 +784,7 @@ public class ItemWindow extends BasicSprite {
 
 	@Override
 	public void update() {
-		//ƒƒCƒ“ƒEƒCƒ“ƒhƒE‚Ì“à—eXV
+		//ãƒ¡ã‚¤ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®å†…å®¹æ›´æ–°
 		if (mode == Mode.ITEM_AND_USER_SELECT) {
 			ItemBag ib = getSelectedPC().getItemBag();
 			StringBuilder sb = new StringBuilder();
@@ -825,9 +825,9 @@ public class ItemWindow extends BasicSprite {
 		}
 	}
 
-	//1‚Â‘O‚Ì‰æ–Ê‚É–ß‚é
+	//1ã¤å‰ã®ç”»é¢ã«æˆ»ã‚‹
 	public boolean close() {
-		//IUS•\¦’†‚Ìê‡‚Í–ß‚é‚Í‘SÁ‚µ
+		//IUSè¡¨ç¤ºä¸­ã®å ´åˆã¯æˆ»ã‚‹ã¯å…¨æ¶ˆã—
 		if (group.getWindows().stream().allMatch(p -> !p.isVisible())) {
 			mode = Mode.ITEM_AND_USER_SELECT;
 			return true;

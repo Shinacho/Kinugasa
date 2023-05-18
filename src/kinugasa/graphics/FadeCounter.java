@@ -24,7 +24,7 @@
 package kinugasa.graphics;
 
 /**
- * F—v‘f‚ğƒtƒF[ƒhƒCƒ“^ƒtƒF[ƒhƒAƒEƒg‚·‚é‚½‚ß‚ÌColorCounter‚ÌÀ‘•‚Å‚·.
+ * è‰²è¦ç´ ã‚’ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ï¼ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã™ã‚‹ãŸã‚ã®ColorCounterã®å®Ÿè£…ã§ã™.
  * <br>
  *
  * <br>
@@ -35,14 +35,14 @@ package kinugasa.graphics;
 public class FadeCounter extends ColorTransitionModel {
 
 	private static final long serialVersionUID = -1609450992263652227L;
-	/** ƒtƒF[ƒh‚Ì‘¬“x‚Å‚·BƒJƒEƒ“ƒ^‚ÌŒ»İ’l‚É‘«‚³‚ê‚Ü‚·. */
+	/** ãƒ•ã‚§ãƒ¼ãƒ‰ã®é€Ÿåº¦ã§ã™ã€‚ã‚«ã‚¦ãƒ³ã‚¿ã®ç¾åœ¨å€¤ã«è¶³ã•ã‚Œã¾ã™. */
 	private int speed;
 
 	/**
-	 * ‰Šú’l‚Æ‘JˆÚ‘¬“x‚ğw’è‚µ‚ÄAƒtƒF[ƒhƒJƒEƒ“ƒ^‚ğì¬‚µ‚Ü‚·.
-	 * @param value ƒJƒEƒ“ƒ^‚Ì‰Šú’l‚Å‚·B0‚©‚ç255‚ÌŠÔ‚Åw’è‚µ‚Ü‚·B<br>
-	 * @param speed ƒJƒEƒ“ƒ^‚Ì‘JˆÚ‘¬“x‚Å‚·B•‰”‚ğw’è‚Å‚«‚Ü‚·B<br>
-	 * @throws IllegalArgumentException ‰Šú’l‚ª0–¢–‚©A255‚ğ’´‚¦‚éê‡‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * åˆæœŸå€¤ã¨é·ç§»é€Ÿåº¦ã‚’æŒ‡å®šã—ã¦ã€ãƒ•ã‚§ãƒ¼ãƒ‰ã‚«ã‚¦ãƒ³ã‚¿ã‚’ä½œæˆã—ã¾ã™.
+	 * @param value ã‚«ã‚¦ãƒ³ã‚¿ã®åˆæœŸå€¤ã§ã™ã€‚0ã‹ã‚‰255ã®é–“ã§æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param speed ã‚«ã‚¦ãƒ³ã‚¿ã®é·ç§»é€Ÿåº¦ã§ã™ã€‚è² æ•°ã‚’æŒ‡å®šã§ãã¾ã™ã€‚<br>
+	 * @throws IllegalArgumentException åˆæœŸå€¤ãŒ0æœªæº€ã‹ã€255ã‚’è¶…ãˆã‚‹å ´åˆã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public FadeCounter(int value, int speed) throws IllegalArgumentException {
 		super(value);
@@ -50,20 +50,20 @@ public class FadeCounter extends ColorTransitionModel {
 	}
 
 	/**
-	 * 0‚©‚çŠJn‚·‚éƒJƒEƒ“ƒ^‚ğì¬‚µ‚Ü‚·.
-	 * @param speed ƒJƒEƒ“ƒ^‚Ì‘JˆÚ‘¬“x‚ğw’è‚µ‚Ü‚·B
-	 * ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍA’Êí‚Í³”‚ğw’è‚µ‚Ü‚·B<br>
-	 * @return ƒtƒF[ƒhƒCƒ“—p‚ÌƒJƒEƒ“ƒ^‚ğì¬‚µ‚Ü‚·B<br>
+	 * 0ã‹ã‚‰é–‹å§‹ã™ã‚‹ã‚«ã‚¦ãƒ³ã‚¿ã‚’ä½œæˆã—ã¾ã™.
+	 * @param speed ã‚«ã‚¦ãƒ³ã‚¿ã®é·ç§»é€Ÿåº¦ã‚’æŒ‡å®šã—ã¾ã™ã€‚
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã€é€šå¸¸ã¯æ­£æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @return ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ç”¨ã®ã‚«ã‚¦ãƒ³ã‚¿ã‚’ä½œæˆã—ã¾ã™ã€‚<br>
 	 */
 	public static FadeCounter fadeIn(int speed) {
 		return new FadeCounter(MIN, speed);
 	}
 
 	/**
-	 * 255‚©‚çŠJn‚·‚éƒJƒEƒ“ƒ^‚ğì¬‚µ‚Ü‚·.
-	 * @param speed ƒJƒEƒ“ƒ^‚Ì‘JˆÚ‘¬“x‚ğw’è‚µ‚Ü‚·B
-	 * ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍA’Êí‚Í•‰”‚ğw’è‚µ‚Ü‚·B<br>
-	 * @return ƒtƒF[ƒhƒAƒEƒg—p‚ÌƒJƒEƒ“ƒ^‚ğì¬‚µ‚Ü‚·B<br>
+	 * 255ã‹ã‚‰é–‹å§‹ã™ã‚‹ã‚«ã‚¦ãƒ³ã‚¿ã‚’ä½œæˆã—ã¾ã™.
+	 * @param speed ã‚«ã‚¦ãƒ³ã‚¿ã®é·ç§»é€Ÿåº¦ã‚’æŒ‡å®šã—ã¾ã™ã€‚
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã€é€šå¸¸ã¯è² æ•°ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @return ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆç”¨ã®ã‚«ã‚¦ãƒ³ã‚¿ã‚’ä½œæˆã—ã¾ã™ã€‚<br>
 	 */
 	public static FadeCounter fadeOut(int speed) {
 		return new FadeCounter(MAX, speed);
@@ -84,19 +84,19 @@ public class FadeCounter extends ColorTransitionModel {
 			ended = true;
 		}
 	}
-	/** uŠJn‚µ‚Ä‚¢‚évó‘Ôƒtƒ‰ƒO‚Å‚·.
-	 * Å‰‚Éupdate‚ğŒÄ‚Ño‚·‚ÆAtrue‚É‚È‚è‚Ü‚·B
-	 * ‚»‚êˆÈ~‚ÍAí‚Étrue‚ğ•Ô‚µ‚Ü‚·B */
+	/** ã€Œé–‹å§‹ã—ã¦ã„ã‚‹ã€çŠ¶æ…‹ãƒ•ãƒ©ã‚°ã§ã™.
+	 * æœ€åˆã«updateã‚’å‘¼ã³å‡ºã™ã¨ã€trueã«ãªã‚Šã¾ã™ã€‚
+	 * ãã‚Œä»¥é™ã¯ã€å¸¸ã«trueã‚’è¿”ã—ã¾ã™ã€‚ */
 	private boolean started = false;
-	/** uI—¹‚µ‚Ä‚¢‚évó‘Ôƒtƒ‰ƒO‚Å‚·.
-	 * ƒJƒEƒ“ƒ^‚Ì’l‚ª—LŒø”ÍˆÍ‚©‚ço‚é‚Æ
-	 * true‚É‚È‚è‚Ü‚·B‚»‚êˆÈ~‚Íí‚Étrue‚ğ•Ô‚µ‚Ü‚·B */
+	/** ã€Œçµ‚äº†ã—ã¦ã„ã‚‹ã€çŠ¶æ…‹ãƒ•ãƒ©ã‚°ã§ã™.
+	 * ã‚«ã‚¦ãƒ³ã‚¿ã®å€¤ãŒæœ‰åŠ¹ç¯„å›²ã‹ã‚‰å‡ºã‚‹ã¨
+	 * trueã«ãªã‚Šã¾ã™ã€‚ãã‚Œä»¥é™ã¯å¸¸ã«trueã‚’è¿”ã—ã¾ã™ã€‚ */
 	private boolean ended = false;
 
 	/**
 	 * {@inheritDoc }
 	 * <br>
-	 * ‚±‚ÌÀ‘•‚Å‚ÍÅ‰‚Éupdate‚ğŒÄ‚Ño‚·‚ÆA‚»‚êˆÈ~‚Íí‚ÉuŠJn‚µ‚Ä‚¢‚éó‘Ôv‚Æ‚È‚è‚Ü‚·B<br>
+	 * ã“ã®å®Ÿè£…ã§ã¯æœ€åˆã«updateã‚’å‘¼ã³å‡ºã™ã¨ã€ãã‚Œä»¥é™ã¯å¸¸ã«ã€Œé–‹å§‹ã—ã¦ã„ã‚‹çŠ¶æ…‹ã€ã¨ãªã‚Šã¾ã™ã€‚<br>
 	 */
 	@Override
 	public boolean isRunning() {
@@ -106,8 +106,8 @@ public class FadeCounter extends ColorTransitionModel {
 	/**
 	 * {@inheritDoc }
 	 * <br>
-	 * ‚±‚ÌÀ‘•‚Å‚ÍAupdateƒƒ\ƒbƒh‚É‚æ‚Á‚ÄƒJƒEƒ“ƒ^‚Ì’l‚ª—LŒø”ÍˆÍ‚©‚ço‚é‚Æ
-	 * ‚»‚êˆÈ~‚Íí‚ÉuI—¹‚µ‚Ä‚¢‚éó‘Ôv‚Æ‚È‚è‚Ü‚·B<br>
+	 * ã“ã®å®Ÿè£…ã§ã¯ã€updateãƒ¡ã‚½ãƒƒãƒ‰ã«ã‚ˆã£ã¦ã‚«ã‚¦ãƒ³ã‚¿ã®å€¤ãŒæœ‰åŠ¹ç¯„å›²ã‹ã‚‰å‡ºã‚‹ã¨
+	 * ãã‚Œä»¥é™ã¯å¸¸ã«ã€Œçµ‚äº†ã—ã¦ã„ã‚‹çŠ¶æ…‹ã€ã¨ãªã‚Šã¾ã™ã€‚<br>
 	 */
 	@Override
 	public boolean isEnded() {

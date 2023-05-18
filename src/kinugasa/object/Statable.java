@@ -25,9 +25,9 @@ package kinugasa.object;
 
 
 /**
- * ���̃C���^�[�t�F�[�X�����������I�u�W�F�N�g�ɁA�u�J�n���Ă���v�u�I�������v�Ȃǂ̏�Ԃ𒲂ׂ�@�\��񋟂��܂�.
+ * このインターフェースを実装したオブジェクトに、「開始している」「終了した」などの状態を調べる機能を提供します.
  * <br>
- * ��ɁA�G�t�F�N�g�̊J�n�^�j���𔻒肷�邽�߂Ɏg�p����܂��B<br>
+ * 主に、エフェクトの開始／破棄を判定するために使用されます。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/12_19:11:08<br>
@@ -36,16 +36,16 @@ package kinugasa.object;
 public interface Statable {
 
 	/**
-	 * ���̃I�u�W�F�N�g���u�J�n���Ă���v��Ԃł��邩���������܂�.
-	 * ���̃I�u�W�F�N�g�̏�Ԃ����Z�b�g�ł���ꍇ�A���Z�b�g����u�J�n����Ă���v���ǂ�����
-	 * �����ɂ���ĈقȂ�܂��B<br>
-	 * @return �J�n���Ă���ꍇ��true��Ԃ��܂��B<br>
+	 * このオブジェクトが「開始している」状態であるかを検査します.
+	 * このオブジェクトの状態をリセットできる場合、リセット後も「開始されている」かどうかは
+	 * 実装によって異なります。<br>
+	 * @return 開始している場合はtrueを返します。<br>
 	 */
 	public boolean isRunning();
 
 	/**
-	 * ���̃I�u�W�F�N�g���u�I�������v��Ԃł��邩���������܂�.
-	 * @return �I�����Ă���ꍇ��true��Ԃ��܂��B<br>
+	 * このオブジェクトが「終了した」状態であるかを検査します.
+	 * @return 終了している場合はtrueを返します。<br>
 	 */
 	public boolean isEnded();
 }

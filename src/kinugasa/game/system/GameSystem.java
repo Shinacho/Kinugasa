@@ -34,7 +34,7 @@ import kinugasa.object.Sprite;
 import kinugasa.util.Random;
 
 /**
- * �X�e�[�^�X�Ǘ��n�̃}�X�^�[�ł��B
+ * ステータス管理系のマスターです。
  *
  * @vesion 1.0.0 - 2022/11/16_15:45:53<br>
  * @author Shinacho<br>

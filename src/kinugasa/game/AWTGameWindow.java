@@ -36,7 +36,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 
 /**
- * AWT‚ğ—˜—p‚µ‚½A•W€‚ÌƒQ[ƒ€ƒEƒCƒ“ƒhƒE‚ÌÀ‘•‚Å‚·B
+ * AWTã‚’åˆ©ç”¨ã—ãŸã€æ¨™æº–ã®ã‚²ãƒ¼ãƒ ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®å®Ÿè£…ã§ã™ã€‚
  *
  * @vesion 1.0.0 - 2021/08/17_14:20:58<br>
  * @author Shinacho<br>
@@ -44,22 +44,22 @@ import java.awt.image.BufferStrategy;
 public class AWTGameWindow extends Frame implements GameWindow {
 
 	/**
-	 * ‚±‚ÌƒtƒŒ[ƒ€‚Ì“à•”—Ìˆæ‚ÌƒLƒƒƒbƒVƒ…‚Å‚·.À•W‚Í0,0‚É‚È‚è‚Ü‚·.
+	 * ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã®å†…éƒ¨é ˜åŸŸã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã§ã™.åº§æ¨™ã¯0,0ã«ãªã‚Šã¾ã™.
 	 */
 	private Rectangle internalBounds;
 	/**
-	 * Ä•`‰æ‚Ég—p‚·‚éBufferStrategy‚ğ’ñ‹Ÿ‚·‚é‚½‚ß‚ÌƒLƒƒƒ“ƒoƒX‚Å‚·.
+	 * å†æç”»ã«ä½¿ç”¨ã™ã‚‹BufferStrategyã‚’æä¾›ã™ã‚‹ãŸã‚ã®ã‚­ãƒ£ãƒ³ãƒã‚¹ã§ã™.
 	 */
 	private final Canvas canvas;
 	/**
-	 * ƒEƒCƒ“ƒhƒE‚ªƒAƒNƒeƒBƒu‚Å‚ ‚é‚©‚ğŒŸ¸‚·‚éƒtƒ‰ƒO‚Å‚·.
+	 * ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãŒã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã§ã‚ã‚‹ã‹ã‚’æ¤œæŸ»ã™ã‚‹ãƒ•ãƒ©ã‚°ã§ã™.
 	 */
 	private boolean active;
 
 	/**
-	 * ƒtƒŒ[ƒ€‚ğì¬‚µ‚Ü‚·.
+	 * ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @throws HeadlessException ÀsŠÂ‹«‚ªGUI‚ğƒTƒ|[ƒg‚µ‚Ä‚¢‚È‚¢ê‡‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @throws HeadlessException å®Ÿè¡Œç’°å¢ƒãŒGUIã‚’ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ãªã„å ´åˆã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	AWTGameWindow() throws HeadlessException {
 		add(canvas = new Canvas());

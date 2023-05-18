@@ -24,26 +24,26 @@
 package kinugasa.game.system;
 
 /**
- * �_���[�W�v�Z�Ɏg�p����^�C�v�ł��B
+ * ダメージ計算に使用するタイプです。
  *
  * @vesion 1.0.0 - 2022/11/16_17:54:58<br>
  * @author Shinacho<br>
  */
 public enum StatusDamageCalcType {
 	/**
-	 * �ő�l��value%�̃_���[�W�B
+	 * 最大値のvalue%のダメージ。
 	 */
 	PERCENT_OF_MAX,
 	/**
-	 * ���ݒl��value%�̃_���[�W�B
+	 * 現在値のvalue%のダメージ。
 	 */
 	PERCENT_OF_NOW,
 	/**
-	 * value�𒼐ډ��Z���܂��B
+	 * valueを直接加算します。
 	 */
 	DIRECT,
 	/**
-	 * �_���[�W�v�Z�����g�p���Čv�Z���܂��B
+	 * ダメージ計算式を使用して計算します。
 	 */
 	USE_DAMAGE_CALC,
 }

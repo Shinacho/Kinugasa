@@ -32,7 +32,7 @@ import kinugasa.resource.Nameable;
  * THE SOFTWARE.
  */
 /**
- * バトルフィールドに配置される障害物のスプライトです。
+ * 繝舌ヨ繝ｫ繝輔ぅ繝ｼ繝ｫ繝峨↓驟咲ｽｮ縺輔ｌ繧矩囿螳ｳ迚ｩ縺ｮ繧ｹ繝励Λ繧､繝医〒縺吶�
  *
  * @vesion 1.0.0 - 2022/11/23_11:42:08<br>
  * @author Shinacho<br>

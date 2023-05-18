@@ -51,9 +51,9 @@ public class BattleLogic extends GameLogic {
 
 		stage = 0;
 		battleSystem = GameSystem.getInstance().getBattleSystem();
-		c5 = new SoundBuilder("resource/se/Œø‰Ê‰¹Q‘I‘ğ1.wav").builde().load();
-		c6 = new SoundBuilder("resource/se/Œø‰Ê‰¹Q‘I‘ğ2.wav").builde().load();
-		turnStart = new SoundBuilder("resource/se/Œø‰Ê‰¹Qƒoƒgƒ‹ƒ^[ƒ“ŠJn.wav").builde().load();
+		c5 = new SoundBuilder("resource/se/åŠ¹æœéŸ³ï¼¿é¸æŠ1.wav").builde().load();
+		c6 = new SoundBuilder("resource/se/åŠ¹æœéŸ³ï¼¿é¸æŠ2.wav").builde().load();
+		turnStart = new SoundBuilder("resource/se/åŠ¹æœéŸ³ï¼¿ãƒãƒˆãƒ«ã‚¿ãƒ¼ãƒ³é–‹å§‹.wav").builde().load();
 
 	}
 
@@ -74,23 +74,23 @@ public class BattleLogic extends GameLogic {
 		/*
 		battleSystem.update();
 
-		//‹Ù‹}’Eoƒ{ƒ^ƒ“
+		//ç·Šæ€¥è„±å‡ºãƒœã‚¿ãƒ³
 		if (is.isPressed(GamePadButton.BACK, InputType.SINGLE)) {
 			battleSystem.setBattleResultValue(new BattleResultValues(BattleResult.WIN, 123, new ArrayList<>(), "FIELD"));
 			BattleResultValues result = GameSystem.getInstance().battleEnd();
-			kinugasa.game.GameLog.printInfo("í“¬‹­§I—¹F" + result);
+			kinugasa.game.GameLog.printInfo("æˆ¦é—˜å¼·åˆ¶çµ‚äº†ï¼š" + result);
 			gls.changeTo("FIELD");
 		}
-		//í“¬I—¹”»’è
+		//æˆ¦é—˜çµ‚äº†åˆ¤å®š
 		if (battleSystem.isEnd()) {
 			BattleResultValues result = GameSystem.getInstance().battleEnd();
-			kinugasa.game.GameLog.printInfo("í“¬I—¹F" + result);
+			kinugasa.game.GameLog.printInfo("æˆ¦é—˜çµ‚äº†ï¼š" + result);
 			gls.changeTo("FIELD");
 		}
 
 		switch (stage) {
 			case 0:
-				//BS‚Ìˆ—‚ªŠ®—¹‚·‚é‚Ü‚Å‘Ò‹@
+				//BSã®å‡¦ç†ãŒå®Œäº†ã™ã‚‹ã¾ã§å¾…æ©Ÿ
 				lp++;
 				if (battleSystem.waitAction()) {
 					stage = 1;
@@ -101,19 +101,19 @@ public class BattleLogic extends GameLogic {
 				}
 				break;
 			case 1:
-				//ƒRƒ}ƒ“ƒh‘I‘ği1‰ñ‚¾‚¯
+				//ã‚³ãƒãƒ³ãƒ‰é¸æŠï¼ˆ1å›ã ã‘
 				cmd = battleSystem.execCmd();
 				if (cmd.isUserOperation()) {
-					//ƒRƒ}ƒ“ƒhƒEƒCƒ“ƒhƒE•\¦AƒRƒ}ƒ“ƒh‘I‘ğ
+					//ã‚³ãƒãƒ³ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦è¡¨ç¤ºã€ã‚³ãƒãƒ³ãƒ‰é¸æŠ
 					turnStart.load().stopAndPlay();
 					stage = 2;
 				} else {
-					//NPCƒAƒNƒVƒ‡ƒ“‚ªI‚í‚é‚Ü‚Å‘Ò‹@
+					//NPCã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãŒçµ‚ã‚ã‚‹ã¾ã§å¾…æ©Ÿ
 					stage = 0;
 				}
 				break;
 			case 2:
-				//ƒRƒ}ƒ“ƒhƒEƒCƒ“ƒhƒE•\¦AƒRƒ}ƒ“ƒh‘I‘ğ
+				//ã‚³ãƒãƒ³ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦è¡¨ç¤ºã€ã‚³ãƒãƒ³ãƒ‰é¸æŠ
 				BattleCommandMessageWindow mw = battleSystem.getMessageWindowSystem().getCommandWindow();
 				if (!mw.isVisible()) {
 					mw.setVisible(true);
@@ -133,24 +133,24 @@ public class BattleLogic extends GameLogic {
 					mw.nextAction();
 				}
 
-				//í‹µ}
+				//æˆ¦æ³å›³
 				if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
 					battleSystem.getMessageWindowSystem().switchVisible();
 				}
 
-				//Œˆ’è
+				//æ±ºå®š
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
-					//ƒ^[ƒQƒbƒg‘I‘ğ
+					//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠ
 					OperationResult result = battleSystem.execPCAction();
 					switch (result) {
 						case MISS:
-							//Ÿ‚ÌƒRƒ}ƒ“ƒh‚Ö
+							//æ¬¡ã®ã‚³ãƒãƒ³ãƒ‰ã¸
 							stage = 0;
 							break;
 						case SUCCESS:
-							//Ÿ‚ÌƒRƒ}ƒ“ƒh‚Ö
+							//æ¬¡ã®ã‚³ãƒãƒ³ãƒ‰ã¸
 							stage = 0;
 							break;
 						case MOVE:
@@ -158,7 +158,7 @@ public class BattleLogic extends GameLogic {
 							stage = 4;
 							break;
 						case CANCEL:
-							//‰½‚à‚µ‚È‚¢iÄÀs‰Â”\
+							//ä½•ã‚‚ã—ãªã„ï¼ˆå†å®Ÿè¡Œå¯èƒ½
 							break;
 						case SHOW_STATUS:
 							stage = 5;
@@ -169,14 +169,14 @@ public class BattleLogic extends GameLogic {
 							break;
 					}
 				}
-				//ƒLƒƒƒ“ƒZƒ‹iƒJ[ƒ\ƒ‹‚ğ–ß‚·
+				//ã‚­ãƒ£ãƒ³ã‚»ãƒ«ï¼ˆã‚«ãƒ¼ã‚½ãƒ«ã‚’æˆ»ã™
 				if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
 					mw.resetSelect();
 				}
 				break;
 			case 3:
-				//ƒ^[ƒQƒbƒgƒZƒŒƒNƒg
+				//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚»ãƒ¬ã‚¯ãƒˆ
 				BattleTargetSystem targetSystem = battleSystem.getTargetSystem();
 
 				if (is.isPressed(GamePadButton.POV_LEFT, InputType.SINGLE)) {
@@ -194,26 +194,26 @@ public class BattleLogic extends GameLogic {
 					targetSystem.next();
 				}
 
-				//í‹µ}
+				//æˆ¦æ³å›³
 				if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
 					battleSystem.getMessageWindowSystem().switchVisible();
 				}
 
-				//Œˆ’è
+				//æ±ºå®š
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
 					OperationResult result = battleSystem.execPCAction();
 					switch (result) {
 						case CANCEL:
 						case TO_TARGET_SELECT:
-							//Äs“®‰Â”\
+							//å†è¡Œå‹•å¯èƒ½
 							break;
 						case SHOW_STATUS:
 						case MOVE:
-							throw new AssertionError("•s³‚È–ß‚è’l : " + result);
+							throw new AssertionError("ä¸æ­£ãªæˆ»ã‚Šå€¤ : " + result);
 						default:
-							//Äs“®•s‰Â”\
+							//å†è¡Œå‹•ä¸å¯èƒ½
 							stage = 0;
 							break;
 					}
@@ -226,16 +226,16 @@ public class BattleLogic extends GameLogic {
 				}
 				break;
 			case 4:
-				//ˆÚ“®ƒtƒF[ƒY
+				//ç§»å‹•ãƒ•ã‚§ãƒ¼ã‚º
 				AfterMoveActionMessageWindow mw2 = battleSystem.getMessageWindowSystem().getAfterMoveCommandWindow();
 
 				BattleCharacter playerChara = cmd.getUser();
 
-				//í‹µ}
+				//æˆ¦æ³å›³
 				if (is.isPressed(GamePadButton.LB, InputType.SINGLE)) {
 					battleSystem.getMessageWindowSystem().switchVisible();
 				}
-				//ƒLƒƒƒ“ƒZƒ‹
+				//ã‚­ãƒ£ãƒ³ã‚»ãƒ«
 				if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
 					c5.stopAndPlay();
 					battleSystem.cancelPCsMove();
@@ -243,8 +243,8 @@ public class BattleLogic extends GameLogic {
 					break;
 				}
 
-				//Œˆ’è
-				//Šm’è‚Ìê‡AŸ‚ÌƒRƒ}ƒ“ƒh‚ÖAUŒ‚‚Ìê‡Aƒ^[ƒQƒbƒg‘I‘ğ‚ÉˆÚ“®‚·‚é
+				//æ±ºå®š
+				//ç¢ºå®šã®å ´åˆã€æ¬¡ã®ã‚³ãƒãƒ³ãƒ‰ã¸ã€æ”»æ’ƒã®å ´åˆã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠã«ç§»å‹•ã™ã‚‹
 				if (is.isPressed(GamePadButton.A, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
 					OperationResult res = battleSystem.execPCAction();
@@ -261,13 +261,13 @@ public class BattleLogic extends GameLogic {
 						break;
 					}
 				}
-				//ˆÚ“®ŒãUŒ‚‚Ì”»’è
+				//ç§»å‹•å¾Œæ”»æ’ƒã®åˆ¤å®š
 				int remMovPoint = (int) (playerChara.getStatus().getEffectedStatus().get("MOV").getValue()
 						- playerMoveInitialLocation.distance(cmd.getUser().getSprite().getCenter()));
-				//cƒ|ƒCƒ“ƒg‚ªÅ‘å’l‚Ì”¼•ªˆÈ‰º‚Ìê‡‚ÍUŒ‚‚Å‚«‚È‚¢
+				//æ®‹ãƒã‚¤ãƒ³ãƒˆãŒæœ€å¤§å€¤ã®åŠåˆ†ä»¥ä¸‹ã®å ´åˆã¯æ”»æ’ƒã§ããªã„
 				battleSystem.setAftedMoveAction(remMovPoint > playerChara.getStatus().getEffectedStatus().get("MOV").getValue() / 2);
 
-				//ƒRƒ}ƒ“ƒh‘I‘ğ
+				//ã‚³ãƒãƒ³ãƒ‰é¸æŠ
 				if (is.isPressed(GamePadButton.POV_LEFT, InputType.SINGLE)) {
 					c6.load().stopAndPlay();
 					mw2.prevAction();
@@ -283,33 +283,33 @@ public class BattleLogic extends GameLogic {
 					mw2.nextAction();
 				}
 
-				//ƒVƒ~ƒ…ƒŒ[ƒgƒ€[ƒu‹N“®‚µ‚ÄŸƒtƒŒ[ƒ€‚ÌˆÊ’uæ“¾
+				//ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ãƒˆãƒ ãƒ¼ãƒ–èµ·å‹•ã—ã¦æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ ã®ä½ç½®å–å¾—
 				KVector v = new KVector(is.getGamePadState().sticks.LEFT.getLocation(VehicleStorage.getInstance().get("WALK").getSpeed()));
 				if (v.getSpeed() <= 0) {
 					break;
 				}
 				Point2D.Float nextFrameLocation = playerChara.getSprite().simulateMoveCenterLocation(v);
-				//—Ìˆæ”»’è
+				//é ˜åŸŸåˆ¤å®š
 				if (!battleSystem.getBattleFieldSystem().getBattleFieldAllArea().contains(nextFrameLocation)) {
 					break;
 				}
-				//áŠQ•¨”»’è
+				//éšœå®³ç‰©åˆ¤å®š
 				if (battleSystem.getBattleFieldSystem().hitObstacle(nextFrameLocation)) {
 					break;
 				}
-				//‹——£”»’è
+				//è·é›¢åˆ¤å®š
 				if (playerChara.getStatus().getEffectedStatus().get("MOV").getValue() <= playerMoveInitialLocation.distance(nextFrameLocation)) {
 					break;
 				}
-				//ˆÚ“®Às
+				//ç§»å‹•å®Ÿè¡Œ
 				playerChara.getSprite().setVector(v);
 				playerChara.getSprite().move();
 				playerChara.to(playerChara.getSprite().getVector().round());
 
 				break;
 			case 5:
-				//ƒXƒe[ƒ^ƒXQÆ
-				//•Â‚¶‚éˆÈŠO“Á‚É‚È‚µB
+				//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å‚ç…§
+				//é–‰ã˜ã‚‹ä»¥å¤–ç‰¹ã«ãªã—ã€‚
 
 				if (is.isPressed(GamePadButton.B, InputType.SINGLE)) {
 					stage = 2;

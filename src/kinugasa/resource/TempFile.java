@@ -28,7 +28,7 @@ import java.io.IOException;
 import kinugasa.game.GameLog;
 
 /**
- * ˆêƒtƒ@ƒCƒ‹‚Å‚·.
+ * ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«ã§ã™.
  * <br>
  *
  * @version 1.0.0 - 2015/01/04<br>

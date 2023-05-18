@@ -29,7 +29,7 @@ import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Storage;
 
 /**
- * 1‚Â‚ÌXML—v‘f‚ª‚Â‘®«‚Ìƒ}ƒbƒv‚Å‚·.
+ * 1ã¤ã®XMLè¦ç´ ãŒæŒã¤å±æ€§ã®ãƒãƒƒãƒ—ã§ã™.
  * <br>
  *
  * <br>
@@ -44,22 +44,22 @@ public class XMLAttributeStorage extends Storage<XMLAttribute> implements Serial
 	private static final long serialVersionUID = -4953330104834129110L;
 
 	/**
-	 * V‚µ‚¢XMLAttributeStorage‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„XMLAttributeStorageã‚’ä½œæˆã—ã¾ã™.
 	 */
 	public XMLAttributeStorage() {
 	}
 
 	/**
-	 * —e—Ê‚Ì‰Šú’l‚ğw’è‚µ‚ÄAV‚µ‚¢XMLAttributeStorage‚ğì¬‚µ‚Ü‚·.
+	 * å®¹é‡ã®åˆæœŸå€¤ã‚’æŒ‡å®šã—ã¦ã€æ–°ã—ã„XMLAttributeStorageã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param initialSize Strage‚Ì‰Šú—e—Ê‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param initialSize Strageã®åˆæœŸå®¹é‡ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public XMLAttributeStorage(int initialSize) {
 		super(initialSize);
 	}
 
 	/**
-	 * XMLAttribute‚ÌƒRƒŒƒNƒVƒ‡ƒ“‚ğ‘S‚Ä’Ç‰Á‚µ‚½Strage‚ğì¬‚µ‚Ü‚·.
+	 * XMLAttributeã®ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ã‚’å…¨ã¦è¿½åŠ ã—ãŸStrageã‚’ä½œæˆã—ã¾ã™.
 	 *
 	 * @param attributes
 	 */
@@ -69,9 +69,9 @@ public class XMLAttributeStorage extends Storage<XMLAttribute> implements Serial
 	}
 
 	/**
-	 * ‘S‚Ä‚Ì‘®«‚ğƒXƒy[ƒX‚Å‹æØ‚Á‚Ä•À‚×‚½•¶š—ñ‚ğ•Ô‚µ‚Ü‚·.
+	 * å…¨ã¦ã®å±æ€§ã‚’ã‚¹ãƒšãƒ¼ã‚¹ã§åŒºåˆ‡ã£ã¦ä¸¦ã¹ãŸæ–‡å­—åˆ—ã‚’è¿”ã—ã¾ã™.
 	 *
-	 * @return ‘®«‚ğkey=value‚ÌŒ`®‚ÅAƒXƒy[ƒX‚Å‹æØ‚Á‚Ä•À‚×‚½•¶š—ñ‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return å±æ€§ã‚’key=valueã®å½¢å¼ã§ã€ã‚¹ãƒšãƒ¼ã‚¹ã§åŒºåˆ‡ã£ã¦ä¸¦ã¹ãŸæ–‡å­—åˆ—ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	@Override
 	public String toString() {

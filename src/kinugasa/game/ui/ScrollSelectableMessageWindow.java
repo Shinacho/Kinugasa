@@ -50,7 +50,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 
 	private List<Text> text = new ArrayList<>();
 	private MessageWindow window;
-	private int select;//全体の中での選択位置
+	private int select;//蜈ｨ菴薙�ｮ荳ｭ縺ｧ縺ｮ驕ｸ謚樔ｽ咲ｽｮ
 	private int visibleIdx;
 	private int visibleLine = 6;
 	private boolean loop = false;
@@ -189,7 +189,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 		return loop;
 	}
 
-	//表示中行中の選択位置
+	//陦ｨ遉ｺ荳ｭ陦御ｸｭ縺ｮ驕ｸ謚樔ｽ咲ｽｮ
 	private int pos = 0;
 
 	public void nextSelect() {

@@ -45,7 +45,7 @@ public class BookWindow extends BasicSprite {
 
 	private List<Status> list;
 	private MessageWindow main;
-	private MessageWindow choiceUse, dropConfirm, tgtSelect, dissassemblyComfirm, msg;//msg‚Íƒ{ƒ^ƒ“‘€ì‚Å‘¦•Â‚¶‚é
+	private MessageWindow choiceUse, dropConfirm, tgtSelect, dissassemblyComfirm, msg;//msgã¯ãƒœã‚¿ãƒ³æ“ä½œã§å³é–‰ã˜ã‚‹
 	private MessageWindowGroup group;
 
 	public BookWindow(float x, float y, float w, float h) {
@@ -73,28 +73,28 @@ public class BookWindow extends BasicSprite {
 
 	public enum Mode {
 		/**
-		 * ‚Ç‚ÌƒAƒCƒeƒ€‚É‚·‚é‚©‚ğ‘I‘ğ’†B
+		 * ã©ã®ã‚¢ã‚¤ãƒ†ãƒ ã«ã™ã‚‹ã‹ã‚’é¸æŠä¸­ã€‚
 		 */
 		BOOK_AND_USER_SELECT,
 		/**
-		 * ƒAƒCƒeƒ€g—p“à—e‚ğ‘I‘ğ’†B
+		 * ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨å†…å®¹ã‚’é¸æŠä¸­ã€‚
 		 */
 		CHOICE_USE,
 		/**
-		 * MSG•\¦‚µAI—¹‘Ò‚¿BI—¹‚µ‚½‚çITEMQANDQUSERQSELECT‚É“ü‚éB
+		 * MSGè¡¨ç¤ºã—ã€çµ‚äº†å¾…ã¡ã€‚çµ‚äº†ã—ãŸã‚‰ITEMï¼¿ANDï¼¿USERï¼¿SELECTã«å…¥ã‚‹ã€‚
 		 */
 		WAIT_MSG_CLOSE_TO_IUS,
 		WAIT_MSG_CLOSE_TO_CU,
 		/**
-		 * “n‚·‘ÎÛ‚ğ‘I‘ğ’†B
+		 * æ¸¡ã™å¯¾è±¡ã‚’é¸æŠä¸­ã€‚
 		 */
 		TARGET_SELECT,
 		/**
-		 * –‚p‘‚Ì‰ğ‘ÌB‰ğ‘Ì‚Å‚«‚é‚Ì‚Íƒy[ƒW‚ª‚ ‚é–‚p‘‚¾‚¯B
+		 * é­”è¡“æ›¸ã®è§£ä½“ã€‚è§£ä½“ã§ãã‚‹ã®ã¯ãƒšãƒ¼ã‚¸ãŒã‚ã‚‹é­”è¡“æ›¸ã ã‘ã€‚
 		 */
 		DISASSEMBLY_CONFIRM,
 		/**
-		 * Ì‚Ä‚Ä‚à‚æ‚¢‚©Šm”F’†B
+		 * æ¨ã¦ã¦ã‚‚ã‚ˆã„ã‹ç¢ºèªä¸­ã€‚
 		 */
 		DROP_CONFIRM,
 	}
@@ -122,7 +122,7 @@ public class BookWindow extends BasicSprite {
 			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				return;
 		}
 	}
@@ -147,7 +147,7 @@ public class BookWindow extends BasicSprite {
 			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				return;
 		}
 	}
@@ -166,7 +166,7 @@ public class BookWindow extends BasicSprite {
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
 			case DISASSEMBLY_CONFIRM:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				return;
 			case TARGET_SELECT:
 				tgtSelect.nextSelect();
@@ -188,7 +188,7 @@ public class BookWindow extends BasicSprite {
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
 			case DISASSEMBLY_CONFIRM:
-				//ˆ—‚È‚µ
+				//å‡¦ç†ãªã—
 				return;
 			case TARGET_SELECT:
 				tgtSelect.prevSelect();
@@ -234,10 +234,10 @@ public class BookWindow extends BasicSprite {
 				mode = Mode.CHOICE_USE;
 				break;
 			case CHOICE_USE:
-				//‘I‚Î‚ê‚½‘I‘ğˆ‚É‚æ‚è•ªŠò
+				//é¸ã°ã‚ŒãŸé¸æŠè‚¢ã«ã‚ˆã‚Šåˆ†å²
 				switch (choiceUse.getSelect()) {
 					case PASS:
-						//ƒpƒXƒ^[ƒQƒbƒg‚ÉˆÚ“®
+						//ãƒ‘ã‚¹ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«ç§»å‹•
 						List<Text> options2 = new ArrayList<>();
 						options2.addAll(list.stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
 						tgtSelect.setText(new Choice(options2, "BOOK_WINDOW_SUB", b.getName() + I18N.translate("WHO_DO_PASS")));
@@ -246,8 +246,8 @@ public class BookWindow extends BasicSprite {
 						mode = Mode.TARGET_SELECT;
 						break;
 					case CHECK:
-						//CHECKƒ‚[ƒh‚Å‚Í‰¿’lAƒL[ƒAƒCƒeƒ€‘®«AƒXƒƒbƒgAUŒ‚—ÍADCS‚ğ•\¦‚·‚é‚±‚ÆI
-						//ƒAƒCƒeƒ€‚ÌÚ×‚ğƒTƒu‚É•\¦
+						//CHECKãƒ¢ãƒ¼ãƒ‰ã§ã¯ä¾¡å€¤ã€ã‚­ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ å±æ€§ã€ã‚¹ãƒ­ãƒƒãƒˆã€æ”»æ’ƒåŠ›ã€DCSã‚’è¡¨ç¤ºã™ã‚‹ã“ã¨ï¼
+						//ã‚¢ã‚¤ãƒ†ãƒ ã®è©³ç´°ã‚’ã‚µãƒ–ã«è¡¨ç¤º
 						StringBuilder sb = new StringBuilder();
 						sb.append(b.getName()).append(Text.getLineSep());
 
@@ -263,10 +263,10 @@ public class BookWindow extends BasicSprite {
 							sb.append(" ").append(b.getDesc());
 							sb.append(Text.getLineSep());
 						}
-						//‰¿’l
+						//ä¾¡å€¤
 						sb.append(" ").append(I18N.translate("VALUE")).append(":").append(b.getValue());
 						sb.append(Text.getLineSep());
-						//‰ğ‘Ì‘fŞ
+						//è§£ä½“ç´ æ
 						sb.append(I18N.translate("IF_DISASSEMBLY_GET")).append(Text.getLineSep());
 						for (BookPage p : b.getPages()) {
 							sb.append("   ").append(p.getDesc()).append(Text.getLineSep());
@@ -278,7 +278,7 @@ public class BookWindow extends BasicSprite {
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						break;
 					case DISASSEMBLY:
-						//‰ğ‘ÌŠm”FƒEƒCƒ“ƒhƒE‚ğ—LŒø‰»
+						//è§£ä½“ç¢ºèªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’æœ‰åŠ¹åŒ–
 						List<Text> options4 = new ArrayList<>();
 						options4.add(new Text(I18N.translate("NO")));
 						options4.add(new Text(I18N.translate("YES")));
@@ -289,7 +289,7 @@ public class BookWindow extends BasicSprite {
 						mode = Mode.DISASSEMBLY_CONFIRM;
 						break;
 					case DROP:
-						//dropŠm”FƒEƒCƒ“ƒhƒE‚ğ—LŒø‰»
+						//dropç¢ºèªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’æœ‰åŠ¹åŒ–
 						List<Text> options5 = new ArrayList<>();
 						options5.add(new Text(I18N.translate("NO")));
 						options5.add(new Text(I18N.translate("YES")));
@@ -302,7 +302,7 @@ public class BookWindow extends BasicSprite {
 				}
 				break;
 			case TARGET_SELECT:
-				//tgtƒEƒCƒ“ƒhƒE‚©‚ç‘I‘ğ‚³‚ê‚½‘ÎÛÒ‚ğ‚à‚Æ‚ÉUSE‚Ü‚½‚ÍPASS‚ğÀs
+				//tgtã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‹ã‚‰é¸æŠã•ã‚ŒãŸå¯¾è±¡è€…ã‚’ã‚‚ã¨ã«USEã¾ãŸã¯PASSã‚’å®Ÿè¡Œ
 				//use or pass
 				assert choiceUse.getSelect() == PASS : "BOOKWINDOW : choice user select is missmatch";
 				if (choiceUse.getSelect() == PASS) {
@@ -310,7 +310,7 @@ public class BookWindow extends BasicSprite {
 					commitPass();
 					boolean self = size == getSelectedPC().getBookBag().size();
 					group.show(msg);
-					//©•ª©g‚É“n‚µ‚½ê‡CU‚ÖA‚»‚¤‚Å‚È‚¢ê‡‚ÍIUS‚É–ß‚é
+					//è‡ªåˆ†è‡ªèº«ã«æ¸¡ã—ãŸå ´åˆCUã¸ã€ãã†ã§ãªã„å ´åˆã¯IUSã«æˆ»ã‚‹
 					if (self) {
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 					} else {
@@ -319,17 +319,17 @@ public class BookWindow extends BasicSprite {
 				}
 				break;
 			case DROP_CONFIRM:
-				//dropŠm”FƒEƒCƒ“ƒhƒE‚Ì‘I‘ğˆ‚É‚æ‚è•ªŠò
+				//dropç¢ºèªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®é¸æŠè‚¢ã«ã‚ˆã‚Šåˆ†å²
 				switch (dropConfirm.getSelect()) {
 					case 0:
-						//‚¢‚¢‚¦
-						//—p“r‘I‘ğ‚É–ß‚é
+						//ã„ã„ãˆ
+						//ç”¨é€”é¸æŠã«æˆ»ã‚‹
 						group.show(choiceUse);
 						mode = Mode.CHOICE_USE;
 						break;
 					case 1:
-						//‚Í‚¢
-						//drop‚µ‚ÄƒAƒCƒeƒ€‘I‘ğ‚É–ß‚é
+						//ã¯ã„
+						//dropã—ã¦ã‚¢ã‚¤ãƒ†ãƒ é¸æŠã«æˆ»ã‚‹
 						commitDrop();
 						group.show(msg);
 						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
@@ -337,17 +337,17 @@ public class BookWindow extends BasicSprite {
 				}
 				break;
 			case DISASSEMBLY_CONFIRM:
-				//‰ğ‘ÌŠm”FƒEƒCƒ“ƒhƒE‚Ì‘I‘ğˆ‚É‚æ‚è•ªŠò
+				//è§£ä½“ç¢ºèªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®é¸æŠè‚¢ã«ã‚ˆã‚Šåˆ†å²
 				switch (dissassemblyComfirm.getSelect()) {
 					case 0:
-						//‚¢‚¢‚¦
-						//—p“r‘I‘ğ‚É–ß‚é
+						//ã„ã„ãˆ
+						//ç”¨é€”é¸æŠã«æˆ»ã‚‹
 						group.show(choiceUse);
 						mode = Mode.CHOICE_USE;
 						break;
 					case 1:
-						//‚Í‚¢
-						//drop‚µ‚ÄƒAƒCƒeƒ€‘I‘ğ‚É–ß‚é
+						//ã¯ã„
+						//dropã—ã¦ã‚¢ã‚¤ãƒ†ãƒ é¸æŠã«æˆ»ã‚‹
 						commitDissasse();
 						group.show(msg);
 						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
@@ -411,7 +411,7 @@ public class BookWindow extends BasicSprite {
 	private void commitDrop() {
 		dropConfirm.close();
 		Book i = getSelectedBook();
-		//1ŒÂ‚µ‚©‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç‘•”õ‚ğŠO‚·
+		//1å€‹ã—ã‹æŒã£ã¦ã„ãªã‹ã£ãŸã‚‰è£…å‚™ã‚’å¤–ã™
 		getSelectedPC().getBookBag().drop(i);
 		msg.setText(getSelectedPC().getName() + I18N.translate("IS") + i.getName() + I18N.translate("WAS_DROP"));
 		msg.allText();
@@ -439,7 +439,7 @@ public class BookWindow extends BasicSprite {
 	}
 
 	public boolean close() {
-		//IUS•\¦’†‚Ìê‡‚Í–ß‚é‚Í‘SÁ‚µ
+		//IUSè¡¨ç¤ºä¸­ã®å ´åˆã¯æˆ»ã‚‹ã¯å…¨æ¶ˆã—
 		if (group.getWindows().stream().allMatch(p -> !p.isVisible())) {
 			mode = Mode.BOOK_AND_USER_SELECT;
 			return true;
@@ -476,7 +476,7 @@ public class BookWindow extends BasicSprite {
 
 	@Override
 	public void update() {
-		//ƒƒCƒ“ƒEƒCƒ“ƒhƒE‚Ì“à—eXV
+		//ãƒ¡ã‚¤ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®å†…å®¹æ›´æ–°
 		if (mode == Mode.BOOK_AND_USER_SELECT) {
 			BookBag ib = getSelectedPC().getBookBag();
 			StringBuilder sb = new StringBuilder();

@@ -28,10 +28,10 @@ import java.util.Arrays;
 import kinugasa.resource.Nameable;
 
 /**
- * XML‚É‚¨‚¯‚é"‘®«"‚ğ•\‚·ƒNƒ‰ƒX‚Å‚·.
+ * XMLã«ãŠã‘ã‚‹"å±æ€§"ã‚’è¡¨ã™ã‚¯ãƒ©ã‚¹ã§ã™.
  * <br>
- * ‘®«‚Í—v‘f‚É0ŒÂˆÈãİ’è‚Å‚«‚éƒL[‚Æ’l‚ÌƒyƒA‚Å‚·B<br>
- * ‚½‚Æ‚¦‚ÎA&lt;hoge fuga=piyo&gt;‚Å‚ÍA fuga‚Æ‚¢‚¤–¼‘O‚Åpiyo‚Æ‚¢‚¤’l‚Ì‘®«‚ª\’z‚³‚ê‚Ü‚·B<br>
+ * å±æ€§ã¯è¦ç´ ã«0å€‹ä»¥ä¸Šè¨­å®šã§ãã‚‹ã‚­ãƒ¼ã¨å€¤ã®ãƒšã‚¢ã§ã™ã€‚<br>
+ * ãŸã¨ãˆã°ã€&lt;hoge fuga=piyo&gt;ã§ã¯ã€ fugaã¨ã„ã†åå‰ã§piyoã¨ã„ã†å€¤ã®å±æ€§ãŒæ§‹ç¯‰ã•ã‚Œã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/03/15_7:10:56.<br>
@@ -43,23 +43,23 @@ public class XMLAttribute implements Nameable, Serializable {
 
 	private static final long serialVersionUID = -2192715007477514049L;
 	/**
-	 * ‚±‚Ì‘®«‚Ì–¼‘O‚Å‚·.
+	 * ã“ã®å±æ€§ã®åå‰ã§ã™.
 	 */
 	private String name;
 	/**
-	 * ‚±‚Ì‘®«‚Ì’l‚Å‚·.
+	 * ã“ã®å±æ€§ã®å€¤ã§ã™.
 	 */
 	private String value;
 
 	/**
-	 * –¼‘O‚Æ’l‚ª‹ó•¶š‚ÌV‚µ‚¢‘®«‚ğì¬‚µ‚Ü‚·.
+	 * åå‰ã¨å€¤ãŒç©ºæ–‡å­—ã®æ–°ã—ã„å±æ€§ã‚’ä½œæˆã—ã¾ã™.
 	 */
 	public XMLAttribute() {
 		name = value = "";
 	}
 
 	/**
-	 * –¼‘O‚Æ’l‚ğw’è‚µ‚ÄAV‚µ‚¢‘®«‚ğì¬‚µ‚Ü‚·.
+	 * åå‰ã¨å€¤ã‚’æŒ‡å®šã—ã¦ã€æ–°ã—ã„å±æ€§ã‚’ä½œæˆã—ã¾ã™.
 	 *
 	 * @param name
 	 * @param value
@@ -75,19 +75,19 @@ public class XMLAttribute implements Nameable, Serializable {
 	}
 
 	/**
-	 * ’l‚ğ®”‚Æ‚µ‚Äæ“¾‚µ‚Ü‚·.
+	 * å€¤ã‚’æ•´æ•°ã¨ã—ã¦å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ’l‚ğInteger.parseInt‚ğg—p‚µ‚Ä®”‚É•ÏŠ·‚µ‚Ä•Ô‚µ‚Ü‚·B<br>
-	 * @throws NumberFormatException ’l‚ª•ÏŠ·‚Å‚«‚È‚¢ê‡‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @return å€¤ã‚’Integer.parseIntã‚’ä½¿ç”¨ã—ã¦æ•´æ•°ã«å¤‰æ›ã—ã¦è¿”ã—ã¾ã™ã€‚<br>
+	 * @throws NumberFormatException å€¤ãŒå¤‰æ›ã§ããªã„å ´åˆã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public int getIntValue() throws NumberFormatException {
 		return Integer.parseInt(value);
 	}
 
 	/**
-	 * ’l‚ª®”‚Å‚ ‚é‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * å€¤ãŒæ•´æ•°ã§ã‚ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @return getIntValue‚ªg—p‚Å‚«‚éê‡true‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return getIntValueãŒä½¿ç”¨ã§ãã‚‹å ´åˆtrueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public boolean isIntValue() {
 		try {
@@ -99,19 +99,19 @@ public class XMLAttribute implements Nameable, Serializable {
 	}
 
 	/**
-	 * ’l‚ğÀ”‚Æ‚µ‚Äæ“¾‚µ‚Ü‚·.
+	 * å€¤ã‚’å®Ÿæ•°ã¨ã—ã¦å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ’l‚ğFloat.parseFloat‚ğg—p‚µ‚ÄÀ”‚É•ÏŠ·‚µ‚Ä•Ô‚µ‚Ü‚·B<br>
-	 * @throws NumberFormatException ’l‚ª•ÏŠ·‚Å‚«‚È‚¢ê‡‚É“Š‚°‚ç‚ê‚Ü‚·B<br>
+	 * @return å€¤ã‚’Float.parseFloatã‚’ä½¿ç”¨ã—ã¦å®Ÿæ•°ã«å¤‰æ›ã—ã¦è¿”ã—ã¾ã™ã€‚<br>
+	 * @throws NumberFormatException å€¤ãŒå¤‰æ›ã§ããªã„å ´åˆã«æŠ•ã’ã‚‰ã‚Œã¾ã™ã€‚<br>
 	 */
 	public float getFloatValue() throws NumberFormatException {
 		return Float.parseFloat(value);
 	}
 
 	/**
-	 * ’l‚ªfloat‚Å‚ ‚é‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * å€¤ãŒfloatã§ã‚ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @return getFloatValue‚ªg—p‚Å‚«‚éê‡‚Étrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return getFloatValueãŒä½¿ç”¨ã§ãã‚‹å ´åˆã«trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public boolean isFloatValue() {
 		try {
@@ -123,9 +123,9 @@ public class XMLAttribute implements Nameable, Serializable {
 	}
 
 	/**
-	 * ’l‚ğ˜_—’l‚Æ‚µ‚Äæ“¾‚µ‚Ü‚·.
+	 * å€¤ã‚’è«–ç†å€¤ã¨ã—ã¦å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ’l‚ğBoolean.parseBoolean‚ğg—p‚µ‚Ä˜_—’l‚É•ÏŠ·‚µ‚Ä•Ô‚µ‚Ü‚·B<br>
+	 * @return å€¤ã‚’Boolean.parseBooleanã‚’ä½¿ç”¨ã—ã¦è«–ç†å€¤ã«å¤‰æ›ã—ã¦è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public boolean getBool() {
 		return Boolean.parseBoolean(value);
@@ -137,27 +137,27 @@ public class XMLAttribute implements Nameable, Serializable {
 	}
 
 	/**
-	 * ‚±‚Ì‘®«‚Ì–¼‘O‚ğ•ÏX‚µ‚Ü‚·. –¼‘O‚ÍAXMLAttriobuteStorage‚©‚çQÆ‚³‚ê‚é‚½‚ßA d•¡‚ª‹–‰Â‚³‚ê‚È‚¢ê‡‚ª‚ ‚è‚Ü‚·B<br>
+	 * ã“ã®å±æ€§ã®åå‰ã‚’å¤‰æ›´ã—ã¾ã™. åå‰ã¯ã€XMLAttriobuteStorageã‹ã‚‰å‚ç…§ã•ã‚Œã‚‹ãŸã‚ã€ é‡è¤‡ãŒè¨±å¯ã•ã‚Œãªã„å ´åˆãŒã‚ã‚Šã¾ã™ã€‚<br>
 	 *
-	 * @param name V‚µ‚¢–¼‘O‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param name æ–°ã—ã„åå‰ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * ‚±‚Ì‘®«‚Ì’l‚ğ•ÏX‚µ‚Ü‚·.
+	 * ã“ã®å±æ€§ã®å€¤ã‚’å¤‰æ›´ã—ã¾ã™.
 	 *
-	 * @param value V‚µ‚¢’l‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param value æ–°ã—ã„å€¤ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
 	/**
-	 * ‚±‚Ì‘®«‚Ì’l‚ğæ“¾‚µ‚Ü‚·.
+	 * ã“ã®å±æ€§ã®å€¤ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ’l‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return å€¤ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public String getValue() {
 		return value;

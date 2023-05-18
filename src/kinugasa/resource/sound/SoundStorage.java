@@ -29,12 +29,12 @@ import kinugasa.resource.InputStatus;
 
 
 /**
- * ���W�b�N���ׂ��ŃT�E���h���Ǘ����邽�߂́A�B��̕ۑ��̈��񋟂��܂�.
+ * ロジックを跨いでサウンドを管理するための、唯一の保存領域を提供します.
  * <br>
- * �T�E���h�}�b�v�ɂ́A�S�ẴT�E���h�}�b�v���܂܂�Ă��܂��B�T�E���h�}�b�v����T�E���h���\�z�����ꍇ�́A
- * ���̃X�g���[�W���炷�ׂẴT�E���h�ɃA�N�Z�X�ł��܂��B<br>
+ * サウンドマップには、全てのサウンドマップが含まれています。サウンドマップからサウンドを構築した場合は、
+ * このストレージからすべてのサウンドにアクセスできます。<br>
  * <br>
- * Freeable�̎����́A�}�b�v�ɒǉ�����Ă��邷�ׂẴT�E���h�ɍs���܂��B<br>
+ * Freeableの実装は、マップに追加されているすべてのサウンドに行われます。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_14:19:07<br>
@@ -42,20 +42,20 @@ import kinugasa.resource.InputStatus;
  */
 public final class SoundStorage extends DynamicStorage<SoundMap> implements Input{
 
-	/** ���̃N���X�̗B��̃C���X�^���X�ł� . */
+	/** このクラスの唯一のインスタンスです . */
 	private static final SoundStorage INSTANCE = new SoundStorage();
 
 	/**
-	 * �T�E���h�X�g���[�W�̃C���X�^���X���擾���܂�.
+	 * サウンドストレージのインスタンスを取得します.
 	 *
-	 * @return �B��̃C���X�^���X��Ԃ��܂��B<br>
+	 * @return 唯一のインスタンスを返します。<br>
 	 */
 	public static SoundStorage getInstance() {
 		return INSTANCE;
 	}
 
 	/**
-	 * �V���O���g���N���X�ł�.
+	 * シングルトンクラスです.
 	 */
 	private SoundStorage() {
 	}

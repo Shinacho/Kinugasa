@@ -139,11 +139,11 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 
 		GradientPaint paint = new GradientPaint(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, inner1, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6, inner2);
 		Paint p = g2.getPaint();
-		//ƒOƒ‰ƒf[ƒVƒ‡ƒ“‚ÅƒCƒ“ƒi[•`‰æ
+		//ã‚°ãƒ©ãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³ã§ã‚¤ãƒ³ãƒŠãƒ¼æç”»
 		g2.setPaint(paint);
 		g2.fillRect(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6);
 
-		//ƒyƒCƒ“ƒg‚ğ‚à‚Æ‚É–ß‚·
+		//ãƒšã‚¤ãƒ³ãƒˆã‚’ã‚‚ã¨ã«æˆ»ã™
 		g2.setPaint(p);
 
 		g2.setColor(cColor);
@@ -161,7 +161,7 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 			y += size + BORDER_SIZE * 2;
 		}
 		y += size;
-		// ƒIƒvƒVƒ‡ƒ“‚Æ‘I‘ğ‚Ì•\¦
+		// ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨é¸æŠã®è¡¨ç¤º
 		if (mw.isAllVisible()) {
 			if (mw.getText() instanceof Choice) {
 				y -= size / 2;

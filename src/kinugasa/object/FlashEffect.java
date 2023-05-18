@@ -29,7 +29,7 @@ import kinugasa.graphics.GraphicsUtil;
 import kinugasa.util.TimeCounter;
 
 /**
- * ’PF‚Ìƒtƒ‰ƒbƒVƒ…Œø‰Ê‚ÌƒGƒtƒFƒNƒg‚ÌÀ‘•‚Å‚·.
+ * å˜è‰²ã®ãƒ•ãƒ©ãƒƒã‚·ãƒ¥åŠ¹æœã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®å®Ÿè£…ã§ã™.
  * <br>
  *
  * <br>
@@ -40,8 +40,8 @@ import kinugasa.util.TimeCounter;
 public class FlashEffect extends ScreenEffect {
 
 	private Color color;
-	private TimeCounter blinkRate;//TRUE‚Åƒtƒ‰ƒbƒVƒ…
-	private TimeCounter flashTime;//TRUE‚ÅI—¹
+	private TimeCounter blinkRate;//TRUEã§ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
+	private TimeCounter flashTime;//TRUEã§çµ‚äº†
 	private boolean ended = false;
 	private boolean running = false;
 

@@ -24,13 +24,13 @@
 package kinugasa.resource;
 
 /**
- * ƒRƒ“ƒeƒ“ƒc‚ð”jŠü‚·‚é‹@”\‚ð’è‹`‚µ‚Ü‚·.
+ * ã‚³ãƒ³ãƒ†ãƒ³ãƒ„ã‚’ç ´æ£„ã™ã‚‹æ©Ÿèƒ½ã‚’å®šç¾©ã—ã¾ã™.
  * <br>
- * ‚±‚ÌƒCƒ“ƒ^[ƒtƒF[ƒX‚ÍuÄƒ[ƒhv‚·‚é‚±‚Æ‚ª‚È‚¢ƒNƒ‰ƒX‚ÉŽÀ‘•‚³‚ê‚Ü‚·B<Br>
- * ‚»‚ê‚ç‚ÌƒNƒ‰ƒX‚Í•K—v‚É‚È‚Á‚½‚Æ‚«‚¾‚¯ƒCƒ“ƒXƒ^ƒ“ƒX‰»‚³‚êA•s—v‚É‚È‚Á‚½‚Æ‚«‚É
- * disposeƒƒ\ƒbƒh‚ðŽg—p‚µ‚ÄÄ‹A“I‚ÉŠJ•ú‚³‚ê‚Ü‚·B<br>
- * uˆêŽž“I‚Éƒƒ‚ƒŠ‚ðŠJ•ú‚µAÄƒ[ƒh‚·‚é‚Æ‚«‚É”õ‚¦‚évFreeable‚Æ‚Í
- * •Ê‚ÌŽg—p•û–@‚Å‚ ‚é“_‚É’ˆÓ‚µ‚Ä‚­‚¾‚³‚¢B<br>
+ * ã“ã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã¯ã€Œå†ãƒ­ãƒ¼ãƒ‰ã€ã™ã‚‹ã“ã¨ãŒãªã„ã‚¯ãƒ©ã‚¹ã«å®Ÿè£…ã•ã‚Œã¾ã™ã€‚<Br>
+ * ãã‚Œã‚‰ã®ã‚¯ãƒ©ã‚¹ã¯å¿…è¦ã«ãªã£ãŸã¨ãã ã‘ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã•ã‚Œã€ä¸è¦ã«ãªã£ãŸã¨ãã«
+ * disposeãƒ¡ã‚½ãƒƒãƒ‰ã‚’ä½¿ç”¨ã—ã¦å†å¸°çš„ã«é–‹æ”¾ã•ã‚Œã¾ã™ã€‚<br>
+ * ã€Œä¸€æ™‚çš„ã«ãƒ¡ãƒ¢ãƒªã‚’é–‹æ”¾ã—ã€å†ãƒ­ãƒ¼ãƒ‰ã™ã‚‹ã¨ãã«å‚™ãˆã‚‹ã€Freeableã¨ã¯
+ * åˆ¥ã®ä½¿ç”¨æ–¹æ³•ã§ã‚ã‚‹ç‚¹ã«æ³¨æ„ã—ã¦ãã ã•ã„ã€‚<br>
  * <br>
  * @version 1.0.0 - 2013/05/05_17:54:26<br>
  * @author Shinacho<br>
@@ -38,7 +38,7 @@ package kinugasa.resource;
 public interface Disposable {
 
 	/**
-	 * ƒRƒ“ƒeƒ“ƒc‚ðƒƒ‚ƒŠ‚©‚ç”jŠü‚µ‚Ü‚·.
+	 * ã‚³ãƒ³ãƒ†ãƒ³ãƒ„ã‚’ãƒ¡ãƒ¢ãƒªã‹ã‚‰ç ´æ£„ã—ã¾ã™.
 	 */
 	public void dispose();
 }

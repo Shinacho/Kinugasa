@@ -25,7 +25,7 @@ package kinugasa.resource;
 
 
 /**
- * w’è‚³‚ê‚½–¼‘O‚ªA‚·‚Å‚Ég—p‚³‚ê‚Ä‚¢‚éê‡‚É“Š‚°‚ç‚ê‚é—áŠO‚Å‚·.
+ * æŒ‡å®šã•ã‚ŒãŸåå‰ãŒã€ã™ã§ã«ä½¿ç”¨ã•ã‚Œã¦ã„ã‚‹å ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ä¾‹å¤–ã§ã™.
  * <br>
  *
  * <br>
@@ -36,14 +36,14 @@ public class DuplicateNameException extends RuntimeException {
 
 
 	/**
-	 * V‚µ‚¢ DuplicateNameException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
+	 * æ–°ã—ã„ DuplicateNameException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
 	 */
 	public DuplicateNameException() {
 	}
 
 	/**
-	 * V‚µ‚¢ DuplicateNameException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
-	 * @param msg ‚±‚Ì—áŠO‚ÌƒƒbƒZ[ƒW.<br>
+	 * æ–°ã—ã„ DuplicateNameException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
+	 * @param msg ã“ã®ä¾‹å¤–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.<br>
 	 */
 	public DuplicateNameException(String msg) {
 		super(msg);

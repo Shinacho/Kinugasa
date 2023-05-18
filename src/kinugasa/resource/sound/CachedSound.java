@@ -39,9 +39,9 @@ import kinugasa.resource.NotYetLoadedException;
 import kinugasa.util.StopWatch;
 
 /**
- * “à•”ƒLƒƒƒbƒVƒ…‚Â‚«‚ÌƒTƒEƒ“ƒh‚ÌÀ‘•‚Å‚·.
+ * å†…éƒ¨ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã¤ãã®ã‚µã‚¦ãƒ³ãƒ‰ã®å®Ÿè£…ã§ã™.
  * <br>
- * WAVEƒtƒ@ƒCƒ‹‚ğÄ¶‚·‚éÛ‚ÌAÅ‚àˆê”Ê“I‚ÈƒTƒEƒ“ƒh‚ÌÀ‘•‚Æ‚È‚è‚Ü‚·B<br>
+ * WAVEãƒ•ã‚¡ã‚¤ãƒ«ã‚’å†ç”Ÿã™ã‚‹éš›ã®ã€æœ€ã‚‚ä¸€èˆ¬çš„ãªã‚µã‚¦ãƒ³ãƒ‰ã®å®Ÿè£…ã¨ãªã‚Šã¾ã™ã€‚<br>
  *
  * <br>
  *
@@ -51,33 +51,33 @@ import kinugasa.util.StopWatch;
 public class CachedSound implements Sound {
 
 	/**
-	 * V‚µ‚¢ƒLƒƒƒbƒVƒ…ƒTƒEƒ“ƒh‚ğ\’z‚µ‚Ü‚·.
+	 * æ–°ã—ã„ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚µã‚¦ãƒ³ãƒ‰ã‚’æ§‹ç¯‰ã—ã¾ã™.
 	 *
-	 * @param b ƒTƒEƒ“ƒh‚Ì\’z‚Ég—p‚·‚éƒrƒ‹ƒ_.<br>
+	 * @param b ã‚µã‚¦ãƒ³ãƒ‰ã®æ§‹ç¯‰ã«ä½¿ç”¨ã™ã‚‹ãƒ“ãƒ«ãƒ€.<br>
 	 *
-	 * @return ƒrƒ‹ƒ_‚Ìİ’è‚Åì¬‚³‚ê‚½ƒLƒƒƒbƒVƒ…ƒTƒEƒ“ƒh.<br>
+	 * @return ãƒ“ãƒ«ãƒ€ã®è¨­å®šã§ä½œæˆã•ã‚ŒãŸã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚µã‚¦ãƒ³ãƒ‰.<br>
 	 */
 	static CachedSound create(SoundBuilder b) {
 		CachedSound sc = new CachedSound(b);
 		return sc;
 	}
 	/**
-	 * ‚±‚ÌƒTƒEƒ“ƒh‚ğ\’z‚µ‚½ƒrƒ‹ƒ_.
+	 * ã“ã®ã‚µã‚¦ãƒ³ãƒ‰ã‚’æ§‹ç¯‰ã—ãŸãƒ“ãƒ«ãƒ€.
 	 */
 	private SoundBuilder builder;
 	/**
-	 * ‚±‚ÌƒTƒEƒ“ƒh‚ÌƒXƒgƒŠ[ƒ€.
+	 * ã“ã®ã‚µã‚¦ãƒ³ãƒ‰ã®ã‚¹ãƒˆãƒªãƒ¼ãƒ .
 	 */
 	private transient Clip clip;
 	/**
-	 * ‚±‚ÌƒTƒEƒ“ƒh‚Ìƒ‹[ƒvİ’è.
+	 * ã“ã®ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒ«ãƒ¼ãƒ—è¨­å®š.
 	 */
 	private LoopPoint lp;
 
 	/**
-	 * ƒTƒEƒ“ƒh‚ğì¬. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍAf.exist‚ÌŒŸ¸‚Í‚µ‚È‚¢.
+	 * ã‚µã‚¦ãƒ³ãƒ‰ã‚’ä½œæˆ. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€f.existã®æ¤œæŸ»ã¯ã—ãªã„.
 	 *
-	 * @param builder ƒtƒ@ƒCƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @param builder ãƒ•ã‚¡ã‚¤ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	private CachedSound(SoundBuilder builder) {
 		this.builder = builder;
@@ -103,24 +103,24 @@ public class CachedSound implements Sound {
 		}
 	}
 	/**
-	 * ƒ[ƒh‚É“K—p‚·‚éƒRƒ“ƒgƒ[ƒ‹.
+	 * ãƒ­ãƒ¼ãƒ‰æ™‚ã«é©ç”¨ã™ã‚‹ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«.
 	 */
 	private HashMap<Control.Type, Float> ctrls = new HashMap<Control.Type, Float>(8);
 
 	/**
-	 * ƒRƒ“ƒgƒ[ƒ‹‚ğƒoƒbƒtƒ@ƒŠƒ“ƒO‚·‚é.
+	 * ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°ã™ã‚‹.
 	 *
-	 * @param t ƒRƒ“ƒgƒ[ƒ‹‚Ìƒ^ƒCƒv.<br>
-	 * @param val ’l.<br>
+	 * @param t ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ã‚¿ã‚¤ãƒ—.<br>
+	 * @param val å€¤.<br>
 	 */
 	private void setControl(Control.Type t, float val) {
 		ctrls.put(t, val);
 	}
 
 	/**
-	 * ƒ‹[ƒvˆÊ’u‚ğİ’è‚µ‚Ü‚·.
+	 * ãƒ«ãƒ¼ãƒ—ä½ç½®ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param p ƒ‹[ƒvˆÊ’u.<br>
+	 * @param p ãƒ«ãƒ¼ãƒ—ä½ç½®.<br>
 	 */
 	private void setLoopPoints(LoopPoint p) {
 		this.lp = p;
@@ -137,7 +137,7 @@ public class CachedSound implements Sound {
 	@Override
 	public void play() throws NotYetLoadedException {
 		if (!(getStatus() == InputStatus.LOADED)) {
-			//b’è‘Î‰
+			//æš«å®šå¯¾å¿œ
 //			throw new NotYetLoadedException("sound " + this + " is not yet loaded.");
 			return;
 		}
@@ -287,9 +287,9 @@ public class CachedSound implements Sound {
 	}
 
 	/**
-	 * ‚±‚ÌƒTƒEƒ“ƒh‚ğ\’z‚µ‚½ƒrƒ‹ƒ_‚ğæ“¾‚µ‚Ü‚·. ƒrƒ‹ƒ_‚Ö‚Ìİ’è‚ÍAˆÓ–¡‚ª‚ ‚è‚Ü‚¹‚ñB<br>
+	 * ã“ã®ã‚µã‚¦ãƒ³ãƒ‰ã‚’æ§‹ç¯‰ã—ãŸãƒ“ãƒ«ãƒ€ã‚’å–å¾—ã—ã¾ã™. ãƒ“ãƒ«ãƒ€ã¸ã®è¨­å®šã¯ã€æ„å‘³ãŒã‚ã‚Šã¾ã›ã‚“ã€‚<br>
 	 *
-	 * @return ‚±‚ÌƒTƒEƒ“ƒh‚ğ\’z‚·‚é‚½‚ß‚Éì¬‚³‚ê‚½ƒrƒ‹ƒ_‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã“ã®ã‚µã‚¦ãƒ³ãƒ‰ã‚’æ§‹ç¯‰ã™ã‚‹ãŸã‚ã«ä½œæˆã•ã‚ŒãŸãƒ“ãƒ«ãƒ€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public SoundBuilder getBuilder() {
 		return builder;

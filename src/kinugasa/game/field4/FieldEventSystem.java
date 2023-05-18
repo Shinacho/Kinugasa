@@ -101,7 +101,7 @@ public class FieldEventSystem implements Drawable {
 		if (event.isEmpty()) {
 			manual = false;
 		}
-		//IF‚Ìtermİ’è
+		//IFã®termè¨­å®š
 		if (event.stream().filter(p -> p.getEventType() == FieldEventType.IF).count()
 				!= event.stream().filter(p -> p.getEventType() == FieldEventType.END_IF).count()) {
 			throw new ScriptFormatException("IF - END_IF is missmatch:" + event);
@@ -134,7 +134,7 @@ public class FieldEventSystem implements Drawable {
 	}
 
 	void setFlag(String storageName, String flagName, FlagStatus v) {
-		//‰¼ƒXƒgƒŒ[ƒW‚Éƒtƒ‰ƒO‚ğ’Ç‰Á
+		//ä»®ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã«ãƒ•ãƒ©ã‚°ã‚’è¿½åŠ 
 		if (!flags.contains(storageName)) {
 			flags.add(new FlagStorage(storageName));
 		}
@@ -146,13 +146,13 @@ public class FieldEventSystem implements Drawable {
 	}
 
 	public void commitFlags() {
-		//ƒtƒ‰ƒOƒXƒgƒŒ[ƒW‚ÌXV
+		//ãƒ•ãƒ©ã‚°ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ã®æ›´æ–°
 		for (FlagStorage s : flags) {
 			if (!FlagStorageStorage.getInstance().contains(s.getName())) {
 				FlagStorageStorage.getInstance().add(s);
 			}
 		}
-		//ƒtƒ‰ƒO©‘Ì‚ÌXV
+		//ãƒ•ãƒ©ã‚°è‡ªä½“ã®æ›´æ–°
 		for (FlagStorage s : FlagStorageStorage.getInstance()) {
 			if (flags.contains(s)) {
 				s.update(flags.get(s.getName()));
@@ -194,7 +194,7 @@ public class FieldEventSystem implements Drawable {
 		return r;
 	}
 
-	//’N‚ª‚ÂHƒEƒCƒ“ƒhƒE‚Ì•\¦
+	//èª°ãŒæŒã¤ï¼Ÿã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®è¡¨ç¤º
 	public MessageWindow showItemGetMessageWindow() {
 		float buffer = 24;
 		float x = buffer;
@@ -323,7 +323,7 @@ public class FieldEventSystem implements Drawable {
 
 	@LoopCall
 	public void update() {
-		//ƒCƒxƒ“ƒgÀs’†‚ÌXV
+		//ã‚¤ãƒ™ãƒ³ãƒˆå®Ÿè¡Œä¸­ã®æ›´æ–°
 		if (!executing) {
 			return;
 		}
@@ -367,7 +367,7 @@ public class FieldEventSystem implements Drawable {
 				break;
 		}
 
-		//ƒJƒƒ‰ƒ€[ƒu‚ÌŠ®—¹
+		//ã‚«ãƒ¡ãƒ©ãƒ ãƒ¼ãƒ–ã®å®Œäº†
 	}
 
 	public MessageWindow showMessageWindow() {

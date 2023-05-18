@@ -33,16 +33,16 @@ import kinugasa.resource.Storage;
 import kinugasa.util.Random;
 
 /**
- * NPC�̈ړ��A���S���Y���̗B��̕ۊǏꏊ�ł��B���̃N���X�̓V���O���g���N���X�ł�.
- * �f�t�H���g�̈ړ��A���S���Y���Ƃ��āA�ȉ��̖��O�̗v�f���ǉ�����Ă��܂��B<br>
- * �ENOT_MOVE�F�ړ����܂���B
- * �EROUND_1�F�����ʒu����w��̔��a�̃^�C�����Ń����_���Ȓn�_�Ɉړ����܂��B�}�b�v���́A����NPC�ɐݒ肳�ꂽ�ړ����@�ňړ��ł���^�C���Ɍ���܂��B�ړ�������60?600�t���[���̃����_���ł��B<br>
- * �EROUND_2�F����<br>
- * �EROUND_3�F����<br>
- * �EROUND_4�F����<br>
- * �EROUND_5�F����<br>
- * ����ȊO�́A�Ⴆ��2�_�Ԃ��s�����藈���肷��A���S���Y����A
- * ����̏ꏊ�Ɉړ�����A���S���Y���́A��{�I�Ƀ}�b�v�`��Ɉˑ����邽�߁A�Ǝ��ɍ쐬����K�v������܂��B<br>
+ * NPCの移動アルゴリズムの唯一の保管場所です。このクラスはシングルトンクラスです.
+ * デフォルトの移動アルゴリズムとして、以下の名前の要素が追加されています。<br>
+ * ・NOT_MOVE：移動しません。
+ * ・ROUND_1：初期位置から指定の半径のタイル数でランダムな地点に移動します。マップ内の、かつNPCに設定された移動方法で移動できるタイルに限ります。移動周期は60?600フレームのランダムです。<br>
+ * ・ROUND_2：同上<br>
+ * ・ROUND_3：同上<br>
+ * ・ROUND_4：同上<br>
+ * ・ROUND_5：同上<br>
+ * これ以外の、例えば2点間を行ったり来たりするアルゴリズムや、
+ * 特定の場所に移動するアルゴリズムは、基本的にマップ形状に依存するため、独自に作成する必要があります。<br>
  *
  * @vesion 1.0.0 - 2022/11/08_19:50:30<br>
  * @author Shinacho<br>
@@ -60,7 +60,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 
 			@Override
 			public int nextMoveFrameTime(NPC n, FieldMap map) {
-				return Integer.MAX_VALUE;//MAX_VALUE��̃t���[���ł��ړ����邱�Ƃ͂Ȃ��B
+				return Integer.MAX_VALUE;//MAX_VALUE後のフレームでも移動することはない。
 			}
 
 			@Override

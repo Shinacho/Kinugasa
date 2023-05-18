@@ -24,9 +24,9 @@
 package kinugasa.resource;
 
 /**
- * ƒQ[ƒ€ƒRƒ“ƒeƒ“ƒc‚ÌI/O‚ÉŠÖ‚·‚é—áŠO‚Å‚·.
+ * ã‚²ãƒ¼ãƒ ã‚³ãƒ³ãƒ†ãƒ³ãƒ„ã®I/Oã«é–¢ã™ã‚‹ä¾‹å¤–ã§ã™.
  * <br>
- * ’Êí‚ÍAjava.io.IOException‚ğƒ‰ƒbƒv‚µ‚Ü‚·B<br>
+ * é€šå¸¸ã¯ã€java.io.IOExceptionã‚’ãƒ©ãƒƒãƒ—ã—ã¾ã™ã€‚<br>
  *
  * <br>
  * @version 1.0.0 - 2013/04/20_18:58:59<br>
@@ -37,22 +37,22 @@ public class ContentsIOException extends RuntimeException {
 	private static final long serialVersionUID = -8593840664351731828L;
 
 	/**
-	 * V‚µ‚¢ ContentsIOException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
+	 * æ–°ã—ã„ ContentsIOException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
 	 */
 	public ContentsIOException() {
 	}
 
 	/**
-	 * V‚µ‚¢ ContentsIOException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
-	 * @param string ‚±‚Ì—áŠO‚ÌƒƒbƒZ[ƒW.<br>
+	 * æ–°ã—ã„ ContentsIOException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
+	 * @param string ã“ã®ä¾‹å¤–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.<br>
 	 */
 	public ContentsIOException(String string) {
 		super(string);
 	}
 
 	/**
-	 * Throwable‚ğƒ‰ƒbƒv‚·‚é—áŠO‚ğì¬‚µ‚Ü‚·.
-	 * @param thrwbl “Š‚°‚ç‚ê‚½—áŠO‚ğw’è‚µ‚Ü‚·B<br>
+	 * Throwableã‚’ãƒ©ãƒƒãƒ—ã™ã‚‹ä¾‹å¤–ã‚’ä½œæˆã—ã¾ã™.
+	 * @param thrwbl æŠ•ã’ã‚‰ã‚ŒãŸä¾‹å¤–ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public ContentsIOException(Throwable thrwbl) {
 		super(thrwbl);

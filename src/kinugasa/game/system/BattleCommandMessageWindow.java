@@ -132,7 +132,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		int i = 0;
 		cmd.getUser().getStatus().updateAction(true);
 		List<CmdAction> actionList = cmd.getBattleActionOf(type);
-		//ƒAƒCƒeƒ€ˆÈŠO‚Ìê‡‚Íƒoƒgƒ‹—˜—p‰Â”\‚ÈƒAƒNƒVƒ‡ƒ“‚ÉƒtƒBƒ‹ƒ^[
+		//ã‚¢ã‚¤ãƒ†ãƒ ä»¥å¤–ã®å ´åˆã¯ãƒãƒˆãƒ«åˆ©ç”¨å¯èƒ½ãªã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã«ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼
 		if (type != ActionType.ITEM) {
 			actionList = actionList.stream().filter(p -> p.isBattleUse()).collect(Collectors.toList());
 		}
@@ -166,7 +166,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 			switch (type) {
 				case ATTACK:
 					text += b.getName() + ":" + b.getDesc();
-					text += ("A")
+					text += ("ã€")
 							+ (I18N.translate("ACTION_ATTR"))
 							+ (":");
 					text += (b.getBattleEvent()
@@ -175,10 +175,10 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 							.map(p -> p.getAttr().getDesc())
 							.distinct()
 							.collect(Collectors.toList()));
-					text += ("A")
+					text += ("ã€")
 							+ (I18N.translate("ACTION_EFFECT"))
 							+ (":");
-					//ENEMY‚ª“ü‚Á‚Ä‚¢‚éê‡Amin‚ðA‚»‚¤‚Å‚È‚¢ê‡‚ÍMAX‚ðŽæ‚é
+					//ENEMYãŒå…¥ã£ã¦ã„ã‚‹å ´åˆã€minã‚’ã€ãã†ã§ãªã„å ´åˆã¯MAXã‚’å–ã‚‹
 					if (b.getBattleEvent().stream().anyMatch(p -> p.getTargetType().toString().contains("ENEMY"))) {
 						text += (Math.abs(b.getBattleEvent()
 								.stream()

@@ -44,7 +44,7 @@ import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
 
 /**
- * 敵のマスタです。
+ * 謨ｵ縺ｮ繝槭せ繧ｿ縺ｧ縺吶�
  *
  * @vesion 1.0.0 - 2022/11/16_20:54:18<br>
  * @author Shinacho<br>

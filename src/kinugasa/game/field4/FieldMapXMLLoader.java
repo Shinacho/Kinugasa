@@ -29,7 +29,7 @@ import kinugasa.game.ui.TextStorageStorage;
 import kinugasa.resource.sound.SoundLoader;
 
 /**
- * �t�B�[���h�}�b�v�֘A�̐ݒ�𐳂������ԂŃ��[�h���邽�߂̃N���X�ł��B
+ * フィールドマップ関連の設定を正しい順番でロードするためのクラスです。
  *
  * @vesion 1.0.0 - 2022/11/16_18:59:45<br>
  * @author Shinacho<br>

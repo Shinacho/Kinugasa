@@ -207,7 +207,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 			return false;
 		}
 		if (selfTarget) {
-			return user == null || (target == null || target.isEmpty());//Šî–{“ü‚Á‚Ä‚é
+			return user == null || (target == null || target.isEmpty());//åŸºæœ¬å…¥ã£ã¦ã‚‹
 		}
 		return target == null || target.isEmpty();
 	}

@@ -42,16 +42,16 @@ import kinugasa.game.GameLog;
 import kinugasa.game.system.GameSystem;
 
 /**
- * �A���S���Y���Ȃǂ̖����\�ȃI�u�W�F�N�g���i�[����}�b�v�ł�.
+ * アルゴリズムなどの命名可能なオブジェクトを格納するマップです.
  * <br>
- * ���̃N���X�́ANameable�����������N���X��HashMap�ɓo�^���A�e�ՂɃA�N�Z�X�ł���悤�ɂ��܂��B<br>
- * �X�g���[�W�ɂ́A�������O�̃I�u�W�F�N�g��o�^���邱�Ƃ͏o���܂���B �X�g���[�W�̗e�ʂ́A�����I�Ɋg�傳��܂��B<br>
+ * このクラスは、Nameableを実装したクラスをHashMapに登録し、容易にアクセスできるようにします。<br>
+ * ストレージには、同じ名前のオブジェクトを登録することは出来ません。 ストレージの容量は、自動的に拡大されます。<br>
  * <br>
- * �Q�[�����A1�̏ꏊ��Nameable�̎�����ۑ��������ꍇ�́A ���̃N���X���p�����邱�ƂŁA�B��̕ۑ��̈���쐬���邱�Ƃ��o���܂��B<br>
- * ���̃N���X�́A�V���A���C�Y�\�ł͂���܂���B���̂悤�ȋ@�\�́A�T�u�N���X�� ��`����K�v������܂��B<br>
+ * ゲーム中、1つの場所にNameableの実装を保存したい場合は、 このクラスを継承することで、唯一の保存領域を作成することが出来ます。<br>
+ * このクラスは、シリアライズ可能ではありません。そのような機能は、サブクラスで 定義する必要があります。<br>
  * <br>
  *
- * @param <T> ���̃X�g���[�W���g�p���閽���\�ȃI�u�W�F�N�g���w�肵�܂��B<br>
+ * @param <T> このストレージが使用する命名可能なオブジェクトを指定します。<br>
  *
  * @version 1.0.0 - 2012/11/18_0:14:31<br>
  * @version 1.0.2 - 2013/01/12_22:16:16<br>
@@ -63,34 +63,34 @@ import kinugasa.game.system.GameSystem;
 public class Storage<T extends Nameable> implements Iterable<T> {
 
 	/**
-	 * T��ۊǂ���}�b�v�ł�.
+	 * Tを保管するマップです.
 	 */
 	private HashMap<String, T> map;
 
 	/**
-	 * �V�����X�g���[�W���쐬���܂�.
+	 * 新しいストレージを作成します.
 	 */
 	public Storage() {
 		map = new HashMap<String, T>(32);
 	}
 
 	/**
-	 * �V�����X�g���[�W���쐬���܂�.
+	 * 新しいストレージを作成します.
 	 *
-	 * @param initialSize �}�b�v�̏����e�ʂ��w�肵�܂��B<br>
+	 * @param initialSize マップの初期容量を指定します。<br>
 	 */
 	public Storage(int initialSize) {
 		map = new HashMap<String, T>(initialSize);
 	}
 
 	/**
-	 * �w�肵�����O�̃I�u�W�F�N�g���擾���܂�.
+	 * 指定した名前のオブジェクトを取得します.
 	 *
-	 * @param key �擾����I�u�W�F�N�g�̖��O���w�肵�܂��B<br>
+	 * @param key 取得するオブジェクトの名前を指定します。<br>
 	 *
-	 * @return �w�肵�����O�����I�u�W�F�N�g��Ԃ��܂��B<br>
+	 * @return 指定した名前を持つオブジェクトを返します。<br>
 	 *
-	 * @throws NameNotFoundException ���݂��Ȃ����O���w�肵���ꍇ�ɓ������܂��B<br>
+	 * @throws NameNotFoundException 存在しない名前を指定した場合に投げられます。<br>
 	 */
 	public T get(String key) throws NameNotFoundException {
 		if (!contains(key)) {
@@ -112,51 +112,51 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �w�肵���L�[�̗v�f���܂܂�Ă���ꍇ�ɁA������擾���܂�.<br>
+	 * 指定したキーの要素が含まれている場合に、それを取得します.<br>
 	 *
-	 * @param key �擾����I�u�W�F�N�g�̃L�[���w�肵�܂��B<br>
+	 * @param key 取得するオブジェクトのキーを指定します。<br>
 	 *
-	 * @return �w�肵���L�[�̃I�u�W�F�N�g���܂܂�Ă���΂�����A�܂܂�Ă��Ȃ����null��Ԃ��܂��B<br>
+	 * @return 指定したキーのオブジェクトが含まれていればそれを、含まれていなければnullを返します。<br>
 	 */
 	public T getIfContains(String key) {
 		return map.get(key);
 	}
 
 	/**
-	 * ���̃X�g���[�W�ɒǉ�����Ă���I�u�W�F�N�g�����ׂĎ擾���܂�.
-	 * ���̃��\�b�h�̖߂�l�͎Q�Ƃł͂���܂���B�V�����쐬���ꂽ�R���N�V�����ł��B<br>
+	 * このストレージに追加されているオブジェクトをすべて取得します.
+	 * このメソッドの戻り値は参照ではありません。新しく作成されたコレクションです。<br>
 	 *
-	 * @return �ۊǂ���Ă��邷�ׂẴI�u�W�F�N�g�̃R���N�V������Ԃ��܂��B�R���N�V�����Ɋi�[����鏇�Ԃ�
-	 * �X�g���[�W�ɒǉ����ꂽ���Ԃƈ�v���܂���B<br>
+	 * @return 保管されているすべてのオブジェクトのコレクションを返します。コレクションに格納される順番は
+	 * ストレージに追加された順番と一致しません。<br>
 	 */
 	public Collection<T> getAll() {
 		return map.values();
 	}
 
 	/**
-	 * ���̃X�g���[�W�ɒǉ�����Ă���I�u�W�F�N�g�����ׂĎ擾���܂�. ���̃��\�b�h�̖߂�l�͎Q�Ƃł͂���܂���B�V�����쐬���ꂽ���X�g�ł��B<br>
+	 * このストレージに追加されているオブジェクトをすべて取得します. このメソッドの戻り値は参照ではありません。新しく作成されたリストです。<br>
 	 *
-	 * @return �ۊǂ���Ă��邷�ׂẴI�u�W�F�N�g�̃��X�g��Ԃ��܂��B���X�g�Ɋi�[����鏇�Ԃ� �X�g���[�W�ɒǉ����ꂽ���Ԃƈ�v���܂���B<br>
+	 * @return 保管されているすべてのオブジェクトのリストを返します。リストに格納される順番は ストレージに追加された順番と一致しません。<br>
 	 */
 	public List<T> asList() {
 		return new ArrayList<T>(getAll());
 	}
 
 	/**
-	 * �w�肵�����O�����I�u�W�F�N�g���i�[����Ă��邩�𒲂ׂ܂�.
+	 * 指定した名前を持つオブジェクトが格納されているかを調べます.
 	 *
-	 * @param key ��������I�u�W�F�N�g�̖��O���w�肵�܂��B<br>
+	 * @param key 検索するオブジェクトの名前を指定します。<br>
 	 *
-	 * @return �w�肵�����O�̃I�u�W�F�N�g���܂܂�Ă���ꍇ��true��Ԃ��܂��B<br>
+	 * @return 指定した名前のオブジェクトが含まれている場合はtrueを返します。<br>
 	 */
 	public boolean contains(String key) {
 		return map.containsKey(key);
 	}
 
 	/**
-	 * �����_���ȗv�f��Ԃ��܂��B
+	 * ランダムな要素を返します。
 	 *
-	 * @return �����_���ɑI�����ꂽ�v�f�B�v�f���Ȃ��ꍇ��null��Ԃ��B
+	 * @return ランダムに選択された要素。要素がない場合はnullを返す。
 	 */
 	public T random() {
 		if (isEmpty()) {
@@ -168,11 +168,11 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �w�肵�����O�����I�u�W�F�N�g���A���ׂĊi�[����Ă��邩�𒲂ׂ܂�.
+	 * 指定した名前を持つオブジェクトが、すべて格納されているかを調べます.
 	 *
-	 * @param keys ��������I�u�W�F�N�g�̖��O���w�肵�܂��B<br>
+	 * @param keys 検索するオブジェクトの名前を指定します。<br>
 	 *
-	 * @return �w�肵�����O���S�Ċ܂܂�Ă���ꍇ�Ɍ���Atrue��Ԃ��܂��B<br>
+	 * @return 指定した名前が全て含まれている場合に限り、trueを返します。<br>
 	 */
 	public boolean containsAll(String... keys) {
 		for (String key : keys) {
@@ -184,22 +184,22 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �w�肵���I�u�W�F�N�g���i�[����Ă��邩�𒲂ׂ܂�.
+	 * 指定したオブジェクトが格納されているかを調べます.
 	 *
-	 * @param obj ��������I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param obj 検索するオブジェクトを指定します。<br>
 	 *
-	 * @return �w�肵���I�u�W�F�N�g���܂܂�Ă���ꍇ��true��Ԃ��܂��B<br>
+	 * @return 指定したオブジェクトが含まれている場合はtrueを返します。<br>
 	 */
 	public boolean contains(T obj) {
 		return contains(obj.getName());
 	}
 
 	/**
-	 * �V�����I�u�W�F�N�g���}�b�v�ɒǉ����܂�.
+	 * 新しいオブジェクトをマップに追加します.
 	 *
-	 * @param val �ǉ�����I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param val 追加するオブジェクトを指定します。<br>
 	 *
-	 * @throws DuplicateNameException val�̖��O�����Ɏg�p����Ă���Ƃ��ɓ������܂��B<br>
+	 * @throws DuplicateNameException valの名前が既に使用されているときに投げられます。<br>
 	 */
 	public void add(T val) throws DuplicateNameException {
 		if (val.getName() == null) {
@@ -212,11 +212,11 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �V�����I�u�W�F�N�g���}�b�v�ɒǉ����܂�.
+	 * 新しいオブジェクトをマップに追加します.
 	 *
-	 * @param values �ǉ�����I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param values 追加するオブジェクトを指定します。<br>
 	 *
-	 * @throws DuplicateNameException val�̖��O�����Ɏg�p����Ă���Ƃ��ɓ������܂��B<br>
+	 * @throws DuplicateNameException valの名前が既に使用されているときに投げられます。<br>
 	 */
 	public void addAll(T... values) throws DuplicateNameException {
 		addAll(Arrays.asList(values));
@@ -227,11 +227,11 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �V�����I�u�W�F�N�g���}�b�v�ɒǉ����܂�.
+	 * 新しいオブジェクトをマップに追加します.
 	 *
-	 * @param values �ǉ�����I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param values 追加するオブジェクトを指定します。<br>
 	 *
-	 * @throws DuplicateNameException val�̖��O�����Ɏg�p����Ă���Ƃ��ɓ������܂��B<br>
+	 * @throws DuplicateNameException valの名前が既に使用されているときに投げられます。<br>
 	 */
 	public void addAll(Collection<? extends T> values) throws DuplicateNameException {
 		for (T value : values) {
@@ -240,27 +240,27 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �I�u�W�F�N�g���A�㏑���Œǉ����܂�. ���̃��\�b�h�͓������O�����I�u�W�F�N�g���o�^����Ă���ꍇ�ɏ㏑�����܂��B<br>
+	 * オブジェクトを、上書きで追加します. このメソッドは同じ名前を持つオブジェクトが登録されている場合に上書きします。<br>
 	 *
-	 * @param val �ǉ�����I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param val 追加するオブジェクトを指定します。<br>
 	 */
 	public void put(T val) {
 		map.put(val.getName(), val);
 	}
 
 	/**
-	 * �����̃I�u�W�F�N�g���㏑���Œǉ����܂�.
+	 * 複数のオブジェクトを上書きで追加します.
 	 *
-	 * @param values �ǉ�����I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param values 追加するオブジェクトを指定します。<br>
 	 */
 	public void putAll(T... values) {
 		putAll(Arrays.asList(values));
 	}
 
 	/**
-	 * �����̃I�u�W�F�N�g���㏑���Œǉ����܂�.
+	 * 複数のオブジェクトを上書きで追加します.
 	 *
-	 * @param values �ǉ�����I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param values 追加するオブジェクトを指定します。<br>
 	 */
 	public void putAll(Collection<? extends T> values) {
 		for (T value : values) {
@@ -269,27 +269,27 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �w�肵�����O�����I�u�W�F�N�g���}�b�v����폜���܂�.
+	 * 指定した名前を持つオブジェクトをマップから削除します.
 	 *
-	 * @param key �폜����I�u�W�F�N�g�̖��O���w�肵�܂��B<br>
+	 * @param key 削除するオブジェクトの名前を指定します。<br>
 	 */
 	public void remove(String key) {
 		map.remove(key);
 	}
 
 	/**
-	 * �I�u�W�F�N�g���}�b�v����폜���܂�.
+	 * オブジェクトをマップから削除します.
 	 *
-	 * @param val �폜����I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param val 削除するオブジェクトを指定します。<br>
 	 */
 	public void remove(T val) {
 		remove(val.getName());
 	}
 
 	/**
-	 * �w�肵�����O�����I�u�W�F�N�g���}�b�v����폜���܂�.
+	 * 指定した名前を持つオブジェクトをマップから削除します.
 	 *
-	 * @param keys �폜����I�u�W�F�N�g�̖��O���w�肵�܂��B<br>
+	 * @param keys 削除するオブジェクトの名前を指定します。<br>
 	 */
 	public void removeAll(String... keys) {
 		for (String key : keys) {
@@ -298,9 +298,9 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �I�u�W�F�N�g���}�b�v����폜���܂�.
+	 * オブジェクトをマップから削除します.
 	 *
-	 * @param values �폜����I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param values 削除するオブジェクトを指定します。<br>
 	 */
 	public void removeAll(T... values) {
 		for (T key : values) {
@@ -309,9 +309,9 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �I�u�W�F�N�g���}�b�v����폜���܂�.
+	 * オブジェクトをマップから削除します.
 	 *
-	 * @param values �폜����I�u�W�F�N�g���w�肵�܂��B<br>
+	 * @param values 削除するオブジェクトを指定します。<br>
 	 */
 	public void removeAll(Collection<? extends T> values) {
 		for (T key : values) {
@@ -320,44 +320,44 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �}�b�v�ɒǉ�����Ă���I�u�W�F�N�g�̐����擾���܂�.
+	 * マップに追加されているオブジェクトの数を取得します.
 	 *
-	 * @return �}�b�v�̗v�f����Ԃ��܂��B<br>
+	 * @return マップの要素数を返します。<br>
 	 */
 	public int size() {
 		return map.size();
 	}
 
 	/**
-	 * �}�b�v���炷�ׂẴI�u�W�F�N�g���폜���܂�.
+	 * マップからすべてのオブジェクトを削除します.
 	 */
 	public void clear() {
 		map.clear();
 	}
 
 	/**
-	 * �}�b�v�̗v�f������ł��邩�𒲂ׂ܂�.
+	 * マップの要素数が空であるかを調べます.
 	 *
-	 * @return �}�b�v����̏ꍇ��true��Ԃ��܂��B<br>
+	 * @return マップが空の場合はtrueを返します。<br>
 	 */
 	public boolean isEmpty() {
 		return map.isEmpty();
 	}
 
 	/**
-	 * ���ݕێ����Ă���S�ẴI�u�W�F�N�g���X�g���[���ɏo�͂��܂�. ���̃��\�b�h�̓f�o�b�O�p�ł��B<br>
+	 * 現在保持している全てのオブジェクトをストリームに出力します. このメソッドはデバッグ用です。<br>
 	 *
-	 * @param stream �����o���X�g���[�����w�肵�܂��B<br>
+	 * @param stream 書き出すストリームを指定します。<br>
 	 */
 	public void printAll(PrintStream stream) {
 		printAll(stream, false);
 	}
 
 	/**
-	 * ���ݕێ����Ă���S�ẴI�u�W�F�N�g���X�g���[���ɏo�͂��܂�. ���̃��\�b�h�̓f�o�b�O�p�ł��B<br>
+	 * 現在保持している全てのオブジェクトをストリームに出力します. このメソッドはデバッグ用です。<br>
 	 *
-	 * @param stream �����o���X�g���[�����w�肵�܂��B<br>
-	 * @param valueOut true���w�肷��ƒl���o�͂��܂��B<br>
+	 * @param stream 書き出すストリームを指定します。<br>
+	 * @param valueOut trueを指定すると値も出力します。<br>
 	 */
 	public void printAll(PrintStream stream, boolean valueOut) {
 		if (!GameSystem.isDebugMode()) {
@@ -379,12 +379,12 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �w�肵�����O�����I�u�W�F�N�g��V�����}�b�v�Ɋi�[���ĕԂ��܂�. ���݂��Ȃ����O���w�肵���ꍇ�́A���̖��O�͖�������܂��B�߂�l��
-	 * �}�b�v�ɂ́A���݂��m�F���ꂽ�I�u�W�F�N�g�������i�[����܂��B<br>
+	 * 指定した名前を持つオブジェクトを新しいマップに格納して返します. 存在しない名前を指定した場合は、その名前は無視されます。戻り値の
+	 * マップには、存在が確認されたオブジェクトだけが格納されます。<br>
 	 *
-	 * @param names �߂�l�ɒǉ�����I�u�W�F�N�g�̖��O���w�肵�܂��B<br>
+	 * @param names 戻り値に追加するオブジェクトの名前を指定します。<br>
 	 *
-	 * @return �w�肵�����O�����I�u�W�F�N�g��V�����}�b�v�Ɋi�[���ĕԂ��܂��B<br>
+	 * @return 指定した名前を持つオブジェクトを新しいマップに格納して返します。<br>
 	 */
 	public Map<String, T> getProperties(String... names) {
 		Map<String, T> result = new HashMap<String, T>(names.length);
@@ -401,10 +401,10 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	}
 
 	/**
-	 * �S�Ă̗v�f���Q�Ƃł���C�e���[�^��Ԃ��܂�. �v�f�̏��Ԃ́AHashSet�Ɉˑ����܂��B���я���ݒ肷��K�v������ꍇ��
-	 * asList���g�p���Ă��������B<br>
+	 * 全ての要素を参照できるイテレータを返します. 要素の順番は、HashSetに依存します。並び順を設定する必要がある場合は
+	 * asListを使用してください。<br>
 	 *
-	 * @return ���̃X�g���[�W�̗v�f���Q�Ƃ���C�e���[�^��Ԃ��܂��B<br>
+	 * @return このストレージの要素を参照するイテレータを返します。<br>
 	 */
 	@Override
 	public Iterator<T> iterator() {

@@ -55,116 +55,116 @@ public final class GamePadConnection {
 
 	public static final int LENGTH = 21;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_A = 0;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_B = 1;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_X = 2;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_Y = 3;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_LB = 4;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_RB = 5;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_LEFT_STICK = 6;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_RIGHT_STICK = 7;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_POV_UP = 8;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_POV_DOWN = 9;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_POV_LEFT = 10;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_POV_RIGHT = 11;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_START = 12;
 	/**
-	 * �����̒l�̓Q�[���p�b�h�̃f�W�^���{�^�������ʂ��܂�.
+	 * これらの値はゲームパッドのデジタルボタンを識別します.
 	 */
 	public static final int BUTTON_BACK = 13;
 	/**
-	 * �Q�[���p�b�h�̃A�i���O�g���K�[�����ʂ��܂�.
+	 * ゲームパッドのアナログトリガーを識別します.
 	 */
 	public static final int TRIGGER_LEFT = 14;
 	/**
-	 * �Q�[���p�b�h�̃A�i���O�g���K�[�����ʂ��܂�.
+	 * ゲームパッドのアナログトリガーを識別します.
 	 */
 	public static final int TRIGGER_RIGHT = 15;
 	/**
-	 * �Q�[���p�b�h�̃A�i���O�X�e�B�b�N�����ʂ��܂�.
+	 * ゲームパッドのアナログスティックを識別します.
 	 */
 	public static final int THUMB_STICK_LEFT_X = 16;
 	/**
-	 * �Q�[���p�b�h�̃A�i���O�X�e�B�b�N�����ʂ��܂�.
+	 * ゲームパッドのアナログスティックを識別します.
 	 */
 	public static final int THUMB_STICK_LEFT_Y = 17;
 	/**
-	 * �Q�[���p�b�h�̃A�i���O�X�e�B�b�N�����ʂ��܂�.
+	 * ゲームパッドのアナログスティックを識別します.
 	 */
 	public static final int THUMB_STICK_RIGHT_X = 18;
 	/**
-	 * �Q�[���p�b�h�̃A�i���O�X�e�B�b�N�����ʂ��܂�.
+	 * ゲームパッドのアナログスティックを識別します.
 	 */
 	public static final int THUMB_STICK_RIGHT_Y = 19;
 	/**
-	 * �Q�[���p�b�h�̎��ʏ�Ԃ��i�[����Ă���ꏊ�̃C���f�b�N�X�ł�.
+	 * ゲームパッドの識別状態が格納されている場所のインデックスです.
 	 */
 	public static final int CONNECTION = 20;
 	//
 	/**
-	 * dll�ɂ���Ē�`�����A�l�C�e�B�u�ȁuFALSE�v�̏�Ԃł�.
+	 * dllによって定義される、ネイティブな「FALSE」の状態です.
 	 */
 	public static final int NATIVE_FALSE = 0;
 	/**
-	 * dll�ɂ���Ďg�p�����A�g���K�[�̓��͂̍ŏ��l�ł�.
+	 * dllによって使用される、トリガーの入力の最小値です.
 	 */
 	public static final int TRIGGER_MIN = 0;
 	/**
-	 * dll�ɂ���Ďg�p�����A�g���K�[�̓��͂̍ő�l�ł�.
+	 * dllによって使用される、トリガーの入力の最大値です.
 	 */
 	public static final int TRIGGER_MAX = 255;
 	/**
-	 * dll�ɂ���Ďg�p�����A�X�e�B�b�N�̓��͂̍ŏ��l�ł�.
+	 * dllによって使用される、スティックの入力の最小値です.
 	 */
 	public static final int THUMBSTICK_MIN = Short.MIN_VALUE;
 	/**
-	 * dll�ɂ���Ďg�p�����A�g���K�[�̓��͂̃f�t�H���g�l�ł�.
+	 * dllによって使用される、トリガーの入力のデフォルト値です.
 	 */
 	public static final int THUMBSTICK_CENTER = 0;
 	/**
-	 * dll�ɂ���Ďg�p�����A�X�e�B�b�N�̓��͂̍ő�l�ł�.
+	 * dllによって使用される、スティックの入力の最大値です.
 	 */
 	public static final int THUMBSTICK_MAX = Short.MAX_VALUE;
 	/**
-	 * dll�ɂ���Ďg�p�����A�g���K�[�̓��͂̍ŏ��l����̍ő�l�܂ł̐�Βl�ł�.
+	 * dllによって使用される、トリガーの入力の最小値からの最大値までの絶対値です.
 	 */
 	public static final int THUMSTICK_ABS_MAX = 65534;
 }

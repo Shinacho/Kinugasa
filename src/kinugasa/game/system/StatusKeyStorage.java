@@ -26,7 +26,7 @@ package kinugasa.game.system;
 import kinugasa.resource.Storage;
 
 /**
- * ステータスの一覧です。
+ * 繧ｹ繝�繝ｼ繧ｿ繧ｹ縺ｮ荳隕ｧ縺ｧ縺吶�
  *
  * @vesion 1.0.0 - 2022/11/15_11:12:24<br>
  * @author Shinacho<br>

@@ -24,10 +24,10 @@
 package kinugasa.game.input;
 
 /**
- * ƒL[ƒ{[ƒh‚ÌƒL[‚ğw’è‚·‚é‚½‚ß‚Ì—ñ‹“‚Å‚·.
+ * ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ã‚­ãƒ¼ã‚’æŒ‡å®šã™ã‚‹ãŸã‚ã®åˆ—æŒ™ã§ã™.
  * <br>
- * Keys‚Í‘Î‰‚·‚éƒL[‚ÌAWTƒL[ƒR[ƒh‚ğ‚¿‚Ü‚·B
- * AWTƒL[ƒR[ƒh‚É‚Â‚¢‚Ä‚ÍAjava.awt.event.KeyEventƒNƒ‰ƒX‚ÌƒŠƒtƒ@ƒŒƒ“ƒX‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢B<br>
+ * Keysã¯å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã®AWTã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ã‚’æŒã¡ã¾ã™ã€‚
+ * AWTã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ã«ã¤ã„ã¦ã¯ã€java.awt.event.KeyEventã‚¯ãƒ©ã‚¹ã®ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã‚’å‚ç…§ã—ã¦ãã ã•ã„ã€‚<br>
  * <br>
  *
  * @see java.awt.event.KeyEvent
@@ -39,366 +39,366 @@ package kinugasa.game.input;
 public enum Keys {
 
 	/**
-	 * –îˆóƒL[‚Ìã‚Å‚·.
+	 * çŸ¢å°ã‚­ãƒ¼ã®ä¸Šã§ã™.
 	 */
 	UP(java.awt.event.KeyEvent.VK_UP),
 	/**
-	 * –îˆóƒL[‚Ì‰º‚Å‚·.
+	 * çŸ¢å°ã‚­ãƒ¼ã®ä¸‹ã§ã™.
 	 */
 	DOWN(java.awt.event.KeyEvent.VK_DOWN),
 	/**
-	 * –îˆóƒL[‚Ì¶‚Å‚·.
+	 * çŸ¢å°ã‚­ãƒ¼ã®å·¦ã§ã™.
 	 */
 	LEFT(java.awt.event.KeyEvent.VK_LEFT),
 	/**
-	 * –îˆóƒL[‚Ì‰E‚Å‚·.
+	 * çŸ¢å°ã‚­ãƒ¼ã®å³ã§ã™.
 	 */
 	RIGHT(java.awt.event.KeyEvent.VK_RIGHT),
 	/**
-	 * WƒL[‚Æ“™‰¿‚Å‚·.
+	 * Wã‚­ãƒ¼ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	WASD_UP(java.awt.event.KeyEvent.VK_W),
 	/**
-	 * SƒL[‚Æ“™‰¿‚Å‚·.
+	 * Sã‚­ãƒ¼ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	WASD_DOWN(java.awt.event.KeyEvent.VK_S),
 	/**
-	 * AƒL[‚Æ“™‰¿‚Å‚·.
+	 * Aã‚­ãƒ¼ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	WASD_LEFT(java.awt.event.KeyEvent.VK_A),
 	/**
-	 * DƒL[‚Æ“™‰¿‚Å‚·.
+	 * Dã‚­ãƒ¼ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	WASD_RIGHT(java.awt.event.KeyEvent.VK_D),
 	/**
-	 * NUMPAD‚Ì8‚Æ“™‰¿‚Å‚·.
+	 * NUMPADã®8ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	PAD_UP(java.awt.event.KeyEvent.VK_NUMPAD8),
 	/**
-	 * NUMPAD‚Ì2‚Æ“™‰¿‚Å‚·.
+	 * NUMPADã®2ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	PAD_DOWN(java.awt.event.KeyEvent.VK_NUMPAD2),
 	/**
-	 * NUMPAD‚Ì4‚Æ“™‰¿‚Å‚·.
+	 * NUMPADã®4ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	PAD_LEFT(java.awt.event.KeyEvent.VK_NUMPAD4),
 	/**
-	 * NUMPAD‚Ì6‚Æ“™‰¿‚Å‚·.
+	 * NUMPADã®6ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	PAD_RIGHT(java.awt.event.KeyEvent.VK_NUMPAD6),
 	/**
-	 * NUMPAD‚Ì7‚Æ“™‰¿‚Å‚·.
+	 * NUMPADã®7ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	PAD_LEFTUP(java.awt.event.KeyEvent.VK_NUMPAD7),
 	/**
-	 * NUMPAD‚Ì9‚Æ“™‰¿‚Å‚·.
+	 * NUMPADã®9ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	PAD_RIGHTUP(java.awt.event.KeyEvent.VK_NUMPAD9),
 	/**
-	 * NUMPAD‚Ì1‚Æ“™‰¿‚Å‚·.
+	 * NUMPADã®1ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	PAD_LEFTDOWN(java.awt.event.KeyEvent.VK_NUMPAD1),
 	/**
-	 * NUMPAD‚Ì3‚Æ“™‰¿‚Å‚·.
+	 * NUMPADã®3ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	PAD_RIGHTDOWN(java.awt.event.KeyEvent.VK_NUMPAD3),
 	/**
-	 * NUMPAD‚Ì5‚Æ“™‰¿‚Å‚·.
+	 * NUMPADã®5ã¨ç­‰ä¾¡ã§ã™.
 	 */
 	PAD_CENTER(java.awt.event.KeyEvent.VK_NUMPAD5),
 	/**
-	 * ƒXƒy[ƒXƒL[‚Å‚·.
+	 * ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ã§ã™.
 	 */
 	SPACE(java.awt.event.KeyEvent.VK_SPACE),
 	/**
-	 * CTRLƒL[‚Å‚·.
+	 * CTRLã‚­ãƒ¼ã§ã™.
 	 */
 	CTRL(java.awt.event.KeyEvent.VK_CONTROL),
 	/**
-	 * ƒVƒtƒgƒL[‚Å‚·.
+	 * ã‚·ãƒ•ãƒˆã‚­ãƒ¼ã§ã™.
 	 */
 	SHIFT(java.awt.event.KeyEvent.VK_SHIFT),
 	/**
-	 * ƒGƒ“ƒ^[ƒL[‚Å‚·.
+	 * ã‚¨ãƒ³ã‚¿ãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	ENTER(java.awt.event.KeyEvent.VK_ENTER),
 	/**
-	 * ƒGƒXƒP[ƒvƒL[‚Å‚·.
+	 * ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã‚­ãƒ¼ã§ã™.
 	 */
 	ESCAPE(java.awt.event.KeyEvent.VK_ESCAPE),
 	/**
-	 * ƒoƒbƒNƒXƒy[ƒXƒL[‚Å‚·.
+	 * ãƒãƒƒã‚¯ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ã§ã™.
 	 */
 	BACK_SPACE(java.awt.event.KeyEvent.VK_BACK_SPACE),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	A(java.awt.event.KeyEvent.VK_A),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	B(java.awt.event.KeyEvent.VK_B),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	C(java.awt.event.KeyEvent.VK_C),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	D(java.awt.event.KeyEvent.VK_D),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	E(java.awt.event.KeyEvent.VK_E),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	F(java.awt.event.KeyEvent.VK_F),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	G(java.awt.event.KeyEvent.VK_G),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	H(java.awt.event.KeyEvent.VK_H),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	I(java.awt.event.KeyEvent.VK_I),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	J(java.awt.event.KeyEvent.VK_J),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	K(java.awt.event.KeyEvent.VK_K),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	L(java.awt.event.KeyEvent.VK_L),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	M(java.awt.event.KeyEvent.VK_M),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	N(java.awt.event.KeyEvent.VK_N),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	O(java.awt.event.KeyEvent.VK_O),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	P(java.awt.event.KeyEvent.VK_P),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	Q(java.awt.event.KeyEvent.VK_Q),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	R(java.awt.event.KeyEvent.VK_R),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	S(java.awt.event.KeyEvent.VK_S),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	T(java.awt.event.KeyEvent.VK_T),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	U(java.awt.event.KeyEvent.VK_U),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	V(java.awt.event.KeyEvent.VK_V),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	W(java.awt.event.KeyEvent.VK_W),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	X(java.awt.event.KeyEvent.VK_X),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	Y(java.awt.event.KeyEvent.VK_Y),
 	/**
-	 * ‘Î‰‚·‚éƒL[‚ğ•\‚µ‚Ü‚·.
+	 * å¯¾å¿œã™ã‚‹ã‚­ãƒ¼ã‚’è¡¨ã—ã¾ã™.
 	 */
 	Z(java.awt.event.KeyEvent.VK_Z),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_1(java.awt.event.KeyEvent.VK_NUMPAD1),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_2(java.awt.event.KeyEvent.VK_NUMPAD2),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_3(java.awt.event.KeyEvent.VK_NUMPAD3),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_4(java.awt.event.KeyEvent.VK_NUMPAD4),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_5(java.awt.event.KeyEvent.VK_NUMPAD6),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_6(java.awt.event.KeyEvent.VK_NUMPAD6),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_7(java.awt.event.KeyEvent.VK_NUMPAD7),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_8(java.awt.event.KeyEvent.VK_NUMPAD8),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_9(java.awt.event.KeyEvent.VK_NUMPAD9),
 	/**
-	 * NUM_PAD‚Ì”šƒL[‚Å‚·.
+	 * NUM_PADã®æ•°å­—ã‚­ãƒ¼ã§ã™.
 	 */
 	PAD_0(java.awt.event.KeyEvent.VK_NUMPAD0),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_1(java.awt.event.KeyEvent.VK_1),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_2(java.awt.event.KeyEvent.VK_2),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_3(java.awt.event.KeyEvent.VK_3),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_4(java.awt.event.KeyEvent.VK_4),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_5(java.awt.event.KeyEvent.VK_5),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_6(java.awt.event.KeyEvent.VK_6),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_7(java.awt.event.KeyEvent.VK_7),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_8(java.awt.event.KeyEvent.VK_8),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_9(java.awt.event.KeyEvent.VK_9),
 	/**
-	 * NUM_PAD‚Å‚È‚¢ƒiƒ“ƒo[ƒL[‚Å‚·.
+	 * NUM_PADã§ãªã„ãƒŠãƒ³ãƒãƒ¼ã‚­ãƒ¼ã§ã™.
 	 */
 	NUM_0(java.awt.event.KeyEvent.VK_0),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F1(java.awt.event.KeyEvent.VK_F1),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F2(java.awt.event.KeyEvent.VK_F2),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F3(java.awt.event.KeyEvent.VK_F3),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F4(java.awt.event.KeyEvent.VK_F4),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F5(java.awt.event.KeyEvent.VK_F5),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F6(java.awt.event.KeyEvent.VK_F6),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F7(java.awt.event.KeyEvent.VK_F7),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F8(java.awt.event.KeyEvent.VK_F8),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F9(java.awt.event.KeyEvent.VK_F9),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F10(java.awt.event.KeyEvent.VK_F10),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F11(java.awt.event.KeyEvent.VK_F11),
 	/**
-	 * ‚±‚ê‚ç‚ÌƒL[‚Íƒtƒ@ƒ“ƒNƒVƒ‡ƒ“ƒL[‚ğ’è‹`‚µ‚Ü‚·.
+	 * ã“ã‚Œã‚‰ã®ã‚­ãƒ¼ã¯ãƒ•ã‚¡ãƒ³ã‚¯ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å®šç¾©ã—ã¾ã™.
 	 */
 	F12(java.awt.event.KeyEvent.VK_F12),
 	/**
-	 * INSERTƒL[‚Å‚·.
+	 * INSERTã‚­ãƒ¼ã§ã™.
 	 */
 	INSERT(java.awt.event.KeyEvent.VK_INSERT),
 	/**
-	 * DELETEƒL[‚Å‚·.
+	 * DELETEã‚­ãƒ¼ã§ã™.
 	 */
 	DELETE(java.awt.event.KeyEvent.VK_DELETE),
 	/**
-	 * HOMEƒL[‚Å‚·.
+	 * HOMEã‚­ãƒ¼ã§ã™.
 	 */
 	HOME(java.awt.event.KeyEvent.VK_HOME),
 	/**
-	 * ENDƒL[‚Å‚·.
+	 * ENDã‚­ãƒ¼ã§ã™.
 	 */
 	END(java.awt.event.KeyEvent.VK_END),
 	/**
-	 * PAGEUPƒL[‚Å‚·.
+	 * PAGEUPã‚­ãƒ¼ã§ã™.
 	 */
 	PAGE_UP(java.awt.event.KeyEvent.VK_PAGE_UP),
 	/**
-	 * PAGEDOWNƒL[‚Å‚·.
+	 * PAGEDOWNã‚­ãƒ¼ã§ã™.
 	 */
 	PAGE_DOWN(java.awt.event.KeyEvent.VK_PAGE_DOWN),
 	/**
-	 * @‚Å‚·B
+	 * @ã§ã™ã€‚
 	 */
 	AT(java.awt.event.KeyEvent.VK_AT),;
 	/**
-	 * ƒL[‚ÌAWTƒL[”Ô†.
+	 * ã‚­ãƒ¼ã®AWTã‚­ãƒ¼ç•ªå·.
 	 */
 	private final int keyCode;
 
 	/**
-	 * AWT‚Ìƒo[ƒ`ƒƒƒ‹ƒL[”Ô†‚ğæ“¾‚µ‚Ü‚·.
+	 * AWTã®ãƒãƒ¼ãƒãƒ£ãƒ«ã‚­ãƒ¼ç•ªå·ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ‘Î‰‚·‚éAWTƒL[ƒR[ƒh‚ğ•Ô‚µ‚Ü‚·.<br>
+	 * @return å¯¾å¿œã™ã‚‹AWTã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ã‚’è¿”ã—ã¾ã™.<br>
 	 */
 	public int getKeyCode() {
 		return keyCode;

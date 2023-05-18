@@ -24,7 +24,7 @@
 package kinugasa.game;
 
 /**
- * ƒQ[ƒ€‚ÌisŠÔ‚ğŠÇ—‚µAFPS‚ğˆê’è‚É•Û‚Â‚½‚ß‚Ì‹@”\‚ğ’ñ‹Ÿ‚µ‚Ü‚·.
+ * ã‚²ãƒ¼ãƒ ã®é€²è¡Œæ™‚é–“ã‚’ç®¡ç†ã—ã€FPSã‚’ä¸€å®šã«ä¿ã¤ãŸã‚ã®æ©Ÿèƒ½ã‚’æä¾›ã—ã¾ã™.
  * <br>
  *
  * <br>
@@ -35,46 +35,46 @@ package kinugasa.game;
 public final class GameTimeManager {
 
 	/**
-	 * ’PˆÊŠÔ“–‚½‚è‚ÌXV‰ñ”.
+	 * å˜ä½æ™‚é–“å½“ãŸã‚Šã®æ›´æ–°å›æ•°.
 	 */
 	private int updateNum;
 	/**
-	 * ‘O‰ñŒŸ¸‚Ì.
+	 * å‰å›æ¤œæŸ»æ™‚ã®æ™‚åˆ».
 	 */
 	private long prevTime;
 	/**
-	 * Œ»İ‚Ì.
+	 * ç¾åœ¨ã®æ™‚åˆ».
 	 */
 	private long nowTime;
 	/**
-	 * Œ»İ‚ÌFPS.
+	 * ç¾åœ¨ã®FPS.
 	 */
 	private float fps;
 	/**
-	 * ƒXƒŠ[ƒv‚Å‚Ì‘Ò‚¿ŠÔ.
+	 * ã‚¹ãƒªãƒ¼ãƒ—ã§ã®å¾…ã¡æ™‚é–“.
 	 */
 	private long waitTime;
 	/**
-	 * ŠJn‚©‚ç‚ÌŒo‰ßƒtƒŒ[ƒ€.
+	 * é–‹å§‹ã‹ã‚‰ã®çµŒéãƒ•ãƒ¬ãƒ¼ãƒ .
 	 */
 	private long totalFrame = 0L;
 	/**
-	 * ƒXƒŠ[ƒv‚ÌI—¹.
+	 * ã‚¹ãƒªãƒ¼ãƒ—ã®çµ‚äº†æ™‚åˆ».
 	 */
 	private long endTime;
 	private long startTime;
 
 	/**
-	 * FPS‚ÌÅ‘å’l‚ª60‚ÌV‚µ‚¢TimeManager‚ğì¬‚µ‚Ü‚·.
+	 * FPSã®æœ€å¤§å€¤ãŒ60ã®æ–°ã—ã„TimeManagerã‚’ä½œæˆã—ã¾ã™.
 	 */
 	GameTimeManager() {
 		this(60);
 	}
 
 	/**
-	 * V‚µ‚¢TimeManager‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„TimeManagerã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param idealFPS FPS‚ÌÅ‘å’l.<Br>
+	 * @param idealFPS FPSã®æœ€å¤§å€¤.<Br>
 	 */
 	GameTimeManager(int idealFPS) {
 		waitTime = 1000 / idealFPS * 1000000;
@@ -87,26 +87,26 @@ public final class GameTimeManager {
 	}
 
 	/**
-	 * ƒQ[ƒ€ŠJn‚ğæ“¾‚µ‚Ü‚·B‚±‚ÌƒQ[ƒ€‚ªŠJn‚³‚ê‚½‚Å‚·B
-	 * @return ƒQ[ƒ€ŠJnBSystem.currentTimeMillis‚Å‚·B
+	 * ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚åˆ»ã‚’å–å¾—ã—ã¾ã™ã€‚ã“ã®ã‚²ãƒ¼ãƒ ãŒé–‹å§‹ã•ã‚ŒãŸæ™‚åˆ»ã§ã™ã€‚
+	 * @return ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚åˆ»ã€‚System.currentTimeMillisã§ã™ã€‚
 	 */
 	public long getStartTime() {
 		return startTime;
 	}
 
 	/**
-	 * FPS‚ÌÅ‘å’l‚ğæ“¾‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚Ì–ß‚è’l‚Íƒ~ƒŠ•b§“x‚ÉŠÛ‚ß‚ç‚ê‚é.
+	 * FPSã®æœ€å¤§å€¤ã‚’å–å¾—ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã®æˆ»ã‚Šå€¤ã¯ãƒŸãƒªç§’åˆ¶åº¦ã«ä¸¸ã‚ã‚‰ã‚Œã‚‹.
 	 *
-	 * @return FPS‚ÌÅ‘å’l.<br>
+	 * @return FPSã®æœ€å¤§å€¤.<br>
 	 */
 	public long getIdealFPS() {
 		return 1000000000 / waitTime;
 	}
 
 	/**
-	 * FPS‚ÌÅ‘å’l‚ğİ’è‚µ‚Ü‚·.
+	 * FPSã®æœ€å¤§å€¤ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param idealFPS FPS‚ÌÅ‘å’l.<br>
+	 * @param idealFPS FPSã®æœ€å¤§å€¤.<br>
 	 */
 	public void setIdealFPS(int idealFPS) {
 		waitTime = 1000 / idealFPS * 1000000;
@@ -114,31 +114,31 @@ public final class GameTimeManager {
 	}
 
 	/**
-	 * Œ»İ‚ÌFPS‚ğæ“¾‚µ‚Ü‚·.
+	 * ç¾åœ¨ã®FPSã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return Œ»İ‚ÌFPS.<br>
+	 * @return ç¾åœ¨ã®FPS.<br>
 	 */
 	public float getFPS() {
 		return fps;
 	}
 
 	/**
-	 * FPS‚Ì‚İ—ñ•\‹L‚ğæ“¾‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚Ì–ß‚è’l‚Í’P¸“x‚Å‚·.<Br>
+	 * FPSã®ã¿æ™‚åˆ—è¡¨è¨˜ã‚’å–å¾—ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã®æˆ»ã‚Šå€¤ã¯å˜ç²¾åº¦ã§ã™.<Br>
 	 *
-	 * @return FPS‚Ì•¶š—ñ•\‹L.’Êí‚Í­”ˆÈ‰º‚Í6Œ…’ö“x‚É‚È‚é.<br>
+	 * @return FPSã®æ–‡å­—åˆ—è¡¨è¨˜.é€šå¸¸ã¯å°‘æ•°ä»¥ä¸‹ã¯6æ¡ç¨‹åº¦ã«ãªã‚‹.<br>
 	 */
 	public String getFPSStr() {
 		return Float.toString(getFPS());
 	}
 
 	/**
-	 * w’è‚µ‚½Œ…”‚ÅFPS‚Ì•¶š—ñ•\‹L‚ğæ“¾‚µ‚Ü‚·.
+	 * æŒ‡å®šã—ãŸæ¡æ•°ã§FPSã®æ–‡å­—åˆ—è¡¨è¨˜ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @param d ¬”“_ˆÈ‰º‚ÌŒ…”.<Br>
+	 * @param d å°æ•°ç‚¹ä»¥ä¸‹ã®æ¡æ•°.<Br>
 	 *
-	 * @return w’è‚µ‚½Œ…”‚ÌØ‚èÌ‚Ä‚ç‚ê‚½FPS•\‹L.<Br>
+	 * @return æŒ‡å®šã—ãŸæ¡æ•°ã®åˆ‡ã‚Šæ¨ã¦ã‚‰ã‚ŒãŸFPSè¡¨è¨˜.<Br>
 	 *
-	 * @throws IllegalArgumentException d‚ª•‰”‚Ìê‡‚É“Š‚°‚ç‚ê‚é.<Br>
+	 * @throws IllegalArgumentException dãŒè² æ•°ã®å ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹.<Br>
 	 */
 	public String getFPSStr(int d) throws IllegalArgumentException {
 		if (d < 0) {
@@ -160,37 +160,37 @@ public final class GameTimeManager {
 	}
 
 	/**
-	 * ŠJn‚©‚ç‚ÌŒo‰ßƒtƒŒ[ƒ€‚ğæ“¾‚µ‚Ü‚·.
+	 * é–‹å§‹ã‹ã‚‰ã®çµŒéãƒ•ãƒ¬ãƒ¼ãƒ ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ŠJn‚©‚ç‚ÌŒo‰ßƒtƒŒ[ƒ€”.<br>
+	 * @return é–‹å§‹ã‹ã‚‰ã®çµŒéãƒ•ãƒ¬ãƒ¼ãƒ æ•°.<br>
 	 */
 	public long getTotalFrame() {
 		return totalFrame;
 	}
 
 	/**
-	 * ŠJn‚©‚ç‚ÌŒo‰ßƒtƒŒ[ƒ€‚ğ‰Šú‰»‚µ‚Ü‚·.
+	 * é–‹å§‹ã‹ã‚‰ã®çµŒéãƒ•ãƒ¬ãƒ¼ãƒ ã‚’åˆæœŸåŒ–ã—ã¾ã™.
 	 */
 	public void resetTotalFrame() {
 		totalFrame = 0L;
 	}
 
 	/**
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ğŒÄ‚Ô‚ÆA‚ ‚ç‚©‚¶‚ßİ’è‚³‚ê‚½FPS‚ğˆÛ‚Å‚«‚éŠÔ‚¾‚¯Às‚µ‚½ƒXƒŒƒbƒh‚ğsleep‚µ‚Ü‚·.
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã¶ã¨ã€ã‚ã‚‰ã‹ã˜ã‚è¨­å®šã•ã‚ŒãŸFPSã‚’ç¶­æŒã§ãã‚‹æ™‚é–“ã ã‘å®Ÿè¡Œã—ãŸã‚¹ãƒ¬ãƒƒãƒ‰ã‚’sleepã—ã¾ã™.
 	 *
-	 * @param startTime ˆ—ŠJn‘O‚Ì‚ğnano•b¸“x‚Å‘—M‚µ‚Ü‚·B<br>
+	 * @param startTime å‡¦ç†é–‹å§‹å‰ã®æ™‚åˆ»ã‚’nanoç§’ç²¾åº¦ã§é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	void sleep(long startTime) {
 		nowTime = System.nanoTime();
-		endTime = nowTime + (waitTime - (nowTime - startTime));//I—¹(ns
-		while (System.nanoTime() < endTime) {//System.nanoTime‚ªƒCƒ“ƒNƒŠƒƒ“ƒg‚³‚ê‚é‚Ì‚ğ—˜—p‚µ‚Ä‚¢‚é
+		endTime = nowTime + (waitTime - (nowTime - startTime));//çµ‚äº†æ™‚åˆ»(ns
+		while (System.nanoTime() < endTime) {//System.nanoTimeãŒã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã•ã‚Œã‚‹ã®ã‚’åˆ©ç”¨ã—ã¦ã„ã‚‹
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException ex) {
 				ex.printStackTrace();
 			}
 		}
-		nowTime = System.nanoTime();//ƒXƒŠ[ƒv‚µ‚Ä‚¢‚é‚Ì‚ÅŒ»İ‚ğXV
+		nowTime = System.nanoTime();//ã‚¹ãƒªãƒ¼ãƒ—ã—ã¦ã„ã‚‹ã®ã§ç¾åœ¨æ™‚åˆ»ã‚’æ›´æ–°
 		totalFrame++;
 		updateNum++;
 		if (nowTime - prevTime > 1000000000) {//1s

@@ -29,12 +29,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * ���O�t�@�C���i���K�[�̃O���[�o�����O�j�ւ̏o�͂��s���܂�. ���O�t�@�C���̃t�H�[�}�b�g��SimpleFoomater���g�p����܂��B<br>
+ * ログファイル（ロガーのグローバルログ）への出力を行います. ログファイルのフォーマットはSimpleFoomaterが使用されます。<br>
  * <br>
- * �����O�ւ̏o�͂́A�p�t�H�[�}���X�ɉe����^���܂��B<br>
+ * ★ログへの出力は、パフォーマンスに影響を与えます。<br>
  * <br>
- * �O���[�o�����O�̐ݒ肪GameConfig�ɂ���ĂȂ���Ă��Ȃ��ꍇ�́A���ׂẴ��O�͕W���o�͂ɏo�͂���܂��B<br>
- * ��GameConfig�̃O���[�o�����O�̐ݒ肪�Ȃ���Ă��Ȃ��ꍇ�́A�W���o�͂ł����Ă����O�̏o�͂��s���ׂ��ł͂���܂���B<br>
+ * グローバルログの設定がGameConfigによってなされていない場合は、すべてのログは標準出力に出力されます。<br>
+ * ※GameConfigのグローバルログの設定がなされていない場合は、標準出力であってもログの出力を行うべきではありません。<br>
  *
  * @version 1.0.0 - 2015/01/03<br>
  * @author Shinacho<br>

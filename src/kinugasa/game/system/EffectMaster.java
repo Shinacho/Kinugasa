@@ -28,7 +28,7 @@ import kinugasa.util.Random;
 import kinugasa.resource.Nameable;
 
 /**
- * ‚±‚ÌƒNƒ‰ƒX‚Íƒ}ƒXƒ^ƒf[ƒ^‚Ì‚½‚ßAİ’è‚³‚ê‚éƒGƒtƒFƒNƒg‚ÌONECEƒtƒ‰ƒO‚ÍƒXƒe[ƒ^ƒX‚ª‚Â•K—v‚ª‚ ‚è‚Ü‚·B
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã¯ãƒã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿ã®ãŸã‚ã€è¨­å®šã•ã‚Œã‚‹ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ONECEãƒ•ãƒ©ã‚°ã¯ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒæŒã¤å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚
  *
  * @vesion 1.0.0 - 2022/11/15_11:59:41<br>
  * @author Shinacho<br>
@@ -72,7 +72,7 @@ public class EffectMaster implements Nameable {
 		this.maxTime = maxTime;
 	}
 
-	// ƒGƒtƒFƒNƒg‚ª•¡”‚ ‚éê‡‚ÅA‚Ç‚ê‚à‚ª“¯‚¶ƒ^ƒCƒ€‚Å‰Ò“­‚·‚éê‡AÅ‰‚Ì1‰ñ‚¾‚¯Às‚·‚é•K—v‚ª‚ ‚é
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒè¤‡æ•°ã‚ã‚‹å ´åˆã§ã€ã©ã‚Œã‚‚ãŒåŒã˜ã‚¿ã‚¤ãƒ ã§ç¨¼åƒã™ã‚‹å ´åˆã€æœ€åˆã®1å›ã ã‘å®Ÿè¡Œã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 	public TimeCounter createTimeCounter() {
 		if (minTime == 0 || maxTime == 0) {
 			throw new GameSystemException("effect time is 0 : " + this);
@@ -91,7 +91,7 @@ public class EffectMaster implements Nameable {
 	}
 
 	public void exec(Status s) {
-		//‚±‚Ìó‘ÔˆÙíŒø‰Ê‚ğS‚É”­¶‚³‚¹‚éB‘ÎÛ‚ÍADDQCONDITIONAATTRINASTATUSB
+		//ã“ã®çŠ¶æ…‹ç•°å¸¸åŠ¹æœã‚’Sã«ç™ºç”Ÿã•ã›ã‚‹ã€‚å¯¾è±¡ã¯ADDï¼¿CONDITIONã€ATTRINã€STATUSã€‚
 		switch (targetType) {
 			case ADD_CONDITION:
 				s.addCondition(targetName);
@@ -124,7 +124,7 @@ public class EffectMaster implements Nameable {
 				}
 			case CONFU:
 			case STOP:
-				//CONFU‚ÆSTOP‚ÍStatus‚©‚ç‚â‚é‚Ì‚ÅA‘€ì‚È‚µ
+				//CONFUã¨STOPã¯Statusã‹ã‚‰ã‚„ã‚‹ã®ã§ã€æ“ä½œãªã—
 				break;
 			default:
 				throw new AssertionError();

@@ -35,8 +35,8 @@ import kinugasa.object.BasicSprite;
 import kinugasa.resource.Disposable;
 
 /**
- * �t�B�[���h�}�b�v�̃��C�����C���[�̖������������X�v���C�g�ł��B ���̃N���X�̓t�B�[���h�}�b�v�̃��C���ł����A�P�i�Ŏg�����Ƃ��ł��܂��B
- * ���̏ꍇ�A���̃��C���[�Ɏg�p����`�b�v�Z�b�g�Ƃ��̓񎟌��z��f�[�^��p�ӂ���K�v������܂��B�f�[�^�̃C���f�b�N�X�́A[y][x]�ł���_�ɒ��ӂ��Ă��������B
+ * フィールドマップのメインレイヤーの役割を持ったスプライトです。 このクラスはフィールドマップのレイヤですが、単品で使うこともできます。
+ * その場合、このレイヤーに使用するチップセットとその二次元配列データを用意する必要があります。データのインデックスは、[y][x]である点に注意してください。
  *
  * @vesion 1.0.0 - 2021/11/26_11:08:20<br>
  * @author Shinacho<br>

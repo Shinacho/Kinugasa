@@ -26,7 +26,7 @@ package kinugasa.object;
 import kinugasa.game.GraphicsContext;
 
 /**
- * ���̃X�v���C�g�̎����́A�w�肳�ꂽ�̈�Ƀt���b�V����t�F�[�h���ʂ�\�����邱�Ƃ��ł��܂�.
+ * このスプライトの実装は、指定された領域にフラッシュやフェード効果を表示することができます.
  * <br>
  *
  * <br>

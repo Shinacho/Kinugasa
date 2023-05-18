@@ -30,7 +30,7 @@ import kinugasa.object.movemodel.BasicMoving;
 import kinugasa.object.movemodel.CompositeMove;
 
 /**
- * Šî–{“I‚ÈˆÚ“®‹@”\‚ğÀ‘•‚µ‚½ASprite‚ÌŠg’£‚Å‚·.
+ * åŸºæœ¬çš„ãªç§»å‹•æ©Ÿèƒ½ã‚’å®Ÿè£…ã—ãŸã€Spriteã®æ‹¡å¼µã§ã™.
  * <br>
  *
  * <br>
@@ -43,7 +43,7 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	private KVector vector;
 	//
 	/**
-	 * ˆÚ“®ƒAƒ‹ƒSƒŠƒYƒ€.
+	 * ç§»å‹•ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ .
 	 */
 	private MovingModel moving;
 	//
@@ -93,14 +93,14 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	/**
-	 * ƒIƒuƒWƒFƒNƒg‚Éİ’è‚³‚ê‚Ä‚¢‚éƒpƒ‰ƒ[ƒ^‚¨‚æ‚ÑƒAƒ‹ƒSƒŠƒYƒ€‚ğg—p‚µ‚ÄˆÚ“®‚µ‚Ü‚·.
+	 * ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«è¨­å®šã•ã‚Œã¦ã„ã‚‹ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãŠã‚ˆã³ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’ä½¿ç”¨ã—ã¦ç§»å‹•ã—ã¾ã™.
 	 */
 	public void move() {
 		moving.move(this);
 		updateCenter();
 	}
 
-	//ˆÚ“®‚ğƒVƒ~ƒ…ƒŒ[ƒg‚µ‚ÄAŸ‚ÌˆÚ“®‚ÅˆÚ“®Œã‚ÌÀ•W‚ğ•Ô‚µ‚Ü‚·B
+	//ç§»å‹•ã‚’ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ãƒˆã—ã¦ã€æ¬¡ã®ç§»å‹•ã§ç§»å‹•å¾Œã®åº§æ¨™ã‚’è¿”ã—ã¾ã™ã€‚
 	private Point2D.Float simulateMoveLocation;
 
 	public void commitMove() {
@@ -131,9 +131,9 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	/**
-	 * w’è‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚ğg—p‚µ‚ÄˆÚ“®‚µ‚Ü‚·.
+	 * æŒ‡å®šã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’ä½¿ç”¨ã—ã¦ç§»å‹•ã—ã¾ã™.
 	 *
-	 * @param m ˆÚ“®•û–@.<br>
+	 * @param m ç§»å‹•æ–¹æ³•.<br>
 	 */
 	public void move(MovingModel m) {
 		m.move(this);
@@ -165,19 +165,19 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚ğ•`‰æ‚µ‚Ü‚·. visible‚Ü‚½‚Íexist‚ªfalse‚Ì‚Æ‚«A•`‰æ‚µ‚Ä‚Í‚È‚è‚Ü‚¹‚ñ.<br>
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’æç”»ã—ã¾ã™. visibleã¾ãŸã¯existãŒfalseã®ã¨ãã€æç”»ã—ã¦ã¯ãªã‚Šã¾ã›ã‚“.<br>
 	 *
-	 * @param g ƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg.<br>
+	 * @param g ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ.<br>
 	 */
 	@Override
 	public abstract void draw(GraphicsContext g);
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚ªŒ»İ‚Ìİ’è‚ÅŸ‚ÉˆÚ“®‚µ‚½‚Ì’†S‚ÌÀ•W‚ğ•Ô‚µ‚Ü‚·.
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãŒç¾åœ¨ã®è¨­å®šã§æ¬¡ã«ç§»å‹•ã—ãŸæ™‚ã®ä¸­å¿ƒã®åº§æ¨™ã‚’è¿”ã—ã¾ã™.
 	 * <br>
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ÍAˆÚ“®ƒ‚ƒfƒ‹‚É‚æ‚éˆÚ“®è’i‚ğl—¶‚µ‚Ü‚¹‚ñB<br>
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã€ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã«ã‚ˆã‚‹ç§»å‹•æ‰‹æ®µã‚’è€ƒæ…®ã—ã¾ã›ã‚“ã€‚<br>
 	 *
-	 * @return Ÿ‚Ì’†SÀ•W.<br>
+	 * @return æ¬¡ã®ä¸­å¿ƒåº§æ¨™.<br>
 	 */
 	public Point2D.Float getNextCenter() {
 		Point2D.Float p = (Point2D.Float) getCenter().clone();
@@ -187,11 +187,11 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚ªŒ»İ‚Ìİ’è‚ÅŸ‚ÉˆÚ“®‚µ‚½‚Ì¶ã‚ÌÀ•W‚ğ•Ô‚µ‚Ü‚·.
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãŒç¾åœ¨ã®è¨­å®šã§æ¬¡ã«ç§»å‹•ã—ãŸæ™‚ã®å·¦ä¸Šã®åº§æ¨™ã‚’è¿”ã—ã¾ã™.
 	 * <br>
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ÍAˆÚ“®ƒ‚ƒfƒ‹‚É‚æ‚éˆÚ“®è’i‚ğl—¶‚µ‚Ü‚¹‚ñB<br>
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã€ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã«ã‚ˆã‚‹ç§»å‹•æ‰‹æ®µã‚’è€ƒæ…®ã—ã¾ã›ã‚“ã€‚<br>
 	 *
-	 * @return Ÿ‚ÌÀ•W.<br>
+	 * @return æ¬¡ã®åº§æ¨™.<br>
 	 */
 	public Point2D.Float getNextLocation() {
 		Point2D.Float p = getLocation();
@@ -209,23 +209,23 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	/**
-	 * ˆÚ“®ƒ‚ƒfƒ‹‚ğæ“¾‚µ‚Ü‚·.
+	 * ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ˆÚ“®ƒ‚ƒfƒ‹.<br>
+	 * @return ç§»å‹•ãƒ¢ãƒ‡ãƒ«.<br>
 	 */
 	public MovingModel getMovingModel() {
 		return moving;
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚ÌˆÚ“®ƒCƒxƒ“ƒg‚Ì‚¤‚¿Aw’è‚µ‚½ƒNƒ‰ƒX‚ÌƒCƒxƒ“ƒg‚ğ•Ô‚µ‚Ü‚·.
-	 * ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍA‚±‚ÌƒXƒvƒ‰ƒCƒg‚ÌˆÚ“®ƒCƒxƒ“ƒg‚ªMovingEvent‚Å‚ ‚éê‡‚É‚Í
-	 * ‚»‚Ì“à•”‚ğŒŸõ‚µ‚ÄˆÚ“®ƒCƒxƒ“ƒg‚ÌÀ‘•‚ğ•Ô‚µ‚Ü‚·B<br>MovingEvent‚ğæ“¾‚·‚é‚É‚ÍA
-	 * ˆø”‚ÉMovingEvent‚ÌƒNƒ‰ƒX‚ğw’è‚µ‚Ü‚·B<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ç§»å‹•ã‚¤ãƒ™ãƒ³ãƒˆã®ã†ã¡ã€æŒ‡å®šã—ãŸã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¿”ã—ã¾ã™.
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã€ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ç§»å‹•ã‚¤ãƒ™ãƒ³ãƒˆãŒMovingEventã§ã‚ã‚‹å ´åˆã«ã¯
+	 * ãã®å†…éƒ¨ã‚’æ¤œç´¢ã—ã¦ç§»å‹•ã‚¤ãƒ™ãƒ³ãƒˆã®å®Ÿè£…ã‚’è¿”ã—ã¾ã™ã€‚<br>MovingEventã‚’å–å¾—ã™ã‚‹ã«ã¯ã€
+	 * å¼•æ•°ã«MovingEventã®ã‚¯ãƒ©ã‚¹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 *
-	 * @param model ŒŸõ‚·‚éƒ‚ƒfƒ‹‚ÌƒNƒ‰ƒXB<br>
+	 * @param model æ¤œç´¢ã™ã‚‹ãƒ¢ãƒ‡ãƒ«ã®ã‚¯ãƒ©ã‚¹ã€‚<br>
 	 *
-	 * @return w’è‚µ‚½ƒNƒ‰ƒX‚ÌƒCƒxƒ“ƒg‚ªŠÜ‚Ü‚ê‚Ä‚¢‚éê‡‚É‚»‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚·B‘¶İ‚µ‚È‚¢ê‡‚Ínull‚ğ•Ô‚·B<br>
+	 * @return æŒ‡å®šã—ãŸã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ™ãƒ³ãƒˆãŒå«ã¾ã‚Œã¦ã„ã‚‹å ´åˆã«ãã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã™ã€‚å­˜åœ¨ã—ãªã„å ´åˆã¯nullã‚’è¿”ã™ã€‚<br>
 	 */
 	public MovingModel getMovingModel(Class<? extends MovingModel> model) {
 		if (moving instanceof CompositeMove) {
@@ -241,19 +241,19 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	/**
-	 * ˆÚ“®ƒ‚ƒfƒ‹‚ğİ’è‚µ‚Ü‚·.
+	 * ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param movingModel ˆÚ“®ƒ‚ƒfƒ‹.<br>
+	 * @param movingModel ç§»å‹•ãƒ¢ãƒ‡ãƒ«.<br>
 	 */
 	public void setMovingModel(MovingModel movingModel) {
 		this.moving = movingModel;
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì•¡»‚ğì¬‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍA‘S‚Ä‚ÌƒtƒB[ƒ‹ƒh‚ğƒNƒ[ƒjƒ“ƒO‚µ‚Ü‚·.<br>
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ÍƒTƒuƒNƒ‰ƒX‚Å“KØ‚ÉƒI[ƒo[ƒ‰ƒCƒh‚µ‚Ä‚­‚¾‚³‚¢.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®è¤‡è£½ã‚’ä½œæˆã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã€å…¨ã¦ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’ã‚¯ãƒ­ãƒ¼ãƒ‹ãƒ³ã‚°ã—ã¾ã™.<br>
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã‚µãƒ–ã‚¯ãƒ©ã‚¹ã§é©åˆ‡ã«ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã—ã¦ãã ã•ã„.<br>
 	 *
-	 * @return ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Æ“¯‚¶İ’è‚ÌV‚µ‚¢ƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã¨åŒã˜è¨­å®šã®æ–°ã—ã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	@Override
 	public BasicSprite clone() {
@@ -264,10 +264,10 @@ public abstract class BasicSprite extends Sprite implements Controllable {
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì•¶š—ñ•\‹L‚ğæ“¾‚µ‚Ü‚·.
-	 * •¶š—ñ‚É‚ÍƒXƒvƒ‰ƒCƒg‚ÌƒtƒB[ƒ‹ƒhî•ñ‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·.‚±‚ê‚ç‚Ì’l‚Í‚·‚×‚ÄƒAƒNƒZƒT‚ğ’Ê‚µ‚Äæ“¾‰Â”\‚Å‚·.<br>
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æ–‡å­—åˆ—è¡¨è¨˜ã‚’å–å¾—ã—ã¾ã™.
+	 * æ–‡å­—åˆ—ã«ã¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰æƒ…å ±ãŒå«ã¾ã‚Œã¦ã„ã¾ã™.ã“ã‚Œã‚‰ã®å€¤ã¯ã™ã¹ã¦ã‚¢ã‚¯ã‚»ã‚µã‚’é€šã—ã¦å–å¾—å¯èƒ½ã§ã™.<br>
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚Ìî•ñ.<br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æƒ…å ±.<br>
 	 */
 	@Override
 	public String toString() {

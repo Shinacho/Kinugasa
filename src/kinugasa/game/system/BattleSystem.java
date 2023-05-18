@@ -69,65 +69,65 @@ public class BattleSystem implements Drawable {
 	private BattleSystem() {
 	}
 
-	//ƒ^[ƒ“”
+	//ã‚¿ãƒ¼ãƒ³æ•°
 	private int turn = 0;
-	//--------------------------------------------------------‰Šú‰»EI—¹‰»
-	//ƒvƒŒƒCƒ„í“¬ŠJn‘OˆÊ’u
+	//--------------------------------------------------------åˆæœŸåŒ–ãƒ»çµ‚äº†åŒ–
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤æˆ¦é—˜é–‹å§‹å‰ä½ç½®
 	private List<Point2D.Float> partyInitialLocation = new ArrayList<>();
-	//ƒvƒŒƒCƒ„í“¬ŠJn‘OŒü‚«
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤æˆ¦é—˜é–‹å§‹å‰å‘ã
 	private List<FourDirection> partyInitialDir = new ArrayList<>();
-	//ƒvƒŒƒCƒ„‰ŠúˆÚ“®–Ú•WÀ•W
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤åˆæœŸç§»å‹•ç›®æ¨™åº§æ¨™
 	private List<Point2D.Float> partyTargetLocationForFirstMove = new ArrayList<>();
-	//í“¬ŠJn‘OBGM
+	//æˆ¦é—˜é–‹å§‹å‰BGM
 	private Sound prevBGM;
-	//í“¬BGM
+	//æˆ¦é—˜BGM
 	private Sound currentBGM;
-	//Ÿ—˜BGM
+	//å‹åˆ©BGM
 	private Sound winBGM;
-	//Ÿ—˜‘JˆÚƒƒWƒbƒN–¼A”s–k‘JˆÚƒƒWƒbƒN–¼
+	//å‹åˆ©é·ç§»ãƒ­ã‚¸ãƒƒã‚¯åã€æ•—åŒ—é·ç§»ãƒ­ã‚¸ãƒƒã‚¯å
 	private String winLogicName, loseLogicName;
-	//--------------------------------------------------------•\¦’†EÀs’†
-	//“G‚ÌƒXƒvƒ‰ƒCƒg‚ÆƒXƒe[ƒ^ƒX
+	//--------------------------------------------------------è¡¨ç¤ºä¸­ãƒ»å®Ÿè¡Œä¸­
+	//æ•µã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 	private List<Enemy> enemies = new ArrayList<>();
-	//‚±‚Ìƒ^[ƒ“‚Ìƒoƒgƒ‹ƒRƒ}ƒ“ƒh‡˜
+	//ã“ã®ã‚¿ãƒ¼ãƒ³ã®ãƒãƒˆãƒ«ã‚³ãƒãƒ³ãƒ‰é †åº
 	private LinkedList<BattleCommand> commandsOfThisTurn = new LinkedList<>();
-	//‚±‚Ìƒ^[ƒ“‚Ìƒoƒgƒ‹ƒRƒ}ƒ“ƒh‡˜
+	//ã“ã®ã‚¿ãƒ¼ãƒ³ã®ãƒãƒˆãƒ«ã‚³ãƒãƒ³ãƒ‰é †åº
 	private LinkedHashMap<Integer, List<MagicSpell>> magics = new LinkedHashMap<>();
-	//•\¦’†ƒoƒgƒ‹ƒAƒNƒVƒ‡ƒ“EƒAƒjƒ[ƒVƒ‡ƒ“
+	//è¡¨ç¤ºä¸­ãƒãƒˆãƒ«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒ»ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 	private List<AnimationSprite> animation = new ArrayList<>();
-	//Às’†ƒoƒgƒ‹ƒAƒNƒVƒ‡ƒ“‚©‚ç¶¬‚³‚ê‚½ƒAƒNƒVƒ‡ƒ“‘Ò‹@ŠÔ
+	//å®Ÿè¡Œä¸­ãƒãƒˆãƒ«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‹ã‚‰ç”Ÿæˆã•ã‚ŒãŸã‚¢ã‚¯ã‚·ãƒ§ãƒ³å¾…æ©Ÿæ™‚é–“
 	private FrameTimeCounter currentBAWaitTime;
-	//s“®’†ƒRƒ}ƒ“ƒh
+	//è¡Œå‹•ä¸­ã‚³ãƒãƒ³ãƒ‰
 	private BattleCommand currentCmd;
-	//ActionMessage•\¦ŠÔ
+	//ActionMessageè¡¨ç¤ºæ™‚é–“
 	private int messageWaitTime = 66;
-	//í“¬Œ‹‰Ê
+	//æˆ¦é—˜çµæœ
 	private BattleResultValues battleResultValue = null;
-	//ƒJƒŒƒ“ƒgBA‚ÌNPCcˆÚ“®ƒ|ƒCƒ“ƒg
+	//ã‚«ãƒ¬ãƒ³ãƒˆBAã®NPCæ®‹ç§»å‹•ãƒã‚¤ãƒ³ãƒˆ
 	private int remMovePoint;
-	//ˆÚ“®ŠJn‚ÌˆÊ’u
+	//ç§»å‹•é–‹å§‹æ™‚ã®ä½ç½®
 	private Point2D.Float moveIinitialLocation;
-	//Œ»İ‚ÌƒXƒe[ƒW
+	//ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ã‚¸
 	private StageHolder stage;
-	//-------------------------------------------------------------------ƒVƒXƒeƒ€
-	//ƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒEƒVƒXƒeƒ€‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	//-------------------------------------------------------------------ã‚·ã‚¹ãƒ†ãƒ 
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚·ã‚¹ãƒ†ãƒ ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private BattleMessageWindowSystem messageWindowSystem;
-	//ƒ^[ƒQƒbƒg‘I‘ğƒVƒXƒeƒ€‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠã‚·ã‚¹ãƒ†ãƒ ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private BattleTargetSystem targetSystem;
-	//ƒoƒgƒ‹ƒtƒB[ƒ‹ƒhƒCƒ“ƒXƒ^ƒ“ƒX
+	//ãƒãƒˆãƒ«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	private BattleFieldSystem battleFieldSystem;
-	//ó‘ÔˆÙíƒ}ƒl[ƒWƒƒ
+	//çŠ¶æ…‹ç•°å¸¸ãƒãƒãƒ¼ã‚¸ãƒ£
 	private ConditionManager conditionManager;
-	//ƒoƒgƒ‹I—¹ƒtƒ‰ƒOitrue=I—¹
+	//ãƒãƒˆãƒ«çµ‚äº†ãƒ•ãƒ©ã‚°ï¼ˆtrue=çµ‚äº†
 	private boolean end = false;
-	//í‹µ}ƒ‚[ƒh‚©‚Ç‚¤‚©
+	//æˆ¦æ³å›³ãƒ¢ãƒ¼ãƒ‰ã‹ã©ã†ã‹
 	private boolean showMode = false;
-	//AfterMoveActionXV—p‚Ì‘O‰ñŒŸ¸‚ÌUŒ‚‰Â”Û
+	//AfterMoveActionæ›´æ–°ç”¨ã®å‰å›æ¤œæŸ»æ™‚ã®æ”»æ’ƒå¯å¦
 	private boolean prevAttackOK = false;
-	//-----------------------------------------------------------ƒAƒCƒeƒ€
-	//ƒAƒCƒeƒ€ChoiceUseƒCƒ“ƒfƒbƒNƒXF-1Fƒ^[ƒQƒbƒg‘I‘ğ–¢g—p
+	//-----------------------------------------------------------ã‚¢ã‚¤ãƒ†ãƒ 
+	//ã‚¢ã‚¤ãƒ†ãƒ ChoiceUseã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ï¼š-1ï¼šã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠæœªä½¿ç”¨
 	private int itemChoiceMode = -1;
-	//ƒAƒCƒeƒ€g—p‚ÆƒpƒX‚ÌƒAƒCƒeƒ€–{‘Ì
+	//ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨ã¨ãƒ‘ã‚¹ã®ã‚¢ã‚¤ãƒ†ãƒ æœ¬ä½“
 	private Item itemPassAndUse;
 
 	class StageHolder {
@@ -165,7 +165,7 @@ public class BattleSystem implements Drawable {
 			}
 			if (this.stage == Stage.SHOW_STATUS) {
 				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.SHOW_STATUS_DESC);
-				//ƒXƒe[ƒ^ƒX•\¦
+				//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¡¨ç¤º
 				int i = 0;
 				for (; !currentCmd.getUser().getStatus().equals(GameSystem.getInstance().getPartyStatus().get(i)); i++);
 				messageWindowSystem.setStatusDescPCIDX(i);
@@ -215,59 +215,59 @@ public class BattleSystem implements Drawable {
 
 	public enum Stage {
 		/**
-		 * ŠJn?‰ŠúˆÚ“®‚Ü‚Å
+		 * é–‹å§‹?åˆæœŸç§»å‹•ã¾ã§
 		 */
 		STARTUP,
 		/**
-		 * ‰ŠúˆÚ“®’†
+		 * åˆæœŸç§»å‹•ä¸­
 		 */
 		INITIAL_MOVING,
 		/**
-		 * ƒ†[ƒU‘€ì‘Ò‚¿
+		 * ãƒ¦ãƒ¼ã‚¶æ“ä½œå¾…ã¡
 		 */
 		WAITING_EXEC_CMD,
 		/**
-		 * ƒRƒ}ƒ“ƒh‘I‘ğ’†
+		 * ã‚³ãƒãƒ³ãƒ‰é¸æŠä¸­
 		 */
 		CMD_SELECT,
 		/**
-		 * “¦‚°ƒAƒjƒ[ƒVƒ‡ƒ“Às’†BI‚í‚Á‚½‚çWAIT‚É“ü‚éB
+		 * é€ƒã’ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å®Ÿè¡Œä¸­ã€‚çµ‚ã‚ã£ãŸã‚‰WAITã«å…¥ã‚‹ã€‚
 		 */
 		ESCAPING,
 		/**
-		 * ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^ˆÚ“®’†BŠm’èƒAƒNƒVƒ‡ƒ“‚ªŒÄ‚Î‚ê‚é‚Ü‚Å‰½‚à‚µ‚È‚¢B
+		 * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ç§»å‹•ä¸­ã€‚ç¢ºå®šã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãŒå‘¼ã°ã‚Œã‚‹ã¾ã§ä½•ã‚‚ã—ãªã„ã€‚
 		 */
 		PLAYER_MOVE,
 		/**
-		 * ƒ^[ƒQƒbƒg‘I‘ğ’†Bexec‚ªŒÄ‚Î‚ê‚é‚Ü‚Å‰½‚à‚µ‚È‚¢B
+		 * ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠä¸­ã€‚execãŒå‘¼ã°ã‚Œã‚‹ã¾ã§ä½•ã‚‚ã—ãªã„ã€‚
 		 */
 		TARGET_SELECT,
 		/**
-		 * ©“®ˆ—Às’†BƒAƒNƒVƒ‡ƒ“ƒƒbƒZ[ƒW‚ª•\¦‚³‚ê‚é‚Ì‚ÅAOK‚ğ‰Ÿ‚·‚ÆŸ‚Éi‚ŞB
+		 * è‡ªå‹•å‡¦ç†å®Ÿè¡Œä¸­ã€‚ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒè¡¨ç¤ºã•ã‚Œã‚‹ã®ã§ã€OKã‚’æŠ¼ã™ã¨æ¬¡ã«é€²ã‚€ã€‚
 		 */
 		EXECUTING_ACTION,
 		/**
-		 * ˆÚ“®Œãs“®‘I‘ğ’†
+		 * ç§»å‹•å¾Œè¡Œå‹•é¸æŠä¸­
 		 */
 		AFTER_MOVE_CMD_SELECT,
 		/**
-		 * ƒXƒe[ƒ^ƒX‰{——’†
+		 * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é–²è¦§ä¸­
 		 */
 		SHOW_STATUS,
 		/**
-		 * ƒAƒCƒeƒ€—p“r‘I‘ğ‰æ–Ê
+		 * ã‚¢ã‚¤ãƒ†ãƒ ç”¨é€”é¸æŠç”»é¢
 		 */
 		ITEM_CHOICE_USE,
 		/**
-		 * ƒAƒCƒeƒ€Ú×Šm”F’†
+		 * ã‚¢ã‚¤ãƒ†ãƒ è©³ç´°ç¢ºèªä¸­
 		 */
 		SHOW_ITEM_DESC,
 		/**
-		 * “GˆÚ“®Às’†BI‚í‚Á‚½‚çWAIT‚É“ü‚éB
+		 * æ•µç§»å‹•å®Ÿè¡Œä¸­ã€‚çµ‚ã‚ã£ãŸã‚‰WAITã«å…¥ã‚‹ã€‚
 		 */
 		EXECUTING_MOVE,
 		/**
-		 * ƒoƒgƒ‹‚ÍI—¹‚µ‚ÄAƒQ[ƒ€ƒVƒXƒeƒ€‚©‚ç‚ÌI—¹w¦‚ğ‘Ò‚Á‚Ä‚¢‚éB
+		 * ãƒãƒˆãƒ«ã¯çµ‚äº†ã—ã¦ã€ã‚²ãƒ¼ãƒ ã‚·ã‚¹ãƒ†ãƒ ã‹ã‚‰ã®çµ‚äº†æŒ‡ç¤ºã‚’å¾…ã£ã¦ã„ã‚‹ã€‚
 		 */
 		BATLE_END,
 	}
@@ -403,8 +403,8 @@ public class BattleSystem implements Drawable {
 				Item i = (Item) a;
 				String s = user.getName() + I18N.translate("IS") + i.getName() + I18N.translate("USE_ITEM") + Text.getLineSep();
 				if (res.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
-					//ƒAƒCƒeƒ€Œø‰Ê”»’è
-					//ƒ^[ƒQƒbƒgæ“¾
+					//ã‚¢ã‚¤ãƒ†ãƒ åŠ¹æœåˆ¤å®š
+					//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆå–å¾—
 					String tgtName = option.get(0);
 					BattleCharacter tgt = null;
 					for (BattleCharacter c : BattleSystem.getInstance().enemies) {
@@ -417,7 +417,7 @@ public class BattleSystem implements Drawable {
 							tgt = c;
 						}
 					}
-					//ƒ^[ƒQƒbƒg‚Ì©“®ƒ_ƒ[ƒWŒvZŒ‹‰Ê‚ğæ“¾
+					//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®è‡ªå‹•ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—çµæœã‚’å–å¾—
 					Map<StatusKey, Float> damage = tgt.getStatus().calcDamage();
 					for (Map.Entry<StatusKey, Float> e : damage.entrySet()) {
 						s += tgt.getName() + I18N.translate("S") + e.getKey().getDesc() + I18N.translate("IS") + (int) (float) e.getValue();
@@ -457,18 +457,18 @@ public class BattleSystem implements Drawable {
 	}
 
 	/**
-	 * Œ»İ‚ÌƒXƒe[ƒW‚ğæ“¾‚µ‚Ü‚·
+	 * ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’å–å¾—ã—ã¾ã™
 	 *
-	 * @return ƒXƒe[ƒW
+	 * @return ã‚¹ãƒ†ãƒ¼ã‚¸
 	 */
 	public Stage getStage() {
 		return stage.getStage();
 	}
 
 	/**
-	 * Œ»İ‚Ìƒ^[ƒ“”‚ğæ“¾‚µ‚Ü‚·B
+	 * ç¾åœ¨ã®ã‚¿ãƒ¼ãƒ³æ•°ã‚’å–å¾—ã—ã¾ã™ã€‚
 	 *
-	 * @return ƒ^[ƒ“”A1ƒXƒ^[ƒgB
+	 * @return ã‚¿ãƒ¼ãƒ³æ•°ã€1ã‚¹ã‚¿ãƒ¼ãƒˆã€‚
 	 */
 	public int getTurn() {
 		return turn;
@@ -481,22 +481,22 @@ public class BattleSystem implements Drawable {
 		return result;
 	}
 
-	//------------------------------------‰Šú‰»---------------------------------------
+	//------------------------------------åˆæœŸåŒ–---------------------------------------
 	public void encountInit(EncountInfo enc) {
 		if (GameSystem.isDebugMode()) {
 			kinugasa.game.GameLog.printInfo(" -----------------BATTLE_START------------------------------------------------");
 		}
 		stage = new StageHolder();
 		stage.setStage(BattleSystem.Stage.STARTUP);
-		//ƒGƒ“ƒJƒEƒ“ƒgî•ñ‚Ìæ“¾
+		//ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆæƒ…å ±ã®å–å¾—
 		EnemySetStorage ess = enc.getEnemySetStorage().load();
 		EnemySet es = ess.get();
 		winLogicName = es.getWinLogicName();
 		loseLogicName = es.getLoseLogicName();
-		//‘OBGM‚Ì’â~
+		//å‰BGMã®åœæ­¢
 		prevBGM = enc.getPrevBGM();
 		if (prevBGM == null) {
-			//prev‚ªnull‚Å‚àÄ¶’†‚ÌBGM‚ª‚ ‚é‚©ŒŸ¸‚·‚éB‚ ‚ê‚Î‚»‚ê‚ğ’â~‚·‚é
+			//prevãŒnullã§ã‚‚å†ç”Ÿä¸­ã®BGMãŒã‚ã‚‹ã‹æ¤œæŸ»ã™ã‚‹ã€‚ã‚ã‚Œã°ãã‚Œã‚’åœæ­¢ã™ã‚‹
 			SoundStorage.getInstance().get("BGM").forEach(p -> p.stop());
 		}
 		if (prevBGM != null) {
@@ -516,16 +516,16 @@ public class BattleSystem implements Drawable {
 					throw new AssertionError("BS undefined bgm mode : " + es);
 			}
 		}
-		//ƒoƒgƒ‹BGM‚ÌÄ¶
+		//ãƒãƒˆãƒ«BGMã®å†ç”Ÿ
 		if (es.hasBgm()) {
 			currentBGM = es.getBgm().load();
 			currentBGM.stopAndPlay();
 		}
 		winBGM = enc.getEnemySetStorage().get().getWinBgm();
-		//“Gæ“¾
+		//æ•µå–å¾—
 		enemies = es.create();
 		ess.dispose();
-		//‰Šú‰»
+		//åˆæœŸåŒ–
 		GameSystem gs = GameSystem.getInstance();
 		battleFieldSystem = BattleFieldSystem.getInstance();
 		battleFieldSystem.init(enc.getChipAttribute());
@@ -534,25 +534,25 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem = BattleMessageWindowSystem.getInstance();
 		messageWindowSystem.init();
 		conditionManager = ConditionManager.getInstance();
-		//”O‚Ì‚½‚ßƒp[ƒeƒB[‚ÌƒAƒNƒVƒ‡ƒ“‚ğXV
+		//å¿µã®ãŸã‚ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’æ›´æ–°
 		GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction(true));
-//		//ƒAƒCƒeƒ€g—p‚ğƒAƒNƒVƒ‡ƒ“‚É’Ç‰Á‚·‚é
+//		//ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨ã‚’ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã«è¿½åŠ ã™ã‚‹
 //		for (PlayerCharacter pc : gs.getParty()) {
 //			pc.getStatus().getActions().addAll(pc.getStatus().getItemBag().getItems());
 //		}
 
-		//oŒ»MSGİ’è—pƒ}ƒbƒv
+		//å‡ºç¾MSGè¨­å®šç”¨ãƒãƒƒãƒ—
 		Map<String, Long> enemyNum = enemies.stream().collect(Collectors.groupingBy(Enemy::getId, Collectors.counting()));
-		//oŒ»MSGİ’è
+		//å‡ºç¾MSGè¨­å®š
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, Long> e : enemyNum.entrySet()) {
 			sb.append(e.getKey()).append(I18N.translate("WAS")).append(e.getValue()).append(I18N.translate("APPEARANCE")).append(Text.getLineSep());
 		}
-		//“GoŒ»î•ñ‚ğƒZƒbƒg
-		setMsg(MessageType.INITIAL_ENEMY_INFO, List.of(sb.toString().split(Text.getLineSep())));
+		//æ•µå‡ºç¾æƒ…å ±ã‚’ã‚»ãƒƒãƒˆ
+		setMsg(MessageType.INITIAL_ENEMY_INFO, null, null, null, List.of(sb.toString().split(Text.getLineSep())));
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 
-		//ƒŠƒZƒbƒg
+		//ãƒªã‚»ãƒƒãƒˆ
 		currentCmd = null;
 		currentBAWaitTime = null;
 		commandsOfThisTurn.clear();
@@ -560,14 +560,14 @@ public class BattleSystem implements Drawable {
 		animation.clear();
 		targetSystem.unsetCurrent();
 
-		//“G‚Ì”z’u
+		//æ•µã®é…ç½®
 		putEnemy();
 
-		//–¡•û‚Ì”z’u
+		//å‘³æ–¹ã®é…ç½®
 		putParty();
 		assert partyTargetLocationForFirstMove.size() == gs.getParty().size() : "initial move target is missmatch";
 
-		//‰ŠúˆÚ“®Às‚Ö
+		//åˆæœŸç§»å‹•å®Ÿè¡Œã¸
 		stage.setStage(BattleSystem.Stage.INITIAL_MOVING);
 	}
 
@@ -577,7 +577,7 @@ public class BattleSystem implements Drawable {
 		partyInitialLocation.clear();
 		partyTargetLocationForFirstMove.clear();
 
-		//í“¬ŠJn‘OˆÊ’uEŒü‚«‘Ş”ğ
+		//æˆ¦é—˜é–‹å§‹å‰ä½ç½®ãƒ»å‘ãé€€é¿
 		List<PlayerCharacterSprite> partySprite = gs.getPartySprite();
 		List<Status> partyStatus = gs.getPartyStatus();
 		for (BasicSprite s : partySprite) {
@@ -586,7 +586,7 @@ public class BattleSystem implements Drawable {
 		}
 
 		int size = partySprite.get(0).getImageHeight();
-		//”z’u
+		//é…ç½®
 		float y = battleFieldSystem.getPartyArea().y + battleFieldSystem.getPartyArea().height / (partySprite.size() + 1) - size;
 		for (int i = 0; i < partySprite.size(); i++) {
 			float x = partyStatus.get(i).getPartyLocation() == PartyLocation.FRONT
@@ -628,33 +628,33 @@ public class BattleSystem implements Drawable {
 		Collections.sort(enemies, (Enemy o1, Enemy o2) -> (int) (o1.getSprite().getY() - o2.getSprite().getY()));
 	}
 
-	//------------------------------------------PPˆ—M------------------------------------
+	//------------------------------------------PPå‡¦ç†M------------------------------------
 	void turnStart() {
 		turn++;
 		if (GameSystem.isDebugMode()) {
 			kinugasa.game.GameLog.printInfo(" -----------------TURN[" + turn + "] START-----------------");
 		}
-		//‚±‚Ìƒ^[ƒ“‚Ìƒoƒgƒ‹ƒRƒ}ƒ“ƒh‚ğì¬
+		//ã“ã®ã‚¿ãƒ¼ãƒ³ã®ãƒãƒˆãƒ«ã‚³ãƒãƒ³ãƒ‰ã‚’ä½œæˆ
 		List<BattleCharacter> list = getAllChara();
 		if (SpeedCalcModelStorage.getInstance().getCurrent() == null) {
 			throw new GameSystemException("speed calc model is null");
 		}
 		SpeedCalcModelStorage.getInstance().getCurrent().sort(list);
 
-		//s“®‡‚Éƒoƒgƒ‹ƒRƒ}ƒ“ƒh‚ğŠi”[
+		//è¡Œå‹•é †ã«ãƒãƒˆãƒ«ã‚³ãƒãƒ³ãƒ‰ã‚’æ ¼ç´
 		assert commandsOfThisTurn.isEmpty() : "turnStart:cmd is not empty";
 		for (BattleCharacter c : list) {
 			BattleCommand.Mode mode = c.isPlayer() ? BattleCommand.Mode.PC : BattleCommand.Mode.CPU;
 			commandsOfThisTurn.add(new BattleCommand(mode, c));
 		}
 
-		//‚±‚Ìƒ^[ƒ“‚Ì–‚–@‰r¥Š®—¹ƒCƒxƒ“ƒg‚ğƒ‰ƒ“ƒ_ƒ€‚ÈˆÊ’u‚ÉŠ„‚è‚Ü‚¹‚é
+		//ã“ã®ã‚¿ãƒ¼ãƒ³ã®é­”æ³•è© å”±å®Œäº†ã‚¤ãƒ™ãƒ³ãƒˆã‚’ãƒ©ãƒ³ãƒ€ãƒ ãªä½ç½®ã«å‰²ã‚Šè¾¼ã¾ã›ã‚‹
 		List<MagicSpell> ms = magics.get(turn);
 		if (ms != null) {
 			if (!ms.isEmpty()) {
 				//commandsOfThisTurn
 				for (MagicSpell s : ms) {
-					//–‚–@ÀsƒCƒxƒ“ƒg‚ğƒ‰ƒ“ƒ_ƒ€‚ÈˆÊ’u‚ÉŠ„‚è‚Ü‚¹‚é
+					//é­”æ³•å®Ÿè¡Œã‚¤ãƒ™ãƒ³ãƒˆã‚’ãƒ©ãƒ³ãƒ€ãƒ ãªä½ç½®ã«å‰²ã‚Šè¾¼ã¾ã›ã‚‹
 					BattleCommand bc = new BattleCommand(s.isPlayer()
 							? BattleCommand.Mode.PC
 							: BattleCommand.Mode.CPU,
@@ -662,42 +662,42 @@ public class BattleSystem implements Drawable {
 							.setAction(Arrays.asList(s.getAction()))
 							.setMagicSpell(true);
 					int idx = Random.randomAbsInt(commandsOfThisTurn.size());
-					//Š„‚è‚Ü‚¹‚éƒ†[ƒU‚Ì’ÊíƒAƒNƒVƒ‡ƒ“‚ğ”jŠü‚·‚é
+					//å‰²ã‚Šè¾¼ã¾ã›ã‚‹ãƒ¦ãƒ¼ã‚¶ã®é€šå¸¸ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’ç ´æ£„ã™ã‚‹
 					BattleCommand remove = null;
 					for (BattleCommand c : commandsOfThisTurn) {
 						if (c.getUser().equals(bc.getUser())) {
 							remove = c;
 						}
 					}
-					//ƒ†[ƒU‚ªƒAƒ“ƒ^[ƒQƒbƒgó‘Ô‚Ìê‡AƒRƒ}ƒ“ƒh‚Í”jŠü
+					//ãƒ¦ãƒ¼ã‚¶ãŒã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆçŠ¶æ…‹ã®å ´åˆã€ã‚³ãƒãƒ³ãƒ‰ã¯ç ´æ£„
 					if (remove != null) {
 						if (!remove.getUser().getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
 							commandsOfThisTurn.remove(remove);
 						}
-						//íœ‚µ‚Ä‚©‚çŠ„‚è‚İÀs
+						//å‰Šé™¤ã—ã¦ã‹ã‚‰å‰²ã‚Šè¾¼ã¿å®Ÿè¡Œ
 						commandsOfThisTurn.add(idx, bc);
 					}
 				}
-				//‰r¥’†ƒŠƒXƒg‚©‚ç‚±‚Ìƒ^[ƒ“‚ÌƒCƒxƒ“ƒg‚ğíœ
+				//è© å”±ä¸­ãƒªã‚¹ãƒˆã‹ã‚‰ã“ã®ã‚¿ãƒ¼ãƒ³ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’å‰Šé™¤
 				magics.remove(turn);
 			}
 		}
-		//PCENPC‚Ìó‘ÔˆÙí‚ÌŒo‰ßƒ^[ƒ“XVEŒp‘±ƒ_ƒ[ƒWˆ—
+		//PCãƒ»NPCã®çŠ¶æ…‹ç•°å¸¸ã®çµŒéã‚¿ãƒ¼ãƒ³æ›´æ–°ãƒ»ç¶™ç¶šãƒ€ãƒ¡ãƒ¼ã‚¸å‡¦ç†
 		updateCondition();
 
-		//‚±‚Ìƒ^[ƒ“s“®‰Â”Û‚ğƒRƒ}ƒ“ƒh‚Éİ’è
+		//ã“ã®ã‚¿ãƒ¼ãƒ³è¡Œå‹•å¯å¦ã‚’ã‚³ãƒãƒ³ãƒ‰ã«è¨­å®š
 		for (BattleCommand cmd : commandsOfThisTurn) {
 			if (cmd.getUser().getStatus().isConfu()) {
-				//¬—
+				//æ··ä¹±
 				cmd.setConfu(true);
 			}
 			if (!cmd.getUser().getStatus().canMoveThisTurn()) {
-				//‚»‚Ì‘¼s“®•s”\‚Ìó‘ÔˆÙí
+				//ãã®ä»–è¡Œå‹•ä¸èƒ½ã®çŠ¶æ…‹ç•°å¸¸
 				cmd.setStop(true);
 			}
 		}
 
-		//ƒ†[ƒU–¼‚É‘Î‚µ‚Ä1‚Â‚ÌƒRƒ}ƒ“ƒh‚ª‚ ‚é‚±‚Æ‚ğŠm”F
+		//ãƒ¦ãƒ¼ã‚¶åã«å¯¾ã—ã¦1ã¤ã®ã‚³ãƒãƒ³ãƒ‰ãŒã‚ã‚‹ã“ã¨ã‚’ç¢ºèª
 		Set<String> set = new HashSet<>();
 		for (BattleCommand cmd : commandsOfThisTurn) {
 			String name = cmd.getUser().getName();
@@ -707,7 +707,7 @@ public class BattleSystem implements Drawable {
 			set.add(name);
 		}
 
-		//ƒRƒ}ƒ“ƒh‚ªƒp[ƒeƒB[‚¾‚¯‚Ìê‡Aí“¬I—¹
+		//ã‚³ãƒãƒ³ãƒ‰ãŒãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ã ã‘ã®å ´åˆã€æˆ¦é—˜çµ‚äº†
 		if (commandsOfThisTurn.stream().map(p -> p.getUser()).collect(Collectors.toList())
 				.equals(GameSystem.getInstance().getParty())) {
 			stage.setStage(Stage.BATLE_END);
@@ -719,11 +719,11 @@ public class BattleSystem implements Drawable {
 
 	@NoLoopCall
 	private void updateCondition() {
-		//HP‚ª0‚É‚È‚Á‚½‚Æ‚«‚È‚Ç‚Ìó‘ÔˆÙí‚ğ•t—^‚·‚é
+		//HPãŒ0ã«ãªã£ãŸã¨ããªã©ã®çŠ¶æ…‹ç•°å¸¸ã‚’ä»˜ä¸ã™ã‚‹
 		conditionManager.setCondition(GameSystem.getInstance().getPartyStatus());
 		conditionManager.setCondition(enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList()));
-		//ƒXƒvƒ‰ƒCƒg‚Ì”ñ•\¦‰»ˆ—
-		//ƒAƒ“ƒ^[ƒQƒbƒgƒRƒ“ƒfƒBƒVƒ‡ƒ“”­¶’†‚Ìƒ†[ƒU‚É‚æ‚éƒRƒ}ƒ“ƒh‚ğœ‹
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®éè¡¨ç¤ºåŒ–å‡¦ç†
+		//ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ç™ºç”Ÿä¸­ã®ãƒ¦ãƒ¼ã‚¶ã«ã‚ˆã‚‹ã‚³ãƒãƒ³ãƒ‰ã‚’é™¤å»
 		List<BattleCommand> remove = new ArrayList<>();
 		for (BattleCommand cmd : commandsOfThisTurn) {
 			if (cmd.getUser().getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
@@ -733,7 +733,7 @@ public class BattleSystem implements Drawable {
 		}
 		commandsOfThisTurn.removeAll(remove);
 
-		//ó‘ÔˆÙí‚ÌŒø‰ÊŠÔ‚ğˆø‚­
+		//çŠ¶æ…‹ç•°å¸¸ã®åŠ¹æœæ™‚é–“ã‚’å¼•ã
 		enemies.stream().map(p -> p.getStatus()).forEach(p -> p.update());
 		GameSystem.getInstance().getPartyStatus().forEach(p -> p.update());
 
@@ -743,40 +743,40 @@ public class BattleSystem implements Drawable {
 	//
 
 	void endBattle() {
-		//–¡•û‚Ì”z’u‚Ì‰Šú‰»
+		//å‘³æ–¹ã®é…ç½®ã®åˆæœŸåŒ–
 		List<PlayerCharacterSprite> partySprite = GameSystem.getInstance().getPartySprite();
 		for (int i = 0; i < partySprite.size(); i++) {
-			//ˆÊ’u‚Ì•œŒ³
+			//ä½ç½®ã®å¾©å…ƒ
 			partySprite.get(i).to(partyInitialDir.get(i));
 			partySprite.get(i).setLocation(partyInitialLocation.get(i));
 		}
-		//“G”Ô†‚Ì‰Šú‰»
+		//æ•µç•ªå·ã®åˆæœŸåŒ–
 		EnemyBlueprint.initEnemyNoMap();
-		//“¦‚°‚½ƒRƒ“ƒfƒBƒVƒ‡ƒ“‚Å”ñ•\¦‚É‚È‚Á‚Ä‚¢‚éê‡•\¦‚·‚é
-		//ƒAƒCƒeƒ€ƒAƒNƒVƒ‡ƒ“‚ğíœ‚·‚é
+		//é€ƒã’ãŸã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ã§éè¡¨ç¤ºã«ãªã£ã¦ã„ã‚‹å ´åˆè¡¨ç¤ºã™ã‚‹
+		//ã‚¢ã‚¤ãƒ†ãƒ ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’å‰Šé™¤ã™ã‚‹
 		for (PlayerCharacter pc : GameSystem.getInstance().getParty()) {
 			if (pc.getStatus().hasCondition(BattleConfig.ConditionName.escaped)) {
-				//“¦‚°‚½l‚ÌƒXƒvƒ‰ƒCƒg‚ğ•\¦‚É–ß‚·
+				//é€ƒã’ãŸäººã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’è¡¨ç¤ºã«æˆ»ã™
 				pc.getSprite().setVisible(true);
-				//“¦‚°‚½ƒRƒ“ƒfƒBƒVƒ‡ƒ“‚ğŠO‚·
+				//é€ƒã’ãŸã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ã‚’å¤–ã™
 				pc.getStatus().removeCondition(BattleConfig.ConditionName.escaped);
 			}
-			//ƒAƒCƒeƒ€ƒAƒNƒVƒ‡ƒ“‚Ìíœ
+			//ã‚¢ã‚¤ãƒ†ãƒ ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®å‰Šé™¤
 			List<CmdAction> removeList = pc.getStatus().getActions().stream().filter(p -> p.getType() == ActionType.ITEM).collect(Collectors.toList());
 			pc.getStatus().getActions().removeAll(removeList);
-			//‰r¥’†ƒRƒ“ƒfƒBƒVƒ‡ƒ“‚ğŠO‚·
+			//è© å”±ä¸­ã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ã‚’å¤–ã™
 			pc.getStatus().removeCondition(BattleConfig.ConditionName.casting);
-			//–hŒäE‰ñ”ğƒRƒ“ƒfƒBƒVƒ‡ƒ“‚ğŠO‚·
+			//é˜²å¾¡ãƒ»å›é¿ã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ã‚’å¤–ã™
 			pc.getStatus().removeCondition(BattleConfig.ConditionName.defence);
 			pc.getStatus().removeCondition(BattleConfig.ConditionName.avoidance);
 
 		}
-		//BGM‚Ìˆ—
+		//BGMã®å‡¦ç†
 //		if (currentBGM != null) {
 //			currentBGM.stop();
 //			currentBGM.dispose();
 //		}
-		winBGM.stop();//‹­§Às
+		winBGM.stop();//å¼·åˆ¶å®Ÿè¡Œ
 		winBGM.dispose();
 		if (prevBGM != null) {
 			prevBGM.play();
@@ -793,12 +793,12 @@ public class BattleSystem implements Drawable {
 		return battleResultValue;
 	}
 
-	//Ÿ‚ÌƒRƒ}ƒ“ƒh‚ğæ“¾BNPC‚Ü‚½‚ÍPCBNPC‚Ìê‡‚Í©“®ÀsB–‚–@‰r¥ƒCƒxƒ“ƒg‚à©“®ÀsB
-	//‚±‚Ìƒƒ\ƒbƒh‚ğ‹N“®‚µ‚ÄŸ‚ÌƒAƒNƒVƒ‡ƒ“‚ğæ“¾‚·‚éB
-	//æ“¾‚µ‚½ƒAƒNƒVƒ‡ƒ“‚ªPC‚È‚çƒRƒ}ƒ“ƒhƒEƒCƒ“ƒhƒE‚ª©“®‚ÅŠJ‚©‚ê‚Ä‚¢‚é‚Ì‚ÅA‘I‘ğ‚·‚éB
-	//‘I‘ğŒãAexecPCAction‚ğÀs‚·‚éB
+	//æ¬¡ã®ã‚³ãƒãƒ³ãƒ‰ã‚’å–å¾—ã€‚NPCã¾ãŸã¯PCã€‚NPCã®å ´åˆã¯è‡ªå‹•å®Ÿè¡Œã€‚é­”æ³•è© å”±ã‚¤ãƒ™ãƒ³ãƒˆã‚‚è‡ªå‹•å®Ÿè¡Œã€‚
+	//ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’èµ·å‹•ã—ã¦æ¬¡ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹ã€‚
+	//å–å¾—ã—ãŸã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãŒPCãªã‚‰ã‚³ãƒãƒ³ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãŒè‡ªå‹•ã§é–‹ã‹ã‚Œã¦ã„ã‚‹ã®ã§ã€é¸æŠã™ã‚‹ã€‚
+	//é¸æŠå¾Œã€execPCActionã‚’å®Ÿè¡Œã™ã‚‹ã€‚
 	public BattleCommand execCmd() {
-		//‚·‚×‚Ä‚ÌƒRƒ}ƒ“ƒh‚ğÀs‚µ‚½‚çŸ‚Ìƒ^[ƒ“‚ğŠJn
+		//ã™ã¹ã¦ã®ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œã—ãŸã‚‰æ¬¡ã®ã‚¿ãƒ¼ãƒ³ã‚’é–‹å§‹
 		if (commandsOfThisTurn.isEmpty()) {
 			turnStart();
 		}
@@ -811,10 +811,10 @@ public class BattleSystem implements Drawable {
 			kinugasa.game.GameLog.printInfo(" currentCMD:" + currentCmd);
 		}
 
-		//ƒ^[ƒQƒbƒgƒVƒXƒeƒ€‰Šú‰»
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚·ã‚¹ãƒ†ãƒ åˆæœŸåŒ–
 		targetSystem.unsetCurrent();
 		currentBAWaitTime = null;
-		//ƒAƒ“ƒ^[ƒQƒbƒgó‘ÔˆÙí‚Ìê‡AƒƒbƒZ[ƒWo‚³‚¸‚ÉŸ‚É‘—‚é
+		//ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆçŠ¶æ…‹ç•°å¸¸ã®å ´åˆã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºã•ãšã«æ¬¡ã«é€ã‚‹
 		if (user.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
 			if (GameSystem.isDebugMode()) {
 				kinugasa.game.GameLog.printInfo(user.getStatus().getName() + " is bad condition");
@@ -822,7 +822,7 @@ public class BattleSystem implements Drawable {
 			stage.setStage(BattleSystem.Stage.WAITING_EXEC_CMD);
 			return execCmd();
 		}
-		//–hŒä‚Ü‚½‚Í‰ñ”ğ’†‚Ìê‡A1ƒ^[ƒ“‚¾‚¯—LŒø‚È‚½‚ßA¡‰ñ‚»‚Ìƒtƒ‰ƒO‚ğŠO‚·
+		//é˜²å¾¡ã¾ãŸã¯å›é¿ä¸­ã®å ´åˆã€1ã‚¿ãƒ¼ãƒ³ã ã‘æœ‰åŠ¹ãªãŸã‚ã€ä»Šå›ãã®ãƒ•ãƒ©ã‚°ã‚’å¤–ã™
 		if (user.getStatus().hasCondition(BattleConfig.ConditionName.defence)) {
 			user.getStatus().removeCondition(BattleConfig.ConditionName.defence);
 		}
@@ -830,26 +830,26 @@ public class BattleSystem implements Drawable {
 			user.getStatus().removeCondition(BattleConfig.ConditionName.avoidance);
 		}
 
-		//ó‘ÔˆÙí‚Å“®‚¯‚È‚¢‚Æ‚«ƒXƒLƒbƒviƒƒbƒZ[ƒW‚Ío‚·
-		//‰r¥’†‚Ìê‡‚Í‚Ì‚¼‚­
+		//çŠ¶æ…‹ç•°å¸¸ã§å‹•ã‘ãªã„ã¨ãã‚¹ã‚­ãƒƒãƒ—ï¼ˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¯å‡ºã™
+		//è© å”±ä¸­ã®å ´åˆã¯ã®ãã
 		if (currentCmd.isStop()) {
 			if (currentCmd.getUser().getStatus().getCondition().stream().filter(p -> p.getName().equals(BattleConfig.ConditionName.casting)).count() != 1) {
-				setMsg(MessageType.STOPING_BY_CONDITION, null, user.getStatus(), List.of(user.getStatus().moveStopDesc().getKey().getDesc()));
+				setMsg(MessageType.STOPING_BY_CONDITION, user.getStatus(), null, null, List.of(user.getStatus().moveStopDesc().getKey().getDesc()));
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 				return currentCmd;
 			}
 		}
 
-		//¬—‚Å“®‚¯‚È‚¢‚Æ‚«‚ÍA’â~‚Ü‚½‚Íƒoƒgƒ‹ƒAƒNƒVƒ‡ƒ“‚ğ“K“–‚Éæ“¾‚µ‚Ä©“®Às‚·‚é
+		//æ··ä¹±ã§å‹•ã‘ãªã„ã¨ãã¯ã€åœæ­¢ã¾ãŸã¯ãƒãƒˆãƒ«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’é©å½“ã«å–å¾—ã—ã¦è‡ªå‹•å®Ÿè¡Œã™ã‚‹
 		if (currentCmd.isConfu()) {
 			if (Random.percent(BattleConfig.confuStopP)) {
-				//“®‚¯‚È‚¢
+				//å‹•ã‘ãªã„
 				CmdAction ba = currentCmd.getFirstBattleAction();
-				setMsg(MessageType.STOP_BECAUSE_CONFU, ba, user.getStatus());
+				setMsg(MessageType.STOP_BECAUSE_CONFU, user.getStatus(), ba, null, null);
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 				return currentCmd;
 			} else {
-				//“®‚¯‚é‚ª¬—
+				//å‹•ã‘ã‚‹ãŒæ··ä¹±
 				CmdAction ba = currentCmd.randomAction();
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 				execAction(ba);
@@ -857,63 +857,63 @@ public class BattleSystem implements Drawable {
 			}
 		}
 
-		//–‚–@‰r¥Š®—¹ƒCƒxƒ“ƒg‚Ìê‡APC‚Å‚àNPC‚Å‚à©“®ÀsAi‰r¥’†ƒRƒ“ƒfƒBƒVƒ‡ƒ“‚ğŠO‚·
-		//–‚–@‚ÌƒRƒXƒg‚Æƒ^[ƒQƒbƒg‚ÍA‰r¥ŠJn‚ÆI—¹‚Ì2‰ñ”»’è‚·‚éB
-		//‚±‚±‚Íu‰r¥I—¹v‚Ìˆ—B
+		//é­”æ³•è© å”±å®Œäº†ã‚¤ãƒ™ãƒ³ãƒˆã®å ´åˆã€PCã§ã‚‚NPCã§ã‚‚è‡ªå‹•å®Ÿè¡Œã€ï¼ˆè© å”±ä¸­ã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ã‚’å¤–ã™
+		//é­”æ³•ã®ã‚³ã‚¹ãƒˆã¨ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¯ã€è© å”±é–‹å§‹ã¨çµ‚äº†ã®2å›åˆ¤å®šã™ã‚‹ã€‚
+		//ã“ã“ã¯ã€Œè© å”±çµ‚äº†æ™‚ã€ã®å‡¦ç†ã€‚
 		if (currentCmd.isMagicSpell()) {
-			CmdAction ba = currentCmd.getFirstBattleAction();//1‚Â‚µ‚©“ü‚Á‚Ä‚¢‚È‚¢
-			//‰r¥’†ó‘ÔˆÙí‚ğŠO‚·
+			CmdAction ba = currentCmd.getFirstBattleAction();//1ã¤ã—ã‹å…¥ã£ã¦ã„ãªã„
+			//è© å”±ä¸­çŠ¶æ…‹ç•°å¸¸ã‚’å¤–ã™
 			currentCmd.getUser().getStatus().removeCondition(BattleConfig.ConditionName.casting);
-			//Œ»ó‚Å‚Ìƒ^[ƒQƒbƒg‚ğæ“¾
+			//ç¾çŠ¶ã§ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’å–å¾—
 			ActionTarget target = BattleTargetSystem.instantTarget(currentCmd.getUser(), ba).setSelfTarget(true);
-			//ƒ^[ƒQƒbƒg‚ª‚¢‚È‚¢ê‡A‰r¥¸”s‚ÌƒƒbƒZ[ƒWo‚·
+			//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ãªã„å ´åˆã€è© å”±å¤±æ•—ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºã™
 			if (target.isEmpty()) {
-				setMsg(MessageType.SPELL_BUT_NO_TARGET, ba, user.getStatus());
+				setMsg(MessageType.SPELL_BUT_NO_TARGET, user.getStatus(), ba, null, null);
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 				return currentCmd;
 			}
-			//Œ»ó‚ÌƒXƒe[ƒ^ƒX‚Å‘Î‰¿‚ğx•¥‚¦‚é‚©Šm”F
-			//¦ÀÛ‚Éx•¥‚¤‚Ì‚Íexec‚µ‚½‚Æ‚«B
+			//ç¾çŠ¶ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã§å¯¾ä¾¡ã‚’æ”¯æ‰•ãˆã‚‹ã‹ç¢ºèª
+			//â€»å®Ÿéš›ã«æ”¯æ‰•ã†ã®ã¯execã—ãŸã¨ãã€‚
 			Map<StatusKey, Integer> damage = ba.selfBattleDirectDamage();
-			//ƒ_ƒ[ƒW‚ğ‡Z
+			//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’åˆç®—
 			StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
-			//ƒ_ƒ[ƒW‚ª‚ ‚Á‚ÄAƒ}ƒCƒiƒX‚Ì€–Ú‚ª‚ ‚éê‡A‘Î‰¿‚ğx•¥‚¦‚È‚¢‚½‚ß‹óU‚è
-			//‚±‚Ì–‚–@‚ÌÁ”ï€–Ú‚ğæ“¾
+			//ãƒ€ãƒ¡ãƒ¼ã‚¸ãŒã‚ã£ã¦ã€ãƒã‚¤ãƒŠã‚¹ã®é …ç›®ãŒã‚ã‚‹å ´åˆã€å¯¾ä¾¡ã‚’æ”¯æ‰•ãˆãªã„ãŸã‚ç©ºæŒ¯ã‚Š
+			//ã“ã®é­”æ³•ã®æ¶ˆè²»é …ç›®ã‚’å–å¾—
 			if (!damage.isEmpty() && simulateDamage.hasMinus()) {
-				//‚µ‚©‚µMP‚ª‘«‚è‚È‚¢
+				//ã—ã‹ã—MPãŒè¶³ã‚Šãªã„
 				List<String> shortageStatusDesc = simulateDamage.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList());
-				setMsg(MessageType.SPELL_BUT_SHORTAGE, ba, user.getStatus(), shortageStatusDesc);
+				setMsg(MessageType.SPELL_BUT_SHORTAGE, user.getStatus(), ba, null, shortageStatusDesc);
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 				return currentCmd;
 			}
-			//‰r¥¬Œ÷A–‚–@Œø‰Ê”­“®
+			//è© å”±æˆåŠŸã€é­”æ³•åŠ¹æœç™ºå‹•
 			target.forEach(p -> p.getStatus().setDamageCalcPoint());
 			ActionResult res = ba.exec(target);
-			setMsg(MessageType.SPELL_SUCCESS, ba, res, actionResultProc(user, ba, target));
+			setMsg(MessageType.SPELL_SUCCESS, null, ba, res, actionResultProc(user, ba, target));
 			animation.addAll(res.getAnimation());
 			currentBAWaitTime = res.getWaitTime().clone();
 			stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 			return currentCmd;
-		}//–‚–@‚±‚±‚Ü‚Å
+		}//é­”æ³•ã“ã“ã¾ã§
 
 		//NPC
 		if (currentCmd.getMode() == BattleCommand.Mode.CPU) {
-			//NPCƒAƒNƒVƒ‡ƒ“‚ğ©“®ÀsA‚±‚Ì’†‚ÅƒXƒe[ƒW‚à•Ï‚í‚é‚µMSG‚àİ’è‚³‚ê‚é
+			//NPCã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’è‡ªå‹•å®Ÿè¡Œã€ã“ã®ä¸­ã§ã‚¹ãƒ†ãƒ¼ã‚¸ã‚‚å¤‰ã‚ã‚‹ã—MSGã‚‚è¨­å®šã•ã‚Œã‚‹
 			execAction(currentCmd.getBattleActionEx(((Enemy) currentCmd.getUser()).getAI(), ActionType.OTHER, ActionType.ITEM));
 			return currentCmd;
 		}
 
-		//PC‚ÌƒAƒNƒVƒ‡ƒ“Às
-		//ƒJƒŒƒ“ƒgƒRƒ}ƒ“ƒh“à—e‚ğƒRƒ}ƒ“ƒhƒEƒCƒ“ƒhƒE‚É•\¦A‚»‚Ì‘¼ƒEƒCƒ“ƒhƒE‚Í•Â‚¶‚é
+		//PCã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œ
+		//ã‚«ãƒ¬ãƒ³ãƒˆã‚³ãƒãƒ³ãƒ‰å†…å®¹ã‚’ã‚³ãƒãƒ³ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã«è¡¨ç¤ºã€ãã®ä»–ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã¯é–‰ã˜ã‚‹
 		messageWindowSystem.getCmdW().setCmd(currentCmd);
 		messageWindowSystem.getCmdW().resetSelect();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.CMD_SELECT);
 
-		//ƒ^[ƒQƒbƒgƒVƒXƒeƒ€‚ğƒEƒCƒ“ƒhƒE‚Ì‰Šú‘I‘ğ‚Å‰Šú‰»
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚·ã‚¹ãƒ†ãƒ ã‚’ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®åˆæœŸé¸æŠã§åˆæœŸåŒ–
 		assert messageWindowSystem.getCmdW().getSelectedCmd() != null : "cmdW initial select action is null";
 		targetSystem.setCurrent(currentCmd.getUser(), messageWindowSystem.getCmdW().getSelectedCmd());
 
-		//PC‚Ì‘€ì‚È‚Ì‚ÅAƒJƒŒƒ“ƒgƒRƒ}ƒ“ƒh‚Ìƒ†[ƒUƒIƒyƒŒ[ƒVƒ‡ƒ“—v”Ûƒtƒ‰ƒO‚ğON‚Éİ’è
+		//PCã®æ“ä½œãªã®ã§ã€ã‚«ãƒ¬ãƒ³ãƒˆã‚³ãƒãƒ³ãƒ‰ã®ãƒ¦ãƒ¼ã‚¶ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³è¦å¦ãƒ•ãƒ©ã‚°ã‚’ONã«è¨­å®š
 		currentCmd.setUserOperation(true);
 
 		stage.setStage(BattleSystem.Stage.CMD_SELECT);
@@ -922,72 +922,72 @@ public class BattleSystem implements Drawable {
 
 	@NoLoopCall
 	public void commitCmd() {
-		//ˆÚ“®ŒãUŒ‚‚©’ÊíUŒ‚‚©‚ğ”»’è
+		//ç§»å‹•å¾Œæ”»æ’ƒã‹é€šå¸¸æ”»æ’ƒã‹ã‚’åˆ¤å®š
 		boolean afterMove = messageWindowSystem.getAfterMoveW().isVisible();
 		if (!afterMove) {
 			if (messageWindowSystem.getCmdW().getSelectedCmd() == null) {
-				return;//g‚¦‚é–‚–@^ƒAƒCƒeƒ€‚ª‚È‚¢
+				return;//ä½¿ãˆã‚‹é­”æ³•ï¼ã‚¢ã‚¤ãƒ†ãƒ ãŒãªã„
 			}
 		} else {
 			targetSystem.getCurrentArea().setVisible(false);
 		}
-		//ƒRƒ}ƒ“ƒhƒEƒCƒ“ƒhƒE‚Ü‚½‚ÍˆÚ“®ŒãUŒ‚ƒEƒCƒ“ƒhƒE‚©‚çƒAƒNƒVƒ‡ƒ“‚ğæ“¾
+		//ã‚³ãƒãƒ³ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã¾ãŸã¯ç§»å‹•å¾Œæ”»æ’ƒã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‹ã‚‰ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’å–å¾—
 		execAction(afterMove
 				? messageWindowSystem.getAfterMoveW().getSelectedCmd()
 				: messageWindowSystem.getCmdW().getSelectedCmd());
 	}
 
-	//ƒAƒNƒVƒ‡ƒ“ÀsiƒRƒ~ƒbƒgA‘‹Œûj
+	//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œï¼ˆã‚³ãƒŸãƒƒãƒˆã€çª“å£ï¼‰
 	void execAction(CmdAction a) {
-		//PC,NPC–â‚í‚¸‘I‘ğ‚³‚ê‚½ƒAƒNƒVƒ‡ƒ“‚ğÀs‚·‚éB
+		//PC,NPCå•ã‚ãšé¸æŠã•ã‚ŒãŸã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’å®Ÿè¡Œã™ã‚‹ã€‚
 
-		//ƒEƒCƒ“ƒhƒEó‘Ô‰Šú‰»EEEƒAƒNƒVƒ‡ƒ“Às‘O
+		//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦çŠ¶æ…‹åˆæœŸåŒ–ãƒ»ãƒ»ãƒ»ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œå‰
 		messageWindowSystem.getActionResultW().setText("");
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 
-		//ƒJƒŒƒ“ƒgƒ†[ƒU
+		//ã‚«ãƒ¬ãƒ³ãƒˆãƒ¦ãƒ¼ã‚¶
 		BattleCharacter user = currentCmd.getUser();
 
-		//¬—’†‚Ìê‡
+		//æ··ä¹±ä¸­ã®å ´åˆ
 		if (user.getStatus().isConfu()) {
-			//ƒ^[ƒQƒbƒgƒVƒXƒeƒ€‚ÌƒJƒŒƒ“ƒg‹N“®‚µ‚È‚¢‚Å‘ÎÛ‚ğæ“¾‚·‚é
+			//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚·ã‚¹ãƒ†ãƒ ã®ã‚«ãƒ¬ãƒ³ãƒˆèµ·å‹•ã—ãªã„ã§å¯¾è±¡ã‚’å–å¾—ã™ã‚‹
 			ActionTarget tgt = BattleTargetSystem.instantTarget(user, a);
 			execAction(a, tgt);
 			return;
 		}
 
-		//NPC‚Ìê‡
+		//NPCã®å ´åˆ
 		if (!user.isPlayer()) {
-			//ƒAƒNƒVƒ‡ƒ“‚ÌŒø‰Ê”ÍˆÍ‚É‘Šè‚ª‚¢‚é‚©AƒCƒ“ƒXƒ^ƒ“ƒgŠm”F
+			//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®åŠ¹æœç¯„å›²ã«ç›¸æ‰‹ãŒã„ã‚‹ã‹ã€ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆç¢ºèª
 			ActionTarget tgt = BattleTargetSystem.instantTarget(user, a);
-			//ƒAƒCƒeƒ€g—p‚Ìê‡
+			//ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨ã®å ´åˆ
 			if (a instanceof Item) {
-				//©•ª‚Ü‚½‚ÍƒCƒ“ƒXƒ^“à‚Ì’N‚©‚ğ‘I‘ğ
+				//è‡ªåˆ†ã¾ãŸã¯ã‚¤ãƒ³ã‚¹ã‚¿å†…ã®èª°ã‹ã‚’é¸æŠ
 				List<BattleCharacter> l = new ArrayList<>();
 				l.add(user);
 				l.addAll(tgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).collect(Collectors.toList()));
 				Collections.shuffle(l);
-				//’Š‘I‚³‚ê‚½ƒ^[ƒQƒbƒg
+				//æŠ½é¸ã•ã‚ŒãŸã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
 				BattleCharacter t = l.get(0);
 				execAction(a, new ActionTarget(user, a).setFieldTarget(false).setInField(false).setTarget(List.of(t)).setSelfTarget(t.equals(user)));
 				return;
 			}
 			if (a.getType() == ActionType.MAGIC) {
-				//‰ñ•œ–‚–@’Š‘I‚Ìê‡‚©”»’è
+				//å›å¾©é­”æ³•æŠ½é¸ã®å ´åˆã‹åˆ¤å®š
 
 				boolean hpIsUnderHarf = user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax();
 				boolean otherHpHarfTgt = tgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).collect(Collectors.toList()).size() > 0;
 				if (hpIsUnderHarf || otherHpHarfTgt) {
-					//©•ª‚Ü‚½‚ÍƒCƒ“ƒXƒ^“à‚Ì’N‚©‚ğ‘I‘ğ
+					//è‡ªåˆ†ã¾ãŸã¯ã‚¤ãƒ³ã‚¹ã‚¿å†…ã®èª°ã‹ã‚’é¸æŠ
 					List<BattleCharacter> l = new ArrayList<>();
 					l.add(user);
 					l.addAll(tgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 							< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).collect(Collectors.toList()));
 					Collections.shuffle(l);
-					//’Š‘I‚³‚ê‚½ƒ^[ƒQƒbƒg
+					//æŠ½é¸ã•ã‚ŒãŸã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
 					BattleCharacter t = l.get(0);
 					execAction(a, new ActionTarget(user, a).setFieldTarget(false).setInField(false).setTarget(List.of(t)).setSelfTarget(t.equals(user)));
 					return;
@@ -995,52 +995,52 @@ public class BattleSystem implements Drawable {
 			}
 
 			if (tgt.isEmpty()) {
-				//ƒ^[ƒQƒbƒg‚ª‚¢‚È‚¢ê‡‚ÅAˆÚ“®ƒAƒNƒVƒ‡ƒ“‚ğ‚Á‚Ä‚¢‚éê‡‚ÍˆÚ“®ŠJn
+				//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ãªã„å ´åˆã§ã€ç§»å‹•ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’æŒã£ã¦ã„ã‚‹å ´åˆã¯ç§»å‹•é–‹å§‹
 				if (user.getStatus().hasAction(BattleConfig.ActionName.move)) {
-					//ˆÚ“®ƒ^[ƒQƒbƒg‚ÍÅ‚à‹ß‚¢PC‚Æ‚·‚é
+					//ç§»å‹•ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¯æœ€ã‚‚è¿‘ã„PCã¨ã™ã‚‹
 					Point2D.Float tgtLocation = ((Enemy) user).getAI().targetLocation(user);
 					user.setTargetLocation(tgtLocation, a.getAreaWithEqip(user));
-					//ˆÚ“®‹——£‚ğ‰Šú‰»
+					//ç§»å‹•è·é›¢ã‚’åˆæœŸåŒ–
 					remMovePoint = (int) user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue();
-					//ˆÚ“®‚µ‚½I‚ÌƒƒbƒZ[ƒW•\¦
-					setMsg(MessageType.IS_MOVED, a, user.getStatus());
+					//ç§»å‹•ã—ãŸï¼ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
+					setMsg(MessageType.IS_MOVED, user.getStatus(), a, null, null);
 					messageWindowSystem.setVisible(
 							BattleMessageWindowSystem.Mode.ACTION);
 					stage.setStage(BattleSystem.Stage.EXECUTING_MOVE);
 					return;
 				} else {
-					//ˆÚ“®‚Å‚«‚È‚¢‚Ì‚Å‰½‚à‚µ‚È‚¢
+					//ç§»å‹•ã§ããªã„ã®ã§ä½•ã‚‚ã—ãªã„
 					return;
 				}
 			} else {
-				//ƒ^[ƒQƒbƒg‚ª‚¢‚éê‡‚Í‘¦Às
+				//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ã‚‹å ´åˆã¯å³æ™‚å®Ÿè¡Œ
 				execAction(a, tgt);
 				return;
 			}
 		}
 
-		//PC‚Ìˆ—
+		//PCã®å‡¦ç†
 		assert user.isPlayer() : "PC action, but action is not PC : " + user + " \r\n " + currentCmd;
 		assert user.getStatus().getActions().contains(a) : "user not have action";
 
-		//PC‚Ì“ÁêƒRƒ}ƒ“ƒh‚Ìˆ—
+		//PCã®ç‰¹æ®Šã‚³ãƒãƒ³ãƒ‰ã®å‡¦ç†
 		if (a.getType() == ActionType.OTHER) {
 			if (a.getName().equals(BattleConfig.ActionName.avoidance)) {
-				//‰ñ”ğE‰ñ”ğó‘Ô‚ğ•t—^‚·‚é
+				//å›é¿ãƒ»å›é¿çŠ¶æ…‹ã‚’ä»˜ä¸ã™ã‚‹
 				user.getStatus().addCondition(BattleConfig.ConditionName.avoidance);
-				setMsg(MessageType.PC_USE_AVO, a, user.getStatus());
+				setMsg(MessageType.PC_USE_AVO, user.getStatus(), a, null, null);
 				stage.setStage(Stage.EXECUTING_ACTION);
 				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.defence)) {
-				//–hŒäE–hŒäó‘Ô‚ğ•t—^‚·‚é
+				//é˜²å¾¡ãƒ»é˜²å¾¡çŠ¶æ…‹ã‚’ä»˜ä¸ã™ã‚‹
 				user.getStatus().addCondition(BattleConfig.ConditionName.defence);
-				setMsg(MessageType.PC_USE_DEFENCE, a, user.getStatus());
+				setMsg(MessageType.PC_USE_DEFENCE, user.getStatus(), a, null, null);
 				stage.setStage(Stage.EXECUTING_ACTION);
 				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.move)) {
-				//ˆÚ“®ŠJnE‰ŠúˆÊ’u‚ğŠi”[
+				//ç§»å‹•é–‹å§‹ãƒ»åˆæœŸä½ç½®ã‚’æ ¼ç´
 				moveIinitialLocation = user.getSprite().getLocation();
 				messageWindowSystem.setVisible(
 						BattleMessageWindowSystem.StatusVisible.ON,
@@ -1050,26 +1050,26 @@ public class BattleSystem implements Drawable {
 				Collections.sort(action);
 				action.add(0, ActionStorage.getInstance().get(BattleConfig.ActionName.commit));
 				messageWindowSystem.getAfterMoveW().setActions(action);
-				//ƒ^[ƒQƒbƒgƒVƒXƒeƒ€‚ÌƒGƒŠƒA•\¦‚ğ—LŒø‰»F’l‚ÍMOV
+				//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚·ã‚¹ãƒ†ãƒ ã®ã‚¨ãƒªã‚¢è¡¨ç¤ºã‚’æœ‰åŠ¹åŒ–ï¼šå€¤ã¯MOV
 				targetSystem.setCurrent(user, a);
 				stage.setStage(Stage.PLAYER_MOVE);
 				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.commit)) {
-				//ˆÚ“®I—¹EƒLƒƒƒ‰ƒNƒ^‚ÌŒü‚«‚Æƒ^[ƒQƒbƒgÀ•W‚ÌƒNƒŠƒA‚ğ‚·‚é
+				//ç§»å‹•çµ‚äº†ãƒ»ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã®å‘ãã¨ã‚¿ãƒ¼ã‚²ãƒƒãƒˆåº§æ¨™ã®ã‚¯ãƒªã‚¢ã‚’ã™ã‚‹
 				user.unsetTarget();
 				user.to(FourDirection.WEST);
 				stage.setStage(BattleSystem.Stage.WAITING_EXEC_CMD);
 				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.status)) {
-				//ƒXƒe[ƒ^ƒX•\¦
+				//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¡¨ç¤º
 				stage.setStage(Stage.SHOW_STATUS, Stage.CMD_SELECT);
 				return;
 			}
 			if (a.getName().equals(BattleConfig.ActionName.escape)) {
-				//“¦‚°‚éE“¦‚°‚ç‚ê‚é‚©”»’è
-				//‘O’ñ‚Æ‚µ‚ÄAˆÚ“®ƒ|ƒCƒ“ƒg“à‚Éƒoƒgƒ‹ƒGƒŠƒA‚Ì‹«ŠEi¶‰Ej‚ª‚È‚¯‚ê‚Î‚È‚ç‚È‚¢
+				//é€ƒã’ã‚‹ãƒ»é€ƒã’ã‚‰ã‚Œã‚‹ã‹åˆ¤å®š
+				//å‰æã¨ã—ã¦ã€ç§»å‹•ãƒã‚¤ãƒ³ãƒˆå†…ã«ãƒãƒˆãƒ«ã‚¨ãƒªã‚¢ã®å¢ƒç•Œï¼ˆå·¦å³ï¼‰ãŒãªã‘ã‚Œã°ãªã‚‰ãªã„
 				Point2D.Float w, e;
 				int movPoint = (int) user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue();
 				e = (Point2D.Float) user.getSprite().getCenter().clone();
@@ -1077,42 +1077,42 @@ public class BattleSystem implements Drawable {
 				w = (Point2D.Float) user.getSprite().getCenter().clone();
 				w.x -= movPoint;
 				if (!battleFieldSystem.getBattleFieldAllArea().contains(e)) {
-					//“¦‘–¬Œ÷i¨j
+					//é€ƒèµ°æˆåŠŸï¼ˆâ†’ï¼‰
 					user.getStatus().addCondition(ConditionValueStorage.getInstance().get(BattleConfig.ConditionName.escaped).getKey());
 					user.setTargetLocation(e, 0);
 					user.to(FourDirection.EAST);
-					setMsg(MessageType.PC_IS_ESCAPE, a, user.getStatus());
+					setMsg(MessageType.PC_IS_ESCAPE, user.getStatus(), a, null, null);
 					stage.setStage(BattleSystem.Stage.ESCAPING);
 					return;
 				}
 				if (!battleFieldSystem.getBattleFieldAllArea().contains(w)) {
-					//“¦‘–¬Œ÷i©j
+					//é€ƒèµ°æˆåŠŸï¼ˆâ†ï¼‰
 					user.getStatus().addCondition(ConditionValueStorage.getInstance().get(BattleConfig.ConditionName.escaped).getKey());
 					user.setTargetLocation(w, 0);
 					user.to(FourDirection.WEST);
-					setMsg(MessageType.PC_IS_ESCAPE, a, user.getStatus());
+					setMsg(MessageType.PC_IS_ESCAPE, user.getStatus(), a, null, null);
 					stage.setStage(BattleSystem.Stage.ESCAPING);
 					return;
 				}
-//TODO:NPC‚Ì“¦‚°‚Í‚±‚±‚Å‚È‚¢B
-//				//NPC‚Ìê‡A“¦‚°‚é‘Ì§‚É“ü‚é
+//TODO:NPCã®é€ƒã’ã¯ã“ã“ã§ãªã„ã€‚
+//				//NPCã®å ´åˆã€é€ƒã’ã‚‹ä½“åˆ¶ã«å…¥ã‚‹
 //				if (!user.isPlayer()) {
 //					remMovePoint = (int) user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue();
 //					user.setTargetLocation(w, 1);
 //					setStage(BattleSystem.Stage.EXECUTING_MOVE, "execAction");
 //					return OperationResult.SUCCESS;
 //				}
-				//“¦‚°‚ç‚ê‚È‚¢
-				setMsg(MessageType.PC_IS_ESCAPE_MISS, a, user.getStatus());
+				//é€ƒã’ã‚‰ã‚Œãªã„
+				setMsg(MessageType.PC_IS_ESCAPE_MISS, user.getStatus(), a, null, null);
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
 				return;
 			}
 		}
 
-		//ƒAƒCƒeƒ€‘I‘ğ‚Ìˆ—
+		//ã‚¢ã‚¤ãƒ†ãƒ é¸æŠæ™‚ã®å‡¦ç†
 		if (a.getType() == ActionType.ITEM) {
-			//ƒAƒCƒeƒ€g—p@¦ƒAƒCƒeƒ€extendsƒAƒNƒVƒ‡ƒ“
-			//ƒAƒCƒeƒ€ChoiceUse‚ğŠJ‚­‚¾‚¯B
+			//ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨ã€€â€»ã‚¢ã‚¤ãƒ†ãƒ extendsã‚¢ã‚¯ã‚·ãƒ§ãƒ³
+			//ã‚¢ã‚¤ãƒ†ãƒ ChoiceUseã‚’é–‹ãã ã‘ã€‚
 			messageWindowSystem.openItemChoiceUse();
 			stage.setStage(BattleSystem.Stage.ITEM_CHOICE_USE);
 			return;
@@ -1120,10 +1120,10 @@ public class BattleSystem implements Drawable {
 
 		assert a.getType() == ActionType.MAGIC || a.getType() == ActionType.ATTACK : "actions are processed in the wrong order.";
 		targetSystem.setCurrent(user, a);
-		//ƒ^[ƒQƒbƒg•sİ
-		if (targetSystem.getInAreaDirect().isEmpty()) {//–‚–@‚ÅŒ»óƒ^[ƒQƒbƒg‚ª‚¢‚È‚¢ê‡‚à‚±‚±‚Å‹zû‚³‚ê‚é
-			setMsg(MessageType.NO_TARGET, a, user.getStatus());
-			//ˆÚ“®ŒãUŒ‚‚©‚ç‘JˆÚ‚µ‚Ä‚«‚½ê‡‚Í‹óU‚è‚³‚¹‚é
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä¸åœ¨
+		if (targetSystem.getInAreaDirect().isEmpty()) {//é­”æ³•ã§ç¾çŠ¶ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ãªã„å ´åˆã‚‚ã“ã“ã§å¸åã•ã‚Œã‚‹
+			setMsg(MessageType.NO_TARGET, user.getStatus(), a, null, null);
+			//ç§»å‹•å¾Œæ”»æ’ƒã‹ã‚‰é·ç§»ã—ã¦ããŸå ´åˆã¯ç©ºæŒ¯ã‚Šã•ã›ã‚‹
 			if (stage.getStage() == Stage.CMD_SELECT) {
 				if (GameSystem.isDebugMode()) {
 					kinugasa.game.GameLog.printInfo("no target(cmd)");
@@ -1137,57 +1137,57 @@ public class BattleSystem implements Drawable {
 			}
 			return;
 		}
-		//ƒ‰ƒ“ƒ_ƒ€1‚Ìê‡Aƒ^[ƒQƒbƒg‘I‘ğ‚Å‚«‚È‚¢iINAREA‚©‚ç“K“–‚ÉE‚Á‚Äg‚¤
+		//ãƒ©ãƒ³ãƒ€ãƒ 1ã®å ´åˆã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠã§ããªã„ï¼ˆINAREAã‹ã‚‰é©å½“ã«æ‹¾ã£ã¦ä½¿ã†
 		if (a.hasBattleTT(TargetType.RANDOM_ONE)
 				|| a.hasBattleTT(TargetType.RANDOM_ONE_ENEMY)
 				|| a.hasBattleTT(TargetType.RANDOM_ONE_PARTY)) {
-			//ƒ‰ƒ“ƒ_ƒ€1‘Ì
+			//ãƒ©ãƒ³ãƒ€ãƒ 1ä½“
 			ActionTarget tgt = targetSystem.getSelected();
 			execAction(a, tgt);
 			return;
 		}
 
-		//ALL‚Ìê‡Aƒ^[ƒQƒbƒg‘I‘ğ•s—v
+		//ALLã®å ´åˆã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠä¸è¦
 		if (a.hasBattleTT(TargetType.ALL)) {
 			ActionTarget tgt = targetSystem.getSelectedInArea();
 			execAction(a, tgt);
 			return;
 		}
 
-		//FIELD‚Ìê‡Aƒ^[ƒQƒbƒg‘I‘ğ•s—v
+		//FIELDã®å ´åˆã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠä¸è¦
 		if (a.hasBattleTT(TargetType.FIELD)) {
 			ActionTarget tgt = targetSystem.getSelected();
 			execAction(a, tgt);
 			return;
 		}
 
-		//ƒp[ƒeƒB[‚Ìê‡ƒ^[ƒQƒbƒg‘I‘ğ•s—v(INAREA‚·‚×‚Äj
+		//ãƒ‘ãƒ¼ãƒ†ã‚£ãƒ¼ã®å ´åˆã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠä¸è¦(INAREAã™ã¹ã¦ï¼‰
 		if (a.hasBattleTT(TargetType.TEAM_ENEMY) || a.hasBattleTT(TargetType.TEAM_PARTY)) {
-			//INAREAg—p
+			//INAREAä½¿ç”¨
 			ActionTarget tgt = targetSystem.getSelectedInArea();
 			execAction(a, tgt);
 			return;
 		}
 
-		//SELF‚Ì‚İ‚Ìê‡Aƒ^[ƒQƒbƒg‘I‘ğ•s—v
+		//SELFã®ã¿ã®å ´åˆã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠä¸è¦
 		if (a.battleEventIsOnly(TargetType.SELF)) {
 			ActionTarget tgt = targetSystem.getSelected();
 			execAction(a, tgt);
 			return;
 		}
-		//–‚–@‰r¥ŠJn‚Ìê‡A‰r¥’†ƒŠƒXƒg‚É’Ç‰Á‚µ‚Ä–ß‚éB
+		//é­”æ³•è© å”±é–‹å§‹ã®å ´åˆã€è© å”±ä¸­ãƒªã‚¹ãƒˆã«è¿½åŠ ã—ã¦æˆ»ã‚‹ã€‚
 		if (a.getType() == ActionType.MAGIC) {
-			//Œ»ó‚ÌƒXƒe[ƒ^ƒX‚Å‘Î‰¿‚ğx•¥‚¦‚é‚©Šm”F
-			//¦ÀÛ‚Éx•¥‚¤‚Ì‚Íexec‚µ‚½‚Æ‚«B
+			//ç¾çŠ¶ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã§å¯¾ä¾¡ã‚’æ”¯æ‰•ãˆã‚‹ã‹ç¢ºèª
+			//â€»å®Ÿéš›ã«æ”¯æ‰•ã†ã®ã¯execã—ãŸã¨ãã€‚
 			Map<StatusKey, Integer> damage = a.selfBattleDirectDamage();
-			//ƒ_ƒ[ƒW‚ğ‡Z
+			//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’åˆç®—
 			StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
-			//ƒ_ƒ[ƒW‚ª‚ ‚Á‚ÄA-‚Ì€–Ú‚ª‚ ‚éê‡A‘Î‰¿‚ğx•¥‚¦‚È‚¢‚½‚ß‹óU‚è
-			//‚±‚Ì–‚–@‚ÌÁ”ï€–Ú‚ğæ“¾
+			//ãƒ€ãƒ¡ãƒ¼ã‚¸ãŒã‚ã£ã¦ã€-ã®é …ç›®ãŒã‚ã‚‹å ´åˆã€å¯¾ä¾¡ã‚’æ”¯æ‰•ãˆãªã„ãŸã‚ç©ºæŒ¯ã‚Š
+			//ã“ã®é­”æ³•ã®æ¶ˆè²»é …ç›®ã‚’å–å¾—
 			if (!damage.isEmpty() && simulateDamage.hasMinus()) {
-				//‘ÎÛ€–Ú‚Å1‚Â‚Å‚à0‚Ì€–Ú‚ª‚ ‚Á‚½‚ç‹óU‚è
+				//å¯¾è±¡é …ç›®ã§1ã¤ã§ã‚‚0ã®é …ç›®ãŒã‚ã£ãŸã‚‰ç©ºæŒ¯ã‚Š
 				List<String> shortageStatusDesc = simulateDamage.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList());
-				setMsg(MessageType.SPELL_BUT_SHORTAGE, a, user.getStatus(), shortageStatusDesc);
+				setMsg(MessageType.SPELL_BUT_SHORTAGE, user.getStatus(), a, null, shortageStatusDesc);
 				if (user.isPlayer()) {
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
 				} else {
@@ -1195,9 +1195,9 @@ public class BattleSystem implements Drawable {
 				}
 				return;
 			}
-			//ƒ^[ƒQƒbƒg‘¶İŠm”FAŒ»ó‚Å‚¢‚È‚¢ê‡A‹óU‚èB”­“®‚ÌÄƒ`ƒFƒbƒN‚ª‚±‚±B
+			//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆå­˜åœ¨ç¢ºèªã€ç¾çŠ¶ã§ã„ãªã„å ´åˆã€ç©ºæŒ¯ã‚Šã€‚ç™ºå‹•æ™‚ã®å†ãƒã‚§ãƒƒã‚¯ãŒã“ã“ã€‚
 			if (targetSystem.isEmpty() && !a.battleEventIsOnly(TargetType.SELF)) {
-				setMsg(MessageType.SPELL_BUT_NO_TARGET, a, user.getStatus());
+				setMsg(MessageType.SPELL_BUT_NO_TARGET, user.getStatus(), a, null, null);
 				if (user.isPlayer()) {
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
 				} else {
@@ -1207,13 +1207,13 @@ public class BattleSystem implements Drawable {
 			}
 
 			if (a.getSpellTime() > 0) {
-				//‰r¥ŠÔ‚ª‚ ‚éê‡‚Í‰r¥ŠJn
-				addSpelling(user, a);//MSGASTAGE‚à‚±‚Ì’†‚Ås‚¤B
+				//è© å”±æ™‚é–“ãŒã‚ã‚‹å ´åˆã¯è© å”±é–‹å§‹
+				addSpelling(user, a);//MSGã€STAGEã‚‚ã“ã®ä¸­ã§è¡Œã†ã€‚
 				return;
 			}
 		}
 
-		//‚»‚Ì‘¼iONEj‚Ìê‡‚Íƒ^[ƒQƒbƒg‘I‘ğ•K—v
+		//ãã®ä»–ï¼ˆONEï¼‰ã®å ´åˆã¯ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠå¿…è¦
 		List<String> tgt = targetSystem.getInAreaDirect().stream().map(p -> p.getName()).collect(Collectors.toList());
 		List<Text> text = tgt.stream().map(p -> new Text(" " + p)).collect(Collectors.toList());
 		text.add(0, new Text(a.getName() + I18N.translate("WHO_TO")));
@@ -1223,7 +1223,7 @@ public class BattleSystem implements Drawable {
 		stage.setStage(BattleSystem.Stage.TARGET_SELECT);
 	}
 
-	//ƒAƒNƒVƒ‡ƒ“ÀsiƒRƒ~ƒbƒgAƒ^[ƒQƒbƒg‚ ‚èj
+	//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œï¼ˆã‚³ãƒŸãƒƒãƒˆã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚ã‚Šï¼‰
 	void execAction(CmdAction ba, ActionTarget tgt) {
 		if (!ba.getName().equals(tgt.getAction().getName())) {
 			ba = tgt.getAction();
@@ -1231,16 +1231,16 @@ public class BattleSystem implements Drawable {
 		if (GameSystem.isDebugMode()) {
 			kinugasa.game.GameLog.printInfo("exec action ba=" + ba.getName() + " TGT:" + tgt);
 		}
-		//ƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒE‚ğ‰Šú‰»
+		//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’åˆæœŸåŒ–
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 		messageWindowSystem.getActionResultW().setText("");
-		//ƒ^[ƒQƒbƒgƒVƒXƒeƒ€‚ªŒÄ‚Î‚ê‚Ä‚¢‚é‚Ì‚ÅA‰Šú‰»
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚·ã‚¹ãƒ†ãƒ ãŒå‘¼ã°ã‚Œã¦ã„ã‚‹ã®ã§ã€åˆæœŸåŒ–
 		targetSystem.unsetCurrent();
-		//ƒJƒŒƒ“ƒgƒ†[ƒU
+		//ã‚«ãƒ¬ãƒ³ãƒˆãƒ¦ãƒ¼ã‚¶
 		BattleCharacter user = currentCmd.getUser();
 		if (user.isPlayer()) {
 			if (ba.getName().equals(BattleConfig.ActionName.commit)) {
-				//ˆÚ“®I—¹EƒLƒƒƒ‰ƒNƒ^‚ÌŒü‚«‚Æƒ^[ƒQƒbƒgÀ•W‚ÌƒNƒŠƒA‚ğ‚·‚é
+				//ç§»å‹•çµ‚äº†ãƒ»ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã®å‘ãã¨ã‚¿ãƒ¼ã‚²ãƒƒãƒˆåº§æ¨™ã®ã‚¯ãƒªã‚¢ã‚’ã™ã‚‹
 				if (GameSystem.isDebugMode()) {
 					kinugasa.game.GameLog.printInfo("commit move");
 				}
@@ -1250,19 +1250,19 @@ public class BattleSystem implements Drawable {
 				return;
 			}
 		}
-		//–‚–@‰r¥ŠJn‚Ìê‡A‰r¥’†ƒŠƒXƒg‚É’Ç‰Á‚µ‚Ä–ß‚éB
+		//é­”æ³•è© å”±é–‹å§‹ã®å ´åˆã€è© å”±ä¸­ãƒªã‚¹ãƒˆã«è¿½åŠ ã—ã¦æˆ»ã‚‹ã€‚
 		if (ba.getType() == ActionType.MAGIC) {
-			//Œ»ó‚ÌƒXƒe[ƒ^ƒX‚Å‘Î‰¿‚ğx•¥‚¦‚é‚©Šm”F
-			//¦ÀÛ‚Éx•¥‚¤‚Ì‚Íexec‚µ‚½‚Æ‚«B
+			//ç¾çŠ¶ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã§å¯¾ä¾¡ã‚’æ”¯æ‰•ãˆã‚‹ã‹ç¢ºèª
+			//â€»å®Ÿéš›ã«æ”¯æ‰•ã†ã®ã¯execã—ãŸã¨ãã€‚
 			Map<StatusKey, Integer> damage = ba.selfBattleDirectDamage();
-			//ƒ_ƒ[ƒW‚ğ‡Z
+			//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’åˆç®—
 			StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
-			//ƒ_ƒ[ƒW‚ª‚ ‚Á‚ÄA-‚Ì€–Ú‚ª‚ ‚éê‡A‘Î‰¿‚ğx•¥‚¦‚È‚¢‚½‚ß‹óU‚è
-			//‚±‚Ì–‚–@‚ÌÁ”ï€–Ú‚ğæ“¾
+			//ãƒ€ãƒ¡ãƒ¼ã‚¸ãŒã‚ã£ã¦ã€-ã®é …ç›®ãŒã‚ã‚‹å ´åˆã€å¯¾ä¾¡ã‚’æ”¯æ‰•ãˆãªã„ãŸã‚ç©ºæŒ¯ã‚Š
+			//ã“ã®é­”æ³•ã®æ¶ˆè²»é …ç›®ã‚’å–å¾—
 			if (!damage.isEmpty() && simulateDamage.hasMinus()) {
-				//‘ÎÛ€–Ú‚Å1‚Â‚Å‚à0‚Ì€–Ú‚ª‚ ‚Á‚½‚ç‹óU‚è
+				//å¯¾è±¡é …ç›®ã§1ã¤ã§ã‚‚0ã®é …ç›®ãŒã‚ã£ãŸã‚‰ç©ºæŒ¯ã‚Š
 				List<String> shortageStatusDesc = simulateDamage.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList());
-				setMsg(MessageType.SPELL_BUT_SHORTAGE, ba, user.getStatus(), shortageStatusDesc);
+				setMsg(MessageType.SPELL_BUT_SHORTAGE, user.getStatus(), ba, null, shortageStatusDesc);
 				if (user.isPlayer()) {
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
 				} else {
@@ -1270,9 +1270,9 @@ public class BattleSystem implements Drawable {
 				}
 				return;
 			}
-			//ƒ^[ƒQƒbƒg‘¶İŠm”FAŒ»ó‚Å‚¢‚È‚¢ê‡A‹óU‚èB”­“®‚ÌÄƒ`ƒFƒbƒN‚ª‚±‚±B
+			//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆå­˜åœ¨ç¢ºèªã€ç¾çŠ¶ã§ã„ãªã„å ´åˆã€ç©ºæŒ¯ã‚Šã€‚ç™ºå‹•æ™‚ã®å†ãƒã‚§ãƒƒã‚¯ãŒã“ã“ã€‚
 			if (tgt.isEmpty() && !ba.battleEventIsOnly(TargetType.SELF)) {
-				setMsg(MessageType.SPELL_BUT_NO_TARGET, ba, user.getStatus());
+				setMsg(MessageType.SPELL_BUT_NO_TARGET, user.getStatus(), ba, null, null);
 				if (user.isPlayer()) {
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
 				} else {
@@ -1282,15 +1282,15 @@ public class BattleSystem implements Drawable {
 			}
 
 			if (ba.getSpellTime() > 0) {
-				//‰r¥ŠÔ‚ª‚ ‚éê‡‚Í‰r¥ŠJn
-				addSpelling(user, ba);//MSGASTAGE‚à‚±‚Ì’†‚Ås‚¤B
+				//è© å”±æ™‚é–“ãŒã‚ã‚‹å ´åˆã¯è© å”±é–‹å§‹
+				addSpelling(user, ba);//MSGã€STAGEã‚‚ã“ã®ä¸­ã§è¡Œã†ã€‚
 				return;
 			}
 		}
 
-		//ƒ^[ƒQƒbƒg•sİ‚Ìê‡A‹óU‚èiƒ~ƒXj
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä¸åœ¨ã®å ´åˆã€ç©ºæŒ¯ã‚Šï¼ˆãƒŸã‚¹ï¼‰
 		if (tgt.isEmpty()) {
-			setMsg(MessageType.NO_TARGET, ba, user.getStatus());
+			setMsg(MessageType.NO_TARGET, user.getStatus(), ba, null, null);
 			if (user.isPlayer()) {
 				if (messageWindowSystem.getCmdW().isVisible()) {
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
@@ -1306,12 +1306,12 @@ public class BattleSystem implements Drawable {
 		}
 
 		assert !tgt.isEmpty() : "target is empty(execAction)";
-		//ƒ^[ƒQƒbƒg‘¶İ‚Ì‚½‚ßAƒAƒNƒVƒ‡ƒ“Às
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆå­˜åœ¨ã®ãŸã‚ã€ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œ
 		tgt.getTarget().forEach(p -> p.getStatus().setDamageCalcPoint());
 		ActionResult res = ba.exec(tgt);
-		setMsg(MessageType.ACTION_SUCCESS, ba, res, actionResultProc(user, ba, tgt));
-		//ƒAƒCƒeƒ€œ‹
-		if (ba instanceof Item) {//NPC‚Ìê‡‚¾‚¯
+		setMsg(MessageType.ACTION_SUCCESS, currentCmd.getUser().getStatus(), ba, res, actionResultProc(user, ba, tgt));
+		//ã‚¢ã‚¤ãƒ†ãƒ é™¤å»
+		if (ba instanceof Item) {//NPCã®å ´åˆã ã‘
 			if (((Item) ba).hasBattlePT(ParameterType.ITEM_LOST)) {
 				user.getStatus().getItemBag().drop((Item) ba);
 			}
@@ -1323,23 +1323,23 @@ public class BattleSystem implements Drawable {
 	}
 
 	public void commitPCsMove() {
-		//ƒ^[ƒQƒbƒgƒVƒXƒeƒ€‚É’l‚ğƒZƒbƒg
-		//AFTER_MOVE‘I‘ğ‚É“ü‚é
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚·ã‚¹ãƒ†ãƒ ã«å€¤ã‚’ã‚»ãƒƒãƒˆ
+		//AFTER_MOVEé¸æŠã«å…¥ã‚‹
 		stage.setStage(Stage.AFTER_MOVE_CMD_SELECT);
 	}
 
-	//PC‚ÌˆÚ“®‚ğƒLƒƒƒ“ƒZƒ‹‚µ‚ÄAˆÚ“®‘O‚ÌˆÊ’u‚É–ß‚·BŠm’è‚Íucommitvƒ^ƒCƒv‚ÌƒAƒNƒVƒ‡ƒ“‚©‚çB
+	//PCã®ç§»å‹•ã‚’ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ã€ç§»å‹•å‰ã®ä½ç½®ã«æˆ»ã™ã€‚ç¢ºå®šã¯ã€Œcommitã€ã‚¿ã‚¤ãƒ—ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‹ã‚‰ã€‚
 	public void cancelPCsMove() {
-		//êŠ‚ğ‰Šú‰»
+		//å ´æ‰€ã‚’åˆæœŸåŒ–
 		currentCmd.getUser().getSprite().setLocation(moveIinitialLocation);
 		currentCmd.getUser().unsetTarget();
-		//ˆê”Ô‹ß‚¢“G‚Ì•ûŒü‚ğŒü‚­
+		//ä¸€ç•ªè¿‘ã„æ•µã®æ–¹å‘ã‚’å‘ã
 		BattleCharacter e = BattleTargetSystem.nearEnemys(currentCmd.getUser());
 		KVector v = new KVector();
 		v.setAngle(currentCmd.getUser().getCenter(), e.getCenter());
 		currentCmd.getUser().to(v.round());
 
-		//CMD_SELECT‚É–ß‚é
+		//CMD_SELECTã«æˆ»ã‚‹
 		stage.setStage(BattleSystem.Stage.CMD_SELECT);
 	}
 
@@ -1355,10 +1355,10 @@ public class BattleSystem implements Drawable {
 			list.add(new MagicSpell(user, ba, user.isPlayer()));
 			magics.put(t, list);
 		}
-		//ƒ†[ƒU‚É‰r¥’†‚Ìó‘ÔˆÙí‚ğ•t—^
+		//ãƒ¦ãƒ¼ã‚¶ã«è© å”±ä¸­ã®çŠ¶æ…‹ç•°å¸¸ã‚’ä»˜ä¸
 		currentCmd.getUser().getStatus().addCondition(BattleConfig.ConditionName.casting);
-		//‰r¥‚ğŠJn‚µ‚½‚ğ•\¦
-		setMsg(MessageType.SPELL_START, ba, user.getStatus());
+		//è© å”±ã‚’é–‹å§‹ã—ãŸã‚’è¡¨ç¤º
+		setMsg(MessageType.SPELL_START, user.getStatus(), ba, null, null);
 		stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 	}
 
@@ -1395,24 +1395,24 @@ public class BattleSystem implements Drawable {
 		Item i = (Item) messageWindowSystem.getCmdW().getSelectedCmd();
 		switch (selected) {
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_CHECK:
-				//ƒ`ƒFƒbƒNƒEƒCƒ“ƒhƒE‚ğo‚·
+				//ãƒã‚§ãƒƒã‚¯ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’å‡ºã™
 				messageWindowSystem.setItemDesc(currentCmd.getUser().getStatus(), i);
 				stage.setStage(BattleSystem.Stage.SHOW_ITEM_DESC);
 				break;
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_EQIP:
-				//‘•”õ‚Å‚«‚È‚¢
+				//è£…å‚™ã§ããªã„
 				if (i.getEqipmentSlot() == null) {
-					setMsg(MessageType.CANT_EQIP, List.of(i.getName()));
+					setMsg(MessageType.CANT_EQIP, null, null, null, List.of(i.getName()));
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 					return;
 				}
-				//‘•”õ‚Å‚«‚È‚¢i‘®«’lj
+				//è£…å‚™ã§ããªã„ï¼ˆå±æ€§å€¤ï¼‰
 				if (!currentCmd.getUser().getStatus().canEqip(i)) {
-					setMsg(MessageType.CANT_EQIP, List.of(i.getName()));
+					setMsg(MessageType.CANT_EQIP, null, null, null, List.of(i.getName()));
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 					return;
 				}
-				//‘•”õ‚µ‚½EŠO‚µ‚½
+				//è£…å‚™ã—ãŸãƒ»å¤–ã—ãŸ
 				assert i.getEqipmentSlot() != null : "item is not eqip";
 				if (currentCmd.getUser().getStatus().isEqip(i.getName())) {
 					currentCmd.getUser().getStatus().removeEqip(i);
@@ -1422,46 +1422,46 @@ public class BattleSystem implements Drawable {
 				MessageType t = currentCmd.getUser().getStatus().isEqip(i.getName())
 						? MessageType.EQIP_ITEM
 						: MessageType.UNEQIP_ITEM;
-				setMsg(t, List.of(i.getName()));
+				setMsg(t, null, null, null, List.of(i.getName()));
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 				break;
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_USE:
-				//ƒoƒgƒ‹ƒAƒNƒVƒ‡ƒ“‚ª“ü‚Á‚Ä‚¢‚È‚¢ê‡Ag‚¦‚È‚¢ƒƒbƒZ[ƒW•\¦
+				//ãƒãƒˆãƒ«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãŒå…¥ã£ã¦ã„ãªã„å ´åˆã€ä½¿ãˆãªã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
 				if (!i.isBattleUse()) {
-					setMsg(MessageType.CANT_USE_THIS_ITEM, List.of(i.getName()));
+					setMsg(MessageType.CANT_USE_THIS_ITEM, null, null, null, List.of(i.getName()));
 					stage.setStage(Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 					break;
 				}
-				//g‚¤
+				//ä½¿ã†
 				itemChoiceMode = BattleMessageWindowSystem.ITEM_CHOICE_USE_USE;
 				area = (int) (currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
-				setMsg(MessageType.ITEM_WHO_TO_USE, List.of(i.getName()));
+				setMsg(MessageType.ITEM_WHO_TO_USE, null, null, null, List.of(i.getName()));
 				break;
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS:
-				//“n‚·
+				//æ¸¡ã™
 				itemChoiceMode = BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS;
 				area = (int) (currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
-				setMsg(MessageType.ITEM_WHO_TO_PASS, List.of(i.getName()));
+				setMsg(MessageType.ITEM_WHO_TO_PASS, null, null, null, List.of(i.getName()));
 				break;
 			default:
 				throw new AssertionError("undefined item choice use No");
 		}
-		//’N‚ÉH
+		//èª°ã«ï¼Ÿ
 		if (itemChoiceMode >= 0) {
 			ActionTarget t = BattleTargetSystem.instantTarget(currentCmd.getUser(), i, area,
 					false,
 					itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_USE
 					|| itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS
 			);
-			//ƒ^[ƒQƒbƒg•sİ‚Ìê‡
+			//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä¸åœ¨ã®å ´åˆ
 			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS && t.getTarget().isEmpty()) {
-				//ƒpƒX‚·‚é–¡•û‚ª‚¢‚È‚¢
-				setMsg(MessageType.NO_TARGET, List.of(i.getName()));
+				//ãƒ‘ã‚¹ã™ã‚‹å‘³æ–¹ãŒã„ãªã„
+				setMsg(MessageType.NO_TARGET, null, null, null, List.of(i.getName()));
 				stage.setStage(Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 				return;
 			}
 			List<String> tgt = t.getTarget().stream().map(p -> p.getName()).collect(Collectors.toList());
-			//ƒ^[ƒQƒbƒg‘I‘ğ‚Ö
+			//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠã¸
 			itemPassAndUse = i;
 			String msg = (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS)
 					? i.getName() + I18N.translate("WHO_DO_PASS")
@@ -1476,7 +1476,7 @@ public class BattleSystem implements Drawable {
 		return currentCmd;
 	}
 
-	//ˆÚ“®ŒãUŒ‚‰Â”ÛiƒGƒŠƒAj‚Ìİ’è‚ğs‚¤Bˆø”‚ÅUŒ‚‚Å‚«‚é‚©‚ğ“n‚·B
+	//ç§»å‹•å¾Œæ”»æ’ƒå¯å¦ï¼ˆã‚¨ãƒªã‚¢ï¼‰ã®è¨­å®šã‚’è¡Œã†ã€‚å¼•æ•°ã§æ”»æ’ƒã§ãã‚‹ã‹ã‚’æ¸¡ã™ã€‚
 	@LoopCall
 	public void setMoveAction(boolean attackOK, int p) {
 		if (prevAttackOK == attackOK) {
@@ -1544,29 +1544,29 @@ public class BattleSystem implements Drawable {
 	public void commitTargetSelect() {
 		if (itemChoiceMode != -1) {
 			assert messageWindowSystem.getCmdW().getSelectedCmd().getType() == ActionType.ITEM : "item use commit, but action is not item";
-			//ƒpƒXorg‚¤
+			//ãƒ‘ã‚¹orä½¿ã†
 			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_USE) {
 				if (GameSystem.isDebugMode()) {
 					kinugasa.game.GameLog.printInfo("use item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
 				}
-				//ƒ^[ƒQƒbƒg‚É‘Î‚µ‚ÄƒAƒNƒVƒ‡ƒ“‚ğÀs
+				//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å¯¾ã—ã¦ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’å®Ÿè¡Œ
 				String tgtName = messageWindowSystem.getTgtW().getSelected().getText();
-				//PC,NPC‚©‚ç–¼‘OŒŸõ
+				//PC,NPCã‹ã‚‰åå‰æ¤œç´¢
 				List<BattleCharacter> all = new ArrayList();
 				all.addAll(enemies);
 				all.addAll(GameSystem.getInstance().getParty());
 				BattleCharacter tgt = all.stream().filter(p -> p.getName().equals(tgtName)).collect(Collectors.toList()).get(0);
 				tgt.getStatus().setDamageCalcPoint();
 				ActionResult res = itemPassAndUse.exec(BattleTargetSystem.instantTarget(currentCmd.getUser(), itemPassAndUse).setTarget(List.of(tgt)));
-				//ƒhƒƒbƒvƒAƒCƒeƒ€ƒCƒxƒ“ƒg‚ÌÀs
+				//ãƒ‰ãƒ­ãƒƒãƒ—ã‚¢ã‚¤ãƒ†ãƒ ã‚¤ãƒ™ãƒ³ãƒˆã®å®Ÿè¡Œ
 				if (itemPassAndUse.getBattleEvent().stream().filter(p -> p.getParameterType() == ParameterType.ITEM_LOST).count() > 0) {
-					//TODO:b’è
+					//TODO:æš«å®š
 					currentCmd.getUser().getStatus().getItemBag().drop(itemPassAndUse);
 				}
-				//ƒAƒNƒVƒ‡ƒ“XV
+				//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³æ›´æ–°
 				GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction(true));
-				//Œø‰Ê‚ğ•\¦
-				setMsg(MessageType.ITEM_USED, itemPassAndUse, res, List.of(tgt.getName()));
+				//åŠ¹æœã‚’è¡¨ç¤º
+				setMsg(MessageType.ITEM_USED, currentCmd.getUser().getStatus(), itemPassAndUse, res, List.of(tgt.getName()));
 				itemPassAndUse = null;
 				stage.setStage(Stage.EXECUTING_ACTION);
 				itemChoiceMode = -1;
@@ -1576,8 +1576,8 @@ public class BattleSystem implements Drawable {
 				if (GameSystem.isDebugMode()) {
 					kinugasa.game.GameLog.printInfo("pass item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
 				}
-				//ƒ^[ƒQƒbƒg‚É‘Î‚µ‚ÄƒpƒX‚ğÀs
-				//PC,NPC‚©‚ç–¼‘OŒŸõ
+				//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å¯¾ã—ã¦ãƒ‘ã‚¹ã‚’å®Ÿè¡Œ
+				//PC,NPCã‹ã‚‰åå‰æ¤œç´¢
 				String tgtName = messageWindowSystem.getTgtW().getSelected().getText();
 				List<BattleCharacter> all = new ArrayList();
 				all.addAll(enemies);
@@ -1585,9 +1585,9 @@ public class BattleSystem implements Drawable {
 				BattleCharacter tgt = all.stream().filter(p -> p.getName().equals(tgtName)).collect(Collectors.toList()).get(0);
 				BattleCharacter user = currentCmd.getUser();
 				user.getStatus().passItem(tgt.getStatus(), itemPassAndUse);
-				//ƒAƒNƒVƒ‡ƒ“XV
+				//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³æ›´æ–°
 				GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction(true));
-				setMsg(MessageType.ITEM_PASSED, List.of(itemPassAndUse.getName()));
+				setMsg(MessageType.ITEM_PASSED, currentCmd.getUser().getStatus(), null, null, List.of(itemPassAndUse.getName()));
 				stage.setStage(Stage.EXECUTING_ACTION);
 				itemPassAndUse = null;
 				itemChoiceMode = -1;
@@ -1595,7 +1595,7 @@ public class BattleSystem implements Drawable {
 			}
 			return;
 		}
-		//UŒ‚ƒ^[ƒQƒbƒgƒZƒŒƒNƒgŠm’è(ONE‚Ì‚İ
+		//æ”»æ’ƒã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚»ãƒ¬ã‚¯ãƒˆç¢ºå®š(ONEã®ã¿
 		assert stage.getStage() == Stage.TARGET_SELECT : "target select not yet :" + stage.getStage();
 		if (messageWindowSystem.getCmdW().isVisible()) {
 			assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.ITEM : "atk commit, but action is item:" + messageWindowSystem.getCmdW().getSelectedCmd();
@@ -1603,13 +1603,13 @@ public class BattleSystem implements Drawable {
 			execAction(messageWindowSystem.getCmdW().getSelectedCmd(), targetSystem.getSelected());
 		} else {
 			assert messageWindowSystem.getAfterMoveW().getSelectedCmd().getType() != ActionType.ITEM : "atk commit(A), but action is item:" + messageWindowSystem.getAfterMoveW().getSelectedCmd();
-			//Šm’è‚Í“ü‚é
+			//ç¢ºå®šã¯å…¥ã‚‹
 			execAction(messageWindowSystem.getAfterMoveW().getSelectedCmd(), targetSystem.getSelected());
 		}
 	}
 
 	/**
-	 * í‹µ}ƒ‚[ƒh‚ÌØ‘Ö
+	 * æˆ¦æ³å›³ãƒ¢ãƒ¼ãƒ‰ã®åˆ‡æ›¿
 	 */
 	public void switchShowMode() {
 		if (showMode) {
@@ -1624,49 +1624,48 @@ public class BattleSystem implements Drawable {
 		showMode = !showMode;
 	}
 
-	private void setMsg(MessageType t) {
-		//t == BATTLE_END
-		String s = t.get(null, null, null, null);
+//	private void setMsg(MessageType t) {
+//		//t == BATTLE_END
+//		String s = t.get(null, null, null, null);
+//		messageWindowSystem.getActionResultW().setText(s);
+//		messageWindowSystem.getActionResultW().allText();
+//	}
+//
+//	private void setMsg(MessageType t, List<String> option) {
+//		String s = t.get(null, null, option, null);
+//		messageWindowSystem.getActionResultW().setText(s);
+//		messageWindowSystem.getActionResultW().allText();
+//	}
+//
+//	private void setMsg(MessageType t, CmdAction a, ActionResult res) {
+//		String s = t.get(a, null, null, res);
+//		messageWindowSystem.getActionResultW().setText(s);
+//		messageWindowSystem.getActionResultW().allText();
+//	}
+	private void setMsg(MessageType t, Status user, CmdAction a, ActionResult res, List<String> option) {
+		String s = t.get(a, user, option, res);
 		messageWindowSystem.getActionResultW().setText(s);
 		messageWindowSystem.getActionResultW().allText();
 	}
 
-	private void setMsg(MessageType t, List<String> option) {
-		String s = t.get(null, null, option, null);
-		messageWindowSystem.getActionResultW().setText(s);
-		messageWindowSystem.getActionResultW().allText();
-	}
-
-	private void setMsg(MessageType t, CmdAction a, ActionResult res) {
-		String s = t.get(a, null, null, res);
-		messageWindowSystem.getActionResultW().setText(s);
-		messageWindowSystem.getActionResultW().allText();
-	}
-
-	private void setMsg(MessageType t, CmdAction a, ActionResult res, List<String> option) {
-		String s = t.get(a, null, option, res);
-		messageWindowSystem.getActionResultW().setText(s);
-		messageWindowSystem.getActionResultW().allText();
-	}
-
-	private void setMsg(MessageType t, CmdAction a, Status user) {
-		String s = t.get(a, user, null, null);
-		messageWindowSystem.getActionResultW().setText(s);
-		messageWindowSystem.getActionResultW().allText();
-	}
-
-	private void setMsg(MessageType t, CmdAction a, Status user, List<String> option) {
-		String s = t.get(a, user, option, null);
-		messageWindowSystem.getActionResultW().setText(s);
-		messageWindowSystem.getActionResultW().allText();
-	}
-
-	private void setMsg(MessageType t, CmdAction a, Status user, ActionResult res) {
-		String s = t.get(a, user, null, res);
-		messageWindowSystem.getActionResultW().setText(s);
-		messageWindowSystem.getActionResultW().allText();
-	}
-
+//	private void setMsg(MessageType t, CmdAction a, Status user) {
+//		String s = t.get(a, user, null, null);
+//		messageWindowSystem.getActionResultW().setText(s);
+//		messageWindowSystem.getActionResultW().allText();
+//	}
+//
+//	private void setMsg(MessageType t, CmdAction a, Status user, List<String> option) {
+//		String s = t.get(a, user, option, null);
+//		messageWindowSystem.getActionResultW().setText(s);
+//		messageWindowSystem.getActionResultW().allText();
+//	}
+//
+//	private void setMsg(MessageType t, CmdAction a, Status user, ActionResult res) {
+//		String s = t.get(a, user, null, res);
+//		messageWindowSystem.getActionResultW().setText(s);
+//		messageWindowSystem.getActionResultW().allText();
+//	}
+//
 	public void update() {
 		battleFieldSystem.update();
 		messageWindowSystem.update();
@@ -1676,22 +1675,22 @@ public class BattleSystem implements Drawable {
 			return;
 		}
 
-		//ƒ^[ƒQƒbƒgƒVƒXƒeƒ€‚ÌƒJƒŒƒ“ƒg•\¦ˆÊ’uXV
+		//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚·ã‚¹ãƒ†ãƒ ã®ã‚«ãƒ¬ãƒ³ãƒˆè¡¨ç¤ºä½ç½®æ›´æ–°
 		if (targetSystem.getCurrentArea().isVisible()) {
 			targetSystem.getCurrentArea().setLocationByCenter(currentCmd.getSpriteCenter());
 		}
-		//ƒXƒe[ƒW•Êˆ—
+		//ã‚¹ãƒ†ãƒ¼ã‚¸åˆ¥å‡¦ç†
 		GameSystem gs = GameSystem.getInstance();
 		List<Status> party = GameSystem.getInstance().getPartyStatus();
 		List<Status> enemy = enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList());
 		switch (stage.getStage()) {
 			case STARTUP:
-				//ƒXƒ^[ƒgƒAƒbƒv‚Éupdate‚ªŒÄ‚Î‚ê‚é‚±‚Æ‚Í‚È‚¢‚½‚ßƒGƒ‰[
+				//ã‚¹ã‚¿ãƒ¼ãƒˆã‚¢ãƒƒãƒ—æ™‚ã«updateãŒå‘¼ã°ã‚Œã‚‹ã“ã¨ã¯ãªã„ãŸã‚ã‚¨ãƒ©ãƒ¼
 				throw new GameSystemException("update call before start");
 			case INITIAL_MOVING:
-				//ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[‚ª–Ú•W‚ÌÀ•W‚É‹ß‚Ã‚­‚Ü‚ÅˆÚ“®‚ğÀsA–Ú“I’n‚É‹ß‚Ã‚¢‚½‚çƒXƒe[ƒWWAIT‚É•Ï‚¦‚é
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãŒç›®æ¨™ã®åº§æ¨™ã«è¿‘ã¥ãã¾ã§ç§»å‹•ã‚’å®Ÿè¡Œã€ç›®çš„åœ°ã«è¿‘ã¥ã„ãŸã‚‰ã‚¹ãƒ†ãƒ¼ã‚¸WAITã«å¤‰ãˆã‚‹
 				gs.getParty().forEach(p -> p.move());
-				//ˆÚ“®I—¹”»’è
+				//ç§»å‹•çµ‚äº†åˆ¤å®š
 				boolean initialMoveEnd = true;
 				for (int i = 0; i < gs.getPartySprite().size(); i++) {
 					float speed = gs.getPartySprite().get(i).getSpeed();
@@ -1709,20 +1708,20 @@ public class BattleSystem implements Drawable {
 			case ESCAPING:
 				targetSystem.getCurrentArea().setArea(0);
 				targetSystem.getInitialArea().setArea(0);
-				//ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[‚ª–Ú•W‚ÌÀ•W‚É‹ß‚Ã‚­‚Ü‚ÅˆÚ“®‚ğÀsA–Ú“I’n‚É‹ß‚Ã‚¢‚½‚çƒXƒe[ƒWWAIT‚É•Ï‚¦‚é
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãŒç›®æ¨™ã®åº§æ¨™ã«è¿‘ã¥ãã¾ã§ç§»å‹•ã‚’å®Ÿè¡Œã€ç›®çš„åœ°ã«è¿‘ã¥ã„ãŸã‚‰ã‚¹ãƒ†ãƒ¼ã‚¸WAITã«å¤‰ãˆã‚‹
 				currentCmd.getUser().moveToTgt();
 
 				if (!currentCmd.getUser().isMoving()) {
-					//ƒXƒvƒ‰ƒCƒg‚ÆƒXƒe[ƒ^ƒX‚ğ”ñ•\¦‚É‚·‚é
+					//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’éè¡¨ç¤ºã«ã™ã‚‹
 					int i = 0;
 					for (; GameSystem.getInstance().getPartyStatus().equals(currentCmd.getUser().getStatus()); i++);
 					currentCmd.getUser().getSprite().setVisible(false);
 					messageWindowSystem.getStatusW().getMw().get(i).setVisible(false);
 
-					//PC‘Sˆõ“¦‚°”»’èA‘Sˆõ“¦‚°‚½ê‡Aí“¬I—¹
+					//PCå…¨å“¡é€ƒã’åˆ¤å®šã€å…¨å“¡é€ƒã’ãŸå ´åˆã€æˆ¦é—˜çµ‚äº†
 					if (party.stream().filter(p -> !p.hasConditions(false, BattleConfig.getUntargetConditionNames())).allMatch(p -> p.hasCondition(BattleConfig.ConditionName.escaped))) {
-						//‘Sˆõ“¦‚°‚½
-						//ƒAƒ“ƒ^[ƒQƒbƒgó‘ÔˆÙí•t—^i“¦‚°‚éˆÈŠOj‚Ì“G‚ÌEXP‚ğ‡Œv‚µ‚Ä“n‚·
+						//å…¨å“¡é€ƒã’ãŸ
+						//ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆçŠ¶æ…‹ç•°å¸¸ä»˜ä¸ï¼ˆé€ƒã’ã‚‹ä»¥å¤–ï¼‰ã®æ•µã®EXPã‚’åˆè¨ˆã—ã¦æ¸¡ã™
 						int exp = 0;
 						for (Enemy e : enemies) {
 							if (e.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames()
@@ -1743,21 +1742,21 @@ public class BattleSystem implements Drawable {
 						stage.setStage(Stage.BATLE_END);
 						break;
 					}
-					//NPC‘Sˆõ“¦‚°”»’è
+					//NPCå…¨å“¡é€ƒã’åˆ¤å®š
 					if (enemies.stream().filter(p -> !p.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())).allMatch(p -> p.getStatus().hasCondition(BattleConfig.ConditionName.escaped))) {
 						targetSystem.getCurrentArea().setArea(0);
 						targetSystem.getInitialArea().setArea(0);
-						//ƒAƒ“ƒ^[ƒQƒbƒgó‘ÔˆÙí•t—^i“¦‚°‚éˆÈŠOj‚Ì“G‚ÌEXP‚ğ‡Œv‚µ‚Ä“n‚·
+						//ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆçŠ¶æ…‹ç•°å¸¸ä»˜ä¸ï¼ˆé€ƒã’ã‚‹ä»¥å¤–ï¼‰ã®æ•µã®EXPã‚’åˆè¨ˆã—ã¦æ¸¡ã™
 						int exp = 0;
 						List<Item> dropItems = new ArrayList<>();
 						for (Enemy e : enemies) {
 							if (e.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames()
 									.stream().filter(p -> !p.equals(BattleConfig.ConditionName.escaped)).collect(Collectors.toList()))) {
 								exp += (int) e.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.exp).getValue();
-								//ƒhƒƒbƒvƒAƒCƒeƒ€‚Ì”»’è
+								//ãƒ‰ãƒ­ãƒƒãƒ—ã‚¢ã‚¤ãƒ†ãƒ ã®åˆ¤å®š
 								List<DropItem> items = e.getDropItem();
 								for (DropItem ii : items) {
-									//ƒhƒƒbƒvƒAƒCƒeƒ€‚ÌŠm—¦”»’è
+									//ãƒ‰ãƒ­ãƒƒãƒ—ã‚¢ã‚¤ãƒ†ãƒ ã®ç¢ºç‡åˆ¤å®š
 									if (Random.percent(ii.getP())) {
 										dropItems.addAll(ii.cloneN());
 									}
@@ -1789,12 +1788,12 @@ public class BattleSystem implements Drawable {
 			case WAITING_EXEC_CMD:
 			case PLAYER_MOVE:
 			case TARGET_SELECT:
-				//ƒvƒŒƒCƒ„[‚Ìs“®‚Ü‚¿‚È‚Ì‚ÅA‰½‚à‚µ‚È‚¢B
-				//ƒRƒ}ƒ“ƒhƒEƒCƒ“ƒhƒE“™‚©‚çˆ—‚ğÀs‚³‚ê‚é
-				//Ÿ‚Éƒoƒgƒ‹ƒRƒ}ƒ“ƒh‚ğæ“¾‚µ‚½‚Æ‚«ANPC‚È‚çNPC‚Ìs“®‚ÌƒXƒe[ƒW‚É“ü‚éB
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¡Œå‹•ã¾ã¡ãªã®ã§ã€ä½•ã‚‚ã—ãªã„ã€‚
+				//ã‚³ãƒãƒ³ãƒ‰ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ç­‰ã‹ã‚‰å‡¦ç†ã‚’å®Ÿè¡Œã•ã‚Œã‚‹
+				//æ¬¡ã«ãƒãƒˆãƒ«ã‚³ãƒãƒ³ãƒ‰ã‚’å–å¾—ã—ãŸã¨ãã€NPCãªã‚‰NPCã®è¡Œå‹•ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã«å…¥ã‚‹ã€‚
 				break;
 			case EXECUTING_ACTION:
-				//ƒJƒŒƒ“ƒgBATime‚ªØ‚ê‚é‚Ü‚Å‘Ò‚Â
+				//ã‚«ãƒ¬ãƒ³ãƒˆBATimeãŒåˆ‡ã‚Œã‚‹ã¾ã§å¾…ã¤
 				assert currentBAWaitTime != null : "currentBAWaitTime is null";
 				if (currentBAWaitTime.isReaching()) {
 					currentBAWaitTime = null;
@@ -1806,21 +1805,21 @@ public class BattleSystem implements Drawable {
 				}
 				break;
 			case EXECUTING_MOVE:
-				//NPC‚ÌˆÚ“®ÀsAIIIIIIIIˆÚ“®‚©‚ñ‚è‚å‚£‚µ‚½‚çƒƒbƒZ[ƒWƒEƒCƒ“ƒhƒE•Â‚¶‚é
+				//NPCã®ç§»å‹•å®Ÿè¡Œã€ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ç§»å‹•ã‹ã‚“ã‚Šã‚‡ã…ã—ãŸã‚‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦é–‰ã˜ã‚‹
 				currentCmd.getUser().moveToTgt();
 				remMovePoint--;
-				//ˆÚ“®ƒ|ƒCƒ“ƒg‚ªØ‚ê‚½ê‡AˆÚ“®I—¹‚µ‚Äƒ†[ƒUƒRƒ}ƒ“ƒh‘Ò‚¿‚ÉˆÚs
+				//ç§»å‹•ãƒã‚¤ãƒ³ãƒˆãŒåˆ‡ã‚ŒãŸå ´åˆã€ç§»å‹•çµ‚äº†ã—ã¦ãƒ¦ãƒ¼ã‚¶ã‚³ãƒãƒ³ãƒ‰å¾…ã¡ã«ç§»è¡Œ
 				if (remMovePoint <= 0 || !currentCmd.getUser().isMoving()) {
 					currentCmd.getUser().unsetTarget();
 					stage.setStage(Stage.WAITING_EXEC_CMD);
 					break;
 				}
-				//ˆÚ“®ƒ|ƒCƒ“ƒg‚ªØ‚ê‚Ä‚¢‚È‚¢ê‡‚ÅAˆÚ“®ƒ|ƒCƒ“ƒg‚ª”¼•ªˆÈãc‚Á‚Ä‚¢‚éê‡‚ÍUŒ‚‰Â”\
-				//”¼•ªˆÈ‰º‚Ìê‡‚Ís“®I—¹
+				//ç§»å‹•ãƒã‚¤ãƒ³ãƒˆãŒåˆ‡ã‚Œã¦ã„ãªã„å ´åˆã§ã€ç§»å‹•ãƒã‚¤ãƒ³ãƒˆãŒåŠåˆ†ä»¥ä¸Šæ®‹ã£ã¦ã„ã‚‹å ´åˆã¯æ”»æ’ƒå¯èƒ½
+				//åŠåˆ†ä»¥ä¸‹ã®å ´åˆã¯è¡Œå‹•çµ‚äº†
 				if (remMovePoint < currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue()) {
 					break;
 				}
-				//ƒAƒNƒVƒ‡ƒ“‚ğ’Š‘IEEE‚±‚ÌƒXƒe[ƒW‚É“ü‚é‚Æ‚«‚Í•K‚¸ENEMY‚È‚Ì‚ÅƒLƒƒƒXƒg¸”s‚µ‚È‚¢
+				//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’æŠ½é¸ãƒ»ãƒ»ãƒ»ã“ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã«å…¥ã‚‹ã¨ãã¯å¿…ãšENEMYãªã®ã§ã‚­ãƒ£ã‚¹ãƒˆå¤±æ•—ã—ãªã„
 				Enemy user;
 				CmdAction eba = currentCmd.getBattleActionOf((user = (Enemy) currentCmd.getUser()).getAI(), ActionType.ATTACK);
 				if (eba == null) {
@@ -1830,34 +1829,34 @@ public class BattleSystem implements Drawable {
 					break;
 				}
 
-				// ƒCƒxƒ“ƒg‘ÎÛÒ•Ê‚Éƒ^[ƒQƒbƒg‚ğİ’è
+				// ã‚¤ãƒ™ãƒ³ãƒˆå¯¾è±¡è€…åˆ¥ã«ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’è¨­å®š
 				ActionTarget tgt = BattleTargetSystem.instantTarget(currentCmd.getUser(), eba);
 
-				//ƒ^[ƒQƒbƒg‚ª‚¢‚È‚¢ê‡A‰½‚à‚µ‚È‚¢
+				//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ãªã„å ´åˆã€ä½•ã‚‚ã—ãªã„
 				if (tgt.isEmpty()) {
 					break;
 				}
 
-				//ˆÚ“®ŒãUŒ‚Às
+				//ç§»å‹•å¾Œæ”»æ’ƒå®Ÿè¡Œ
 				ActionResult res = eba.exec(tgt);
-				setMsg(MessageType.ACTION_SUCCESS, eba, res, actionResultProc(user, eba, tgt));
+				setMsg(MessageType.ACTION_SUCCESS, user.getStatus(), eba, res, actionResultProc(user, eba, tgt));
 				animation.addAll(res.getAnimation());
 				currentBAWaitTime = new FrameTimeCounter(eba.getWaitTime());
-				//ƒAƒNƒVƒ‡ƒ“Às’†‚É“ü‚é
+				//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œä¸­ã«å…¥ã‚‹
 				stage.setStage(Stage.EXECUTING_ACTION);
 				break;
 			case ITEM_CHOICE_USE:
 			case SHOW_ITEM_DESC:
 			case SHOW_STATUS:
-				//‰½‚à‚µ‚È‚¢iê—pƒƒ\ƒbƒh‚©‚ç‘€ì‚·‚é
+				//ä½•ã‚‚ã—ãªã„ï¼ˆå°‚ç”¨ãƒ¡ã‚½ãƒƒãƒ‰ã‹ã‚‰æ“ä½œã™ã‚‹
 				break;
 			case BATLE_END:
-				//‰½‚à‚µ‚È‚¢iƒ†[ƒU‘€ì‘Ò‚¿
+				//ä½•ã‚‚ã—ãªã„ï¼ˆãƒ¦ãƒ¼ã‚¶æ“ä½œå¾…ã¡
 				break;
 			default:
 				throw new AssertionError("UNDEFINED STAGE");
 		}
-		//Ÿ”s”»’è
+		//å‹æ•—åˆ¤å®š
 		if (stage.getStage() == Stage.EXECUTING_ACTION) {
 			return;
 		}
@@ -1870,7 +1869,7 @@ public class BattleSystem implements Drawable {
 			if (result == BattleResult.NOT_YET) {
 				continue;
 			}
-			//Ÿ”s‚Ç‚¿‚ç‚©‚É‚È‚Á‚½
+			//å‹æ•—ã©ã¡ã‚‰ã‹ã«ãªã£ãŸ
 			if (result == BattleResult.LOSE) {
 				currentBGM.stop();
 				currentBGM.dispose();
@@ -1885,7 +1884,7 @@ public class BattleSystem implements Drawable {
 			}
 			targetSystem.getCurrentArea().setArea(0);
 			targetSystem.getInitialArea().setArea(0);
-			//í“¬I—¹ˆ—
+			//æˆ¦é—˜çµ‚äº†å‡¦ç†
 			String nextLogicName = result == BattleResult.WIN ? winLogicName : loseLogicName;
 			if (result == BattleResult.WIN) {
 				currentBGM.stop();
@@ -1897,7 +1896,7 @@ public class BattleSystem implements Drawable {
 			for (Enemy e : enemies) {
 				List<DropItem> items = e.getDropItem();
 				for (DropItem i : items) {
-					//ƒhƒƒbƒvƒAƒCƒeƒ€‚ÌŠm—¦”»’è
+					//ãƒ‰ãƒ­ãƒƒãƒ—ã‚¢ã‚¤ãƒ†ãƒ ã®ç¢ºç‡åˆ¤å®š
 					if (Random.percent(i.getP())) {
 						dropItems.addAll(i.cloneN());
 					}
@@ -1920,11 +1919,11 @@ public class BattleSystem implements Drawable {
 			stage.setStage(Stage.BATLE_END);
 		}
 
-		//Œø‰Ê‚ÌI‚í‚Á‚½ƒAƒjƒ[ƒVƒ‡ƒ“‚ğæ‚èœ‚­
-		//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÍƒAƒNƒVƒ‡ƒ“‚Ì‘Ò‹@ŠÔ‚æ‚è’·‚­•\¦‚·‚é‚±‚Æ‚à‰Â”\‚È‚½‚ßstageŠO‚ÅÀ{
+		//åŠ¹æœã®çµ‚ã‚ã£ãŸã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å–ã‚Šé™¤ã
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã¯ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®å¾…æ©Ÿæ™‚é–“ã‚ˆã‚Šé•·ãè¡¨ç¤ºã™ã‚‹ã“ã¨ã‚‚å¯èƒ½ãªãŸã‚stageå¤–ã§å®Ÿæ–½
 		List<AnimationSprite> removeList = new ArrayList<>();
 		for (AnimationSprite a : animation) {
-			if (a.getAnimation() == null) {//null‚ÍŠî–{“ü‚Á‚Ä‚¢‚È‚¢‚Ì‚Å‚à‚µ‚ ‚Á‚½‚çÁ‚·
+			if (a.getAnimation() == null) {//nullã¯åŸºæœ¬å…¥ã£ã¦ã„ãªã„ã®ã§ã‚‚ã—ã‚ã£ãŸã‚‰æ¶ˆã™
 				removeList.add(a);
 				continue;
 			}
@@ -1935,18 +1934,18 @@ public class BattleSystem implements Drawable {
 		animation.removeAll(removeList);
 	}
 
-	//ƒAƒNƒVƒ‡ƒ“¬Œ÷‚Ìˆ—
+	//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³æˆåŠŸæ™‚ã®å‡¦ç†
 	private List<String> actionResultProc(BattleCharacter user, CmdAction ba, ActionTarget tgt) {
-		//HP‚ª0‚É‚È‚Á‚½‚Æ‚«‚È‚Ç‚Ìó‘ÔˆÙí‚ğ•t—^‚·‚é
+		//HPãŒ0ã«ãªã£ãŸã¨ããªã©ã®çŠ¶æ…‹ç•°å¸¸ã‚’ä»˜ä¸ã™ã‚‹
 		conditionManager.setCondition(GameSystem.getInstance().getPartyStatus());
 		conditionManager.setCondition(enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList()));
-		//ƒXƒvƒ‰ƒCƒg‚Ì”ñ•\¦‰»ˆ—‚ÆƒAƒ“ƒ^[ƒQƒbƒgƒRƒ“ƒfƒBƒVƒ‡ƒ“”­¶’†‚Ìƒ†[ƒU‚É‚æ‚éƒRƒ}ƒ“ƒh‚ğœ‹
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®éè¡¨ç¤ºåŒ–å‡¦ç†ã¨ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚³ãƒ³ãƒ‡ã‚£ã‚·ãƒ§ãƒ³ç™ºç”Ÿä¸­ã®ãƒ¦ãƒ¼ã‚¶ã«ã‚ˆã‚‹ã‚³ãƒãƒ³ãƒ‰ã‚’é™¤å»
 		List<BattleCommand> removeList2 = new ArrayList<>();
-		Map<String, String> deadEnemyName = new HashMap<>();//‚±‚ê‚ğ•\¦‚·‚é
+		Map<String, String> deadEnemyName = new HashMap<>();//ã“ã‚Œã‚’è¡¨ç¤ºã™ã‚‹
 		for (BattleCommand cmd : commandsOfThisTurn) {
 			for (String conditionName : BattleConfig.getUntargetConditionNames()) {
 				ConditionKey k = ConditionValueStorage.getInstance().get(conditionName).getKey();
-				//ƒAƒ“ƒ^[ƒQƒbƒgó‘ÔˆÙí‚ğ‚Á‚Ä‚¢‚é‚©ŒŸ¸
+				//ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆçŠ¶æ…‹ç•°å¸¸ã‚’æŒã£ã¦ã„ã‚‹ã‹æ¤œæŸ»
 				if (cmd.getUser().getStatus().hasCondition(conditionName)) {
 					removeList2.add(cmd);
 					cmd.getUser().getSprite().setVisible(false);
@@ -1961,7 +1960,7 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		commandsOfThisTurn.removeAll(removeList2);
-		//ƒAƒ“ƒ^[ƒQƒbƒgó‘ÔˆÙí‚É‚È‚Á‚½ƒLƒƒƒ‰‚ÌƒXƒvƒ‰ƒCƒg‚ğ”ñ•\¦‚É‚·‚é
+		//ã‚¢ãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆçŠ¶æ…‹ç•°å¸¸ã«ãªã£ãŸã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’éè¡¨ç¤ºã«ã™ã‚‹
 		for (BattleCharacter c : GameSystem.getInstance().getParty()) {
 			for (String cndKey : BattleConfig.getUntargetConditionNames()) {
 				if (c.getStatus().hasCondition(cndKey)) {
@@ -1982,10 +1981,10 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		List<String> text = new ArrayList<>();
-		//1s–Ú
-		text.add(user.getName() + " " + I18N.translate("S") + " " + ba.getName() + " !!");//‰üs•s—v
+		//1è¡Œç›®
+		text.add(user.getName() + " " + I18N.translate("S") + " " + ba.getName() + " !!");//æ”¹è¡Œä¸è¦
 
-		//2s–ÚˆÈ~
+		//2è¡Œç›®ä»¥é™
 		class Tgt {
 
 			String name;
@@ -1999,16 +1998,16 @@ public class BattleSystem implements Drawable {
 		}
 		List<Tgt> map = tgt.getTarget().stream().map(p -> new Tgt(p.getName(), p.getStatus().calcDamage())).collect(Collectors.toList());
 
-		//ƒ_ƒ[ƒW‚ª”­¶‚µ‚Ä‚¢‚È‚¢ê‡‚Íƒ~ƒX‚ğ•\¦
+		//ãƒ€ãƒ¡ãƒ¼ã‚¸ãŒç™ºç”Ÿã—ã¦ã„ãªã„å ´åˆã¯ãƒŸã‚¹ã‚’è¡¨ç¤º
 		if (map.stream().flatMap(f -> f.damage.values().stream()).collect(Collectors.toList()).isEmpty()
 				|| map.stream().flatMap(f -> f.damage.values().stream()).mapToDouble(p -> p).allMatch(p -> 0 == p)) {
-			//ƒ_ƒ[ƒW‚È‚µ
+			//ãƒ€ãƒ¡ãƒ¼ã‚¸ãªã—
 			text.add(I18N.translate("BUT") + " " + I18N.translate("NOT_HIT"));
 			return text;
 		}
 
 		if (map.stream().flatMap(f -> f.damage.entrySet().stream()).count() >= 7) {
-			//•½‹Ïƒ‚[ƒh
+			//å¹³å‡ãƒ¢ãƒ¼ãƒ‰
 			for (String statusKey : BattleConfig.getVisibleStatus().stream().sorted().collect(Collectors.toList())) {
 				float avg = 0;
 				for (Tgt t : map) {
@@ -2032,11 +2031,11 @@ public class BattleSystem implements Drawable {
 				text.add(v);
 			}
 		} else {
-			//‘Ss•\¦ƒ‚[ƒh
+			//å…¨è¡Œè¡¨ç¤ºãƒ¢ãƒ¼ãƒ‰
 			for (String statusKey : BattleConfig.getVisibleStatus().stream().sorted().collect(Collectors.toList())) {
 				for (Tgt t : map) {
 					if (t.damage.containsKey(StatusKeyStorage.getInstance().get(statusKey))) {
-						//visibleStatus‚ğ3‚Â‚Ü‚Å•\¦
+						//visibleStatusã‚’3ã¤ã¾ã§è¡¨ç¤º
 						String txt = t.name + I18N.translate("S");
 						txt += " " + StatusKeyStorage.getInstance().get(statusKey).getDesc();
 						float v = t.damage.get(StatusKeyStorage.getInstance().get(statusKey));
@@ -2076,7 +2075,7 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.draw(g);
 	}
 
-	//ƒ^[ƒQƒbƒg‘I‘ğƒ‚[ƒh‚ğƒLƒƒƒ“ƒZƒ‹‚µ‚Ä•Â‚¶‚éBƒAƒNƒVƒ‡ƒ“‘I‘ğ‚É–ß‚é
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆé¸æŠãƒ¢ãƒ¼ãƒ‰ã‚’ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦é–‰ã˜ã‚‹ã€‚ã‚¢ã‚¯ã‚·ãƒ§ãƒ³é¸æŠã«æˆ»ã‚‹
 	public void cancelTargetSelect() {
 		targetSystem.unsetCurrent();
 		stage.prev();

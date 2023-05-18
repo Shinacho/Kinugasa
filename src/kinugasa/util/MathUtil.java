@@ -26,11 +26,11 @@ package kinugasa.util;
 import kinugasa.game.system.GameSystem;
 
 /**
- * ”Šwƒ†[ƒeƒBƒŠƒeƒB‚Å‚·.
+ * æ•°å­¦ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ã§ã™.
  * <br>
  * <br>
- * OŠpŠÖ”‚Ì’l‚Í0.5“x‚İ‚ÅŒvZ‚³‚ê‚Ü‚·B‚±‚Ì’l‚Í Å‰‚ÌŒÄ‚Ño‚µ‚ÉƒLƒƒƒbƒVƒ…‚³‚ê‚Ü‚·B<br>
- * —”ƒWƒFƒlƒŒ[ƒ^‚Íkinugasa.util.RandomƒNƒ‰ƒX‚ğg—p‚µ‚Ä‚­‚¾‚³‚¢B<br>
+ * ä¸‰è§’é–¢æ•°ã®å€¤ã¯0.5åº¦åˆ»ã¿ã§è¨ˆç®—ã•ã‚Œã¾ã™ã€‚ã“ã®å€¤ã¯ æœ€åˆã®å‘¼ã³å‡ºã—æ™‚ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã•ã‚Œã¾ã™ã€‚<br>
+ * ä¹±æ•°ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ã¯kinugasa.util.Randomã‚¯ãƒ©ã‚¹ã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚<br>
  * <br>
  *
  * @version 3.0.0 - 2011/09/16_20:58<br>
@@ -43,16 +43,16 @@ import kinugasa.game.system.GameSystem;
 public final class MathUtil {
 
 	/**
-	 * ƒCƒ“ƒXƒ^ƒ“ƒX‰»‚Å‚«‚Ü‚¹‚ñ.<br>
+	 * ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã§ãã¾ã›ã‚“.<br>
 	 */
 	private MathUtil() {
 	}
 	/**
-	 * sin‚Ì’l‚ªƒLƒƒƒbƒVƒ…‚³‚ê‚é”z—ñ‚Å‚·.
+	 * sinã®å€¤ãŒã‚­ãƒ£ãƒƒã‚·ãƒ¥ã•ã‚Œã‚‹é…åˆ—ã§ã™.
 	 */
 	private static final float[] sinTable = new float[720];
 	/**
-	 * cos‚Ì’l‚ªƒLƒƒƒbƒVƒ…‚³‚ê‚é”z—ñ‚Å‚·.
+	 * cosã®å€¤ãŒã‚­ãƒ£ãƒƒã‚·ãƒ¥ã•ã‚Œã‚‹é…åˆ—ã§ã™.
 	 */
 	private static final float[] cosTable = new float[720];
 
@@ -69,13 +69,13 @@ public final class MathUtil {
 	}
 
 	/**
-	 * ƒTƒCƒ“”g‚ğŠi”[‚µ‚½’P¸“x”z—ñ‚ğì¬‚µ‚Ü‚·.
+	 * ã‚µã‚¤ãƒ³æ³¢ã‚’æ ¼ç´ã—ãŸå˜ç²¾åº¦é…åˆ—ã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param fq ƒTƒCƒ“”g‚Ìü”g”.<br>
-	 * @param mag Šg‘å”{—¦.<br>
-	 * @param max ƒÆ‚ÌÅ‘å’l.<br>
+	 * @param fq ã‚µã‚¤ãƒ³æ³¢ã®å‘¨æ³¢æ•°.<br>
+	 * @param mag æ‹¡å¤§å€ç‡.<br>
+	 * @param max Î¸ã®æœ€å¤§å€¤.<br>
 	 *
-	 * @return w’è‚µ‚½—Ìˆæ‚ÌƒTƒCƒ“”g‚ğ\’z‚Å‚«‚é’l‚ªŠi”[‚³‚ê‚½”z—ñ.<br>
+	 * @return æŒ‡å®šã—ãŸé ˜åŸŸã®ã‚µã‚¤ãƒ³æ³¢ã‚’æ§‹ç¯‰ã§ãã‚‹å€¤ãŒæ ¼ç´ã•ã‚ŒãŸé…åˆ—.<br>
 	 */
 	public static float[] createSinWaveArray(float fq, float mag, float max) {
 		float[] reAry = new float[(int) (max / fq)];
@@ -86,14 +86,14 @@ public final class MathUtil {
 	}
 
 	/**
-	 * ƒTƒCƒ“”g‚ğŠi”[‚µ‚½’P¸“x”z—ñ‚ğì¬‚µ‚Ü‚·.
+	 * ã‚µã‚¤ãƒ³æ³¢ã‚’æ ¼ç´ã—ãŸå˜ç²¾åº¦é…åˆ—ã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param fq ƒTƒCƒ“”g‚Ìü”g”.<br>
-	 * @param mag Šg‘å”{—¦.<br>
-	 * @param max ƒÆ‚ÌÅ‘å’l.<br>
-	 * @param reverse true‚ğw’è‚·‚é‚Æ”gŒ`‚ğ‹t‡‚Éƒ\[ƒg‚µ‚Ü‚·.<br>
+	 * @param fq ã‚µã‚¤ãƒ³æ³¢ã®å‘¨æ³¢æ•°.<br>
+	 * @param mag æ‹¡å¤§å€ç‡.<br>
+	 * @param max Î¸ã®æœ€å¤§å€¤.<br>
+	 * @param reverse trueã‚’æŒ‡å®šã™ã‚‹ã¨æ³¢å½¢ã‚’é€†é †ã«ã‚½ãƒ¼ãƒˆã—ã¾ã™.<br>
 	 *
-	 * @return w’è‚µ‚½—Ìˆæ‚ÌƒTƒCƒ“”g‚ğ\’z‚Å‚«‚é’l‚ªŠi”[‚³‚ê‚½”z—ñ.<br>
+	 * @return æŒ‡å®šã—ãŸé ˜åŸŸã®ã‚µã‚¤ãƒ³æ³¢ã‚’æ§‹ç¯‰ã§ãã‚‹å€¤ãŒæ ¼ç´ã•ã‚ŒãŸé…åˆ—.<br>
 	 */
 	public static float[] createSinWaveArray(float fq, float mag, float max, boolean reverse) {
 		float[] reAry = new float[(int) (max / fq)];
@@ -107,11 +107,11 @@ public final class MathUtil {
 	}
 
 	/**
-	 * ƒTƒCƒ“‚ğæ“¾‚µ‚Ü‚·.<br>
+	 * ã‚µã‚¤ãƒ³ã‚’å–å¾—ã—ã¾ã™.<br>
 	 *
-	 * @param angle “x”–@‚ÌŠp“x‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param angle åº¦æ•°æ³•ã®è§’åº¦ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ƒTƒCƒ“‚Ì’l‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚µã‚¤ãƒ³ã®å€¤ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static float sin(float angle) {
 		int index = (int) (angle + angle);
@@ -122,11 +122,11 @@ public final class MathUtil {
 	}
 
 	/**
-	 * ƒRƒTƒCƒ“‚ğæ“¾‚µ‚Ü‚·.
+	 * ã‚³ã‚µã‚¤ãƒ³ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @param angle “x”–@‚ÌŠp“x‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param angle åº¦æ•°æ³•ã®è§’åº¦ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ƒRƒTƒCƒ“‚Ì’l‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚³ã‚µã‚¤ãƒ³ã®å€¤ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static float cos(float angle) {
 		int index = (int) (angle + angle);

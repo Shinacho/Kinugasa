@@ -29,7 +29,7 @@ import java.awt.event.KeyListener;
 import java.util.BitSet;
 
 /**
- * ƒL[ƒ{[ƒh‚Ì“ü—Íó‘Ô‚ğŒŸ¸‚·‚é‚½‚ß‚ÌKe‚™Listener‚ÌÀ‘•‚Å‚·.
+ * ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®å…¥åŠ›çŠ¶æ…‹ã‚’æ¤œæŸ»ã™ã‚‹ãŸã‚ã®Keï½™Listenerã®å®Ÿè£…ã§ã™.
  * <br>
  *
  * <br>
@@ -40,20 +40,20 @@ import java.util.BitSet;
 public class KeyConnection implements KeyListener {
 
 	/**
-	 * ƒL[ó‘Ô‚ªŠi”[‚³‚ê‚éƒrƒbƒgƒZƒbƒg‚Å‚·.
+	 * ã‚­ãƒ¼çŠ¶æ…‹ãŒæ ¼ç´ã•ã‚Œã‚‹ãƒ“ãƒƒãƒˆã‚»ãƒƒãƒˆã§ã™.
 	 */
 	private static final BitSet keySet = new BitSet(512);
 	/**
-	 * —Bˆê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Å‚·.
+	 * å”¯ä¸€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ã™.
 	 */
 	private static final KeyConnection INSTANCE = new KeyConnection();
 	/**
-	 * ‰½‚à“ü—Í‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô‚ÌKeyState‚Å‚·.
+	 * ä½•ã‚‚å…¥åŠ›ã•ã‚Œã¦ã„ãªã„çŠ¶æ…‹ã®KeyStateã§ã™.
 	 */
 	private static final KeyState CLEAR_STATE = new KeyState(new BitSet(512));
 
 	/**
-	 * ƒVƒ“ƒOƒ‹ƒgƒ“ƒNƒ‰ƒX‚Å‚·.ƒCƒ“ƒXƒ^ƒ“ƒX‰»‚Å‚«‚Ü‚¹‚ñ.<br>
+	 * ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¯ãƒ©ã‚¹ã§ã™.ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã§ãã¾ã›ã‚“.<br>
 	 */
 	private KeyConnection() {
 	}
@@ -63,45 +63,45 @@ public class KeyConnection implements KeyListener {
 	}
 
 	/**
-	 * ƒRƒ“ƒ|[ƒlƒ“ƒg‚É‚±‚ÌƒŠƒXƒi‚ğ’Ç‰Á‚µ‚Ü‚·.
+	 * ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã«ã“ã®ãƒªã‚¹ãƒŠã‚’è¿½åŠ ã—ã¾ã™.
 	 *
-	 * @param component ƒŠƒXƒi‚ğ“o˜^‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param component ãƒªã‚¹ãƒŠã‚’ç™»éŒ²ã™ã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	public static void setListener(Component component) {
 		component.addKeyListener(INSTANCE);
 	}
 
 	/**
-	 * ‹ó‚ÌƒL[ƒXƒe[ƒg‚ğ”­s‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚Íí‚É“¯‚¶ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * ç©ºã®ã‚­ãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ç™ºè¡Œã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯å¸¸ã«åŒã˜ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ‹ó‚ÌƒL[ƒXƒe[ƒg‚ğ•Ô‚µ‚Ü‚·B‰½‚à‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô‚Å‚·B<br>
+	 * @return ç©ºã®ã‚­ãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆã‚’è¿”ã—ã¾ã™ã€‚ä½•ã‚‚æŠ¼ã•ã‚Œã¦ã„ãªã„çŠ¶æ…‹ã§ã™ã€‚<br>
 	 */
 	public static KeyState createClearState() {
 		return CLEAR_STATE;
 	}
 
 	/**
-	 * Œ»İ‚Ì“ü—Íó‘Ô‚ğæ“¾‚µ‚Ü‚·.
+	 * ç¾åœ¨ã®å…¥åŠ›çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return Œ»İ‚ÌƒL[“ü—Íó‘Ô‚Å‚·B<br>
+	 * @return ç¾åœ¨ã®ã‚­ãƒ¼å…¥åŠ›çŠ¶æ…‹ã§ã™ã€‚<br>
 	 */
 	public static KeyState getState() {
 		return new KeyState(KeyConnection.keySet);
 	}
 
 	/**
-	 * ƒL[ƒŠƒXƒi‚ÌÀ‘•‚Å‚·.
+	 * ã‚­ãƒ¼ãƒªã‚¹ãƒŠã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param ke ƒL[ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param ke ã‚­ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void keyTyped(KeyEvent ke) {
 	}
 
 	/**
-	 * ƒL[ƒŠƒXƒi‚ÌÀ‘•‚Å‚·.
+	 * ã‚­ãƒ¼ãƒªã‚¹ãƒŠã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param ke ƒL[ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param ke ã‚­ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void keyPressed(KeyEvent ke) {
@@ -109,9 +109,9 @@ public class KeyConnection implements KeyListener {
 	}
 
 	/**
-	 * ƒL[ƒŠƒXƒi‚ÌÀ‘•‚Å‚·.
+	 * ã‚­ãƒ¼ãƒªã‚¹ãƒŠã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param ke ƒL[ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param ke ã‚­ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void keyReleased(KeyEvent ke) {

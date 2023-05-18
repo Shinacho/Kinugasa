@@ -29,14 +29,14 @@ import kinugasa.resource.Nameable;
 import kinugasa.resource.NotYetLoadedException;
 
 /**
- * �T�E���h�t�@�C���̍Đ����~�Ȃǂ̋@�\�𒊏ۉ����邽�߂̃C���^�[�t�F�[�X�ł�.
+ * サウンドファイルの再生や停止などの機能を抽象化するためのインターフェースです.
  * <br>
- * �S�ẴT�E���h�f�[�^�́A���̃C���^�[�t�F�[�X����������K�v������܂��B<br>
- * �ʏ�̎����ł́A���[�h����Ă��Ȃ��T�E���h�ɑ΂��鑀��́A�����s���܂���B<br>
- * �܂��A���łɃ��[�h����Ă���ꍇ�ɍēx���[�h���邱�Ƃ͂���܂���B<br>
+ * 全てのサウンドデータは、このインターフェースを実装する必要があります。<br>
+ * 通常の実装では、ロードされていないサウンドに対する操作は、何も行いません。<br>
+ * また、すでにロードされている場合に再度ロードすることはありません。<br>
  * <br>
- * �T�E���h�̖��O�Ƃ́A�ʏ�́A�p�X���������t�@�C�����ƂȂ�܂��B<br>
- * ���Ƃ��΁Ahoge/piyo/fuga.wav�̏ꍇ��fuga.wav�����O�ƂȂ�܂��B<br>
+ * サウンドの名前とは、通常は、パスを除いたファイル名となります。<br>
+ * たとえば、hoge/piyo/fuga.wavの場合はfuga.wavが名前となります。<br>
  * <br>
  *
  *
@@ -49,10 +49,10 @@ public interface Sound extends Input<Sound>, Nameable {
 	public String getName();
 
 	/**
-	 * �T�E���h�̍Đ����J�n���܂�. �T�E���h�����[�v�@�\���T�|�[�g���Ă���ꍇ�́A�ݒ�ɂ���Ă̓��[�v�Đ����J�n���܂�.<Br>
-	 * �T�E���h�����ɍĐ�����Ă���ꍇ�͉������܂���.<br>
+	 * サウンドの再生を開始します. サウンドがループ機能をサポートしている場合は、設定によってはループ再生を開始します.<Br>
+	 * サウンドが既に再生されている場合は何もしません.<br>
 	 *
-	 * @throws NotYetLoadedException �T�E���h�����[�h����Ă��Ȃ��ꍇ�ɓ����邱�Ƃ��ł��܂��B<br>
+	 * @throws NotYetLoadedException サウンドがロードされていない場合に投げることができます。<br>
 	 */
 	public void play() throws NotYetLoadedException;
 	
@@ -61,26 +61,26 @@ public interface Sound extends Input<Sound>, Nameable {
 	public void stopAndPlay();
 
 	/**
-	 * �T�E���h�̌��݂̃t���[���ʒu��Ԃ��܂�.
+	 * サウンドの現在のフレーム位置を返します.
 	 *
-	 * @return ���݂̃t���[���ʒu.<br>
+	 * @return 現在のフレーム位置.<br>
 	 */
 	public long getFramePosition();
 
 	/**
-	 * ���̃T�E���h�̃t���[���̍ő咷��Ԃ��܂�.
+	 * このサウンドのフレームの最大長を返します.
 	 *
-	 * @return �t���[���̍ő咷.<br>
+	 * @return フレームの最大長.<br>
 	 */
 	public long getFrameLength();
 
 	/**
-	 * �T�E���h�̍Đ����~���čŏ��܂Ŋ����߂��܂�.
+	 * サウンドの再生を停止して最初まで巻き戻します.
 	 */
 	public void stop();
 
 	/**
-	 * �T�E���h�̍Đ����ꎞ��~���܂�. ����play���Ăяo���ꂽ�Ƃ��Apause���Ă΂ꂽ�ʒu����Đ����܂�.<br>
+	 * サウンドの再生を一時停止します. 次回playが呼び出されたとき、pauseが呼ばれた位置から再生します.<br>
 	 */
 	public void pause();
 
@@ -98,9 +98,9 @@ public interface Sound extends Input<Sound>, Nameable {
 	public boolean isPlaying();
 
 	/**
-	 * �T�E���h�̉��ʂ�ݒ肵�܂�.
+	 * サウンドの音量を設定します.
 	 *
-	 * @param vol �V��������.0f�Ŗ����ɂȂ�.<br>
+	 * @param vol 新しい音量.0fで無音になる.<br>
 	 */
 	public void setVolume(float vol);
 

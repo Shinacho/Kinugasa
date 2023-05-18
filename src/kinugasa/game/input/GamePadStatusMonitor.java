@@ -34,7 +34,7 @@ import kinugasa.game.ui.TextLabelSprite;
 import kinugasa.object.BasicSprite;
 
 /**
- * ゲームパッドの状態を表示するスプライトです。
+ * 繧ｲ繝ｼ繝繝代ャ繝峨�ｮ迥ｶ諷九ｒ陦ｨ遉ｺ縺吶ｋ繧ｹ繝励Λ繧､繝医〒縺吶�
  *
  * @vesion 1.0.0 - 2021/11/23_8:44:45<br>
  * @author Shinacho<br>

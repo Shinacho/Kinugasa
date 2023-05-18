@@ -77,27 +77,27 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				assert ba.getParameterType() == ParameterType.STATUS : "damage calculation: Invalid damage calc type:" + ba;
 				assert ba.getDamageCalcType() == StatusDamageCalcType.USE_DAMAGE_CALC : "damage calculation: Invalid damage calc type:" + ba;
 
-				//Š„‡‚Ö‚Ìƒ_ƒ[ƒW‚Ìê‡ƒGƒ‰[‚Æ‚·‚é
+				//å‰²åˆã¸ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã®å ´åˆã‚¨ãƒ©ãƒ¼ã¨ã™ã‚‹
 				if (StatusKeyStorage.getInstance().get(ba.getTgtName()).getMax() == 1f) {
 					throw new GameSystemException("only non-float status can be used to calc damage.");
 				}
 
-//				//P”»’è‚ÍActionEvent‚ÅÀ{Ï‚İ
+//				//Påˆ¤å®šã¯ActionEventã§å®Ÿæ–½æ¸ˆã¿
 //				if (!Random.percent(ba.getP())) {
 //					if (GameSystem.isDebugMode()) {
 //						kinugasa.game.GameLog.printInfo("damage calculation, calceled by P.");
 //					}
 //					return new ActionEventResult(ActionResultType.MISS, null);
 //				}
-				//–‚–@orUŒ‚
+				//é­”æ³•oræ”»æ’ƒ
 				boolean isAtk = ba.getAttr().getOrder() < 10;
 				StringBuilder desc = new StringBuilder();
 				desc.append("SDCM : ").append(user.getName()).append("->").append(tgt.getName()).append(":");
 
-				//UŒ‚------------------------------------------------------------------------------------------------------------------------
+				//æ”»æ’ƒ------------------------------------------------------------------------------------------------------------------------
 				if (isAtk) {
 					desc.append("ATK,");
-					//ba‚Ìvalue * spread
+					//baã®value * spread
 					float spread = (ba.getValue() * ba.getSpread());
 					float value = ba.getValue();
 					if (Random.percent(0.5f)) {
@@ -106,19 +106,19 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						value -= spread;
 					}
 
-					//ƒAƒNƒVƒ‡ƒ“ƒNƒŠƒeƒBƒJƒ‹”»’è
+					//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«åˆ¤å®š
 					boolean critical = Random.percent(user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.critAtk).getValue());
 					if (critical) {
 						desc.append("CRITICAL,");
 						value *= (1 + user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.critAtkVal).getValue());
 					}
 
-					//‰ñ”ğ”»’è
-					//ƒNƒŠƒeƒBƒJƒ‹‚Ìê‡‚Í‰ñ”ğ‚Å‚«‚È‚¢
+					//å›é¿åˆ¤å®š
+					//ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ã®å ´åˆã¯å›é¿ã§ããªã„
 					if (!critical) {
 						if (Random.percent(tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.avoAtk).getValue())) {
 							desc.append("AVO");
-							//‰ñ”ğ¬Œ÷
+							//å›é¿æˆåŠŸ
 							if (GameSystem.isDebugMode()) {
 								kinugasa.game.GameLog.printInfo("damage calculation(ATK), calceled by AVO.");
 							}
@@ -126,10 +126,10 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						}
 					}
 
-					//ATTRŒvZ
+					//ATTRè¨ˆç®—
 					value *= tgt.getStatus().getEffectedAttrIn().get(ba.getAttr().getName()).getValue();
 					//DCS
-					//ƒ†[ƒU‚Ì‘•”õ•i‚ÉŒvZƒXƒe[ƒ^ƒXƒL[‚ª‚ ‚é‚©ŒŸ¸
+					//ãƒ¦ãƒ¼ã‚¶ã®è£…å‚™å“ã«è¨ˆç®—ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚­ãƒ¼ãŒã‚ã‚‹ã‹æ¤œæŸ»
 					Item weapon = user.getStatus().getEqipment().get(ItemEqipmentSlotStorage.getInstance().get(BattleConfig.weaponSlotName));
 					if (weapon != null) {
 						float ave = (float) user.getStatus()
@@ -139,17 +139,17 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 								.mapToDouble(p -> p.getValue() / p.getKey().getMax())
 								.average()
 								.getAsDouble();
-						//ƒ_ƒ[ƒWŒvZƒXƒe[ƒ^ƒX%•ªˆĞ—Í‚ğã‚°‚é
+						//ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹%åˆ†å¨åŠ›ã‚’ä¸Šã’ã‚‹
 						value *= (1 + ave);
 						desc.append("DCS,");
 					}
 
-					//UŒ‚—ÍF–hŒä—Í”»’è
+					//æ”»æ’ƒåŠ›ï¼šé˜²å¾¡åŠ›åˆ¤å®š
 					float atk = user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.atk).getValue()
 							/ user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.atk).getKey().getMax();
 					float def = tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.defAtk).getValue()
 							/ tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.defAtk).getKey().getMax();
-					//UŒ‚‚ÌŠ„‡-–hŒä‚ÌŠ„‡
+					//æ”»æ’ƒã®å‰²åˆ-é˜²å¾¡ã®å‰²åˆ
 					float atkSubDef = atk - def * BattleConfig.atkDefPercent;
 					if (atkSubDef < 0) {
 						atkSubDef = 0;
@@ -157,20 +157,20 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					desc.append("atk-def[" + atkSubDef + "],");
 					value *= atkSubDef;
 
-					//UŒ‚ƒJƒbƒg”»’è
-					//ƒNƒŠƒeƒBƒJƒ‹‚Ìê‡‚ÍƒJƒbƒg‚Å‚«‚È‚¢
+					//æ”»æ’ƒã‚«ãƒƒãƒˆåˆ¤å®š
+					//ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ã®å ´åˆã¯ã‚«ãƒƒãƒˆã§ããªã„
 					if (!critical) {
 						if (Random.percent(tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.cutAtk).getValue())) {
-							//ƒJƒbƒg¬Œ÷
+							//ã‚«ãƒƒãƒˆæˆåŠŸ
 							desc.append("CUT,");
 							value *= tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.cutAtkVal).getValue();
 						}
 					}
 
-					//ƒ^[ƒQƒbƒgƒXƒe[ƒ^ƒX–¼‚ğdesc‚É’Ç‰Á
+					//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹åã‚’descã«è¿½åŠ 
 					desc.append(ba.getTgtName() + ",");
 
-					//valueİ’è
+					//valueè¨­å®š
 					value *= BattleConfig.damageMul;
 					value = (int) value;
 					if (value == 0) {
@@ -183,14 +183,14 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					desc.append("result[" + value + "]");
 					tgt.getStatus().getBaseStatus().get(ba.getTgtName()).add(value);
 
-					//ƒAƒjƒ[ƒVƒ‡ƒ“ˆ—
+					//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å‡¦ç†
 					AnimationSprite sprite = null;
 					if (ba.hasAnimation()) {
-						//ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒvƒ‰ƒCƒg
+						//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
 						sprite = new AnimationSprite(ba.getAnimationClone());
 						sprite.update();
 						sprite.setSizeByImage();
-						sprite.getAnimation().setRepeat(false);//d—vAƒAƒjƒ[ƒVƒ‡ƒ“‚ªÁ‚¦‚È‚­‚È‚é
+						sprite.getAnimation().setRepeat(false);//é‡è¦ã€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒæ¶ˆãˆãªããªã‚‹
 						switch (ba.getAnimationMoveType()) {
 							case NONE:
 								sprite.setVisible(false);
@@ -208,16 +208,16 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						}
 					}
 
-					//ƒŠƒUƒ‹ƒg•Ô‹p
+					//ãƒªã‚¶ãƒ«ãƒˆè¿”å´
 					if (GameSystem.isDebugMode()) {
 						GameLog.printInfo("DamageCalcResult:" + desc.toString());
 					}
 					return new ActionEventResult(ActionResultType.SUCCESS, sprite);
 
 				}
-				//–‚–@----------------------------------------------------------------------------------------------
+				//é­”æ³•----------------------------------------------------------------------------------------------
 				desc.append("MGK,");
-				//ba‚Ìvalue * spread
+				//baã®value * spread
 				float spread = (ba.getValue() * ba.getSpread());
 				float value = ba.getValue();
 				if (Random.percent(0.5f)) {
@@ -226,19 +226,19 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					value -= spread;
 				}
 
-				//ƒAƒNƒVƒ‡ƒ“ƒNƒŠƒeƒBƒJƒ‹”»’è
+				//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«åˆ¤å®š
 				boolean critical = Random.percent(user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.critMgk).getValue());
 				if (critical) {
 					desc.append("CRITICAL,");
 					value *= (1 + user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.critMgkVal).getValue());
 				}
 
-				//‰ñ”ğ”»’è
-				//ƒNƒŠƒeƒBƒJƒ‹‚Ìê‡‚Í‰ñ”ğ‚Å‚«‚È‚¢
+				//å›é¿åˆ¤å®š
+				//ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ã®å ´åˆã¯å›é¿ã§ããªã„
 				if (!critical) {
 					if (Random.percent(tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.avoMgk).getValue())) {
 						desc.append("AVO");
-						//‰ñ”ğ¬Œ÷
+						//å›é¿æˆåŠŸ
 						if (GameSystem.isDebugMode()) {
 							kinugasa.game.GameLog.printInfo("damage calculation(MGK), calceled by AVO.");
 						}
@@ -246,11 +246,11 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					}
 				}
 
-				//ATTRŒvZ
+				//ATTRè¨ˆç®—
 				value *= tgt.getStatus().getEffectedAttrIn().get(ba.getAttr().getName()).getValue();
 
 				//DCS
-				//ƒ†[ƒU‚Ì‘•”õ•i‚ÉŒvZƒXƒe[ƒ^ƒXƒL[‚ª‚ ‚é‚©ŒŸ¸
+				//ãƒ¦ãƒ¼ã‚¶ã®è£…å‚™å“ã«è¨ˆç®—ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚­ãƒ¼ãŒã‚ã‚‹ã‹æ¤œæŸ»
 				Item weapon = user.getStatus().getEqipment().get(ItemEqipmentSlotStorage.getInstance().get(BattleConfig.weaponSlotName));
 				if (weapon != null) {
 					float ave = (float) user.getStatus()
@@ -260,17 +260,17 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 							.mapToDouble(p -> p.getValue() / p.getKey().getMax())
 							.average()
 							.getAsDouble();
-					//ƒ_ƒ[ƒWŒvZƒXƒe[ƒ^ƒX%•ªˆĞ—Í‚ğã‚°‚é
+					//ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹%åˆ†å¨åŠ›ã‚’ä¸Šã’ã‚‹
 					value *= (1 + ave);
 					desc.append("DCS,");
 				}
 
-				//UŒ‚—ÍF–hŒä—Í”»’è
+				//æ”»æ’ƒåŠ›ï¼šé˜²å¾¡åŠ›åˆ¤å®š
 				float atk = user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.mgk).getValue()
 						/ user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.mgk).getKey().getMax();
 				float def = tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.defMgk).getValue()
 						/ tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.defMgk).getKey().getMax();
-				//UŒ‚‚ÌŠ„‡-–hŒä‚ÌŠ„‡
+				//æ”»æ’ƒã®å‰²åˆ-é˜²å¾¡ã®å‰²åˆ
 				float atkSubDef = atk - def * BattleConfig.atkDefPercent;
 				if (atkSubDef < 0) {
 					atkSubDef = 0;
@@ -278,20 +278,20 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				desc.append("atk-def[" + atkSubDef + "],");
 				value *= atkSubDef;
 
-				//UŒ‚ƒJƒbƒg”»’è
-				//ƒNƒŠƒeƒBƒJƒ‹‚Ìê‡‚ÍƒJƒbƒg‚Å‚«‚È‚¢
+				//æ”»æ’ƒã‚«ãƒƒãƒˆåˆ¤å®š
+				//ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ã®å ´åˆã¯ã‚«ãƒƒãƒˆã§ããªã„
 				if (!critical) {
 					if (Random.percent(tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.cutMgk).getValue())) {
-						//ƒJƒbƒg¬Œ÷
+						//ã‚«ãƒƒãƒˆæˆåŠŸ
 						desc.append("CUT,");
 						value *= tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.cutMgkVal).getValue();
 					}
 				}
 
-				//ƒ^[ƒQƒbƒgƒXƒe[ƒ^ƒX–¼‚ğdesc‚É’Ç‰Á
+				//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹åã‚’descã«è¿½åŠ 
 				desc.append(ba.getTgtName() + ",");
 
-				//valueİ’è
+				//valueè¨­å®š
 				value *= BattleConfig.damageMul;
 				value = (int) value;
 				if (value == 0) {
@@ -304,14 +304,14 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				desc.append("result[" + value + "]");
 				tgt.getStatus().getBaseStatus().get(ba.getTgtName()).add(value);
 
-				//ƒAƒjƒ[ƒVƒ‡ƒ“ˆ—
+				//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å‡¦ç†
 				AnimationSprite sprite = null;
 				if (ba.hasAnimation()) {
-					//ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒvƒ‰ƒCƒg
+					//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
 					sprite = new AnimationSprite(ba.getAnimationClone());
 					sprite.update();
 					sprite.setSizeByImage();
-					sprite.getAnimation().setRepeat(false);//d—vAƒAƒjƒ[ƒVƒ‡ƒ“‚ªÁ‚¦‚È‚­‚È‚é
+					sprite.getAnimation().setRepeat(false);//é‡è¦ã€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒæ¶ˆãˆãªããªã‚‹
 					switch (ba.getAnimationMoveType()) {
 						case NONE:
 							sprite.setVisible(false);
@@ -329,7 +329,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					}
 				}
 
-				//ƒŠƒUƒ‹ƒg•Ô‹p
+				//ãƒªã‚¶ãƒ«ãƒˆè¿”å´
 				if (GameSystem.isDebugMode()) {
 					GameLog.printInfo("DamageCalcResult:" + desc.toString());
 				}

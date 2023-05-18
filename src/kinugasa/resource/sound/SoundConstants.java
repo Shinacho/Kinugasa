@@ -25,7 +25,7 @@ package kinugasa.resource.sound;
 
 
 /**
- * ƒTƒEƒ“ƒh‚É‹¤’Ê‚Ì’è”‚ğ’è‹`‚µ‚Ü‚·.
+ * ã‚µã‚¦ãƒ³ãƒ‰ã«å…±é€šã®å®šæ•°ã‚’å®šç¾©ã—ã¾ã™.
  * <br>
  *
  * <br>
@@ -36,31 +36,31 @@ package kinugasa.resource.sound;
 public final class SoundConstants {
 
 	/**
-	 * 44100Hz‚Ìü”g”‚Å‚·.
+	 * 44100Hzã®å‘¨æ³¢æ•°ã§ã™.
 	 */
 	public static final int FREQ_44100_HZ = 44100;
 	/**
-	 * 32000Hz‚Ìü”g”‚Å‚·.
+	 * 32000Hzã®å‘¨æ³¢æ•°ã§ã™.
 	 */
 	public static final int FREQ_32000_HZ = 32000;
 	/**
-	 * 22050Hz‚Ìü”g”‚Å‚·.
+	 * 22050Hzã®å‘¨æ³¢æ•°ã§ã™.
 	 */
 	public static final int FREQ_22050_HZ = 22050;
 	/**
-	 * 16000Hz‚Ìü”g”‚Å‚·.
+	 * 16000Hzã®å‘¨æ³¢æ•°ã§ã™.
 	 */
 	public static final int FREQ_16000_HZ = 16000;
 	/**
-	 * 11050Hz‚Ìü”g”‚Å‚·.
+	 * 11050Hzã®å‘¨æ³¢æ•°ã§ã™.
 	 */
 	public static final int FREQ_11050_HZ = 11050;
 	/**
-	 * 8000Hz‚Ìü”g”‚Å‚·.
+	 * 8000Hzã®å‘¨æ³¢æ•°ã§ã™.
 	 */
 	public static final int FREQ_8000_HZ = 8000;
 	/**
-	 * 4000Hz‚Ìü”g”‚Å‚·.
+	 * 4000Hzã®å‘¨æ³¢æ•°ã§ã™.
 	 */
 	public static final int FREQ_4000_HZ = 4000;
 

@@ -66,10 +66,10 @@ import kinugasa.util.FrameTimeCounter;
  * @author Shinacho<br>
  */
 public enum FieldEventType {
-	//’²‚×‚ç‚ê‚éƒCƒxƒ“ƒg
+	//èª¿ã¹ã‚‰ã‚Œã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
 	/**
-	 * ’ÊíAƒCƒxƒ“ƒg‚Í‚»‚Ìƒ}ƒX‚ğ“¥‚Ş‚Æ©“®‹N“®‚µ‚Ü‚·‚ªA
-	 * ƒXƒNƒŠƒvƒg‚É‚±‚ÌƒCƒxƒ“ƒg‚ª“ü‚Á‚Ä‚¢‚é‚ÆAƒtƒB[ƒ‹ƒhã‚Åu’²‚×‚évƒRƒ}ƒ“ƒh‚ğÀs‚µ‚Ä‚©‚çAƒCƒxƒ“ƒg‚ª‹N“®‚µ‚Ü‚·B
+	 * é€šå¸¸ã€ã‚¤ãƒ™ãƒ³ãƒˆã¯ãã®ãƒã‚¹ã‚’è¸ã‚€ã¨è‡ªå‹•èµ·å‹•ã—ã¾ã™ãŒã€
+	 * ã‚¹ã‚¯ãƒªãƒ—ãƒˆã«ã“ã®ã‚¤ãƒ™ãƒ³ãƒˆãŒå…¥ã£ã¦ã„ã‚‹ã¨ã€ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ä¸Šã§ã€Œèª¿ã¹ã‚‹ã€ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œã—ã¦ã‹ã‚‰ã€ã‚¤ãƒ™ãƒ³ãƒˆãŒèµ·å‹•ã—ã¾ã™ã€‚
 	 */
 	MANUAL_EVENT {
 		@Override
@@ -77,7 +77,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//ƒTƒEƒ“ƒhƒ}ƒbƒv–¼AƒTƒEƒ“ƒh–¼
+	//ã‚µã‚¦ãƒ³ãƒ‰ãƒãƒƒãƒ—åã€ã‚µã‚¦ãƒ³ãƒ‰å
 	STOP_ALL_SOUND {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
@@ -108,7 +108,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//ƒAƒCƒeƒ€–¼
+	//ã‚¢ã‚¤ãƒ†ãƒ å
 	ADD_ITEM {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -133,12 +133,12 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//ƒGƒlƒ~[ƒZƒbƒgƒXƒgƒŒ[ƒW–¼iƒ}ƒbƒv“à‚Ìƒ‰ƒ“ƒ_ƒ€‚ÈƒZƒbƒg‚É‚È‚éB
-	//ƒ}ƒbƒv“à‚ğ1‚Â‚É‚·‚é‚±‚Æ‚ÅA1í—Ş‚ÌƒGƒ“ƒJƒEƒ“ƒg‚É‚Å‚«‚é
+	//ã‚¨ãƒãƒŸãƒ¼ã‚»ãƒƒãƒˆã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸åï¼ˆãƒãƒƒãƒ—å†…ã®ãƒ©ãƒ³ãƒ€ãƒ ãªã‚»ãƒƒãƒˆã«ãªã‚‹ã€‚
+	//ãƒãƒƒãƒ—å†…ã‚’1ã¤ã«ã™ã‚‹ã“ã¨ã§ã€1ç¨®é¡ã®ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆã«ã§ãã‚‹
 	START_BATTLE {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
-			//ƒtƒB[ƒ‹ƒhƒCƒxƒ“ƒgƒVƒXƒeƒ€‚ÉƒGƒ“ƒJƒEƒ“ƒgî•ñ‚ğ“o˜^‚·‚é
+			//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚¤ãƒ™ãƒ³ãƒˆã‚·ã‚¹ãƒ†ãƒ ã«ã‚¨ãƒ³ã‚«ã‚¦ãƒ³ãƒˆæƒ…å ±ã‚’ç™»éŒ²ã™ã‚‹
 			EnemySetStorage sto = EnemySetStorageStorage.getInstance().get(e.getStorageName());
 			Sound bgm = FieldMap.getCurrentInstance().getBgm();
 			MapChipAttribute attr = FieldMap.getCurrentInstance().getCurrentTile().get0Attr();
@@ -215,7 +215,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//tgt‚ÌNPC‚ğvalue‚ÌˆÊ’u‚ÉˆÚ“®‚³‚¹‚éBƒRƒ“ƒeƒjƒ…[‚³‚¹‚é
+	//tgtã®NPCã‚’valueã®ä½ç½®ã«ç§»å‹•ã•ã›ã‚‹ã€‚ã‚³ãƒ³ãƒ†ãƒ‹ãƒ¥ãƒ¼ã•ã›ã‚‹
 	ALL_NPC_LOCK_LOCATION {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -261,7 +261,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//tgt‚ÌNPC‚ğvalue‚ÌˆÊ’u‚ÉˆÚ“®‚³‚¹‚éBƒRƒ“ƒeƒjƒ…[‚³‚¹‚È‚¢
+	//tgtã®NPCã‚’valueã®ä½ç½®ã«ç§»å‹•ã•ã›ã‚‹ã€‚ã‚³ãƒ³ãƒ†ãƒ‹ãƒ¥ãƒ¼ã•ã›ãªã„
 	NPC_MOVE_AND_WAIT_THAT {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -304,7 +304,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//ƒeƒLƒXƒgƒXƒgƒŒ[ƒW–¼AƒeƒLƒXƒgID
+	//ãƒ†ã‚­ã‚¹ãƒˆã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸åã€ãƒ†ã‚­ã‚¹ãƒˆID
 	SHOW_MESSAGE_FROM_TEXTSTORAGE {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -316,7 +316,7 @@ public enum FieldEventType {
 			return UserOperationRequire.SHOW_MESSAGE;
 		}
 	},
-	//ƒeƒLƒXƒg
+	//ãƒ†ã‚­ã‚¹ãƒˆ
 	SHOW_MESSAGE_DIRECT {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -348,7 +348,7 @@ public enum FieldEventType {
 			return UserOperationRequire.WAIT_FOR_EVENT;
 		}
 	},
-	//ƒtƒ‰ƒOƒXƒgƒŒ[ƒW–¼Aƒtƒ‰ƒO–¼
+	//ãƒ•ãƒ©ã‚°ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸åã€ãƒ•ãƒ©ã‚°å
 	SET_FLG_DIRECT {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -377,18 +377,18 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//ƒNƒGƒXƒgƒ‰ƒCƒ“ƒXƒgƒŒ[ƒW–¼AƒNƒGƒXƒgIDAƒXƒe[ƒW’l
+	//ã‚¯ã‚¨ã‚¹ãƒˆãƒ©ã‚¤ãƒ³ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸åã€ã‚¯ã‚¨ã‚¹ãƒˆIDã€ã‚¹ãƒ†ãƒ¼ã‚¸å€¤
 	SET_QUEST_LINE {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			int v = Integer.parseInt(e.getValue());
-			//ƒNƒGƒXƒgî•ñ‚ğİ’è
+			//ã‚¯ã‚¨ã‚¹ãƒˆæƒ…å ±ã‚’è¨­å®š
 			QuestStage s = QuestStageStorage.getInstance().get(e.getTargetName(), v);
 			QuestLineStorage.getInstance().get(e.getTargetName()).setStage(s);
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//’l‚È‚µiFES‚Éİ’è‚·‚é
+	//å€¤ãªã—ï¼ˆFESã«è¨­å®šã™ã‚‹
 	ENABLE_OPERATION {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -396,7 +396,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//’l‚È‚µiFES‚Éİ’è‚·‚é
+	//å€¤ãªã—ï¼ˆFESã«è¨­å®šã™ã‚‹
 	DISABLE_OPERATION {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -404,7 +404,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//‘ÎÛÀ•WiFMC‚ğ‘€ì‚·‚é
+	//å¯¾è±¡åº§æ¨™ï¼ˆFMCã‚’æ“ä½œã™ã‚‹
 	MOVE_CAMERA_2 {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -445,7 +445,7 @@ public enum FieldEventType {
 			return UserOperationRequire.WAIT_FOR_EVENT;
 		}
 	},
-	//’l‚È‚µiFMC‚ğ‘€ì‚·‚é
+	//å€¤ãªã—ï¼ˆFMCã‚’æ“ä½œã™ã‚‹
 	RESET_CAMERA {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -478,14 +478,14 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//CHANGELOGIC‚ğ—v‹‚·‚é
+	//CHANGELOGICã‚’è¦æ±‚ã™ã‚‹
 	GAME_OVER {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			return UserOperationRequire.GAME_OVER;
 		}
 	},
-	//CHANGEMAP‚ğ—v‹‚·‚é
+	//CHANGEMAPã‚’è¦æ±‚ã™ã‚‹
 	CHANGE_MAP {
 		int v = 0;
 
@@ -519,7 +519,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//CONTINUE(value‚Ì–¼‘O‚ÌƒXƒe[ƒ^ƒX‚ğƒ[ƒh‚µ‚ÄFMAGS‚É’Ç‰Á‚·‚é
+	//CONTINUE(valueã®åå‰ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’ãƒ­ãƒ¼ãƒ‰ã—ã¦FMã€GSã«è¿½åŠ ã™ã‚‹
 	PC_ADD {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -529,7 +529,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//END_IF‚ªŒ»‚ê‚é‚Ü‚Å‚ÌƒCƒxƒ“ƒg‚ÉA‚±‚ÌƒCƒxƒ“ƒg‚Ìterm‚ğ“K—p‚µ‚Ü‚·B“K—p‚·‚é‚Ì‚ÍƒCƒxƒ“ƒg‚ªƒZƒbƒg‚³‚ê‚½‚Æ‚«‚Å‚·B
+	//END_IFãŒç¾ã‚Œã‚‹ã¾ã§ã®ã‚¤ãƒ™ãƒ³ãƒˆã«ã€ã“ã®ã‚¤ãƒ™ãƒ³ãƒˆã®termã‚’é©ç”¨ã—ã¾ã™ã€‚é©ç”¨ã™ã‚‹ã®ã¯ã‚¤ãƒ™ãƒ³ãƒˆãŒã‚»ãƒƒãƒˆã•ã‚ŒãŸã¨ãã§ã™ã€‚
 	IF {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {

@@ -24,7 +24,7 @@
 package kinugasa.graphics;
 
 /**
- * 4ƒoƒCƒgARGBŒ`®‚ÌFî•ñ‚ğ•ÒW‚·‚é‚½‚ß‚Ìƒ†[ƒeƒBƒŠƒeƒB‚Å‚·.
+ * 4ãƒã‚¤ãƒˆARGBå½¢å¼ã®è‰²æƒ…å ±ã‚’ç·¨é›†ã™ã‚‹ãŸã‚ã®ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ã§ã™.
  * <br>
  *
  * <br>
@@ -35,103 +35,103 @@ package kinugasa.graphics;
 public final class ARGBColor {
 
 	/**
-	 * ARGB—ñ‚ÌƒAƒ‹ƒtƒ@¬•ª‚Ìƒ}ƒXƒN’l‚Å‚·.
+	 * ARGBåˆ—ã®ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®ãƒã‚¹ã‚¯å€¤ã§ã™.
 	 */
 	public static final int ARGB_ALPHA_MASK = 0xFF000000;
 	/**
-	 * ARGB—ñ‚ÌRED¬•ª‚Ìƒ}ƒXƒN’l‚Å‚·.
+	 * ARGBåˆ—ã®REDæˆåˆ†ã®ãƒã‚¹ã‚¯å€¤ã§ã™.
 	 */
 	public static final int ARGB_RED_MASK = 0x00FF0000;
 	/**
-	 * ARGB—ñ‚ÌGREEN¬•ª‚Ìƒ}ƒXƒN’l‚Å‚·.
+	 * ARGBåˆ—ã®GREENæˆåˆ†ã®ãƒã‚¹ã‚¯å€¤ã§ã™.
 	 */
 	public static final int ARGB_GREEN_MASK = 0x0000FF00;
 	/**
-	 * ARGB—ñ‚ÌBLUE¬•ª‚Ìƒ}ƒXƒN’l‚Å‚·.
+	 * ARGBåˆ—ã®BLUEæˆåˆ†ã®ãƒã‚¹ã‚¯å€¤ã§ã™.
 	 */
 	public static final int ARGB_BLUE_MASK = 0x000000FF;
 	//
 	/**
-	 * ƒAƒ‹ƒtƒ@¬•ª‚ÌŠ®‘S‚É•s“§–¾‚Å‚ ‚é’l‚Å‚·.
+	 * ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®å®Œå…¨ã«ä¸é€æ˜ã§ã‚ã‚‹å€¤ã§ã™.
 	 */
 	public static final int ALPHA_OPAQUE = 255;
 	/**
-	 * ƒAƒ‹ƒtƒ@¬•ª‚ÌŠ®‘S‚É“§–¾‚Å‚ ‚é’l‚Å‚·.
+	 * ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã®å®Œå…¨ã«é€æ˜ã§ã‚ã‚‹å€¤ã§ã™.
 	 */
 	public static final int ALPHA_TRANSPARENT = 0;
 	//
 	/**
-	 * ƒAƒ‹ƒtƒ@¬•ª‚ğ255‚Éİ’è‚µ‚½ê‡•‚É‚È‚éŠ®‘S‚É“§–¾‚ÈF‚Å‚·.
+	 * ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã‚’255ã«è¨­å®šã—ãŸå ´åˆé»’ã«ãªã‚‹å®Œå…¨ã«é€æ˜ãªè‰²ã§ã™.
 	 */
 	public static final int CLEAR_BLACK = 0x00000000;
 	/**
-	 * ƒAƒ‹ƒtƒ@¬•ª‚ğ255‚Éİ’è‚µ‚½ê‡”’‚É‚È‚éŠ®‘S‚É“§–¾‚ÈF‚Å‚·. ‚±‚Ì’è”‚ÍAAPLHA¬•ªˆÈŠO‚Ì—v‘f‚Ö‚Ìƒ}ƒXƒN‚Æ‚µ‚Ä‚àg—p‚Å‚«‚Ü‚·B
+	 * ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã‚’255ã«è¨­å®šã—ãŸå ´åˆç™½ã«ãªã‚‹å®Œå…¨ã«é€æ˜ãªè‰²ã§ã™. ã“ã®å®šæ•°ã¯ã€APLHAæˆåˆ†ä»¥å¤–ã®è¦ç´ ã¸ã®ãƒã‚¹ã‚¯ã¨ã—ã¦ã‚‚ä½¿ç”¨ã§ãã¾ã™ã€‚
 	 */
 	public static final int CLEAR_WHITE = 0x00FFFFFF;
 	/**
-	 * •s“§–¾‚È•‚Å‚·.
+	 * ä¸é€æ˜ãªé»’ã§ã™.
 	 */
 	public static final int BLACK = 0xFF000000;
 	/**
-	 * •s“§–¾‚È”’‚Å‚·.
+	 * ä¸é€æ˜ãªç™½ã§ã™.
 	 */
 	public static final int WHITE = 0xFFFFFFFF;
 	/**
-	 * •s“§–¾‚ÈÔ‚Å‚·.
+	 * ä¸é€æ˜ãªèµ¤ã§ã™.
 	 */
 	public static final int RED = 0xFFFF0000;
 	/**
-	 * •s“§–¾‚È—Î‚Å‚·.
+	 * ä¸é€æ˜ãªç·‘ã§ã™.
 	 */
 	public static final int GREEN = 0xFF00FF00;
 	/**
-	 * •s“§–¾‚ÈÂ‚Å‚·.
+	 * ä¸é€æ˜ãªé’ã§ã™.
 	 */
 	public static final int BLUE = 0xFF0000FF;
 	/**
-	 * •s“§–¾‚È–¾‚é‚¢ŠDF‚Å‚·.
+	 * ä¸é€æ˜ãªæ˜ã‚‹ã„ç°è‰²ã§ã™.
 	 */
 	public static final int LIGHTGRAY = 0xFFC0C0C0;
 	/**
-	 * •s“§–¾‚ÈŠDF‚Å‚·.
+	 * ä¸é€æ˜ãªç°è‰²ã§ã™.
 	 */
 	public static final int GRAY = 0xFF808080;
 	/**
-	 * •s“§–¾‚ÈˆÃ‚¢ŠDF‚Å‚·.
+	 * ä¸é€æ˜ãªæš—ã„ç°è‰²ã§ã™.
 	 */
 	public static final int DARKGRAY = 0xFF404040;
 	/**
-	 * •s“§–¾‚ÈƒIƒŒƒ“ƒW‚Å‚·.
+	 * ä¸é€æ˜ãªã‚ªãƒ¬ãƒ³ã‚¸ã§ã™.
 	 */
 	public static final int ORANGE = 0xFFFFC800;
 	/**
-	 * •s“§–¾‚È‰©F‚Å‚·.
+	 * ä¸é€æ˜ãªé»„è‰²ã§ã™.
 	 */
 	public static final int YELLOW = 0xFFFFFF00;
 	/**
-	 * •s“§–¾‚Èƒ}ƒ[ƒ“ƒ^‚Å‚·.
+	 * ä¸é€æ˜ãªãƒã‚¼ãƒ³ã‚¿ã§ã™.
 	 */
 	public static final int MAGENTA = 0xFFFF00FF;
 	/**
-	 * •s“§–¾‚ÈƒVƒAƒ“‚Å‚·.
+	 * ä¸é€æ˜ãªã‚·ã‚¢ãƒ³ã§ã™.
 	 */
 	public static final int CYAN = 0xFF00FFFF;
 
 	/**
-	 * ƒ†[ƒeƒBƒŠƒeƒBƒNƒ‰ƒX‚Å‚·.
+	 * ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ã‚¯ãƒ©ã‚¹ã§ã™.
 	 */
 	private ARGBColor() {
 	}
 
 	/**
-	 * Fî•ñ‚ª”ÍˆÍ“à‚©‚ğ’²‚×‚Ü‚·.
+	 * è‰²æƒ…å ±ãŒç¯„å›²å†…ã‹ã‚’èª¿ã¹ã¾ã™.
 	 *
-	 * @param a ƒAƒ‹ƒtƒ@¬•ª.<br>
-	 * @param r RED¬•ª.<br>
-	 * @param g GREEN¬•ª.<br>
-	 * @param b BLUE¬•ª.<br>
+	 * @param a ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†.<br>
+	 * @param r REDæˆåˆ†.<br>
+	 * @param g GREENæˆåˆ†.<br>
+	 * @param b BLUEæˆåˆ†.<br>
 	 *
-	 * @throws IllegalArgumentException ”ÍˆÍŠO‚Ìê‡.<br>
+	 * @throws IllegalArgumentException ç¯„å›²å¤–ã®å ´åˆ.<br>
 	 */
 	private static void checkColor(int a, int r, int g, int b) throws IllegalArgumentException {
 		String badComp = "";
@@ -153,14 +153,14 @@ public final class ARGBColor {
 	}
 
 	/**
-	 * Fî•ñ‚ª”ÍˆÍ“à‚©‚ğ’²‚×‚Ü‚·.
+	 * è‰²æƒ…å ±ãŒç¯„å›²å†…ã‹ã‚’èª¿ã¹ã¾ã™.
 	 *
-	 * @param a ƒAƒ‹ƒtƒ@¬•ª.<br>
-	 * @param r RED¬•ª.<br>
-	 * @param g GREEN¬•ª.<br>
-	 * @param b BLUE¬•ª.<br>
+	 * @param a ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†.<br>
+	 * @param r REDæˆåˆ†.<br>
+	 * @param g GREENæˆåˆ†.<br>
+	 * @param b BLUEæˆåˆ†.<br>
 	 *
-	 * @return ”ÍˆÍ“à‚Ì‚Æ‚«true‚ğ•Ô‚·.<br>
+	 * @return ç¯„å›²å†…ã®ã¨ãtrueã‚’è¿”ã™.<br>
 	 */
 	public static boolean checkRange(int a, int r, int g, int b) {
 		try {
@@ -172,15 +172,15 @@ public final class ARGBColor {
 	}
 
 	/**
-	 * 0‚©‚ç255‚Åw’è‚³‚ê‚½Fî•ñ‚ğARGB‚É•ÏŠ·‚·‚é.
+	 * 0ã‹ã‚‰255ã§æŒ‡å®šã•ã‚ŒãŸè‰²æƒ…å ±ã‚’ARGBã«å¤‰æ›ã™ã‚‹.
 	 *
-	 * @param r RED¬•ª.<br>
-	 * @param g GREEN¬•ª.<br>
-	 * @param b BLUE¬•ª.<br>
+	 * @param r REDæˆåˆ†.<br>
+	 * @param g GREENæˆåˆ†.<br>
+	 * @param b BLUEæˆåˆ†.<br>
 	 *
-	 * @return w’è‚³‚ê‚½Fî•ñ‚Ì•s“§–¾‚ÈARGB.<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸè‰²æƒ…å ±ã®ä¸é€æ˜ãªARGB.<br>
 	 *
-	 * @throws IllegalArgumentException Fî•ñ‚ª”ÍˆÍŠO‚Ì‚Æ‚«.<br>
+	 * @throws IllegalArgumentException è‰²æƒ…å ±ãŒç¯„å›²å¤–ã®ã¨ã.<br>
 	 */
 	public static int toARGB(int r, int g, int b) throws IllegalArgumentException {
 		checkColor(255, r, g, b);
@@ -188,16 +188,16 @@ public final class ARGBColor {
 	}
 
 	/**
-	 * 0‚©‚ç255‚Åw’è‚³‚ê‚½Fî•ñ‚ğARGB‚É•ÏŠ·‚·‚é.
+	 * 0ã‹ã‚‰255ã§æŒ‡å®šã•ã‚ŒãŸè‰²æƒ…å ±ã‚’ARGBã«å¤‰æ›ã™ã‚‹.
 	 *
-	 * @param a ƒAƒ‹ƒtƒ@¬•ª.<br>
-	 * @param r RED¬•ª.<br>
-	 * @param g GREEN¬•ª.<br>
-	 * @param b BLUE¬•ª.<br>
+	 * @param a ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†.<br>
+	 * @param r REDæˆåˆ†.<br>
+	 * @param g GREENæˆåˆ†.<br>
+	 * @param b BLUEæˆåˆ†.<br>
 	 *
-	 * @return w’è‚³‚ê‚½Fî•ñ‚ÌARGB.<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸè‰²æƒ…å ±ã®ARGB.<br>
 	 *
-	 * @throws IllegalArgumentException Fî•ñ‚ª”ÍˆÍŠO‚Ì‚Æ‚«.<br>
+	 * @throws IllegalArgumentException è‰²æƒ…å ±ãŒç¯„å›²å¤–ã®ã¨ã.<br>
 	 */
 	public static int toARGB(int a, int r, int g, int b) {
 		checkColor(a, r, g, b);
@@ -205,9 +205,9 @@ public final class ARGBColor {
 	}
 
 	/**
-	 * AWTƒJƒ‰[‚ğARGB‚É•ÏŠ·‚µ‚Ü‚·.<br>
+	 * AWTã‚«ãƒ©ãƒ¼ã‚’ARGBã«å¤‰æ›ã—ã¾ã™.<br>
 	 *
-	 * @param c F.<br>
+	 * @param c è‰².<br>
 	 *
 	 * @return ARGB.<br>
 	 */
@@ -216,22 +216,22 @@ public final class ARGBColor {
 	}
 
 	/**
-	 * ARGB‚ğAWTƒJƒ‰[‚É•ÏX‚µ‚Ü‚·.
+	 * ARGBã‚’AWTã‚«ãƒ©ãƒ¼ã«å¤‰æ›´ã—ã¾ã™.
 	 *
 	 * @param argb ARGB.<br>
 	 *
-	 * @return AWTƒJƒ‰[.<br>
+	 * @return AWTã‚«ãƒ©ãƒ¼.<br>
 	 */
 	public static java.awt.Color toAWTColor(int argb) {
 		return new java.awt.Color(getRed(argb), getGreen(argb), getBlue(argb), getAlpha(argb));
 	}
 
 	/**
-	 * ARGB—ñ‚©‚çƒAƒ‹ƒtƒ@¬•ª‚ğ’Šo‚µ‚Ü‚·.
+	 * ARGBåˆ—ã‹ã‚‰ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã‚’æŠ½å‡ºã—ã¾ã™.
 	 *
 	 * @param argb ARGB.<br>
 	 *
-	 * @return ƒAƒ‹ƒtƒ@¬•ª‚ğ0‚©‚ç255‚Ì’l‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.<br>
+	 * @return ã‚¢ãƒ«ãƒ•ã‚¡æˆåˆ†ã‚’0ã‹ã‚‰255ã®å€¤ã¨ã—ã¦è¿”ã—ã¾ã™.<br>
 	 */
 	public static int getAlpha(int argb) {
 		return argb >> 24 & 0xFF;
@@ -242,55 +242,55 @@ public final class ARGBColor {
 	}
 
 	/**
-	 * ARGB—ñ‚©‚çRED¬•ª‚ğ’Šo‚µ‚Ü‚·.
+	 * ARGBåˆ—ã‹ã‚‰REDæˆåˆ†ã‚’æŠ½å‡ºã—ã¾ã™.
 	 *
 	 * @param argb ARGB.<br>
 	 *
-	 * @return RED¬•ª‚ğ0‚©‚ç255‚Ì’l‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.<br>
+	 * @return REDæˆåˆ†ã‚’0ã‹ã‚‰255ã®å€¤ã¨ã—ã¦è¿”ã—ã¾ã™.<br>
 	 */
 	public static int getRed(int argb) {
 		return argb >> 16 & 0xFF;
 	}
 
 	/**
-	 * ARGB—ñ‚©‚çGREEN¬•ª‚ğ’Šo‚µ‚Ü‚·.
+	 * ARGBåˆ—ã‹ã‚‰GREENæˆåˆ†ã‚’æŠ½å‡ºã—ã¾ã™.
 	 *
 	 * @param argb ARGB.<br>
 	 *
-	 * @return GREEN¬•ª‚ğ0‚©‚ç255‚Ì’l‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.<br>
+	 * @return GREENæˆåˆ†ã‚’0ã‹ã‚‰255ã®å€¤ã¨ã—ã¦è¿”ã—ã¾ã™.<br>
 	 */
 	public static int getGreen(int argb) {
 		return argb >> 8 & 0xFF;
 	}
 
 	/**
-	 * ARGB—ñ‚©‚çBLUE¬•ª‚ğ’Šo‚µ‚Ü‚·.
+	 * ARGBåˆ—ã‹ã‚‰BLUEæˆåˆ†ã‚’æŠ½å‡ºã—ã¾ã™.
 	 *
 	 * @param argb ARGB.<br>
 	 *
-	 * @return BLUE¬•ª‚ğ0‚©‚ç255‚Ì’l‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·.<br>
+	 * @return BLUEæˆåˆ†ã‚’0ã‹ã‚‰255ã®å€¤ã¨ã—ã¦è¿”ã—ã¾ã™.<br>
 	 */
 	public static int getBlue(int argb) {
 		return argb & 0xFF;
 	}
 
 	/**
-	 * RGB‚Ì•½‹Ï’li–¾“xj‚ğZo‚µ‚Ü‚·.
+	 * RGBã®å¹³å‡å€¤ï¼ˆæ˜åº¦ï¼‰ã‚’ç®—å‡ºã—ã¾ã™.
 	 *
 	 * @param argb RGB.<br>
 	 *
-	 * @return –¾“x.<br>
+	 * @return æ˜åº¦.<br>
 	 */
 	public static int getRGBAverage(int argb) {
 		return (getRed(argb) + getGreen(argb) + getBlue(argb)) / 3;
 	}
 
 	/**
-	 * 4ƒoƒCƒgƒJƒ‰[‚ğ®Œ`‚µ‚½•¶š—ñ‚ğ•Ô‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ÍA"ARGB:[getAlpha(argb)], [getRed(argb)], [getGreen(argb)], [getBlue(argb)]"‚ÌŒ`®‚Ì•¶š—ñ‚ğ •Ô‚µ‚Ü‚·.<br>
+	 * 4ãƒã‚¤ãƒˆã‚«ãƒ©ãƒ¼ã‚’æ•´å½¢ã—ãŸæ–‡å­—åˆ—ã‚’è¿”ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã€"ARGB:[getAlpha(argb)], [getRed(argb)], [getGreen(argb)], [getBlue(argb)]"ã®å½¢å¼ã®æ–‡å­—åˆ—ã‚’ è¿”ã—ã¾ã™.<br>
 	 *
-	 * @param argb ARGBŒ`®‚Ì4ƒoƒCƒgƒJƒ‰[.<br>
+	 * @param argb ARGBå½¢å¼ã®4ãƒã‚¤ãƒˆã‚«ãƒ©ãƒ¼.<br>
 	 *
-	 * @return ®Œ`‚µ‚½•¶š—ñ‚ğ•Ô‚·.<br>
+	 * @return æ•´å½¢ã—ãŸæ–‡å­—åˆ—ã‚’è¿”ã™.<br>
 	 */
 	public static String toString(int argb) {
 		return "ARGB:[" + getAlpha(argb) + ", " + getRed(argb) + ", " + getGreen(argb) + ", " + getBlue(argb) + "]";

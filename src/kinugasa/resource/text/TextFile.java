@@ -49,12 +49,12 @@ public class TextFile implements Input<TextFile>, Output , Nameable, Iterable<St
 
 	public TextFile(File file) {
 		this.file = file;
-		charset = Charset.forName("MS932");
+		charset = Charset.forName("UTF-8");
 	}
 
 	public TextFile(String path) {
 		this.file = new File(path);
-		charset = Charset.forName("MS932");
+		charset = Charset.forName("UTF-8");
 	}
 
 	public TextFile(File file, Charset c) {

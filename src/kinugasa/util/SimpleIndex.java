@@ -25,14 +25,14 @@ package kinugasa.util;
 
 
 /**
- * �z��̗v�f�ɁA���ԂɃA�N�Z�X�����{�I�ȃC���f�b�N�X�̃J�E���^�ł�.
+ * 配列の要素に、順番にアクセスする基本的なインデックスのカウンタです.
  * <br>
- * index���\�b�h���Ăяo����邽�тɁA�C���f�b�N�X�̒l���J�E���g����܂��B
- * �C���f�b�N�X�̒l���ő�l�ɒB�����Ƃ��i�z��̗v�f��-1�j���̌Ăяo���ł�
- * �C���f�b�N�X�̒l��0�ɖ߂���܂��B<br>
+ * indexメソッドが呼び出されるたびに、インデックスの値がカウントされます。
+ * インデックスの値が最大値に達したとき（配列の要素数-1）次の呼び出しでは
+ * インデックスの値が0に戻されます。<br>
  * <br>
- * ���̎����́A�����ŃJ�E���^�̒l��ێ����邽�߁A1�̔z��v�f�ɑ΂��āA1��
- * �C���f�b�N�X���f�����K�v�ł��B<br>
+ * この実装は、内部でカウンタの値を保持するため、1つの配列要素に対して、1つの
+ * インデックスモデルが必要です。<br>
  *
  * @version 1.0.0 - 2013/01/12_17:12:36<br>
  * @author Shinacho<br>
@@ -40,20 +40,20 @@ package kinugasa.util;
 public class SimpleIndex extends ArrayIndexModel {
 
 	private static final long serialVersionUID = -5792984578642711312L;
-	/** ���݂̃C���f�b�N�X�ł�. */
+	/** 現在のインデックスです. */
 	private int index;
 
 	/**
-	 * 0����X�^�[�g���A�E�����փ��[�v����C���f�b�N�X���f�����쐬���܂�.
+	 * 0からスタートし、右方向へループするインデックスモデルを作成します.
 	 */
 	public SimpleIndex() {
 		this(0);
 	}
 
 	/**
-	 * �w�肳�ꂽ�C���f�b�N�X����X�^�[�g���A�E�����փ��[�v����C���f�b�N�X���f�����쐬���܂�.
+	 * 指定されたインデックスからスタートし、右方向へループするインデックスモデルを作成します.
 	 *
-	 * @param index �C���f�b�N�X�̏����l���w�肵�܂��B<br>
+	 * @param index インデックスの初期値を指定します。<br>
 	 */
 	public SimpleIndex(int index) {
 		this.index = index;
@@ -69,9 +69,9 @@ public class SimpleIndex extends ArrayIndexModel {
 	}
 
 	/**
-	 * �C���f�b�N�X�̌��ݒl��ݒ肵�܂�.
+	 * インデックスの現在値を設定します.
 	 *
-	 * @param index �J�E���^�̒l���w�肵�܂��B<br>
+	 * @param index カウンタの値を指定します。<br>
 	 */
 	public void setIndex(int index) {
 		this.index = index;

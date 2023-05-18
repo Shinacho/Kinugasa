@@ -26,7 +26,7 @@ package kinugasa.game.field4;
 import java.util.List;
 
 /**
- * ƒ}ƒbƒvã‚Ì1ƒ^ƒCƒ‹‚ğ“§‰ß“I‚Éˆµ‚¤ƒNƒ‰ƒX‚Å‚·.
+ * ãƒãƒƒãƒ—ä¸Šã®1ã‚¿ã‚¤ãƒ«ã‚’é€éçš„ã«æ‰±ã†ã‚¯ãƒ©ã‚¹ã§ã™.
  *
  * @vesion 1.0.0 - 2022/11/08_20:37:29<br>
  * @author Shinacho<br>

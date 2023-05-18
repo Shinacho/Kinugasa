@@ -55,7 +55,7 @@ public class FieldStatusWindows extends BasicSprite {
 		float w = 128;
 		for (Status s : status) {
 			List<ProgressBarSprite> p = new ArrayList<>();
-			//•\¦•¶š—ñ‚Ì¶¬
+			//è¡¨ç¤ºæ–‡å­—åˆ—ã®ç”Ÿæˆ
 			String text = s.getName() + Text.getLineSep();
 			int i = 1;
 			for (String vs : BattleConfig.getVisibleStatus()) {
@@ -72,7 +72,7 @@ public class FieldStatusWindows extends BasicSprite {
 				p.add(pp);
 				i++;
 			}
-			//À•W‚ÌŒvZ
+			//åº§æ¨™ã®è¨ˆç®—
 			Text t = new Text(text);
 			t.allText();
 			MessageWindow window = new MessageWindow(x, y, w, h, t);
@@ -97,7 +97,7 @@ public class FieldStatusWindows extends BasicSprite {
 		float w = 128;
 		for (Status s : status) {
 			List<ProgressBarSprite> p = new ArrayList<>();
-			//•\¦•¶š—ñ‚Ì¶¬
+			//è¡¨ç¤ºæ–‡å­—åˆ—ã®ç”Ÿæˆ
 			String text = s.getName() + Text.getLineSep();
 			int i = 1;
 			for (String vs : BattleConfig.getVisibleStatus()) {
@@ -114,7 +114,7 @@ public class FieldStatusWindows extends BasicSprite {
 				p.add(pp);
 				i++;
 			}
-			//À•W‚ÌŒvZ
+			//åº§æ¨™ã®è¨ˆç®—
 			Text t = new Text(text);
 			t.allText();
 			MessageWindow window = new MessageWindow(x, y, w, h, t);

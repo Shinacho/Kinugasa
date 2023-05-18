@@ -24,9 +24,9 @@
 package kinugasa.game.input;
 
 /**
- * �}�E�X�̓��͔���Ɏg�p����{�^���̗񋓂ł�.
+ * マウスの入力判定に使用するボタンの列挙です.
  * <br>
- * �}�E�X�{�^���͈�ʓI��2�{�^���{�z�C�[�����g�p�ł��܂��B<br>
+ * マウスボタンは一般的な2ボタン＋ホイールが使用できます。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_15:05:08<br>
@@ -34,10 +34,10 @@ package kinugasa.game.input;
  */
 public enum MouseButtons {
 
-	/** ���{�^���ł�. */
+	/** 左ボタンです. */
 	LEFT_BUTTON,
-	/** �E�{�^���ł�. */
+	/** 右ボタンです. */
 	RIGHT_BUTTON,
-	/** �z�C�[���N���b�N�ł�. */
+	/** ホイールクリックです. */
 	WHEEL_BUTTON,;
 }

@@ -31,15 +31,15 @@ package kinugasa.game.field4;
 public enum FieldMapCameraMode {
 
 	/**
-	 * �L�����ړ��ɍ��킹��i�L��������ɒ��S�ɕ\������j�B
+	 * キャラ移動に合わせる（キャラを常に中心に表示する）。
 	 */
 	FOLLOW_TO_CENTER,
 	/**
-	 * �Ǐ]���Ȃ��B
+	 * 追従しない。
 	 */
 	FREE,
 //	/**
-//	 * �Ǐ]���邪�A�t�B�[���h�}�b�v�f�[�^�̒[�̏ꍇ�A��~����B
+//	 * 追従するが、フィールドマップデータの端の場合、停止する。
 //	 */
 //	STOP_IN_EDGE,;
 }

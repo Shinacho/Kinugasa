@@ -23,7 +23,7 @@
  */
 
 /**
- * MovingModel�̎������܂܂�Ă��܂�.
+ * MovingModelの実装が含まれています.
  * <br>
  * 
  * <br>

@@ -26,10 +26,10 @@ package kinugasa.resource;
 import kinugasa.game.GameLog;
 
 /**
- * �ꎞ�t�@�C�����Ǘ����܂�.
+ * 一時ファイルを管理します.
  * <br>
- * �ꎞ�t�@�C���̓ǂݍ��݁E�����o���ɂ̓e�L�X�g���[�_���g�p���܂��B<br>
- * �ꎞ�t�@�C���́A�Q�[���̏I�����ɂ��ׂč폜�����_�ɒ��ӂ��Ă��������B<br>
+ * 一時ファイルの読み込み・書き出しにはテキストリーダを使用します。<br>
+ * 一時ファイルは、ゲームの終了時にすべて削除される点に注意してください。<br>
  * <br>
  *
  * @version 1.0.0 - 2015/01/04<br>

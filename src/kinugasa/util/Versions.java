@@ -25,7 +25,7 @@ package kinugasa.util;
 
 
 /**
- * ƒtƒŒ[ƒ€ƒ[ƒN‚Ìƒo[ƒWƒ‡ƒ“‚ÆŠJ”­ŠJn“ú‚Ìƒƒ‚‚Å‚·.
+ * ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã¨é–‹ç™ºé–‹å§‹æ—¥ã®ãƒ¡ãƒ¢ã§ã™.
  * <br>
  *
  * <br>
@@ -38,15 +38,15 @@ public enum Versions {
 	VERSION_01("0.1.000");
 
 	/**
-	 * „‚Å‚·.
+	 * ç§ã§ã™.
 	 */
 	public static final String AUTHOR = "Shinacho";
 	/**
-	 * „‚Ìƒ[ƒ‹ƒAƒhƒŒƒX‚Å‚·.
+	 * ç§ã®ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ã§ã™.
 	 */
 	public static final String MAIL_TO = "d0211@live.jp";
 	/**
-	 * ’˜ìŒ ‚Ì•\‹L‚Å‚·.
+	 * è‘—ä½œæ¨©ã®è¡¨è¨˜ã§ã™.
 	 */
 	public static final String COPY_RIGHT = "Copyright (c) 2011- " + AUTHOR + " All rights reserved.";
 

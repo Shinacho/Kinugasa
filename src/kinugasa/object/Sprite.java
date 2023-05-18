@@ -32,9 +32,9 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.resource.Nameable;
 
 /**
- * ƒQ[ƒ€‚É•\¦‚³‚ê‚é©‹@‚âƒLƒƒƒ‰ƒNƒ^‚ÌŠî’êƒNƒ‰ƒX‚Å‚·.
+ * ã‚²ãƒ¼ãƒ ã«è¡¨ç¤ºã•ã‚Œã‚‹è‡ªæ©Ÿã‚„ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã®åŸºåº•ã‚¯ãƒ©ã‚¹ã§ã™.
  * <br>
- * ƒXƒvƒ‰ƒCƒg‚Ì‚·‚×‚Ä‚ÌƒTƒuƒNƒ‰ƒX‚Å‚ÍAƒNƒ[ƒ“‚ğ“KØ‚ÉƒI[ƒo[ƒ‰ƒCƒh‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B<br>
+ * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã™ã¹ã¦ã®ã‚µãƒ–ã‚¯ãƒ©ã‚¹ã§ã¯ã€ã‚¯ãƒ­ãƒ¼ãƒ³ã‚’é©åˆ‡ã«ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚<br>
  * <br>
  *
  * @version 3.0 : 12/01/20_18:30-<br>
@@ -64,32 +64,32 @@ public abstract class Sprite
 		implements Drawable, Shapeable, Cloneable, Comparable<Sprite> {
 
 	/**
-	 * —Ìˆæ.
+	 * é ˜åŸŸ.
 	 */
 	private Rectangle2D.Float bounds;
 	/**
-	 * ’†SÀ•W‚ÌƒLƒƒƒbƒVƒ….
+	 * ä¸­å¿ƒåº§æ¨™ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥.
 	 */
 	private Point2D.Float center = null;
 	/**
-	 * ‘Š‘Î’†SÀ•W.
+	 * ç›¸å¯¾ä¸­å¿ƒåº§æ¨™.
 	 */
 	private Point2D.Float personalCenter = null;
 	/**
-	 * Z²[“x.
+	 * Zè»¸æ·±åº¦.
 	 */
 	private float z = 0f;
 	/**
-	 * ‰Â‹ó‘Ô.
+	 * å¯è¦–çŠ¶æ…‹.
 	 */
 	private boolean visible = true;
 	/**
-	 * ¶‘¶ó‘Ô.
+	 * ç”Ÿå­˜çŠ¶æ…‹.
 	 */
 	private boolean exist = true;
 
 	/**
-	 * ’†SÀ•W‚ÌƒLƒƒƒbƒVƒ…‚ğì¬‚µ‚Ü‚·.
+	 * ä¸­å¿ƒåº§æ¨™ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’ä½œæˆã—ã¾ã™.
 	 */
 	private void setCenter() {
 		center = new Point2D.Float(bounds.x + bounds.width / 2,
@@ -98,7 +98,7 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ’†SÀ•W‚ÌƒLƒƒƒbƒVƒ…‚ğXV‚µ‚Ü‚·.
+	 * ä¸­å¿ƒåº§æ¨™ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ›´æ–°ã—ã¾ã™.
 	 */
 	protected final void updateCenter() {
 		center.x = bounds.x + personalCenter.x;
@@ -106,7 +106,7 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ’†SÀ•W‚ÌƒLƒƒƒbƒVƒ…‚ğXV‚µ‚Ü‚·.
+	 * ä¸­å¿ƒåº§æ¨™ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ›´æ–°ã—ã¾ã™.
 	 */
 	protected final void updatePersonalCenter() {
 		personalCenter.x = bounds.width / 2;
@@ -114,7 +114,7 @@ public abstract class Sprite
 	}
 
 	/**
-	 * V‚µ‚¢ƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‘S‚Ä‚ÌƒtƒB[ƒ‹ƒh‚ª‰Šú‰»‚³‚ê‚Ü‚·.<br>
+	 * æ–°ã—ã„ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. å…¨ã¦ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãŒåˆæœŸåŒ–ã•ã‚Œã¾ã™.<br>
 	 */
 	public Sprite() {
 		bounds = new Rectangle2D.Float();
@@ -122,9 +122,9 @@ public abstract class Sprite
 	}
 
 	/**
-	 * V‚µ‚¢ƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·. ‚±‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚ÍAƒfƒB[ƒvƒRƒs[‚É‹ß‚¢AQÆ‚ğ—˜—p‚µ‚½ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìì¬‚ğs‚¤‚±‚Æ‚ª‚Å‚«‚Ü‚·.<br>
+	 * æ–°ã—ã„ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™. ã“ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ã€ãƒ‡ã‚£ãƒ¼ãƒ—ã‚³ãƒ”ãƒ¼ã«è¿‘ã„ã€å‚ç…§ã‚’åˆ©ç”¨ã—ãŸã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ä½œæˆã‚’è¡Œã†ã“ã¨ãŒã§ãã¾ã™.<br>
 	 *
-	 * @param bounds ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì—Ìˆæ.<br>
+	 * @param bounds ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é ˜åŸŸ.<br>
 	 */
 	private Sprite(Rectangle2D.Float bounds) {
 		this.bounds = bounds;
@@ -133,24 +133,24 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ˆÊ’u‚¨‚æ‚ÑƒTƒCƒY‚ğw’è‚µ‚ÄƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·.
+	 * ä½ç½®ãŠã‚ˆã³ã‚µã‚¤ã‚ºã‚’æŒ‡å®šã—ã¦ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param x XÀ•W.<br>
-	 * @param y YÀ•W.<br>
-	 * @param w •.<br>
-	 * @param h ‚‚³.<br>
+	 * @param x Xåº§æ¨™.<br>
+	 * @param y Yåº§æ¨™.<br>
+	 * @param w å¹….<br>
+	 * @param h é«˜ã•.<br>
 	 */
 	public Sprite(float x, float y, float w, float h) {
 		this(x, y, w, h, 0);
 	}
 
 	/**
-	 * ˆÊ’u‚¨‚æ‚ÑƒTƒCƒY‚ğw’è‚µ‚ÄƒXƒvƒ‰ƒCƒg‚ğì¬‚µ‚Ü‚·.
+	 * ä½ç½®ãŠã‚ˆã³ã‚µã‚¤ã‚ºã‚’æŒ‡å®šã—ã¦ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param x XÀ•W.<br>
-	 * @param y YÀ•W.<br>
-	 * @param w •.<br>
-	 * @param h ‚‚³.<br>
+	 * @param x Xåº§æ¨™.<br>
+	 * @param y Yåº§æ¨™.<br>
+	 * @param w å¹….<br>
+	 * @param h é«˜ã•.<br>
 	 * @param z
 	 */
 	public Sprite(float x, float y, float w, float h, float z) {
@@ -160,45 +160,45 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚ğ•`‰æ‚µ‚Ü‚·. visible‚Ü‚½‚Íexist‚ªfalse‚Ì‚Æ‚«A•`‰æ‚µ‚Ä‚Í‚È‚è‚Ü‚¹‚ñ.<br>
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’æç”»ã—ã¾ã™. visibleã¾ãŸã¯existãŒfalseã®ã¨ãã€æç”»ã—ã¦ã¯ãªã‚Šã¾ã›ã‚“.<br>
 	 *
-	 * @param g ƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg.<br>
+	 * @param g ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ.<br>
 	 */
 	@Override
 	public abstract void draw(GraphicsContext g);
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì—lX‚ÈƒvƒƒpƒeƒB‚ğXV‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ÍAƒI[ƒo[ƒ‰ƒCƒh‚µ‚È‚¢ŒÀ‚èA‰½‚às‚¢‚Ü‚¹‚ñB<br>
-	 * ˆÚ“®‚Æ‚Í•Ê‚ÉAó‘Ô‚ğXV‚·‚é•K—v‚ª‚ ‚éê‡AƒI[ƒo[ƒ‰ƒCƒh‚·‚é‚±‚Æ‚Å ˆ—‚ğ’è‹`‚Å‚«‚Ü‚·B<br>
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æ§˜ã€…ãªãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã‚’æ›´æ–°ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã€ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã—ãªã„é™ã‚Šã€ä½•ã‚‚è¡Œã„ã¾ã›ã‚“ã€‚<br>
+	 * ç§»å‹•ã¨ã¯åˆ¥ã«ã€çŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹å¿…è¦ãŒã‚ã‚‹å ´åˆã€ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã™ã‚‹ã“ã¨ã§ å‡¦ç†ã‚’å®šç¾©ã§ãã¾ã™ã€‚<br>
 	 */
 	public void update() {
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì—Ìˆæ‚ğæ“¾‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍƒNƒ[ƒ“‚ª•Ô‚³‚ê‚Ü‚·.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é ˜åŸŸã‚’å–å¾—ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã‚¯ãƒ­ãƒ¼ãƒ³ãŒè¿”ã•ã‚Œã¾ã™.<br>
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚Ì—Ìˆæ.<br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é ˜åŸŸ.<br>
 	 */
 	public Rectangle2D.Float getBounds() {
 		return (Rectangle2D.Float) bounds.clone();
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ìh“–‚½‚è”»’èh‚Ì—Ìˆæ‚ğ•Ô‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ÍƒXƒvƒ‰ƒCƒg‚ª‘¼‚ÌƒXƒvƒ‰ƒCƒg‚ğÕ“Ë‚µ‚Ä‚¢‚é‚©ŒŸ¸‚·‚éê‡‚É
-	 * ƒXƒvƒ‰ƒCƒg‚ğ•ïŠÜ‚·‚é‹éŒ`‚Æ˜_—“I‚ÈÕ“Ëó‘Ô‚ğ‹æ•Ê‚·‚é‚½‚ß‚Éİ‚¯‚ç‚ê‚Ä‚¢‚Ü‚·B<br>
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ÍƒfƒtƒHƒ‹ƒg‚Å‚ÍAgetBounds()‚Æ“¯‚¶’l‚ğ•Ô‚µ‚Ü‚·B<br>
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ğg—p‚·‚éê‡‚Í“KØ‚ÉƒI[ƒo[ƒ‰ƒCƒh‚µ‚Ä‚­‚¾‚³‚¢B<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®â€å½“ãŸã‚Šåˆ¤å®šâ€ã®é ˜åŸŸã‚’è¿”ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãŒä»–ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’è¡çªã—ã¦ã„ã‚‹ã‹æ¤œæŸ»ã™ã‚‹å ´åˆã«
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚’åŒ…å«ã™ã‚‹çŸ©å½¢ã¨è«–ç†çš„ãªè¡çªçŠ¶æ…‹ã‚’åŒºåˆ¥ã™ã‚‹ãŸã‚ã«è¨­ã‘ã‚‰ã‚Œã¦ã„ã¾ã™ã€‚<br>
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã¯ã€getBounds()ã¨åŒã˜å€¤ã‚’è¿”ã—ã¾ã™ã€‚<br>
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯é©åˆ‡ã«ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã—ã¦ãã ã•ã„ã€‚<br>
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚Ìh“–‚½‚è”»’èh‚Ì—Ìˆæ‚ğ•Ô‚µ‚Ü‚·BƒI[ƒo[ƒ‰ƒCƒh‚µ‚È‚¢ê‡‚ÍgetBounds()‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®â€å½“ãŸã‚Šåˆ¤å®šâ€ã®é ˜åŸŸã‚’è¿”ã—ã¾ã™ã€‚ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã—ãªã„å ´åˆã¯getBounds()ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public Rectangle2D.Float getHitBounds() {
 		return (Rectangle2D.Float) bounds.clone();
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì—Ìˆæ‚ğİ’è‚µ‚Ü‚·.
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é ˜åŸŸã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param bounds ƒXƒvƒ‰ƒCƒg‚Ì—Ìˆæ.<br>
+	 * @param bounds ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é ˜åŸŸ.<br>
 	 */
 	public void setBounds(Rectangle2D.Float bounds) {
 		this.bounds = bounds;
@@ -207,29 +207,29 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì—Ìˆæ‚ğİ’è‚µ‚Ü‚·.
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é ˜åŸŸã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param location ˆÊ’u‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param width •‚Å‚·B<br>
-	 * @param height ‚‚³‚Å‚·B<br>
+	 * @param location ä½ç½®ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param width å¹…ã§ã™ã€‚<br>
+	 * @param height é«˜ã•ã§ã™ã€‚<br>
 	 */
 	public void setBounds(Point2D.Float location, float width, float height) {
 		setBounds(new Rectangle2D.Float(location.x, location.y, width, height));
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì—Ìˆæ‚ğİ’è‚µ‚Ü‚·.
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é ˜åŸŸã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param x XˆÊ’u‚Å‚·B<br>
-	 * @param y YˆÊ’u‚Å‚·B<br>
-	 * @param width •‚Å‚·B<br>
-	 * @param height ‚‚³‚Å‚·B<br>
+	 * @param x Xä½ç½®ã§ã™ã€‚<br>
+	 * @param y Yä½ç½®ã§ã™ã€‚<br>
+	 * @param width å¹…ã§ã™ã€‚<br>
+	 * @param height é«˜ã•ã§ã™ã€‚<br>
 	 */
 	public void setBounds(float x, float y, float width, float height) {
 		setBounds(new Rectangle2D.Float(x, y, width, height));
 	}
 
-	//•K—v‚Å‚ ‚ê‚ÎAhitBounds‚É‚æ‚é”»’è‚ÉƒI[ƒo[ƒ‰ƒCƒh‚Å‚«‚é
+	//å¿…è¦ã§ã‚ã‚Œã°ã€hitBoundsã«ã‚ˆã‚‹åˆ¤å®šã«ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã§ãã‚‹
 	@Override
 	public boolean contains(Point2D point) {
 		return bounds.contains(point);
@@ -248,44 +248,44 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì¶ã‚ÌˆÊ’u‚ğæ“¾‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ÍV‚µ‚¢ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·.<br>
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å·¦ä¸Šã®ä½ç½®ã‚’å–å¾—ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯æ–°ã—ã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™.<br>
 	 *
-	 * @return ¶ã‚ÌˆÊ’u.<br>
+	 * @return å·¦ä¸Šã®ä½ç½®.<br>
 	 */
 	public Point2D.Float getLocation() {
 		return new Point2D.Float(bounds.x, bounds.y);
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì¶ã‚ÌˆÊ’u‚ğİ’è‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å·¦ä¸Šã®ä½ç½®ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param location ¶ã‚ÌˆÊ’u.<br>
+	 * @param location å·¦ä¸Šã®ä½ç½®.<br>
 	 */
 	public void setLocation(Point2D.Float location) {
 		setLocation(location.x, location.y);
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Æ“¯‚¶À•W‚É”z’u‚µ‚Ü‚·B
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã¨åŒã˜åº§æ¨™ã«é…ç½®ã—ã¾ã™ã€‚
 	 *
-	 * @param s ‘ÎÛ‚ÌƒXƒvƒ‰ƒCƒgB
+	 * @param s å¯¾è±¡ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã€‚
 	 */
 	public void setLocation(Sprite s) {
 		setLocation(s.getLocation());
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì¶ã‚ÌˆÊ’u‚ğİ’è‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å·¦ä¸Šã®ä½ç½®ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param x XÀ•W.<br>
-	 * @param y YÀ•W.<br>
+	 * @param x Xåº§æ¨™.<br>
+	 * @param y Yåº§æ¨™.<br>
 	 */
 	public void setLocation(float x, float y) {
 		setX(x);
 		setY(y);
 	}
 
-	//p‚ªcenter‚É‚È‚é‚æ‚¤‚ÉˆÊ’u‚ğİ’è
+	//pãŒcenterã«ãªã‚‹ã‚ˆã†ã«ä½ç½®ã‚’è¨­å®š
 	public void setLocationByCenter(Point2D.Float p) {
 		float x = p.x - getWidth() / 2;
 		float y = p.y - getHeight() / 2;
@@ -293,84 +293,84 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì’†S‚ÌÀ•W‚ğæ“¾‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍƒNƒ[ƒ“‚ª•Ô‚³‚ê‚Ü‚·.<br>
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®åº§æ¨™ã‚’å–å¾—ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã‚¯ãƒ­ãƒ¼ãƒ³ãŒè¿”ã•ã‚Œã¾ã™.<br>
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚Ì’†S‚ÌÀ•W.ƒEƒCƒ“ƒhƒEã‚Å‚Ìâ‘ÎÀ•W.<Br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®åº§æ¨™.ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ä¸Šã§ã®çµ¶å¯¾åº§æ¨™.<Br>
 	 */
 	public Point2D.Float getCenter() {
 		return (Point2D.Float) center.clone();
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì’†S‚ÌXÀ•W‚ğæ“¾‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®Xåº§æ¨™ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚Ì’†S‚ÌXÀ•WBƒEƒCƒ“ƒhƒEã‚Å‚ÌÀ•W‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®Xåº§æ¨™ã€‚ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ä¸Šã§ã®åº§æ¨™ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public float getCenterX() {
 		return center.x;
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì’†S‚ÌYÀ•W‚ğæ“¾‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®Yåº§æ¨™ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚Ì’†S‚ÌYÀ•WBƒEƒCƒ“ƒhƒEã‚Å‚ÌÀ•W‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®Yåº§æ¨™ã€‚ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ä¸Šã§ã®åº§æ¨™ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public float getCenterY() {
 		return center.y;
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì’†S‚Ì‘Š‘Î“I‚ÈXÀ•W‚ğæ“¾‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®ç›¸å¯¾çš„ãªXåº§æ¨™ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚Ì’†S‚ÌXÀ•WBƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒY‚É‘Î‚·‚é’†S‚ÌÀ•W‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®Xåº§æ¨™ã€‚ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚ºã«å¯¾ã™ã‚‹ä¸­å¿ƒã®åº§æ¨™ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public float getPersonalCenterX() {
 		return personalCenter.x;
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì’†S‚Ì‘Š‘Î“I‚ÈYÀ•W‚ğæ“¾‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®ç›¸å¯¾çš„ãªYåº§æ¨™ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚Ì’†S‚ÌYÀ•WBƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒY‚É‘Î‚·‚é’†S‚ÌÀ•W‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®Yåº§æ¨™ã€‚ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚ºã«å¯¾ã™ã‚‹ä¸­å¿ƒã®åº§æ¨™ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public float getPersonalCenterY() {
 		return personalCenter.y;
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì’†S‚Ì‘Š‘ÎÀ•W‚ğæ“¾‚µ‚Ü‚·. ‘Š‘Î’†SÀ•W‚Æ‚ÍƒXƒvƒ‰ƒCƒg‚Ì—Ìˆæ‚Ì¶ã‚©‚ç‚Ì’†S‚Ü‚Å‚Ì‹——£‚Å‚·.<br>
-	 * ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍƒNƒ[ƒ“‚ª•Ô‚³‚ê‚Ü‚·.<br>
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã®ç›¸å¯¾åº§æ¨™ã‚’å–å¾—ã—ã¾ã™. ç›¸å¯¾ä¸­å¿ƒåº§æ¨™ã¨ã¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é ˜åŸŸã®å·¦ä¸Šã‹ã‚‰ã®ä¸­å¿ƒã¾ã§ã®è·é›¢ã§ã™.<br>
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã‚¯ãƒ­ãƒ¼ãƒ³ãŒè¿”ã•ã‚Œã¾ã™.<br>
 	 *
-	 * @return ’†S‚Ì‘Š‘ÎÀ•W.<br>
+	 * @return ä¸­å¿ƒã®ç›¸å¯¾åº§æ¨™.<br>
 	 */
 	public Point2D.Float getPersonalCenter() {
 		return (Point2D.Float) personalCenter.clone();
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒY‚ğæ“¾‚µ‚Ü‚·. ƒTƒCƒY‚Íint¸“x‚ÉŠÛ‚ß‚ç‚ê‚Ü‚·.<br>
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ÍV‚µ‚¢ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·.<br>
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚ºã‚’å–å¾—ã—ã¾ã™. ã‚µã‚¤ã‚ºã¯intç²¾åº¦ã«ä¸¸ã‚ã‚‰ã‚Œã¾ã™.<br>
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯æ–°ã—ã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™.<br>
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒY.<br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚º.<br>
 	 */
 	public Dimension getSize() {
 		return new Dimension((int) bounds.width, (int) bounds.height);
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒY‚ğæ“¾‚µ‚Ü‚·. ƒTƒCƒY‚Íint¸“x‚ÉŠÛ‚ß‚ç‚ê‚Ü‚·.<br>
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚ºã‚’å–å¾—ã—ã¾ã™. ã‚µã‚¤ã‚ºã¯intç²¾åº¦ã«ä¸¸ã‚ã‚‰ã‚Œã¾ã™.<br>
 	 *
-	 * @param size ƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒY.<br>
+	 * @param size ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚º.<br>
 	 */
 	public void setSize(Dimension size) {
 		setSize(size.width, size.height);
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚ÌƒTƒCƒY‚ğæ“¾‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ã‚µã‚¤ã‚ºã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @param w ƒXƒvƒ‰ƒCƒg‚Ì•.<br>
-	 * @param h ƒXƒvƒ‰ƒCƒg‚Ì‚‚³.<br>
+	 * @param w ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹….<br>
+	 * @param h ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•.<br>
 	 */
 	public void setSize(float w, float h) {
 		bounds.width = w;
@@ -380,36 +380,36 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì¶‘¶ó‘Ô‚ğæ“¾‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ç”Ÿå­˜çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ¶‘¶’†‚Ìê‡‚Ítrue‚ğ•Ô‚·.<Br>
+	 * @return ç”Ÿå­˜ä¸­ã®å ´åˆã¯trueã‚’è¿”ã™.<Br>
 	 */
 	public boolean isExist() {
 		return exist;
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì¶‘¶ó‘Ô‚ğİ’è‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ç”Ÿå­˜çŠ¶æ…‹ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param exist ¶‘¶ó‘Ô.<br>
+	 * @param exist ç”Ÿå­˜çŠ¶æ…‹.<br>
 	 */
 	public void setExist(boolean exist) {
 		this.exist = exist;
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì‰Â‹ó‘Ô‚ğæ“¾‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¯è¦–çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ƒXƒvƒ‰ƒCƒg‚Ì‰Â‹ó‘Ô.<br>
+	 * @return ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¯è¦–çŠ¶æ…‹.<br>
 	 */
 	public boolean isVisible() {
 		return visible;
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì‰Â‹ó‘Ô‚ğİ’è‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¯è¦–çŠ¶æ…‹ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param visible ƒXƒvƒ‰ƒCƒg‚Ì‰Â‹ó‘Ô.<br>
+	 * @param visible ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¯è¦–çŠ¶æ…‹.<br>
 	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;
@@ -421,18 +421,18 @@ public abstract class Sprite
 	
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì¶ã‚ÌXÀ•W‚ğæ“¾‚µ‚Ü‚·.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å·¦ä¸Šã®Xåº§æ¨™ã‚’å–å¾—ã—ã¾ã™.<br>
 	 *
-	 * @return XÀ•W.<br>
+	 * @return Xåº§æ¨™.<br>
 	 */
 	public float getX() {
 		return bounds.x;
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì¶ã‚ÌXÀ•W‚ğİ’è‚µ‚Ü‚·.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å·¦ä¸Šã®Xåº§æ¨™ã‚’è¨­å®šã—ã¾ã™.<br>
 	 *
-	 * @param x XÀ•W.<br>
+	 * @param x Xåº§æ¨™.<br>
 	 */
 	public void setX(float x) {
 		bounds.x = x;
@@ -440,18 +440,18 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì¶ã‚ÌYÀ•W‚ğæ“¾‚µ‚Ü‚·.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å·¦ä¸Šã®Yåº§æ¨™ã‚’å–å¾—ã—ã¾ã™.<br>
 	 *
-	 * @return YÀ•W.<br>
+	 * @return Yåº§æ¨™.<br>
 	 */
 	public float getY() {
 		return bounds.y;
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì¶ã‚ÌYÀ•W‚ğİ’è‚µ‚Ü‚·.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å·¦ä¸Šã®Yåº§æ¨™ã‚’è¨­å®šã—ã¾ã™.<br>
 	 *
-	 * @param y YÀ•W.<br>
+	 * @param y Yåº§æ¨™.<br>
 	 */
 	public void setY(float y) {
 		bounds.y = y;
@@ -459,18 +459,18 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì•‚ğæ“¾‚µ‚Ü‚·.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’å–å¾—ã—ã¾ã™.<br>
 	 *
-	 * @return •.<br>
+	 * @return å¹….<br>
 	 */
 	public float getWidth() {
 		return bounds.width;
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì•‚ğİ’è‚µ‚Ü‚·.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®å¹…ã‚’è¨­å®šã—ã¾ã™.<br>
 	 *
-	 * @param width •.<br>
+	 * @param width å¹….<br>
 	 */
 	public void setWidth(float width) {
 		bounds.width = width;
@@ -479,18 +479,18 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğæ“¾‚µ‚Ü‚·.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’å–å¾—ã—ã¾ã™.<br>
 	 *
-	 * @return ‚‚³.<br>
+	 * @return é«˜ã•.<br>
 	 */
 	public float getHeight() {
 		return bounds.height;
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì‚‚³‚ğİ’è‚µ‚Ü‚·.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®é«˜ã•ã‚’è¨­å®šã—ã¾ã™.<br>
 	 *
-	 * @param height ‚‚³.<br>
+	 * @param height é«˜ã•.<br>
 	 */
 	public void setHeight(float height) {
 		bounds.height = height;
@@ -499,28 +499,28 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚ÌZ[“x‚ğæ“¾‚µ‚Ü‚·.
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Zæ·±åº¦ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return [“x.<br>
+	 * @return æ·±åº¦.<br>
 	 */
 	public float getZ() {
 		return z;
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚ÌZ[“x‚ğİ’è‚µ‚Ü‚·.
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®Zæ·±åº¦ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param z [“x.<br>
+	 * @param z æ·±åº¦.<br>
 	 */
 	public void setZ(float z) {
 		this.z = z;
 	}
 
 	/**
-	 * ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Ì•¡»‚ğì¬‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚Å‚ÍA‘S‚Ä‚ÌƒtƒB[ƒ‹ƒh‚ğƒNƒ[ƒjƒ“ƒO‚µ‚Ü‚·.<br>
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ÍƒTƒuƒNƒ‰ƒX‚Å“KØ‚ÉƒI[ƒo[ƒ‰ƒCƒh‚µ‚Ä‚­‚¾‚³‚¢.<br>
+	 * ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®è¤‡è£½ã‚’ä½œæˆã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã§ã¯ã€å…¨ã¦ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’ã‚¯ãƒ­ãƒ¼ãƒ‹ãƒ³ã‚°ã—ã¾ã™.<br>
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã‚µãƒ–ã‚¯ãƒ©ã‚¹ã§é©åˆ‡ã«ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã—ã¦ãã ã•ã„.<br>
 	 *
-	 * @return ‚±‚ÌƒXƒvƒ‰ƒCƒg‚Æ“¯‚¶İ’è‚ÌV‚µ‚¢ƒCƒ“ƒXƒ^ƒ“ƒX.<br>
+	 * @return ã“ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã¨åŒã˜è¨­å®šã®æ–°ã—ã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.<br>
 	 */
 	@Override
 	public Sprite clone() {
@@ -537,11 +537,11 @@ public abstract class Sprite
 	}
 
 	/**
-	 * ƒXƒvƒ‰ƒCƒg‚Ì[“x‚ğ”äŠr‚µAz²À•W‚Ì¸‡‚É•À‚Ñ‘Ö‚¦‚é‹@”\‚ğ’ñ‹Ÿ‚µ‚Ü‚·.
+	 * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æ·±åº¦ã‚’æ¯”è¼ƒã—ã€zè»¸åº§æ¨™ã®æ˜‡é †ã«ä¸¦ã³æ›¿ãˆã‚‹æ©Ÿèƒ½ã‚’æä¾›ã—ã¾ã™.
 	 *
-	 * @param spr ”äŠr‚·‚éƒXƒvƒ‰ƒCƒg.<br>
+	 * @param spr æ¯”è¼ƒã™ã‚‹ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ.<br>
 	 *
-	 * @return Comparable‚ÌÀ‘•‚ÉŠî‚Ã‚­’l.<br>
+	 * @return Comparableã®å®Ÿè£…ã«åŸºã¥ãå€¤.<br>
 	 */
 	@Override
 	public final int compareTo(Sprite spr) {

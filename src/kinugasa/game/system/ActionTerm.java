@@ -27,7 +27,7 @@ import kinugasa.game.system.GameSystemException;
 import kinugasa.resource.Nameable;
 
 /**
- * ƒAƒNƒVƒ‡ƒ“‚Ì”­“®ğŒ‚ğ’è‹`‚·‚éƒNƒ‰ƒX‚Å‚·B
+ * ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®ç™ºå‹•æ¡ä»¶ã‚’å®šç¾©ã™ã‚‹ã‚¯ãƒ©ã‚¹ã§ã™ã€‚
  *
  * @vesion 1.0.0 - 2022/12/01_21:52:13<br>
  * @author Shinacho<br>
@@ -57,7 +57,7 @@ public class ActionTerm implements Nameable {
 		return value;
 	}
 
-	//ƒAƒNƒVƒ‡ƒ“‚ª”­“®‚Å‚«‚é‚©‚ğ•Ô‚·BtrueF‰Â”\
+	//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãŒç™ºå‹•ã§ãã‚‹ã‹ã‚’è¿”ã™ã€‚trueï¼šå¯èƒ½
 	public boolean canExec(ActionTarget tgt) {
 		switch (type) {
 			case NONE:

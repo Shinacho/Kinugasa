@@ -42,9 +42,9 @@ import kinugasa.resource.text.XMLFile;
  */
 public class FieldEventParser {
 
-	private String name;//�C�x���g�̖��O
-	private D2Idx idx;//�C�x���g�̈ʒu
-	private XMLFile scriptData;//�X�N���v�g�f�[�^
+	private String name;//イベントの名前
+	private D2Idx idx;//イベントの位置
+	private XMLFile scriptData;//スクリプトデータ
 
 	public FieldEventParser(String name, D2Idx idx, XMLFile scriptData) {
 		this.name = name;
@@ -63,7 +63,7 @@ public class FieldEventParser {
 		XMLElement root = scriptData.load().getFirst();
 		List<FieldEvent> result = new ArrayList<>();
 
-		//Term�̃p�[�X
+		//Termのパース
 		Storage<EventTerm> term = new Storage<>();
 		for (XMLElement e : root.getElement("term")) {
 			String name = e.getAttributes().get("name").getValue();
@@ -75,7 +75,7 @@ public class FieldEventParser {
 			term.add(t);
 		}
 
-		//event�̃p�[�X
+		//eventのパース
 		int i = 0;
 		boolean undead = root.hasAttribute("undead");
 		for (XMLElement e : root.getElement("event")) {

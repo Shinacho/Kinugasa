@@ -25,11 +25,11 @@ package kinugasa.util;
 
 
 /**
- * ƒCƒ“ƒfƒbƒNƒX‚Ì’l‚ğ‘I‘ğ‚Å‚«‚éƒCƒ“ƒfƒbƒNƒX‚ÌƒJƒEƒ“ƒ^‚Å‚·.
+ * ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®å€¤ã‚’é¸æŠã§ãã‚‹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ã‚«ã‚¦ãƒ³ã‚¿ã§ã™.
  * <br>
- * ‚±‚Ìƒ‚ƒfƒ‹‚Å‚ÍA—v‹‚³‚ê‚½ƒCƒ“ƒfƒbƒNƒX‚ªA”z—ñ‚Ì’·‚³‚ğ’´‚¦‚éê‡‚Í
- * ”z—ñ‚ÌÅŒã‚Ì—v‘f‚ğQÆ‚·‚éƒCƒ“ƒfƒbƒNƒX‚ğ•Ô‚µ‚Ü‚·B<br>
- * 0–¢–‚Ìê‡‚Í0‚ğ•Ô‚µ‚Ü‚·B<br>
+ * ã“ã®ãƒ¢ãƒ‡ãƒ«ã§ã¯ã€è¦æ±‚ã•ã‚ŒãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒã€é…åˆ—ã®é•·ã•ã‚’è¶…ãˆã‚‹å ´åˆã¯
+ * é…åˆ—ã®æœ€å¾Œã®è¦ç´ ã‚’å‚ç…§ã™ã‚‹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
+ * 0æœªæº€ã®å ´åˆã¯0ã‚’è¿”ã—ã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/02/12_12:43:13<br>
@@ -40,20 +40,20 @@ package kinugasa.util;
 public class SelectableIndex extends ArrayIndexModel {
 
 	private static final long serialVersionUID = -2030495902937694525L;
-	/** ƒCƒ“ƒfƒbƒNƒX‚ÌŒ»İ‚Ì’l‚Å‚·. */
+	/** ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ç¾åœ¨ã®å€¤ã§ã™. */
 	private int currentIndex;
 
 	/**
-	 * ƒCƒ“ƒfƒbƒNƒX‚ª0‚Ìƒ‚ƒfƒ‹‚ğì¬‚µ‚Ü‚·.
+	 * ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒ0ã®ãƒ¢ãƒ‡ãƒ«ã‚’ä½œæˆã—ã¾ã™.
 	 */
 	public SelectableIndex() {
 		this(0);
 	}
 
 	/**
-	 * w’è‚³‚ê‚½ƒCƒ“ƒfƒbƒNƒX‚Ìƒ‚ƒfƒ‹‚ğì¬‚µ‚Ü‚·.
+	 * æŒ‡å®šã•ã‚ŒãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ãƒ¢ãƒ‡ãƒ«ã‚’ä½œæˆã—ã¾ã™.
 	 *
-	 * @param currentIndex ƒCƒ“ƒfƒbƒNƒX‚Ì‰Šú’l‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param currentIndex ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®åˆæœŸå€¤ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public SelectableIndex(int currentIndex) {
 		this.currentIndex = currentIndex;
@@ -65,14 +65,14 @@ public class SelectableIndex extends ArrayIndexModel {
 	}
 
 	/**
-	 * ƒCƒ“ƒfƒbƒNƒX‚ğƒCƒ“ƒNƒŠƒƒ“ƒg‚µ‚Ü‚·.
+	 * ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã—ã¾ã™.
 	 */
 	public void next() {
 		currentIndex++;
 	}
 
 	/**
-	 * ƒCƒ“ƒfƒbƒNƒX‚ğƒfƒNƒŠƒƒ“ƒg‚µ‚Ü‚·.
+	 * ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ãƒ‡ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã—ã¾ã™.
 	 */
 	public void prev() {
 		currentIndex--;
@@ -84,9 +84,9 @@ public class SelectableIndex extends ArrayIndexModel {
 	}
 
 	/**
-	 * ƒCƒ“ƒfƒbƒNƒX‚ğİ’è‚µ‚Ü‚·.
+	 * ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’è¨­å®šã—ã¾ã™.
 	 *
-	 * @param currentIndex ƒCƒ“ƒfƒbƒNƒX‚ğw’è‚µ‚Ü‚·B<br>
+	 * @param currentIndex ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
 	 */
 	public void setIndex(int currentIndex) {
 		this.currentIndex = currentIndex;

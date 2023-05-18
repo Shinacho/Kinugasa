@@ -24,7 +24,7 @@
 package kinugasa.resource.text;
 
 /**
- * XMFƒtƒ@ƒCƒ‹‚ÌƒtƒH[ƒ}ƒbƒg‚ªDTD‚É‰ˆ‚Á‚Ä‚¢‚È‚¢ê‡‚É“Š‚°‚ç‚ê‚é—áŠO‚Å‚·.
+ * XMFãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆãŒDTDã«æ²¿ã£ã¦ã„ãªã„å ´åˆã«æŠ•ã’ã‚‰ã‚Œã‚‹ä¾‹å¤–ã§ã™.
  * <br>
  *
  * <br>
@@ -38,17 +38,17 @@ public class IllegalXMLFormatException extends FileFormatException {
 	private static final long serialVersionUID = -8305393008312141380L;
 
 	/**
-	 * V‚µ‚¢ IllegalXMLFormatException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
+	 * æ–°ã—ã„ IllegalXMLFormatException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
 	 *
-	 * @param msg ‚±‚Ì—áŠO‚ÌƒƒbƒZ[ƒW.<br>
+	 * @param msg ã“ã®ä¾‹å¤–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.<br>
 	 */
 	public IllegalXMLFormatException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Throwable‚©‚ç—áŠO‚ğì¬‚µ‚Ü‚·.
-	 * @param ex “Š‚°‚ç‚ê‚½—áŠO‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * Throwableã‹ã‚‰ä¾‹å¤–ã‚’ä½œæˆã—ã¾ã™.
+	 * @param ex æŠ•ã’ã‚‰ã‚ŒãŸä¾‹å¤–ã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	public IllegalXMLFormatException(Exception ex) {
 		super(ex);

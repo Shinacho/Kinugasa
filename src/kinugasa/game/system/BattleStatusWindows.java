@@ -58,7 +58,7 @@ public class BattleStatusWindows extends BasicSprite {
 		float y = 3;
 		float w = (GameOption.getInstance().getWindowSize().width - 6) / status.size() / GameOption.getInstance().getDrawSize();
 		for (Status s : status) {
-			//•\¦•¶š—ñ‚Ì¶¬
+			//è¡¨ç¤ºæ–‡å­—åˆ—ã®ç”Ÿæˆ
 			String text = s.getName() + " | ";
 			StatusValueSet es = s.getEffectedStatus();
 			int j = 0;
@@ -67,7 +67,7 @@ public class BattleStatusWindows extends BasicSprite {
 					if (s.getName().substring(0, 1).getBytes().length == 1) {
 						text += " ".repeat(s.getName().length());
 					} else {
-						text += "@".repeat(s.getName().length());
+						text += "ã€€".repeat(s.getName().length());
 					}
 					text += " | ";
 				}
@@ -76,7 +76,7 @@ public class BattleStatusWindows extends BasicSprite {
 						+ (int) (es.get(vs.trim()).getValue()) + Text.getLineSep();
 				j++;
 			}
-			//À•W‚ÌŒvZ
+			//åº§æ¨™ã®è¨ˆç®—
 			Text t = new Text(text);
 			t.allText();
 			MessageWindow window = new MessageWindow(x, y, w, h, t);
@@ -91,7 +91,7 @@ public class BattleStatusWindows extends BasicSprite {
 	public void update() {
 		int i = 0;
 		for (Status s : status) {
-			//•\¦•¶š—ñ‚Ì¶¬
+			//è¡¨ç¤ºæ–‡å­—åˆ—ã®ç”Ÿæˆ
 			String text = s.getName() + " | ";
 			StatusValueSet es = s.getEffectedStatus();
 			int j = 0;
@@ -100,7 +100,7 @@ public class BattleStatusWindows extends BasicSprite {
 					if (s.getName().substring(0, 1).getBytes().length == 1) {
 						text += " ".repeat(s.getName().length());
 					} else {
-						text += "@".repeat(s.getName().length());
+						text += "ã€€".repeat(s.getName().length());
 					}
 					text += " | ";
 				}

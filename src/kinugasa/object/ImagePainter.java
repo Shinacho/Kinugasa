@@ -27,9 +27,9 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.resource.Nameable;
 
 /**
- * �摜��`�悷����@���J�v�Z�������܂�.
+ * 画像を描画する方法をカプセル化します.
  * <br>
- * ���̃��f���́A�ʏ�N���[�j���O����Ȃ����߁AImageSprite�ł̃N���[���ł͕�������܂���B<br>
+ * このモデルは、通常クローニングされないため、ImageSpriteでのクローンでは複製されません。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_20:30:09<br>

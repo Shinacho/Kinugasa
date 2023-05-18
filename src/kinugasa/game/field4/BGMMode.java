@@ -25,16 +25,16 @@
 package kinugasa.game.field4;
 
 /**
- * �}�b�v�J�ڎ���BGM�̐ؑւɂ��Ē�`���܂�.
+ * マップ遷移時のBGMの切替について定義します.
  * @vesion 1.0.0 - 2022/11/08_15:10:17<br>
  * @author Shinacho<br>
  */
 public enum BGMMode {
-	/** ���ׂĂ�BGM���~���āA�}�b�v�ɐݒ肳�ꂽBGM���J�n���܂�. */
+	/** すべてのBGMを停止して、マップに設定されたBGMを開始します. */
 	STOP_AND_PLAY,
-	/** ���݂�BGM�Đ��󋵂ɑ΂��ĉ������܂���. */
+	/** 現在のBGM再生状況に対して何もしません. */
 	NOTHING,
-	/** ���ׂĂ�BGM���~���܂�. */
+	/** すべてのBGMを停止します. */
 	STOP,
 	PAUSE,
 	;

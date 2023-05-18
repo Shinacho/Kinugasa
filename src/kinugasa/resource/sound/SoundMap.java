@@ -6,16 +6,16 @@ import kinugasa.resource.Nameable;
 import kinugasa.resource.text.FileIOException;
 
 /**
- * �T�E���h�̈ꎞ�I�ȕۑ��̈��񋟂��܂�.
+ * サウンドの一時的な保存領域を提供します.
  * <br>
- * ���̃X�g���[�W�̎����̓��W�b�N�̃v���Z�b�g�ɂ���āA ���ʉ���BGM���Đ����邽�߂̃L�[���w�肳��Ă���ꍇ������܂��B<br>
+ * このストレージの実装はロジックのプリセットによって、 効果音やBGMを再生するためのキーが指定されている場合があります。<br>
  *
- * �쐬���ꂽ�T�E���h�}�b�v�͎����I�ɃT�E���h�X�g���[�W�ɒǉ�����܂��B<br>
- * �T�E���h�}�b�v�̖��O���w�肵�Ȃ��ꍇ�́A�K���Ȗ��O�����蓖�Ă��܂��B<br>
+ * 作成されたサウンドマップは自動的にサウンドストレージに追加されます。<br>
+ * サウンドマップの名前を指定しない場合は、適当な名前が割り当てられます。<br>
  * <br>
- * �T�E���h�̋�ۃN���X�̌^�ɒ��ӂ��Ă��������B1�̃}�b�v�Ɋ܂܂��A�T�E���h�̌^�� ���ꂷ�邱�Ƃ𐄏����܂��B<br>
+ * サウンドの具象クラスの型に注意してください。1つのマップに含まれる、サウンドの型は 統一することを推奨します。<br>
  * <br>
- * Freeable�̎����́A�}�b�v�ɒǉ�����Ă��邷�ׂẴT�E���h�ɍs���܂��B<br>
+ * Freeableの実装は、マップに追加されているすべてのサウンドに行われます。<br>
  * <br>
  *
  * @version 1.0.0 - 2013/02/06_7:52:47<br>
@@ -24,26 +24,26 @@ import kinugasa.resource.text.FileIOException;
 public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 
 	/**
-	 * ���̃T�E���h�}�b�v�̖��O�ł�. ���Ƃ��΁A�u��A�v��u�_���W����5�v�̂悤�Ȃ킩��₷�����O��t���邱�Ƃ��ł��܂��B
+	 * このサウンドマップの名前です. たとえば、「町A」や「ダンジョン5」のようなわかりやすい名前を付けることができます。
 	 */
 	private String name;
 	/**
-	 * �T�E���h�}�b�v�̃C���X�^���X���̃J�E���^�ł�.
+	 * サウンドマップのインスタンス数のカウンタです.
 	 */
 	private static int counter;
 
 	/**
-	 * �K���Ȗ��O���w�肵�ĐV�����T�E���h�}�b�v���쐬���܂�.
+	 * 適当な名前を指定して新しいサウンドマップを作成します.
 	 */
 	public SoundMap() {
 		this("SoundMap_" + (counter++));
 	}
 
 	/**
-	 * ���O�Ə����f�[�^���w�肵�āA�T�E���h�}�b�v���쐬���܂�.
+	 * 名前と初期データを指定して、サウンドマップを作成します.
 	 *
-	 * @param name �T�E���h�}�b�v�̖��O���w�肵�܂��B<br>
-	 * @param sounds �����f�[�^���w�肵�܂��B<br>
+	 * @param name サウンドマップの名前を指定します。<br>
+	 * @param sounds 初期データを指定します。<br>
 	 */
 	public SoundMap(String name, Sound... sounds) {
 		this(name);
@@ -51,20 +51,20 @@ public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 	}
 
 	/**
-	 * ���O���w�肵�ăT�E���h�}�b�v���쐬���܂�.
+	 * 名前を指定してサウンドマップを作成します.
 	 *
-	 * @param name �T�E���h�}�b�v�̖��O���w�肵�܂��B<br>
+	 * @param name サウンドマップの名前を指定します。<br>
 	 */
 	public SoundMap(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * �T�E���h�r���_����A�L���b�V���T�E���h���쐬���A���̃}�b�v�ɒǉ����܂�.
+	 * サウンドビルダから、キャッシュサウンドを作成し、このマップに追加します.
 	 *
-	 * @param soundBuilder �쐬����T�E���h�̐ݒ���s���r���_�ł��B<br>
+	 * @param soundBuilder 作成するサウンドの設定を行うビルダです。<br>
 	 *
-	 * @return �쐬���ꂽ�T�E���h��Ԃ��܂��B���̃}�b�v�ɒǉ�����Ă��܂��B<br>
+	 * @return 作成されたサウンドを返します。このマップに追加されています。<br>
 	 */
 	public CachedSound createCachedSound(SoundBuilder soundBuilder) {
 		CachedSound sound = soundBuilder.builde();
@@ -78,7 +78,7 @@ public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
 	}
 
 	/**
-	 * �S�ẴT�E���h��������܂�.
+	 * 全てのサウンドを解放します.
 	 */
 	@Override
 	public void dispose() {

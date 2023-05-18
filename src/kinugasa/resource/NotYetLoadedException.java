@@ -24,7 +24,7 @@
 package kinugasa.resource;
 
 /**
- * ŠJ•ú‰Â”\‚ÈƒIƒuƒWƒFƒNƒg‚ªƒ[ƒh‚³‚ê‚Ä‚¢‚È‚¢ê‡‚É “Š‚°‚é‚±‚Æ‚ª‚Å‚«‚é—áŠO‚Å‚·.
+ * é–‹æ”¾å¯èƒ½ãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒãƒ­ãƒ¼ãƒ‰ã•ã‚Œã¦ã„ãªã„å ´åˆã« æŠ•ã’ã‚‹ã“ã¨ãŒã§ãã‚‹ä¾‹å¤–ã§ã™.
  * <br>
  *
  * <br>
@@ -35,15 +35,15 @@ package kinugasa.resource;
 public class NotYetLoadedException extends RuntimeException {
 
 	/**
-	 * V‚µ‚¢ NotYetLoadedException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
+	 * æ–°ã—ã„ NotYetLoadedException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
 	 */
 	public NotYetLoadedException() {
 	}
 
 	/**
-	 * V‚µ‚¢ NotYetLoadedException ‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬.
+	 * æ–°ã—ã„ NotYetLoadedException ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ.
 	 *
-	 * @param msg ‚±‚Ì—áŠO‚ÌƒƒbƒZ[ƒW.<br>
+	 * @param msg ã“ã®ä¾‹å¤–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.<br>
 	 */
 	public NotYetLoadedException(String msg) {
 		super(msg);

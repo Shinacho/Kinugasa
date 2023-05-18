@@ -81,7 +81,7 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 			switch (type) {
 				case ATTACK:
 					text += b.getName() + ":" + b.getDesc();
-					text += ("A")
+					text += ("ã€")
 							+ (I18N.translate("ACTION_ATTR"))
 							+ (":");
 					text += (b.getBattleEvent()
@@ -90,10 +90,10 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 							.map(p -> p.getAttr().getDesc())
 							.distinct()
 							.collect(Collectors.toList()));
-					text += ("A")
+					text += ("ã€")
 							+ (I18N.translate("ACTION_EFFECT"))
 							+ (":");
-					//ENEMY‚ª“ü‚Á‚Ä‚¢‚éê‡Amin‚ğA‚»‚¤‚Å‚È‚¢ê‡‚ÍMAX‚ğæ‚é
+					//ENEMYãŒå…¥ã£ã¦ã„ã‚‹å ´åˆã€minã‚’ã€ãã†ã§ãªã„å ´åˆã¯MAXã‚’å–ã‚‹
 					if (b.getBattleEvent().stream().anyMatch(p -> p.getTargetType().toString().contains("ENEMY"))) {
 						text += (Math.abs(b.getBattleEvent()
 								.stream()
@@ -110,7 +110,7 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 					break;
 				case ITEM:
 				case MAGIC:
-					//ˆ—‚È‚µi“ü‚ç‚È‚¢j
+					//å‡¦ç†ãªã—ï¼ˆå…¥ã‚‰ãªã„ï¼‰
 					break;
 				case OTHER:
 					text += b.getName();

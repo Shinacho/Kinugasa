@@ -24,9 +24,9 @@
 package kinugasa.util;
 
 /**
- * ƒVƒXƒeƒ€Œv‚ÌŒo‰ßŠÔ‚É‚æ‚Á‚Ä‘Ò‹@ŠÔ‚ğ•]‰¿‚·‚éTimeCounter‚ÌÀ‘•‚Å‚·.
+ * ã‚·ã‚¹ãƒ†ãƒ æ™‚è¨ˆã®çµŒéæ™‚é–“ã«ã‚ˆã£ã¦å¾…æ©Ÿæ™‚é–“ã‚’è©•ä¾¡ã™ã‚‹TimeCounterã®å®Ÿè£…ã§ã™.
  * <br>
- * ‘S‚Ä‚ÌŠÔ‚Íƒ~ƒŠ•b’PˆÊ‚Å‚·B<br>
+ * å…¨ã¦ã®æ™‚é–“ã¯ãƒŸãƒªç§’å˜ä½ã§ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/12_14:46:33<br>
@@ -36,15 +36,15 @@ public class SystemTimeCounter extends TimeCounter {
 
 	private static final long serialVersionUID = -4734476685297706601L;
 	/**
-	 * ‘Ò‹@‚ªI—¹‚·‚é‚Å‚·.
+	 * å¾…æ©ŸãŒçµ‚äº†ã™ã‚‹æ™‚åˆ»ã§ã™.
 	 */
 	private long endTime;
 	/**
-	 * ‘Ò‹@‚·‚éŠÔiƒ~ƒŠ•bj‚Å‚·.
+	 * å¾…æ©Ÿã™ã‚‹æ™‚é–“ï¼ˆãƒŸãƒªç§’ï¼‰ã§ã™.
 	 */
 	private long waitTime;
 	/**
-	 * Å‰‚ÌŒÄ‚Ño‚µ‚ğŒŸ’m‚·‚éƒtƒ‰ƒO‚Å‚·.
+	 * æœ€åˆã®å‘¼ã³å‡ºã—ã‚’æ¤œçŸ¥ã™ã‚‹ãƒ•ãƒ©ã‚°ã§ã™.
 	 */
 	private boolean running = false;
 

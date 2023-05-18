@@ -30,7 +30,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
 /**
- * ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚â“ü—Íó‘Ô‚ğŒŸ¸‚·‚é‚½‚ß‚Ìƒ}ƒEƒXƒAƒ_ƒvƒ^‚ÌÀ‘•‚Å‚·.
+ * ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®ã‚„å…¥åŠ›çŠ¶æ…‹ã‚’æ¤œæŸ»ã™ã‚‹ãŸã‚ã®ãƒã‚¦ã‚¹ã‚¢ãƒ€ãƒ—ã‚¿ã®å®Ÿè£…ã§ã™.
  * <br>
  *
  * <br>
@@ -41,11 +41,11 @@ import java.awt.event.MouseWheelEvent;
 public class MouseConnection extends MouseAdapter {
 
 	/**
-	 * —Bˆê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Å‚·.
+	 * å”¯ä¸€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ã™.
 	 */
 	private static final MouseConnection INSTANCE = new MouseConnection();
 	/**
-	 * ‰½‚à“ü—Í‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô‚ÌMouseState‚Å‚·.
+	 * ä½•ã‚‚å…¥åŠ›ã•ã‚Œã¦ã„ãªã„çŠ¶æ…‹ã®MouseStateã§ã™.
 	 */
 	private static final MouseState CLEAR_STATE = new MouseState(false, false, false, false, false, 0, new Point(), new Point(), null);
 
@@ -54,9 +54,9 @@ public class MouseConnection extends MouseAdapter {
 	}
 
 	/**
-	 * ƒRƒ“ƒ|[ƒlƒ“ƒg‚É‚±‚ÌƒŠƒXƒi‚ğ’Ç‰Á‚µ‚Ü‚·.
+	 * ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã«ã“ã®ãƒªã‚¹ãƒŠã‚’è¿½åŠ ã—ã¾ã™.
 	 *
-	 * @param component ƒŠƒXƒi‚ğ“o˜^‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ‘—M‚µ‚Ü‚·B<br>
+	 * @param component ãƒªã‚¹ãƒŠã‚’ç™»éŒ²ã™ã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’é€ä¿¡ã—ã¾ã™ã€‚<br>
 	 */
 	public static void setListener(Component component) {
 		component.addMouseListener(INSTANCE);
@@ -65,16 +65,16 @@ public class MouseConnection extends MouseAdapter {
 	}
 
 	/**
-	 * ‹ó‚Ìƒ}ƒEƒXƒXƒe[ƒg‚ğ”­s‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚Íí‚É“¯‚¶ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * ç©ºã®ãƒã‚¦ã‚¹ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ç™ºè¡Œã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯å¸¸ã«åŒã˜ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ‹ó‚Ìƒ}ƒEƒXƒXƒe[ƒg‚ğ•Ô‚µ‚Ü‚·B‰½‚à‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô‚Å‚·BÀ•W‚Í0,0‚Å‚·B<br>
+	 * @return ç©ºã®ãƒã‚¦ã‚¹ã‚¹ãƒ†ãƒ¼ãƒˆã‚’è¿”ã—ã¾ã™ã€‚ä½•ã‚‚æŠ¼ã•ã‚Œã¦ã„ãªã„çŠ¶æ…‹ã§ã™ã€‚åº§æ¨™ã¯0,0ã§ã™ã€‚<br>
 	 */
 	public static MouseState createClearState() {
 		return CLEAR_STATE;
 	}
 
 	/**
-	 * ƒVƒ“ƒOƒ‹ƒgƒ“ƒNƒ‰ƒX‚Å‚·.
+	 * ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¯ãƒ©ã‚¹ã§ã™.
 	 */
 	private MouseConnection() {
 		location = new Point();
@@ -82,9 +82,9 @@ public class MouseConnection extends MouseAdapter {
 	}
 
 	/**
-	 * Œ»İ‚Ìƒ}ƒEƒX‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·.
+	 * ç¾åœ¨ã®ãƒã‚¦ã‚¹ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ƒ}ƒEƒX‚Ì“ü—Íó‘Ô‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ãƒã‚¦ã‚¹ã®å…¥åŠ›çŠ¶æ…‹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public static MouseState getState() {
 		return new MouseState(
@@ -99,36 +99,36 @@ public class MouseConnection extends MouseAdapter {
 				INSTANCE.draggedLocation);
 	}
 	/**
-	 * ƒ}ƒEƒX‚Ìƒ{ƒ^ƒ“‚Ì“ü—Íó‘Ô‚Å‚·.
+	 * ãƒã‚¦ã‚¹ã®ãƒœã‚¿ãƒ³ã®å…¥åŠ›çŠ¶æ…‹ã§ã™.
 	 */
 	private boolean[] buttonState = {false, false, false, false, false, false};
 	/**
-	 * ƒ}ƒEƒX‚ªƒEƒCƒ“ƒhƒE“à‚É‚ ‚é‚©‚ğ”»’è‚µ‚Ü‚·.
+	 * ãƒã‚¦ã‚¹ãŒã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦å†…ã«ã‚ã‚‹ã‹ã‚’åˆ¤å®šã—ã¾ã™.
 	 */
 	private boolean entry;
 	/**
-	 * ƒhƒ‰ƒbƒO’†‚Å‚ ‚é‚©‚ğ”»’è‚µ‚Ü‚·.
+	 * ãƒ‰ãƒ©ãƒƒã‚°ä¸­ã§ã‚ã‚‹ã‹ã‚’åˆ¤å®šã—ã¾ã™.
 	 */
 	private boolean drag;
 	/**
-	 * ƒEƒCƒ“ƒhƒE“à‚É‚¨‚¯‚éƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚Å‚·.
+	 * ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦å†…ã«ãŠã‘ã‚‹ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®ã§ã™.
 	 */
 	private Point location;
 	/**
-	 * ƒXƒNƒŠ[ƒ“ã‚É‚¨‚¯‚éƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚Å‚·.
+	 * ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸Šã«ãŠã‘ã‚‹ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®ã§ã™.
 	 */
 	private Point locationOnScreen;
 	/**
-	 * ƒzƒC[ƒ‹‚Ì‰ñ“]—Ê‚Å‚·. ã‚É‰ñ‚·‚Æ•‰”‚Æ‚È‚è‚Ü‚·B
+	 * ãƒ›ã‚¤ãƒ¼ãƒ«ã®å›è»¢é‡ã§ã™. ä¸Šã«å›ã™ã¨è² æ•°ã¨ãªã‚Šã¾ã™ã€‚
 	 */
 	private int wheelValue;
 	private Point draggedLocation;
 	private Point prevDragLocation;
 
 	/**
-	 * ƒ}ƒEƒXƒAƒ_ƒvƒ^‚ÌÀ‘•‚Å‚·.
+	 * ãƒã‚¦ã‚¹ã‚¢ãƒ€ãƒ—ã‚¿ã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param e ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param e ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -137,9 +137,9 @@ public class MouseConnection extends MouseAdapter {
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒAƒ_ƒvƒ^‚ÌÀ‘•‚Å‚·.
+	 * ãƒã‚¦ã‚¹ã‚¢ãƒ€ãƒ—ã‚¿ã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param e ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param e ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
@@ -148,9 +148,9 @@ public class MouseConnection extends MouseAdapter {
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒAƒ_ƒvƒ^‚ÌÀ‘•‚Å‚·.
+	 * ãƒã‚¦ã‚¹ã‚¢ãƒ€ãƒ—ã‚¿ã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param e ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param e ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -158,9 +158,9 @@ public class MouseConnection extends MouseAdapter {
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒAƒ_ƒvƒ^‚ÌÀ‘•‚Å‚·.
+	 * ãƒã‚¦ã‚¹ã‚¢ãƒ€ãƒ—ã‚¿ã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param e ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param e ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
@@ -170,9 +170,9 @@ public class MouseConnection extends MouseAdapter {
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒAƒ_ƒvƒ^‚ÌÀ‘•‚Å‚·.
+	 * ãƒã‚¦ã‚¹ã‚¢ãƒ€ãƒ—ã‚¿ã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param e ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param e ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
@@ -180,9 +180,9 @@ public class MouseConnection extends MouseAdapter {
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒAƒ_ƒvƒ^‚ÌÀ‘•‚Å‚·.
+	 * ãƒã‚¦ã‚¹ã‚¢ãƒ€ãƒ—ã‚¿ã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param e ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param e ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
@@ -190,9 +190,9 @@ public class MouseConnection extends MouseAdapter {
 	}
 
 	/**
-	 * ƒ}ƒEƒXƒAƒ_ƒvƒ^‚ÌÀ‘•‚Å‚·.
+	 * ãƒã‚¦ã‚¹ã‚¢ãƒ€ãƒ—ã‚¿ã®å®Ÿè£…ã§ã™.
 	 *
-	 * @param e ƒCƒxƒ“ƒg‚ª‘—M‚³‚ê‚Ü‚·B<br>
+	 * @param e ã‚¤ãƒ™ãƒ³ãƒˆãŒé€ä¿¡ã•ã‚Œã¾ã™ã€‚<br>
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {

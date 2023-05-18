@@ -28,9 +28,9 @@ import kinugasa.game.input.InputState;
 
 
 /**
- * ‚±‚ÌƒNƒ‰ƒX‚ÍInputState‚ÌƒNƒ[ƒ“‚ğƒ‰ƒbƒv‚µAƒŠƒvƒŒƒC‚Æ‚µ‚Ä•Û‘¶‚Å‚«‚é‚æ‚¤‚É‚µ‚Ü‚·.
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã¯InputStateã®ã‚¯ãƒ­ãƒ¼ãƒ³ã‚’ãƒ©ãƒƒãƒ—ã—ã€ãƒªãƒ—ãƒ¬ã‚¤ã¨ã—ã¦ä¿å­˜ã§ãã‚‹ã‚ˆã†ã«ã—ã¾ã™.
  * <br>
- * ‚±‚ÌƒNƒ‰ƒX‚Å‚ÍAInputState‚ÉNameable‚Ì‹@”\‚Æ‚µ‚ÄA“ü—Í‚³‚ê‚½ƒtƒŒ[ƒ€”‚ğ•Û‘¶‚·‚é‹@”\‚ª’Ç‰Á‚³‚ê‚Ü‚·B<br>
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã§ã¯ã€InputStateã«Nameableã®æ©Ÿèƒ½ã¨ã—ã¦ã€å…¥åŠ›ã•ã‚ŒãŸãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã‚’ä¿å­˜ã™ã‚‹æ©Ÿèƒ½ãŒè¿½åŠ ã•ã‚Œã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/20_19:14:08<br>
@@ -38,16 +38,16 @@ import kinugasa.game.input.InputState;
  */
 public final class ReplayInputState implements Serializable, Nameable {
 
-	/** “ü—Í‚ğŒŸØ‚µ‚½ƒ^ƒCƒ~ƒ“ƒO‚ÅA’Êí‚Í‹N“®‚©‚ç‚ÌŒo‰ßƒtƒŒ[ƒ€”‚Å‚·. */
+	/** å…¥åŠ›ã‚’æ¤œè¨¼ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ã€é€šå¸¸ã¯èµ·å‹•ã‹ã‚‰ã®çµŒéãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã§ã™. */
 	private long time;
-	/** ‚±‚Ì“_‚Å‚Ì“ü—Íó‘Ô‚Å‚·. */
+	/** ã“ã®æ™‚ç‚¹ã§ã®å…¥åŠ›çŠ¶æ…‹ã§ã™. */
 	private InputState inputState;
 
 	/**
-	 * V‚µ‚¢ƒŠƒvƒŒƒC—p“ü—Íó‘Ô‚ğì¬‚µ‚Ü‚·.
+	 * æ–°ã—ã„ãƒªãƒ—ãƒ¬ã‚¤ç”¨å…¥åŠ›çŠ¶æ…‹ã‚’ä½œæˆã—ã¾ã™.
 	 *
 	 * @param time
-	 * @param inputState ‚±‚Ì“_‚Å‚Ì“ü—Íó‘Ô‚ğ‘—M‚µ‚Ü‚·B
+	 * @param inputState ã“ã®æ™‚ç‚¹ã§ã®å…¥åŠ›çŠ¶æ…‹ã‚’é€ä¿¡ã—ã¾ã™ã€‚
 	 */
 	public ReplayInputState(long time, InputState inputState) {
 		this.time = time;
@@ -55,18 +55,18 @@ public final class ReplayInputState implements Serializable, Nameable {
 	}
 
 	/**
-	 * “ü—Íó‘Ô‚ğæ“¾‚µ‚Ü‚·.
+	 * å…¥åŠ›çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return “ü—Íó‘Ô‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return å…¥åŠ›çŠ¶æ…‹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public InputState getInputState() {
 		return inputState;
 	}
 
 	/**
-	 * ƒtƒŒ[ƒ€”‚ğæ“¾‚µ‚Ü‚·.
+	 * ãƒ•ãƒ¬ãƒ¼ãƒ æ•°ã‚’å–å¾—ã—ã¾ã™.
 	 *
-	 * @return ƒtƒŒ[ƒ€‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public long getTime() {
 		return time;

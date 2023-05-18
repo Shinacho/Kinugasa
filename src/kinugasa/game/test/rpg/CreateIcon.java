@@ -48,7 +48,7 @@ public class CreateIcon {
 		g.setPaint(gp);
 		g.setFont(FontModel.DEFAULT.clone().setFontSize(48).setFontStyle(Font.BOLD).getFont());
 		
-		g.drawString("ˆß", 0, 42);
+		g.drawString("è¡£", 0, 42);
 
 		g.dispose();
 		ImageUtil.save("resource/test/icon.png", image);

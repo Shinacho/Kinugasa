@@ -31,18 +31,18 @@ import kinugasa.game.PlayerConstants;
 import kinugasa.object.FourDirection;
 
 /**
- * “ü—ÍƒfƒoƒCƒX‚Ìó‘Ô‚ğŠi”[‚µ‚Ü‚·.
+ * å…¥åŠ›ãƒ‡ãƒã‚¤ã‚¹ã®çŠ¶æ…‹ã‚’æ ¼ç´ã—ã¾ã™.
  * <br>
- * ‚±‚ÌƒNƒ‰ƒX‚ÍAƒvƒŒƒCƒ„[‚ªg—p‚Å‚«‚éƒfƒoƒCƒX‚Ìó‘Ô‚ğˆêŒ³ŠÇ—‚µ‚Ü‚·B<br>
- * ‚±‚ÌƒNƒ‰ƒX‚ğg—p‚·‚é‚±‚Æ‚ÅA“ü—Íó‘Ô‚ğŠÈ’P‚ÉŒŸ¸‚Å‚«‚Ü‚·B<br>
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã¯ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä½¿ç”¨ã§ãã‚‹ãƒ‡ãƒã‚¤ã‚¹ã®çŠ¶æ…‹ã‚’ä¸€å…ƒç®¡ç†ã—ã¾ã™ã€‚<br>
+ * ã“ã®ã‚¯ãƒ©ã‚¹ã‚’ä½¿ç”¨ã™ã‚‹ã“ã¨ã§ã€å…¥åŠ›çŠ¶æ…‹ã‚’ç°¡å˜ã«æ¤œæŸ»ã§ãã¾ã™ã€‚<br>
  * <br>
- * “ü—Íó‘Ô‚ÌXV‚É‚ÍA‚»‚ê‚È‚è‚ÌŠÔ“IƒRƒXƒg‚ª‚©‚©‚è‚Ü‚·B<br>
- * ‚Ü‚½AgetInstance‚ªÀs‚³‚ê‚½‚Æ‚«‚ÉA“ü—Íó‘Ô‚ªƒŠƒtƒŒƒbƒVƒ…‚³‚ê‚Ü‚·B
- * getInstance‚Ìg—p‚ÍA1ƒ‹[ƒv’†1‰ñ‚É‚Æ‚Ç‚ß‚Ä‚­‚¾‚³‚¢B•¡”‰ñÀs‚·‚é‚ÆAu‘O‰ñ‚Ì“ü—Íó‘Ôv‚ª•s³‚É‚È‚èA³‚µ‚­”»’è‚Å‚«‚Ü‚¹‚ñB<br>
+ * å…¥åŠ›çŠ¶æ…‹ã®æ›´æ–°ã«ã¯ã€ãã‚Œãªã‚Šã®æ™‚é–“çš„ã‚³ã‚¹ãƒˆãŒã‹ã‹ã‚Šã¾ã™ã€‚<br>
+ * ã¾ãŸã€getInstanceãŒå®Ÿè¡Œã•ã‚ŒãŸã¨ãã«ã€å…¥åŠ›çŠ¶æ…‹ãŒãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ã•ã‚Œã¾ã™ã€‚
+ * getInstanceã®ä½¿ç”¨ã¯ã€1ãƒ«ãƒ¼ãƒ—ä¸­1å›ã«ã¨ã©ã‚ã¦ãã ã•ã„ã€‚è¤‡æ•°å›å®Ÿè¡Œã™ã‚‹ã¨ã€ã€Œå‰å›ã®å…¥åŠ›çŠ¶æ…‹ã€ãŒä¸æ­£ã«ãªã‚Šã€æ­£ã—ãåˆ¤å®šã§ãã¾ã›ã‚“ã€‚<br>
  * <br>
  * <br>
- * ƒQ[ƒ€‹N“®‚Ìİ’è‚É‚æ‚Á‚ÄAg—p‚µ‚È‚¢ƒfƒoƒCƒX‚ª‚ ‚éê‡A
- * ‚»‚ÌƒfƒoƒCƒX‚Ìó‘Ô‚Íí‚Énull‚Å‚·B‚µ‚½‚ª‚Á‚ÄA—á‚¦‚ÎƒQ[ƒ€ƒpƒbƒh‚ªÚ‘±‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô‚ÅƒQ[ƒ€ƒpƒbƒh‚ÌŒŸ¸‚ğŒÄ‚Ño‚·‚ÆNPE‚É‚È‚è‚Ü‚·B<br>
+ * ã‚²ãƒ¼ãƒ èµ·å‹•æ™‚ã®è¨­å®šã«ã‚ˆã£ã¦ã€ä½¿ç”¨ã—ãªã„ãƒ‡ãƒã‚¤ã‚¹ãŒã‚ã‚‹å ´åˆã€
+ * ãã®ãƒ‡ãƒã‚¤ã‚¹ã®çŠ¶æ…‹ã¯å¸¸ã«nullã§ã™ã€‚ã—ãŸãŒã£ã¦ã€ä¾‹ãˆã°ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ãŒæ¥ç¶šã•ã‚Œã¦ã„ãªã„çŠ¶æ…‹ã§ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ã®æ¤œæŸ»ã‚’å‘¼ã³å‡ºã™ã¨NPEã«ãªã‚Šã¾ã™ã€‚<br>
  * <br>
  *
  * @version 1.0.0 - 2013/01/14_14:55:04<br>
@@ -52,24 +52,24 @@ public final class InputState extends InputDeviceState {
 
 	private static final long serialVersionUID = 2349722781837661059L;
 	/**
-	 * Œ»İ‚ÌƒL[ƒ{[ƒh‚Ìó‘Ô.
+	 * ç¾åœ¨ã®ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®çŠ¶æ…‹.
 	 */
 	private KeyState keyState = null;
 	/**
-	 * ‘O‰ñ‚ÌƒL[ƒ{[ƒh‚Ìó‘Ô.
+	 * å‰å›ã®ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®çŠ¶æ…‹.
 	 */
 	private KeyState prevKeyState = null;
 	/**
-	 * Œ»İ‚Ìƒ}ƒEƒX‚Ìó‘Ô.
+	 * ç¾åœ¨ã®ãƒã‚¦ã‚¹ã®çŠ¶æ…‹.
 	 */
 	private MouseState mouseState = null;
 	/**
-	 * ‘O‰ñ‚Ìƒ}ƒEƒX‚Ìó‘Ô.
+	 * å‰å›ã®ãƒã‚¦ã‚¹ã®çŠ¶æ…‹.
 	 */
 	private MouseState prevMouseState = null;
 	//
 	/**
-	 * —Bˆê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Å‚·.
+	 * å”¯ä¸€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ã™.
 	 */
 	private static final InputState INSTANCE = new InputState();
 
@@ -77,7 +77,7 @@ public final class InputState extends InputDeviceState {
 	private GamePadState prevGpState;
 
 	/**
-	 * ƒVƒ“ƒOƒ‹ƒgƒ“ƒNƒ‰ƒX‚Å‚·. getInstance‚ğg—p‚µ‚Ä‚­‚¾‚³‚¢B<br>
+	 * ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¯ãƒ©ã‚¹ã§ã™. getInstanceã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚<br>
 	 */
 	private InputState() {
 		if (PlayerConstants.getInstance().isUsingKeyboard()) {
@@ -94,9 +94,9 @@ public final class InputState extends InputDeviceState {
 	}
 
 	/**
-	 * ƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚ğŒÄ‚Ño‚·‚ÆAŒ»İ‚Ì“ü—Íó‘Ô‚ªŒŸ¸‚³‚ê‚Ü‚·B<br>
+	 * ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã™ã¨ã€ç¾åœ¨ã®å…¥åŠ›çŠ¶æ…‹ãŒæ¤œæŸ»ã•ã‚Œã¾ã™ã€‚<br>
 	 *
-	 * @return InputState‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return InputStateã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	@Deprecated
 	public static InputState getInstance() {
@@ -105,7 +105,7 @@ public final class InputState extends InputDeviceState {
 	}
 
 	/**
-	 * “ü—Íó‘Ô‚ğXV‚µ‚Ü‚·.
+	 * å…¥åŠ›çŠ¶æ…‹ã‚’æ›´æ–°ã—ã¾ã™.
 	 */
 	private void refresh() {
 		if (PlayerConstants.getInstance().isUsingMouse()) {
@@ -160,11 +160,11 @@ public final class InputState extends InputDeviceState {
 	}
 
 	/**
-	 * ƒL[ƒ{[ƒh‚ÌƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @param key ”»’è‚·‚éƒL[‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param type ‘O‰ñ‚Ì“ü—Íó‘Ô‚ğŒŸ¸‚·‚é‚©‚ğŒˆ’è‚µ‚Ü‚·B<br>
-	 * @return w’è‚³‚ê‚½ƒL[‚ªŒ»İ‰Ÿ‚³‚ê‚Ä‚¢‚éê‡Atrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @param key åˆ¤å®šã™ã‚‹ã‚­ãƒ¼ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param type å‰å›ã®å…¥åŠ›çŠ¶æ…‹ã‚’æ¤œæŸ»ã™ã‚‹ã‹ã‚’æ±ºå®šã—ã¾ã™ã€‚<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸã‚­ãƒ¼ãŒç¾åœ¨æŠ¼ã•ã‚Œã¦ã„ã‚‹å ´åˆã€trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public boolean isPressed(Keys key, InputType type) {
 		return type == InputType.CONTINUE
@@ -173,13 +173,13 @@ public final class InputState extends InputDeviceState {
 	}
 
 	/**
-	 * ƒQ[ƒ€ƒpƒbƒh‚Ü‚½‚ÍƒL[ƒ{[ƒh‚Ì“ü—Í‚ª‚ ‚é‚©ŒŸ¸‚µ‚Ü‚·B
-	 * ‚±‚Ìƒƒ\ƒbƒh‚ÍAƒQ[ƒ€ƒpƒbƒh‚ª‚È‚¢ŠÂ‹«‚Å‚àƒQ[ƒ€ƒpƒbƒh‚ªÚ‘±‚³‚ê‚Ä‚¢‚é‚©‚ÌŒŸ¸‚ğÈ—ª‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+	 * ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ã¾ãŸã¯ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®å…¥åŠ›ãŒã‚ã‚‹ã‹æ¤œæŸ»ã—ã¾ã™ã€‚
+	 * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã€ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ãŒãªã„ç’°å¢ƒã§ã‚‚ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ãŒæ¥ç¶šã•ã‚Œã¦ã„ã‚‹ã‹ã®æ¤œæŸ»ã‚’çœç•¥ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚
 	 *
-	 * @param b ƒQ[ƒ€ƒpƒbƒh‚Ìƒ{ƒ^ƒ“B
-	 * @param k ƒL[ƒ{[ƒh‚ÌƒL[B
-	 * @param t ƒCƒ“ƒvƒbƒgƒ^ƒCƒvB
-	 * @return b‚Ü‚½‚Ík‚ª‰Ÿ‚³‚ê‚Ä‚¢‚éê‡TRUE‚ğ•Ô‚µ‚Ü‚·B
+	 * @param b ã‚²ãƒ¼ãƒ ãƒ‘ãƒƒãƒ‰ã®ãƒœã‚¿ãƒ³ã€‚
+	 * @param k ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ã‚­ãƒ¼ã€‚
+	 * @param t ã‚¤ãƒ³ãƒ—ãƒƒãƒˆã‚¿ã‚¤ãƒ—ã€‚
+	 * @return bã¾ãŸã¯kãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹å ´åˆTRUEã‚’è¿”ã—ã¾ã™ã€‚
 	 */
 	public boolean isPressed(GamePadButton b, Keys k, InputType t) {
 		if (gpState == null) {
@@ -206,11 +206,11 @@ public final class InputState extends InputDeviceState {
 	}
 
 	/**
-	 * ƒ}ƒEƒX‚Ìƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚ğŒŸ¸‚µ‚Ü‚·.
+	 * ãƒã‚¦ã‚¹ã®ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’æ¤œæŸ»ã—ã¾ã™.
 	 *
-	 * @param button ”»’è‚·‚éƒ{ƒ^ƒ“‚ğw’è‚µ‚Ü‚·B<br>
-	 * @param type ‘O‰ñ‚Ì“ü—Íó‘Ô‚ğŒŸ¸‚·‚é‚©‚ğŒˆ’è‚µ‚Ü‚·B<br>
-	 * @return w’è‚³‚ê‚½ƒ{ƒ^ƒ“‚ªŒ»İ‰Ÿ‚³‚ê‚Ä‚¢‚éê‡Atrue‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @param button åˆ¤å®šã™ã‚‹ãƒœã‚¿ãƒ³ã‚’æŒ‡å®šã—ã¾ã™ã€‚<br>
+	 * @param type å‰å›ã®å…¥åŠ›çŠ¶æ…‹ã‚’æ¤œæŸ»ã™ã‚‹ã‹ã‚’æ±ºå®šã—ã¾ã™ã€‚<br>
+	 * @return æŒ‡å®šã•ã‚ŒãŸãƒœã‚¿ãƒ³ãŒç¾åœ¨æŠ¼ã•ã‚Œã¦ã„ã‚‹å ´åˆã€trueã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public boolean isPressed(MouseButtons button, InputType type) {
 		if (!PlayerConstants.getInstance().isUsingMouse()) {
@@ -222,27 +222,27 @@ public final class InputState extends InputDeviceState {
 	}
 
 	/**
-	 * Œ»İ‚ÌƒL[ƒ{[ƒh‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·. ƒL[ƒ{[ƒh‚ªg—p‚Å‚«‚È‚¢ê‡Anull‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * ç¾åœ¨ã®ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™. ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãŒä½¿ç”¨ã§ããªã„å ´åˆã€nullã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ƒL[ƒ{[ƒh‚Ìó‘Ô‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®çŠ¶æ…‹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public KeyState getKeyState() {
 		return keyState;
 	}
 
 	/**
-	 * ‘O‰ñ‚ÌƒL[ƒ{[ƒh‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·. ƒL[ƒ{[ƒh‚ªg—p‚Å‚«‚È‚¢ê‡Anull‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * å‰å›ã®ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™. ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãŒä½¿ç”¨ã§ããªã„å ´åˆã€nullã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ƒL[ƒ{[ƒh‚Ìó‘Ô‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®çŠ¶æ…‹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public KeyState getPrevKeyState() {
 		return prevKeyState;
 	}
 
 	/**
-	 * Œ»İ‚Ìƒ}ƒEƒX‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·. ƒ}ƒEƒX‚ªg—p‚Å‚«‚È‚¢ê‡Anull‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * ç¾åœ¨ã®ãƒã‚¦ã‚¹ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™. ãƒã‚¦ã‚¹ãŒä½¿ç”¨ã§ããªã„å ´åˆã€nullã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ƒ}ƒEƒX‚Ìó‘Ô‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ãƒã‚¦ã‚¹ã®çŠ¶æ…‹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public MouseState getPrevMouseState() {
 		return prevMouseState;
@@ -250,9 +250,9 @@ public final class InputState extends InputDeviceState {
 	}
 
 	/**
-	 * ‘O‰ñ‚Ìƒ}ƒEƒX‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·. ƒ}ƒEƒX‚ªg—p‚Å‚«‚È‚¢ê‡Anull‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * å‰å›ã®ãƒã‚¦ã‚¹ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™. ãƒã‚¦ã‚¹ãŒä½¿ç”¨ã§ããªã„å ´åˆã€nullã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 *
-	 * @return ƒ}ƒEƒX‚Ìó‘Ô‚ğ•Ô‚µ‚Ü‚·B<br>
+	 * @return ãƒã‚¦ã‚¹ã®çŠ¶æ…‹ã‚’è¿”ã—ã¾ã™ã€‚<br>
 	 */
 	public MouseState getMouseState() {
 		return mouseState;

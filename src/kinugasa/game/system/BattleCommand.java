@@ -45,20 +45,20 @@ public class BattleCommand {
 		PC,;
 
 	}
-	//CPU‚Ü‚½‚ÍPC
+	//CPUã¾ãŸã¯PC
 	private Mode mode;
-	//‚±‚ÌƒRƒ}ƒ“ƒh‚Ìƒ†[ƒU
+	//ã“ã®ã‚³ãƒžãƒ³ãƒ‰ã®ãƒ¦ãƒ¼ã‚¶
 	private BattleCharacter user;
-	//Žæ‚ê‚és“®
+	//å–ã‚Œã‚‹è¡Œå‹•
 	private List<CmdAction> ba;
-	//ó‘ÔˆÙíŠÖ˜A
+	//çŠ¶æ…‹ç•°å¸¸é–¢é€£
 	private boolean stop = false;
 	private boolean confu = false;
-	//ƒ†[ƒUƒIƒyƒŒ[ƒVƒ‡ƒ“—v”Ûƒtƒ‰ƒO
-	//’ˆÓFPC‚Å‚àƒ†[ƒUƒIƒyƒŒ[ƒVƒ‡ƒ“•s—v‚Æ‚¢‚¤ê‡‚ª‚ ‚é
+	//ãƒ¦ãƒ¼ã‚¶ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³è¦å¦ãƒ•ãƒ©ã‚°
+	//æ³¨æ„ï¼šPCã§ã‚‚ãƒ¦ãƒ¼ã‚¶ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ä¸è¦ã¨ã„ã†å ´åˆãŒã‚ã‚‹
 	private boolean userOperation = false;
 
-	//‰r¥Š®—¹ƒCƒxƒ“ƒg‚Ìƒtƒ‰ƒO
+	//è© å”±å®Œäº†ã‚¤ãƒ™ãƒ³ãƒˆã®ãƒ•ãƒ©ã‚°
 	private boolean magicSpell = false;
 
 	public BattleCommand(Mode mode, BattleCharacter user) {

@@ -26,7 +26,7 @@ package kinugasa.object;
 import java.awt.geom.Point2D;
 
 /**
- * ���̃C���^�[�t�F�[�X�����������N���X�́A�}�E�X�ɂ����͔���Ȃǂ̍��W�̓������ł��܂�.
+ * このインターフェースを実装したクラスは、マウスによる入力判定などの座標の内包が判定できます.
  * <br>
  *
  * <br>

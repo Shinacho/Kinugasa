@@ -27,7 +27,7 @@ import kinugasa.object.BasicSprite;
 import kinugasa.object.MovingModel;
 
 /**
- * •¡”‚ÌMovingModel‚ğÀs‚Å‚«‚éMovingModel‚ÌŠg’£‚Å‚·.
+ * è¤‡æ•°ã®MovingModelã‚’å®Ÿè¡Œã§ãã‚‹MovingModelã®æ‹¡å¼µã§ã™.
  * <br>
  *
  * <br>

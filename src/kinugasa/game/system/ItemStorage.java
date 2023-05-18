@@ -30,7 +30,7 @@ import kinugasa.resource.*;
 import kinugasa.util.*;
 
 /**
- * アイテムの一覧を定義するクラスです。
+ * 繧｢繧､繝�繝縺ｮ荳隕ｧ繧貞ｮ夂ｾｩ縺吶ｋ繧ｯ繝ｩ繧ｹ縺ｧ縺吶�
  *
  * @vesion 1.0.0 - 2022/11/16_11:58:41<br>
  * @author Shinacho<br>

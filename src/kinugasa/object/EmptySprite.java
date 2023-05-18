@@ -28,7 +28,7 @@ import java.awt.geom.Point2D;
 import kinugasa.game.GraphicsContext;
 
 /**
- * ��̃X�v���C�g�ł��B�����\�����܂���B���W�v�Z�ȂǂŎg���_�~�[�̃X�v���C�g�̎����ł��B
+ * 空のスプライトです。何も表示しません。座標計算などで使うダミーのスプライトの実装です。
  *
  * @vesion 1.0.0 - 2022/11/25_20:18:38<br>
  * @author Shinacho<br>

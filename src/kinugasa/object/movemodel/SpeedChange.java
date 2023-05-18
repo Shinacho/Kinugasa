@@ -37,21 +37,21 @@ import kinugasa.object.MovingModel;
  */
 public class SpeedChange extends MovingModel {
 
-	/** ˆê‰ñ‚ÌˆÚ“®‚Å‰ÁZ‚·‚é’l. */
+	/** ä¸€å›ã®ç§»å‹•ã§åŠ ç®—ã™ã‚‹å€¤. */
 	private float addSpeed;
-	/** ‘¬“x‚ÌÅ’á’li‚±‚ê‚ğŠÜ‚Ş). */
+	/** é€Ÿåº¦ã®æœ€ä½å€¤ï¼ˆã“ã‚Œã‚’å«ã‚€). */
 	private float minSpeed;
-	/** ‘¬“x‚ÌÅ‘å’l(‚±‚ê‚ğŠÜ‚Ş). */
+	/** é€Ÿåº¦ã®æœ€å¤§å€¤(ã“ã‚Œã‚’å«ã‚€). */
 	private float maxSpeed;
 
 	/**
-	 * ˆÚ“®‘¬“x‚ª•ÏX‚³‚ê‚éˆÚ“®ƒ‚ƒfƒ‹‚ğ\’z‚µ‚Ü‚·.
+	 * ç§»å‹•é€Ÿåº¦ãŒå¤‰æ›´ã•ã‚Œã‚‹ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’æ§‹ç¯‰ã—ã¾ã™.
 	 * 
-	 * @param addSpeed ‚P‰ñ‚ÌˆÚ“®‚Å‰ÁZ‚·‚é‘¬“x‚Ì’l.•‰”‚ğw’è‚Å‚«‚é.<Br>
-	 * @param min      Å’á‚Ì‘¬“x.‚±‚Ì’l‚ğŠÜ‚Ş.<br>
-	 * @param max      Å‘å‚Ì‘¬“x.‚±‚Ì’l‚ğŠÜ‚Ş.<br>
+	 * @param addSpeed ï¼‘å›ã®ç§»å‹•ã§åŠ ç®—ã™ã‚‹é€Ÿåº¦ã®å€¤.è² æ•°ã‚’æŒ‡å®šã§ãã‚‹.<Br>
+	 * @param min      æœ€ä½ã®é€Ÿåº¦.ã“ã®å€¤ã‚’å«ã‚€.<br>
+	 * @param max      æœ€å¤§ã®é€Ÿåº¦.ã“ã®å€¤ã‚’å«ã‚€.<br>
 	 *
-	 * @throws IllegalArgumentException min>max‚Ì‚Æ‚«‚É“Š‚°‚ç‚ê‚é.<br>
+	 * @throws IllegalArgumentException min>maxã®ã¨ãã«æŠ•ã’ã‚‰ã‚Œã‚‹.<br>
 	 */
 	public SpeedChange(float addSpeed, float min, float max) throws IllegalArgumentException {
 		super();
@@ -64,64 +64,64 @@ public class SpeedChange extends MovingModel {
 	}
 
 	/**
-	 * ˆÚ“®‘¬“x‚ª•ÏX‚³‚ê‚éˆÚ“®ƒ‚ƒfƒ‹‚ğ\’z‚µ‚Ü‚·.
-	 * Å’á‘¬“x‚¨‚æ‚ÑÅ‘å‘¬“x‚ğg—p‚µ‚Ü‚¹‚ñ.(–³ŒÀ‘å‚ğİ’è)<br>
+	 * ç§»å‹•é€Ÿåº¦ãŒå¤‰æ›´ã•ã‚Œã‚‹ç§»å‹•ãƒ¢ãƒ‡ãƒ«ã‚’æ§‹ç¯‰ã—ã¾ã™.
+	 * æœ€ä½é€Ÿåº¦ãŠã‚ˆã³æœ€å¤§é€Ÿåº¦ã‚’ä½¿ç”¨ã—ã¾ã›ã‚“.(ç„¡é™å¤§ã‚’è¨­å®š)<br>
 	 * 
-	 * @param addSpeed ‚P‰ñ‚ÌˆÚ“®‚Å‰ÁZ‚·‚é‘¬“x‚Ì’l.•‰”‚ğw’è‚Å‚«‚é.<Br>
+	 * @param addSpeed ï¼‘å›ã®ç§»å‹•ã§åŠ ç®—ã™ã‚‹é€Ÿåº¦ã®å€¤.è² æ•°ã‚’æŒ‡å®šã§ãã‚‹.<Br>
 	 */
 	public SpeedChange(float addSpeed) {
 		this(addSpeed, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
 	}
 
 	/**
-	 * ˆÚ“®‚Ì“x‚É‰ÁZ‚·‚é’l‚ğæ“¾‚µ‚Ü‚·.
+	 * ç§»å‹•ã®åº¦ã«åŠ ç®—ã™ã‚‹å€¤ã‚’å–å¾—ã—ã¾ã™.
 	 * 
-	 * @return ‰ÁZ‚·‚é’l.<bR>
+	 * @return åŠ ç®—ã™ã‚‹å€¤.<bR>
 	 */
 	public float getAddSpeed() {
 		return addSpeed;
 	}
 
 	/**
-	 * Å‘å‚Ì‘¬“x‚ğæ“¾‚µ‚Ü‚·.
+	 * æœ€å¤§ã®é€Ÿåº¦ã‚’å–å¾—ã—ã¾ã™.
 	 * 
-	 * @return Å‘å‘¬“x.<bR>
+	 * @return æœ€å¤§é€Ÿåº¦.<bR>
 	 */
 	public float getMaxSpeed() {
 		return maxSpeed;
 	}
 
 	/**
-	 * Å’á‚Ì‘¬“x‚ğæ“¾‚µ‚Ü‚·.
+	 * æœ€ä½ã®é€Ÿåº¦ã‚’å–å¾—ã—ã¾ã™.
 	 * 
-	 * @return Å’á‚Ì‘¬“x.<bR>
+	 * @return æœ€ä½ã®é€Ÿåº¦.<bR>
 	 */
 	public float getMinSpeed() {
 		return minSpeed;
 	}
 
 	/**
-	 * ˆÚ“®‚Ì“x‚É‰ÁZ‚·‚é’l‚ğİ’è‚µ‚Ü‚·.
+	 * ç§»å‹•ã®åº¦ã«åŠ ç®—ã™ã‚‹å€¤ã‚’è¨­å®šã—ã¾ã™.
 	 * 
-	 * @param addSpeed ‰ÁZ‚·‚é’l.<bR>
+	 * @param addSpeed åŠ ç®—ã™ã‚‹å€¤.<bR>
 	 */
 	public void setAddSpeed(float addSpeed) {
 		this.addSpeed = addSpeed;
 	}
 
 	/**
-	 * Å‘å‚Ì‘¬“x‚ğİ’è‚µ‚Ü‚·.
+	 * æœ€å¤§ã®é€Ÿåº¦ã‚’è¨­å®šã—ã¾ã™.
 	 * 
-	 * @param maxSpeed Å‘å‘¬“x.<bR>
+	 * @param maxSpeed æœ€å¤§é€Ÿåº¦.<bR>
 	 */
 	public void setMaxSpeed(float maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
 
 	/**
-	 * Å’á‚Ì‘¬“x‚ğİ’è‚µ‚Ü‚·.
+	 * æœ€ä½ã®é€Ÿåº¦ã‚’è¨­å®šã—ã¾ã™.
 	 * 
-	 * @param minSpeed Å’á‚Ì‘¬“x.<bR>
+	 * @param minSpeed æœ€ä½ã®é€Ÿåº¦.<bR>
 	 */
 	public void setMinSpeed(float minSpeed) {
 		this.minSpeed = minSpeed;

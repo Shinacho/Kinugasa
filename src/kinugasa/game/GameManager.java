@@ -56,7 +56,7 @@ import kinugasa.resource.TempFileStorage;
 import kinugasa.util.MathUtil;
 
 /**
- * ƒQ[ƒ€‚ÌƒX[ƒp[ƒNƒ‰ƒX‚Å‚·.
+ * ã‚²ãƒ¼ãƒ ã®ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹ã§ã™.
  *
  * @vesion 1.0.0 - 2021/08/17_5:41:45<br>
  * @author Shinacho<br>
@@ -64,11 +64,11 @@ import kinugasa.util.MathUtil;
 public abstract class GameManager {
 
 	/**
-	 * ‹N“®İ’è.
+	 * èµ·å‹•æ™‚è¨­å®š.
 	 */
 	private GameOption option;
 	/**
-	 * ƒEƒCƒ“ƒhƒE.
+	 * ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦.
 	 */
 	private AWTGameWindow window;
 	private GameLoop loop;
@@ -294,7 +294,7 @@ public abstract class GameManager {
 			System.exit(1);
 		}
 		if (PlayerConstants.getInstance().isUsingGamePad()) {
-			// GamePadConnection.free(); //‚È‚ñ‚©ƒGƒ‰[o‚é
+			// GamePadConnection.free(); //ãªã‚“ã‹ã‚¨ãƒ©ãƒ¼å‡ºã‚‹
 		}
 		LockUtil.deleteLockFile();
 		TempFileStorage.getInstance().deleteAll();
@@ -303,36 +303,36 @@ public abstract class GameManager {
 	}
 
 	/**
-	 * ƒQ[ƒ€‚ğŠJn‚·‚éè‡‚ğ‹Lq‚µ‚Ü‚·.
+	 * ã‚²ãƒ¼ãƒ ã‚’é–‹å§‹ã™ã‚‹æ‰‹é †ã‚’è¨˜è¿°ã—ã¾ã™.
 	 */
 	@OneceTime
 	protected abstract void startUp();
 
 	/**
-	 * ƒQ[ƒ€‚ğ”jŠü‚·‚éè‡‚ğ‹Lq‚µ‚Ü‚·.
+	 * ã‚²ãƒ¼ãƒ ã‚’ç ´æ£„ã™ã‚‹æ‰‹é †ã‚’è¨˜è¿°ã—ã¾ã™.
 	 */
 	@OneceTime
 	protected abstract void dispose();
 
 	/**
-	 * ƒQ[ƒ€ƒ[ƒ‹ƒh‚ğXV‚·‚éˆ—‚ğ‹Lq‚µ‚Ü‚·.
+	 * ã‚²ãƒ¼ãƒ ãƒ¯ãƒ¼ãƒ«ãƒ‰ã‚’æ›´æ–°ã™ã‚‹å‡¦ç†ã‚’è¨˜è¿°ã—ã¾ã™.
 	 *
-	 * @param gtm ƒQ[ƒ€ƒ^ƒCƒ€ƒ}ƒl[ƒWƒƒ[‚Ì—Bˆê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX.
+	 * @param gtm ã‚²ãƒ¼ãƒ ã‚¿ã‚¤ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®å”¯ä¸€ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹.
 	 */
 	@LoopCall
 	protected abstract void update(GameTimeManager gtm, InputState is);
 
 	/**
-	 * ‰æ–Ê‚ğ•`‰æ‚·‚éˆ—‚ğ‹Lq‚µ‚Ü‚·.
+	 * ç”»é¢ã‚’æç”»ã™ã‚‹å‡¦ç†ã‚’è¨˜è¿°ã—ã¾ã™.
 	 *
-	 * @param gc ƒEƒCƒ“ƒhƒE‚Ì“à•”—Ìˆæ‚É‘Î‰‚·‚éƒOƒ‰ƒtƒBƒbƒNƒXƒRƒ“ƒeƒLƒXƒg.
+	 * @param gc ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®å†…éƒ¨é ˜åŸŸã«å¯¾å¿œã™ã‚‹ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ.
 	 */
 	@LoopCall
 	protected abstract void draw(GraphicsContext gc);
 	private BufferedImage image;
 
 	/**
-	 * ‰æ–Ê‚ğƒŠƒyƒCƒ“ƒg‚µ‚Ü‚·. ‚±‚Ìƒƒ\ƒbƒh‚Í“à•”—p‚Å‚·BŒÄ‚Ño‚³‚È‚¢‚Å‚­‚¾‚³‚¢B
+	 * ç”»é¢ã‚’ãƒªãƒšã‚¤ãƒ³ãƒˆã—ã¾ã™. ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯å†…éƒ¨ç”¨ã§ã™ã€‚å‘¼ã³å‡ºã•ãªã„ã§ãã ã•ã„ã€‚
 	 */
 	@LoopCall
 	final void repaint() {
