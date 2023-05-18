@@ -1816,7 +1816,7 @@ public class BattleSystem implements Drawable {
 				}
 				//移動ポイントが切れていない場合で、移動ポイントが半分以上残っている場合は攻撃可能
 				//半分以下の場合は行動終了
-				if (remMovePoint < currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue()) {
+				if (remMovePoint < currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2) {
 					break;
 				}
 				//アクションを抽選・・・このステージに入るときは必ずENEMYなのでキャスト失敗しない
