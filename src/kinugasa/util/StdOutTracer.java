@@ -262,7 +262,7 @@ public final class StdOutTracer {
 				instance.frame.setVisible(true);
 			}
 		});
-		GameLog.printInfo("stdout trace is enable");
+		GameLog.print("stdout trace is enable");
 	}
 
 	public static void close() {
@@ -270,7 +270,7 @@ public final class StdOutTracer {
 			use();
 		}
 		instance.closeButton.doClick();
-		GameLog.printInfo("stdout trace is disable");
+		GameLog.print("stdout trace is disable");
 	}
 
 	/**
@@ -367,7 +367,7 @@ public final class StdOutTracer {
 		try{
 			throw new Exception();
 		}catch(Exception ex){
-			kinugasa.game.GameLog.printInfo(ex.getStackTrace()[0].getClassName());
+			kinugasa.game.GameLog.print(ex.getStackTrace()[0].getClassName());
 		}
 		
 

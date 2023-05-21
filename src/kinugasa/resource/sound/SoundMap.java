@@ -1,6 +1,6 @@
 package kinugasa.resource.sound;
 
-import kinugasa.resource.DynamicStorage;
+import kinugasa.resource.InputObjectStorage;
 import kinugasa.resource.InputStatus;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.text.FileIOException;
@@ -21,7 +21,7 @@ import kinugasa.resource.text.FileIOException;
  * @version 1.0.0 - 2013/02/06_7:52:47<br>
  * @author Shinacho<br>
  */
-public final class SoundMap extends DynamicStorage<Sound> implements Nameable {
+public final class SoundMap extends InputObjectStorage<Sound> implements Nameable {
 
 	/**
 	 * このサウンドマップの名前です. たとえば、「町A」や「ダンジョン5」のようなわかりやすい名前を付けることができます。

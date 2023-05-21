@@ -103,7 +103,7 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 		return stream().filter(p).collect(Collectors.toList());
 	}
 
-	public T first(Predicate<? super T> p) {
+	public T firstOf(Predicate<? super T> p) {
 		return stream().filter(p).collect(Collectors.toList()).get(0);
 	}
 
@@ -118,7 +118,7 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 *
 	 * @return 指定したキーのオブジェクトが含まれていればそれを、含まれていなければnullを返します。<br>
 	 */
-	public T getIfContains(String key) {
+	public T getOrNull(String key) {
 		return map.get(key);
 	}
 
@@ -192,6 +192,11 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 */
 	public boolean contains(T obj) {
 		return contains(obj.getName());
+	}
+	
+	@Deprecated
+	public Map<String, T> getDirect(){
+		return map;
 	}
 
 	/**
@@ -364,18 +369,18 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 			return;
 		}
 		stream.println("> Storage : class=[" + getClass() + "]");
-		GameLog.printInfo("> Storage : class=[" + getClass() + "]");
+		GameLog.print("> Storage : class=[" + getClass() + "]");
 		for (T obj : map.values()) {
 			stream.print("> Storage : printAll : " + obj.getName());
-			GameLog.printInfo("> Storage : printAll : " + obj.getName());
+			GameLog.print("> Storage : printAll : " + obj.getName());
 			if (valueOut) {
 				stream.print(" : " + obj);
-				GameLog.printInfo(" : " + obj);
+				GameLog.print(" : " + obj);
 			}
 			stream.println();
 		}
 		stream.println("> Storage : ------------------------");
-		GameLog.printInfo("> Storage : ------------------------");
+		GameLog.print("> Storage : ------------------------");
 	}
 
 	/**
@@ -386,7 +391,7 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 *
 	 * @return 指定した名前を持つオブジェクトを新しいマップに格納して返します。<br>
 	 */
-	public Map<String, T> getProperties(String... names) {
+	public Map<String, T> getAsNewMap(String... names) {
 		Map<String, T> result = new HashMap<String, T>(names.length);
 		for (String name : names) {
 			if (contains(name)) {
@@ -411,7 +416,7 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 		return map.values().iterator();
 	}
 
-	public List<T> sort(Comparator<? super T> c) {
+	public List<T> asSortedList(Comparator<? super T> c) {
 		List<T> list = new ArrayList<>(asList());
 		Collections.sort(list, c);
 		return list;

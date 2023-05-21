@@ -79,14 +79,13 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 		XMLElement root = file.load().getFirst();
 
 		for (XMLElement e : root.getElement("enemy")) {
-			String id = e.getAttributes().get("name").getValue();
-			String visibleName = e.getAttributes().get("visibleName").getValue();
+			String visibleName = e.getAttributes().get("name").getValue();
 			BufferedImage image = ImageUtil.load(e.getAttributes().get("image").getValue());
 			Race race = RaceStorage.getInstance().get(e.getAttributes().get("race").getValue());
 			Vehicle vehicle = VehicleStorage.getInstance().get(e.getAttributes().get("vehicle").getValue());
 			EnemyAI ai = EnemyAIStorage.getInstance().get(e.getAttributes().get("ai").getValue());
 			Sound deadSound = null;
-			if(e.getAttributes().contains("deadSound")){
+			if (e.getAttributes().contains("deadSound")) {
 				String mapName = e.getAttributes().get("deadSound").safeSplit("/")[0];
 				String soundName = e.getAttributes().get("deadSound").safeSplit("/")[1];
 				Sound s = SoundStorage.getInstance().get(mapName).get(soundName);
@@ -152,7 +151,6 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 			}
 
 			EnemyBlueprint b = new EnemyBlueprint(
-					id,
 					visibleName,
 					statusValueSet,
 					attrValueSet,

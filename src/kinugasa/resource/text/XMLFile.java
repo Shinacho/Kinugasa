@@ -109,7 +109,7 @@ public final class XMLFile implements Input<XMLFile>, Output, Nameable, Iterable
 		assert document != null : "document is null";
 
 		data.add(XMLParserUtil.createElement(document.getLastChild()));
-		GameLog.printInfoIfUsing("XMLFile [" + file.getName() + "] is loaded");
+		GameLog.print("XMLFile [" + file.getName() + "] is loaded");
 		return this;
 	}
 

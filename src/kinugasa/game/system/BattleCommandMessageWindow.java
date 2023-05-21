@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
 import kinugasa.game.NoLoopCall;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
 
@@ -70,7 +71,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		type = ActionType.values()[typeIdx];
 		updateText();
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("BCMW :" + selected);
+			kinugasa.game.GameLog.print("BCMW :" + selected);
 		}
 		setCurrent();
 	}
@@ -83,7 +84,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		type = ActionType.values()[typeIdx];
 		updateText();
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("BCMW :" + selected);
+			kinugasa.game.GameLog.print("BCMW :" + selected);
 		}
 		setCurrent();
 	}
@@ -121,12 +122,12 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 	private void updateText() {
 		if (cmd == null) {
 			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.printInfo("BCMW : cmd is null");
+				kinugasa.game.GameLog.print("BCMW : cmd is null");
 			}
 			return;
 		}
 		String text = cmd.getUser().getStatus().getName();
-		text = I18N.translate("WHATDO") + ", " + text + " ! ! ";
+		text = I18N.get(GameSystemI18NKeys.どうする) + ", " + text + " ! ! ";
 		text += "         <------------------[ " + type.displayName() + " ]------------------>";
 		text += Text.getLineSep();
 		int i = 0;
@@ -145,10 +146,10 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 				case OTHER:
 					throw new GameSystemException("ATTACK,OTHER action is empty");
 				case ITEM:
-					text += I18N.translate("NOTHING_ITEM") + Text.getLineSep();
+					text += I18N.get(GameSystemI18NKeys.何も持っていない) + Text.getLineSep();
 					break;
 				case MAGIC:
-					text += I18N.translate("NOTHING_MAGIC") + Text.getLineSep();
+					text += I18N.get(GameSystemI18NKeys.使える魔術はない) + Text.getLineSep();
 					break;
 				default:
 					throw new AssertionError("BattleCommandMessageWindow : undefined type");
@@ -167,7 +168,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 				case ATTACK:
 					text += b.getName() + ":" + b.getDesc();
 					text += ("、")
-							+ (I18N.translate("ACTION_ATTR"))
+							+ (I18N.get(GameSystemI18NKeys.属性))
 							+ (":");
 					text += (b.getBattleEvent()
 							.stream()
@@ -176,7 +177,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 							.distinct()
 							.collect(Collectors.toList()));
 					text += ("、")
-							+ (I18N.translate("ACTION_EFFECT"))
+							+ (I18N.get(GameSystemI18NKeys.基礎威力))
 							+ (":");
 					//ENEMYが入っている場合、minを、そうでない場合はMAXを取る
 					if (b.getBattleEvent().stream().anyMatch(p -> p.getTargetType().toString().contains("ENEMY"))) {
@@ -208,7 +209,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 						int val = map.containsKey(StatusKeyStorage.getInstance().get(s)) ? map.get(StatusKeyStorage.getInstance().get(s)) : 0;
 						status += " " + StatusKeyStorage.getInstance().get(s).getDesc() + ":" + val;
 					}
-					status += " (" + I18N.translate("SPELLTIME") + ":" + b.getSpellTime() + I18N.translate("TURN") + ")";
+					status += " (" + I18N.get(GameSystemI18NKeys.詠唱時間) + ":" + b.getSpellTime() + I18N.get(GameSystemI18NKeys.ターン) + ")";
 					text += b.getName() + " : " + status + Text.getLineSep();
 					break;
 				case OTHER:
@@ -235,7 +236,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		Collections.sort(actionList);
 		selected = actionList.get(getSelectedIdx() - 1);
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("MCMW :" + selected);
+			kinugasa.game.GameLog.print("MCMW :" + selected);
 		}
 		setCurrent();
 	}
@@ -249,7 +250,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		Collections.sort(actionList);
 		selected = actionList.get(getSelectedIdx() - 1);
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("MCMW :" + selected);
+			kinugasa.game.GameLog.print("MCMW :" + selected);
 		}
 		setCurrent();
 	}

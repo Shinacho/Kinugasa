@@ -65,11 +65,11 @@ public class VehicleStorage extends Storage<Vehicle> implements XMLFileSupport {
 
 			List<MapChipAttribute> list = new ArrayList<>();
 			for (XMLElement ee : e.getElement("stepOn")) {
-				list.add(MapChipAttributeStorage.getInstance().get(ee.getAttributes().get("attribute").getValue()));
+				list.add(MapChipAttributeStorage.getInstance().get(ee.getAttributes().get("name").getValue()));
 			}
 			add(new Vehicle(name, speed, list));
 		}
-		GameLog.printIfUsing(Level.ALL, getAll().toString());
+		GameLog.print(getAll());
 	}
 
 	private Vehicle currentVehicle;

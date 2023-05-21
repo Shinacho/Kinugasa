@@ -30,6 +30,8 @@ package kinugasa.game.system;
  * @author Shinacho<br>
  */
 public enum TargetType {
+	/** ユーザ定義イベント */
+	USER_DEFINED,
 	/**
 	 * 自身のみ。
 	 */

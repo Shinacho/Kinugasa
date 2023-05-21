@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.NoLoopCall;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
@@ -63,22 +64,22 @@ public class MaterialPageWindow extends BasicSprite {
 			case MATERIAL:
 				Map<Material, Integer> map1 = GameSystem.getInstance().getMaterialBag().getMap();
 				for (Map.Entry<Material, Integer> e : map1.entrySet()) {
-					list.add(e.getKey().getName() + ":" + e.getValue() + (I18N.translate("VALUE") + ":" + e.getKey().getValue()));
+					list.add(e.getKey().getName() + ":" + e.getValue() + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getValue()));
 				}
 				break;
 			case PAGE:
 				Map<BookPage, Integer> map2 = GameSystem.getInstance().getBookPageBag().getMap();
 				for (Map.Entry<BookPage, Integer> e : map2.entrySet()) {
-					list.add(e.getKey().getName() + ":" + e.getValue() + (I18N.translate("VALUE") + ":" + e.getKey().getSaleValue()));
+					list.add(e.getKey().getName() + ":" + e.getValue() + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getSaleValue()));
 				}
 				break;
 		}
 		Collections.sort(list);
 		if (list.isEmpty()) {
-			list.add(I18N.translate("NOTHING_ITEM"));
+			list.add(I18N.get(GameSystemI18NKeys.何も持っていない));
 		}
 
-		list.add(0, "<----" + I18N.translate(mode.toString()) + "---->");
+		list.add(0, "<----" + I18N.get(mode == Mode.MATERIAL ? GameSystemI18NKeys.素材 : GameSystemI18NKeys.術式) + "---->");
 
 		mw.setText(list.stream().map(p -> new Text(p)).collect(Collectors.toList()));
 	}

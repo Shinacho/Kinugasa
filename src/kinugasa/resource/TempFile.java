@@ -53,7 +53,7 @@ public final class TempFile implements Nameable {
 		} catch (IOException e) {
 			throw new ContentsIOException(e);
 		}
-		GameLog.printInfoIfUsing("temp file " + file.getPath() + " is created");
+		GameLog.print("temp file " + file.getPath() + " is created");
 	}
 
 	public String getPath() {

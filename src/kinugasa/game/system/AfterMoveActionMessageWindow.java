@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
@@ -82,7 +83,7 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 				case ATTACK:
 					text += b.getName() + ":" + b.getDesc();
 					text += ("、")
-							+ (I18N.translate("ACTION_ATTR"))
+							+ (I18N.get(GameSystemI18NKeys.属性))
 							+ (":");
 					text += (b.getBattleEvent()
 							.stream()
@@ -91,7 +92,7 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 							.distinct()
 							.collect(Collectors.toList()));
 					text += ("、")
-							+ (I18N.translate("ACTION_EFFECT"))
+							+ (I18N.get(GameSystemI18NKeys.基礎威力))
 							+ (":");
 					//ENEMYが入っている場合、minを、そうでない場合はMAXを取る
 					if (b.getBattleEvent().stream().anyMatch(p -> p.getTargetType().toString().contains("ENEMY"))) {

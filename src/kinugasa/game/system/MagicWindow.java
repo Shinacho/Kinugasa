@@ -29,6 +29,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
+import static kinugasa.game.system.ParameterType.ITEM_LOST;
+import static kinugasa.game.system.ParameterType.STATUS;
+import static kinugasa.game.system.StatusDamageCalcType.PERCENT_OF_MAX;
+import static kinugasa.game.system.StatusDamageCalcType.PERCENT_OF_NOW;
+import static kinugasa.game.system.StatusDamageCalcType.USE_DAMAGE_CALC;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.MessageWindowGroup;
@@ -159,9 +165,9 @@ public class MagicWindow extends BasicSprite {
 		switch (mode) {
 			case MAGIC_AND_USER_SELECT:
 				List<Text> options = new ArrayList<>();
-				options.add(new Text(I18N.translate("USE")));
-				options.add(new Text(I18N.translate("CHECK")));
-				Choice c = new Choice(options, "IMAGIC_WINDOW_SUB", a.getName() + I18N.translate("OF"));
+				options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
+				options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
+				Choice c = new Choice(options, "IMAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, a.getName()));
 				choiceUse.setText(c);
 				choiceUse.allText();
 				choiceUse.setSelect(0);
@@ -174,13 +180,9 @@ public class MagicWindow extends BasicSprite {
 						//フィールドでは使えない場合
 						if (!a.isFieldUse()) {
 							StringBuilder sb = new StringBuilder();
-							sb.append(getSelectedPC().getName());
-							sb.append(I18N.translate("IS"));
-							sb.append(a.getName());
-							sb.append(I18N.translate("USE_ITEM"));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
 							sb.append(Text.getLineSep());
-							sb.append(I18N.translate("BUT"));
-							sb.append(I18N.translate("CANT_USE_FIELD"));
+							sb.append(I18N.get(GameSystemI18NKeys.しかしこの魔法はフィールドでは使えない));
 							msg.setText(sb.toString());
 							msg.allText();
 							group.show(msg);
@@ -194,10 +196,9 @@ public class MagicWindow extends BasicSprite {
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 							if (vs.hasMinus()) {
 								StringBuilder sb = new StringBuilder();
-								sb.append(getSelectedPC().getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
 								sb.append(Text.getLineSep());
-								sb.append(I18N.translate("BUT"));
-								sb.append(vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
+								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
 								msg.setText(sb.toString());
 								msg.allText();
 								group.show(msg);
@@ -209,7 +210,7 @@ public class MagicWindow extends BasicSprite {
 							tgt.setDamageCalcPoint();
 							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true).setSelfTarget(true));
 							StringBuilder sb = new StringBuilder();
-							sb.append(tgt.getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
 							sb.append(Text.getLineSep());
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 								//成功
@@ -217,21 +218,24 @@ public class MagicWindow extends BasicSprite {
 								Map<StatusKey, Float> map = tgt.calcDamage();
 								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 									if (e.getValue() < 0f) {
-										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
+										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()));
+										sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
 										sb.append(Text.getLineSep());
 									} else if (e.getValue() > 0f) {
-										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("SUB"));
+										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
 										sb.append(Text.getLineSep());
 									} else {
 										//==0
-										sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
+										sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 										sb.append(Text.getLineSep());
 									}
 								}
 							} else {
 								//失敗
-								sb.append(I18N.translate("BUT"));
-								sb.append(I18N.translate("NO_EFFECT"));
+								sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 							}
 							msg.setText(sb.toString());
 							msg.allText();
@@ -246,10 +250,9 @@ public class MagicWindow extends BasicSprite {
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 							if (vs.hasMinus()) {
 								StringBuilder sb = new StringBuilder();
-								sb.append(getSelectedPC().getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
 								sb.append(Text.getLineSep());
-								sb.append(I18N.translate("BUT"));
-								sb.append(vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
+								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
 								msg.setText(sb.toString());
 								msg.allText();
 								group.show(msg);
@@ -263,7 +266,7 @@ public class MagicWindow extends BasicSprite {
 							tgt.setDamageCalcPoint();
 							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
 							StringBuilder sb = new StringBuilder();
-							sb.append(tgt.getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
 							sb.append(Text.getLineSep());
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 								//成功
@@ -271,21 +274,24 @@ public class MagicWindow extends BasicSprite {
 								Map<StatusKey, Float> map = tgt.calcDamage();
 								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 									if (e.getValue() < 0f) {
-										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
+										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()));
+										sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
 										sb.append(Text.getLineSep());
 									} else if (e.getValue() > 0f) {
-										sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("SUB"));
+										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
 										sb.append(Text.getLineSep());
 									} else {
 										//==0
-										sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
+										sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 										sb.append(Text.getLineSep());
 									}
 								}
 							} else {
 								//失敗
-								sb.append(I18N.translate("BUT"));
-								sb.append(I18N.translate("NO_EFFECT"));
+								sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 							}
 							msg.setText(sb.toString());
 							msg.allText();
@@ -300,10 +306,9 @@ public class MagicWindow extends BasicSprite {
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 							if (vs.hasMinus()) {
 								StringBuilder sb = new StringBuilder();
-								sb.append(getSelectedPC().getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
 								sb.append(Text.getLineSep());
-								sb.append(I18N.translate("BUT"));
-								sb.append(vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
+								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
 								msg.setText(sb.toString());
 								msg.allText();
 								group.show(msg);
@@ -316,7 +321,7 @@ public class MagicWindow extends BasicSprite {
 							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
 							StringBuilder sb = new StringBuilder();
 							for (Status s : tgt) {
-								sb.append(s.getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
 								sb.append(Text.getLineSep());
 								if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 									//成功
@@ -324,21 +329,24 @@ public class MagicWindow extends BasicSprite {
 									Map<StatusKey, Float> map = s.calcDamage();
 									for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 										if (e.getValue() < 0f) {
-											sb.append(I18N.translate("PARTY")).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
+											sb.append(I18N.get(GameSystemI18NKeys.Xの, I18N.get(GameSystemI18NKeys.全員)));
+											sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()));
+											sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
 											sb.append(Text.getLineSep());
 										} else if (e.getValue() > 0f) {
-											sb.append(I18N.translate("PARTY")).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("SUB"));
+											sb.append(I18N.get(GameSystemI18NKeys.Xの, I18N.get(GameSystemI18NKeys.全員)));
+											sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()));
+											sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
 											sb.append(Text.getLineSep());
 										} else {
 											//==0
-											sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
+											sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 											sb.append(Text.getLineSep());
 										}
 									}
 								} else {
 									//失敗
-									sb.append(I18N.translate("BUT"));
-									sb.append(I18N.translate("NO_EFFECT"));
+									sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 								}
 							}
 							msg.setText(sb.toString());
@@ -352,10 +360,9 @@ public class MagicWindow extends BasicSprite {
 						StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 						if (vs.hasMinus()) {
 							StringBuilder sb = new StringBuilder();
-							sb.append(getSelectedPC().getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
 							sb.append(Text.getLineSep());
-							sb.append(I18N.translate("BUT"));
-							sb.append(vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList())).append(I18N.translate("SHORTAGE"));
+							sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
 							msg.setText(sb.toString());
 							msg.allText();
 							group.show(msg);
@@ -365,7 +372,8 @@ public class MagicWindow extends BasicSprite {
 						//その他の場合はターゲット選択へ
 						List<Text> option1 = new ArrayList<>();
 						option1.addAll(GameSystem.getInstance().getPartyStatus().stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
-						tgtSelect.setText(new Choice(option1, "MAGIC_WINDOW_SUB", a.getName() + I18N.translate("WHO_DO_USE")));
+						tgtSelect.setText(new Choice(option1, "MAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの, a.getName())
+								+ I18N.get(GameSystemI18NKeys.Xを誰に使う, getSelectedAction().getName())));
 						tgtSelect.allText();
 						group.show(tgtSelect);
 						mode = Mode.TARGET_SELECT;
@@ -386,15 +394,15 @@ public class MagicWindow extends BasicSprite {
 							sb.append(Text.getLineSep());
 						}
 						//イベント詳細
-						sb.append("--").append(I18N.translate("BATTLE_ACTION")).append(Text.getLineSep());
+						sb.append("--").append(I18N.get(GameSystemI18NKeys.戦闘効果)).append(Text.getLineSep());
 						if (a.isBattleUse()) {
 							//SPELL_TIME
 							sb.append("  ");
-							sb.append(I18N.translate("SPELLTIME")).append(":").append(a.getSpellTime()).append(I18N.translate("TURN"));
+							sb.append(I18N.get(GameSystemI18NKeys.詠唱時間)).append(":").append(a.getSpellTime()).append(I18N.get(GameSystemI18NKeys.ターン));
 							sb.append(Text.getLineSep());
 							//AREA
 							sb.append("  ");
-							sb.append(I18N.translate("AREA")).append(":").append(a.getArea());
+							sb.append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(a.getArea());
 							sb.append(Text.getLineSep());
 						}
 						if (a.isBattleUse()) {
@@ -402,141 +410,139 @@ public class MagicWindow extends BasicSprite {
 								sb.append("  ");
 								switch (e.getParameterType()) {
 									case ADD_CONDITION:
-										sb.append(I18N.translate("ADD_CONDITION").replaceAll("c", ConditionValueStorage.getInstance().get(e.getTgtName()).getKey().getDesc()));
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを追加する, ConditionValueStorage.getInstance().get(e.getTgtName()).getKey().getDesc()));
 										break;
 									case ATTR_IN:
-										sb.append(I18N.translate("CHANGE_ATTR"));
-										sb.append(AttributeKeyStorage.getInstance().get(e.getTgtName()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xの有効度を変更する, AttributeKeyStorage.getInstance().get(e.getTgtName()).getDesc()));
 										sb.append(",");
 										//dct
 										switch (e.getDamageCalcType()) {
 											case DIRECT:
-												sb.append(I18N.translate("DCT_DIRECT"));
+												sb.append(I18N.get(GameSystemI18NKeys.直接作用));
 												break;
 											case PERCENT_OF_MAX:
-												sb.append(I18N.translate("DCT_PERCENT_OF_MAX"));
+												sb.append(I18N.get(GameSystemI18NKeys.最大値の割合));
 												break;
 											case PERCENT_OF_NOW:
-												sb.append(I18N.translate("DCT_PERCENT_OF_NOW"));
+												sb.append(I18N.get(GameSystemI18NKeys.現在値の割合));
 												break;
 											case USE_DAMAGE_CALC:
-												sb.append(I18N.translate("DCT_USE_DAMAGE_CALC"));
+												sb.append(I18N.get(GameSystemI18NKeys.標準ダメージ計算));
 												break;
 										}
 										break;
 									case ITEM_ADD:
-										sb.append(I18N.translate("ITEM_ADD").replaceAll("i", e.getTgtName()));
+										sb.append(I18N.get(GameSystemI18NKeys.アイテムXを追加する, e.getTgtName()));
 										break;
 									case ITEM_LOST:
-										sb.append(I18N.translate("ITEM_LOST").replaceAll("i", e.getTgtName()));
+										sb.append(I18N.get(GameSystemI18NKeys.アイテムXを破棄する, e.getTgtName()));
 										break;
 									case NONE:
 										break;
 									case REMOVE_CONDITION:
-										sb.append(I18N.translate("REMOVE_CONDITION").replaceAll("c", e.getTgtName()));
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを回復する, e.getTgtName()));
 										break;
 									case STATUS:
-										sb.append(I18N.translate("DAMAGE")).append(":");
+										sb.append(I18N.get(GameSystemI18NKeys.ダメージ)).append(":");
 										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getName());
 										sb.append(",");
 										//dct
 										switch (e.getDamageCalcType()) {
 											case DIRECT:
-												sb.append(I18N.translate("DCT_DIRECT"));
+												sb.append(I18N.get(GameSystemI18NKeys.直接作用));
 												break;
 											case PERCENT_OF_MAX:
-												sb.append(I18N.translate("DCT_PERCENT_OF_MAX"));
+												sb.append(I18N.get(GameSystemI18NKeys.最大値の割合));
 												break;
 											case PERCENT_OF_NOW:
-												sb.append(I18N.translate("DCT_PERCENT_OF_NOW"));
+												sb.append(I18N.get(GameSystemI18NKeys.現在値の割合));
 												break;
 											case USE_DAMAGE_CALC:
-												sb.append(I18N.translate("DCT_USE_DAMAGE_CALC"));
+												sb.append(I18N.get(GameSystemI18NKeys.標準ダメージ計算));
 												break;
 										}
 										break;
 								}
 								sb.append(",");
 								if (e.getParameterType() == ParameterType.STATUS) {
-									sb.append(I18N.translate("ACTION_EFFECT")).append(":").append(Math.abs((int) e.getValue()));
+									sb.append(I18N.get(GameSystemI18NKeys.基礎威力)).append(":").append(Math.abs((int) e.getValue()));
 								}
 								sb.append(",");
-								sb.append(I18N.translate("P")).append(":").append((int) (e.getP() * 100)).append("%");
+								sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append((int) (e.getP() * 100)).append("%");
 								sb.append(Text.getLineSep());
 							}
 						} else {
-							sb.append("  ").append(I18N.translate("CANT_USE_BATTLE")).append(Text.getLineSep());
+							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法は戦闘中使えない)).append(Text.getLineSep());
 						}
-						sb.append("--").append(I18N.translate("FIELD_ACTION")).append(Text.getLineSep());
+						sb.append("--").append(I18N.get(GameSystemI18NKeys.フィールド効果)).append(Text.getLineSep());
 						if (a.isFieldUse()) {
 							for (ActionEvent e : a.getFieldEvent()) {
 								sb.append("  ");
 								switch (e.getParameterType()) {
 									case ADD_CONDITION:
-										sb.append(I18N.translate("ADD_CONDITION").replaceAll("c", e.getTgtName()));
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを追加する, e.getTgtName()));
 										break;
 									case ATTR_IN:
-										sb.append(I18N.translate("CHANGE_ATTR"));
-										sb.append(AttributeKeyStorage.getInstance().get(e.getTgtName()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xの有効度を変更する, AttributeKeyStorage.getInstance().get(e.getTgtName()).getDesc()));
 										sb.append(",");
 										//dct
 										switch (e.getDamageCalcType()) {
 											case DIRECT:
-												sb.append(I18N.translate("DCT_DIRECT"));
+												sb.append(I18N.get(GameSystemI18NKeys.直接作用));
 												break;
 											case PERCENT_OF_MAX:
-												sb.append(I18N.translate("DCT_PERCENT_OF_MAX"));
+												sb.append(I18N.get(GameSystemI18NKeys.最大値の割合));
 												break;
 											case PERCENT_OF_NOW:
-												sb.append(I18N.translate("DCT_PERCENT_OF_NOW"));
+												sb.append(I18N.get(GameSystemI18NKeys.現在値の割合));
 												break;
 											case USE_DAMAGE_CALC:
-												sb.append(I18N.translate("DCT_USE_DAMAGE_CALC"));
+												sb.append(I18N.get(GameSystemI18NKeys.標準ダメージ計算));
 												break;
 										}
 										break;
 									case ITEM_ADD:
-										sb.append(I18N.translate("ITEM_ADD").replaceAll("i", e.getTgtName()));
+										sb.append(I18N.get(GameSystemI18NKeys.アイテムXを追加する, e.getTgtName()));
 										break;
 									case ITEM_LOST:
-										sb.append(I18N.translate("ITEM_LOST").replaceAll("i", e.getTgtName()));
+										sb.append(I18N.get(GameSystemI18NKeys.アイテムXを破棄する, e.getTgtName()));
 										break;
 									case NONE:
 										break;
 									case REMOVE_CONDITION:
-										sb.append(I18N.translate("REMOVE_CONDITION").replaceAll("c", e.getTgtName()));
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを回復する, e.getTgtName()));
 										break;
 									case STATUS:
-										sb.append(I18N.translate("DAMAGE")).append(":");
+										sb.append(I18N.get(GameSystemI18NKeys.ダメージ)).append(":");
 										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getName());
 										sb.append(",");
 										//dct
 										switch (e.getDamageCalcType()) {
 											case DIRECT:
-												sb.append(I18N.translate("DCT_DIRECT"));
+												sb.append(I18N.get(GameSystemI18NKeys.直接作用));
 												break;
 											case PERCENT_OF_MAX:
-												sb.append(I18N.translate("DCT_PERCENT_OF_MAX"));
+												sb.append(I18N.get(GameSystemI18NKeys.最大値の割合));
 												break;
 											case PERCENT_OF_NOW:
-												sb.append(I18N.translate("DCT_PERCENT_OF_NOW"));
+												sb.append(I18N.get(GameSystemI18NKeys.現在値の割合));
 												break;
 											case USE_DAMAGE_CALC:
-												sb.append(I18N.translate("DCT_USE_DAMAGE_CALC"));
+												sb.append(I18N.get(GameSystemI18NKeys.標準ダメージ計算));
 												break;
 										}
 										break;
 								}
 								sb.append(",");
 								if (e.getParameterType() == ParameterType.STATUS) {
-									sb.append(I18N.translate("ACTION_EFFECT")).append(":").append(Math.abs((int) e.getValue()));
+									sb.append(I18N.get(GameSystemI18NKeys.基礎威力)).append(":").append(Math.abs((int) e.getValue()));
 								}
 								sb.append(",");
-								sb.append(I18N.translate("P")).append(":").append((int) (e.getP() * 100)).append("%");
+								sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append((int) (e.getP() * 100)).append("%");
 								sb.append(Text.getLineSep());
 							}
 						} else {
-							sb.append("  ").append(I18N.translate("CANT_USE_FIELD")).append(Text.getLineSep());
+							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法はフィールドでは使えない)).append(Text.getLineSep());
 						}
 						msg.setText(sb.toString());
 						msg.allText();
@@ -573,7 +579,7 @@ public class MagicWindow extends BasicSprite {
 		}
 		ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
 		StringBuilder sb = new StringBuilder();
-		sb.append(tgt.getName()).append(I18N.translate("IS")).append(a.getName()).append(I18N.translate("USE_MAGIC"));
+		sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
 		sb.append(Text.getLineSep());
 		if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 			//成功
@@ -581,14 +587,18 @@ public class MagicWindow extends BasicSprite {
 			Map<StatusKey, Float> map = getSelectedPC().calcDamage();
 			for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
 				if (e.getValue() < 0f) {
-					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("HEALDAMAGE"));
+					sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
+					sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()));
+					sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
 					sb.append(Text.getLineSep());
 				} else if (e.getValue() > 0f) {
-					sb.append(tgt.getName()).append(I18N.translate("S")).append(e.getKey().getDesc()).append(I18N.translate("IS")).append(Math.abs(e.getValue())).append(I18N.translate("SUB"));
+					sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
+					sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()));
+					sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
 					sb.append(Text.getLineSep());
 				} else {
 					//==0
-					sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
+					sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 					sb.append(Text.getLineSep());
 				}
 			}
@@ -596,13 +606,12 @@ public class MagicWindow extends BasicSprite {
 			//TODO:
 
 			if (map.isEmpty()) {
-				sb.append(I18N.translate("BUT")).append(I18N.translate("NO_EFFECT"));
+				sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 				sb.append(Text.getLineSep());
 			}
 		} else {
 			//失敗
-			sb.append(I18N.translate("BUT"));
-			sb.append(I18N.translate("NO_EFFECT"));
+			sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 			sb.append(Text.getLineSep());
 		}
 
@@ -625,11 +634,11 @@ public class MagicWindow extends BasicSprite {
 	}
 
 	private void updateText() {
-		Text line1 = new Text("<---" + getSelectedPC().getName() + I18N.translate("S") + I18N.translate("MAGIC") + "--->");
+		Text line1 = new Text("<---" + I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getName()) + I18N.get(GameSystemI18NKeys.魔術) + "--->");
 
 		List<CmdAction> list = getSelectedPC().getActions(ActionType.MAGIC);
 		if (list.isEmpty()) {
-			Text line2 = new Text(I18N.translate("NOTHING_MAGIC"));
+			Text line2 = new Text(I18N.get(GameSystemI18NKeys.使える魔術はない));
 			main.setText(List.of(line1, line2));
 			return;
 		}

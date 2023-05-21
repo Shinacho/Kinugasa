@@ -233,7 +233,7 @@ public class CachedSound implements Sound {
 					FloatControl control = (FloatControl) clip.getControl(t);
 					control.setValue(val);
 				} catch (IllegalArgumentException i) {
-					GameLog.printInfoIfUsing("! > CachedSound : [" + getName() + "] : UN SUPPORTED CONTROL : Type=[" + t + "]");
+					GameLog.print("! > CachedSound : [" + getName() + "] : UN SUPPORTED CONTROL : Type=[" + t + "]");
 				}
 			}
 			if (lp != null) {
@@ -252,7 +252,7 @@ public class CachedSound implements Sound {
 			}
 		}
 		watch.stop();
-		GameLog.printInfoIfUsing("CachedSound is loaded name=[" + getName() + "](" + watch.getTime() + " ms)");
+		GameLog.print("CachedSound is loaded name=[" + getName() + "](" + watch.getTime() + " ms)");
 		return this;
 	}
 
@@ -267,7 +267,7 @@ public class CachedSound implements Sound {
 			clip.close();
 		}
 		clip = null;
-		GameLog.printInfoIfUsing("CachedSound : [" + getName() + "] : is disposed");
+		GameLog.print("CachedSound : [" + getName() + "] : is disposed");
 	}
 
 	@Override

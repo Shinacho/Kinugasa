@@ -97,7 +97,6 @@ public class FieldLogic extends GameLogic {
 		//----------------------------------------------------------------------
 		//
 		screenShot = new SoundBuilder("resource/se/screenShot.wav").builde().load();
-		String operaionText = "(LS) " + I18N.translate("MOVE");
 		//
 		ts = fm.getTextStorage();
 		battle = false;

@@ -23,17 +23,13 @@
  */
 package kinugasa.game.system;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.awt.image.BufferedImage;
 import kinugasa.game.GameLog;
-import kinugasa.graphics.Animation;
-import kinugasa.graphics.ImageUtil;
-import kinugasa.graphics.SpriteSheet;
+import static kinugasa.game.system.AnimationMoveType.ROTATE_TGT_TO_USER;
+import kinugasa.graphics.ImageEditor;
 import kinugasa.object.AnimationSprite;
+import kinugasa.resource.KImage;
 import kinugasa.resource.Storage;
-import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.Random;
 
 /**
@@ -85,7 +81,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 //				//P判定はActionEventで実施済み
 //				if (!Random.percent(ba.getP())) {
 //					if (GameSystem.isDebugMode()) {
-//						kinugasa.game.GameLog.printInfo("damage calculation, calceled by P.");
+//						kinugasa.game.GameLog.print("damage calculation, calceled by P.");
 //					}
 //					return new ActionEventResult(ActionResultType.MISS, null);
 //				}
@@ -120,7 +116,11 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 							desc.append("AVO");
 							//回避成功
 							if (GameSystem.isDebugMode()) {
-								kinugasa.game.GameLog.printInfo("damage calculation(ATK), calceled by AVO.");
+								kinugasa.game.GameLog.print("damage calculation(ATK), calceled by AVO.");
+							}
+							//サウンド再生
+							if (BattleConfig.Sound.avoidance != null) {
+								BattleConfig.Sound.avoidance.load().stopAndPlay();
 							}
 							return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 						}
@@ -164,6 +164,10 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 							//カット成功
 							desc.append("CUT,");
 							value *= tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.cutAtkVal).getValue();
+							//サウンド再生
+							if (BattleConfig.Sound.block != null) {
+								BattleConfig.Sound.block.load().stopAndPlay();
+							}
 						}
 					}
 
@@ -176,7 +180,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					if (value == 0) {
 						desc.append("VALUE is 0");
 						if (GameSystem.isDebugMode()) {
-							kinugasa.game.GameLog.printInfo(desc.toString());
+							kinugasa.game.GameLog.print(desc.toString());
 						}
 						return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 					}
@@ -202,6 +206,17 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 							case USER:
 								sprite.setLocationByCenter(user.getSprite().getCenter());
 								break;
+							case ROTATE_TGT_TO_USER:
+								//回転の場合
+								KImage[] images = sprite.getAnimation().getImages();
+
+								float kakudo = ba.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()).angle + 90f;
+								BufferedImage[] newImages = new BufferedImage[images.length];
+								for (int i = 0; i < images.length; i++) {
+									newImages[i] = ImageEditor.rotate(images[i].get(), kakudo, null);
+								}
+								sprite.getAnimation().setImages(images);
+								break;
 							default:
 								sprite.setVector(ba.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()));
 								break;
@@ -210,7 +225,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 
 					//リザルト返却
 					if (GameSystem.isDebugMode()) {
-						GameLog.printInfo("DamageCalcResult:" + desc.toString());
+						GameLog.print("DamageCalcResult:" + desc.toString());
 					}
 					return new ActionEventResult(ActionResultType.SUCCESS, sprite);
 
@@ -240,7 +255,11 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						desc.append("AVO");
 						//回避成功
 						if (GameSystem.isDebugMode()) {
-							kinugasa.game.GameLog.printInfo("damage calculation(MGK), calceled by AVO.");
+							kinugasa.game.GameLog.print("damage calculation(MGK), calceled by AVO.");
+						}
+						//サウンド再生
+						if (BattleConfig.Sound.avoidance != null) {
+							BattleConfig.Sound.avoidance.load().stopAndPlay();
 						}
 						return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 					}
@@ -285,6 +304,10 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						//カット成功
 						desc.append("CUT,");
 						value *= tgt.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.cutMgkVal).getValue();
+						//サウンド再生
+						if (BattleConfig.Sound.block != null) {
+							BattleConfig.Sound.block.load().stopAndPlay();
+						}
 					}
 				}
 
@@ -297,7 +320,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				if (value == 0) {
 					desc.append("VALUE is 0");
 					if (GameSystem.isDebugMode()) {
-						kinugasa.game.GameLog.printInfo(desc.toString());
+						kinugasa.game.GameLog.print(desc.toString());
 					}
 					return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 				}
@@ -323,6 +346,17 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						case USER:
 							sprite.setLocationByCenter(user.getSprite().getCenter());
 							break;
+						case ROTATE_TGT_TO_USER:
+							//回転の場合
+							KImage[] images = sprite.getAnimation().getImages();
+
+							float kakudo = ba.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()).angle + 90f;
+							BufferedImage[] newImages = new BufferedImage[images.length];
+							for (int i = 0; i < images.length; i++) {
+								newImages[i] = ImageEditor.rotate(images[i].get(), kakudo, null);
+							}
+							sprite.getAnimation().setImages(images);
+							break;
 						default:
 							sprite.setVector(ba.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()));
 							break;
@@ -331,7 +365,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 
 				//リザルト返却
 				if (GameSystem.isDebugMode()) {
-					GameLog.printInfo("DamageCalcResult:" + desc.toString());
+					GameLog.print("DamageCalcResult:" + desc.toString());
 				}
 				return new ActionEventResult(ActionResultType.SUCCESS, sprite);
 

@@ -42,6 +42,7 @@ public class Vehicle implements Nameable {
 		this.name = name;
 		this.speed = speed;
 		this.stepOn = stepOn;
+		stepOn.add(MapChipAttributeStorage.getInstance().get("VOID"));
 	}
 
 	@Override

@@ -23,10 +23,12 @@
  */
 package kinugasa.game;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Collection;
+import kinugasa.resource.Storage;
 
 /**
  * ログファイル（ロガーのグローバルログ）への出力を行います. ログファイルのフォーマットはSimpleFoomaterが使用されます。<br>
@@ -46,10 +48,28 @@ public final class GameLog {
 	}
 	private static boolean using = false;
 	private static String logFilePath;
+	private static BufferedWriter writer;
 
 	protected static void usingLog(String path) {
 		using = true;
 		logFilePath = path;
+
+		if (using) {
+			try {
+				writer = new BufferedWriter(new FileWriter(new File(path)));
+			} catch (IOException ex) {
+			}
+		}
+	}
+
+	protected static void close() {
+		if (writer == null) {
+			return;
+		}
+		try {
+			writer.close();
+		} catch (IOException ex) {
+		}
 	}
 
 	public static String getLogFilePath() {
@@ -60,35 +80,34 @@ public final class GameLog {
 		return using;
 	}
 
-	public static void print(Level lv, String message) {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, message.replaceAll("\r\n", "").replaceAll("\n", "").replaceAll("\r", ""));
+	public static void print(String string) {
+		out(string.toString());
 	}
 
-	public static void print(Level lv, Throwable t) {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, t.toString().replaceAll("\r\n", "").replaceAll("\n", "").replaceAll("\r", ""));
-	}
-
-	public static void printIfUsing(Level lv, String message) {
-		if (using) {
-			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, message.replaceAll("\r\n", "").replaceAll("\n", "").replaceAll("\r", ""));
+	public static void print(Object string) {
+		if (string instanceof Collection<?>) {
+			for (Object t : (Collection<?>) string) {
+				print(t);
+			}
+		} else if (string instanceof Storage<?>) {
+			for (Object t : (Storage<?>) string) {
+				print(t);
+			}
+		} else {
+			out(string.toString());
 		}
 	}
 
-	public static void printIfUsing(Level lv, Throwable t) {
-		if (using) {
-			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(lv, t.toString().replaceAll("\r\n", "").replaceAll("\n", "").replaceAll("\r", ""));
+	private static void out(String s) {
+		if (writer == null) {
+			return;
 		}
-	}
-
-	public static void printInfoIfUsing(String string) {
-		printIfUsing(Level.INFO, string);
-	}
-
-	public static void printInfo(String string) {
-		print(Level.INFO, string);
-	}
-
-	public static void printInfo(Object string) {
-		print(Level.INFO, string.toString());
+		try {
+			System.out.println(s);
+			writer.append(s);
+			writer.newLine();
+			writer.flush();
+		} catch (IOException ex) {
+		}
 	}
 }

@@ -97,7 +97,7 @@ public class GameSystemXMLLoader {
 		return this;
 	}
 
-	public GameSystemXMLLoader addEnemySet(String fileName) {
+	public GameSystemXMLLoader addEnemySetStorage(String fileName) {
 		this.ess.add(fileName);
 		return this;
 	}
@@ -410,7 +410,7 @@ public class GameSystemXMLLoader {
 	public boolean testStatus(String raceName) {
 		try {
 			Status s = new Status("name", RaceStorage.getInstance().get(raceName));
-			kinugasa.game.GameLog.printInfo(s);
+			kinugasa.game.GameLog.print(s);
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
@@ -49,9 +50,9 @@ public class OrderSelectWindow extends BasicSprite {
 	private void init() {
 		List<Text> options = new ArrayList<>();
 		for (Status s : GameSystem.getInstance().getPartyStatus()) {
-			options.add(new Text(s.getName() + " : " + I18N.translate(s.getPartyLocation())));
+			options.add(new Text(s.getName() + " : " + I18N.get(s.getPartyLocation() == PartyLocation.BACK ? GameSystemI18NKeys.後列 : GameSystemI18NKeys.前列)));
 		}
-		window.setText(new Choice(options, "ORDER_SELECT_WINDOW", I18N.translate("ORDER_SELECT")));
+		window.setText(new Choice(options, "ORDER_SELECT_WINDOW", I18N.get(GameSystemI18NKeys.前列後列設定)));
 		window.allText();
 	}
 	private MessageWindow window;
@@ -82,9 +83,9 @@ public class OrderSelectWindow extends BasicSprite {
 		int selectId = window.getSelect();
 		List<Text> options = new ArrayList<>();
 		for (Status s : GameSystem.getInstance().getPartyStatus()) {
-			options.add(new Text(s.getName() + " : " + I18N.translate(s.getPartyLocation())));
+			options.add(new Text(s.getName() + " : " + I18N.get(s.getPartyLocation() == PartyLocation.BACK ? GameSystemI18NKeys.後列 : GameSystemI18NKeys.前列)));
 		}
-		window.setText(new Choice(options, "ORDER_SELECT_WINDOW", I18N.translate("ORDER_SELECT")));
+		window.setText(new Choice(options, "ORDER_SELECT_WINDOW", I18N.get(GameSystemI18NKeys.前列後列設定)));
 		window.allText();
 		window.setSelect(selectId);
 	}

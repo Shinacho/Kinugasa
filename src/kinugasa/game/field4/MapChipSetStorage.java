@@ -84,7 +84,7 @@ public class MapChipSetStorage extends Storage<MapChipSet> implements XMLFileSup
 			}
 			add(chipSet);
 		}
-		GameLog.printIfUsing(Level.ALL, getAll().toString());
+		GameLog.print(getAll());
 
 	}
 

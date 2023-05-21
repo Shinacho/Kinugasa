@@ -122,9 +122,9 @@ public class FieldEventSystem implements Drawable {
 		}
 
 //		if (GameSystem.isDebugMode() && !event.isEmpty()) {
-//			kinugasa.game.GameLog.printInfo("kinugasa.game.field4.FieldEventSystem.setEvent()");
+//			kinugasa.game.GameLog.print("kinugasa.game.field4.FieldEventSystem.setEvent()");
 //			for (FieldEvent e : event) {
-//				kinugasa.game.GameLog.printInfo("> " + e);
+//				kinugasa.game.GameLog.print("> " + e);
 //			}
 //		}
 	}
@@ -159,7 +159,7 @@ public class FieldEventSystem implements Drawable {
 			}
 		}
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("tmp flags commit is done.");
+			kinugasa.game.GameLog.print("tmp flags commit is done.");
 		}
 		clearTmpFlags();
 	}
@@ -203,13 +203,12 @@ public class FieldEventSystem implements Drawable {
 		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
 		List<Text> options = new ArrayList<>();
 		for (PlayerCharacter pc : GameSystem.getInstance().getParty()) {
-			options.add(new Text(pc.getName() + " / " + I18N.translate("CAN_HAVE").replaceAll("n", "" + (pc.getStatus().getItemBag().getMax() - pc.getStatus().getItemBag().size()))));
+			options.add(new Text(pc.getName() + " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().sizeAt() + "")));
 		}
-		options.add(new Text(I18N.translate("GIVE_UP")));
+		options.add(new Text(I18N.get(GameSystemI18NKeys.諦める)));
 
 		Choice c = new Choice(options, "",
-				item.getName() + I18N.translate("IS_GET") + ", " + I18N.translate("WHO_WILL_HOLD_IT"),
-				new FrameTimeCounter(0), 0);
+				I18N.get(GameSystemI18NKeys.Xを手に入れた誰が持つ, item.getName()), new FrameTimeCounter(0), 0);
 		c.allText();
 
 		MessageWindow mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), null, c);
@@ -265,7 +264,7 @@ public class FieldEventSystem implements Drawable {
 		item = null;
 		executing = false;
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("--------ManualEndEvent");
+			kinugasa.game.GameLog.print("--------ManualEndEvent");
 		}
 	}
 
@@ -277,7 +276,7 @@ public class FieldEventSystem implements Drawable {
 		currentEvent = event.getFirst();
 		event.removeFirst();
 //		System.out.print("start event : " + currentEvent);
-		GameLog.printInfo("start event : " + currentEvent);
+		GameLog.print("start event : " + currentEvent);
 		if (currentEvent.getEventType() == FieldEventType.IF) {
 			return UserOperationRequire.CONTINUE;
 		}

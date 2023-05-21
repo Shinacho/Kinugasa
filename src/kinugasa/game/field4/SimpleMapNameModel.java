@@ -69,7 +69,7 @@ public class SimpleMapNameModel extends MapNameModel {
 		Graphics2D g2 = g.create();
 		switch (stage) {
 			case 0:
-				String val = I18N.translate(fm.getName());
+				String val = I18N.contains(fm.getName()) ? I18N.get(fm.getName()) : fm.getName();
 				label.setText(val.equals("?") ? fm.getName() : val);
 				float x = (float) (GameOption.getInstance().getWindowSize().getWidth() / GameOption.getInstance().getDrawSize() - 24 - label.getText().length() * label.getLabelModel().getFontSize());
 				label.setX(x);

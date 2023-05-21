@@ -149,7 +149,7 @@ public final class ImageUtil {
 		//キャッシュあり&GC未実行
 		if (cacheRef != null && cacheRef.get() != null) {
 			watch.stop();
-			GameLog.printInfoIfUsing("ImageUtil cached filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+			GameLog.print("ImageUtil cached filePath=[" + filePath + "](" + watch.getTime() + " ms)");
 			return cacheRef.get();
 		}
 		//GCが実行されているかキャッシュがなければ新しくロードしてキャッシュに追加する
@@ -163,19 +163,19 @@ public final class ImageUtil {
 			dst = ImageIO.read(file);
 		} catch (IOException ex) {
 			watch.stop();
-			GameLog.print(Level.WARNING, "cant load filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+			GameLog.print("cant load filePath=[" + filePath + "](" + watch.getTime() + " ms)");
 			throw new ContentsIOException(ex);
 		}
 		if (dst == null) {
 			watch.stop();
-			GameLog.print(Level.WARNING, "image is null filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+			GameLog.print("image is null filePath=[" + filePath + "](" + watch.getTime() + " ms)");
 			throw new ContentsIOException("image is null");
 		}
 		//互換画像に置換
 		dst = copy(dst, newImage(dst.getWidth(), dst.getHeight()));
 		IMAGE_CACHE.put(filePath, new SoftReference<BufferedImage>(dst));
 		watch.stop();
-		GameLog.printInfoIfUsing("ImageUtil loaded filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+		GameLog.print("ImageUtil loaded filePath=[" + filePath + "](" + watch.getTime() + " ms)");
 		return dst;
 	}
 
@@ -437,7 +437,7 @@ public final class ImageUtil {
 				try {
 					BufferedImage image = new Robot().createScreenCapture(BOUNDS);
 					ImageUtil.save(FILE_PATH, image);
-					GameLog.printInfoIfUsing("スクリーンショットを撮影しました FILE_PATH=[" + FILE_PATH + "]");
+					GameLog.print("ScreenShot FILE_PATH=[" + FILE_PATH + "]");
 				} catch (AWTException ex) {
 					throw new ContentsIOException(ex);
 				}

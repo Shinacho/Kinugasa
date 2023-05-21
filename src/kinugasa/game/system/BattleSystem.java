@@ -39,6 +39,7 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
 import kinugasa.game.NoLoopCall;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.field4.PlayerCharacterSprite;
 import kinugasa.game.field4.VehicleStorage;
 import kinugasa.game.ui.Text;
@@ -91,7 +92,7 @@ public class BattleSystem implements Drawable {
 	private List<Enemy> enemies = new ArrayList<>();
 	//このターンのバトルコマンド順序
 	private LinkedList<BattleCommand> commandsOfThisTurn = new LinkedList<>();
-	//このターンのバトルコマンド順序
+	//ターンごとの魔法詠唱完了イベント
 	private LinkedHashMap<Integer, List<MagicSpell>> magics = new LinkedHashMap<>();
 	//表示中バトルアクション・アニメーション
 	private List<AnimationSprite> animation = new ArrayList<>();
@@ -142,7 +143,7 @@ public class BattleSystem implements Drawable {
 
 		public void setStage(Stage s, Stage n) {
 			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.printInfo(" changeStage : [" + this.stage + "] to [" + s + "] and[" + n + "]");
+				kinugasa.game.GameLog.print(" changeStage : [" + this.stage + "] to [" + s + "] and[" + n + "]");
 			}
 			prev = this.stage;
 			this.stage = s;
@@ -282,18 +283,17 @@ public class BattleSystem implements Drawable {
 		SPELL_BUT_NO_TARGET {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("IS")
-						+ a.getName() + I18N.translate("OF") + I18N.translate("USE_MAGIC") + Text.getLineSep()
-						+ I18N.translate("BUT") + " " + I18N.translate("NO_TARGET");
+				return I18N.get(GameSystemI18NKeys.XはXを詠唱した, user.getName(), a.getName())
+						+ Text.getLineSep()
+						+ I18N.get(GameSystemI18NKeys.しかし効果範囲に対象がいない);
 			}
 		},
 		SPELL_BUT_SHORTAGE {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("IS")
-						+ a.getName() + I18N.translate("OF") + I18N.translate("USE_MAGIC") + Text.getLineSep()
-						+ I18N.translate("BUT") + " "
-						+ String.join(",", option) + I18N.translate("SHORTAGE");
+				return I18N.get(GameSystemI18NKeys.XはXを詠唱した, user.getName(), a.getName())
+						+ Text.getLineSep()
+						+ I18N.get(GameSystemI18NKeys.しかしXが足りない, String.join(",", option));
 			}
 		},
 		SPELL_SUCCESS {
@@ -311,97 +311,101 @@ public class BattleSystem implements Drawable {
 		STOP_BECAUSE_CONFU {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("IS_CONFU");
+				return I18N.get(GameSystemI18NKeys.Xは混乱していて動けない, user.getName());
 			}
 		},
 		IS_MOVED {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("ISMOVE");
+				return I18N.get(GameSystemI18NKeys.Xは移動した, user.getName());
 			}
 		},
 		PC_USE_AVO {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("AVOIDANCE");
+				return I18N.get(GameSystemI18NKeys.Xは回避に専念した, user.getName());
 			}
 		},
 		PC_USE_DEFENCE {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("DEFENCE");
+				return I18N.get(GameSystemI18NKeys.Xは防御に専念した, user.getName());
 			}
 		},
 		PC_IS_ESCAPE {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("ISESCAPE");
+				return I18N.get(GameSystemI18NKeys.Xは逃げ出した, user.getName());
 			}
 		},
 		PC_IS_ESCAPE_MISS {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("ISESCAPE") + Text.getLineSep()
-						+ I18N.translate("BUT") + I18N.translate("CANT_ESCAPE");
+				return I18N.get(GameSystemI18NKeys.Xは逃げ出した, user.getName())
+						+ Text.getLineSep()
+						+ I18N.get(GameSystemI18NKeys.しかし戦闘エリアの中心にいては逃げられない);
 			}
 		},
 		NO_TARGET {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return I18N.translate("NO_TARGET");
+				return I18N.get(GameSystemI18NKeys.効果範囲に対象がいない);
 			}
 
 		},
 		EQIP_ITEM {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("IS")
-						+ option.get(0) + I18N.translate("IS_EQIP");
+				return I18N.get(GameSystemI18NKeys.Xは, user.getName()) + Text.getLineSep()
+						+ I18N.get(GameSystemI18NKeys.Xを装備した, option.get(0));
 			}
 		},
 		UNEQIP_ITEM {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("IS")
-						+ option.get(0) + I18N.translate("REMOVE_EQUP");
+				return I18N.get(GameSystemI18NKeys.Xは, user.getName()) + Text.getLineSep()
+						+ I18N.get(GameSystemI18NKeys.Xを外した, option.get(0));
 			}
 		},
 		CANT_EQIP {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return option.get(0) + I18N.translate("NOT_EQIP");
+				return I18N.get(GameSystemI18NKeys.Xは装備できない, option.get(0));
 			}
 		},
 		CANT_USE_THIS_ITEM {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("IS") + option.get(0) + I18N.translate("USE_ITEM") + Text.getLineSep()
-						+ I18N.translate("BUT") + I18N.translate("NO_EFFECT");
+				return I18N.get(GameSystemI18NKeys.XはXを使用した, user.getName(), option.get(0))
+						+ Text.getLineSep()
+						+ I18N.get(GameSystemI18NKeys.しかし効果がなかった);
 			}
 		},
 		ITEM_WHO_TO_USE {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return toString();
+				return I18N.get(GameSystemI18NKeys.Xの, user.getName())
+						+ I18N.get(GameSystemI18NKeys.Xを誰に使う, option.get(0));
 			}
 		},
 		ITEM_WHO_TO_PASS {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return option.get(0) + I18N.translate("WHO_DO_USE");
+				return I18N.get(GameSystemI18NKeys.Xの, user.getName())
+						+ I18N.get(GameSystemI18NKeys.Xを誰に渡す, option.get(0));
 			}
 		},
 		ITEM_PASSED {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return option.get(0) + I18N.translate("WHO_DO_PASS");
+				return I18N.get(GameSystemI18NKeys.XはXにXを渡した, user.getName(), option.get(0), option.get(1));
 			}
 		},
 		ITEM_USED {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
 				Item i = (Item) a;
-				String s = user.getName() + I18N.translate("IS") + i.getName() + I18N.translate("USE_ITEM") + Text.getLineSep();
+				String s = I18N.get(GameSystemI18NKeys.XはXを使用した, user.getName(), i.getName());
 				if (res.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 					//アイテム効果判定
 					//ターゲット取得
@@ -420,15 +424,23 @@ public class BattleSystem implements Drawable {
 					//ターゲットの自動ダメージ計算結果を取得
 					Map<StatusKey, Float> damage = tgt.getStatus().calcDamage();
 					for (Map.Entry<StatusKey, Float> e : damage.entrySet()) {
-						s += tgt.getName() + I18N.translate("S") + e.getKey().getDesc() + I18N.translate("IS") + (int) (float) e.getValue();
 						if (e.getValue() > 0) {
-							s += I18N.translate("HEALDAMAGE") + Text.getLineSep();
+							s += (I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
+							s += (I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()));
+							s += (I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
+							s += (Text.getLineSep());
+						} else if (e.getValue() < 0) {
+							s += (I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
+							s += (I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()));
+							s += (I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
 						} else {
-							s += I18N.translate("SUB") + Text.getLineSep();
+							s += (I18N.get(GameSystemI18NKeys.しかし効果がなかった));
+							s += (Text.getLineSep());
 						}
 					}
 				} else {
-					s += I18N.translate("BUT") + I18N.translate("NO_EFFECT");
+					s += (I18N.get(GameSystemI18NKeys.しかし効果がなかった));
+					s += (Text.getLineSep());
 				}
 				return s;
 			}
@@ -436,8 +448,7 @@ public class BattleSystem implements Drawable {
 		SPELL_START {
 			@Override
 			String get(CmdAction a, Status user, List<String> option, ActionResult res) {
-				return user.getName() + I18N.translate("IS")
-						+ a.getName() + I18N.translate("SPELL_START");
+				return I18N.get(GameSystemI18NKeys.XはXを詠唱した, user.getName(), a.getName());
 			}
 		},
 		ACTION_SUCCESS {
@@ -484,12 +495,12 @@ public class BattleSystem implements Drawable {
 	//------------------------------------初期化---------------------------------------
 	public void encountInit(EncountInfo enc) {
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo(" -----------------BATTLE_START------------------------------------------------");
+			kinugasa.game.GameLog.print(" -----------------BATTLE_START------------------------------------------------");
 		}
 		stage = new StageHolder();
 		stage.setStage(BattleSystem.Stage.STARTUP);
 		//エンカウント情報の取得
-		EnemySetStorage ess = enc.getEnemySetStorage().load();
+		EnemySetStorage ess = enc.getEnemySetStorage().build();
 		EnemySet es = ess.get();
 		winLogicName = es.getWinLogicName();
 		loseLogicName = es.getLoseLogicName();
@@ -546,7 +557,7 @@ public class BattleSystem implements Drawable {
 		//出現MSG設定
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, Long> e : enemyNum.entrySet()) {
-			sb.append(e.getKey()).append(I18N.translate("WAS")).append(e.getValue()).append(I18N.translate("APPEARANCE")).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.XがX体現れた, e.getKey(), e.getValue() + "")).append(Text.getLineSep());
 		}
 		//敵出現情報をセット
 		setMsg(MessageType.INITIAL_ENEMY_INFO, null, null, null, List.of(sb.toString().split(Text.getLineSep())));
@@ -632,7 +643,7 @@ public class BattleSystem implements Drawable {
 	void turnStart() {
 		turn++;
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo(" -----------------TURN[" + turn + "] START-----------------");
+			kinugasa.game.GameLog.print(" -----------------TURN[" + turn + "] START-----------------");
 		}
 		//このターンのバトルコマンドを作成
 		List<BattleCharacter> list = getAllChara();
@@ -808,7 +819,7 @@ public class BattleSystem implements Drawable {
 		BattleCharacter user = currentCmd.getUser();
 
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo(" currentCMD:" + currentCmd);
+			kinugasa.game.GameLog.print(" currentCMD:" + currentCmd);
 		}
 
 		//ターゲットシステム初期化
@@ -817,7 +828,7 @@ public class BattleSystem implements Drawable {
 		//アンターゲット状態異常の場合、メッセージ出さずに次に送る
 		if (user.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
 			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.printInfo(user.getStatus().getName() + " is bad condition");
+				kinugasa.game.GameLog.print(user.getStatus().getName() + " is bad condition");
 			}
 			stage.setStage(BattleSystem.Stage.WAITING_EXEC_CMD);
 			return execCmd();
@@ -1126,12 +1137,12 @@ public class BattleSystem implements Drawable {
 			//移動後攻撃から遷移してきた場合は空振りさせる
 			if (stage.getStage() == Stage.CMD_SELECT) {
 				if (GameSystem.isDebugMode()) {
-					kinugasa.game.GameLog.printInfo("no target(cmd)");
+					kinugasa.game.GameLog.print("no target(cmd)");
 				}
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.CMD_SELECT);
 			} else {
 				if (GameSystem.isDebugMode()) {
-					kinugasa.game.GameLog.printInfo("no target(after)");
+					kinugasa.game.GameLog.print("no target(after)");
 				}
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.AFTER_MOVE_CMD_SELECT);
 			}
@@ -1205,6 +1216,10 @@ public class BattleSystem implements Drawable {
 				}
 				return;
 			}
+			//詠唱開始サウンド再生
+			if (BattleConfig.Sound.spellStart != null) {
+				BattleConfig.Sound.spellStart.load().stopAndPlay();
+			}
 
 			if (a.getSpellTime() > 0) {
 				//詠唱時間がある場合は詠唱開始
@@ -1216,7 +1231,7 @@ public class BattleSystem implements Drawable {
 		//その他（ONE）の場合はターゲット選択必要
 		List<String> tgt = targetSystem.getInAreaDirect().stream().map(p -> p.getName()).collect(Collectors.toList());
 		List<Text> text = tgt.stream().map(p -> new Text(" " + p)).collect(Collectors.toList());
-		text.add(0, new Text(a.getName() + I18N.translate("WHO_TO")));
+		text.add(0, new Text(I18N.get(GameSystemI18NKeys.Xを誰に, a.getName())));
 		messageWindowSystem.getTgtW().setText(text);
 		messageWindowSystem.getTgtW().reset();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.TGT_SELECT);
@@ -1229,7 +1244,7 @@ public class BattleSystem implements Drawable {
 			ba = tgt.getAction();
 		}
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("exec action ba=" + ba.getName() + " TGT:" + tgt);
+			kinugasa.game.GameLog.print("exec action ba=" + ba.getName() + " TGT:" + tgt);
 		}
 		//メッセージウインドウを初期化
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
@@ -1242,7 +1257,7 @@ public class BattleSystem implements Drawable {
 			if (ba.getName().equals(BattleConfig.ActionName.commit)) {
 				//移動終了・キャラクタの向きとターゲット座標のクリアをする
 				if (GameSystem.isDebugMode()) {
-					kinugasa.game.GameLog.printInfo("commit move");
+					kinugasa.game.GameLog.print("commit move");
 				}
 				user.unsetTarget();
 				user.to(FourDirection.WEST);
@@ -1464,8 +1479,8 @@ public class BattleSystem implements Drawable {
 			//ターゲット選択へ
 			itemPassAndUse = i;
 			String msg = (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS)
-					? i.getName() + I18N.translate("WHO_DO_PASS")
-					: i.getName() + I18N.translate("WHO_DO_USE");
+					? I18N.get(GameSystemI18NKeys.Xを誰に渡す, i.getName())
+					: I18N.get(GameSystemI18NKeys.Xを誰に使う, i.getName());
 			tgt.add(0, msg);
 			messageWindowSystem.getTgtW().setText(tgt.stream().map(p -> new Text(p)).collect(Collectors.toList()));
 			stage.setStage(BattleSystem.Stage.TARGET_SELECT);
@@ -1484,7 +1499,7 @@ public class BattleSystem implements Drawable {
 		}
 		prevAttackOK = attackOK;
 		if (!attackOK) {
-			messageWindowSystem.getInfoW().setText(I18N.translate("AFTER_MOVE_ATK_NG"));
+			messageWindowSystem.getInfoW().setText(I18N.get(GameSystemI18NKeys.移動後攻撃不可));
 			messageWindowSystem.getInfoW().allText();
 			List<CmdAction> list = new ArrayList<>();
 			list.add(ActionStorage.getInstance().get(BattleConfig.ActionName.commit));
@@ -1494,7 +1509,7 @@ public class BattleSystem implements Drawable {
 					BattleMessageWindowSystem.Mode.AFTER_MOVE,
 					BattleMessageWindowSystem.InfoVisible.ON);
 		} else {
-			messageWindowSystem.getInfoW().setText(I18N.translate("AFTER_MOVE_ATK_OK"));
+			messageWindowSystem.getInfoW().setText(I18N.get(GameSystemI18NKeys.移動後攻撃可能));
 			messageWindowSystem.getInfoW().allText();
 			List<CmdAction> actions = currentCmd.getBattleActionOf(ActionType.ATTACK);
 			Collections.sort(actions);
@@ -1547,7 +1562,7 @@ public class BattleSystem implements Drawable {
 			//パスor使う
 			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_USE) {
 				if (GameSystem.isDebugMode()) {
-					kinugasa.game.GameLog.printInfo("use item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
+					kinugasa.game.GameLog.print("use item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
 				}
 				//ターゲットに対してアクションを実行
 				String tgtName = messageWindowSystem.getTgtW().getSelected().getText();
@@ -1574,7 +1589,7 @@ public class BattleSystem implements Drawable {
 			}
 			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS) {
 				if (GameSystem.isDebugMode()) {
-					kinugasa.game.GameLog.printInfo("pass item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
+					kinugasa.game.GameLog.print("pass item : " + itemPassAndUse + " to " + messageWindowSystem.getTgtW().getSelected().getText());
 				}
 				//ターゲットに対してパスを実行
 				//PC,NPCから名前検索
@@ -1587,7 +1602,7 @@ public class BattleSystem implements Drawable {
 				user.getStatus().passItem(tgt.getStatus(), itemPassAndUse);
 				//アクション更新
 				GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction(true));
-				setMsg(MessageType.ITEM_PASSED, currentCmd.getUser().getStatus(), null, null, List.of(itemPassAndUse.getName()));
+				setMsg(MessageType.ITEM_PASSED, currentCmd.getUser().getStatus(), null, null, List.of(tgt.getName(), itemPassAndUse.getName()));
 				stage.setStage(Stage.EXECUTING_ACTION);
 				itemPassAndUse = null;
 				itemChoiceMode = -1;
@@ -1730,9 +1745,10 @@ public class BattleSystem implements Drawable {
 							}
 						}
 						battleResultValue = new BattleResultValues(BattleResult.ESCAPE, exp, new ArrayList<>(), winLogicName);
-						String text = "---" + I18N.translate("BATTLE_RESULT") + "---" + Text.getLineSep() + I18N.translate("PLAYER_WAS_ESCAPED") + Text.getLineSep();
-						text += I18N.translate("GET_EXP") + ":" + exp + Text.getLineSep();
-						text += I18N.translate("DROP_ITEM") + ":" + I18N.translate("NOTHING") + Text.getLineSep();
+						String text = "---" + I18N.get(GameSystemI18NKeys.戦闘結果) + "---" + Text.getLineSep()
+								+ I18N.get(GameSystemI18NKeys.全員が逃げた) + Text.getLineSep();
+						text += I18N.get(GameSystemI18NKeys.獲得経験値) + ":" + exp + Text.getLineSep();
+						text += I18N.get(GameSystemI18NKeys.獲得物資) + ":" + I18N.get(GameSystemI18NKeys.なし) + Text.getLineSep();
 						messageWindowSystem.getBattleResultW().setText(text);
 						messageWindowSystem.getBattleResultW().allText();
 						messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
@@ -1764,9 +1780,10 @@ public class BattleSystem implements Drawable {
 							}
 						}
 						battleResultValue = new BattleResultValues(BattleResult.ESCAPE, exp, new ArrayList<>(), winLogicName);
-						String text = "---" + I18N.translate("BATTLE_RESULT") + "---" + Text.getLineSep() + I18N.translate("ENEMY_WAS_ESCAPED") + Text.getLineSep();
-						text += I18N.translate("GET_EXP") + ":" + exp + Text.getLineSep();
-						text += I18N.translate("DROP_ITEM") + ":" + Text.getLineSep();
+						String text = "---" + I18N.get(GameSystemI18NKeys.戦闘結果) + "---" + Text.getLineSep()
+								+ I18N.get(GameSystemI18NKeys.全員が逃げた) + Text.getLineSep();
+						text += I18N.get(GameSystemI18NKeys.獲得経験値) + ":" + exp + Text.getLineSep();
+						text += I18N.get(GameSystemI18NKeys.獲得物資) + ":" + Text.getLineSep();;
 						for (Item ii : dropItems) {
 							text += " " + ii.getName() + Text.getLineSep();
 						}
@@ -1824,7 +1841,7 @@ public class BattleSystem implements Drawable {
 				CmdAction eba = currentCmd.getBattleActionOf((user = (Enemy) currentCmd.getUser()).getAI(), ActionType.ATTACK);
 				if (eba == null) {
 					if (GameSystem.isDebugMode()) {
-						kinugasa.game.GameLog.printInfo(" enemy " + currentCmd.getUser().getStatus().getName() + " try afterMoveAttack, but dont have attackCMD");
+						kinugasa.game.GameLog.print(" enemy " + currentCmd.getUser().getStatus().getName() + " try afterMoveAttack, but dont have attackCMD");
 					}
 					break;
 				}
@@ -1876,7 +1893,7 @@ public class BattleSystem implements Drawable {
 				prevBGM.stop();
 				prevBGM.dispose();
 				if (GameSystem.isDebugMode()) {
-					kinugasa.game.GameLog.printInfo(" this battle is ended");
+					kinugasa.game.GameLog.print(" this battle is ended");
 				}
 				battleResultValue = new BattleResultValues(result, 0, new ArrayList<>(), loseLogicName);
 				stage.setStage(Stage.BATLE_END);
@@ -1903,9 +1920,12 @@ public class BattleSystem implements Drawable {
 				}
 			}
 			battleResultValue = new BattleResultValues(result, exp, dropItems, nextLogicName);
-			String text = "---" + I18N.translate("BATTLE_RESULT") + "---" + Text.getLineSep() + I18N.translate("WIN_BATTLE") + Text.getLineSep();
-			text += I18N.translate("GET_EXP") + ":" + exp + Text.getLineSep();
-			text += I18N.translate("DROP_ITEM") + ":" + Text.getLineSep();
+
+			String text = "---" + I18N.get(GameSystemI18NKeys.戦闘結果) + "---" + Text.getLineSep()
+					+ I18N.get(GameSystemI18NKeys.勝利した) + Text.getLineSep();
+			text += I18N.get(GameSystemI18NKeys.獲得経験値) + ":" + exp + Text.getLineSep();
+			text += I18N.get(GameSystemI18NKeys.獲得物資) + ":" + Text.getLineSep();
+
 			for (Item i : dropItems) {
 				text += " " + i.getName() + Text.getLineSep();
 			}
@@ -1914,7 +1934,7 @@ public class BattleSystem implements Drawable {
 			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
 
 			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.printInfo(" this battle is ended");
+				kinugasa.game.GameLog.print(" this battle is ended");
 			}
 			stage.setStage(Stage.BATLE_END);
 		}
@@ -1949,7 +1969,7 @@ public class BattleSystem implements Drawable {
 				if (cmd.getUser().getStatus().hasCondition(conditionName)) {
 					removeList2.add(cmd);
 					cmd.getUser().getSprite().setVisible(false);
-					deadEnemyName.put(cmd.getUser().getName(), cmd.getUser().getName() + I18N.translate("IS") + k.getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+					deadEnemyName.put(cmd.getUser().getName(), I18N.get(GameSystemI18NKeys.XはX状態になった, cmd.getUser().getName(), k.getDesc()));
 					if (cmd.getUser() instanceof Enemy) {
 						if (((Enemy) cmd.getUser()).getDeadSound() != null) {
 							((Enemy) cmd.getUser()).getDeadSound().load().stopAndPlay();
@@ -1965,7 +1985,7 @@ public class BattleSystem implements Drawable {
 			for (String cndKey : BattleConfig.getUntargetConditionNames()) {
 				if (c.getStatus().hasCondition(cndKey)) {
 					c.getSprite().setVisible(false);
-					deadEnemyName.put(c.getName(), c.getName() + I18N.translate("IS") + ConditionValueStorage.getInstance().get(cndKey).getKey().getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+					deadEnemyName.put(c.getName(), I18N.get(GameSystemI18NKeys.XはX状態になった, c.getName(), ConditionValueStorage.getInstance().get(cndKey).getKey().getDesc()));
 				}
 			}
 		}
@@ -1973,7 +1993,7 @@ public class BattleSystem implements Drawable {
 			for (String cndKey : BattleConfig.getUntargetConditionNames()) {
 				if (c.getStatus().hasCondition(cndKey)) {
 					c.getSprite().setVisible(false);
-					deadEnemyName.put(c.getName(), c.getName() + I18N.translate("IS") + ConditionValueStorage.getInstance().get(cndKey).getKey().getDesc() + I18N.translate("ADD_UNTGT_CONDITION"));
+					deadEnemyName.put(c.getName(), I18N.get(GameSystemI18NKeys.XはX状態になった, c.getName(), ConditionValueStorage.getInstance().get(cndKey).getKey().getDesc()));
 					if (((Enemy) c).getDeadSound() != null) {
 						((Enemy) c).getDeadSound().load().stopAndPlay();
 					}
@@ -1982,7 +2002,7 @@ public class BattleSystem implements Drawable {
 		}
 		List<String> text = new ArrayList<>();
 		//1行目
-		text.add(user.getName() + " " + I18N.translate("S") + " " + ba.getName() + " !!");//改行不要
+		text.add(I18N.get(GameSystemI18NKeys.XのX, user.getName(), ba.getName()) + " !!");//改行不要
 
 		//2行目以降
 		class Tgt {
@@ -2002,7 +2022,7 @@ public class BattleSystem implements Drawable {
 		if (map.stream().flatMap(f -> f.damage.values().stream()).collect(Collectors.toList()).isEmpty()
 				|| map.stream().flatMap(f -> f.damage.values().stream()).mapToDouble(p -> p).allMatch(p -> 0 == p)) {
 			//ダメージなし
-			text.add(I18N.translate("BUT") + " " + I18N.translate("NOT_HIT"));
+			text.add(I18N.get(GameSystemI18NKeys.しかし当たらなかった));
 			return text;
 		}
 
@@ -2016,13 +2036,13 @@ public class BattleSystem implements Drawable {
 					}
 				}
 				avg /= map.size() == 0 ? 1 : map.size();
-				String txt = I18N.translate("AVERAGE")
+				String txt = I18N.get(GameSystemI18NKeys.平均)
 						+ " " + Math.abs((int) avg) + " "
 						+ StatusKeyStorage.getInstance().get(statusKey).getDesc();
 				if (avg < 0) {
-					txt += " " + I18N.translate("HEALDAMAGE");
+					txt += " " + I18N.get(GameSystemI18NKeys.回復した);
 				} else {
-					txt += " " + I18N.translate("GET_DAMAGE");
+					txt += " " + I18N.get(GameSystemI18NKeys.のダメージ);
 				}
 				txt += " !";
 				text.add(txt);
@@ -2036,14 +2056,16 @@ public class BattleSystem implements Drawable {
 				for (Tgt t : map) {
 					if (t.damage.containsKey(StatusKeyStorage.getInstance().get(statusKey))) {
 						//visibleStatusを3つまで表示
-						String txt = t.name + I18N.translate("S");
-						txt += " " + StatusKeyStorage.getInstance().get(statusKey).getDesc();
+						String txt = "";
 						float v = t.damage.get(StatusKeyStorage.getInstance().get(statusKey));
-						txt += (Math.abs((int) v)) + "";
 						if (v < 0) {
-							txt += " " + I18N.translate("HEALDAMAGE");
+							txt += I18N.get(GameSystemI18NKeys.XのXは, t.name, statusKey);
+							txt += (Math.abs((int) v)) + "";
+							txt += " " + I18N.get(GameSystemI18NKeys.回復した);
 						} else {
-							txt += " " + I18N.translate("TO") + " " + I18N.translate("GET_DAMAGE");
+							txt += I18N.get(GameSystemI18NKeys.XのXに, t.name, statusKey);
+							txt += (Math.abs((int) v)) + "";
+							txt += " " + I18N.get(GameSystemI18NKeys.のダメージ);
 						}
 						txt += " ! ";
 						if (deadEnemyName.containsKey(t.name)) {

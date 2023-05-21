@@ -101,7 +101,7 @@ public class IniFile implements Input<IniFile>, Output {
 		}
 		status = InputStatus.LOADED;
 
-		GameLog.printInfoIfUsing(file.getPath());
+		GameLog.print(file.getPath());
 //		map.entrySet().forEach(e -> {
 //			GameLog.printInfoIfUsing(e.getKey() + "=" + e.getValue());
 //		});

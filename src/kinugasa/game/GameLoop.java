@@ -119,10 +119,10 @@ public final class GameLoop implements Runnable {
 			}
 			Throwable t = ex;
 			while (t.getCause() != null) {
-				kinugasa.game.GameLog.printInfo(t.getCause());
+				kinugasa.game.GameLog.print(t.getCause());
 				t = t.getCause();
 			}
-			GameLog.print(Level.WARNING, ex);
+			GameLog.print(ex);
 			System.exit(1);
 		}
 	}

@@ -96,7 +96,7 @@ public class FieldMapResourceUtil {
 		}
 		reader.dispose();
 		writer.save();
-		kinugasa.game.GameLog.printInfo("変換は正常に終了しました");
+		kinugasa.game.GameLog.print("変換は正常に終了しました");
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class FieldMapResourceUtil {
 		List<String> keyList = new ArrayList<String>(map.keySet());
 		Collections.sort(keyList);
 		for (int i = 0, size = keyList.size(); i < size; i++) {
-			kinugasa.game.GameLog.printInfo(keyList.get(i));
+			kinugasa.game.GameLog.print(keyList.get(i));
 		}
 	}
 	

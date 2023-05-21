@@ -88,7 +88,7 @@ public class XMLAttributeStorage extends Storage<XMLAttribute> implements Serial
 		try {
 			return super.get(key); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
 		} catch (NameNotFoundException ex) {
-			kinugasa.game.GameLog.printInfo("XML ATTR KEY NOT FOUND");
+			kinugasa.game.GameLog.print("XML ATTR KEY NOT FOUND");
 			throw ex;
 		}
 	}

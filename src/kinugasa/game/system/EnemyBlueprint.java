@@ -62,18 +62,14 @@ public class EnemyBlueprint implements Nameable {
 
 	@Override
 	public String getName() {
-		return id;
+		return visibleName;
 	}
 
 	public String getVisibleName() {
 		return visibleName;
 	}
 
-	public String getId() {
-		return id;
-	}
 
-	private String id;
 	private String visibleName;
 	private StatusValueSet statusValueSet;
 	private AttributeValueSet attrValueSet;
@@ -89,7 +85,7 @@ public class EnemyBlueprint implements Nameable {
 	private EnemyAI ai;
 	private Sound deadSound;
 
-	public EnemyBlueprint(String id,
+	public EnemyBlueprint(
 			String visibleName,
 			StatusValueSet statusValueSet,
 			AttributeValueSet attrValueSet,
@@ -101,8 +97,7 @@ public class EnemyBlueprint implements Nameable {
 			ArrayList<DropItem> dropItems,
 			ImageSprite sprite,
 			List<CmdAction> actions,
-			Vehicle vehicle, EnemyAI ai,Sound deadSound) {
-		this.id = id;
+			Vehicle vehicle, EnemyAI ai, Sound deadSound) {
 		this.visibleName = visibleName;
 		this.statusValueSet = statusValueSet;
 		this.attrValueSet = attrValueSet;
@@ -120,7 +115,7 @@ public class EnemyBlueprint implements Nameable {
 	}
 
 	public Enemy create() {
-		String enemyName = visibleName + getEnemyNo(id);
+		String enemyName = visibleName + getEnemyNo(visibleName);
 		Status s = new Status(enemyName, race);
 		s.setBaseAttrIn(attrValueSet.clone());
 		s.setBaseStatus(statusValueSet.clone());
@@ -137,6 +132,6 @@ public class EnemyBlueprint implements Nameable {
 		}
 		actions.forEach(v -> s.getActions().add(v));
 
-		return new Enemy(id, s, (ArrayList<DropItem>) dropItems.clone(), sprite.clone(), vehicle, ai, deadSound);
+		return new Enemy(visibleName, s, (ArrayList<DropItem>) dropItems.clone(), sprite.clone(), vehicle, ai, deadSound);
 	}
 }

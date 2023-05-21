@@ -25,6 +25,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;

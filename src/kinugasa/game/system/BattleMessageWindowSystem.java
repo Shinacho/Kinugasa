@@ -25,10 +25,10 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import static kinugasa.game.system.BattleConfig.messageWindowY;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
@@ -192,16 +192,16 @@ public class BattleMessageWindowSystem implements Drawable {
 			sb.append(Text.getLineSep());
 		}
 		//価値
-		sb.append(" ").append(I18N.translate("VALUE")).append(":").append(i.getValue());
+		sb.append(" ").append(I18N.get(GameSystemI18NKeys.価値)).append(":").append(i.getValue());
 		sb.append(Text.getLineSep());
 		//装備スロット
-		sb.append(" ").append(I18N.translate("SLOT")).append(":").append(i.getEqipmentSlot() != null
+		sb.append(" ").append(I18N.get(GameSystemI18NKeys.装備スロット)).append(":").append(i.getEqipmentSlot() != null
 				? i.getEqipmentSlot().getName()
-				: I18N.translate("NONE"));
+				: I18N.get(GameSystemI18NKeys.なし));
 		sb.append(Text.getLineSep());
 		//WMT
 		if (i.getWeaponMagicType() != null) {
-			sb.append(" ").append(I18N.translate("WMT")).append(":").append(i.getWeaponMagicType().getName());
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.武器種別)).append(":").append(i.getWeaponMagicType().getName());
 			sb.append(Text.getLineSep());
 		}
 		//area
@@ -217,12 +217,7 @@ public class BattleMessageWindowSystem implements Drawable {
 			}
 		}
 		if (area != 0) {
-			sb.append(" ").append(I18N.translate("AREA")).append(":").append(area);
-			sb.append(Text.getLineSep());
-		}
-		//キーアイテム属性
-		if (!i.canSale()) {
-			sb.append(" ").append(I18N.translate("CANT_SALE"));
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(area);
 			sb.append(Text.getLineSep());
 		}
 		//DCS
@@ -232,18 +227,18 @@ public class BattleMessageWindowSystem implements Drawable {
 				dcs += s.getDesc() + ",";
 			}
 			dcs = dcs.substring(0, dcs.length() - 1);
-			sb.append(" ").append(I18N.translate("DCS")).append(":").append(dcs);
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.ダメージ計算方式)).append(":").append(dcs);
 			sb.append(Text.getLineSep());
 		}
 		//戦闘中アクション
 		if (i.getBattleEvent() != null && !i.getBattleEvent().isEmpty()) {
-			sb.append(" ").append(I18N.translate("CAN_USE_BATTLE"));
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムは戦闘中使える));
 			sb.append(Text.getLineSep());
 		}
 		if (i.isEqipItem()) {
 			//攻撃回数
 			if (i.getActionCount() > 1) {
-				sb.append(" ").append(I18N.translate("ACTION_COUNT").replaceAll("n", i.getActionCount() + ""));
+				sb.append(" ").append(I18N.get(GameSystemI18NKeys.攻撃回数).replaceAll("n", i.getActionCount() + ""));
 				sb.append(Text.getLineSep());
 			}
 			//eqStatus
@@ -477,11 +472,11 @@ public class BattleMessageWindowSystem implements Drawable {
 		}
 		Item i = (Item) cmdW.getSelectedCmd();
 		List<Text> options = new ArrayList<>();
-		options.add(new Text(I18N.translate("CHECK")));
-		options.add(new Text(I18N.translate("USE")));
-		options.add(new Text(I18N.translate("EQIP")));
-		options.add(new Text(I18N.translate("PASS")));
-		itemChoiceUseW.setText(new Choice(options, "BATTLE_MW_SYSTEM_IUC", i.getName() + I18N.translate("OF")));
+		options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
+		options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
+		options.add(new Text(I18N.get(GameSystemI18NKeys.装備)));
+		options.add(new Text(I18N.get(GameSystemI18NKeys.渡す)));
+		itemChoiceUseW.setText(new Choice(options, "BATTLE_MW_SYSTEM_IUC", I18N.get(GameSystemI18NKeys.Xを, i.getName())));
 		setVisible(StatusVisible.ON, mode.ITEM_USE_SELECT, InfoVisible.OFF);
 	}
 

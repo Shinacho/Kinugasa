@@ -117,9 +117,9 @@ public abstract class GameManager {
 
 				Logger.getGlobal().addHandler(handler);
 			} catch (IOException | SecurityException ex) {
-				GameLog.print(Level.WARNING, ex);
+				GameLog.print(ex);
 			}
-			GameLog.printInfo("this is " + option.getLogPath());
+			GameLog.print("this is " + option.getLogPath());
 		}
 		CMDargs.init(option.getArgs());
 		I18N.init(option.getLang());
@@ -263,7 +263,7 @@ public abstract class GameManager {
 			try {
 				startUp();
 			} catch (Throwable ex) {
-				GameLog.print(Level.WARNING, "ERROR : " + ex);
+				GameLog.print("ERROR : " + ex);
 				System.exit(1);
 			}
 			window.setVisible(true);
@@ -276,7 +276,7 @@ public abstract class GameManager {
 				image = ImageUtil.newImage((int) (window.getInternalBounds().getWidth() / drawSize), (int) (window.getInternalBounds().getHeight() / drawSize));
 			}
 		});
-		GameLog.printInfoIfUsing(getWindow().getTitle() + " is start");
+		GameLog.print(getWindow().getTitle() + " is start");
 	}
 
 	@OneceTime
@@ -290,13 +290,14 @@ public abstract class GameManager {
 		try {
 			dispose();
 		} catch (Throwable ex) {
-			GameLog.print(Level.WARNING, "ERROR : " + ex);
+			GameLog.print("ERROR : " + ex);
 			System.exit(1);
 		}
 		if (PlayerConstants.getInstance().isUsingGamePad()) {
 			// GamePadConnection.free(); //なんかエラー出る
 		}
 		LockUtil.deleteLockFile();
+		GameLog.close();
 		TempFileStorage.getInstance().deleteAll();
 		window.dispose();
 		System.exit(0);

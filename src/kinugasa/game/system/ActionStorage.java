@@ -24,19 +24,13 @@
 package kinugasa.game.system;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import kinugasa.game.GameLog;
 import kinugasa.game.GameOption;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.SpriteSheet;
-import kinugasa.object.AnimationSprite;
 import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.Storage;
 import kinugasa.resource.sound.Sound;
@@ -63,6 +57,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 	public static ActionStorage getInstance() {
 		return INSTANCE;
 	}
+
 	Map<String, Animation> animationMap = new HashMap<>();
 
 	private ActionEvent parseEvent(XMLElement e) {
@@ -406,6 +401,12 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 		animationMap.clear();
 		file.dispose();
 
+	}
+
+	private static Map<String, ActionEvent> userEvents = new HashMap<>();
+
+	public static void addUserDefinedActionEvent(String name, ActionEvent e) {
+		userEvents.put(name, e);
 	}
 
 }

@@ -83,6 +83,10 @@ public class BookBag implements Cloneable, Iterable<Book> {
 		return books.size();
 	}
 
+	public int sizeAt() {
+		return max - size();
+	}
+
 	public void drop(String name) {
 		drop(BookStorage.getInstance().get(name));
 	}

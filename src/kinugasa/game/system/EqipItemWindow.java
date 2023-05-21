@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
@@ -80,11 +81,11 @@ public class EqipItemWindow extends PCStatusWindow {
 	@Override
 	public void update() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<---").append(s.get(pcIdx).getName()).append(I18N.translate("S")).append(I18N.translate("EQIP")).append("--->").append(Text.getLineSep());
+		sb.append("<---").append(I18N.get(GameSystemI18NKeys.Xの装備, s.get(pcIdx).getName())).append("--->").append(Text.getLineSep());
 
 		for (Map.Entry<ItemEqipmentSlot, Item> e : s.get(pcIdx).getEqipment().entrySet()) {
 			String key = e.getKey().getName();
-			String value = e.getValue() == null ? I18N.translate("NONE") : e.getValue().getName();
+			String value = e.getValue() == null ? I18N.get(GameSystemI18NKeys.なし) : e.getValue().getName();
 			sb.append("  ").append(key).append(":").append(value).append(Text.getLineSep());
 		}
 

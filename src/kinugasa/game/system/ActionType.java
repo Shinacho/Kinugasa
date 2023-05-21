@@ -24,6 +24,7 @@
 package kinugasa.game.system;
 
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
 
 /**
  *
@@ -37,6 +38,18 @@ public enum ActionType {
 	OTHER,;
 
 	public String displayName() {
-		return I18N.translate(this.toString());
+		switch (this) {
+			case ATTACK:
+				return I18N.get(GameSystemI18NKeys.攻撃);
+			case ITEM:
+				return I18N.get(GameSystemI18NKeys.道具);
+			case MAGIC:
+				return I18N.get(GameSystemI18NKeys.魔術);
+			case OTHER:
+				return I18N.get(GameSystemI18NKeys.行動);
+			default:
+				throw new AssertionError("undefined ActionType");
+		}
 	}
+
 }

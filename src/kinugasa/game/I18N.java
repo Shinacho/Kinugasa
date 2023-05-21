@@ -26,6 +26,7 @@ package kinugasa.game;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
+import kinugasa.game.system.GameSystemException;
 import kinugasa.resource.text.IniFile;
 import kinugasa.resource.text.FileFormatException;
 
@@ -46,7 +47,6 @@ public class I18N {
 	public static void init(String lang) {
 		ini = new IniFile("translate/" + lang + ".ini").load();
 
-		checkKey();
 	}
 
 	public I18N add(String lang, File dir) throws IllegalArgumentException {
@@ -63,31 +63,31 @@ public class I18N {
 		return this;
 	}
 
-	private static void checkKey() {
-		for (Field f : Key.class.getDeclaredFields()) {
-			if (!ini.containsKey(f.getName())) {
-				throw new FileFormatException("default ini is broken.");
-			}
-		}
+	public static <T extends Enum<T>> String get(T t) {
+		return get(t.toString());
 	}
 
-	public static final class Key {
-
-		public static final String CONFIRM = "CONFIRM";
-		public static final String ARE_YOU_SURE_EXIT = "ARE_YOU_SURE_EXIT";
-
+	public static boolean contains(String key) {
+		return ini.containsKey(key);
 	}
 
-	public static <T extends Enum<T>> String translate(T t) {
-		return translate(t.toString());
-	}
-
-	public static String translate(String key) {
+	public static String get(String key) {
 		if (!ini.containsKey(key)) {
-			GameLog.printIfUsing(Level.ALL, "unknown I18N key " + key);
-			return "?";
+			throw new GameSystemException("undefined I18N key : " + key);
 		}
 		return ini.get(key).get().value();
+	}
+
+	public static String get(String key, String... value) {
+		if (!ini.containsKey(key)) {
+			throw new GameSystemException("undefined I18N key : " + key);
+		}
+
+		String res = ini.get(key).get().value();
+		for (int i = 0; i < value.length; i++) {
+			res = res.replaceAll("!" + i, value[i]);
+		}
+		return res;
 	}
 
 }

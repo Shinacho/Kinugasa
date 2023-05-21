@@ -26,7 +26,6 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GameOption;
-import kinugasa.game.I18N;
 
 /**
  *
@@ -60,16 +59,17 @@ public class BattleConfig {
 		public static String defMgk = "M_DEF";
 		public static String atk = "ATK";
 		public static String mgk = "M_ATK";
-		
+
 	}
-	
-	public static class Sound{
-		public static Sound avoidance;
-		public static Sound block;
-		public static Sound spellStart;
-		
+
+	public static class Sound {
+
+		public static kinugasa.resource.sound.Sound avoidance;
+		public static kinugasa.resource.sound.Sound block;
+		public static kinugasa.resource.sound.Sound spellStart;
+
 	}
-	
+
 	public static float atkDefPercent = 0.75f;//ダメージ効率
 	public static float damageMul = 2.5f;
 	public static String weaponSlotName = "";
@@ -92,6 +92,7 @@ public class BattleConfig {
 		public static String escape = "ESCAPE";
 		public static String commit = "COMMIT";
 	}
+
 	//
 	public static float confuStopP = 0.5f;
 	public static int actionWindowLF = 48;

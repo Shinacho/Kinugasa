@@ -613,7 +613,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 //			g2.drawLine((int) p3.x, (int) p3.y, (int) p4.x, (int) p4.y);
 //			g2.dispose();
 ////			System.out.print("IDX : " + currentIdx);
-////			kinugasa.game.GameLog.printInfo("  FM_LOCATION : " + getBaseLayer().getLocation());
+////			kinugasa.game.GameLog.print("  FM_LOCATION : " + getBaseLayer().getLocation());
 //		}
 	}
 
@@ -665,6 +665,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				}
 			}
 		}
+		//スタックチェック
+		if(GameSystem.isDebugMode()){
+			if(!getTile(currentIdx).canStep()){
+				throw new GameSystemException("FM : PC IS STUCK!!!!!!!!:" + getTile(currentIdx));
+			}
+		}
 	}
 
 	private ManualTimeCounter encountCounter;
@@ -692,7 +698,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 			encountCounter.sub(x);
 			if (debugMode) {
-				kinugasa.game.GameLog.printInfo("FM MOVE " + currentIdx + " /EC=" + encountCounter.getCurrentTime() + " /TILE=" + getCurrentTile());
+				kinugasa.game.GameLog.print("FM MOVE " + currentIdx + " /EC=" + encountCounter.getCurrentTime() + " /TILE=" + getCurrentTile());
 			}
 			prevLocationList.addFirst(prevIdx);
 			if (playerCharacter.size() <= prevLocationList.size()) {
@@ -713,7 +719,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		boolean r = encountCounter.isReaching();
 		if (debugMode && r) {
-			kinugasa.game.GameLog.printInfo("ENCOUNT!");
+			kinugasa.game.GameLog.print("ENCOUNT!");
 		}
 		if (r) {
 			resetEncountCounter();
@@ -906,19 +912,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		return idx;
 	}
 
-	private static String noNPCMessage;
-
-	static {
-		noNPCMessage = I18N.translate("NO_NPC");
-	}
-
-	public static String getNoNPCMessage() {
-		return noNPCMessage;
-	}
-
-	public static void setNoNPCMessage(String noNPCMessage) {
-		FieldMap.noNPCMessage = noNPCMessage;
-	}
 	private MessageWindow mw;
 
 	/**
@@ -942,7 +935,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				: buffer;
 		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - (buffer * 2);
 		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
-		Text t = n == null ? new Text(noNPCMessage) : textStorage.get(n.getTextID());
+		Text t = n == null ? new Text("") : textStorage.get(n.getTextID());
 		if (n != null) {
 			n.to(playerCharacter.get(0).getCurrentDir().reverse());
 		}
@@ -950,7 +943,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), textStorage, t);
 
 		if (isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("FM TALK: textID[" + t.getName() + "]");
+			kinugasa.game.GameLog.print("FM TALK: textID[" + t.getName() + "]");
 		}
 
 		return mw;
@@ -1025,7 +1018,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			FieldMap.getPlayerCharacter().subList(1, getPlayerCharacter().size()).forEach(v -> v.setLocation(playerCharacter.get(0).getLocation()));
 		}
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("CHANGE_MAP: " + n);
+			kinugasa.game.GameLog.print("CHANGE_MAP: " + n);
 		}
 		return fm;
 	}

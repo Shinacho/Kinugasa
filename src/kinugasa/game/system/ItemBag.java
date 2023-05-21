@@ -84,7 +84,7 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 	public void add(Item i) {
 		items.add(i);
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("ItemBags,addItem:" + i);
+			kinugasa.game.GameLog.print("ItemBags,addItem:" + i);
 		}
 	}
 
@@ -96,13 +96,17 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 		if (items.contains(i)) {
 			items.remove(i);
 			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.printInfo("ItemBags,dropItem:" + i);
+				kinugasa.game.GameLog.print("ItemBags,dropItem:" + i);
 			}
 		}
 	}
 
 	public int size() {
 		return items.size();
+	}
+
+	public int sizeAt() {
+		return max - size();
 	}
 
 	public Item get(int idx) {

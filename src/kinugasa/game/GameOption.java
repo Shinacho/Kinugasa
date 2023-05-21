@@ -31,6 +31,7 @@ import java.awt.Point;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.swing.ImageIcon;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.graphics.GraphicsUtil;
 import kinugasa.resource.text.IniFile;
 import kinugasa.game.ui.Dialog;
@@ -67,7 +68,8 @@ public class GameOption {
 	private String logName = "log_" + new SimpleDateFormat("yyyyMMddHHmmssSSS") + ".log";
 	private ImageIcon icon = new ImageIcon(getClass().getResource("icon.png"));
 	private CloseEvent closeEvent
-			= () -> Dialog.yesOrNo(I18N.translate(I18N.Key.CONFIRM), DialogIcon.QUESTION, I18N.translate(I18N.Key.ARE_YOU_SURE_EXIT)).is(DialogOption.YES);
+			= () -> Dialog.yesOrNo(I18N.get(GameSystemI18NKeys.確認), DialogIcon.QUESTION,
+					I18N.get(GameSystemI18NKeys.本当に終了しますか)).is(DialogOption.YES);
 
 	public static final class Key {
 

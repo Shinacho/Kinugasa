@@ -102,7 +102,7 @@ public class Test extends GameManager {
 				.addBattleActionStorage("resource/field/data/battle/action.xml")
 				.addBattleField("resource/field/data/battle/battleField.xml")
 				.addEnemyMaster("resource/field/data/enemy/enemyList.xml")
-				.addEnemySet("resource/field/data/enemy/enemySet.xml")
+				.addEnemySetStorage("resource/field/data/enemy/enemySet.xml")
 				.addBookList("resource/field/data/item/bookList.xml")
 				.load();
 		// プレイヤーキャラクターの表示座標計算

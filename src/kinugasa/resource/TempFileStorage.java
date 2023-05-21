@@ -84,7 +84,7 @@ public class TempFileStorage extends Storage<TempFile> {
 				file.delete();
 			}
 		}
-		GameLog.printInfoIfUsing("TempFileStorage : all temp file is deleted");
+		GameLog.print("TempFileStorage : all temp file is deleted");
 	}
 
 }

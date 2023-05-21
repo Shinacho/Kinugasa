@@ -44,7 +44,7 @@ import kinugasa.util.ArrayUtil;
  * @version 1.4.0 - 2013/04/28_23:40<br>
  * @author Shinacho<br>
  */
-public abstract class DynamicStorage<T extends Nameable & Input>
+public abstract class InputObjectStorage<T extends Nameable & Input>
 		extends Storage<T> implements Input {
 
 	/**
@@ -52,14 +52,14 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	 *
 	 * @param initialSize ストレージの初期容量を指定します。<br>
 	 */
-	public DynamicStorage(int initialSize) {
+	public InputObjectStorage(int initialSize) {
 		super(initialSize);
 	}
 
 	/**
 	 * 新しいストレージを作成します.
 	 */
-	public DynamicStorage() {
+	public InputObjectStorage() {
 	}
 
 	/**
@@ -68,7 +68,7 @@ public abstract class DynamicStorage<T extends Nameable & Input>
 	 * @return このストレージを返します。<br>
 	 */
 	@Override
-	public DynamicStorage<T> load() {
+	public InputObjectStorage<T> load() {
 		for (T obj : this) {
 			obj.load();
 		}

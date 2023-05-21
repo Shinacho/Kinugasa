@@ -24,7 +24,7 @@
 package kinugasa.game;
 
 import kinugasa.game.system.GameSystem;
-import kinugasa.resource.DynamicStorage;
+import kinugasa.resource.InputObjectStorage;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Storage;
 
@@ -65,7 +65,7 @@ public class GameLogicStorage extends Storage<GameLogic> {
 
 	public void changeTo(String name, boolean load) {
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("kinugasa.game.GameLogicStorage.changeTo():" + name);
+			kinugasa.game.GameLog.print("kinugasa.game.GameLogicStorage.changeTo():" + name);
 		}
 		if (!contains(name)) {
 			throw new NameNotFoundException("logic " + name + " is not found");

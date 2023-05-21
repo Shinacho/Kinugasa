@@ -65,9 +65,9 @@ public final class LockUtil {
 			writer.append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime()));
 			writer.flush();
 		} catch (IOException ex) {
-			GameLog.print(Level.WARNING, ex);
+			GameLog.print(ex);
 		}
-		GameLog.printInfoIfUsing("lockFile:" + lockFile.getPath() + " is created");
+		GameLog.print("lockFile:" + lockFile.getPath() + " is created");
 	}
 
 	/**
@@ -78,7 +78,7 @@ public final class LockUtil {
 		File[] list = new File("./").listFiles(TEMP_FN_FILTER);
 		for (File file : list) {
 			file.delete();
-			GameLog.printInfoIfUsing("lockFile:" + file.getPath() + " is deleted");
+			GameLog.print("lockFile:" + file.getPath() + " is deleted");
 		}
 	}
 
@@ -90,10 +90,10 @@ public final class LockUtil {
 						writer.close();
 					}
 				} catch (IOException ex) {
-					GameLog.print(Level.WARNING, ex);
+					GameLog.print( ex);
 				}
 				lockFile.delete();
-				GameLog.printInfoIfUsing("lockFile:" + lockFile.getPath() + " is deleted");
+				GameLog.print("lockFile:" + lockFile.getPath() + " is deleted");
 			}
 		}
 	}

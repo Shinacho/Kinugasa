@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
@@ -70,7 +71,7 @@ public class InfoWindow extends BasicSprite {
 		List<Text> t = new ArrayList<>();
 
 		//line1
-		t.add(new Text("<---" + I18N.translate(mode.toString()) + "--->"));
+		t.add(new Text("<---" + I18N.get(mode == Mode.MONEY ? GameSystemI18NKeys.お金 : GameSystemI18NKeys.クエスト) + "--->"));
 
 		//data
 		switch (mode) {
@@ -81,12 +82,12 @@ public class InfoWindow extends BasicSprite {
 				break;
 			case QUEST:
 				//MAIN
-				t.add(new Text("--" + I18N.translate("MAIN") + I18N.translate("QUEST")));
+				t.add(new Text("--" + I18N.get(GameSystemI18NKeys.メインクエスト)));
 				QuestStage qs = QuestLineStorage.getInstance().get("MAIN").getStage();
 				t.add(new Text("  " + qs.getTitle() + Text.getLineSep() + "   　　　 " + qs.getDesc().replaceAll("/", "/   　　　 ")));
 
 				//SUB
-				t.add(new Text("--" + I18N.translate("QSUB") + I18N.translate("QUEST")));
+				t.add(new Text("--" + I18N.get(GameSystemI18NKeys.サブクエスト)));
 				for (QuestLine ql : QuestLineStorage.getInstance().filter(p -> !p.getName().equals("MAIN"))) {
 					QuestStage qs2 = ql.getStage();
 					t.add(new Text("  " + qs2.getTitle() + Text.getLineSep() + "  " + qs2.getDesc()));

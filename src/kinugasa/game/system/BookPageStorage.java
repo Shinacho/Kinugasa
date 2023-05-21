@@ -30,6 +30,7 @@ import kinugasa.resource.Storage;
  * @vesion 1.0.0 - 2022/12/25_13:58:05<br>
  * @author Shinacho<br>
  */
+@Deprecated
 public class BookPageStorage extends Storage<BookPage> {
 
 	private BookPageStorage() {

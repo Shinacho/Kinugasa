@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
@@ -89,7 +90,7 @@ public class ActionDescWindow extends PCStatusWindow {
 		//SSMWに文字列を設定
 
 		List<Text> t = new ArrayList<>();
-		t.add(new Text("<---" + s.get(pcIdx).getName() + I18N.translate("S") + I18N.translate("ACTION") + "--->"));
+		t.add(new Text("<---" + I18N.get(GameSystemI18NKeys.Xの行動, s.get(pcIdx).getName()) + "--->"));
 
 		for (CmdAction a
 				: s.get(pcIdx).getActions()
@@ -114,11 +115,11 @@ public class ActionDescWindow extends PCStatusWindow {
 				sb.append(a.getDesc());
 			}
 			sb.append("(")
-					.append(I18N.translate("AREA"))
+					.append(I18N.get(GameSystemI18NKeys.範囲))
 					.append(":")
 					.append(a.getAreaWithEqip(s.get(pcIdx)))
 					.append("、")
-					.append(I18N.translate("ACTION_ATTR"))
+					.append(I18N.get(GameSystemI18NKeys.属性))
 					.append(":");
 			sb.append(a.getBattleEvent()
 					.stream()
@@ -127,7 +128,7 @@ public class ActionDescWindow extends PCStatusWindow {
 					.distinct()
 					.collect(Collectors.toList()));
 			sb.append("、")
-					.append(I18N.translate("ACTION_EFFECT"))
+					.append(I18N.get(GameSystemI18NKeys.基礎威力))
 					.append(":");
 
 			//ENEMYが入っている場合、minを、そうでない場合はMAXを取る

@@ -108,7 +108,7 @@ public class FieldEventParser {
 					try {
 						t = term.getAll(terms);
 					} catch (NameNotFoundException ex) {
-						kinugasa.game.GameLog.printInfo("UNDEFINED TERM NAME:" + terms);
+						kinugasa.game.GameLog.print("UNDEFINED TERM NAME:" + terms);
 						throw ex;
 					}
 				}

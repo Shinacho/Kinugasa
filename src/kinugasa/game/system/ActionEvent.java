@@ -24,12 +24,13 @@ package kinugasa.game.system;
  * THE SOFTWARE.
  */
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import kinugasa.graphics.Animation;
+import kinugasa.graphics.ImageEditor;
 import kinugasa.object.AnimationSprite;
-import kinugasa.object.KVector;
+import kinugasa.resource.KImage;
 import kinugasa.util.Random;
 
 /**
@@ -212,13 +213,13 @@ public class ActionEvent implements Comparable<ActionEvent> {
 			//P判定
 			if (!Random.percent(p)) {
 				if (GameSystem.isDebugMode()) {
-					kinugasa.game.GameLog.printInfo(this + " is no exec(P)");
+					kinugasa.game.GameLog.print(this + " is no exec(P)");
 				}
 				result.addResultTypePerTgt(ActionResultType.MISS);
 				continue;
 			}
 			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.printInfo("ACTION:" + c.getName() + ":" + parameterType + ":" + damageCalcType + ":" + tgtName + ":" + value);
+				kinugasa.game.GameLog.print("ACTION:" + c.getName() + ":" + parameterType + ":" + damageCalcType + ":" + tgtName + ":" + value);
 			}
 
 			//実行可能
@@ -306,7 +307,7 @@ public class ActionEvent implements Comparable<ActionEvent> {
 		}
 
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.printInfo("ACTION RESULT:" + result);
+			kinugasa.game.GameLog.print("ACTION RESULT:" + result);
 		}
 		return result;
 	}
@@ -330,6 +331,18 @@ public class ActionEvent implements Comparable<ActionEvent> {
 	private AnimationSprite createAnimationSprite(Point2D.Float user, Point2D.Float tgt) {
 		Animation a = getAnimationClone();
 		AnimationSprite s = new AnimationSprite(animation);
+		if (animationMoveType == AnimationMoveType.ROTATE_TGT_TO_USER) {
+			//回転の場合
+			KImage[] images = a.getImages();
+
+			float kakudo = animationMoveType.createVector(user, tgt).angle + 90f;
+			BufferedImage[] newImages = new BufferedImage[images.length];
+			for (int i = 0; i < images.length; i++) {
+				newImages[i] = ImageEditor.rotate(images[i].get(), kakudo, null);
+			}
+
+			a.setImages(images);
+		}
 		if (animationMoveType == AnimationMoveType.NONE) {
 			s.setVisible(false);
 			return s;

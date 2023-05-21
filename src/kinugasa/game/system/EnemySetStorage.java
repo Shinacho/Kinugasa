@@ -23,6 +23,7 @@
  */
 package kinugasa.game.system;
 
+import static java.lang.Math.random;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +69,7 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 		return random();
 	}
 
-	public EnemySetStorage load() throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
+	public EnemySetStorage build() throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
 		XMLFile file = new XMLFile(fileName);
 		if (!file.exists()) {
 			throw new FileNotFoundException(file.getFile());

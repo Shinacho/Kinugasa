@@ -29,17 +29,17 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import kinugasa.game.GameLog;
+import static kinugasa.game.I18N.get;
 import kinugasa.game.field4.FieldEventParser;
 import kinugasa.game.system.GameSystem;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Nameable;
-import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
 import kinugasa.resource.FileNotFoundException;
+import kinugasa.resource.Storage;
 import kinugasa.resource.text.IllegalXMLFormatException;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
-import kinugasa.resource.text.XMLFileSupport;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.TimeCounter;
 
@@ -129,7 +129,7 @@ public class TextStorage extends Storage<Text> implements Nameable {
 		data.dispose();
 
 		if (GameSystem.isDebugMode()) {
-		GameLog.printIfUsing(Level.ALL, getAll().toString());
+			GameLog.print(getAll());
 		}
 
 		return this;

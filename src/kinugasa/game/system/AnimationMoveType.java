@@ -32,6 +32,18 @@ import kinugasa.object.KVector;
  * @author Shinacho<br>
  */
 public enum AnimationMoveType {
+	FIELD(0) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	ROTATE_TGT_TO_USER(0) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
 	TGT(0) {
 		@Override
 		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {

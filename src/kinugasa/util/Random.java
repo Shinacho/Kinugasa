@@ -26,6 +26,7 @@ package kinugasa.util;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
@@ -95,7 +96,7 @@ public class AttrDescWindow extends PCStatusWindow {
 
 	private void updateText() {
 
-		Text line1 = new Text("<---" + s.get(pcIdx).getName() + I18N.translate("S") + I18N.translate("ATTR") + "--->");
+		Text line1 = new Text("<---" + I18N.get(GameSystemI18NKeys.Xの有効度, s.get(pcIdx).getName()) + "--->");
 
 		List<AttributeValue> list = s.get(pcIdx).getEffectedAttrIn().stream().sorted().collect(Collectors.toList());
 		List<Text> l = new ArrayList<>();
@@ -107,7 +108,7 @@ public class AttrDescWindow extends PCStatusWindow {
 				continue;
 			}
 			if (v.getKey().getOrder() > 100 && !midashi) {
-				l.add(new Text("--" + I18N.translate("CONDITION")));
+				l.add(new Text("--" + I18N.get(GameSystemI18NKeys.状態異常)));
 				midashi = true;
 			}
 			l.add(new Text("  " + v.getKey().getDesc() + ":" + (v.getValue() * 100) + '%'));

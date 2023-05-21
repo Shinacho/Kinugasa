@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
@@ -87,7 +88,7 @@ public class ConditionDescWindow extends PCStatusWindow {
 	private void updateText() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<---");
-		sb.append(s.get(pcIdx).getName()).append(I18N.translate("S")).append(I18N.translate("CURRENT_CONDITION")).append("--->");
+		sb.append(I18N.get(GameSystemI18NKeys.Xの発生中の効果, s.get(pcIdx).getName())).append("--->");
 		List<Text> l = new ArrayList<>();
 		l.add(new Text(sb.toString()));
 		l.addAll(s.get(pcIdx).getCondition().stream().map(p -> new Text(p.getKey().getDesc())).collect(Collectors.toList()));

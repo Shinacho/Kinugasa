@@ -46,10 +46,12 @@ public class MapChipAttributeStorage extends Storage<MapChipAttribute> implement
 	public static MapChipAttributeStorage getInstance() {
 		return INSTANCE;
 	}
+	public static final MapChipAttribute VOID = new MapChipAttribute("VOID");
+	public static final MapChipAttribute CLOSE = new MapChipAttribute("CLOSE");
 
-	private MapChipAttributeStorage() {
-		add(new MapChipAttribute("VOID"));
-		add(new MapChipAttribute("CLOSE"));
+	static {
+		getInstance().add(VOID);
+		getInstance().add(CLOSE);
 	}
 
 	@Override
@@ -65,7 +67,7 @@ public class MapChipAttributeStorage extends Storage<MapChipAttribute> implement
 			int encountBaseValue = e.getAttributes().contains("encountBaseValue") ? e.getAttributes().get("encountBaseValue").getIntValue() : 0;
 			getInstance().add(new MapChipAttribute(name, encountBaseValue));
 		}
-		GameLog.printIfUsing(Level.ALL, getAll().toString());
+		GameLog.print(getAll());
 
 	}
 

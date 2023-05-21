@@ -165,7 +165,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 	public void moveToTgt() {
 		if (!moving) {
 			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.printInfo("enemy " + getName() + " move is canceld : " + moving + " / " + tgt);
+				kinugasa.game.GameLog.print("enemy " + getName() + " move is canceld : " + moving + " / " + tgt);
 			}
 			return;
 		}

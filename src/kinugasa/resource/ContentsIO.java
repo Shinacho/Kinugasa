@@ -87,7 +87,7 @@ public final class ContentsIO {
 			} catch (IOException ex) {
 				throw new ContentsIOException(ex);
 			} finally {
-				GameLog.printInfoIfUsing("> ContentsIO : save : obj=[" + obj + "] file=[" + file.getPath() + "]");
+				GameLog.print("> ContentsIO : save : obj=[" + obj + "] file=[" + file.getPath() + "]");
 			}
 		}
 	}
@@ -141,7 +141,7 @@ public final class ContentsIO {
 			} catch (IOException ex) {
 				throw new ContentsIOException(ex);
 			} finally {
-				GameLog.printInfoIfUsing("> ContentsIO : load : type=[" + type + "] file=[" + file.getPath() + "]");
+				GameLog.print("> ContentsIO : load : type=[" + type + "] file=[" + file.getPath() + "]");
 			}
 		}
 	}

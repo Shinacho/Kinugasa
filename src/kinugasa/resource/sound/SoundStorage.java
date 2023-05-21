@@ -23,7 +23,7 @@
  */
 package kinugasa.resource.sound;
 
-import kinugasa.resource.DynamicStorage;
+import kinugasa.resource.InputObjectStorage;
 import kinugasa.resource.Input;
 import kinugasa.resource.InputStatus;
 
@@ -40,7 +40,7 @@ import kinugasa.resource.InputStatus;
  * @version 1.0.0 - 2013/01/14_14:19:07<br>
  * @author Shinacho<br>
  */
-public final class SoundStorage extends DynamicStorage<SoundMap> implements Input{
+public final class SoundStorage extends InputObjectStorage<SoundMap> implements Input{
 
 	/** このクラスの唯一のインスタンスです . */
 	private static final SoundStorage INSTANCE = new SoundStorage();

@@ -69,22 +69,22 @@ public class GraphicsUtil {
 	private GraphicsUtil() {
 	}
 
-	/**
-	 * Java2DのOpenGLパイプラインを有効化します. 環境によっては、描画パフォーマンスが向上する場合があります。<br>
-	 */
-	public static void useOpenGL() {
-		System.setProperty("sun.java2d.opengl", "true");
-		GameLog.printInfoIfUsing("> opengl state : [" + System.getProperty("sun.java2d.opengl") + "]");
-	}
-
-	/**
-	 * OpenGLパイプラインを使用しているかを検査します.
-	 *
-	 * @return OpenGLパイプラインを使用している場合は、trueを返します。<br>
-	 */
-	public static boolean isUseOpenGL() {
-		return System.getProperty("sun.java2d.opengl").equals("true");
-	}
+//	/**
+//	 * Java2DのOpenGLパイプラインを有効化します. 環境によっては、描画パフォーマンスが向上する場合があります。<br>
+//	 */
+//	public static void useOpenGL() {
+//		System.setProperty("sun.java2d.opengl", "true");
+//		GameLog.print("> opengl state : [" + System.getProperty("sun.java2d.opengl") + "]");
+//	}
+//
+//	/**
+//	 * OpenGLパイプラインを使用しているかを検査します.
+//	 *
+//	 * @return OpenGLパイプラインを使用している場合は、trueを返します。<br>
+//	 */
+//	public static boolean isUseOpenGL() {
+//		return System.getProperty("sun.java2d.opengl").equals("true");
+//	}
 
 	/**
 	 * Rectangle2Dインスタンスを使用して、clearRectを実行します.

@@ -107,7 +107,7 @@ public final class ReplayData extends Storage<ReplayInputState> implements Seria
 	 * @return 指定されたフレームの入力状態を返します。このフレームに入力が無かった場合はnullを返します。<br>
 	 */
 	public InputState get(long frame) {
-		ReplayInputState state = super.getIfContains(Long.toString(frame));
+		ReplayInputState state = super.getOrNull(Long.toString(frame));
 		return state == null ? null : state.getInputState();
 	}
 }
