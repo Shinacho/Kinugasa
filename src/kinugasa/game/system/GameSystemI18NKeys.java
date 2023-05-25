@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.field4;
+package kinugasa.game.system;
 
 /**
  * GameSystemで使用されるI18Nキーです。これらがI18Nクラスにない場合、様々な処理が失敗します。
@@ -166,6 +166,18 @@ public class GameSystemI18NKeys {
 	public static String 道具 = "道具";
 	public static String 魔術 = "魔術";
 	public static String 行動 = "行動";
-
-	//
+	//ターゲティング
+	public static String 敵 = "敵";
+	public static String 味方 = "味方";
+	public static String 有効 = "有効";
+	public static String 無効 = "無効";
+	public static String 単体 = "単体";
+	public static String 全体 = "全体";
+	public static String 戦闘時ターゲット情報 = "戦闘時ターゲット情報";
+	public static String 効果対象 = "効果対象";
+	public static String 敵味方識別 = "敵味方識別";
+	public static String 敵味方切替 = "敵味方切替";
+	public static String 標的選択 = "標的選択";
+	public static String 術者 = "術者";
+	public static String 対象 = "対象";
 }

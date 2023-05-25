@@ -23,6 +23,7 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.GameSystemI18NKeys;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Shinacho.
+ * Copyright 2023 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,21 +23,35 @@
  */
 package kinugasa.game.system;
 
-import kinugasa.resource.Storage;
+import java.util.List;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_13:06:44<br>
+ * @vesion 1.0.0 - May 23, 2023_12:29:16 PM<br>
  * @author Shinacho<br>
  */
-public class FieldConditionValueStorage extends Storage<ConditionValue> {
+public abstract class UserDefinedCmdAction extends CmdAction {
 
-	private static final FieldConditionValueStorage INSTANCE = new FieldConditionValueStorage();
-
-	private FieldConditionValueStorage() {
+	public UserDefinedCmdAction(ActionType t, String name, String desc) {
+		super(t, name, desc);
 	}
 
-	public static FieldConditionValueStorage getInstance() {
-		return INSTANCE;
+	public final void ActionStorageAddThis() {
+		ActionStorage.getInstance().add(this);
 	}
+
+	@Override
+	public abstract ActionResult exec(ActionTarget tgt);
+
+	@Override
+	public abstract TargetOption getTargetOption();
+
+	@Override
+	public abstract int getArea();
+
+	@Override
+	public abstract int getSpellTime();
+
+	@Override
+	public abstract List<ActionTerm> getTerms();
 }

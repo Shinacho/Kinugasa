@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.field4.MapChipAttribute;
@@ -41,8 +40,6 @@ import kinugasa.game.field4.MapChipAttributeStorage;
 import kinugasa.graphics.GraphicsUtil;
 import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
-import kinugasa.object.AnimationSprite;
-import kinugasa.object.BasicSprite;
 import kinugasa.object.Sprite;
 import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.text.FileIOException;
@@ -50,10 +47,8 @@ import kinugasa.resource.text.IllegalXMLFormatException;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
-import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.Random;
 import kinugasa.object.EmptySprite;
-import kinugasa.util.TimeCounter;
 
 /**
  *
@@ -62,9 +57,6 @@ import kinugasa.util.TimeCounter;
  */
 public class BattleFieldSystem implements XMLFileSupport {
 
-	private FieldConditionValueSet condition = new FieldConditionValueSet();
-	private final HashMap<ConditionKey, TimeCounter> conditionTimes = new HashMap<>();
-	private final HashMap<ConditionKey, AnimationSprite> conditionAnime = new HashMap<>();
 	private final HashMap<MapChipAttribute, BufferedImage> fieldImage = new HashMap<>();
 	private final HashMap<MapChipAttribute, Integer> obstacleMax = new HashMap<>();
 	private final HashMap<MapChipAttribute, String[]> obstacleName = new HashMap<>();
@@ -199,10 +191,6 @@ public class BattleFieldSystem implements XMLFileSupport {
 		return fieldImage;
 	}
 
-	public FieldConditionValueSet getCondition() {
-		return condition;
-	}
-
 	public void setEnemytArea(Rectangle enemytArea) {
 		this.enemytArea = enemytArea;
 	}
@@ -231,14 +219,6 @@ public class BattleFieldSystem implements XMLFileSupport {
 		return obstacleMax;
 	}
 
-	public HashMap<ConditionKey, TimeCounter> getConditionTimes() {
-		return conditionTimes;
-	}
-
-	public HashMap<ConditionKey, AnimationSprite> getConditionAnime() {
-		return conditionAnime;
-	}
-
 	public MapChipAttribute getDefaultChipAttr() {
 		return defaultChipAttr;
 	}
@@ -251,133 +231,10 @@ public class BattleFieldSystem implements XMLFileSupport {
 		return battleAreaAndNoPartyArea;
 	}
 
-	// すべての状態異常を取り除きます
-	public void clearCondition() {
-		condition.clear();
-		conditionTimes.clear();
-	}
-
-	//状態異常を追加します
-	public void addCondition(ConditionKey k) {
-		addCondition(k.getName());
-	}
-
-	//状態異常を追加します
-	public void addCondition(String name) {
-		ConditionValue v = ConditionValueStorage.getInstance().get(name);
-		// すでに発生している効果の場合、何もしない
-		if (condition.contains(name)) {
-			assert conditionTimes.containsKey(v.getKey()) : "conditionとeffectTimesの同期が取れていません";
-			return;
-		}
-		//優先度計算
-		//優先度が同一の状態異常がある場合、後勝ちで削除
-		int pri = v.getKey().getPriority();
-		if (!condition.asList().stream().filter(s -> s.getKey().getPriority() == pri).collect(Collectors.toList()).isEmpty()) {
-			condition.remove(name);
-			conditionTimes.remove(new ConditionKey(name, "", 0));
-		}
-		List<EffectMaster> effects = v.getEffects();
-		//タイム算出
-		List<EffectMaster> continueEffect = effects.stream().filter(a -> a.getContinueType() == EffectContinueType.CONTINUE).collect(Collectors.toList());
-		TimeCounter tc = continueEffect.isEmpty() ? TimeCounter.oneCounter() : continueEffect.get(0).createTimeCounter();
-		//発生中の効果とエフェクト効果時間に追加
-		condition.add(v);
-		conditionTimes.put(v.getKey(), tc);
-	}
-
-	// 状態異常を強制的に取り除きます
-	public void removeCondition(String name) {
-		ConditionValue v = ConditionValueStorage.getInstance().get(name);
-		condition.remove(v);
-		conditionTimes.remove(v.getKey());
-	}
-
-	// 状態異常の効果時間を上書きします。状態異常が付与されていない場合はセットします。
-	public void setConditionTime(String name, int time) {
-		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
-		ConditionValue v = ConditionValueStorage.getInstance().get(name);
-		if (condition.contains(v)) {
-			removeCondition(name);
-		}
-		condition.put(v);
-		conditionTimes.put(key, new FrameTimeCounter(time));
-	}
-
-	// 状態異常の効果時間を追加します。状態異常が付与されていない場合はセットします。
-	public void addConditionTime(String name, int time) {
-		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
-		ConditionValue v = ConditionValueStorage.getInstance().get(name);
-		if (condition.contains(v)) {
-			removeCondition(name);
-		}
-		time += conditionTimes.get(key).getCurrentTime();
-		condition.put(v);
-		conditionTimes.put(key, new FrameTimeCounter(time));
-	}
-
-	// コンディションによるコンディション発生を設定する
-	//Pの判定を行っているので、毎回違う結果になる可能性がある。
-	// すでに発生している状態異常は付与しない。効果時間のリセットは別途作成すること
-	public void updateCondition() {
-		List<ConditionValue> addList = new ArrayList<>();
-		for (ConditionValue v : condition) {
-			for (EffectMaster e : v.getEffects()) {
-				if (e.getTargetType() == EffectTargetType.ADD_CONDITION) {
-					if (Random.percent(e.getP())) {
-						if (!condition.contains(e.getTargetName())) {
-							addList.add(ConditionValueStorage.getInstance().get(e.getTargetName()));
-							conditionTimes.put(e.getKey(), e.createTimeCounter());
-						}
-					}
-				}
-			}
-		}
-		condition.addAll(addList);
-	}
-
-	public void update() {
-		for (ConditionValue v : condition) {
-			conditionAnime.get(v.getKey()).update();
-		}
-		List<ConditionKey> deleteList = new ArrayList<>();
-		for (ConditionKey key : conditionTimes.keySet()) {
-			if (conditionTimes.get(key).isReaching()) {
-				deleteList.add(key);
-			}
-		}
-		for (ConditionKey k : deleteList) {
-			conditionTimes.remove(k);
-			condition.remove(k.getName());
-		}
-
-	}
-
-	// 発生中の効果に基づいて、このターン行動できるかを判定します
-	public boolean canMoveThisTurn() {
-		if (condition.isEmpty()) {
-			assert conditionTimes.isEmpty() : "conditionとeffectTimesの同期が取れていません";
-			return true;
-		}
-		for (ConditionValue v : condition) {
-			for (EffectMaster e : v.getEffects()) {
-				if (e.getTargetType() == EffectTargetType.STOP) {
-					if (Random.percent(e.getP())) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-
 	public void draw(GraphicsContext g) {
 		g.drawImage(fieldImage.get(currentChipAttr), 0, 0);
 		obstacle.forEach(v -> v.draw(g));
 
-		for (ConditionValue v : condition) {
-			conditionAnime.get(v.getKey()).draw(g);
-		}
 		if (GameSystem.isDebugMode()) {
 			Graphics2D g2 = g.create();
 			g2.setColor(Color.ORANGE);

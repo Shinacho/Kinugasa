@@ -26,6 +26,7 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GameOption;
+import kinugasa.object.Sprite;
 
 /**
  *
@@ -73,6 +74,7 @@ public class BattleConfig {
 	public static float atkDefPercent = 0.75f;//ダメージ効率
 	public static float damageMul = 2.5f;
 	public static String weaponSlotName = "";
+	public static Sprite castingAnimation = null;
 
 	public static class ConditionName {
 

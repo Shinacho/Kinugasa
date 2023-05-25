@@ -110,21 +110,6 @@ public class ActionEvent implements Comparable<ActionEvent> {
 	public ActionEventResult exec(ActionTarget tgt) {
 		//フィールドモードの場合、アニメーションは無視される。
 		//すべてのtgtに対して行う。その結果をTypeとして返す
-		//フィールドアクションの場合
-		if (tgt.isFieldTarget() && targetType == TargetType.FIELD) {
-			List<ActionResultType> resultTypePerTgt = new ArrayList<>();
-			List<AnimationSprite> ani = new ArrayList<>();
-			assert tgt.isInField() : "field action, but not in field";
-			if (!Random.percent(p)) {
-				resultTypePerTgt.add(ActionResultType.MISS);
-				return new ActionEventResult(resultTypePerTgt, ani);
-			}
-			resultTypePerTgt.add(ActionResultType.SUCCESS);
-			AnimationSprite a = new AnimationSprite(getAnimationClone());
-			a.setLocationByCenter(GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getBattleFieldAllArea().getCenter());
-			ani.add(a);
-			return new ActionEventResult(resultTypePerTgt, ani);
-		}
 
 		ActionEventResult result = new ActionEventResult();
 		//セルフイベントの場合

@@ -194,7 +194,7 @@ public class Text implements Nameable {
 
 	@Override
 	public String toString() {
-		return "Text{" + "name=" + name + ", text=" + text + ", nextId=" + nextId + '}';
+		return "Text{" + "name=" + name + ", nextId=" + nextId + '}';
 	}
 
 	public void reset() {

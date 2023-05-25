@@ -26,7 +26,10 @@ package kinugasa.game.system;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+import kinugasa.game.GameLog;
 import kinugasa.game.GameOption;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.ImageEditor;
@@ -83,7 +86,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			event.setDamageCalcType(e.getAttributes().get("dct").of(StatusDamageCalcType.class));
 		}
 		if (e.hasAttribute("animation")) {
-			event.setAnimation(animationMap.get(e.getAttributes().get("animation").getValue()));
+			event.setAnimation(animationMap.get(e.getAttributes().get("animation").getValue()));//注意：後でクローンすること！！！！
 		}
 		if (e.hasAttribute("animationMoveType")) {
 			event.setAnimationMoveType(e.getAttributes().get("animationMoveType").of(AnimationMoveType.class));
@@ -182,6 +185,18 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			}
 			if (e.hasAttribute("canSale")) {
 				i.setCanSale(e.getAttributes().get("canSale").getBool());
+			}
+			//ターゲットオプション
+			TargetOption targetOption = null;
+			if (e.hasAttribute("targetOption")) {
+				String[] v = e.getAttributes().get("targetOption").safeSplit(",");
+				TargetOption.SelectType selectType = TargetOption.SelectType.valueOf(v[0]);
+				TargetOption.IFF iff = TargetOption.IFF.valueOf(v[1]);
+				TargetOption.DefaultTarget defaultTarget = TargetOption.DefaultTarget.valueOf(v[2]);
+				TargetOption.SwitchTeam switchTeam = TargetOption.SwitchTeam.valueOf(v[3]);
+				TargetOption.SelfTarget selfTarget = TargetOption.SelfTarget.valueOf(v[4]);
+				TargetOption.Targeting targeting = TargetOption.Targeting.valueOf(v[5]);
+				i.setTgtOption(TargetOption.of(selectType, iff, defaultTarget, switchTeam, selfTarget, targeting));
 			}
 			//イベント
 			for (XMLElement ee : e.getElement("battleEvent")) {
@@ -289,7 +304,8 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			}
 			ItemStorage.getInstance().add(i);
 		}
-
+		GameLog.print("item list -----------");
+		GameLog.print(ItemStorage.getInstance());
 		//攻撃のパース
 		ActionType actionType = ActionType.ATTACK;
 		for (XMLElement e : root.getElement("attack")) {
@@ -316,8 +332,24 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			if (e.hasAttribute("spellTime")) {
 				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
 			}
+			//ターゲットオプション
+			TargetOption targetOption = null;
+			if (e.hasAttribute("targetOption")) {
+				String[] v = e.getAttributes().get("targetOption").safeSplit(",");
+				TargetOption.SelectType selectType = TargetOption.SelectType.valueOf(v[0]);
+				TargetOption.IFF iff = TargetOption.IFF.valueOf(v[1]);
+				TargetOption.DefaultTarget defaultTarget = TargetOption.DefaultTarget.valueOf(v[2]);
+				TargetOption.SwitchTeam switchTeam = TargetOption.SwitchTeam.valueOf(v[3]);
+				TargetOption.SelfTarget selfTarget = TargetOption.SelfTarget.valueOf(v[4]);
+				TargetOption.Targeting targeting = TargetOption.Targeting.valueOf(v[5]);
+				a.setTgtOption(TargetOption.of(selectType, iff, defaultTarget, switchTeam, selfTarget, targeting));
+			}
+			if (a.getTargetOption() == null) {
+				throw new IllegalXMLFormatException("attack, but target option is null : " + a);
+			}
 			//イベント
 			for (XMLElement ee : e.getElement("battleEvent")) {
+				System.out.println("kinugasa.game.system.ActionStorage.readFromXML()" + ee);
 				a.addBattleEvent(parseEvent(ee));
 			}
 			for (XMLElement ee : e.getElement("fieldEvent")) {
@@ -353,8 +385,24 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			if (e.hasAttribute("spellTime")) {
 				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
 			}
+			//ターゲットオプション
+			TargetOption targetOption = null;
+			if (e.hasAttribute("targetOption")) {
+				String[] v = e.getAttributes().get("targetOption").safeSplit(",");
+				TargetOption.SelectType selectType = TargetOption.SelectType.valueOf(v[0]);
+				TargetOption.IFF iff = TargetOption.IFF.valueOf(v[1]);
+				TargetOption.DefaultTarget defaultTarget = TargetOption.DefaultTarget.valueOf(v[2]);
+				TargetOption.SwitchTeam switchTeam = TargetOption.SwitchTeam.valueOf(v[3]);
+				TargetOption.SelfTarget selfTarget = TargetOption.SelfTarget.valueOf(v[4]);
+				TargetOption.Targeting targeting = TargetOption.Targeting.valueOf(v[5]);
+				a.setTgtOption(TargetOption.of(selectType, iff, defaultTarget, switchTeam, selfTarget, targeting));
+			}
+			if (a.getTargetOption() == null) {
+				throw new IllegalXMLFormatException("magic, but target option is null : " + a);
+			}
 			//イベント
 			for (XMLElement ee : e.getElement("battleEvent")) {
+				System.out.println("kinugasa.game.system.ActionStorage.readFromXML()" + ee);
 				a.addBattleEvent(parseEvent(ee));
 			}
 			for (XMLElement ee : e.getElement("fieldEvent")) {
@@ -362,6 +410,7 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			}
 			getInstance().add(a);
 		}
+
 		//その他行動のパース(ESCAPEイベント
 		actionType = ActionType.OTHER;
 		for (XMLElement e : root.getElement("other")) {
@@ -398,15 +447,43 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 			getInstance().add(a);
 		}
 
+		GameLog.print("action list -----------");
+		GameLog.print(this);
+
 		animationMap.clear();
 		file.dispose();
 
-	}
+		for (CmdAction a : this) {
+			//バトルイベントが入っているのにターゲットオプションが入っていないアクションがあるか点検
+			//ある場合例外
+			if (a.isBattleUse() && a.getTargetOption() == null && a.getType() != ActionType.OTHER) {
+				throw new IllegalXMLFormatException("this action is can use in battle, but target option is null : " + a);
+			}
+			if (a.getType() != ActionType.ATTACK) {
+				continue;
+			}
+			//イベントが入っていない場合エラー
+			if (a.getBattleEvent().isEmpty() && a.getFieldEvent().isEmpty()) {
+				throw new IllegalXMLFormatException("this action is not have event : " + a);
+			}
+			//アクションのvalueが0の場合警告
+			if (a.getBattleEvent().stream().allMatch(p -> p.getValue() == 0)) {
+				GameLog.print("!> action event(B) value is zero : " + a + " / " + a.getBattleEvent());
+			}
+			if (a.getFieldEvent().stream().allMatch(p -> p.getValue() == 0)) {
+				GameLog.print("!> action event(F) value is zero : " + a + " / " + a.getFieldEvent());
+			}
+			//ターゲティングがDISABLEでランダムイベントを持っていないアクションはエラー
+			if (a.getTargetOption().getTargeting() == TargetOption.Targeting.DISABLE) {
+				if (a.getBattleEvent().stream().allMatch(p -> !p.getTargetType().toString().contains("RANDOM"))) {
+					throw new IllegalXMLFormatException("this action(B) is targeting=DISABLE, but not have random event : " + a);
+				}
+				if (a.getFieldEvent().stream().allMatch(p -> !p.getTargetType().toString().contains("RANDOM"))) {
+					throw new IllegalXMLFormatException("this action(F) is targeting=DISABLE, but not have random event : " + a);
+				}
+			}
+		}
 
-	private static Map<String, ActionEvent> userEvents = new HashMap<>();
-
-	public static void addUserDefinedActionEvent(String name, ActionEvent e) {
-		userEvents.put(name, e);
 	}
 
 }

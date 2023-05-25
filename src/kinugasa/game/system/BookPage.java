@@ -62,8 +62,8 @@ public class BookPage implements Nameable {
 	public String getName() {
 		return getDesc();
 	}
-	
-	public int getSaleValue(){
+
+	public int getSaleValue() {
 		//TODO:価格ここ
 		return 100;
 	}
@@ -94,9 +94,8 @@ public class BookPage implements Nameable {
 			case ADD_CONDITION_TIME:
 				if (ConditionValueStorage.getInstance().contains(tgtName)) {
 					s += "(" + ConditionValueStorage.getInstance().get(tgtName).getKey().getDesc();
-				}
-				if (FieldConditionValueStorage.getInstance().contains(tgtName)) {
-					s += "(" + FieldConditionValueStorage.getInstance().get(tgtName).getKey().getDesc();
+				} else {
+					throw new GameSystemException("book page condtion name not found: " + tgtName);
 				}
 				break;
 			case ADD_AREA:

@@ -30,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import static kinugasa.game.system.TargetType.ALL;
+import static kinugasa.game.system.TargetType.ONE;
+import static kinugasa.game.system.TargetType.SELF;
+import static kinugasa.game.system.TargetType.TEAM;
 import kinugasa.object.EmptySprite;
 import kinugasa.object.KVector;
 
@@ -45,9 +49,9 @@ public enum StandardEnemyAI implements EnemyAI {
 			assert user.isPlayer() == false : "ENEMY AI but user is not CPU";
 			//HPが半分以下かどうか
 			boolean hpIsUnderHarf = user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
-					< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax();
+					< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax() / 2;
 			L1:
-			{
+			if(hpIsUnderHarf){
 				//回復アイテム（valueが＋でバトル利用できるアイテム）を持っているかどうか
 				Item healItem = (Item) getMax(user.getStatus().getItemBag().getItems());
 				if (healItem == null) {
@@ -55,16 +59,19 @@ public enum StandardEnemyAI implements EnemyAI {
 				}
 				//回復アイテムインスタ
 				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healItem);
+				if (instTgt.getTarget().isEmpty()) {
+					break L1;
+				}
 				//自分のHPが半分以下またはインスタエリアの敵内にHPが半分以下がいる場合、そいつにアイテム使用
 				//（ターゲットはBSで再計算する
 				if (hpIsUnderHarf || instTgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
-						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).count() > 0) {
+						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax() / 2).count() > 0) {
 					return healItem;
 				}
 			}
 
 			L2:
-			{
+			if(hpIsUnderHarf){
 				//回復魔法（valueが＋）持っている場合でHPが低い場合自分に使う
 				CmdAction healMgk = getMax(list.stream().filter(p -> p.getType() == ActionType.MAGIC).collect(Collectors.toList()));
 				if (healMgk == null) {
@@ -72,10 +79,13 @@ public enum StandardEnemyAI implements EnemyAI {
 				}
 				//回復魔法インスタ
 				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healMgk);
+				if (instTgt.getTarget().isEmpty()) {
+					break L2;
+				}
 				//自分のHPが半分以下またはインスタエリアの敵内にHPが半分以下がいる場合、そいつにアイテム使用
 				//（ターゲットはBSで再計算する
 				if (hpIsUnderHarf || instTgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
-						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).count() > 0) {
+						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax() / 2).count() > 0) {
 					return healMgk;
 				}
 
@@ -105,7 +115,7 @@ public enum StandardEnemyAI implements EnemyAI {
 			//ただし足障害物がある場合は障害物をよけるコースで障害物までの位置を返す
 
 			//最も近いPCを検索
-			BattleCharacter pc = BattleTargetSystem.nearPCs(user);
+			BattleCharacter pc = BattleTargetSystem.nearPC(user);
 
 			//現在の障害物リストを取得
 			List<BattleFieldObstacle> oList = GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getObstacle();
@@ -200,31 +210,17 @@ public enum StandardEnemyAI implements EnemyAI {
 					case ALL:
 						sum += (enemyNum + partyNum) * e.getValue();
 						break;
-					case FIELD:
-						break;
-					case ONE_ENEMY:
+					case ONE:
 						sum += (partyNum) * e.getValue();
 						break;
-					case ONE_PARTY:
-						sum += (enemyNum) * e.getValue();
-						break;
-					case RANDOM_ONE:
-						sum += e.getValue();
-						break;
-					case RANDOM_ONE_ENEMY:
-						sum += e.getValue();
-						break;
-					case RANDOM_ONE_PARTY:
+					case RANDOM:
 						sum += e.getValue();
 						break;
 					case SELF:
 						sum += e.getValue();
 						break;
-					case TEAM_ENEMY:
+					case TEAM:
 						sum += (partyNum) * e.getValue();
-						break;
-					case TEAM_PARTY:
-						sum += (enemyNum) * e.getValue();
 						break;
 					default:
 						throw new AssertionError();
@@ -262,31 +258,17 @@ public enum StandardEnemyAI implements EnemyAI {
 					case ALL:
 						sum += (enemyNum + partyNum) * e.getValue();
 						break;
-					case FIELD:
-						break;
-					case ONE_ENEMY:
+					case ONE:
 						sum += (partyNum) * e.getValue();
 						break;
-					case ONE_PARTY:
-						sum += (enemyNum) * e.getValue();
-						break;
-					case RANDOM_ONE:
-						sum += e.getValue();
-						break;
-					case RANDOM_ONE_ENEMY:
-						sum += e.getValue();
-						break;
-					case RANDOM_ONE_PARTY:
+					case RANDOM:
 						sum += e.getValue();
 						break;
 					case SELF:
 						sum += e.getValue();
 						break;
-					case TEAM_ENEMY:
+					case TEAM:
 						sum += (partyNum) * e.getValue();
-						break;
-					case TEAM_PARTY:
-						sum += (enemyNum) * e.getValue();
 						break;
 					default:
 						throw new AssertionError();

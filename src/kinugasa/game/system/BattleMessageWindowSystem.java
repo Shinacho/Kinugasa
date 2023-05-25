@@ -28,7 +28,6 @@ import java.util.List;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import kinugasa.game.field4.GameSystemI18NKeys;
 import static kinugasa.game.system.BattleConfig.messageWindowY;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;

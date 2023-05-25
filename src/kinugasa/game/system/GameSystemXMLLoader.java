@@ -277,7 +277,7 @@ public class GameSystemXMLLoader {
 		XMLElement root = f.load().getFirst();
 
 		// キャラクタ状態異常マスタ
-		for (XMLElement e : root.getElement("cCondition")) {
+		for (XMLElement e : root.getElement("condition")) {
 			String name = e.getAttributes().get("name").getValue();
 			String desc = e.getAttributes().get("desc").getValue();
 			int priority = e.getAttributes().get("pri").getIntValue();
@@ -342,60 +342,6 @@ public class GameSystemXMLLoader {
 				}
 			}
 			ConditionValueStorage.getInstance().add(new ConditionValue(key, list));
-		}
-
-		//フィールド状態マスタ
-		for (XMLElement e : root.getElement("fCondition")) {
-			String name = e.getAttributes().get("name").getValue();
-			String desc = e.getAttributes().get("desc").getValue();
-			int priority = e.getAttributes().get("pri").getIntValue();
-			ConditionKey key = new ConditionKey(name, desc, priority);
-			List<EffectMaster> list = new ArrayList<>();
-			for (XMLElement ee : e.getElement("effect")) {
-				EffectContinueType ect = EffectContinueType.valueOf(ee.getAttributes().get("ect").getValue());
-				//NONEエフェクトの場合、追加して次
-				if (ect == EffectContinueType.NONE) {
-					list.add(new EffectMaster(key));
-					continue;
-				}
-				EffectTargetType targetType = EffectTargetType.valueOf(ee.getAttributes().get("ett").getValue());
-				float p = ee.getAttributes().get("p").getFloatValue();
-				//ETTがSTOP、CONFU、ADD＿CONDITIONの場合、一部パラメタを省略して追加し、次
-				int min = 0, max = 0;
-				if (ee.hasAttribute("time")) {
-					String time = ee.getAttributes().get("time").getValue();
-					if (time.contains("/")) {
-						min = ee.getAttributes().get("time").parseInt("/")[0];
-						max = ee.getAttributes().get("time").parseInt("/")[1];
-					} else if (time.equals("INFINITY")) {
-						min = Integer.MAX_VALUE;
-						max = Integer.MAX_VALUE;
-					} else if (time.equals("1")) {
-						min = max = 1;
-					} else {
-						throw new IllegalXMLFormatException("nCondition " + e + " s time is error");
-					}
-				}
-				if (targetType == EffectTargetType.STOP) {
-					list.add(new EffectMaster(key, ect, targetType, p, min, max));
-					continue;
-				}
-				if (targetType == EffectTargetType.ADD_CONDITION) {
-					String targetName = ee.getAttributes().get("tgt").getValue();
-					list.add(new EffectMaster(key, ect, targetType, targetName, p));
-					continue;
-				}
-				// NONEでもSTOPでもない場合、各要素を取得
-				if (targetType == EffectTargetType.CONFU) {
-					list.add(new EffectMaster(key, ect, targetType, min, max, p));
-					continue;
-				}
-				EffectSetType est = EffectSetType.valueOf(ee.getAttributes().get("est").getValue());
-				String targetName = ee.getAttributes().get("tgt").getValue();
-				float value = ee.getAttributes().get("value").getFloatValue();
-				list.add(new EffectMaster(key, ect, targetType, est, targetName, value, p, min, max));
-			}
-			FieldConditionValueStorage.getInstance().add(new ConditionValue(key, list));
 		}
 
 		f.dispose();

@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
@@ -92,12 +91,11 @@ public class ActionDescWindow extends PCStatusWindow {
 		List<Text> t = new ArrayList<>();
 		t.add(new Text("<---" + I18N.get(GameSystemI18NKeys.Xの行動, s.get(pcIdx).getName()) + "--->"));
 
-		for (CmdAction a
-				: s.get(pcIdx).getActions()
-						.stream()
-						.filter(p -> p.isBattleUse())
-						.sorted()
-						.collect(Collectors.toList())) {
+		for (CmdAction a : s.get(pcIdx).getActions()
+				.stream()
+				.filter(p -> p.isBattleUse())
+				.sorted()
+				.collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
 			if (a.getType() == ActionType.ITEM) {
 				//表示しない
@@ -133,21 +131,22 @@ public class ActionDescWindow extends PCStatusWindow {
 
 			//ENEMYが入っている場合、minを、そうでない場合はMAXを取る
 			if (!a.getBattleEvent().isEmpty()) {
-				if (a.getBattleEvent().stream().anyMatch(p -> p.getTargetType().toString().contains("ENEMY"))) {
-					sb.append(Math.abs(a.getBattleEvent()
-							.stream()
-							.mapToInt(p -> (int) (p.getValue()))
-							.min()
-							.getAsInt()));
+				if (a.getTargetOption().getDefaultTarget() == TargetOption.DefaultTarget.ENEMY) {
+					sb.append(Math.abs(
+							a.getBattleEvent()
+									.stream()
+									.mapToInt(p -> (int) (p.getValue()))
+									.min()
+									.getAsInt()));
 				} else {
-					sb.append(Math.abs(a.getBattleEvent()
-							.stream()
-							.mapToInt(p -> (int) (p.getValue()))
-							.max()
-							.getAsInt()));
+					sb.append(Math.abs(
+							a.getBattleEvent()
+									.stream()
+									.mapToInt(p -> (int) (p.getValue()))
+									.max()
+									.getAsInt()));
 				}
 			}
-
 			sb.append(")");
 
 			t.add(new Text(sb.toString()));
@@ -176,7 +175,8 @@ public class ActionDescWindow extends PCStatusWindow {
 	}
 
 	@Override
-	public void draw(GraphicsContext g) {
+	public void draw(GraphicsContext g
+	) {
 		if (!isVisible() || !isExist()) {
 			return;
 		}

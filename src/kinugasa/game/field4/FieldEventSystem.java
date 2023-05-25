@@ -23,6 +23,7 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.GameSystemI18NKeys;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;

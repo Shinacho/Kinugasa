@@ -31,7 +31,7 @@ import java.awt.Point;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.swing.ImageIcon;
-import kinugasa.game.field4.GameSystemI18NKeys;
+import kinugasa.game.system.GameSystemI18NKeys;
 import kinugasa.graphics.GraphicsUtil;
 import kinugasa.resource.text.IniFile;
 import kinugasa.game.ui.Dialog;

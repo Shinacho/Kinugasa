@@ -50,14 +50,15 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 	private Sound sound;
 	private int waitTime;
 	private boolean stop = false;
-	private List<ActionEvent> battleEvent = new ArrayList<>();
-	private List<ActionEvent> fieldEvent = new ArrayList<>();
+	private final List<ActionEvent> battleEvent = new ArrayList<>();
+	private final List<ActionEvent> fieldEvent = new ArrayList<>();
 	private int area;
 	private List<ActionTerm> terms = new ArrayList<>();
 	private int sort;
 	private int spellTime;
 	private int actionCount = 1;
 	private Set<StatusKey> damageCalcStatusKey = new HashSet<>();
+	private TargetOption tgtOption;
 
 	public CmdAction(ActionType type, String name, String desc) {
 		this.type = type;
@@ -67,6 +68,15 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 
 	public Set<StatusKey> getDamageCalcStatusKey() {
 		return damageCalcStatusKey;
+	}
+
+	public TargetOption getTargetOption() {
+		return tgtOption;
+	}
+
+	public CmdAction setTgtOption(TargetOption tgtOption) {
+		this.tgtOption = tgtOption;
+		return this;
 	}
 
 	public CmdAction setDamageCalcStatusKey(Set<StatusKey> damageCalcStatusKey) {
@@ -114,21 +124,19 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 		return this;
 	}
 
-	public CmdAction setBattleEvent(List<ActionEvent> battleEvent) {
-		this.battleEvent = battleEvent;
-		return this;
-	}
-
+//	public CmdAction setBattleEvent(List<ActionEvent> battleEvent) {
+//		this.battleEvent = battleEvent;
+//		return this;
+//	}
 	public CmdAction addBattleEvent(ActionEvent e) {
 		this.battleEvent.add(e);
 		return this;
 	}
 
-	public CmdAction setFieldEvent(List<ActionEvent> fieldEvent) {
-		this.fieldEvent = fieldEvent;
-		return this;
-	}
-
+//	public CmdAction setFieldEvent(List<ActionEvent> fieldEvent) {
+//		this.fieldEvent = fieldEvent;
+//		return this;
+//	}
 	public CmdAction addFieldEvent(ActionEvent e) {
 		this.fieldEvent.add(e);
 		return this;
@@ -173,7 +181,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 			Collections.sort(battleEvent);
 			battleActionSorted = true;
 		}
-		return battleEvent;
+		return new ArrayList<>(battleEvent);
 	}
 
 	private boolean fieldActionSorted = false;
@@ -183,7 +191,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 			Collections.sort(fieldEvent);
 			fieldActionSorted = true;
 		}
-		return fieldEvent;
+		return new ArrayList<>(fieldEvent);
 	}
 
 	public int getArea() {
@@ -255,7 +263,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 	}
 
 	private boolean canDoThis(ActionTarget tgt) {
-		return terms == null ? true : terms.stream().allMatch(p -> p.canExec(tgt));
+		return terms == null ? true : getTerms().stream().allMatch(p -> p.canExec(tgt));
 	}
 
 	public Map<StatusKey, Integer> selfFieldDirectDamage() {
@@ -337,7 +345,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 	}
 
 	//effect ->targtet
-	public final ActionResult exec(ActionTarget tgt) {
+	public ActionResult exec(ActionTarget tgt) {
 		if (stop || !canDoThis(tgt)) {
 			if (tgt.isInField()) {
 				List<ActionResultType> list = Collections.nCopies(tgt.getTarget().size(), ActionResultType.MISS);
@@ -399,7 +407,8 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 
 	@Override
 	public String toString() {
-		return "CmdAction{" + "type=" + type + ", name=" + name + '}';
+		return "CmdAction{" + "type=" + type + ", name=" + name
+				+ "(" + (battleEvent.isEmpty() ? "x" : "B") + (fieldEvent.isEmpty() ? "x" : "F") + ")" + '}';
 	}
 
 	@Override

@@ -39,32 +39,18 @@ public enum TargetType {
 	/**
 	 * 対象一人。。
 	 */
-	ONE_ENEMY,
-	ONE_PARTY,
+	ONE,
 	/**
-	 * 敵全体または味方全体。
+	 * 敵全体または味方全体（効果範囲内のみ。
 	 */
-	TEAM_PARTY,
-	TEAM_ENEMY,
+	TEAM,
 	/**
 	 * 敵味方全体。
 	 */
 	ALL,
 	/**
-	 * フィールド。特殊な作用です。
-	 */
-	FIELD,
-	/**
 	 * ランダムな標的（味方含む。
 	 */
-	RANDOM_ONE,
-	/**
-	 * ランダムな標的（敵のみ。これを複数定義することで数体への攻撃が実装できるだろう
-	 */
-	RANDOM_ONE_ENEMY,
-	/**
-	 * ランダムなパーティメンバー
-	 */
-	RANDOM_ONE_PARTY,;
+	RANDOM;
 
 }

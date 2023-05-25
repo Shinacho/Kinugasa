@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import kinugasa.game.field4.GameSystemI18NKeys;
 import static kinugasa.game.system.ParameterType.ITEM_LOST;
 import static kinugasa.game.system.ParameterType.STATUS;
 import static kinugasa.game.system.StatusDamageCalcType.PERCENT_OF_MAX;
@@ -244,7 +243,7 @@ public class MagicWindow extends BasicSprite {
 							return;
 						}
 						//ターゲットタイプランダムの場合は即時実行
-						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.RANDOM_ONE_PARTY)) {
+						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.RANDOM)) {
 							//代償が支払えるかのチェック
 							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
@@ -300,7 +299,7 @@ public class MagicWindow extends BasicSprite {
 							return;
 						}
 						//チームが入っている場合即時実行
-						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.TEAM_PARTY)) {
+						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.TEAM)) {
 							//代償が支払えるかのチェック
 							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
@@ -443,8 +442,13 @@ public class MagicWindow extends BasicSprite {
 										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを回復する, e.getTgtName()));
 										break;
 									case STATUS:
+										if (e.getTargetType() == TargetType.SELF) {
+											sb.append(I18N.get(GameSystemI18NKeys.術者));
+										} else {
+											sb.append(I18N.get(GameSystemI18NKeys.対象));
+										}
 										sb.append(I18N.get(GameSystemI18NKeys.ダメージ)).append(":");
-										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getName());
+										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getDesc());
 										sb.append(",");
 										//dct
 										switch (e.getDamageCalcType()) {
@@ -469,7 +473,10 @@ public class MagicWindow extends BasicSprite {
 								}
 								sb.append(",");
 								sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append((int) (e.getP() * 100)).append("%");
-								sb.append(Text.getLineSep());
+								if (e.getAttr() != null) {
+									sb.append(",");
+									sb.append(I18N.get(GameSystemI18NKeys.属性)).append(":").append(e.getAttr().getDesc()).append(Text.getLineSep());
+								}
 							}
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法は戦闘中使えない)).append(Text.getLineSep());
@@ -514,7 +521,7 @@ public class MagicWindow extends BasicSprite {
 										break;
 									case STATUS:
 										sb.append(I18N.get(GameSystemI18NKeys.ダメージ)).append(":");
-										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getName());
+										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getDesc());
 										sb.append(",");
 										//dct
 										switch (e.getDamageCalcType()) {
@@ -539,11 +546,33 @@ public class MagicWindow extends BasicSprite {
 								}
 								sb.append(",");
 								sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append((int) (e.getP() * 100)).append("%");
-								sb.append(Text.getLineSep());
+								if (e.getAttr() != null) {
+									sb.append(",");
+									sb.append(I18N.get(GameSystemI18NKeys.属性)).append(":").append(e.getAttr().getDesc()).append(Text.getLineSep());
+								}
 							}
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法はフィールドでは使えない)).append(Text.getLineSep());
 						}
+						//ターゲティング情報
+						sb.append("--").append(GameSystemI18NKeys.戦闘時ターゲット情報).append(Text.getLineSep());
+						String s = a.getTargetOption().getSelectType() == TargetOption.SelectType.IN_AREA
+								? I18N.get(GameSystemI18NKeys.全体)
+								: I18N.get(GameSystemI18NKeys.単体);
+						sb.append("  ").append(I18N.get(GameSystemI18NKeys.効果対象)).append(":").append(s).append(Text.getLineSep());
+						s = a.getTargetOption().getIff() == TargetOption.IFF.ON
+								? I18N.get(GameSystemI18NKeys.有効)
+								: I18N.get(GameSystemI18NKeys.無効);
+						sb.append("  ").append(I18N.get(GameSystemI18NKeys.敵味方識別)).append(":").append(s).append(Text.getLineSep());
+						s = a.getTargetOption().getSwitchTeam() == TargetOption.SwitchTeam.OK
+								? I18N.get(GameSystemI18NKeys.有効)
+								: I18N.get(GameSystemI18NKeys.無効);
+						sb.append("  ").append(I18N.get(GameSystemI18NKeys.敵味方切替)).append(":").append(s).append(Text.getLineSep());
+						s = a.getTargetOption().getTargeting() == TargetOption.Targeting.ENABLE
+								? I18N.get(GameSystemI18NKeys.有効)
+								: I18N.get(GameSystemI18NKeys.無効);
+						sb.append("  ").append(I18N.get(GameSystemI18NKeys.標的選択)).append(":").append(s).append(Text.getLineSep());
+
 						msg.setText(sb.toString());
 						msg.allText();
 						group.show(msg);

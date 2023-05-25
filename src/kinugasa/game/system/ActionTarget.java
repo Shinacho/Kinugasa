@@ -44,7 +44,6 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 
 	private BattleCharacter user;
 	private CmdAction action;
-	private boolean fieldTarget = false;
 	private boolean inField = false;
 	private List<BattleCharacter> target = new ArrayList<>();
 	private boolean selfTarget = false;
@@ -141,11 +140,6 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 		}
 	}
 
-	public ActionTarget setFieldTarget(boolean fieldTarget) {
-		this.fieldTarget = fieldTarget;
-		return this;
-	}
-
 	public ActionTarget setInField(boolean inField) {
 		this.inField = inField;
 		return this;
@@ -171,10 +165,6 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 
 	public boolean isInField() {
 		return inField;
-	}
-
-	public boolean isFieldTarget() {
-		return fieldTarget;
 	}
 
 	public BattleCharacter getUser() {
@@ -203,9 +193,6 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 	}
 
 	public boolean isEmpty() {
-		if (fieldTarget) {
-			return false;
-		}
 		if (selfTarget) {
 			return user == null || (target == null || target.isEmpty());//基本入ってる
 		}
@@ -214,7 +201,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 
 	@Override
 	public String toString() {
-		return "BattleActionTarget{" + "user=" + user + ", action=" + action + ", fieldTarget=" + fieldTarget + ", inField=" + inField + ", target=" + target + '}';
+		return "BattleActionTarget{" + "user=" + user + ", action=" + action + ", inField=" + inField + ", target=" + target + '}';
 	}
 
 }

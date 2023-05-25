@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import kinugasa.game.field4.GameSystemI18NKeys;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.MessageWindowGroup;
@@ -257,22 +256,11 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
-						//敵対象のアイテムの場合使用できない（このようなアイテムは存在しないはずだが念のため）
-						if (i.fieldEventIsOnly(TargetType.ONE_ENEMY) || i.fieldEventIsOnly(TargetType.RANDOM_ONE_ENEMY) || i.fieldEventIsOnly(TargetType.RANDOM_ONE_ENEMY)) {
-							//使っても効果がないよ
-							msg.setText(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getName())
-									+ Text.getLineSep()
-									+ I18N.get(GameSystemI18NKeys.しかし効果がなかった));
-							msg.allText();
-							group.show(msg);
-							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
-							return;
-						}
 						//ターゲット確認
 						//SELFのみの場合即時実行
 						//ターゲットタイプランダムの場合は即時実行
 
-						if (i.fieldEventIsOnly(TargetType.SELF) || i.fieldEventIsOnly(TargetType.RANDOM_ONE)) {
+						if (i.fieldEventIsOnly(TargetType.SELF) || i.fieldEventIsOnly(TargetType.RANDOM)) {
 							//即時実行してサブに効果を出力
 							Status tgt = getSelectedPC();
 							tgt.setDamageCalcPoint();
@@ -305,7 +293,7 @@ public class ItemWindow extends BasicSprite {
 							return;
 						}
 						//チームが入っている場合即時実行
-						if (i.fieldEventIsOnly(TargetType.TEAM_PARTY)) {
+						if (i.fieldEventIsOnly(TargetType.TEAM)) {
 							StringBuilder sb = new StringBuilder();
 							//即時実行してサブに効果を出力
 							sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getName()));

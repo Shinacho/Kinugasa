@@ -24,7 +24,6 @@
 package kinugasa.game.system;
 
 import kinugasa.game.I18N;
-import kinugasa.game.field4.GameSystemI18NKeys;
 
 /**
  *

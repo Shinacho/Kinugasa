@@ -666,8 +666,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 		}
 		//スタックチェック
-		if(GameSystem.isDebugMode()){
-			if(!getTile(currentIdx).canStep()){
+		if (GameSystem.isDebugMode()) {
+			if (!getTile(currentIdx).canStep()) {
 				throw new GameSystemException("FM : PC IS STUCK!!!!!!!!:" + getTile(currentIdx));
 			}
 		}
@@ -1025,7 +1025,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 
 	@Override
 	public String toString() {
-		return "FieldMap{" + "name=" + name + ", chipW=" + chipW + ", chipH=" + chipH + '}';
+		return "FieldMap{" + "name=" + name + '}';
 	}
 
 }
