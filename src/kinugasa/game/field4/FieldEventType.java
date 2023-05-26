@@ -55,6 +55,7 @@ import kinugasa.object.AnimationSprite;
 import kinugasa.object.FadeEffect;
 import kinugasa.object.FourDirection;
 import kinugasa.resource.NameNotFoundException;
+import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundBuilder;
 import kinugasa.resource.sound.SoundStorage;
@@ -651,7 +652,40 @@ public enum FieldEventType {
 
 			return UserOperationRequire.CONTINUE;
 		}
-
+	},
+	DB_CONNECTION_OPEN {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
+			String fileName = e.getValue().split("/")[0];
+			String user = e.getValue().split("/")[1];
+			String pass = e.getValue().split("/")[2];
+			DBConnection.getInstance().close();
+			DBConnection.getInstance().init(fileName, user, pass);
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	DB_CONNECTION_CLOSE {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
+			DBConnection.getInstance().close();
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	EXEC_SQL {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
+			String fileName = e.getValue();
+			DBConnection.getInstance().execByFile(fileName);
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	EXEC_SQL_DIRECT {
+		@Override
+		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
+			String sql = e.getValue();
+			DBConnection.getInstance().execDirect(sql);
+			return UserOperationRequire.CONTINUE;
+		}
 	};
 
 	abstract UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException;

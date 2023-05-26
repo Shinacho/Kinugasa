@@ -24,14 +24,9 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kinugasa.game.I18N;
 import kinugasa.game.field4.*;
-import kinugasa.game.ui.SimpleMessageWindowModel;
-import kinugasa.object.Sprite;
-import kinugasa.util.Random;
 
 /**
  * ステータス管理系のマスターです。

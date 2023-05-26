@@ -81,7 +81,16 @@ public class BattleMessageWindowSystem implements Drawable {
 		float h = (float) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3.66f);
 		cmdW = new BattleCommandMessageWindow(3, (int) messageWindowY, (int) w, (int) h);
 		afterMoveW = new AfterMoveActionMessageWindow(3, (int) messageWindowY, (int) w, (int) h);
-		tgtW = new ScrollSelectableMessageWindow(3, (int) messageWindowY, (int) w, (int) h, 7, false);
+		tgtW = new ScrollSelectableMessageWindow(3, (int) messageWindowY, (int) w, (int) h, 7, false) {
+			@Override
+			public void setText(List<? extends Text> text) {
+				if (text.size() <= 1) {
+					throw new GameSystemException("BMWS target window contents is 0");
+				}
+				super.setText(text); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+			}
+
+		};
 		infoW = new MessageWindow(480, messageWindowY, w - 480, h, new SimpleMessageWindowModel().setNextIcon(""));
 		statusW = new BattleStatusWindows(statusList);
 		itemChoiceUseW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));

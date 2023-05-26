@@ -1241,7 +1241,11 @@ public class BattleSystem implements Drawable {
 		List<String> tgt = new ArrayList<>();
 		if (a.getTargetOption().getSelectType() == TargetOption.SelectType.IN_AREA) {
 			if (a.getTargetOption().getIff() == TargetOption.IFF.ON) {
-				execAction(a, targetSystem.getSelectedInArea());
+				if (a.getTargetOption().getDefaultTarget() == TargetOption.DefaultTarget.ENEMY) {
+					tgt.add(I18N.get(GameSystemI18NKeys.敵));
+				} else {
+					tgt.add(I18N.get(GameSystemI18NKeys.味方));
+				}
 			} else {
 				if (a.getTargetOption().getDefaultTarget() == TargetOption.DefaultTarget.ENEMY) {
 					tgt.add(I18N.get(GameSystemI18NKeys.敵));
@@ -1684,25 +1688,21 @@ public class BattleSystem implements Drawable {
 		if (a.getTargetOption().getSwitchTeam() == TargetOption.SwitchTeam.NG) {
 			return;
 		}
-		//IFF ONの場合スイッチできない
-		if (a.getTargetOption().getIff() == TargetOption.IFF.ON) {
-			return;
-		}
-		if (GameSystem.isDebugMode()) {
-			GameLog.print("BS switch Team : " + a.getTargetOption().getSwitchTeam());
-		}
 		//スイッチチーム実行
 		TargetOption.DefaultTarget t = targetSystem.switchTeam();
 		//TGTウインドウ更新
 		List<String> tgt = new ArrayList<>();
 		if (a.getTargetOption().getSelectType() == TargetOption.SelectType.IN_AREA) {
 			if (a.getTargetOption().getIff() == TargetOption.IFF.ON) {
-				execAction(a, targetSystem.getSelectedInArea());
+				if (t == TargetOption.DefaultTarget.ENEMY) {
+					tgt.add(I18N.get(GameSystemI18NKeys.敵));
+				} else {
+					tgt.add(I18N.get(GameSystemI18NKeys.味方));
+				}
 			} else {
 				if (t == TargetOption.DefaultTarget.ENEMY) {
 					tgt.add(I18N.get(GameSystemI18NKeys.敵));
 				} else {
-					//ターゲット選択不可
 					tgt.add(I18N.get(GameSystemI18NKeys.味方));
 				}
 			}

@@ -53,6 +53,7 @@ import kinugasa.game.system.GameSystem;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.graphics.RenderingQuality;
 import kinugasa.resource.TempFileStorage;
+import kinugasa.resource.db.DBConnection;
 import kinugasa.util.MathUtil;
 
 /**
@@ -287,6 +288,7 @@ public abstract class GameManager {
 		if (loop != null && loop.isStarted()) {
 			loop.end();
 		}
+		DBConnection.getInstance().close();
 		try {
 			dispose();
 		} catch (Throwable ex) {

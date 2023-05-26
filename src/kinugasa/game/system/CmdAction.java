@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
@@ -386,10 +388,17 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 				ActionEventResult r = e.exec(tgt);
 				result.add(r.getResultTypePerTgt());
 				anime.addAll(r.getAnimation());
+				if (result.stream().flatMap(p -> p.stream()).anyMatch(p -> p == ActionResultType.SUCCESS)) {
+					playSound();
+				}
+				if (i > 0) {
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException ex) {
+						Logger.getLogger(CmdAction.class.getName()).log(Level.SEVERE, null, ex);
+					}
+				}
 			}
-		}
-		if (result.stream().flatMap(p -> p.stream()).anyMatch(p -> p == ActionResultType.SUCCESS)) {
-			playSound();
 		}
 		return new ActionResult(tgt, result, createWaitTime(), anime);
 

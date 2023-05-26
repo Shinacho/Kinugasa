@@ -243,7 +243,6 @@ public class BattleTargetSystem implements Drawable {
 //		if (GameSystem.isDebugMode()) {
 //			kinugasa.game.GameLog.print("TS instantTarget " + result);
 //		}
-
 		return result;
 	}
 	//
@@ -474,6 +473,42 @@ public class BattleTargetSystem implements Drawable {
 		for (BattleCharacter c : inArea) {
 			if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
 				removeList.add(c);
+			}
+		}
+		inArea.removeAll(removeList);
+		inArea = inArea.stream().distinct().collect(Collectors.toList());
+
+		//IFF_ONの場合、INAREAから選択しているチーム以外を削除
+		removeList.clear();
+		if (currentBA.getTargetOption().getIff() == TargetOption.IFF.ON) {
+			if (selectedTeam == ENEMY) {
+				if (currentUser.isPlayer()) {
+					for (BattleCharacter c : inArea) {
+						if (c.isPlayer()) {
+							removeList.add(c);
+						}
+					}
+				} else {
+					for (BattleCharacter c : inArea) {
+						if (!c.isPlayer()) {
+							removeList.add(c);
+						}
+					}
+				}
+			} else {
+				if (currentUser.isPlayer()) {
+					for (BattleCharacter c : inArea) {
+						if (!c.isPlayer()) {
+							removeList.add(c);
+						}
+					}
+				} else {
+					for (BattleCharacter c : inArea) {
+						if (c.isPlayer()) {
+							removeList.add(c);
+						}
+					}
+				}
 			}
 		}
 		inArea.removeAll(removeList);
