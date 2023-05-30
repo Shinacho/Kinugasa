@@ -40,22 +40,19 @@ public class EnemySet implements Nameable, Comparable<EnemySet> {
 	private String name;
 	private List<EnemyBlueprint> enemies;
 	private float p;
-	private String bgmMapName;
 	private String bgmName;
 	private String winLogicName, loseLogicName;
 	private BGMMode bgmMode;
-	private String winBgmMap, winBgmName;
+	private String winBgmName;
 
-	public EnemySet(String name, List<EnemyBlueprint> enemies, float p, 
-			String bgmMapName, String bgmName, BGMMode mode,
-			String winbgmMap, String winBgmName,
+	public EnemySet(String name, List<EnemyBlueprint> enemies, float p,
+			String bgmName, BGMMode mode,
+			String winBgmName,
 			String winLogicName, String loseLogicName) {
 		this.name = name;
 		this.enemies = enemies;
 		this.p = p;
-		this.bgmMapName = bgmMapName;
 		this.bgmName = bgmName;
-		this.winBgmMap = winbgmMap;
 		this.winBgmName = winBgmName;
 		this.winLogicName = winLogicName;
 		this.loseLogicName = loseLogicName;
@@ -78,24 +75,20 @@ public class EnemySet implements Nameable, Comparable<EnemySet> {
 		return bgmName;
 	}
 
-	public String getBgmMapName() {
-		return bgmMapName;
-	}
-
 	public boolean hasBgm() {
-		return bgmMapName != null && bgmName != null;
+		return bgmName != null;
 	}
 
 	public Sound getBgm() {
 		if (!hasBgm()) {
 			throw new GameSystemException("enemySet " + name + " is not have BGM");
 		}
-		return SoundStorage.getInstance().get(bgmMapName).get(bgmName);
+		return SoundStorage.getInstance().get(bgmName);
 	}
 
 	public Sound getWinBgm() {
-		if (winBgmMap != null && winBgmName != null) {
-			return SoundStorage.getInstance().get(winBgmMap).get(winBgmName);
+		if (winBgmName != null) {
+			return SoundStorage.getInstance().get(winBgmName);
 		}
 		throw new GameSystemException("enemySet " + name + " win bgm is null");
 	}

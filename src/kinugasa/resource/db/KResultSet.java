@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
 import java.util.Iterator;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import kinugasa.game.GameLog;
 
 /**
@@ -39,6 +42,9 @@ public class KResultSet implements Iterable<List<DBValue>> {
 	private List<List<DBValue>> data = new ArrayList<>();
 
 	public KResultSet(ResultSet rs) throws KSQLException {
+		if (rs == null) {
+			return;
+		}
 		try {
 			while (rs.next()) {
 				List<DBValue> list = new ArrayList<>();
@@ -61,6 +67,18 @@ public class KResultSet implements Iterable<List<DBValue>> {
 		}
 	}
 
+	public List<DBValue> row(int n) {
+		return data.get(n);
+	}
+
+	public DBValue cell(int r, int c) {
+		return row(r).get(c);
+	}
+
+	public boolean isEmpty() {
+		return data.isEmpty();
+	}
+
 	public List<List<DBValue>> getData() {
 		return data;
 	}
@@ -69,4 +87,26 @@ public class KResultSet implements Iterable<List<DBValue>> {
 	public Iterator<List<DBValue>> iterator() {
 		return data.iterator();
 	}
+
+	public Stream<List<DBValue>> stream() {
+		return data.stream();
+	}
+
+	public List<DBValue> flatMap() {
+		return data.stream().flatMap(p -> p.stream()).collect(Collectors.toList());
+	}
+
+	public <R> List<R> flatMap(Function<DBValue, R> f) {
+		return flatMap().stream().map(f).collect(Collectors.toList());
+	}
+
+	public int size() {
+		return data.size();
+	}
+
+	@Override
+	public String toString() {
+		return "KResultSet{" + "data=" + data + '}';
+	}
+
 }

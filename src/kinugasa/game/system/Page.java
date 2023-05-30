@@ -25,6 +25,7 @@ package kinugasa.game.system;
 
 import java.util.Objects;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.db.DBRecord;
 
 /**
  * ブックページは、本を構成するページで、魔法効果か合成効果のどちらかを持っています。
@@ -32,14 +33,17 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/12/25_10:50:45<br>
  * @author Shinacho<br>
  */
-public class BookPage implements Nameable {
+@DBRecord
+public class Page implements Nameable {
 
+	private String id;
 	private MagicCompositeType compositeType;
 	private String name;
 	private String tgtName;
 	private float value;
 
-	public BookPage(MagicCompositeType compositeType, String name, String tgtName, float value) {
+	public Page(String id, MagicCompositeType compositeType, String name, String tgtName, float value) {
+		this.id = id;
 		this.compositeType = compositeType;
 		this.name = name;
 		this.tgtName = tgtName;
@@ -60,7 +64,7 @@ public class BookPage implements Nameable {
 
 	@Override
 	public String getName() {
-		return getDesc();
+		return id;
 	}
 
 	public int getSaleValue() {
@@ -92,8 +96,8 @@ public class BookPage implements Nameable {
 			case ADD_CONDITION:
 			case REMOVE_CONDITION:
 			case ADD_CONDITION_TIME:
-				if (ConditionValueStorage.getInstance().contains(tgtName)) {
-					s += "(" + ConditionValueStorage.getInstance().get(tgtName).getKey().getDesc();
+				if (ConditionStorage.getInstance().contains(tgtName)) {
+					s += "(" + ConditionStorage.getInstance().get(tgtName).getKey().getDesc();
 				} else {
 					throw new GameSystemException("book page condtion name not found: " + tgtName);
 				}
@@ -155,7 +159,8 @@ public class BookPage implements Nameable {
 
 	@Override
 	public int hashCode() {
-		int hash = 7;
+		int hash = 3;
+		hash = 37 * hash + Objects.hashCode(this.id);
 		return hash;
 	}
 
@@ -170,17 +175,8 @@ public class BookPage implements Nameable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final BookPage other = (BookPage) obj;
-		if (Float.floatToIntBits(this.value) != Float.floatToIntBits(other.value)) {
-			return false;
-		}
-		if (!Objects.equals(this.name, other.name)) {
-			return false;
-		}
-		if (!Objects.equals(this.tgtName, other.tgtName)) {
-			return false;
-		}
-		return this.compositeType == other.compositeType;
+		final Page other = (Page) obj;
+		return Objects.equals(this.id, other.id);
 	}
 
 }

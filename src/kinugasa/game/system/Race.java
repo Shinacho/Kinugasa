@@ -23,24 +23,22 @@
  */
 package kinugasa.game.system;
 
+import java.util.Objects;
 import java.util.Set;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.db.DBRecord;
 
 /**
  *
  * @vesion 1.0.0 - 2022/11/16_13:27:22<br>
  * @author Shinacho<br>
  */
+@DBRecord
 public class Race implements Nameable {
 
 	private String name;
 	private int itemBagSize, bookBagSize;
 	private Set<ItemEqipmentSlot> eqipSlot;
-
-	public Race(String name, Set<ItemEqipmentSlot> eqipSlot) {
-		this.name = name;
-		this.eqipSlot = eqipSlot;
-	}
 
 	public Race(String name, int itemBagSize, int bookBagSize, Set<ItemEqipmentSlot> eqipSlot) {
 		this.name = name;
@@ -69,6 +67,28 @@ public class Race implements Nameable {
 	@Override
 	public String toString() {
 		return "Race{" + "name=" + name + ", eqipSlot=" + eqipSlot + '}';
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 97 * hash + Objects.hashCode(this.name);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Race other = (Race) obj;
+		return Objects.equals(this.name, other.name);
 	}
 
 }

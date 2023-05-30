@@ -21,14 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package kinugasa.game;
 
-package kinugasa.game.system.dbStorage;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
 /**
  *
- * @vesion 1.0.0 - May 25, 2023_11:14:47 PM<br>
+ * @vesion 1.0.0 - May 28, 2023_11:04:26 AM<br>
  * @author Shinacho<br>
  */
-public class ActionStorageDB {
+@Target(ElementType.METHOD)
+public @interface Nullable {
 
 }

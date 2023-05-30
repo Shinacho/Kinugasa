@@ -23,9 +23,11 @@
  */
 package kinugasa.game.system;
 
+import java.util.Objects;
 import kinugasa.util.*;
 import kinugasa.util.Random;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.db.DBRecord;
 
 /**
  * このクラスはマスタデータのため、設定されるエフェクトのONECEフラグはステータスが持つ必要があります。
@@ -33,60 +35,43 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/11/15_11:59:41<br>
  * @author Shinacho<br>
  */
-public class EffectMaster implements Nameable {
+@DBRecord
+public class ConditionEffect implements Nameable {
 
-	private ConditionKey key;
+	private String id;
 	private EffectContinueType continueType;
 	private EffectTargetType targetType;
 	private EffectSetType setType;
 	private String targetName;
 	private float value;
 	private float p;
-	private int minTime, maxTime;
+	private int time;
 
-	public EffectMaster(ConditionKey key) {
-		this(key, EffectContinueType.NONE, null, null, null, 0, 0, 0, 0);
-	}
-
-	public EffectMaster(ConditionKey key, EffectContinueType continueType, EffectTargetType targetType, float p, int min, int max) {
-		this(key, continueType, targetType, null, null, 0, p, min, max);
-	}
-
-	public EffectMaster(ConditionKey key, EffectContinueType continueType, EffectTargetType targetType, int min, int max, float p) {
-		this(key, continueType, targetType, null, null, 0, p, min, max);
-	}
-
-	public EffectMaster(ConditionKey key, EffectContinueType continueType, EffectTargetType targetType, String targetName, float p) {
-		this(key, continueType, targetType, null, targetName, 0, p, 0, 0);
-	}
-
-	public EffectMaster(ConditionKey key, EffectContinueType continueType, EffectTargetType targetType, EffectSetType setType, String targetName, float value, float p, int minTime, int maxTime) {
-		this.key = key;
+	public ConditionEffect(String id, EffectContinueType continueType, EffectTargetType targetType, EffectSetType setType, String targetName, float value, float p, int time) {
+		this.id = id;
 		this.continueType = continueType;
 		this.targetType = targetType;
 		this.setType = setType;
 		this.targetName = targetName;
 		this.value = value;
 		this.p = p;
-		this.minTime = minTime;
-		this.maxTime = maxTime;
+		this.time = time;
 	}
 
 	// エフェクトが複数ある場合で、どれもが同じタイムで稼働する場合、最初の1回だけ実行する必要がある
 	public TimeCounter createTimeCounter() {
-		if (minTime == 0 || maxTime == 0) {
+		if (time == 0) {
 			throw new GameSystemException("effect time is 0 : " + this);
 		}
-		if (minTime == 1 && maxTime == 1) {
+
+		if (time == 1) {
 			return TimeCounter.oneCounter();
 		}
-		if (minTime >= Integer.MAX_VALUE || maxTime >= Integer.MAX_VALUE) {
+
+		if (time == 9999) {
 			return TimeCounter.FALSE;
 		}
-		if (minTime == maxTime) {
-			return new FrameTimeCounter(minTime);
-		}
-		int val = Random.randomAbsInt(minTime, maxTime);
+		int val = Random.randomAbsInt((int) (time * 0.5), (int) (time * 2));
 		return new FrameTimeCounter(val);
 	}
 
@@ -96,7 +81,7 @@ public class EffectMaster implements Nameable {
 			case ADD_CONDITION:
 				s.addCondition(targetName);
 				break;
-			case ATTRIBUTE_IN:
+			case ATTR:
 				switch (setType) {
 					case ADD_PERCENT_OF_MAX:
 						float val = s.getBaseAttrIn().get(targetName).getMax() * value;
@@ -133,7 +118,7 @@ public class EffectMaster implements Nameable {
 
 	@Override
 	public String getName() {
-		return key.getName();
+		return id;
 	}
 
 	public EffectContinueType getContinueType() {
@@ -184,21 +169,35 @@ public class EffectMaster implements Nameable {
 		this.p = p;
 	}
 
-	public ConditionKey getKey() {
-		return key;
+	public int getTime() {
+		return time;
 	}
 
-	public int getMaxTime() {
-		return maxTime;
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 53 * hash + Objects.hashCode(this.id);
+		return hash;
 	}
 
-	public int getMinTime() {
-		return minTime;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ConditionEffect other = (ConditionEffect) obj;
+		return Objects.equals(this.id, other.id);
 	}
 
 	@Override
 	public String toString() {
-		return "EffectMaster{" + "key=" + key + ", value=" + value + ", minTime=" + minTime + ", maxTime=" + maxTime + '}';
+		return "ConditionEffect{" + "id=" + id + ", continueType=" + continueType + ", targetType=" + targetType + ", setType=" + setType + ", targetName=" + targetName + ", value=" + value + ", p=" + p + ", time=" + time + '}';
 	}
 
 }

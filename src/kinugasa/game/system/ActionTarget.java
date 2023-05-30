@@ -25,15 +25,12 @@ package kinugasa.game.system;
  */
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-import kinugasa.game.system.BattleCharacter;
 import kinugasa.object.BasicSprite;
 import kinugasa.object.EmptySprite;
 import kinugasa.object.FourDirection;
-import kinugasa.object.Sprite;
 
 /**
  *
@@ -43,12 +40,12 @@ import kinugasa.object.Sprite;
 public class ActionTarget implements Iterable<BattleCharacter> {
 
 	private BattleCharacter user;
-	private CmdAction action;
+	private Action action;
 	private boolean inField = false;
 	private List<BattleCharacter> target = new ArrayList<>();
 	private boolean selfTarget = false;
 
-	public ActionTarget(BattleCharacter user, CmdAction a) {
+	public ActionTarget(BattleCharacter user, Action a) {
 		if (user == null) {
 			throw new GameSystemException("battle action result s user is null");
 		}
@@ -56,11 +53,11 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 		this.action = a;
 	}
 
-	public static ActionTarget instantTarget(Status user, CmdAction a) {
+	public static ActionTarget instantTarget(Status user, Action a) {
 		return instantTarget(user, a, new Status[]{});
 	}
 
-	public static ActionTarget instantTarget(Status user, CmdAction a, List<Status> tgt) {
+	public static ActionTarget instantTarget(Status user, Action a, List<Status> tgt) {
 		boolean userIsPlayer = GameSystem.getInstance().getPartyStatus().contains(user);
 		List<DummyCharacter> target = new ArrayList<>();
 		for (Status s : tgt) {
@@ -72,7 +69,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 				.setTarget(target.stream().collect(Collectors.toList()));
 	}
 
-	public static ActionTarget instantTarget(Status user, CmdAction a, Status... tgt) {
+	public static ActionTarget instantTarget(Status user, Action a, Status... tgt) {
 		boolean userIsPlayer = GameSystem.getInstance().getPartyStatus().contains(user);
 		List<DummyCharacter> target = new ArrayList<>();
 		for (Status s : tgt) {
@@ -171,7 +168,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 		return user;
 	}
 
-	public CmdAction getAction() {
+	public Action getAction() {
 		return action;
 	}
 

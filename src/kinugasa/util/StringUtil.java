@@ -58,6 +58,23 @@ public final class StringUtil {
 	}
 
 	/**
+	 * 文字列をlengthの長さになるよう右詰し、空いたスペースに"0"を挿入します.
+	 *
+	 * @param msg 対象文字列.<br>
+	 * @param length 操作後の全体の長さ.<br>
+	 *
+	 * @return 右詰された文字列.<br>
+	 */
+	public static String zeroUme(String msg, int length) {
+		String res = "";
+		for (int i = 0; i < length - msg.length(); i++) {
+			res += "0";
+		}
+		res += msg;
+		return res;
+	}
+
+	/**
 	 * 指定された文字列からファイル名を抽出します. たとえば/hoge/piyo/fuga/a.cのときa.cを返します。<br>
 	 * 文字列の終端が"/"である場合はその文字列自体を返します。<br>
 	 * 文字列内に"/"が存在しない場合もその文字列自体を返します。<br>

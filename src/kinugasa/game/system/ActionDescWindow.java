@@ -91,7 +91,7 @@ public class ActionDescWindow extends PCStatusWindow {
 		List<Text> t = new ArrayList<>();
 		t.add(new Text("<---" + I18N.get(GameSystemI18NKeys.Xの行動, s.get(pcIdx).getName()) + "--->"));
 
-		for (CmdAction a : s.get(pcIdx).getActions()
+		for (Action a : s.get(pcIdx).getActions()
 				.stream()
 				.filter(p -> p.isBattleUse())
 				.sorted()

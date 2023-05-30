@@ -264,7 +264,7 @@ public abstract class GameManager {
 			try {
 				startUp();
 			} catch (Throwable ex) {
-				GameLog.print("ERROR : " + ex);
+				GameLog.print(ex);
 				System.exit(1);
 			}
 			window.setVisible(true);

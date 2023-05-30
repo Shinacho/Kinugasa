@@ -29,10 +29,9 @@ import java.sql.SQLException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import kinugasa.game.GameLog;
 import kinugasa.resource.text.TextFile;
+import kinugasa.util.StopWatch;
 
 /**
  *
@@ -55,11 +54,16 @@ public class DBConnection {
 		return INSTANCE;
 	}
 
-	public void init(String dataFileName, String user, String password) throws KSQLException {
+	public boolean isUsing() {
+		return statement != null;
+	}
+
+	public void open(String dataFileName, String user, String password) throws KSQLException {
 		try {
 			Class.forName(JDBC_DRIVER);
 			connection = DriverManager.getConnection(URL + dataFileName, user, password);
 			statement = connection.createStatement();
+			GameLog.print("DBC open " + URL + dataFileName + "-----------------------------------------");
 		} catch (ClassNotFoundException | SQLException ex) {
 			GameLog.print(ex);
 			throw new KSQLException(ex);
@@ -70,25 +74,69 @@ public class DBConnection {
 	public List<KResultSet> execByFile(String fileName) throws KSQLException {
 		TextFile file = new TextFile(fileName);
 		file.load();
+		GameLog.print("DBC execFile : " + fileName + "---------------------------------------");
 		List<String> data = file.getData();
 		StringBuilder sb = new StringBuilder();
 		for (String line : data) {
+			if (line.trim().isEmpty()) {
+				continue;
+			}
+			if (line.trim().startsWith("--")) {
+				continue;
+			}
+			if (line.contains("--")) {
+				line = line.substring(0, line.indexOf("--"));
+			}
 			sb.append(line.replaceAll("\r\n", "").replaceAll("\n", ""));
 		}
 		file.dispose();
 		List<KResultSet> result = new ArrayList<>();
-		String[] sql = sb.toString().split(";");
-		for (String s : sql) {
-			result.add(execDirect(s));
+		for (String s : sb.toString().split(";")) {
+			result.add(execDirect(s.trim() + ";"));
 		}
 		return result;
 	}
 
 	public KResultSet execDirect(String sql) throws KSQLException {
+		StopWatch sw = new StopWatch().start();
 		try {
+			if (sql.trim().toLowerCase().startsWith("insert")) {
+				statement.execute(sql);
+				sw.stop();
+				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				return new KResultSet(null);
+			}
+			if (sql.trim().toLowerCase().startsWith("create")) {
+				statement.execute(sql);
+				sw.stop();
+				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				return new KResultSet(null);
+			}
+			if (sql.trim().toLowerCase().startsWith("drop")) {
+				statement.execute(sql);
+				sw.stop();
+				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				return new KResultSet(null);
+			}
+			if (sql.trim().toLowerCase().startsWith("truncate")) {
+				statement.execute(sql);
+				sw.stop();
+				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				return new KResultSet(null);
+			}
+			if (sql.trim().toLowerCase().startsWith("update")) {
+				statement.execute(sql);
+				sw.stop();
+				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				return new KResultSet(null);
+			}
+			sw.stop();
+			GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
 			return new KResultSet(statement.executeQuery(sql));
 		} catch (SQLException ex) {
 			GameLog.print(ex);
+			sw.stop();
+			GameLog.print("DBC [ERROR] execDirect : " + sql + "(" + sw.getTime() + "ms)");
 			throw new KSQLException(ex);
 		}
 	}
@@ -97,10 +145,13 @@ public class DBConnection {
 		try {
 			if (statement != null) {
 				statement.close();
+				statement = null;
 			}
 			if (connection != null) {
 				connection.close();
+				connection = null;
 			}
+			GameLog.print("DBC close ------------------------------------------------------");
 		} catch (SQLException ex) {
 			GameLog.print(ex);
 			throw new KSQLException(ex);

@@ -77,17 +77,15 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 		XMLElement root = file.load().getFirst();
 
 		for (XMLElement e : root.getElement("set")) {
-			String name = e.getAttributes().get("name").getValue();
+			String id = e.getAttributes().get("name").getValue();
 			float p = e.getAttributes().get("p").getFloatValue();
-			String bgmMapName = null, bgmName = null;
+			String bgmName = null;
 			if (e.getAttributes().contains("BGM")) {
-				bgmMapName = e.getAttributes().get("BGM").getValue().split("/")[0];
-				bgmName = e.getAttributes().get("BGM").getValue().split("/")[1];
+				bgmName = e.getAttributes().get("BGM").getValue();
 			}
-			String winBgmMapName = null, winBgmName = null;
+			String winBgmName = null;
 			if (e.getAttributes().contains("winBGM")) {
-				winBgmMapName = e.getAttributes().get("winBGM").getValue().split("/")[0];
-				winBgmName = e.getAttributes().get("winBGM").getValue().split("/")[1];
+				winBgmName = e.getAttributes().get("winBGM").getValue();
 			}
 			BGMMode bgmMode = BGMMode.NOTHING;
 			if (e.hasAttribute("bgmMode")) {
@@ -100,7 +98,7 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 			for (XMLElement ee : e.getElement("enemy")) {
 				list.add(EnemyStorage.getInstance().getByVisibleName(ee.getAttributes().get("name").getValue()));
 			}
-			EnemySet es = new EnemySet(name, list, p, bgmMapName, bgmName, bgmMode, winBgmMapName, winBgmName, win, lose);
+			EnemySet es = new EnemySet(id, list, p, bgmName, bgmMode, winBgmName, win, lose);
 			add(es);
 		}
 

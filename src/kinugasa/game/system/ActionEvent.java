@@ -25,12 +25,23 @@ package kinugasa.game.system;
  */
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import static kinugasa.game.system.ParameterType.ADD_CONDITION;
+import static kinugasa.game.system.ParameterType.ATTR_IN;
+import static kinugasa.game.system.ParameterType.ITEM_LOST;
+import static kinugasa.game.system.ParameterType.NONE;
+import static kinugasa.game.system.ParameterType.REMOVE_CONDITION;
+import static kinugasa.game.system.ParameterType.STATUS;
+import static kinugasa.game.system.StatusDamageCalcType.DIRECT;
+import static kinugasa.game.system.StatusDamageCalcType.PERCENT_OF_MAX;
+import static kinugasa.game.system.StatusDamageCalcType.PERCENT_OF_NOW;
+import static kinugasa.game.system.StatusDamageCalcType.USE_DAMAGE_CALC;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.ImageEditor;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.KImage;
+import kinugasa.resource.*;
+import kinugasa.resource.db.*;
 import kinugasa.util.Random;
 
 /**
@@ -38,8 +49,10 @@ import kinugasa.util.Random;
  * @vesion 1.0.0 - 2022/12/01_21:23:55<br>
  * @author Shinacho<br>
  */
-public class ActionEvent implements Comparable<ActionEvent> {
+@DBRecord
+public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 
+	private String id, desc;
 	private TargetType targetType;
 	private ParameterType parameterType;
 	private String tgtName;
@@ -50,54 +63,117 @@ public class ActionEvent implements Comparable<ActionEvent> {
 	private float spread;
 	private Animation animation;
 	private AnimationMoveType animationMoveType = AnimationMoveType.TGT;
+	private boolean battle, field;
 
-	public ActionEvent(TargetType tt, ParameterType pt) {
+	@Override
+	public String getName() {
+		return id;
+	}
+
+	public boolean isBattle() {
+		return battle;
+	}
+
+	public void setBattle(boolean battle) {
+		this.battle = battle;
+	}
+
+	public boolean isField() {
+		return field;
+	}
+
+	public void setField(boolean field) {
+		this.field = field;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public ActionEvent(String id) {
+		this.id = id;
+	}
+
+	public ActionEvent(String id, TargetType tt, ParameterType pt) {
+		this.id = id;
 		this.targetType = tt;
 		this.parameterType = pt;
 	}
 
-	public ActionEvent setTgtName(String tgtName) {
+	public void setTargetType(TargetType targetType) {
+		this.targetType = targetType;
+	}
+
+	public void setParameterType(ParameterType parameterType) {
+		this.parameterType = parameterType;
+	}
+
+	public void setTgtName(String tgtName) {
 		this.tgtName = tgtName;
-		return this;
 	}
 
-	public ActionEvent setValue(float value) {
-		this.value = value;
-		return this;
-	}
-
-	public ActionEvent setAttr(AttributeKey attr) {
+	public void setAttr(AttributeKey attr) {
 		this.attr = attr;
-		return this;
+	}
+
+	public void setValue(float value) {
+		this.value = value;
+	}
+
+	public void setDamageCalcType(StatusDamageCalcType damageCalcType) {
+		this.damageCalcType = damageCalcType;
+	}
+
+	public void setP(float p) {
+		this.p = p;
+	}
+
+	public void setSpread(float spread) {
+		this.spread = spread;
+	}
+
+	public void setAnimation(Animation animation) {
+		this.animation = animation;
+	}
+
+	public void setAnimationMoveType(AnimationMoveType animationMoveType) {
+		this.animationMoveType = animationMoveType;
+	}
+
+	public TargetType getTargetType() {
+		return targetType;
+	}
+
+	public ParameterType getParameterType() {
+		return parameterType;
+	}
+
+	public String getTgtName() {
+		return tgtName;
 	}
 
 	public AttributeKey getAttr() {
 		return attr;
 	}
 
-	public ActionEvent setDamageCalcType(StatusDamageCalcType damageCalcType) {
-		this.damageCalcType = damageCalcType;
-		return this;
+	public float getValue() {
+		return value;
 	}
 
-	public ActionEvent setP(float p) {
-		this.p = p;
-		return this;
+	public StatusDamageCalcType getDamageCalcType() {
+		return damageCalcType;
 	}
 
-	public ActionEvent setSpread(float spread) {
-		this.spread = spread;
-		return this;
+	public float getP() {
+		return p;
 	}
 
-	public ActionEvent setAnimation(Animation animation) {
-		this.animation = animation;
-		return this;
-	}
-
-	public ActionEvent setAnimationMoveType(AnimationMoveType animationMoveType) {
-		this.animationMoveType = animationMoveType;
-		return this;
+	public float getSpread() {
+		return spread;
 	}
 
 	public AnimationMoveType getAnimationMoveType() {
@@ -344,37 +420,31 @@ public class ActionEvent implements Comparable<ActionEvent> {
 		return s;
 	}
 
-	public TargetType getTargetType() {
-		return targetType;
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 37 * hash + Objects.hashCode(this.id);
+		return hash;
 	}
 
-	public ParameterType getParameterType() {
-		return parameterType;
-	}
-
-	public String getTgtName() {
-		return tgtName;
-	}
-
-	public float getValue() {
-		return value;
-	}
-
-	public StatusDamageCalcType getDamageCalcType() {
-		return damageCalcType;
-	}
-
-	public float getP() {
-		return p;
-	}
-
-	public float getSpread() {
-		return spread;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ActionEvent other = (ActionEvent) obj;
+		return Objects.equals(this.id, other.id);
 	}
 
 	@Override
 	public String toString() {
-		return "ActionEvent{" + "targetType=" + targetType + ", parameterType=" + parameterType + ", tgtName=" + tgtName + ", value=" + value + '}';
+		return "ActionEvent{" + "id=" + id + ", targetType=" + targetType + ", parameterType=" + parameterType + ", tgtName=" + tgtName + ", attr=" + attr + ", value=" + value + ", damageCalcType=" + damageCalcType + ", p=" + p + ", spread=" + spread + ", animation=" + animation + ", animationMoveType=" + animationMoveType + '}';
 	}
 
 	@Override

@@ -329,9 +329,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				FourDirection outDir = FourDirection.valueOf(e.getAttributes().get("outDir").getValue());
 				Node node = Node.ofInOutNode(name, tgtMapName, exitNodeName, x, y, tooltip, accepter, outDir);
 				if (e.getAttributes().contains("se")) {
-					String soundMapName = e.getAttributes().get("se").getValue().split("/")[0];
-					String soundName = e.getAttributes().get("se").getValue().split("/")[1];
-					node.setSe(SoundStorage.getInstance().get(soundMapName).get(soundName));
+					String soundName = e.getAttributes().get("se").getValue();
+					node.setSe(SoundStorage.getInstance().get(soundName));
 				}
 				nodeStorage.add(node);
 			}
@@ -527,7 +526,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				BGMMode mode = BGMMode.valueOf(e.getAttributes().get("mode").getValue());
 				String mapName = e.getAttributes().get("mapName").getValue();
 				String soundName = e.getAttributes().get("soundName").getValue();
-				bgm = SoundStorage.getInstance().get(mapName).get(soundName);
+				bgm = SoundStorage.getInstance().get(soundName);
 				switch (mode) {
 					case NOTHING:
 						break;
@@ -535,12 +534,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 						bgm.pause();
 						break;
 					case STOP:
-						SoundStorage.getInstance().get(mapName).stopAll();
-						SoundStorage.getInstance().get(mapName).dispose();
+						SoundStorage.getInstance().stopAll();
+						SoundStorage.getInstance().dispose();
 						break;
 					case STOP_AND_PLAY:
-						SoundStorage.getInstance().get(mapName).stopAll();
-						SoundStorage.getInstance().get(mapName).dispose();
+						SoundStorage.getInstance().stopAll();
+						SoundStorage.getInstance().dispose();
 						bgm.load().stopAndPlay();
 						break;
 					default:

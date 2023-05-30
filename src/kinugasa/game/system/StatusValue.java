@@ -117,6 +117,26 @@ public class StatusValue implements Nameable, Cloneable, Comparable<StatusValue>
 		this.initial = initial;
 	}
 
+	public void toInitial() {
+		setValue(initial);
+	}
+
+	public void saveInitial() {
+		initial = value;
+	}
+
+	public void setInitialIfChange() {
+		if (value != initial) {
+			toInitial();
+		}
+	}
+
+	public void setMaxIfOverMax() {
+		if (value > max) {
+			value = max;
+		}
+	}
+
 	public void toMax() {
 		value = key.getMax();
 	}

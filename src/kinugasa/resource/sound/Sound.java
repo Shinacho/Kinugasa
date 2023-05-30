@@ -23,6 +23,7 @@
  */
 package kinugasa.resource.sound;
 
+import java.io.File;
 import kinugasa.resource.Input;
 import kinugasa.resource.InputStatus;
 import kinugasa.resource.Nameable;
@@ -55,7 +56,7 @@ public interface Sound extends Input<Sound>, Nameable {
 	 * @throws NotYetLoadedException サウンドがロードされていない場合に投げることができます。<br>
 	 */
 	public void play() throws NotYetLoadedException;
-	
+
 	public void nonLoopPlay();
 
 	public void stopAndPlay();
@@ -109,5 +110,13 @@ public interface Sound extends Input<Sound>, Nameable {
 
 	@Override
 	public void dispose();
+
+	public File getFile();
+
+	public String getDesc();
+
+	public String getFileName();
+
+	public SoundType getType();
 
 }

@@ -21,30 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test.rpg;
+package kinugasa.game.system;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import kinugasa.graphics.ImageUtil;
-import kinugasa.graphics.RenderingQuality;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/16_9:07:07<br>
+ * @vesion 1.0.0 - 2022/12/25_10:50:54<br>
  * @author Shinacho<br>
  */
-public class BeforeClearBlackImage {
+public class PageBag {
 
-	public static void main(String[] args) {
-		Color c = new Color(0, 0, 0, 72);
-		BufferedImage image = ImageUtil.newImage(1440 / 2, 960 / 2);
-		Graphics2D g = ImageUtil.createGraphics2D(image, RenderingQuality.SPEED);
-		g.setColor(c);
-		g.fillRect(0, 0, 1440 / 2, 960 / 2);
-		g.dispose();
-		ImageUtil.save(new File("resource/test/before1.png"), image);
-		
+	private Map<Page, Integer> map = new HashMap<>();
+
+	public PageBag() {
 	}
+
+	public Map<Page, Integer> getMap() {
+		return map;
+	}
+
+	public void addAll(List<Page> list) {
+		for (Page p : list) {
+			if (map.containsKey(p) && map.get(p) == 99) {
+				continue;
+			}
+			if (map.containsKey(p)) {
+				map.put(p, map.get(p) + 1);
+			} else {
+				map.put(p, 1);
+			}
+
+		}
+	}
+
+	public void add(Page p) {
+		if (map.containsKey(p) && map.get(p) == 99) {
+			return;
+		}
+		if (map.containsKey(p)) {
+			map.put(p, map.get(p) + 1);
+		} else {
+			map.put(p, 1);
+		}
+	}
+
+	public int size() {
+		return map.size();
+	}
+
 }

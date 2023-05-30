@@ -24,8 +24,6 @@
 package kinugasa.game.system;
 
 import java.util.List;
-import kinugasa.resource.Nameable;
-import kinugasa.resource.Storage;
 
 /**
  *
@@ -54,7 +52,7 @@ public class ConditionManager {
 					if (condName == null) {
 						continue;
 					}
-					if (!ConditionValueStorage.getInstance().contains(condName)) {
+					if (!ConditionStorage.getInstance().contains(condName)) {
 						throw new GameSystemException("when 0 condition " + condName + " is not found.");
 					}
 					s.addCondition(condName);

@@ -27,21 +27,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GameOption;
+import kinugasa.game.system.CurrentQuest;
 import kinugasa.game.system.EncountInfo;
 import kinugasa.game.system.EnemySetStorage;
 import kinugasa.game.system.EnemySetStorageStorage;
 import kinugasa.game.system.Flag;
 import kinugasa.game.system.FlagStatus;
 import kinugasa.game.system.FlagStorage;
-import kinugasa.game.system.FlagStorageStorage;
 import kinugasa.game.system.GameSystem;
 import kinugasa.game.system.GameSystemException;
 import kinugasa.game.system.Item;
 import kinugasa.game.system.ItemStorage;
 import kinugasa.game.system.PlayerCharacter;
-import kinugasa.game.system.QuestLineStorage;
-import kinugasa.game.system.QuestStage;
-import kinugasa.game.system.QuestStageStorage;
+import kinugasa.game.system.Quest;
+import kinugasa.game.system.QuestStorage;
 import kinugasa.game.system.ScriptFormatException;
 import kinugasa.game.system.Status;
 import kinugasa.game.ui.Text;
@@ -85,27 +84,17 @@ public enum FieldEventType {
 			if (e.getStorageName() == null) {
 				throw new FieldEventScriptException("storage name is null  : " + e);
 			}
-			SoundStorage.getInstance().get(e.getStorageName()).stopAll();
+			SoundStorage.getInstance().stopAll();
 			return UserOperationRequire.CONTINUE;
 		}
 	},
 	PLAY_SOUND {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException {
-			if (e.getStorageName() == null) {
-				throw new FieldEventScriptException("storage name is null  : " + e);
-			}
 			if (e.getTargetName() == null) {
 				throw new FieldEventScriptException("target name is null  : " + e);
 			}
-			SoundStorage.getInstance().get(e.getStorageName()).get(e.getTargetName()).load().stopAndPlay();
-			return UserOperationRequire.CONTINUE;
-		}
-	},
-	PLAY_SOUND_DIRECT {
-		@Override
-		UserOperationRequire exec(List<Status> party, FieldEvent e) {
-			new SoundBuilder(e.getValue()).builde().load().stopAndPlay();
+			SoundStorage.getInstance().get(e.getTargetName()).load().stopAndPlay();
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -353,10 +342,7 @@ public enum FieldEventType {
 	SET_FLG_DIRECT {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
-			if (!FlagStorageStorage.getInstance().contains(e.getStorageName())) {
-				FlagStorageStorage.getInstance().add(new FlagStorage(e.getStorageName()));
-			}
-			FlagStorage fs = FlagStorageStorage.getInstance().get(e.getStorageName());
+			FlagStorage fs = FlagStorage.getInstance();
 			if (!fs.contains(e.getTargetName())) {
 				fs.add(new Flag(e.getTargetName()));
 			}
@@ -368,7 +354,7 @@ public enum FieldEventType {
 	SET_FLG_TMP {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
-			FieldEventSystem.getInstance().setFlag(e.getStorageName(), e.getTargetName(), FlagStatus.valueOf(e.getValue()));
+			FieldEventSystem.getInstance().setFlag(e.getTargetName(), FlagStatus.valueOf(e.getValue()));
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -378,14 +364,17 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//クエストラインストレージ名、クエストID、ステージ値
-	SET_QUEST_LINE {
+	//クエストID、ステージ値
+	SET_QUEST {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			int v = Integer.parseInt(e.getValue());
 			//クエスト情報を設定
-			QuestStage s = QuestStageStorage.getInstance().get(e.getTargetName(), v);
-			QuestLineStorage.getInstance().get(e.getTargetName()).setStage(s);
+			Quest q = QuestStorage.getInstance().get(e.getTargetName());
+			if (CurrentQuest.getInstance().contains(q)) {
+				CurrentQuest.getInstance().remove(q);
+			}
+			CurrentQuest.getInstance().add(q);
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -660,7 +649,7 @@ public enum FieldEventType {
 			String user = e.getValue().split("/")[1];
 			String pass = e.getValue().split("/")[2];
 			DBConnection.getInstance().close();
-			DBConnection.getInstance().init(fileName, user, pass);
+			DBConnection.getInstance().open(fileName, user, pass);
 			return UserOperationRequire.CONTINUE;
 		}
 	},

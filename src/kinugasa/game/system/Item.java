@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 import kinugasa.resource.*;
+import kinugasa.resource.db.DBRecord;
 
 /**
  * アイテムの名称と、効果を保持するクラスです。
@@ -39,12 +40,13 @@ import kinugasa.resource.*;
  * @vesion 1.0.0 - 2022/11/16_11:58:36<br>
  * @author Shinacho<br>
  */
-public class Item extends CmdAction implements Nameable, Cloneable {
+@DBRecord
+public class Item extends Action implements Nameable, Cloneable {
 
 	private StatusValueSet eqStatus;
 	private AttributeValueSet eqAttr;
 	private ItemEqipmentSlot eqipmentSlot;
-	private WeaponMagicType weaponMagicType;
+	private WeaponType weaponMagicType;
 	private int value;//ベース価値
 	private boolean canSale = true;//売れるかどうか
 	private int currentUpgrade = 0;
@@ -52,8 +54,8 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 	private Map<Material, Integer> dissasseMaterials = new HashMap<>();//解体時に得られる資源
 	private List<ItemEqipTerm> eqipTerm = new ArrayList<>();
 
-	public Item(String name, String desc) {
-		super(ActionType.ITEM, name, desc);
+	public Item(String id, String name, String desc) {
+		super(ActionType.ITEM, id, name, desc);
 	}
 
 	public Item setEqStatus(StatusValueSet eqStatus) {
@@ -163,12 +165,12 @@ public class Item extends CmdAction implements Nameable, Cloneable {
 		return this;
 	}
 
-	public Item setWeaponMagicType(WeaponMagicType weaponMagicType) {
+	public Item setWeaponMagicType(WeaponType weaponMagicType) {
 		this.weaponMagicType = weaponMagicType;
 		return this;
 	}
 
-	public WeaponMagicType getWeaponMagicType() {
+	public WeaponType getWeaponMagicType() {
 		return weaponMagicType;
 	}
 

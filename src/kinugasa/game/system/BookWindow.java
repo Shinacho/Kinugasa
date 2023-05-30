@@ -268,7 +268,7 @@ public class BookWindow extends BasicSprite {
 						sb.append(Text.getLineSep());
 						//解体素材
 						sb.append(I18N.get(GameSystemI18NKeys.解体すると以下を入手する)).append(Text.getLineSep());
-						for (BookPage p : b.getPages()) {
+						for (Page p : b.getPages()) {
 							sb.append("   ").append(p.getDesc()).append(Text.getLineSep());
 						}
 
@@ -401,7 +401,7 @@ public class BookWindow extends BasicSprite {
 		}
 		getSelectedPC().updateAction();
 		if (!getSelectedPC().getEffectedStatus().get(Status.canMagicStatusName).equals(Status.canMagicStatusValue)) {
-			List<CmdAction> removeList = getSelectedPC().getActions(ActionType.MAGIC);
+			List<Action> removeList = getSelectedPC().getActions(ActionType.MAGIC);
 			getSelectedPC().getActions().removeAll(removeList);
 		}
 		main.setText(sb.toString());
@@ -422,13 +422,13 @@ public class BookWindow extends BasicSprite {
 
 	private void commitDissasse() {
 		Book i = getSelectedBook();
-		List<BookPage> pages = i.getPages();
+		List<Page> pages = i.getPages();
 		getSelectedPC().getBookBag().drop(i);
 		GameSystem.getInstance().getBookPageBag().addAll(pages);
 		StringBuilder s = new StringBuilder();
 		s.append(I18N.get(GameSystemI18NKeys.XはXを解体した, getSelectedPC().getName(), i.getName()));
 		s.append(Text.getLineSep());
-		Map<String, Long> count = pages.stream().collect(Collectors.groupingBy(BookPage::getDesc, Collectors.counting()));
+		Map<String, Long> count = pages.stream().collect(Collectors.groupingBy(Page::getDesc, Collectors.counting()));
 		for (Map.Entry<String, Long> e : count.entrySet()) {
 			s.append(I18N.get(GameSystemI18NKeys.XをX個入手した, e.getKey(), e.getValue() + ""));
 			s.append(Text.getLineSep());

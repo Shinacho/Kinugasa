@@ -21,58 +21,71 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.test.rpg;
+package kinugasa.game.system;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import kinugasa.game.GameManager;
-import kinugasa.game.GameOption;
-import kinugasa.game.GameTimeManager;
-import kinugasa.game.GraphicsContext;
-import kinugasa.game.LockUtil;
-import kinugasa.game.input.InputState;
-import static kinugasa.game.system.BattleConfig.messageWindowY;
-import kinugasa.game.ui.MessageWindow;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import kinugasa.resource.Nameable;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/22_5:31:16<br>
+ * @vesion 1.0.0 - 2022/11/15_12:07:46<br>
  * @author Shinacho<br>
  */
-public class Test2 extends GameManager {
+public class Condition implements Nameable, Cloneable {
 
-	public static void main(String[] args) {
-	
-		LockUtil.deleteAllLockFile();
-		new Test2().gameStart();
+	private ConditionKey key;
+	private List<ConditionEffect> effects = new ArrayList<>();
+
+	public Condition(ConditionKey key) {
+		this.key = key;
 	}
 
-	Test2() {
-		super(GameOption.defaultOption());
+	public Condition(ConditionKey key, ConditionEffect e) {
+		this.key = key;
+		this.effects.add(e);
 	}
-	MessageWindow mw;
 
-	@Override
-	protected void startUp() {
-		float w = GameOption.getInstance().getWindowSize().width - 6;
-		float h = (float) (GameOption.getInstance().getWindowSize().height / 3.66f);
-		mw = new MessageWindow(3, messageWindowY, w, h);
-		mw.setText("１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０");
-		mw.allText();
+	public Condition(ConditionKey key, List<ConditionEffect> effects) {
+		this.key = key;
+		this.effects = effects;
 	}
 
 	@Override
-	protected void dispose() {
+	public String getName() {
+		return key.getName();
+	}
+
+	public ConditionKey getKey() {
+		return key;
+	}
+
+	public List<ConditionEffect> getEffects() {
+		return effects;
+	}
+
+	public void setEffects(List<ConditionEffect> effects) {
+		this.effects = effects;
 	}
 
 	@Override
-	protected void update(GameTimeManager gtm, InputState is) {
-		mw.update();
+	public String toString() {
+		return super.toString(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
 	}
 
 	@Override
-	protected void draw(GraphicsContext gc) {
-		mw.draw(gc);
+	public Condition clone() {
+		try {
+			Condition c = (Condition) super.clone();
+			c.effects = (List<ConditionEffect>) ((ArrayList<ConditionEffect>) effects).clone();
+			return c;
+		} catch (CloneNotSupportedException ex) {
+			throw new InternalError(ex);
+		}
 	}
 
 }

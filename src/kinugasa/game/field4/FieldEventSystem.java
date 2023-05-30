@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import kinugasa.game.GameLog;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
@@ -40,9 +39,7 @@ import kinugasa.game.system.EncountInfo;
 import kinugasa.game.system.Flag;
 import kinugasa.game.system.FlagStatus;
 import kinugasa.game.system.FlagStorage;
-import kinugasa.game.system.FlagStorageStorage;
 import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.GameSystemException;
 import kinugasa.game.system.Item;
 import kinugasa.game.system.ItemStorage;
 import kinugasa.game.system.PlayerCharacter;
@@ -90,7 +87,7 @@ public class FieldEventSystem implements Drawable {
 	private boolean manual = false;
 	//
 	private Item item;
-	private Storage<FlagStorage> flags = new Storage<FlagStorage>();
+	private Storage<Flag> flags = new Storage<Flag>();
 
 	public void setEvent(LinkedList<FieldEvent> event) {
 		Collections.sort(event);
@@ -121,44 +118,24 @@ public class FieldEventSystem implements Drawable {
 				break;
 			}
 		}
-
-//		if (GameSystem.isDebugMode() && !event.isEmpty()) {
-//			kinugasa.game.GameLog.print("kinugasa.game.field4.FieldEventSystem.setEvent()");
-//			for (FieldEvent e : event) {
-//				kinugasa.game.GameLog.print("> " + e);
-//			}
-//		}
 	}
 
-	Storage<FlagStorage> getFlags() {
+	Storage<Flag> getFlags() {
 		return flags;
 	}
 
-	void setFlag(String storageName, String flagName, FlagStatus v) {
+	void setFlag(String flagName, FlagStatus v) {
 		//仮ストレージにフラグを追加
-		if (!flags.contains(storageName)) {
-			flags.add(new FlagStorage(storageName));
+		FlagStorage fs = FlagStorage.getInstance();
+		if (!flags.contains(flagName)) {
+			flags.add(new Flag(flagName));
 		}
-		FlagStorage fs = flags.get(storageName);
-		if (!fs.contains(flagName)) {
-			fs.add(new Flag(flagName));
-		}
-		fs.get(flagName).set(v);
+		flags.get(flagName).set(v);
 	}
 
 	public void commitFlags() {
-		//フラグストレージの更新
-		for (FlagStorage s : flags) {
-			if (!FlagStorageStorage.getInstance().contains(s.getName())) {
-				FlagStorageStorage.getInstance().add(s);
-			}
-		}
+		FlagStorage.getInstance().update(flags);
 		//フラグ自体の更新
-		for (FlagStorage s : FlagStorageStorage.getInstance()) {
-			if (flags.contains(s)) {
-				s.update(flags.get(s.getName()));
-			}
-		}
 		if (GameSystem.isDebugMode()) {
 			kinugasa.game.GameLog.print("tmp flags commit is done.");
 		}

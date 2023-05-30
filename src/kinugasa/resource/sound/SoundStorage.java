@@ -1,74 +1,144 @@
-/*
- * The MIT License
- *
- * Copyright 2013 Shinacho.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package kinugasa.resource.sound;
 
-import kinugasa.resource.InputObjectStorage;
-import kinugasa.resource.Input;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import kinugasa.game.GameLog;
+import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.InputStatus;
-
+import kinugasa.resource.db.*;
+import static kinugasa.resource.sound.SoundType.BGM;
+import static kinugasa.resource.sound.SoundType.SE;
+import kinugasa.resource.text.FileIOException;
+import kinugasa.util.StopWatch;
 
 /**
- * ロジックを跨いでサウンドを管理するための、唯一の保存領域を提供します.
+ * サウンドの一時的な保存領域を提供します.
  * <br>
- * サウンドマップには、全てのサウンドマップが含まれています。サウンドマップからサウンドを構築した場合は、
- * このストレージからすべてのサウンドにアクセスできます。<br>
+ * このストレージの実装はロジックのプリセットによって、 効果音やBGMを再生するためのキーが指定されている場合があります。<br>
+ *
+ * 作成されたサウンドマップは自動的にサウンドストレージに追加されます。<br>
+ * サウンドマップの名前を指定しない場合は、適当な名前が割り当てられます。<br>
+ * <br>
+ * サウンドの具象クラスの型に注意してください。1つのマップに含まれる、サウンドの型は 統一することを推奨します。<br>
  * <br>
  * Freeableの実装は、マップに追加されているすべてのサウンドに行われます。<br>
  * <br>
  *
- * @version 1.0.0 - 2013/01/14_14:19:07<br>
+ * @version 1.0.0 - 2013/02/06_7:52:47<br>
  * @author Shinacho<br>
  */
-public final class SoundStorage extends InputObjectStorage<SoundMap> implements Input{
+public final class SoundStorage extends DBStorage<Sound> {
 
-	/** このクラスの唯一のインスタンスです . */
 	private static final SoundStorage INSTANCE = new SoundStorage();
 
-	/**
-	 * サウンドストレージのインスタンスを取得します.
-	 *
-	 * @return 唯一のインスタンスを返します。<br>
-	 */
 	public static SoundStorage getInstance() {
 		return INSTANCE;
 	}
 
-	/**
-	 * シングルトンクラスです.
-	 */
+	public static float volumeBgm = 1.0f;
+	public static float volumeSe = 1.0f;
+
 	private SoundStorage() {
 	}
 
-	@Override
+	/**
+	 * サウンドの音量を更新するため、サウンドを作成しなおします。
+	 */
+	public void rebuild() {
+		GameLog.print("SoundStorage rebuild");
+		getDirect().clear();
+		addAll(selectAll());
+	}
+
+	/**
+	 * 全てのサウンドを解放します.
+	 */
 	public void dispose() {
-		super.dispose();
+		getDirect().values().forEach(p -> p.stop());
+		getDirect().values().forEach(p -> p.dispose());
 		System.gc();
 	}
 
+	public void stopAll() {
+		for (Sound sound : getDirect().values()) {
+			sound.stop();
+		}
+	}
+
 	@Override
-	public InputStatus getStatus() {
-		return isEmpty() ? InputStatus.NOT_LOADED : asList().get(0).getStatus();
+	protected Sound select(String id) throws KSQLException {
+		if (DBConnection.getInstance().isUsing()) {
+			KResultSet kr = DBConnection.getInstance().execDirect("select SoundID, desc, fileName, loopFrom, loopTo, mg, type  from sound where soundid='" + id + "';");
+			if (kr.isEmpty()) {
+				return null;
+			}
+			for (List<DBValue> line : kr) {
+				String soundID = line.get(0).get();
+				String desc = line.get(1).get();
+				String fileName = line.get(2).get();
+				int lpf = line.get(3).asInt();
+				int lpt = line.get(4).asInt();
+				float mg = line.get(5).asFloat();
+				SoundType type = line.get(6).of(SoundType.class);
+				switch (type) {
+					case BGM:
+						mg *= volumeBgm;
+						break;
+					case SE:
+						mg *= volumeSe;
+						break;
+					default:
+						throw new AssertionError("SoundStorage : undefined Type : " + line);
+				}
+				SoundBuilder sb = SoundBuilder.create(soundID, fileName, desc, lpf, lpt, mg, type);
+				return sb.builde();
+			}
+		}
+		return null;
+	}
+
+	@Override
+	protected List<Sound> selectAll() throws KSQLException {
+		if (DBConnection.getInstance().isUsing()) {
+			KResultSet kr = DBConnection.getInstance().execDirect("select SoundID, desc, fileName, loopFrom, loopTo, mg, type from sound;");
+			if (kr.isEmpty()) {
+				return Collections.emptyList();
+			}
+			List<Sound> list = new ArrayList<>();
+			for (List<DBValue> line : kr) {
+				String soundID = line.get(0).get();
+				String desc = line.get(1).get();
+				String fileName = line.get(2).get();
+				int lpf = line.get(3).asInt();
+				int lpt = line.get(4).asInt();
+				float mg = line.get(5).asFloat();
+				SoundType type = line.get(6).of(SoundType.class);
+				switch (type) {
+					case BGM:
+						mg *= volumeBgm;
+						break;
+					case SE:
+						mg *= volumeSe;
+						break;
+					default:
+						throw new AssertionError("SoundStorage : undefined Type : " + line);
+				}
+				SoundBuilder sb = SoundBuilder.create(soundID, fileName, desc, lpf, lpt, mg, type);
+				list.add(sb.builde());
+			}
+			return list;
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	protected int count() throws KSQLException {
+		if (DBConnection.getInstance().isUsing()) {
+			return DBConnection.getInstance().execDirect("select count(*) from sound").cell(0, 0).asInt();
+		}
+		return 0;
+
 	}
 
 }

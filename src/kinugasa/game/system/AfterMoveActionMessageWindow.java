@@ -46,18 +46,18 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 	public AfterMoveActionMessageWindow(int x, int y, int w, int h) {
 		super(x, y, w, h, 7, true);
 	}
-	private List<CmdAction> actions = new ArrayList();
+	private List<Action> actions = new ArrayList();
 
-	public List<CmdAction> getActions() {
+	public List<Action> getActions() {
 		return actions;
 	}
 
 	@Override
-	public CmdAction getSelectedCmd() {
+	public Action getSelectedCmd() {
 		return actions.get(getSelectedIdx());
 	}
 
-	public void setActions(List<CmdAction> actions) {
+	public void setActions(List<Action> actions) {
 		this.actions = actions;
 		updateText();
 		reset();
@@ -76,7 +76,7 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 		StringBuilder s = new StringBuilder();
 		for (int i = 0; i < actions.size(); i++) {
 			ActionType type = actions.get(i).getType();
-			CmdAction b = actions.get(i);
+			Action b = actions.get(i);
 			String text = "";
 			switch (type) {
 				case ATTACK:

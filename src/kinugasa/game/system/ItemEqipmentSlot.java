@@ -25,17 +25,21 @@ package kinugasa.game.system;
 
 import java.util.Objects;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.db.DBRecord;
 
 /**
  *
  * @vesion 1.0.0 - 2022/11/16_13:22:06<br>
  * @author Shinacho<br>
  */
+@DBRecord
 public class ItemEqipmentSlot implements Nameable {
 
+	private String id;
 	private String name;
 
-	public ItemEqipmentSlot(String name) {
+	public ItemEqipmentSlot(String id, String name) {
+		this.id = id;
 		this.name = name;
 	}
 
@@ -46,8 +50,8 @@ public class ItemEqipmentSlot implements Nameable {
 
 	@Override
 	public int hashCode() {
-		int hash = 7;
-		hash = 37 * hash + Objects.hashCode(this.name);
+		int hash = 3;
+		hash = 89 * hash + Objects.hashCode(this.id);
 		return hash;
 	}
 
@@ -63,12 +67,7 @@ public class ItemEqipmentSlot implements Nameable {
 			return false;
 		}
 		final ItemEqipmentSlot other = (ItemEqipmentSlot) obj;
-		return Objects.equals(this.name, other.name);
-	}
-
-	@Override
-	public String toString() {
-		return "ItemEqipmentSlot{" + "name=" + name + '}';
+		return Objects.equals(this.id, other.id);
 	}
 
 }

@@ -23,6 +23,7 @@
  */
 package kinugasa.resource.sound;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
 import javax.sound.sampled.AudioInputStream;
@@ -294,4 +295,25 @@ public class CachedSound implements Sound {
 	public SoundBuilder getBuilder() {
 		return builder;
 	}
+
+	@Override
+	public File getFile() {
+		return builder.getFile();
+	}
+
+	@Override
+	public String getDesc() {
+		return builder.getDesc();
+	}
+
+	@Override
+	public String getFileName() {
+		return getFile().getName();
+	}
+
+	@Override
+	public SoundType getType() {
+		return builder.getType();
+	}
+
 }

@@ -25,6 +25,7 @@ package kinugasa.resource.sound;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Objects;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.FileNotFoundException;
 
@@ -39,47 +40,82 @@ import kinugasa.resource.FileNotFoundException;
  */
 public final class SoundBuilder implements Serializable, Nameable {
 
-	/** ファイルインスタンス. */
-	private File file;
-	/** ループ設定. */
-	private LoopPoint loopPoint = LoopPoint.NO_USE;
-	/** リバーブ設定. */
-	private ReverbModel reverbModel = ReverbModel.NO_USE;
-	/** マスターゲインの値. */
-	private float masterGain = 1f;
-	/** ボリューム. */
-	private float volume = 1f;
-	/** パンの設定. */
-	private float pan = 0f;
-	/** 再生時のサンプルレート. */
-	private float sampleRate = 0f;
-	/** 新規インスタンスで作成するか. */
-	private boolean newFile = false;
-	private String name;
-
 	/**
-	 * 新しいCachedSoundを作成するためのビルダを構築します.
-	 * 
-	 * @param filePath ファイルパス.<br>
-	 *
-	 * @throws ContentsFileNotFoundException ファイルが存在しない場合に投げられる.<br>
+	 * ファイルインスタンス.
 	 */
-	public SoundBuilder(String filePath) throws FileNotFoundException {
+	private File file;
+	/**
+	 * ループ設定.
+	 */
+	private LoopPoint loopPoint = LoopPoint.NO_USE;
+	/**
+	 * リバーブ設定.
+	 */
+	private ReverbModel reverbModel = ReverbModel.NO_USE;
+	/**
+	 * マスターゲインの値.
+	 */
+	private float masterGain = 1f;
+	/**
+	 * ボリューム.
+	 */
+	private float volume = 1f;
+	/**
+	 * パンの設定.
+	 */
+	private float pan = 0f;
+	/**
+	 * 再生時のサンプルレート.
+	 */
+	private float sampleRate = 0f;
+	private String id;
+	private String desc;
+	private SoundType type;
+
+	public String getVisibleName() {
+		return getFile().getName();
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	@Deprecated
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public SoundType getType() {
+		return type;
+	}
+
+	public static SoundBuilder create(String id, String filePath, String desc, int lpf, int lpt, float mg, SoundType type) throws FileNotFoundException {
+		SoundBuilder s = new SoundBuilder();
 		File soundFile = new File(filePath);
 		if (!soundFile.exists()) {
 			throw new FileNotFoundException("not found : filePath=[" + filePath + "]");
 		}
-		this.file = soundFile;
-		this.name = file.getName();
+		s.file = soundFile;
+		s.id = id;
+		s.desc = desc;
+		s.type = type;
+		if (lpf == - 1) {
+			s.loopPoint = new LoopPoint(lpf, lpt);
+		} else if (lpf > 0) {
+			s.loopPoint = new LoopPoint(lpf, lpt);
+		}
+		s.masterGain = mg;
+		return s;
 	}
 
 	/**
 	 * ループ位置を設定します.
-	 * 
+	 *
 	 * @param loopPoint ループ位置.<br>
 	 *
 	 * @return このビルダのインスタンス.<br>
 	 */
+	@Deprecated
 	public SoundBuilder setLoopPoint(LoopPoint loopPoint) {
 		this.loopPoint = loopPoint;
 		return this;
@@ -87,102 +123,86 @@ public final class SoundBuilder implements Serializable, Nameable {
 
 	/**
 	 * ループ位置を設定します.
-	 * 
+	 *
 	 * @param from ループ位置.<br>
-	 * @param to   ループ位置.<br>
+	 * @param to ループ位置.<br>
 	 *
 	 * @return このビルダのインスタンス.<br>
 	 */
+	@Deprecated
 	public SoundBuilder setLoopPoint(int from, int to) {
 		this.loopPoint = new LoopPoint(from, to);
 		return this;
 	}
 
 	/**
-	 * サウンドのマスターゲインを設定します.
-	 * これはボリュームがサポートされていない環境で音量を設定することができます.<br>
-	 * 
+	 * サウンドのマスターゲインを設定します. これはボリュームがサポートされていない環境で音量を設定することができます.<br>
+	 *
 	 * @param masterGain ゲインの値.0.0fで無音になる.<br>
 	 *
 	 * @return このビルダのインスタンス.<br>
 	 */
+	@Deprecated
 	public SoundBuilder setMasterGain(float masterGain) {
 		this.masterGain = masterGain;
 		return this;
 	}
 
 	/**
-	 * ステレオサウンドのパン位置を設定します.
-	 * この機能はサポートされていない可能性があります.
-	 * 
+	 * ステレオサウンドのパン位置を設定します. この機能はサポートされていない可能性があります.
+	 *
 	 * @param pan 中心を0.0、左右を1.0とした場合のパン位置.<br>
 	 *
 	 * @return このビルダのインスタンス.<br>
 	 */
+	@Deprecated
 	public SoundBuilder setPan(float pan) {
 		this.pan = pan;
 		return this;
 	}
 
 	/**
-	 * サウンドの音量を設定します.
-	 * この機能はサポートされていない可能性があります.音量の調節はマスターゲインを使用してください.<br>
-	 * 
+	 * サウンドの音量を設定します. この機能はサポートされていない可能性があります.音量の調節はマスターゲインを使用してください.<br>
+	 *
 	 * @param volume 音量.<br>
 	 *
 	 * @return このビルダのインスタンス.<br>
 	 */
+	@Deprecated
 	public SoundBuilder setVolume(float volume) {
 		this.volume = volume;
 		return this;
 	}
 
 	/**
-	 * サウンドのリバーブを設定します.
-	 * この機能はサポートされていない可能性があります.
-	 * 
+	 * サウンドのリバーブを設定します. この機能はサポートされていない可能性があります.
+	 *
 	 * @param reverbModel リバーブの設定.<br>
 	 *
 	 * @return このビルダのインスタンス.<br>
 	 */
+	@Deprecated
 	public SoundBuilder setReverbModel(ReverbModel reverbModel) {
 		this.reverbModel = reverbModel;
 		return this;
 	}
 
 	/**
-	 * サウンドの再生時のサンプルレートを設定します.
-	 * この機能はサポートされていない可能性があります.
-	 * 
+	 * サウンドの再生時のサンプルレートを設定します. この機能はサポートされていない可能性があります.
+	 *
 	 * @param sampleRate 再生時のサンプルレート.<br>
 	 *
 	 * @return このビルダのインスタンス.<br>
 	 */
+	@Deprecated
 	public SoundBuilder setSampleRate(float sampleRate) {
 		this.sampleRate = sampleRate;
 		return this;
 	}
 
 	/**
-	 * このメソッドを呼び出すとCachedSoundのキャッシュデータを使用せず、
-	 * 新しいサウンドインスタンスを作成します.<br>
-	 * 
-	 * @return このビルダのインスタンス.<br>
-	 */
-	public SoundBuilder newFile() {
-		newFile = true;
-		return this;
-	}
-
-	public SoundBuilder setName(String name) {
-		this.name = name;
-		return this;
-	}
-
-	/**
-	 * 作成される予定のサウンドのファイルを取得します.
-	 * このメソッドの戻り値のファイルは存在が保証されます.<br>
-	 * 
+	 * 作成される予定のサウンドのファイルを取得します. このメソッドの戻り値のファイルは存在が保証されます.<br>
+	 *
 	 * @return ファイルインスタンス.<br>
 	 */
 	public File getFile() {
@@ -191,7 +211,7 @@ public final class SoundBuilder implements Serializable, Nameable {
 
 	/**
 	 * 設定されている値を返します.
-	 * 
+	 *
 	 * @return ループ位置.<br>
 	 */
 	public LoopPoint getLoopPoint() {
@@ -200,7 +220,7 @@ public final class SoundBuilder implements Serializable, Nameable {
 
 	/**
 	 * 設定されている値を返します.
-	 * 
+	 *
 	 * @return ゲインの値.<br>
 	 */
 	public float getMasterGain() {
@@ -209,16 +229,7 @@ public final class SoundBuilder implements Serializable, Nameable {
 
 	/**
 	 * 設定されている値を返します.
-	 * 
-	 * @return キャッシュを使用せずに新しいインスタンスを作成する場合はTRUEを返す.<br>
-	 */
-	public boolean isNewFile() {
-		return newFile;
-	}
-
-	/**
-	 * 設定されている値を返します.
-	 * 
+	 *
 	 * @return パンの設定.<br>
 	 */
 	public float getPan() {
@@ -227,7 +238,7 @@ public final class SoundBuilder implements Serializable, Nameable {
 
 	/**
 	 * 設定されている値を返します.
-	 * 
+	 *
 	 * @return リバーブの設定.<br>
 	 */
 	public ReverbModel getReverbModel() {
@@ -236,7 +247,7 @@ public final class SoundBuilder implements Serializable, Nameable {
 
 	/**
 	 * 設定されている値を返します.
-	 * 
+	 *
 	 * @return 再生時のサンプルレート.<br>
 	 */
 	public float getSampleRate() {
@@ -245,7 +256,7 @@ public final class SoundBuilder implements Serializable, Nameable {
 
 	/**
 	 * 設定されている値を返します.
-	 * 
+	 *
 	 * @return 音量.<br>
 	 */
 	public float getVolume() {
@@ -254,7 +265,7 @@ public final class SoundBuilder implements Serializable, Nameable {
 
 	/**
 	 * 現在の設定で新しいCachedSoundを作成します.
-	 * 
+	 *
 	 * @return AudioDataの実装を返す.<br>
 	 */
 	public CachedSound builde() {
@@ -262,7 +273,31 @@ public final class SoundBuilder implements Serializable, Nameable {
 	}
 
 	@Override
+	public String getName() {
+		return id;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 3;
+		hash = 13 * hash + Objects.hashCode(this.file);
+		hash = 13 * hash + Objects.hashCode(this.loopPoint);
+		hash = 13 * hash + Objects.hashCode(this.reverbModel);
+		hash = 13 * hash + Float.floatToIntBits(this.masterGain);
+		hash = 13 * hash + Float.floatToIntBits(this.volume);
+		hash = 13 * hash + Float.floatToIntBits(this.pan);
+		hash = 13 * hash + Float.floatToIntBits(this.sampleRate);
+		hash = 13 * hash + Objects.hashCode(this.id);
+		hash = 13 * hash + Objects.hashCode(this.desc);
+		hash = 13 * hash + Objects.hashCode(this.type);
+		return hash;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
 		if (obj == null) {
 			return false;
 		}
@@ -270,15 +305,6 @@ public final class SoundBuilder implements Serializable, Nameable {
 			return false;
 		}
 		final SoundBuilder other = (SoundBuilder) obj;
-		if (this.file != other.file && (this.file == null || !this.file.equals(other.file))) {
-			return false;
-		}
-		if (this.loopPoint != other.loopPoint && (this.loopPoint == null || !this.loopPoint.equals(other.loopPoint))) {
-			return false;
-		}
-		if (this.reverbModel != other.reverbModel && (this.reverbModel == null || !this.reverbModel.equals(other.reverbModel))) {
-			return false;
-		}
 		if (Float.floatToIntBits(this.masterGain) != Float.floatToIntBits(other.masterGain)) {
 			return false;
 		}
@@ -291,33 +317,27 @@ public final class SoundBuilder implements Serializable, Nameable {
 		if (Float.floatToIntBits(this.sampleRate) != Float.floatToIntBits(other.sampleRate)) {
 			return false;
 		}
-		if (this.newFile != other.newFile) {
+		if (!Objects.equals(this.id, other.id)) {
 			return false;
 		}
-		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 97 * hash + (this.file != null ? this.file.hashCode() : 0);
-		hash = 97 * hash + (this.loopPoint != null ? this.loopPoint.hashCode() : 0);
-		hash = 97 * hash + (this.reverbModel != null ? this.reverbModel.hashCode() : 0);
-		hash = 97 * hash + Float.floatToIntBits(this.masterGain);
-		hash = 97 * hash + Float.floatToIntBits(this.volume);
-		hash = 97 * hash + Float.floatToIntBits(this.pan);
-		hash = 97 * hash + Float.floatToIntBits(this.sampleRate);
-		hash = 97 * hash + (this.newFile ? 1 : 0);
-		return hash;
-	}
-
-	@Override
-	public String getName() {
-		return name;
+		if (!Objects.equals(this.desc, other.desc)) {
+			return false;
+		}
+		if (!Objects.equals(this.file, other.file)) {
+			return false;
+		}
+		if (!Objects.equals(this.loopPoint, other.loopPoint)) {
+			return false;
+		}
+		if (!Objects.equals(this.reverbModel, other.reverbModel)) {
+			return false;
+		}
+		return this.type == other.type;
 	}
 
 	@Override
 	public String toString() {
-		return "SoundBuilder{" + "file=" + file + ", loopPoint=" + loopPoint + ", reverbModel=" + reverbModel + ", masterGain=" + masterGain + ", volume=" + volume + ", pan=" + pan + ", sampleRate=" + sampleRate + ", newFile=" + newFile + '}';
+		return "SoundBuilder{" + "file=" + file + ", loopPoint=" + loopPoint + ", reverbModel=" + reverbModel + ", masterGain=" + masterGain + ", volume=" + volume + ", pan=" + pan + ", sampleRate=" + sampleRate + ", id=" + id + ", desc=" + desc + ", type=" + type + '}';
 	}
+
 }

@@ -126,15 +126,19 @@ public class GameSystem {
 		battleSystem.endBattle();
 		return battleSystem.getBattleResultValue();
 	}
-	private BookPageBag pageBag = new BookPageBag();
+	private PageBag pageBag = new PageBag();
 
-	public BookPageBag getBookPageBag() {
+	public PageBag getBookPageBag() {
 		return pageBag;
 	}
 	private MaterialBag materialBag = new MaterialBag();
 
 	public MaterialBag getMaterialBag() {
 		return materialBag;
+	}
+	
+	public void save(int dataNO) throws GameSystemException{
+		//TODO:
 	}
 
 }

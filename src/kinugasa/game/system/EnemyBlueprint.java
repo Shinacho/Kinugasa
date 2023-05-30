@@ -80,7 +80,7 @@ public class EnemyBlueprint implements Nameable {
 	private Map<ItemEqipmentSlot, Item> equipment;
 	private ArrayList<DropItem> dropItems;
 	private ImageSprite sprite;
-	private List<CmdAction> actions;
+	private List<Action> actions;
 	private Vehicle vehicle;
 	private EnemyAI ai;
 	private Sound deadSound;
@@ -96,7 +96,7 @@ public class EnemyBlueprint implements Nameable {
 			Map<ItemEqipmentSlot, Item> equipment,
 			ArrayList<DropItem> dropItems,
 			ImageSprite sprite,
-			List<CmdAction> actions,
+			List<Action> actions,
 			Vehicle vehicle, EnemyAI ai, Sound deadSound) {
 		this.visibleName = visibleName;
 		this.statusValueSet = statusValueSet;

@@ -78,6 +78,26 @@ public class AttributeValue implements Nameable, Cloneable, Comparable<Attribute
 		return initial;
 	}
 
+	public void toInitial() {
+		setValue(initial);
+	}
+
+	public void saveInitial() {
+		initial = value;
+	}
+
+	public void setInitialIfChange() {
+		if (value != initial) {
+			toInitial();
+		}
+	}
+
+	public void setMaxIfOverMax() {
+		if (value > max) {
+			value = max;
+		}
+	}
+
 	public void setInitial(float initial) {
 		this.initial = initial;
 	}

@@ -30,7 +30,7 @@ import kinugasa.resource.Storage;
  * @vesion 1.0.0 - 2022/11/15_12:21:49<br>
  * @author Shinacho<br>
  */
-public class CharacterConditionValueSet extends Storage<ConditionValue> {
+public class CharacterConditionValueSet extends Storage<Condition> {
 
 	public CharacterConditionValueSet() {
 	}

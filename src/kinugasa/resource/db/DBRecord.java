@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Shinacho.
+ * Copyright 2023 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,37 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
+package kinugasa.resource.db;
 
-import kinugasa.resource.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/16_16:55:03<br>
  * @author Shinacho<br>
  */
-public class WeaponMagicType implements Nameable {
-
-	private String name;
-	private String desc;
-
-	public WeaponMagicType(String name, String desc) {
-		this.name = name;
-		this.desc = desc;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public String toString() {
-		return "WeaponMagicType{" + "name=" + name + '}';
-	}
+@Target(ElementType.TYPE)
+public @interface DBRecord {
 
 }

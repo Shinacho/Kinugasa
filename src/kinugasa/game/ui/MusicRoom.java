@@ -23,9 +23,10 @@
  */
 package kinugasa.game.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import kinugasa.resource.sound.SoundMap;
+import kinugasa.resource.sound.*;
 
 /**
  * BGMの一覧を表示し、再生可能にする画面表示の実装です。アクションテキストスプライトグループを使用しています。
@@ -35,21 +36,31 @@ import kinugasa.resource.sound.SoundMap;
  */
 public class MusicRoom extends ScrollSelectableMessageWindow {
 
-	private SoundMap map;
+	private List<Sound> list = new ArrayList<>();
 
-	public MusicRoom(SoundMap map, int x, int y, int w, int h, int line) {
+	public MusicRoom(int x, int y, int w, int h, int line) {
 		super(x, y, w, h, line);
-		this.map = map;
 		setLoop(true);
 		setLine1select(false);
-		List<Text> t = map.stream().map(p -> p.getName()).sorted().map(p -> new Text(p)).collect(Collectors.toList());
-		t.add(0, new Text("--" + map.getName()));
+
+		list.addAll(SoundStorage.getInstance().filter(p -> p.getType() == SoundType.BGM));
+		List<Text> t = list
+				.stream()
+				.map(p -> ((CachedSound) p).getBuilder().getVisibleName())
+				.map(p -> new Text(p))
+				.collect(Collectors.toList());
+		t.add(0, new Text("--" + "BGM"));
 		setText(t);
 	}
 
 	public void play() {
-		map.dispose();
-		map.get(getSelected().getText()).load().stopAndPlay();
+		SoundStorage.getInstance().dispose();
+		//play
+		list.get(getSelectedIdx() - 1).load().stopAndPlay();
+	}
+
+	public Sound getSelectedSound() {
+		return list.get(getSelectedIdx() - 1);
 	}
 
 }

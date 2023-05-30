@@ -25,6 +25,7 @@ package kinugasa.game.system;
 
 import java.util.Objects;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.db.DBRecord;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.Random;
 import kinugasa.util.TimeCounter;
@@ -34,6 +35,7 @@ import kinugasa.util.TimeCounter;
  * @vesion 1.0.0 - 2022/11/15_12:09:03<br>
  * @author Shinacho<br>
  */
+@DBRecord
 public class ConditionKey implements Nameable {
 
 	private String name;

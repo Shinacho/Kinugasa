@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Shinacho.
+ * Copyright 2023 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,53 +23,26 @@
  */
 package kinugasa.game.system;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import kinugasa.graphics.Animation;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/25_10:50:54<br>
+ * @vesion 1.0.0 - May 30, 2023_11:00:40 AM<br>
  * @author Shinacho<br>
  */
-public class BookPageBag {
+public abstract class CustomActionEvent extends ActionEvent {
 
-	private Map<BookPage, Integer> map = new HashMap<>();
-
-	public BookPageBag() {
+	public CustomActionEvent(String id) {
+		super(id);
 	}
 
-	public Map<BookPage, Integer> getMap() {
-		return map;
-	}
-
-	public void addAll(List<BookPage> list) {
-		for (BookPage p : list) {
-			if (map.containsKey(p) && map.get(p) == 99) {
-				continue;
-			}
-			if (map.containsKey(p)) {
-				map.put(p, map.get(p) + 1);
-			} else {
-				map.put(p, 1);
-			}
-
-		}
-	}
-
-	public void add(BookPage p) {
-		if (map.containsKey(p) && map.get(p) == 99) {
-			return;
-		}
-		if (map.containsKey(p)) {
-			map.put(p, map.get(p) + 1);
-		} else {
-			map.put(p, 1);
-		}
-	}
-
-	public int size() {
-		return map.size();
-	}
+	/**
+	 * アクションのサウンド再生は自動で行われますが、P判定を含めた処理は実施する必要があります。
+	 *
+	 * @param tgt アクションのターゲット情報
+	 * @return アクションの成否。
+	 */
+	@Override
+	public abstract ActionEventResult exec(ActionTarget tgt);
 
 }

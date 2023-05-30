@@ -26,7 +26,6 @@ package kinugasa.game.field4;
 import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.ui.TextStorageStorage;
-import kinugasa.resource.sound.SoundLoader;
 
 /**
  * フィールドマップ関連の設定を正しい順番でロードするためのクラスです。
@@ -38,7 +37,6 @@ public class FieldMapXMLLoader {
 
 	public FieldMapXMLLoader() {
 	}
-	private List<String> soundLoader = new ArrayList<>();
 	private List<String> textStorage = new ArrayList<>();
 	private List<String> mapChipAttrStorage = new ArrayList<>();
 	private List<String> vehicleStorage = new ArrayList<>();
@@ -47,11 +45,6 @@ public class FieldMapXMLLoader {
 	private List<String> fieldMapStorage = new ArrayList<>();
 	private String initialFieldMapName;
 	private D2Idx initialIdx;
-
-	public FieldMapXMLLoader addSound(String fileName) {
-		soundLoader.add(fileName);
-		return this;
-	}
 
 	public FieldMapXMLLoader addMapChipAttr(String fileName) {
 		mapChipAttrStorage.add(fileName);
@@ -93,10 +86,6 @@ public class FieldMapXMLLoader {
 		return this;
 	}
 
-	public List<String> getSoundLoader() {
-		return soundLoader;
-	}
-
 	public List<String> getMapChipAttrStorage() {
 		return mapChipAttrStorage;
 	}
@@ -130,7 +119,6 @@ public class FieldMapXMLLoader {
 	}
 
 	public FieldMap load() throws IllegalStateException {
-		soundLoader.forEach(v -> SoundLoader.loadList(v, 1.0f));
 
 		textStorage.forEach(v -> TextStorageStorage.getInstance().readFromXML(v));
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Shinacho.
+ * Copyright 2023 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,51 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
+package kinugasa.game;
 
-import kinugasa.resource.Nameable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/11_16:56:25<br>
+ * @vesion 1.0.0 - May 28, 2023_11:04:26 AM<br>
  * @author Shinacho<br>
  */
-public class QuestStage {
-
-	private int value;
-	private String title;
-	private String desc;
-
-	public QuestStage(int value, String title, String desc) {
-		this.value = value;
-		this.title = title;
-		this.desc = desc;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public QuestStage() {
-		value = 0;
-	}
-
-	public int getValue() {
-		return value;
-	}
-
-	public boolean is(int a) {
-		return value == a;
-	}
-	//TODO:removeNPC情報ここ
-
-	@Override
-	public String toString() {
-		return "QuestStage{" + "value=" + value + ", title=" + title + ", desc=" + desc + '}';
-	}
+@Target(ElementType.METHOD)
+public @interface NoNull {
 
 }

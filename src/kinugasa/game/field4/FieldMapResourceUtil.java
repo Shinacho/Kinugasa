@@ -114,8 +114,6 @@ public class FieldMapResourceUtil {
 			kinugasa.game.GameLog.print(keyList.get(i));
 		}
 	}
-	
-	
 
 	//outer16
 	public static void main(String[] args) {

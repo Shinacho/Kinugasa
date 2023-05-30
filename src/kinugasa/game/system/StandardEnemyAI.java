@@ -45,7 +45,7 @@ import kinugasa.object.KVector;
 public enum StandardEnemyAI implements EnemyAI {
 	SIMPLE {
 		@Override
-		public CmdAction getNext(BattleCharacter user, List<CmdAction> list) {
+		public Action getNext(BattleCharacter user, List<Action> list) {
 			assert user.isPlayer() == false : "ENEMY AI but user is not CPU";
 			//HPが半分以下かどうか
 			boolean hpIsUnderHarf = user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
@@ -73,7 +73,7 @@ public enum StandardEnemyAI implements EnemyAI {
 			L2:
 			if(hpIsUnderHarf){
 				//回復魔法（valueが＋）持っている場合でHPが低い場合自分に使う
-				CmdAction healMgk = getMax(list.stream().filter(p -> p.getType() == ActionType.MAGIC).collect(Collectors.toList()));
+				Action healMgk = getMax(list.stream().filter(p -> p.getType() == ActionType.MAGIC).collect(Collectors.toList()));
 				if (healMgk == null) {
 					break L2;
 				}
@@ -93,7 +93,7 @@ public enum StandardEnemyAI implements EnemyAI {
 			//威力が最低の行動を返すが、足りない項目があって詠唱できない魔法である場合は別の行動を返す
 			final int CHUUSEN_KAISU = 12;
 			for (int i = 0; i < CHUUSEN_KAISU; i++) {
-				CmdAction kouho = getMin(list);
+				Action kouho = getMin(list);
 				Map<StatusKey, Integer> damage = kouho.selfBattleDirectDamage();
 				//ダメージを合算
 				StatusValueSet simulateDamage = user.getStatus().simulateDamage(damage);
@@ -196,14 +196,14 @@ public enum StandardEnemyAI implements EnemyAI {
 	//lからTTがパーティーでvalueが最大のものを返す（＋
 	//複数ある場合はランダムなものを返す
 	//ない場合はnullを返す
-	private static CmdAction getMax(List<? extends CmdAction> l) {
+	private static Action getMax(List<? extends Action> l) {
 		//敵の人数
 		int enemyNum = GameSystem.getInstance().getBattleSystem().getEnemies().size();
 		//味方の人数
 		int partyNum = GameSystem.getInstance().getParty().size();
 		Collections.shuffle(l);
-		Map<CmdAction, Integer> result = new HashMap<>();
-		for (CmdAction a : l) {
+		Map<Action, Integer> result = new HashMap<>();
+		for (Action a : l) {
 			int sum = 0;
 			for (ActionEvent e : a.getBattleEvent()) {
 				switch (e.getTargetType()) {
@@ -244,14 +244,14 @@ public enum StandardEnemyAI implements EnemyAI {
 	//lからTTがエネミーでvalueが最低のものを返す（ー
 	//複数ある場合はランダムなものを返す
 	//ない場合はnullを返す
-	private static CmdAction getMin(List<? extends CmdAction> l) {
+	private static Action getMin(List<? extends Action> l) {
 		//敵の人数
 		int enemyNum = GameSystem.getInstance().getBattleSystem().getEnemies().size();
 		//味方の人数
 		int partyNum = GameSystem.getInstance().getParty().size();
 		Collections.shuffle(l);
-		Map<CmdAction, Integer> result = new HashMap<>();
-		for (CmdAction a : l) {
+		Map<Action, Integer> result = new HashMap<>();
+		for (Action a : l) {
 			int sum = 0;
 			for (ActionEvent e : a.getBattleEvent()) {
 				switch (e.getTargetType()) {

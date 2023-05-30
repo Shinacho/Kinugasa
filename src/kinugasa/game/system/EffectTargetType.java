@@ -37,7 +37,7 @@ public enum EffectTargetType {
 	/**
 	 * ATTR_INを改変します（バフ・デバフ）。
 	 */
-	ATTRIBUTE_IN,
+	ATTR,
 	/**
 	 * コンディションを追加します。
 	 */

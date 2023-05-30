@@ -24,12 +24,8 @@
 package kinugasa.game.system;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.util.Random;
 
@@ -50,7 +46,7 @@ public class BattleCommand {
 	//このコマンドのユーザ
 	private BattleCharacter user;
 	//取れる行動
-	private List<CmdAction> ba;
+	private List<Action> ba;
 	//状態異常関連
 	private boolean stop = false;
 	private boolean confu = false;
@@ -68,7 +64,7 @@ public class BattleCommand {
 		assert !ba.isEmpty() : user.getStatus().getName() + " s BA is EMPTY";
 	}
 
-	BattleCommand setAction(List<CmdAction> ba) {
+	BattleCommand setAction(List<Action> ba) {
 		this.ba = ba;
 		return this;
 	}
@@ -114,61 +110,61 @@ public class BattleCommand {
 		return user;
 	}
 
-	public CmdAction randomAction() {
+	public Action randomAction() {
 		int i = Random.randomAbsInt(ba.size());
 		return ba.get(i);
 	}
 
-	public List<CmdAction> getBattleActions() {
+	public List<Action> getBattleActions() {
 		return ba;
 	}
 
-	public CmdAction getFirstBattleAction() {
+	public Action getFirstBattleAction() {
 		return getBattleActions().get(0);
 	}
 
-	public CmdAction getBattleAction(EnemyAI mode) {
+	public Action getBattleAction(EnemyAI mode) {
 		return mode.getNext(user, getBattleActions());
 	}
 
-	public CmdAction getBattleActionEx(EnemyAI mode, ActionType at) {
-		List<CmdAction> a = getBattleActions().stream().filter(p -> p.getType() != at).collect(Collectors.toList());
+	public Action getBattleActionEx(EnemyAI mode, ActionType at) {
+		List<Action> a = getBattleActions().stream().filter(p -> p.getType() != at).collect(Collectors.toList());
 		return mode.getNext(user, a);
 	}
 
-	public CmdAction getBattleActionEx(EnemyAI mode, ActionType... at) {
-		List<CmdAction> a = getBattleActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
+	public Action getBattleActionEx(EnemyAI mode, ActionType... at) {
+		List<Action> a = getBattleActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
 		return mode.getNext(user, a);
 	}
 
-	public CmdAction getBattleActionOf(EnemyAI mode, ActionType at) {
-		List<CmdAction> a = getBattleActions().stream().filter(p -> p.getType() == at).collect(Collectors.toList());
+	public Action getBattleActionOf(EnemyAI mode, ActionType at) {
+		List<Action> a = getBattleActions().stream().filter(p -> p.getType() == at).collect(Collectors.toList());
 		return mode.getNext(user, a);
 	}
 
-	public CmdAction getBattleActionOf(EnemyAI mode, ActionType... at) {
-		List<CmdAction> a = getBattleActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
+	public Action getBattleActionOf(EnemyAI mode, ActionType... at) {
+		List<Action> a = getBattleActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
 		return mode.getNext(user, a);
 	}
 
-	public List<CmdAction> getBattleActionEx(ActionType at) {
+	public List<Action> getBattleActionEx(ActionType at) {
 		return getBattleActions().stream().filter(p -> p.getType() != at).collect(Collectors.toList());
 	}
 
-	public List<CmdAction> getBattleActionEx(ActionType... at) {
+	public List<Action> getBattleActionEx(ActionType... at) {
 		return getBattleActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
 	}
 
-	public List<CmdAction> getBattleActionOf(ActionType at) {
+	public List<Action> getBattleActionOf(ActionType at) {
 		return getBattleActions().stream().filter(p -> p.getType() == at).collect(Collectors.toList());
 	}
 
-	public List<CmdAction> getBattleActionOf(ActionType... at) {
+	public List<Action> getBattleActionOf(ActionType... at) {
 		return getBattleActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
 	}
 
 	public boolean hasAction(String name) {
-		for (CmdAction a : ba) {
+		for (Action a : ba) {
 			if (a.getName().equals(name)) {
 				return true;
 			}
@@ -177,7 +173,7 @@ public class BattleCommand {
 	}
 
 	public boolean hasMoveAction() {
-		for (CmdAction a : ba) {
+		for (Action a : ba) {
 			if (a.getName().equals(BattleConfig.ActionName.move)) {
 				return true;
 			}

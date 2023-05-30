@@ -86,9 +86,8 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 			EnemyAI ai = EnemyAIStorage.getInstance().get(e.getAttributes().get("ai").getValue());
 			Sound deadSound = null;
 			if (e.getAttributes().contains("deadSound")) {
-				String mapName = e.getAttributes().get("deadSound").safeSplit("/")[0];
-				String soundName = e.getAttributes().get("deadSound").safeSplit("/")[1];
-				Sound s = SoundStorage.getInstance().get(mapName).get(soundName);
+				String soundID = e.getAttributes().get("deadSound").getValue();
+				Sound s = SoundStorage.getInstance().get(soundID);
 				s.dispose();
 				deadSound = s;
 			}
@@ -119,7 +118,7 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 				float p = ie.getAttributes().get("p").getFloatValue();
 				dropItems.add(new DropItem(ItemStorage.getInstance().get(itemKey), n, p));
 			}
-			List<CmdAction> actionList = new ArrayList<>();
+			List<Action> actionList = new ArrayList<>();
 			for (XMLElement ae : e.getElement("action")) {
 				String name = ae.getAttributes().get("name").getValue();
 				actionList.add(ActionStorage.getInstance().get(name));
@@ -127,7 +126,7 @@ public class EnemyStorage extends Storage<EnemyBlueprint> implements XMLFileSupp
 			List<ConditionKey> condition = new ArrayList<>();
 			for (XMLElement ae : e.getElement("condition")) {
 				String name = ae.getAttributes().get("name").getValue();
-				condition.add(ConditionValueStorage.getInstance().get(name).getKey());
+				condition.add(ConditionStorage.getInstance().get(name).getKey());
 			}
 			Map<ItemEqipmentSlot, Item> eqip = new HashMap<>();
 			ItemBag itemBag = new ItemBag(race.getItemBagSize());

@@ -160,7 +160,7 @@ public class MagicWindow extends BasicSprite {
 			mode = Mode.MAGIC_AND_USER_SELECT;
 			return;
 		}
-		CmdAction a = getSelectedAction();
+		Action a = getSelectedAction();
 		switch (mode) {
 			case MAGIC_AND_USER_SELECT:
 				List<Text> options = new ArrayList<>();
@@ -409,7 +409,7 @@ public class MagicWindow extends BasicSprite {
 								sb.append("  ");
 								switch (e.getParameterType()) {
 									case ADD_CONDITION:
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを追加する, ConditionValueStorage.getInstance().get(e.getTgtName()).getKey().getDesc()));
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを追加する, ConditionStorage.getInstance().get(e.getTgtName()).getKey().getDesc()));
 										break;
 									case ATTR_IN:
 										sb.append(I18N.get(GameSystemI18NKeys.Xの有効度を変更する, AttributeKeyStorage.getInstance().get(e.getTgtName()).getDesc()));
@@ -597,7 +597,7 @@ public class MagicWindow extends BasicSprite {
 	}
 
 	private void commitUse() {
-		CmdAction a = getSelectedAction();
+		Action a = getSelectedAction();
 		Status tgt = GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect());
 
 		//使用者のMP計算のためDCP設定
@@ -650,7 +650,7 @@ public class MagicWindow extends BasicSprite {
 		updateText();
 	}
 
-	public CmdAction getSelectedAction() {
+	public Action getSelectedAction() {
 		return GameSystem.getInstance().getPartyStatus().get(pcIdx).getActions(ActionType.MAGIC).get(main.getSelectedIdx() - 1);
 	}
 
@@ -665,7 +665,7 @@ public class MagicWindow extends BasicSprite {
 	private void updateText() {
 		Text line1 = new Text("<---" + I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getName()) + I18N.get(GameSystemI18NKeys.魔術) + "--->");
 
-		List<CmdAction> list = getSelectedPC().getActions(ActionType.MAGIC);
+		List<Action> list = getSelectedPC().getActions(ActionType.MAGIC);
 		if (list.isEmpty()) {
 			Text line2 = new Text(I18N.get(GameSystemI18NKeys.使える魔術はない));
 			main.setText(List.of(line1, line2));

@@ -34,69 +34,54 @@ import kinugasa.resource.db.KSQLException;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/23_18:56:31<br>
+ * @vesion 1.0.0 - 2022/12/25_13:58:05<br>
  * @author Shinacho<br>
  */
-public class BookStorage extends DBStorage<Book> {
+public class PageStorage extends DBStorage<Page> {
 
-	private static final BookStorage INSTANCE = new BookStorage();
-
-	private BookStorage() {
+	private PageStorage() {
 	}
+	private static final PageStorage INSTANCE = new PageStorage();
 
-	public static BookStorage getInstance() {
+	public static PageStorage getInstance() {
 		return INSTANCE;
 	}
 
 	@Override
-	protected Book select(String id) throws KSQLException {
+	protected Page select(String id) throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from Book where bookid='" + id + "';");
+			KResultSet kr = DBConnection.getInstance().execDirect("select * from Page where pageID='" + id + "';");
 			if (kr.isEmpty()) {
 				return null;
 			}
-			//ページの取得
-			KResultSet pkr = DBConnection.getInstance().execDirect("select * from book_page where bookID='" + id + "';");
-			List<Page> page = new ArrayList();
-			if (!pkr.isEmpty()) {
-				for (List<DBValue> v : pkr) {
-					page.add(PageStorage.getInstance().get(v.get(1).get()));
-				}
-			}
 			for (List<DBValue> v : kr) {
-				String visibleName = v.get(1).get();
-				String desc = v.get(2).get();
-				int val = v.get(3).asInt();
-				return new Book(id, visibleName, desc, val).setPages(page);
+				MagicCompositeType compositeType = v.get(1).of(MagicCompositeType.class);
+				String visibleName = v.get(2).get();
+				String targetName = v.get(3).get();
+				float value = v.get(4).asFloat();
+				return new Page(id, compositeType, visibleName, targetName, value);
 			}
 		}
 		return null;
 	}
 
 	@Override
-	protected List<Book> selectAll() throws KSQLException {
+	protected List<Page> selectAll() throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from Book;");
+			KResultSet kr = DBConnection.getInstance().execDirect("select * from Page;");
 			if (kr.isEmpty()) {
 				return Collections.emptyList();
 			}
-			//ページの取得
-			List<Book> book = new ArrayList<>();
+			List<Page> page = new ArrayList<>();
 			for (List<DBValue> v : kr) {
 				String id = v.get(0).get();
-				KResultSet pkr = DBConnection.getInstance().execDirect("select * from book_page where bookID='" + id + "';");
-				List<Page> page = new ArrayList();
-				if (!pkr.isEmpty()) {
-					for (List<DBValue> vv : pkr) {
-						page.add(PageStorage.getInstance().get(vv.get(1).get()));
-					}
-				}
-				String visibleName = v.get(1).get();
-				String desc = v.get(2).get();
-				int val = v.get(3).asInt();
-				book.add(new Book(id, visibleName, desc, val).setPages(page));
+				MagicCompositeType compositeType = v.get(1).of(MagicCompositeType.class);
+				String visibleName = v.get(2).get();
+				String targetName = v.get(3).get();
+				float value = v.get(4).asFloat();
+				page.add(new Page(id, compositeType, visibleName, targetName, value));
 			}
-			return book;
+			return page;
 		}
 		return Collections.emptyList();
 	}
@@ -104,7 +89,7 @@ public class BookStorage extends DBStorage<Book> {
 	@Override
 	protected int count() throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			return DBConnection.getInstance().execDirect("select count(*) from book").row(0).get(0).asInt();
+			return DBConnection.getInstance().execDirect("select count(*) from Page").row(0).get(0).asInt();
 		}
 		return 0;
 	}

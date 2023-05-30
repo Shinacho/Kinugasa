@@ -23,10 +23,11 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.resource.db.DBStorage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import kinugasa.resource.db.DBStorage;
+import kinugasa.resource.*;
 import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.db.DBValue;
 import kinugasa.resource.db.KResultSet;
@@ -34,69 +35,45 @@ import kinugasa.resource.db.KSQLException;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/23_18:56:31<br>
+ * @vesion 1.0.0 - 2022/11/16_16:55:15<br>
  * @author Shinacho<br>
  */
-public class BookStorage extends DBStorage<Book> {
+public class WeaponTypeStorage extends DBStorage<WeaponType> {
 
-	private static final BookStorage INSTANCE = new BookStorage();
+	private static final WeaponTypeStorage INSTANCE = new WeaponTypeStorage();
 
-	private BookStorage() {
+	private WeaponTypeStorage() {
 	}
 
-	public static BookStorage getInstance() {
+	public static WeaponTypeStorage getInstance() {
 		return INSTANCE;
 	}
 
 	@Override
-	protected Book select(String id) throws KSQLException {
+	protected WeaponType select(String name) throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from Book where bookid='" + id + "';");
-			if (kr.isEmpty()) {
+			KResultSet rs = DBConnection.getInstance().execDirect("select * from weaponType where weaponTypeID = '" + name + "';");
+			if (rs.isEmpty()) {
 				return null;
 			}
-			//ページの取得
-			KResultSet pkr = DBConnection.getInstance().execDirect("select * from book_page where bookID='" + id + "';");
-			List<Page> page = new ArrayList();
-			if (!pkr.isEmpty()) {
-				for (List<DBValue> v : pkr) {
-					page.add(PageStorage.getInstance().get(v.get(1).get()));
-				}
-			}
-			for (List<DBValue> v : kr) {
-				String visibleName = v.get(1).get();
-				String desc = v.get(2).get();
-				int val = v.get(3).asInt();
-				return new Book(id, visibleName, desc, val).setPages(page);
-			}
+			List<DBValue> values = rs.row(0);
+			return convert(values);
 		}
 		return null;
 	}
 
 	@Override
-	protected List<Book> selectAll() throws KSQLException {
+	protected List<WeaponType> selectAll() throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from Book;");
-			if (kr.isEmpty()) {
+			KResultSet rs = DBConnection.getInstance().execDirect("select * from weaponType;");
+			if (rs.isEmpty()) {
 				return Collections.emptyList();
 			}
-			//ページの取得
-			List<Book> book = new ArrayList<>();
-			for (List<DBValue> v : kr) {
-				String id = v.get(0).get();
-				KResultSet pkr = DBConnection.getInstance().execDirect("select * from book_page where bookID='" + id + "';");
-				List<Page> page = new ArrayList();
-				if (!pkr.isEmpty()) {
-					for (List<DBValue> vv : pkr) {
-						page.add(PageStorage.getInstance().get(vv.get(1).get()));
-					}
-				}
-				String visibleName = v.get(1).get();
-				String desc = v.get(2).get();
-				int val = v.get(3).asInt();
-				book.add(new Book(id, visibleName, desc, val).setPages(page));
+			List<WeaponType> res = new ArrayList<>();
+			for (List<DBValue> rec : rs) {
+				res.add(convert(rec));
 			}
-			return book;
+			return res;
 		}
 		return Collections.emptyList();
 	}
@@ -104,9 +81,13 @@ public class BookStorage extends DBStorage<Book> {
 	@Override
 	protected int count() throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			return DBConnection.getInstance().execDirect("select count(*) from book").row(0).get(0).asInt();
+			return DBConnection.getInstance().execDirect("select count(*) from weaponType;").row(0).get(0).asInt();
 		}
 		return 0;
+	}
+
+	protected WeaponType convert(List<DBValue> record) {
+		return new WeaponType(record.get(0).get(), record.get(1).get(), record.get(2).get());
 	}
 
 }

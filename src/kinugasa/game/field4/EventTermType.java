@@ -25,12 +25,12 @@ package kinugasa.game.field4;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kinugasa.game.system.CurrentQuest;
 import kinugasa.game.system.Flag;
 import kinugasa.game.system.FlagStatus;
 import kinugasa.game.system.FlagStorage;
-import kinugasa.game.system.FlagStorageStorage;
 import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.QuestLineStorage;
+import kinugasa.game.system.QuestStorage;
 import kinugasa.game.system.Status;
 
 /**
@@ -108,11 +108,7 @@ public enum EventTermType {
 	FLG_IS {
 		@Override
 		boolean canExec(List<Status> party, EventTerm t) {
-			//return FlagStorageStorage.getInstance().get(t.getStorageName()).get(t.getTargetName()).get().is(FlagStatus.valueOf(t.getValue()));
-			if (!FlagStorageStorage.getInstance().contains(t.getStorageName())) {
-				return false;
-			}
-			FlagStorage s = FlagStorageStorage.getInstance().get(t.getStorageName());
+			FlagStorage s = FlagStorage.getInstance();
 			if (s == null) {
 				return false;
 			}
@@ -129,10 +125,7 @@ public enum EventTermType {
 	NO_EXISTS_FLG {
 		@Override
 		boolean canExec(List<Status> party, EventTerm t) {
-			if (!FlagStorageStorage.getInstance().contains(t.getStorageName())) {
-				return true;
-			}
-			FlagStorage s = FlagStorageStorage.getInstance().get(t.getStorageName());
+			FlagStorage s = FlagStorage.getInstance();
 			if (s == null) {
 				return true;
 			}
@@ -149,10 +142,7 @@ public enum EventTermType {
 	EXISTS_FLG {
 		@Override
 		public boolean canExec(List<Status> party, EventTerm t) {
-			if (!FlagStorageStorage.getInstance().contains(t.getStorageName())) {
-				return false;
-			}
-			FlagStorage s = FlagStorageStorage.getInstance().get(t.getStorageName());
+			FlagStorage s = FlagStorage.getInstance();
 			if (s == null) {
 				return false;
 			}
@@ -169,13 +159,13 @@ public enum EventTermType {
 	QUEST_LINE_IS {
 		@Override
 		public boolean canExec(List<Status> party, EventTerm t) {
-			return QuestLineStorage.getInstance().get(t.getTargetName()).getStage().getValue() == Integer.parseInt(t.getValue());
+			return CurrentQuest.getInstance().get(t.getTargetName()).getStage() == Integer.parseInt(t.getValue());
 		}
 	},
 	QUEST_LINE_IS_OVER {
 		@Override
 		public boolean canExec(List<Status> party, EventTerm t) {
-			return QuestLineStorage.getInstance().get(t.getTargetName()).getStage().getValue() > Integer.parseInt(t.getValue());
+			return CurrentQuest.getInstance().get(t.getTargetName()).getStage() >= Integer.parseInt(t.getValue());
 		}
 	},;
 

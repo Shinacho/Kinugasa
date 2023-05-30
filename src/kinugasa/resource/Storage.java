@@ -193,9 +193,9 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	public boolean contains(T obj) {
 		return contains(obj.getName());
 	}
-	
+
 	@Deprecated
-	public Map<String, T> getDirect(){
+	public final Map<String, T> getDirect() {
 		return map;
 	}
 
@@ -210,7 +210,7 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 		if (val.getName() == null) {
 			throw new NameNotFoundException("null key : " + this);
 		}
-		if (contains(val.getName())) {
+		if (getDirect().containsKey(val.getName())) {
 			throw new DuplicateNameException("! > Storage : add : duplicate name : name=[" + val.getName() + "] : ");
 		}
 		map.put(val.getName(), val);
@@ -368,15 +368,11 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 		if (!GameSystem.isDebugMode()) {
 			return;
 		}
-		stream.println("> Storage : class=[" + getClass() + "]");
-		GameLog.print("> Storage : class=[" + getClass() + "]");
+		stream.println("> Storage : class=[" + getClass() + "]----------------");
+		GameLog.print("> Storage : class=[" + getClass() + "]----------------");
 		for (T obj : map.values()) {
-			stream.print("> Storage : printAll : " + obj.getName());
-			GameLog.print("> Storage : printAll : " + obj.getName());
-			if (valueOut) {
-				stream.print(" : " + obj);
-				GameLog.print(" : " + obj);
-			}
+			stream.print("  " + obj.getName() + (valueOut ? obj : ""));
+			GameLog.print("  " + obj.getName() + (valueOut ? obj : ""));
 			stream.println();
 		}
 		stream.println("> Storage : ------------------------");

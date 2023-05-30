@@ -65,6 +65,15 @@ public class ItemUpgrade implements Comparable<ItemUpgrade> {
 		this.addStatus = addStatus;
 	}
 
+	public void addStatus(StatusKey k, float v) {
+		this.addStatus.put(k, v);
+
+	}
+
+	public void addAttrIn(AttributeKey k, float v) {
+		this.addAttrin.put(k, v);
+	}
+
 	public Map<AttributeKey, Float> getAddAttrin() {
 		return addAttrin;
 	}

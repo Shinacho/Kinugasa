@@ -49,7 +49,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 	}
 	private int typeIdx = ActionType.values().length - 1;
 	private ActionType type = ActionType.OTHER;
-	private CmdAction selected;
+	private Action selected;
 
 	public void resetSelect() {
 		setType(ActionType.OTHER);
@@ -93,7 +93,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 	}
 
 	@Override
-	public CmdAction getSelectedCmd() {
+	public Action getSelectedCmd() {
 		assert cmd != null : "BCMW cmd is null";
 		return selected;
 	}
@@ -131,7 +131,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		text += Text.getLineSep();
 		int i = 0;
 		cmd.getUser().getStatus().updateAction(true);
-		List<CmdAction> actionList = cmd.getBattleActionOf(type);
+		List<Action> actionList = cmd.getBattleActionOf(type);
 		//アイテム以外の場合はバトル利用可能なアクションにフィルター
 		if (type != ActionType.ITEM) {
 			actionList = actionList.stream().filter(p -> p.isBattleUse()).collect(Collectors.toList());
@@ -162,7 +162,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		}
 
 		selected = actionList.get(0);
-		for (CmdAction b : actionList) {
+		for (Action b : actionList) {
 			switch (type) {
 				case ATTACK:
 					text += b.getName() + ":" + b.getDesc();
@@ -227,7 +227,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 	}
 
 	public void nextAction() {
-		List<CmdAction> actionList = cmd.getBattleActionOf(type);
+		List<Action> actionList = cmd.getBattleActionOf(type);
 		if (actionList.isEmpty()) {
 			return;
 		}
@@ -242,7 +242,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 
 	public void prevAction() {
 		super.prevSelect();
-		List<CmdAction> actionList = cmd.getBattleActionOf(type);
+		List<Action> actionList = cmd.getBattleActionOf(type);
 		if (actionList.isEmpty()) {
 			return;
 		}

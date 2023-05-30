@@ -54,6 +54,24 @@ public class DBValue {
 		return Integer.parseInt(value);
 	}
 
+	public int[] asIntArray(String sep) {
+		String[] v = safeSplit(sep);
+		int[] res = new int[v.length];
+		for (int i = 0; i < v.length; i++) {
+			res[i] = Integer.parseInt(v[i]);
+		}
+		return res;
+	}
+
+	public float[] asFloatArray(String sep) {
+		String[] v = safeSplit(sep);
+		float[] res = new float[v.length];
+		for (int i = 0; i < v.length; i++) {
+			res[i] = Float.parseFloat(v[i]);
+		}
+		return res;
+	}
+
 	public float asFloat() {
 		return Float.parseFloat(value);
 	}

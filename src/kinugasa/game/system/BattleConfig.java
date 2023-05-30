@@ -122,7 +122,7 @@ public class BattleConfig {
 	public static void setUntargetConditionNames(List<String> untargetConditionNames) {
 		BattleConfig.untargetConditionNames = untargetConditionNames;
 		for (String n : untargetConditionNames) {
-			if (!ConditionValueStorage.getInstance().contains(n)) {
+			if (!ConditionStorage.getInstance().contains(n)) {
 				throw new GameSystemException("undefined condition name : " + n);
 			}
 		}
@@ -131,7 +131,7 @@ public class BattleConfig {
 	public static void addUntargetConditionNames(String name) {
 		BattleConfig.untargetConditionNames.add(name);
 		for (String n : untargetConditionNames) {
-			if (!ConditionValueStorage.getInstance().contains(n)) {
+			if (!ConditionStorage.getInstance().contains(n)) {
 				throw new GameSystemException("undefined condition name : " + n);
 			}
 		}

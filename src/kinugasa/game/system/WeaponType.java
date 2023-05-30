@@ -23,22 +23,66 @@
  */
 package kinugasa.game.system;
 
-import kinugasa.resource.Storage;
+import java.util.Objects;
+import kinugasa.resource.db.DBRecord;
+import kinugasa.resource.*;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/25_13:58:05<br>
+ * @vesion 1.0.0 - 2022/11/16_16:55:03<br>
  * @author Shinacho<br>
  */
-@Deprecated
-public class BookPageStorage extends Storage<BookPage> {
+@DBRecord
+public class WeaponType implements Nameable {
 
-	private BookPageStorage() {
+	private String id;
+	private String visibleName;
+	private String desc;
+
+	public WeaponType(String id, String name, String desc) {
+		this.id = id;
+		this.visibleName = name;
+		this.desc = desc;
 	}
-	private static final BookPageStorage INSTANCE = new BookPageStorage();
 
-	public static BookPageStorage getInstance() {
-		return INSTANCE;
+	public String getDesc() {
+		return desc;
+	}
+
+	@Override
+	public String getName() {
+		return id;
+	}
+
+	public String getVisibleName() {
+		return visibleName;
+	}
+
+	@Override
+	public String toString() {
+		return "WeaponMagicType{" + "id=" + id + ", visibleName=" + visibleName + '}';
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 97 * hash + Objects.hashCode(this.id);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final WeaponType other = (WeaponType) obj;
+		return Objects.equals(this.id, other.id);
 	}
 
 }

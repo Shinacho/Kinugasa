@@ -24,14 +24,13 @@ package kinugasa.game.system;
  * THE SOFTWARE.
  */
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
@@ -42,12 +41,13 @@ import kinugasa.util.FrameTimeCounter;
  * @vesion 1.0.0 - 2022/12/01_20:11:07<br>
  * @author Shinacho<br>
  */
-public class CmdAction implements Nameable, Comparable<CmdAction> {
+public class Action implements Nameable, Comparable<Action> {
 
 	public static int missWaitTime = 66;
 	//
 	private ActionType type;
-	private String name;
+	private String id;
+	private String visibleName;
 	private String desc;
 	private Sound sound;
 	private int waitTime;
@@ -62,9 +62,10 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 	private Set<StatusKey> damageCalcStatusKey = new HashSet<>();
 	private TargetOption tgtOption;
 
-	public CmdAction(ActionType type, String name, String desc) {
+	public Action(ActionType type, String id, String visibleName, String desc) {
 		this.type = type;
-		this.name = name;
+		this.id = id;
+		this.visibleName = visibleName;
 		this.desc = desc;
 	}
 
@@ -76,12 +77,12 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 		return tgtOption;
 	}
 
-	public CmdAction setTgtOption(TargetOption tgtOption) {
+	public Action setTargetOption(TargetOption tgtOption) {
 		this.tgtOption = tgtOption;
 		return this;
 	}
 
-	public CmdAction setDamageCalcStatusKey(Set<StatusKey> damageCalcStatusKey) {
+	public Action setDamageCalcStatusKey(Set<StatusKey> damageCalcStatusKey) {
 		this.damageCalcStatusKey = damageCalcStatusKey;
 		return this;
 	}
@@ -95,14 +96,14 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.id = name;
 	}
 
 	public int getSpellTime() {
 		return spellTime;
 	}
 
-	public CmdAction setSpellTime(int spellTime) {
+	public Action setSpellTime(int spellTime) {
 		this.spellTime = spellTime;
 		return this;
 	}
@@ -111,57 +112,67 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 		return sort;
 	}
 
-	public CmdAction setSort(int sort) {
+	public Action setSort(int sort) {
 		this.sort = sort;
 		return this;
 	}
 
-	public CmdAction setSound(Sound sound) {
+	public Action setSound(Sound sound) {
 		this.sound = sound;
 		return this;
 	}
 
-	public CmdAction setWaitTime(int waitTime) {
+	public Action setWaitTime(int waitTime) {
 		this.waitTime = waitTime;
 		return this;
 	}
 
-//	public CmdAction setBattleEvent(List<ActionEvent> battleEvent) {
+//	public Action setBattleEvent(List<ActionEvent> battleEvent) {
 //		this.battleEvent = battleEvent;
 //		return this;
 //	}
-	public CmdAction addBattleEvent(ActionEvent e) {
-		this.battleEvent.add(e);
+	public Action addBattleEvent(ActionEvent... e) {
+		this.battleEvent.addAll(Arrays.asList(e));
 		return this;
 	}
 
-//	public CmdAction setFieldEvent(List<ActionEvent> fieldEvent) {
+	public Action addBattleEvent(List<ActionEvent> e) {
+		this.battleEvent.addAll(e);
+		return this;
+	}
+
+//	public Action setFieldEvent(List<ActionEvent> fieldEvent) {
 //		this.fieldEvent = fieldEvent;
 //		return this;
 //	}
-	public CmdAction addFieldEvent(ActionEvent e) {
-		this.fieldEvent.add(e);
+	public Action addFieldEvent(ActionEvent... e) {
+		this.fieldEvent.addAll(Arrays.asList(e));
 		return this;
 	}
 
-	public CmdAction addTerm(ActionTerm t) {
+	public Action addFieldEvent(List<ActionEvent> e) {
+		this.fieldEvent.addAll(e);
+		return this;
+	}
+
+	public Action addTerm(ActionTerm t) {
 		this.terms.add(t);
 		return this;
 	}
 
-	public CmdAction setArea(int area) {
+	public Action setArea(int area) {
 		this.area = area;
 		return this;
 	}
 
-	public CmdAction setTerms(List<ActionTerm> terms) {
+	public Action setTerms(List<ActionTerm> terms) {
 		this.terms = terms;
 		return this;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return id;
 	}
 
 	public String getDesc() {
@@ -223,7 +234,7 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 		return stop;
 	}
 
-	public CmdAction setStop(boolean stop) {
+	public Action setStop(boolean stop) {
 		this.stop = stop;
 		return this;
 	}
@@ -395,8 +406,14 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 					try {
 						Thread.sleep(20);
 					} catch (InterruptedException ex) {
-						Logger.getLogger(CmdAction.class.getName()).log(Level.SEVERE, null, ex);
 					}
+//					new Thread(() -> {
+//						try {
+//							Thread.sleep(20);
+//						} catch (InterruptedException ex) {
+//						}
+//						playSound();
+//					}).start();
 				}
 			}
 		}
@@ -416,17 +433,17 @@ public class CmdAction implements Nameable, Comparable<CmdAction> {
 
 	@Override
 	public String toString() {
-		return "CmdAction{" + "type=" + type + ", name=" + name
+		return "CmdAction{" + "type=" + type + ", name=" + id
 				+ "(" + (battleEvent.isEmpty() ? "x" : "B") + (fieldEvent.isEmpty() ? "x" : "F") + ")" + '}';
 	}
 
 	@Override
-	public int compareTo(CmdAction o) {
+	public int compareTo(Action o) {
 		if (sort == o.sort) {
-			if (name.length() != o.name.length()) {
-				return name.length() - o.name.length();
+			if (id.length() != o.id.length()) {
+				return id.length() - o.id.length();
 			}
-			return name.compareTo(o.getName());
+			return id.compareTo(o.getName());
 		}
 		return sort - o.sort;
 	}

@@ -23,8 +23,9 @@ package kinugasa.game.system;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import kinugasa.game.system.GameSystemException;
+import java.util.Objects;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.db.DBRecord;
 
 /**
  * アクションの発動条件を定義するクラスです。
@@ -32,6 +33,7 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/12/01_21:52:13<br>
  * @author Shinacho<br>
  */
+@DBRecord
 public class ActionTerm implements Nameable {
 
 	private String name;
@@ -112,8 +114,30 @@ public class ActionTerm implements Nameable {
 	}
 
 	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 89 * hash + Objects.hashCode(this.name);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ActionTerm other = (ActionTerm) obj;
+		return Objects.equals(this.name, other.name);
+	}
+
+	@Override
 	public String toString() {
-		return "ActionTerm{" + "type=" + type + ", value=" + value + '}';
+		return "ActionTerm{" + "name=" + name + ", type=" + type + ", value=" + value + '}';
 	}
 
 }

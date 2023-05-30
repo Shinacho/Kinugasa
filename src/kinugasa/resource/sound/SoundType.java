@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Shinacho.
+ * Copyright 2023 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.game.system;
-
-import kinugasa.resource.Storage;
+package kinugasa.resource.sound;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_13:06:44<br>
+ * @vesion 1.0.0 - May 30, 2023_5:18:12 PM<br>
  * @author Shinacho<br>
  */
-public class ConditionValueStorage extends Storage<ConditionValue> {
-
-	private static final ConditionValueStorage INSTANCE = new ConditionValueStorage();
-
-	private ConditionValueStorage() {
-	}
-
-	public static ConditionValueStorage getInstance() {
-		return INSTANCE;
-	}
-
-	@Override
-	public String toString() {
-		return super.toString(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-	}
+public enum SoundType {
+	BGM,
+	SE
 }

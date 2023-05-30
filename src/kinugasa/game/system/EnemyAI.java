@@ -34,7 +34,7 @@ import kinugasa.resource.Nameable;
  */
 public interface EnemyAI extends Nameable {
 
-	CmdAction getNext(BattleCharacter user, List<CmdAction> list);
+	Action getNext(BattleCharacter user, List<Action> list);
 
 	Point2D.Float targetLocation(BattleCharacter user);
 }

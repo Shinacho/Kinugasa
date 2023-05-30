@@ -23,34 +23,23 @@
  */
 package kinugasa.game.system;
 
-import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import kinugasa.game.GameLog;
-import kinugasa.game.GameOption;
-import kinugasa.graphics.Animation;
-import kinugasa.graphics.ImageEditor;
-import kinugasa.graphics.SpriteSheet;
-import kinugasa.resource.FileNotFoundException;
-import kinugasa.resource.Storage;
-import kinugasa.resource.sound.Sound;
-import kinugasa.resource.sound.SoundBuilder;
-import kinugasa.resource.text.FileIOException;
-import kinugasa.resource.text.IllegalXMLFormatException;
-import kinugasa.resource.text.XMLElement;
-import kinugasa.resource.text.XMLFile;
-import kinugasa.resource.text.XMLFileSupport;
-import kinugasa.util.FrameTimeCounter;
+import java.util.Set;
+import kinugasa.resource.db.DBConnection;
+import kinugasa.resource.db.DBStorage;
+import kinugasa.resource.db.KResultSet;
+import kinugasa.resource.db.KSQLException;
+import kinugasa.resource.sound.SoundStorage;
 
 /**
  *
  * @vesion 1.0.0 - 2022/11/16_14:43:14<br>
  * @author Shinacho<br>
  */
-public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport {
+public class ActionStorage extends DBStorage<Action> {
 
 	private static final ActionStorage INSTANCE = new ActionStorage();
 
@@ -61,429 +50,193 @@ public class ActionStorage extends Storage<CmdAction> implements XMLFileSupport 
 		return INSTANCE;
 	}
 
-	Map<String, Animation> animationMap = new HashMap<>();
+	@Override
+	protected Action select(String id) throws KSQLException {
+		if (DBConnection.getInstance().isUsing()) {
+			String sql = "select "
+					+ "ActionID, "
+					+ "type, "
+					+ "visibleName, "
+					+ "desc, "
+					+ "area, "
+					+ "waitTime, "
+					+ "SoundID, "
+					+ "sortNo, "
+					+ "spellTime, "
+					+ "attackCount, "
+					+ "dcsCSV, "
+					+ "selectType, "
+					+ "IFF, "
+					+ "defaultTargetTeam, "
+					+ "switchTeam, "
+					+ "Targeting "
+					+ "from action "
+					+ "where actionID='" + id + "';";
+			KResultSet rs = DBConnection.getInstance().execDirect(sql);
+			if (rs.isEmpty()) {
+				return null;
+			}
+			for (var v : rs) {
+				//基本情報
+				String actionID = v.get(0).get();
+				ActionType type = v.get(1).of(ActionType.class);
+				String visibleName = v.get(2).get();
+				String desc = v.get(3).get();
+				Action a = new Action(type, actionID, visibleName, desc);
+				//area
+				a.setArea(v.get(4).asInt());
+				//waitTime
+				a.setWaitTime(v.get(5).asInt());
+				//Sound
+				a.setSound(SoundStorage.getInstance().get(v.get(6).get()));
+				//sortID
+				a.setSort(v.get(7).asInt());
+				//spellTime
+				a.setSpellTime(v.get(8).asInt());
+				//atkCount
+				a.setActionCount(v.get(9).asInt());
+				//dcs
+				Set<StatusKey> dcs = new HashSet<>();
+				for (String s : v.get(10).safeSplit(",")) {
+					StatusKey sk = StatusKeyStorage.getInstance().get(s);
+					dcs.add(sk);
+				}
+				a.setDamageCalcStatusKey(dcs);
+				//TARGET_OPTION
+				TargetOption.SelectType selectType = v.get(11).of(TargetOption.SelectType.class);
+				TargetOption.IFF iff = v.get(12).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
+				TargetOption.DefaultTarget defaultTarget = v.get(13).of(TargetOption.DefaultTarget.class);
+				TargetOption.SwitchTeam switchTeam = v.get(14).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
+				TargetOption.Targeting targeting = v.get(15).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
+				TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
+				a.setTargetOption(targetOption);
 
-	private ActionEvent parseEvent(XMLElement e) {
-		TargetType tt = e.getAttributes().get("tt").of(TargetType.class);
-		ParameterType pt = e.getAttributes().get("pt").of(ParameterType.class);
-		ActionEvent event = new ActionEvent(tt, pt);
-		if (e.hasAttribute("p")) {
-			event.setP(e.getAttributes().get("p").getFloatValue());
+				//ACTION_TERM
+				KResultSet akr = DBConnection.getInstance().execDirect("select"
+						+ " t.visibleName, "
+						+ " t.termType, "
+						+ "t.val "
+						+ "from Action_ActionTerm a, ActionTerm t "
+						+ "where a.ActionTermID = t.ActionTermID "
+						+ "and a.ActionID = '" + actionID + "';");
+				if (!akr.isEmpty()) {
+					for (var vv : akr) {
+						String name = vv.get(0).get();
+						TermType tt = vv.get(1).of(TermType.class);
+						String val = vv.get(2).get();
+						a.addTerm(new ActionTerm(name, tt, val));
+					}
+				}
+
+				//ACTION_EVENT
+				ActionEventStorage.ActionEvents events = ActionEventStorage.getInstance().getActionEvents(a);
+				a.addBattleEvent(events.battle);
+				a.addFieldEvent(events.field);
+
+				return a;
+			}
+
 		}
-		if (e.hasAttribute("tgtName")) {
-			event.setTgtName(e.getAttributes().get("tgtName").getValue());
-		}
-		if (e.hasAttribute("attr")) {
-			event.setAttr(AttributeKeyStorage.getInstance().get(e.getAttributes().get("attr").getValue()));
-		}
-		if (e.hasAttribute("value")) {
-			event.setValue(e.getAttributes().get("value").getFloatValue());
-		}
-		if (e.hasAttribute("spread")) {
-			event.setSpread(e.getAttributes().get("spread").getFloatValue());
-		}
-		if (e.hasAttribute("dct")) {
-			event.setDamageCalcType(e.getAttributes().get("dct").of(StatusDamageCalcType.class));
-		}
-		if (e.hasAttribute("animation")) {
-			event.setAnimation(animationMap.get(e.getAttributes().get("animation").getValue()));//注意：後でクローンすること！！！！
-		}
-		if (e.hasAttribute("animationMoveType")) {
-			event.setAnimationMoveType(e.getAttributes().get("animationMoveType").of(AnimationMoveType.class));
-		}
-		return event;
+		return null;
 	}
 
 	@Override
-	public void readFromXML(String filePath) throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
-		XMLFile file = new XMLFile(filePath);
-		if (!file.exists()) {
-			throw new FileNotFoundException(file.getFile());
-		}
-
-		XMLElement root = file.load().getFirst();
-		//発動条件のパース
-		for (XMLElement e : root.getElement("term")) {
-			String name = e.getAttributes().get("name").getValue();
-			TermType type = TermType.valueOf(e.getAttributes().get("tt").getValue());
-			String value = null;
-			if (e.hasAttribute("value")) {
-				value = e.getAttributes().get("value").getValue();
+	protected List<Action> selectAll() throws KSQLException {
+		if (DBConnection.getInstance().isUsing()) {
+			String sql = "select "
+					+ "ActionID, "
+					+ "type, "
+					+ "visibleName, "
+					+ "desc, "
+					+ "area, "
+					+ "waitTime, "
+					+ "SoundID, "
+					+ "sortNo, "
+					+ "spellTime, "
+					+ "attackCount, "
+					+ "dcsCSV, "
+					+ "selectType, "
+					+ "IFF, "
+					+ "defaultTargetTeam, "
+					+ "switchTeam, "
+					+ "Targeting "
+					+ "from action;";
+			KResultSet rs = DBConnection.getInstance().execDirect(sql);
+			if (rs.isEmpty()) {
+				return Collections.emptyList();
 			}
-			ActionTermStorage.getInstance().add(new ActionTerm(name, type, value));
-		}
-
-		//アニメーションのパース
-		for (XMLElement e : root.getElement("animation")) {
-			String name = e.getAttributes().get("name").getValue();
-			int w = e.getAttributes().get("w").getIntValue();
-			int h = e.getAttributes().get("h").getIntValue();
-			BufferedImage[] images = new SpriteSheet(e.getAttributes().get("spriteSheet").getValue()).rows(0, w, h).images();
-			float mg = e.getAttributes().get("mg").getFloatValue();
-			images = ImageEditor.resizeAll(images, mg * GameOption.getInstance().getDrawSize());
-			FrameTimeCounter tc = new FrameTimeCounter(Arrays.stream(e.getAttributes().get("tc").safeSplit(",")).mapToInt(p -> Integer.valueOf(p)).toArray());
-			Animation a = new Animation(tc, images);
-			a.setRepeat(false);
-			animationMap.put(name, a);
-		}
-
-		//サウンドのパース
-		Map<String, Sound> soundMap = new HashMap<>();
-		for (XMLElement e : root.getElement("sound")) {
-			String name = e.getAttributes().get("name").getValue();
-			Sound s = new SoundBuilder(e.getAttributes().get("file").getValue()).builde();
-			soundMap.put(name, s);
-		}
-		//素材のパース
-		for (XMLElement e : root.getElement("material")) {
-			String name = e.getAttributes().get("name").getValue();
-			int value = e.getAttributes().get("value").getIntValue();
-			MaterialStorage.getInstance().add(new Material(name, value));
-		}
-
-		//アイテムのパース
-		for (XMLElement e : root.getElement("item")) {
-			String name = e.getAttributes().get("name").getValue();
-			String desc = e.getAttributes().get("desc").getValue();
-			Item i = new Item(name, desc);
-			if (e.hasAttribute("waitTime")) {
-				i.setWaitTime(e.getAttributes().get("waitTime").getIntValue());
-			}
-			if (e.hasAttribute("sound")) {
-				i.setSound(soundMap.get(e.getAttributes().get("sound").getValue()));
-			}
-			if (e.hasAttribute("term")) {
-				for (String v : e.getAttributes().get("term").safeSplit(",")) {
-					i.addTerm(ActionTermStorage.getInstance().get(v));
+			List<Action> res = new ArrayList<>();
+			for (var v : rs) {
+				//基本情報
+				String actionID = v.get(0).get();
+				ActionType type = v.get(1).of(ActionType.class);
+				String visibleName = v.get(2).get();
+				String desc = v.get(3).get();
+				Action a = new Action(type, actionID, visibleName, desc);
+				//area
+				a.setArea(v.get(4).asInt());
+				//waitTime
+				a.setWaitTime(v.get(5).asInt());
+				//Sound
+				a.setSound(SoundStorage.getInstance().get(v.get(6).get()));
+				//sortID
+				a.setSort(v.get(7).asInt());
+				//spellTime
+				a.setSpellTime(v.get(8).asInt());
+				//atkCount
+				a.setActionCount(v.get(9).asInt());
+				//dcs
+				Set<StatusKey> dcs = new HashSet<>();
+				for (String s : v.get(10).safeSplit(",")) {
+					StatusKey sk = StatusKeyStorage.getInstance().get(s);
+					dcs.add(sk);
 				}
-			}
-			if (e.hasAttribute("slot")) {
-				ItemEqipmentSlot slot = ItemEqipmentSlotStorage.getInstance().get(e.getAttributes().get("slot").getValue());
-				i.setEqipmentSlot(slot);
-			}
-			if (e.hasAttribute("wmt")) {
-				WeaponMagicType wmt = WeaponMagicTypeStorage.getInstance().get(e.getAttributes().get("wmt").getValue());
-				i.setWeaponMagicType(wmt);
-			}
-			if (e.hasAttribute("area")) {
-				i.setArea(e.getAttributes().get("area").getIntValue());
-			}
-			if (e.hasAttribute("sort")) {
-				i.setSort(e.getAttributes().get("sort").getIntValue());
-			}
-			if (e.hasAttribute("spellTime")) {
-				i.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
-			}
-			if (e.hasAttribute("dcs")) {
-				for (String statusName : e.getAttributes().get("dcs").safeSplit(",")) {
-					StatusKey key = StatusKeyStorage.getInstance().get(statusName);
-					i.getDamageCalcStatusKey().add(key);
-				}
-			}
-			if (e.hasAttribute("value")) {
-				i.setValue(e.getAttributes().get("value").getIntValue());
-			}
-			if (e.hasAttribute("canSale")) {
-				i.setCanSale(e.getAttributes().get("canSale").getBool());
-			}
-			//ターゲットオプション
-			TargetOption targetOption = null;
-			if (e.hasAttribute("targetOption")) {
-				String[] v = e.getAttributes().get("targetOption").safeSplit(",");
-				TargetOption.SelectType selectType = TargetOption.SelectType.valueOf(v[0]);
-				TargetOption.IFF iff = TargetOption.IFF.valueOf(v[1]);
-				TargetOption.DefaultTarget defaultTarget = TargetOption.DefaultTarget.valueOf(v[2]);
-				TargetOption.SwitchTeam switchTeam = TargetOption.SwitchTeam.valueOf(v[3]);
-				TargetOption.SelfTarget selfTarget = TargetOption.SelfTarget.valueOf(v[4]);
-				TargetOption.Targeting targeting = TargetOption.Targeting.valueOf(v[5]);
-				i.setTgtOption(TargetOption.of(selectType, iff, defaultTarget, switchTeam, selfTarget, targeting));
-			}
-			//イベント
-			for (XMLElement ee : e.getElement("battleEvent")) {
-				i.addBattleEvent(parseEvent(ee));
-			}
-			for (XMLElement ee : e.getElement("fieldEvent")) {
-				i.addFieldEvent(parseEvent(ee));
-			}
-			//強化関連
-			if (e.hasElement("upgrade")) {
-				for (XMLElement ee : e.getElement("upgrade")) {
-					int order = ee.getAttributes().get("order").getIntValue();
-					int value = ee.getAttributes().get("value").getIntValue();
-					ItemUpgrade up = new ItemUpgrade(order, value);
-					Map<Material, Integer> upgradeMaterials = new HashMap<>();
-					for (XMLElement eee : ee.getElement("material")) {
-						Material m = MaterialStorage.getInstance().get(eee.getAttributes().get("name").getValue());
-						int n = 1;
-						if (eee.hasAttribute("num")) {
-							n = eee.getAttributes().get("num").getIntValue();
-						}
-						upgradeMaterials.put(m, n);
-					}
-					up.setMaterials(upgradeMaterials);
-					Map<StatusKey, Float> upgradeStatus = new HashMap<>();
-					for (XMLElement eee : ee.getElement("addStatus")) {
-						StatusKey k = StatusKeyStorage.getInstance().get(eee.getAttributes().get("tgt").getValue());
-						float v = eee.getAttributes().get("value").getFloatValue();
-						upgradeStatus.put(k, v);
-					}
-					up.setAddStatus(upgradeStatus);
-					Map<AttributeKey, Float> upgradeAttr = new HashMap<>();
-					for (XMLElement eee : ee.getElement("addAttr")) {
-						AttributeKey k = AttributeKeyStorage.getInstance().get(eee.getAttributes().get("tgt").getValue());
-						float v = eee.getAttributes().get("value").getFloatValue();
-						upgradeAttr.put(k, v);
-					}
-					up.setAddAttrin(upgradeAttr);
-					i.addUpgrade(up);
-				}
-			}
-			//攻撃回数・・・初期値１
-			if (e.hasAttribute("count")) {
-				i.setActionCount(e.getAttributes().get("count").getIntValue());
-			}
-			//装備条件・・・複数入っている場合はANDになる
-			if (e.hasElement("eqipTerm")) {
-				for (XMLElement ee : e.getElement("eqipTerm")) {
-					String type = ee.getAttributes().get("type").getValue();
-					String tgt = ee.getAttributes().get("tgt").getValue();
-					int value = ee.getAttributes().get("value").getIntValue();
-					switch (type) {
-						case "STATUS_IS":
-							i.getEqipTerm().add(ItemEqipTerm.statusIs(StatusKeyStorage.getInstance().get(tgt), value));
-							break;
-						case "STATUS_IS_OVER":
-							i.getEqipTerm().add(ItemEqipTerm.statusIsOver(StatusKeyStorage.getInstance().get(tgt), value));
-							break;
-						case "RACE_IS":
-							i.getEqipTerm().add(ItemEqipTerm.raceIs(RaceStorage.getInstance().get(tgt)));
-							break;
-						default:
-							throw new AssertionError("undefined eqipTerm name : " + type);
+				a.setDamageCalcStatusKey(dcs);
+				//TARGET_OPTION
+				TargetOption.SelectType selectType = v.get(11).of(TargetOption.SelectType.class);
+				TargetOption.IFF iff = v.get(12).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
+				TargetOption.DefaultTarget defaultTarget = v.get(13).of(TargetOption.DefaultTarget.class);
+				TargetOption.SwitchTeam switchTeam = v.get(14).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
+				TargetOption.Targeting targeting = v.get(15).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
+				TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
+				a.setTargetOption(targetOption);
+
+				//ACTION_TERM
+				KResultSet akr = DBConnection.getInstance().execDirect("select"
+						+ " t.visibleName, "
+						+ " t.termType, "
+						+ "t.val "
+						+ "from Action_ActionTerm a, ActionTerm t "
+						+ "where a.ActionTermID = t.ActionTermID "
+						+ "and a.ActionID = '" + actionID + "';");
+				if (!akr.isEmpty()) {
+					for (var vv : akr) {
+						String name = vv.get(0).get();
+						TermType tt = vv.get(1).of(TermType.class);
+						String val = vv.get(2).get();
+						a.addTerm(new ActionTerm(name, tt, val));
 					}
 				}
-			} else {
-				i.getEqipTerm().add(ItemEqipTerm.ANY);
+
+				//ACTION_EVENT
+				ActionEventStorage.ActionEvents events = ActionEventStorage.getInstance().getActionEvents(a);
+				a.addBattleEvent(events.battle);
+				a.addFieldEvent(events.field);
+
+				res.add(a);
 			}
-			//解体
-			if (e.hasElement("disassembly")) {
-				Map<Material, Integer> dissase = new HashMap<>();
-				for (XMLElement eee : e.getElement("disassembly").get(0).getElement("material")) {
-					Material m = MaterialStorage.getInstance().get(eee.getAttributes().get("name").getValue());
-					int n = 1;
-					if (eee.hasAttribute("num")) {
-						n = eee.getAttributes().get("num").getIntValue();
-					}
-					dissase.put(m, n);
-				}
-				i.setDisasseMaterials(dissase);
-			}
-			//アイテム装備効果（ステータス）
-			if (i.isEqipItem()) {
-				StatusValueSet s = new StatusValueSet();
-				s.forEach(p -> p.set(0));
-				s.forEach(p -> p.setMax(9999));
-				s.forEach(p -> p.setMin(-9999));
-				for (XMLElement ee : e.getElement("eqStatus")) {
-					String tgt = ee.getAttributes().get("tgt").getValue();
-					float value = ee.getAttributes().get("value").getFloatValue();
-					s.get(tgt).set(value);//後勝ち
-				}
-				i.setEqStatus(s);
-			}
-			//アイテム装備効果（耐性）
-			if (i.isEqipItem()) {
-				AttributeValueSet a = new AttributeValueSet();
-				a.forEach(p -> p.set(0));
-				for (XMLElement ee : e.getElement("eqAttr")) {
-					String tgt = ee.getAttributes().get("tgt").getValue();
-					float value = ee.getAttributes().get("value").getFloatValue();
-					a.get(tgt).add(value);
-				}
-				i.setEqAttr(a);
-			}
-			ItemStorage.getInstance().add(i);
-		}
-		GameLog.print("item list -----------");
-		GameLog.print(ItemStorage.getInstance());
-		//攻撃のパース
-		ActionType actionType = ActionType.ATTACK;
-		for (XMLElement e : root.getElement("attack")) {
-			String name = e.getAttributes().get("name").getValue();
-			String desc = e.getAttributes().get("desc").getValue();
-			CmdAction a = new CmdAction(actionType, name, desc);
-			if (e.hasAttribute("waitTime")) {
-				a.setWaitTime(e.getAttributes().get("waitTime").getIntValue());
-			}
-			if (e.hasAttribute("sound")) {
-				a.setSound(soundMap.get(e.getAttributes().get("sound").getValue()));
-			}
-			if (e.hasAttribute("term")) {
-				for (String v : e.getAttributes().get("term").safeSplit(",")) {
-					a.addTerm(ActionTermStorage.getInstance().get(v));
-				}
-			}
-			if (e.hasAttribute("area")) {
-				a.setArea(e.getAttributes().get("area").getIntValue());
-			}
-			if (e.hasAttribute("sort")) {
-				a.setSort(e.getAttributes().get("sort").getIntValue());
-			}
-			if (e.hasAttribute("spellTime")) {
-				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
-			}
-			//ターゲットオプション
-			TargetOption targetOption = null;
-			if (e.hasAttribute("targetOption")) {
-				String[] v = e.getAttributes().get("targetOption").safeSplit(",");
-				TargetOption.SelectType selectType = TargetOption.SelectType.valueOf(v[0]);
-				TargetOption.IFF iff = TargetOption.IFF.valueOf(v[1]);
-				TargetOption.DefaultTarget defaultTarget = TargetOption.DefaultTarget.valueOf(v[2]);
-				TargetOption.SwitchTeam switchTeam = TargetOption.SwitchTeam.valueOf(v[3]);
-				TargetOption.SelfTarget selfTarget = TargetOption.SelfTarget.valueOf(v[4]);
-				TargetOption.Targeting targeting = TargetOption.Targeting.valueOf(v[5]);
-				a.setTgtOption(TargetOption.of(selectType, iff, defaultTarget, switchTeam, selfTarget, targeting));
-			}
-			if (a.getTargetOption() == null) {
-				throw new IllegalXMLFormatException("attack, but target option is null : " + a);
-			}
-			//イベント
-			for (XMLElement ee : e.getElement("battleEvent")) {
-				System.out.println("kinugasa.game.system.ActionStorage.readFromXML()" + ee);
-				a.addBattleEvent(parseEvent(ee));
-			}
-			for (XMLElement ee : e.getElement("fieldEvent")) {
-				a.addFieldEvent(parseEvent(ee));
-			}
-			getInstance().add(a);
+			return res;
 
 		}
+		return Collections.emptyList();
+	}
 
-		//魔法のパース
-		actionType = ActionType.MAGIC;
-		for (XMLElement e : root.getElement("magic")) {
-			String name = e.getAttributes().get("name").getValue();
-			String desc = e.getAttributes().get("desc").getValue();
-			CmdAction a = new CmdAction(actionType, name, desc);
-			if (e.hasAttribute("waitTime")) {
-				a.setWaitTime(e.getAttributes().get("waitTime").getIntValue());
-			}
-			if (e.hasAttribute("sound")) {
-				a.setSound(soundMap.get(e.getAttributes().get("sound").getValue()));
-			}
-			if (e.hasAttribute("term")) {
-				for (String v : e.getAttributes().get("term").safeSplit(",")) {
-					a.addTerm(ActionTermStorage.getInstance().get(v));
-				}
-			}
-			if (e.hasAttribute("area")) {
-				a.setArea(e.getAttributes().get("area").getIntValue());
-			}
-			if (e.hasAttribute("sort")) {
-				a.setSort(e.getAttributes().get("sort").getIntValue());
-			}
-			if (e.hasAttribute("spellTime")) {
-				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
-			}
-			//ターゲットオプション
-			TargetOption targetOption = null;
-			if (e.hasAttribute("targetOption")) {
-				String[] v = e.getAttributes().get("targetOption").safeSplit(",");
-				TargetOption.SelectType selectType = TargetOption.SelectType.valueOf(v[0]);
-				TargetOption.IFF iff = TargetOption.IFF.valueOf(v[1]);
-				TargetOption.DefaultTarget defaultTarget = TargetOption.DefaultTarget.valueOf(v[2]);
-				TargetOption.SwitchTeam switchTeam = TargetOption.SwitchTeam.valueOf(v[3]);
-				TargetOption.SelfTarget selfTarget = TargetOption.SelfTarget.valueOf(v[4]);
-				TargetOption.Targeting targeting = TargetOption.Targeting.valueOf(v[5]);
-				a.setTgtOption(TargetOption.of(selectType, iff, defaultTarget, switchTeam, selfTarget, targeting));
-			}
-			if (a.getTargetOption() == null) {
-				throw new IllegalXMLFormatException("magic, but target option is null : " + a);
-			}
-			//イベント
-			for (XMLElement ee : e.getElement("battleEvent")) {
-				System.out.println("kinugasa.game.system.ActionStorage.readFromXML()" + ee);
-				a.addBattleEvent(parseEvent(ee));
-			}
-			for (XMLElement ee : e.getElement("fieldEvent")) {
-				a.addFieldEvent(parseEvent(ee));
-			}
-			getInstance().add(a);
+	@Override
+	protected int count() throws KSQLException {
+		if (DBConnection.getInstance().isUsing()) {
+			return DBConnection.getInstance().execDirect("select count(*) from action;").cell(0, 0).asInt();
 		}
-
-		//その他行動のパース(ESCAPEイベント
-		actionType = ActionType.OTHER;
-		for (XMLElement e : root.getElement("other")) {
-			String name = e.getAttributes().get("name").getValue();
-			String desc = e.getAttributes().get("desc").getValue();
-			CmdAction a = new CmdAction(actionType, name, desc);
-			if (e.hasAttribute("waitTime")) {
-				a.setWaitTime(e.getAttributes().get("waitTime").getIntValue());
-			}
-			if (e.hasAttribute("sound")) {
-				a.setSound(soundMap.get(e.getAttributes().get("sound").getValue()));
-			}
-			if (e.hasAttribute("term")) {
-				for (String v : e.getAttributes().get("term").safeSplit(",")) {
-					a.addTerm(ActionTermStorage.getInstance().get(v));
-				}
-			}
-			if (e.hasAttribute("area")) {
-				a.setArea(e.getAttributes().get("area").getIntValue());
-			}
-			if (e.hasAttribute("sort")) {
-				a.setSort(e.getAttributes().get("sort").getIntValue());
-			}
-			if (e.hasAttribute("spellTime")) {
-				a.setSpellTime(e.getAttributes().get("spellTime").getIntValue());
-			}
-			//イベント
-			for (XMLElement ee : e.getElement("battleEvent")) {
-				a.addBattleEvent(parseEvent(ee));
-			}
-			for (XMLElement ee : e.getElement("fieldEvent")) {
-				a.addFieldEvent(parseEvent(ee));
-			}
-			getInstance().add(a);
-		}
-
-		GameLog.print("action list -----------");
-		GameLog.print(this);
-
-		animationMap.clear();
-		file.dispose();
-
-		for (CmdAction a : this) {
-			//バトルイベントが入っているのにターゲットオプションが入っていないアクションがあるか点検
-			//ある場合例外
-			if (a.isBattleUse() && a.getTargetOption() == null && a.getType() != ActionType.OTHER) {
-				throw new IllegalXMLFormatException("this action is can use in battle, but target option is null : " + a);
-			}
-			if (a.getType() != ActionType.ATTACK) {
-				continue;
-			}
-			//イベントが入っていない場合エラー
-			if (a.getBattleEvent().isEmpty() && a.getFieldEvent().isEmpty()) {
-				throw new IllegalXMLFormatException("this action is not have event : " + a);
-			}
-			//アクションのvalueが0の場合警告
-			if (a.getBattleEvent().stream().allMatch(p -> p.getValue() == 0)) {
-				GameLog.print("!> action event(B) value is zero : " + a + " / " + a.getBattleEvent());
-			}
-			if (a.getFieldEvent().stream().allMatch(p -> p.getValue() == 0)) {
-				GameLog.print("!> action event(F) value is zero : " + a + " / " + a.getFieldEvent());
-			}
-			//ターゲティングがDISABLEでランダムイベントを持っていないアクションはエラー
-			if (a.getTargetOption().getTargeting() == TargetOption.Targeting.DISABLE) {
-				if (a.getBattleEvent().stream().allMatch(p -> !p.getTargetType().toString().contains("RANDOM"))) {
-					throw new IllegalXMLFormatException("this action(B) is targeting=DISABLE, but not have random event : " + a);
-				}
-				if (a.getFieldEvent().stream().allMatch(p -> !p.getTargetType().toString().contains("RANDOM"))) {
-					throw new IllegalXMLFormatException("this action(F) is targeting=DISABLE, but not have random event : " + a);
-				}
-			}
-		}
-
+		return 0;
 	}
 
 }

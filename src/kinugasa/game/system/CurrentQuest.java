@@ -23,35 +23,18 @@
  */
 package kinugasa.game.system;
 
-import java.util.List;
+import kinugasa.resource.Storage;
 
 /**
  *
- * @vesion 1.0.0 - May 23, 2023_12:29:16 PM<br>
+ * @vesion 1.0.0 - May 28, 2023_1:31:44 PM<br>
  * @author Shinacho<br>
  */
-public abstract class UserDefinedCmdAction extends CmdAction {
+public class CurrentQuest extends Storage<Quest> {
 
-	public UserDefinedCmdAction(ActionType t, String name, String desc) {
-		super(t, name, desc);
+	private static final CurrentQuest INSTANCE = new CurrentQuest();
+
+	public static CurrentQuest getInstance() {
+		return INSTANCE;
 	}
-
-	public final void ActionStorageAddThis() {
-		ActionStorage.getInstance().add(this);
-	}
-
-	@Override
-	public abstract ActionResult exec(ActionTarget tgt);
-
-	@Override
-	public abstract TargetOption getTargetOption();
-
-	@Override
-	public abstract int getArea();
-
-	@Override
-	public abstract int getSpellTime();
-
-	@Override
-	public abstract List<ActionTerm> getTerms();
 }

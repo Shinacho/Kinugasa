@@ -66,11 +66,15 @@ public class Status implements Nameable {
 	//装備品
 	private final HashMap<ItemEqipmentSlot, Item> eqipment = new HashMap<>();
 	//取れる行動
-	private List<CmdAction> actions = new ArrayList<>();
+	private List<Action> actions = new ArrayList<>();
 	//前衛・後衛
 	private PartyLocation partyLocation = PartyLocation.FRONT;
 	//生存状態
 	private boolean exists = true;
+	//実行中状態異常
+	private Set<ConditionEffect> execEffect = new HashSet<>();
+	//行動できない理由
+	private Condition moveStopDesc;
 
 	public Status(String name, Race race) {
 		this.name = name;
@@ -123,16 +127,16 @@ public class Status implements Nameable {
 	}
 
 	public boolean hasCondition(String name) {
-		return conditionTimes.containsKey(ConditionValueStorage.getInstance().get(name).getKey());
+		return conditionTimes.containsKey(ConditionStorage.getInstance().get(name).getKey());
 	}
 
 	public boolean hasConditions(boolean all, List<String> name) {
 		boolean result = all;
 		for (String n : name) {
 			if (all) {
-				result &= conditionTimes.containsKey(ConditionValueStorage.getInstance().get(n).getKey());
+				result &= conditionTimes.containsKey(ConditionStorage.getInstance().get(n).getKey());
 			} else {
-				result |= conditionTimes.containsKey(ConditionValueStorage.getInstance().get(n).getKey());
+				result |= conditionTimes.containsKey(ConditionStorage.getInstance().get(n).getKey());
 				if (result) {
 					return true;
 				}
@@ -155,7 +159,7 @@ public class Status implements Nameable {
 		return i.canEqip(this) && eqipment.keySet().contains(i.getEqipmentSlot());
 	}
 
-	public List<CmdAction> getActions(ActionType type) {
+	public List<Action> getActions(ActionType type) {
 		return actions.stream().filter(p -> p.getType() == type).collect(Collectors.toList());
 	}
 
@@ -175,7 +179,7 @@ public class Status implements Nameable {
 	}
 
 	public boolean hasAction(ParameterType batpt) {
-		for (CmdAction ba : actions) {
+		for (Action ba : actions) {
 			for (ActionEvent e : ba.getBattleEvent()) {
 				if (e.getParameterType() == batpt) {
 					return true;
@@ -185,7 +189,7 @@ public class Status implements Nameable {
 		return false;
 	}
 
-	public List<CmdAction> getActions() {
+	public List<Action> getActions() {
 		return actions;
 	}
 
@@ -239,7 +243,7 @@ public class Status implements Nameable {
 
 	public void updateAction(boolean itemAdd) {
 		actions.clear();
-		for (CmdAction a : ActionStorage.getInstance()) {
+		for (Action a : ActionStorage.getInstance()) {
 			if (a.getType() == ActionType.ITEM) {
 				continue;
 			}
@@ -267,7 +271,7 @@ public class Status implements Nameable {
 
 //		if (GameSystem.isDebugMode()) {
 //			kinugasa.game.GameLog.print("STATUS [" + getName() + "]s action update : ");
-//			for (CmdAction a : actions) {
+//			for (Action a : actions) {
 //				kinugasa.game.GameLog.print(" " + a);
 //			}
 //			kinugasa.game.GameLog.print("---");
@@ -322,7 +326,7 @@ public class Status implements Nameable {
 			if (i == null) {
 				continue;
 			}
-			if (i.getWeaponMagicType() == WeaponMagicTypeStorage.getInstance().get(typeName)) {
+			if (i.getWeaponMagicType() == WeaponTypeStorage.getInstance().get(typeName)) {
 				return true;
 			}
 		}
@@ -331,8 +335,8 @@ public class Status implements Nameable {
 
 	//混乱の状態異常が付与されているかを検査します
 	public boolean isConfu() {
-		for (ConditionValue v : condition) {
-			for (EffectMaster e : v.getEffects()) {
+		for (Condition v : condition) {
+			for (ConditionEffect e : v.getEffects()) {
 				if (e.getTargetType() == EffectTargetType.CONFU) {
 					return true;
 				}
@@ -341,12 +345,7 @@ public class Status implements Nameable {
 		return false;
 	}
 
-	private EffectMaster moveStopDesc;
-
-	public EffectMaster moveStopDesc() {
-		if (moveStopDesc == null) {
-			return null;
-		}
+	public Condition moveStopDesc() {
 		return moveStopDesc;
 	}
 
@@ -356,11 +355,11 @@ public class Status implements Nameable {
 			assert conditionTimes.isEmpty() : "Condition and effectTimes are out of sync.";
 			return true;
 		}
-		for (ConditionValue v : condition) {
-			for (EffectMaster e : v.getEffects()) {
+		for (Condition v : condition) {
+			for (ConditionEffect e : v.getEffects()) {
 				if (e.getTargetType() == EffectTargetType.STOP) {
 					if (Random.percent(e.getP())) {
-						moveStopDesc = e;
+						moveStopDesc = v;
 						return false;
 					}
 				}
@@ -372,7 +371,7 @@ public class Status implements Nameable {
 
 	//状態異常を追加します
 	public void addCondition(String name) {
-		ConditionValue v = ConditionValueStorage.getInstance().get(name);
+		Condition v = ConditionStorage.getInstance().get(name);
 		// すでに発生している効果の場合、何もしない
 		if (condition.contains(name)) {
 			assert conditionTimes.containsKey(v.getKey()) : "Condition and effectTimes are out of sync.";
@@ -389,15 +388,24 @@ public class Status implements Nameable {
 		}
 
 		//優先度計算
-		//優先度が同一の状態異常がある場合、後勝ちで削除
+		//新しい状態異常より優先度が低い状態異常を破棄
 		int pri = v.getKey().getPriority();
+		List<String> removeList = new ArrayList<>();
+		for (Condition cv : condition) {
+			if (cv.getKey().getPriority() < pri) {
+				removeList.add(cv.getKey().getName());
+			}
+		}
+		removeList.forEach(p -> removeCondition(p));
+
+		//優先度が同一の状態異常がある場合、後勝ちで削除
 		if (!condition.asList().stream().filter(s -> s.getKey().getPriority() == pri).collect(Collectors.toList()).isEmpty()) {
 			condition.remove(name);
 			conditionTimes.remove(new ConditionKey(name, "", 0));
 		}
-		List<EffectMaster> effects = v.getEffects();
+		List<ConditionEffect> effects = v.getEffects();
 		//タイム算出
-		List<EffectMaster> continueEffect = effects.stream().filter(a -> a.getContinueType() == EffectContinueType.CONTINUE).collect(Collectors.toList());
+		List<ConditionEffect> continueEffect = effects.stream().filter(a -> a.getContinueType() == EffectContinueType.CONTINUE).collect(Collectors.toList());
 		TimeCounter tc = continueEffect.isEmpty() ? TimeCounter.oneCounter() : continueEffect.get(0).createTimeCounter();
 		//発生中の効果とエフェクト効果時間に追加
 		condition.add(v);
@@ -409,21 +417,23 @@ public class Status implements Nameable {
 		addCondition(k.getName());
 	}
 
-	//エフェクトの効果時間を引く
-	//終了したエフェクトは、エフェクトタイムとコンディションから取り除く。
-	private Set<EffectMaster> execEffect = new HashSet<>();
-
 	@NoLoopCall
 	public void update() {
 		//状態異常による効果の実行
-		List<EffectMaster> addList = new ArrayList<>();
+		List<ConditionEffect> addList = new ArrayList<>();
 		for (int i = 0; i < condition.size(); i++) {
-			ConditionValue v = condition.asList().get(i);
-			for (EffectMaster e : v.getEffects()) {
+			Condition v = condition.asList().get(i);
+			for (ConditionEffect e : v.getEffects()) {
 				if (e.getTargetType() == EffectTargetType.ADD_CONDITION) {
-					e.exec(this);
-					if (e.getContinueType() == EffectContinueType.ONECE) {
-						addList.add(e);
+					if (Random.percent(e.getP()
+							* (getEffectedAttrIn().contains(e.getTargetName())
+							? getEffectedAttrIn().get(e.getTargetName()).getValue()
+							: 1))) {
+
+						e.exec(this);
+						if (e.getContinueType() == EffectContinueType.ONECE) {
+							addList.add(e);
+						}
 					}
 				}
 			}
@@ -440,8 +450,8 @@ public class Status implements Nameable {
 			conditionTimes.remove(k);
 			condition.remove(k.getName());
 			//効果が終了したエフェクトのONCE実行済みフラグを除去する
-			ConditionValue v = ConditionValueStorage.getInstance().get(k.getName());
-			for (EffectMaster e : v.getEffects()) {
+			Condition v = ConditionStorage.getInstance().get(k.getName());
+			for (ConditionEffect e : v.getEffects()) {
 				if (execEffect.contains(e)) {
 					execEffect.remove(e);
 				}
@@ -458,15 +468,15 @@ public class Status implements Nameable {
 
 	// 状態異常を強制的に取り除きます
 	public void removeCondition(String name) {
-		ConditionValue v = ConditionValueStorage.getInstance().get(name);
+		Condition v = ConditionStorage.getInstance().get(name);
 		condition.remove(v);
 		conditionTimes.remove(v.getKey());
 	}
 
 	// 状態異常の効果時間を上書きします。状態異常が付与されていない場合はセットします。
 	public void setConditionTime(String name, int time) {
-		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
-		ConditionValue v = ConditionValueStorage.getInstance().get(name);
+		ConditionKey key = ConditionStorage.getInstance().get(name).getKey();
+		Condition v = ConditionStorage.getInstance().get(name);
 		if (condition.contains(v)) {
 			removeCondition(name);
 		}
@@ -476,8 +486,8 @@ public class Status implements Nameable {
 
 	// 状態異常の効果時間を追加します。状態異常が付与されていない場合はセットします。
 	public void addConditionTime(String name, int time) {
-		ConditionKey key = ConditionValueStorage.getInstance().get(name).getKey();
-		ConditionValue v = ConditionValueStorage.getInstance().get(name);
+		ConditionKey key = ConditionStorage.getInstance().get(name).getKey();
+		Condition v = ConditionStorage.getInstance().get(name);
 		if (condition.contains(v)) {
 			removeCondition(name);
 		}
@@ -492,8 +502,8 @@ public class Status implements Nameable {
 	public StatusValueSet getEffectedStatus() {
 		StatusValueSet r = status.clone();
 
-		for (ConditionValue v : condition) {
-			for (EffectMaster e : v.getEffects()) {
+		for (Condition v : condition) {
+			for (ConditionEffect e : v.getEffects()) {
 				if (e.getTargetType() == EffectTargetType.STATUS) {
 					if (r.contains(e.getTargetName())) {
 						StatusValue tgtVal = r.get(e.getTargetName());
@@ -536,8 +546,8 @@ public class Status implements Nameable {
 	public AttributeValueSet getEffectedAttrIn() {
 		AttributeValueSet r = attrIn.clone();
 
-		for (ConditionValue v : condition) {
-			for (EffectMaster e : v.getEffects()) {
+		for (Condition v : condition) {
+			for (ConditionEffect e : v.getEffects()) {
 				if (r.contains(e.getTargetName())) {
 					AttributeValue tgtVal = r.get(e.getTargetName());
 					if (Random.percent(e.getP())) {

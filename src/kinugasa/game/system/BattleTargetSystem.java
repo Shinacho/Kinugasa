@@ -65,7 +65,7 @@ public class BattleTargetSystem implements Drawable {
 	}
 
 	private BattleCharacter currentUser;
-	private CmdAction currentBA;
+	private Action currentBA;
 	private boolean selfTarget = false;
 	//
 	private BattleActionAreaSprite currentArea;
@@ -157,7 +157,7 @@ public class BattleTargetSystem implements Drawable {
 
 	//カレントを設定せずに、ターゲットを分析する。
 	//空のターゲットインスタンスを返す場合がある。
-	static ActionTarget instantTarget(BattleCharacter user, CmdAction a) {
+	static ActionTarget instantTarget(BattleCharacter user, Action a) {
 //		if (GameSystem.isDebugMode()) {
 //			GameLog.print("TS intant Target start : " + a);
 //		}
@@ -376,7 +376,7 @@ public class BattleTargetSystem implements Drawable {
 		return inAreaTeam;
 	}
 
-	void setCurrent(BattleCharacter pc, CmdAction a) {
+	void setCurrent(BattleCharacter pc, Action a) {
 		selectedIdx = 0;
 		currentUser = pc;
 		currentBA = a;
