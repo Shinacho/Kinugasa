@@ -30,8 +30,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
@@ -85,6 +83,12 @@ public abstract class GameManager {
 	private Runnable painter;
 
 	protected GameManager(GameOption option) throws IllegalStateException {
+		//DBドライバロード
+		try {
+			org.h2.Driver.load();
+		} catch (Throwable a) {
+			a.printStackTrace();
+		}
 		this.option = option;
 		updateOption();
 	}
@@ -120,7 +124,7 @@ public abstract class GameManager {
 			} catch (IOException | SecurityException ex) {
 				GameLog.print(ex);
 			}
-			GameLog.print("this is " + option.getLogPath());
+			GameLog.print("this is " + option.getLogPath() + option.getLogName());
 		}
 		CMDargs.init(option.getArgs());
 		I18N.init(option.getLang());
@@ -252,6 +256,7 @@ public abstract class GameManager {
 
 	@OneceTime
 	public final void gameStart() throws IllegalStateException {
+		GameLog.print("GAME START");
 		if (option == null) {
 			throw new IllegalStateException("game option is null");
 		}

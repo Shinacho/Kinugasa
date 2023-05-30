@@ -24,12 +24,12 @@
 package kinugasa.resource.db;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,12 +42,10 @@ import kinugasa.game.GameLog;
 import kinugasa.game.NoNull;
 import kinugasa.game.Nullable;
 import kinugasa.game.system.GameSystem;
-import kinugasa.resource.DuplicateNameException;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Storage;
 import kinugasa.util.Random;
-import kinugasa.util.StopWatch;
 
 /**
  * メモリ上になければDBを読みに行くStorageの拡張です。 DB呼び出し部分はサブクラスで定義する必要がありますが、それ以外の処理は自動で行われます。
@@ -90,15 +88,20 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 
 	@Override
 	public final List<T> asList() {
-		List<T> list = new ArrayList<>(getDirect().values());
+		LinkedHashMap<String, T> l = new LinkedHashMap<>();
+		for (Map.Entry<String, T> e : getDirect().entrySet()) {
+			l.put(e.getKey(), e.getValue());
+		}
 		if (DBConnection.getInstance().isUsing()) {
 			try {
-				list.addAll(selectAll());
+				for (var t : selectAll()) {
+					l.put(name, t);
+				}
 			} catch (KSQLException e) {
 				GameLog.print(e);
 			}
 		}
-		return list;
+		return l.values().stream().collect(Collectors.toList());
 	}
 
 	@Override

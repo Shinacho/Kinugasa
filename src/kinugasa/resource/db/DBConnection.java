@@ -40,7 +40,6 @@ import kinugasa.util.StopWatch;
  */
 public class DBConnection {
 
-	private static final String JDBC_DRIVER = "org.h2.Driver";
 	private static final String URL = "jdbc:h2:";
 	private static final DBConnection INSTANCE = new DBConnection();
 
@@ -60,11 +59,10 @@ public class DBConnection {
 
 	public void open(String dataFileName, String user, String password) throws KSQLException {
 		try {
-			Class.forName(JDBC_DRIVER);
 			connection = DriverManager.getConnection(URL + dataFileName, user, password);
 			statement = connection.createStatement();
 			GameLog.print("DBC open " + URL + dataFileName + "-----------------------------------------");
-		} catch (ClassNotFoundException | SQLException ex) {
+		} catch (SQLException ex) {
 			GameLog.print(ex);
 			throw new KSQLException(ex);
 		}

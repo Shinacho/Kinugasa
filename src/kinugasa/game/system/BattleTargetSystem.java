@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kinugasa.game.GameLog;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LoopCall;
 import kinugasa.game.OneceTime;

@@ -24,6 +24,8 @@
 package kinugasa.game.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.resource.sound.*;
@@ -44,6 +46,7 @@ public class MusicRoom extends ScrollSelectableMessageWindow {
 		setLine1select(false);
 
 		list.addAll(SoundStorage.getInstance().filter(p -> p.getType() == SoundType.BGM));
+		Collections.sort(list, (Sound o1, Sound o2) -> o1.getName().compareTo(o2.getName()));
 		List<Text> t = list
 				.stream()
 				.map(p -> ((CachedSound) p).getBuilder().getVisibleName())
@@ -54,6 +57,7 @@ public class MusicRoom extends ScrollSelectableMessageWindow {
 	}
 
 	public void play() {
+		list.forEach(p -> p.dispose());
 		SoundStorage.getInstance().dispose();
 		//play
 		list.get(getSelectedIdx() - 1).load().stopAndPlay();
@@ -61,6 +65,10 @@ public class MusicRoom extends ScrollSelectableMessageWindow {
 
 	public Sound getSelectedSound() {
 		return list.get(getSelectedIdx() - 1);
+	}
+
+	public CachedSound getSelectedCachedSound() {
+		return (CachedSound) list.get(getSelectedIdx() - 1);
 	}
 
 }
