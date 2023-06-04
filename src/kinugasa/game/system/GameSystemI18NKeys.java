@@ -63,6 +63,7 @@ public class GameSystemI18NKeys {
 	public static String Xを外した = "Xを外した";
 	public static String Xを装備した = "Xを装備した";
 	public static String Xは装備できない = "Xは装備できない";
+	public static String 持ち物が多すぎてXを外せない = "持ち物が多すぎてXを外せない";
 	public static String 価値 = "価値";
 	public static String 装備スロット = "装備スロット";
 	public static String 武器種別 = "武器種別";
@@ -180,4 +181,5 @@ public class GameSystemI18NKeys {
 	public static String 標的選択 = "標的選択";
 	public static String 術者 = "術者";
 	public static String 対象 = "対象";
+	public static String 独自効果 = "独自効果";
 }

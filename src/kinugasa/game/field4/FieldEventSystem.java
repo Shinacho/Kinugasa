@@ -164,12 +164,7 @@ public class FieldEventSystem implements Drawable {
 	}
 
 	public Item getItem() {
-		if (item == null) {
-			return null;
-		}
-		Item r = item.clone();
-		item = null;
-		return r;
+		return item == null ? null : item.clone();
 	}
 
 	//誰が持つ？ウインドウの表示
@@ -181,7 +176,7 @@ public class FieldEventSystem implements Drawable {
 		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
 		List<Text> options = new ArrayList<>();
 		for (PlayerCharacter pc : GameSystem.getInstance().getParty()) {
-			options.add(new Text(pc.getName() + " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().sizeAt() + "")));
+			options.add(new Text(pc.getName() + " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().remainingSize() + "")));
 		}
 		options.add(new Text(I18N.get(GameSystemI18NKeys.諦める)));
 

@@ -26,6 +26,8 @@ package kinugasa.resource.sound;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.BooleanControl;
@@ -239,6 +241,22 @@ public class CachedSound implements Sound {
 			}
 			if (lp != null) {
 				clip.setLoopPoints(lp.getTo(), lp.getFrom());
+			} else {
+				//lp null
+				CachedSound s = this;
+				new Thread(() -> {
+					while (true) {
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException ex) {
+							Logger.getLogger(CachedSound.class.getName()).log(Level.SEVERE, null, ex);
+						}
+						if (s.clip.getFramePosition() >= s.clip.getFrameLength() || !s.playing) {
+							s.dispose();
+							break;
+						}
+					}
+				}, getFileName() + "_DISPOSER").start();
 			}
 		} catch (Exception ex) {
 //			throw new SoundStreamException(ex);

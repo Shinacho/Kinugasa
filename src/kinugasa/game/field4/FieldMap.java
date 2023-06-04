@@ -524,7 +524,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			if (root.hasElement("bgm")) {
 				XMLElement e = root.getElement("bgm").get(0);
 				BGMMode mode = BGMMode.valueOf(e.getAttributes().get("mode").getValue());
-				String mapName = e.getAttributes().get("mapName").getValue();
 				String soundName = e.getAttributes().get("soundName").getValue();
 				bgm = SoundStorage.getInstance().get(soundName);
 				switch (mode) {

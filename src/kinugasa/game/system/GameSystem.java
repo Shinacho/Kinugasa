@@ -136,9 +136,13 @@ public class GameSystem {
 	public MaterialBag getMaterialBag() {
 		return materialBag;
 	}
-	
-	public void save(int dataNO) throws GameSystemException{
+
+	public void save(int dataNO) throws GameSystemException {
 		//TODO:
+	}
+
+	public Counts getCountSystem() {
+		return Counts.getInstance();
 	}
 
 }

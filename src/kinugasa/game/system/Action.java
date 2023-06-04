@@ -377,7 +377,11 @@ public class Action implements Nameable, Comparable<Action> {
 			}
 			List<List<ActionResultType>> result = new ArrayList<>();
 			for (ActionEvent e : fieldEvent) {
-				for (int i = 0; i < actionCount; i++) {
+				int count = actionCount;
+				if (tgt.getUser().getStatus().getEqipment().get(BattleConfig.weaponSlotName) != null) {
+					count *= tgt.getUser().getStatus().getEqipment().get(BattleConfig.weaponSlotName).getActionCount();
+				}
+				for (int i = 0; i < count; i++) {
 					ActionEventResult r = e.exec(tgt);
 					result.add(r.getResultTypePerTgt());
 				}
@@ -395,7 +399,11 @@ public class Action implements Nameable, Comparable<Action> {
 		List<List<ActionResultType>> result = new ArrayList<>();
 		List<AnimationSprite> anime = new ArrayList<>();
 		for (ActionEvent e : battleEvent) {
-			for (int i = 0; i < actionCount; i++) {
+			int count = actionCount;
+			if (tgt.getUser().getStatus().getEqipment().get(BattleConfig.weaponSlotName) != null) {
+				count *= tgt.getUser().getStatus().getEqipment().get(BattleConfig.weaponSlotName).getActionCount();
+			}
+			for (int i = 0; i < count; i++) {
 				ActionEventResult r = e.exec(tgt);
 				result.add(r.getResultTypePerTgt());
 				anime.addAll(r.getAnimation());

@@ -31,7 +31,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import kinugasa.resource.db.*;
+import kinugasa.resource.db.DBConnection;
+import kinugasa.resource.db.DBValue;
+import kinugasa.resource.db.KResultSet;
+import kinugasa.resource.db.KSQLException;
 import kinugasa.resource.sound.SoundStorage;
 
 /**
@@ -471,5 +474,10 @@ public class ItemStorage extends DBStorage<Item> {
 		}
 		return 0;
 	}
+
+	/**
+	 * バッグに分類されるアイテムを登録する。 キー：アイテムのID：value：この装備で追加されるアイテム数
+	 */
+	public static Map<String, Integer> bagItems = new HashMap<>();
 
 }

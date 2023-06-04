@@ -656,4 +656,15 @@ public class Status implements Nameable {
 		return result;
 	}
 
+	public void updateItemBagSize() {
+		int n = getRace().getItemBagSize();
+		for (Map.Entry<String, Integer> m : ItemStorage.bagItems.entrySet()) {
+			if (isEqip(m.getKey())) {
+				n += m.getValue();
+				break;
+			}
+		}
+		getItemBag().setMax(n);
+	}
+
 }

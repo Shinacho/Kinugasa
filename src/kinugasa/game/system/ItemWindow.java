@@ -340,8 +340,26 @@ public class ItemWindow extends BasicSprite {
 						//装備できるアイテムかどうかで分岐
 						if (getSelectedPC().getEqipment().values().contains(i)) {
 							//すでに装備している時は外す
+							//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
+							if (ItemStorage.bagItems.containsKey(i.getName())) {
+								//もともとのサイズ
+								int itemBagDefaultMax = getSelectedPC().getRace().getItemBagSize();
+								//現在のサイズ
+								int currentSize = getSelectedPC().getItemBag().size();
+								//現在のサイズがもともともサイズより大きい場合は外せない
+								if (currentSize > itemBagDefaultMax) {
+									//外せない
+									msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getName()));
+									msg.allText();
+									group.show(msg);
+									mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+									break;
+								}
+							}
 							getSelectedPC().getEqipment().put(i.getEqipmentSlot(), null);
 							getSelectedPC().updateAction();
+							//アイテム所持数の再計算
+							getSelectedPC().updateItemBagSize();
 							msg.setText(I18N.get(GameSystemI18NKeys.Xを外した, i.getName()));
 							msg.allText();
 							group.show(msg);
@@ -350,6 +368,8 @@ public class ItemWindow extends BasicSprite {
 							//装備する
 							getSelectedPC().addEqip(i);
 							getSelectedPC().updateAction();
+							//アイテム所持数の再計算
+							getSelectedPC().updateItemBagSize();
 							msg.setText(I18N.get(GameSystemI18NKeys.Xを装備した, i.getName()));
 							msg.allText();
 							group.show(msg);
@@ -843,7 +863,7 @@ public class ItemWindow extends BasicSprite {
 				}
 				sb.append(Text.getLineSep());
 				sb.append(Text.getLineSep());
-				sb.append(I18N.get(GameSystemI18NKeys.あとX個持てる, getSelectedPC().getItemBag().sizeAt() + ""));
+				sb.append(I18N.get(GameSystemI18NKeys.あとX個持てる, getSelectedPC().getItemBag().remainingSize() + ""));
 				main.setText(sb.toString());
 				main.allText();
 				main.setVisible(true);

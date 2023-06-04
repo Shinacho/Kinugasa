@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * キャラクタ一人のアイテムを定義するクラスです。
@@ -105,7 +103,7 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 		return items.size();
 	}
 
-	public int sizeAt() {
+	public int remainingSize() {
 		return max - size();
 	}
 

@@ -379,6 +379,12 @@ public class BattleSystem implements Drawable {
 				return I18N.get(GameSystemI18NKeys.Xは装備できない, option.get(0));
 			}
 		},
+		CANT_UNEQIP {
+			@Override
+			String get(Action a, Status user, List<String> option, ActionResult res) {
+				return I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, option.get(0));
+			}
+		},
 		CANT_USE_THIS_ITEM {
 			@Override
 			String get(Action a, Status user, List<String> option, ActionResult res) {
@@ -807,6 +813,14 @@ public class BattleSystem implements Drawable {
 			pc.getStatus().getBaseAttrIn().forEach(p -> p.setMaxIfOverMax());
 			pc.getStatus().getBaseStatus().forEach(p -> p.setMaxIfOverMax());
 		}
+		//倒した敵の数カウント
+		//TODO:RACE別にする
+		int c = (int) enemies.stream().filter(p -> p.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())).count();
+		if (GameSystem.getInstance().getCountSystem().contains(Counts.KEY_倒した敵の数)) {
+			c += Counts.getInstance().get(Counts.KEY_倒した敵の数).num;
+		}
+		Counts.getInstance().put(new Counts.Value(Counts.KEY_倒した敵の数, c));
+
 		//BGMの処理
 //		if (currentBGM != null) {
 //			currentBGM.stop();
@@ -1491,12 +1505,29 @@ public class BattleSystem implements Drawable {
 					return;
 				}
 				//装備した・外した
+				//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
+				if (ItemStorage.bagItems.containsKey(i.getName())
+						&& currentCmd.getUser().getStatus().isEqip(i.getName())) {
+					//もともとのサイズ
+					int itemBagDefaultMax = currentCmd.getUser().getStatus().getRace().getItemBagSize();
+					//現在のサイズ
+					int currentSize = currentCmd.getUser().getStatus().getItemBag().size();
+					//現在のサイズがもともともサイズより大きい場合は外せない
+					if (currentSize > itemBagDefaultMax) {
+						//外せない
+						setMsg(MessageType.CANT_UNEQIP, null, null, null, List.of(i.getName()));
+						stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
+						return;
+					}
+				}
 				assert i.getEqipmentSlot() != null : "item is not eqip";
 				if (currentCmd.getUser().getStatus().isEqip(i.getName())) {
 					currentCmd.getUser().getStatus().removeEqip(i);
 				} else {
 					currentCmd.getUser().getStatus().addEqip(i);
 				}
+				//アイテム所持数の再計算
+				currentCmd.getUser().getStatus().updateItemBagSize();
 				MessageType t = currentCmd.getUser().getStatus().isEqip(i.getName())
 						? MessageType.EQIP_ITEM
 						: MessageType.UNEQIP_ITEM;
@@ -1579,6 +1610,10 @@ public class BattleSystem implements Drawable {
 					BattleMessageWindowSystem.Mode.AFTER_MOVE,
 					BattleMessageWindowSystem.InfoVisible.ON);
 		}
+	}
+
+	public Sound getCurrentBGM() {
+		return currentBGM;
 	}
 
 	public void nextTargetSelect() {

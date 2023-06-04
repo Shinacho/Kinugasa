@@ -42,18 +42,4 @@ module kinugasa {
 	exports kinugasa.resource.text;
 	exports kinugasa.resource;
 	exports kinugasa.util;	
-//	opens kinugasa.game.event.fb;
-//	opens kinugasa.game.field4;
-//	opens kinugasa.game.input;
-//	opens kinugasa.game.system;
-//	opens kinugasa.game.ui;
-//	opens kinugasa.game;
-//	opens kinugasa.graphics;
-//	opens kinugasa.object;
-//	opens kinugasa.object.movemodel;
-//	opens kinugasa.resource.db;
-//	opens kinugasa.resource.sound;
-//	opens kinugasa.resource.text;
-//	opens kinugasa.resource;
-//	opens kinugasa.util;
 }

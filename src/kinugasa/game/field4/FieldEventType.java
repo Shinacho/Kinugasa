@@ -338,7 +338,7 @@ public enum FieldEventType {
 			return UserOperationRequire.WAIT_FOR_EVENT;
 		}
 	},
-	//フラグストレージ名、フラグ名
+	//フラグ名
 	SET_FLG_DIRECT {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Shinacho.
+ * Copyright 2023 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,45 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package kinugasa.util;
+package kinugasa.game.system;
+
+import kinugasa.resource.Nameable;
+import kinugasa.resource.Storage;
+import kinugasa.resource.db.DBRecord;
+import kinugasa.resource.text.IniFile.Value;
 
 /**
- * フレームワークのバージョンと開発開始日のメモです.
- * <br>
  *
- * <br>
- *
- * @version 1.0.0 - 2013/04/20_17:18:27<br>
+ * @vesion 1.0.0 - 2023/05/31_19:57:01<br>
  * @author Shinacho<br>
  */
-public enum Versions {
+public class Counts extends Storage<Counts.Value> {
 
-	VERSION_01("0.1.000");
+	private static final Counts INSTANCE = new Counts();
 
-	/**
-	 * 私です.
-	 */
-	public static final String AUTHOR = "Shinacho";
-	/**
-	 * 私のメールアドレスです.
-	 */
-	public static final String MAIL_TO = "d0211@live.jp";
-	/**
-	 * 著作権の表記です.
-	 */
-	public static final String COPY_RIGHT = "Copyright (c) 2011- " + AUTHOR;
-
-	private final String value;
-
-	private Versions(String value) {
-		this.value = value;
+	public static Counts getInstance() {
+		return INSTANCE;
 	}
 
-	public String getValue() {
-		return value;
+	private Counts() {
 	}
 
-	public static Versions getLatest() {
-		return VERSION_01;
+	public static final String KEY_倒した敵の数 = "倒した敵の数";
+
+	@DBRecord
+	public static class Value implements Nameable {
+
+		String name;
+		int num;
+
+		public Value(String name, int num) {
+			this.name = name;
+			this.num = num;
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+
 	}
 }

@@ -407,6 +407,10 @@ public class MagicWindow extends BasicSprite {
 						if (a.isBattleUse()) {
 							for (ActionEvent e : a.getBattleEvent()) {
 								sb.append("  ");
+								if (e instanceof CustomActionEvent) {
+									sb.append(I18N.get(GameSystemI18NKeys.独自効果));
+									continue;
+								}
 								switch (e.getParameterType()) {
 									case ADD_CONDITION:
 										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを追加する, ConditionStorage.getInstance().get(e.getTgtName()).getKey().getDesc()));
@@ -485,6 +489,10 @@ public class MagicWindow extends BasicSprite {
 						if (a.isFieldUse()) {
 							for (ActionEvent e : a.getFieldEvent()) {
 								sb.append("  ");
+								if (e instanceof CustomActionEvent) {
+									sb.append(I18N.get(GameSystemI18NKeys.独自効果));
+									continue;
+								}
 								switch (e.getParameterType()) {
 									case ADD_CONDITION:
 										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを追加する, e.getTgtName()));
