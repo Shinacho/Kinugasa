@@ -84,7 +84,7 @@ public class EqipItemWindow extends PCStatusWindow {
 
 		for (Map.Entry<ItemEqipmentSlot, Item> e : s.get(pcIdx).getEqipment().entrySet()) {
 			String key = e.getKey().getName();
-			String value = e.getValue() == null ? I18N.get(GameSystemI18NKeys.なし) : e.getValue().getName();
+			String value = e.getValue() == null ? I18N.get(GameSystemI18NKeys.なし) : e.getValue().getVisibleName();
 			sb.append("  ").append(key).append(":").append(value).append(Text.getLineSep());
 		}
 

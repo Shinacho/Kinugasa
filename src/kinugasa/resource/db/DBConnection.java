@@ -29,6 +29,8 @@ import java.sql.SQLException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kinugasa.game.GameLog;
 import kinugasa.resource.text.TextFile;
 import kinugasa.util.StopWatch;
@@ -54,19 +56,24 @@ public class DBConnection {
 	}
 
 	public boolean isUsing() {
-		return statement != null;
+		return connection != null;
 	}
+	private String dataFileName, user, password;
 
 	public void open(String dataFileName, String user, String password) throws KSQLException {
+		this.dataFileName = dataFileName;
+		this.user = user;
+		this.password = password;
 		try {
+			StopWatch sw = new StopWatch().start();
 			connection = DriverManager.getConnection(URL + dataFileName, user, password);
-			statement = connection.createStatement();
-			GameLog.print("DBC open " + URL + dataFileName + "-----------------------------------------");
+			sw.stop();
+			GameLog.print("DBC open " + URL + dataFileName + "(" + sw.getTime() + "ms)-----------------------------------------");
 		} catch (SQLException ex) {
 			GameLog.print(ex);
 			throw new KSQLException(ex);
-		}
 
+		}
 	}
 
 	public List<KResultSet> execByFile(String fileName) throws KSQLException {
@@ -98,7 +105,20 @@ public class DBConnection {
 	public KResultSet execDirect(String sql) throws KSQLException {
 		StopWatch sw = new StopWatch().start();
 		try {
+			if (connection.isClosed()) {
+				StopWatch s = new StopWatch().start();
+				connection = DriverManager.getConnection(URL + dataFileName, user, password);
+				s.stop();
+				GameLog.print("DBC REopen " + URL + dataFileName + "(" + sw.getTime() + "ms)-----------------------------------------");
+			}
+			statement = connection.createStatement();
 			if (sql.trim().toLowerCase().startsWith("insert")) {
+				statement.execute(sql);
+				sw.stop();
+				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				return new KResultSet(null);
+			}
+			if (sql.trim().toLowerCase().startsWith("call")) {
 				statement.execute(sql);
 				sw.stop();
 				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
@@ -136,10 +156,16 @@ public class DBConnection {
 			sw.stop();
 			GameLog.print("DBC [ERROR] execDirect : " + sql + "(" + sw.getTime() + "ms)");
 			throw new KSQLException(ex);
+		} finally {
+			try {
+				statement.close();
+			} catch (SQLException ex) {
+			}
 		}
 	}
 
 	public void close() throws KSQLException {
+		StopWatch sw = new StopWatch().start();
 		try {
 			if (statement != null) {
 				statement.close();
@@ -149,7 +175,8 @@ public class DBConnection {
 				connection.close();
 				connection = null;
 			}
-			GameLog.print("DBC close ------------------------------------------------------");
+			sw.stop();
+			GameLog.print("DBC close (" + sw.getTime() + "ms)------------------------------------------------------");
 		} catch (SQLException ex) {
 			GameLog.print(ex);
 			throw new KSQLException(ex);

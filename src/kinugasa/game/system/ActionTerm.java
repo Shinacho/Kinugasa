@@ -99,7 +99,7 @@ public class ActionTerm implements Nameable {
 					if (i == null) {
 						continue;
 					}
-					if (i.getName().contains(value)) {
+					if (i.getVisibleName().contains(value)) {
 						return true;
 					}
 				}

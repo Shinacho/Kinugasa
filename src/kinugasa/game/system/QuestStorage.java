@@ -26,6 +26,7 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.db.DBValue;
@@ -56,10 +57,11 @@ public class QuestStorage extends DBStorage<Quest> {
 				return null;
 			}
 			String qid = kr.row(0).get(0).get();
-			int stage = kr.row(0).get(1).asInt();
-			String title = kr.row(0).get(2).get();
-			String desc = kr.row(0).get(3).get();
-			return new Quest(qid, stage, title, desc);
+			String typ = kr.row(0).get(1).get();
+			int stage = kr.row(0).get(2).asInt();
+			String title = kr.row(0).get(3).get();
+			String desc = kr.row(0).get(4).get();
+			return new Quest(qid, typ, stage, title, desc);
 		}
 		return null;
 	}
@@ -74,10 +76,11 @@ public class QuestStorage extends DBStorage<Quest> {
 			List<Quest> q = new ArrayList<>();
 			for (List<DBValue> v : kr) {
 				String qid = v.get(0).get();
-				int stage = v.get(1).asInt();
-				String title = v.get(2).get();
-				String desc = v.get(3).get();
-				add(new Quest(qid, stage, title, desc));
+				String typ = v.get(1).get();
+				int stage = v.get(2).asInt();
+				String title = v.get(3).get();
+				String desc = v.get(4).get();
+				q.add(new Quest(qid, typ, stage, title, desc));
 			}
 			return q;
 		}

@@ -417,7 +417,7 @@ public class BattleSystem implements Drawable {
 			@Override
 			String get(Action a, Status user, List<String> option, ActionResult res) {
 				Item i = (Item) a;
-				String s = I18N.get(GameSystemI18NKeys.XはXを使用した, user.getName(), i.getName());
+				String s = I18N.get(GameSystemI18NKeys.XはXを使用した, user.getName(), i.getVisibleName());
 				if (res.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 					//アイテム効果判定
 					//ターゲット取得
@@ -1494,20 +1494,20 @@ public class BattleSystem implements Drawable {
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_EQIP:
 				//装備できない
 				if (i.getEqipmentSlot() == null) {
-					setMsg(MessageType.CANT_EQIP, null, null, null, List.of(i.getName()));
+					setMsg(MessageType.CANT_EQIP, null, null, null, List.of(i.getVisibleName()));
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 					return;
 				}
 				//装備できない（属性値）
 				if (!currentCmd.getUser().getStatus().canEqip(i)) {
-					setMsg(MessageType.CANT_EQIP, null, null, null, List.of(i.getName()));
+					setMsg(MessageType.CANT_EQIP, null, null, null, List.of(i.getVisibleName()));
 					stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 					return;
 				}
 				//装備した・外した
 				//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
-				if (ItemStorage.bagItems.containsKey(i.getName())
-						&& currentCmd.getUser().getStatus().isEqip(i.getName())) {
+				if (ItemStorage.bagItems.containsKey(i.getVisibleName())
+						&& currentCmd.getUser().getStatus().isEqip(i.getVisibleName())) {
 					//もともとのサイズ
 					int itemBagDefaultMax = currentCmd.getUser().getStatus().getRace().getItemBagSize();
 					//現在のサイズ
@@ -1515,42 +1515,42 @@ public class BattleSystem implements Drawable {
 					//現在のサイズがもともともサイズより大きい場合は外せない
 					if (currentSize > itemBagDefaultMax) {
 						//外せない
-						setMsg(MessageType.CANT_UNEQIP, null, null, null, List.of(i.getName()));
+						setMsg(MessageType.CANT_UNEQIP, null, null, null, List.of(i.getVisibleName()));
 						stage.setStage(BattleSystem.Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 						return;
 					}
 				}
 				assert i.getEqipmentSlot() != null : "item is not eqip";
-				if (currentCmd.getUser().getStatus().isEqip(i.getName())) {
+				if (currentCmd.getUser().getStatus().isEqip(i.getVisibleName())) {
 					currentCmd.getUser().getStatus().removeEqip(i);
 				} else {
 					currentCmd.getUser().getStatus().addEqip(i);
 				}
 				//アイテム所持数の再計算
 				currentCmd.getUser().getStatus().updateItemBagSize();
-				MessageType t = currentCmd.getUser().getStatus().isEqip(i.getName())
+				MessageType t = currentCmd.getUser().getStatus().isEqip(i.getVisibleName())
 						? MessageType.EQIP_ITEM
 						: MessageType.UNEQIP_ITEM;
-				setMsg(t, null, null, null, List.of(i.getName()));
+				setMsg(t, null, null, null, List.of(i.getVisibleName()));
 				stage.setStage(BattleSystem.Stage.EXECUTING_ACTION);
 				break;
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_USE:
 				//バトルアクションが入っていない場合、使えないメッセージ表示
 				if (!i.isBattleUse()) {
-					setMsg(MessageType.CANT_USE_THIS_ITEM, null, null, null, List.of(i.getName()));
+					setMsg(MessageType.CANT_USE_THIS_ITEM, null, null, null, List.of(i.getVisibleName()));
 					stage.setStage(Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 					break;
 				}
 				//使う
 				itemChoiceMode = BattleMessageWindowSystem.ITEM_CHOICE_USE_USE;
 				area = (int) (currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
-				setMsg(MessageType.ITEM_WHO_TO_USE, null, null, null, List.of(i.getName()));
+				setMsg(MessageType.ITEM_WHO_TO_USE, null, null, null, List.of(i.getVisibleName()));
 				break;
 			case BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS:
 				//渡す
 				itemChoiceMode = BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS;
 				area = (int) (currentCmd.getUser().getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
-				setMsg(MessageType.ITEM_WHO_TO_PASS, null, null, null, List.of(i.getName()));
+				setMsg(MessageType.ITEM_WHO_TO_PASS, null, null, null, List.of(i.getVisibleName()));
 				break;
 			default:
 				throw new AssertionError("undefined item choice use No");
@@ -1561,7 +1561,7 @@ public class BattleSystem implements Drawable {
 			//ターゲット不在の場合
 			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS && t.getTarget().isEmpty()) {
 				//パスする味方がいない
-				setMsg(MessageType.NO_TARGET, null, null, null, List.of(i.getName()));
+				setMsg(MessageType.NO_TARGET, null, null, null, List.of(i.getVisibleName()));
 				stage.setStage(Stage.EXECUTING_ACTION, Stage.ITEM_CHOICE_USE);
 				return;
 			}
@@ -1569,8 +1569,8 @@ public class BattleSystem implements Drawable {
 			//ターゲット選択へ
 			itemPassAndUse = i;
 			String msg = (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS)
-					? I18N.get(GameSystemI18NKeys.Xを誰に渡す, i.getName())
-					: I18N.get(GameSystemI18NKeys.Xを誰に使う, i.getName());
+					? I18N.get(GameSystemI18NKeys.Xを誰に渡す, i.getVisibleName())
+					: I18N.get(GameSystemI18NKeys.Xを誰に使う, i.getVisibleName());
 			tgt.add(0, msg);
 			messageWindowSystem.getTgtW().setText(tgt.stream().map(p -> new Text(p)).collect(Collectors.toList()));
 			stage.setStage(BattleSystem.Stage.TARGET_SELECT);
@@ -1918,7 +1918,7 @@ public class BattleSystem implements Drawable {
 						text += I18N.get(GameSystemI18NKeys.獲得経験値) + ":" + exp + Text.getLineSep();
 						text += I18N.get(GameSystemI18NKeys.獲得物資) + ":" + Text.getLineSep();;
 						for (Item ii : dropItems) {
-							text += " " + ii.getName() + Text.getLineSep();
+							text += " " + ii.getVisibleName() + Text.getLineSep();
 						}
 						messageWindowSystem.getBattleResultW().setText(text);
 						messageWindowSystem.getBattleResultW().allText();
@@ -2060,7 +2060,7 @@ public class BattleSystem implements Drawable {
 			text += I18N.get(GameSystemI18NKeys.獲得物資) + ":" + Text.getLineSep();
 
 			for (Item i : dropItems) {
-				text += " " + i.getName() + Text.getLineSep();
+				text += " " + i.getVisibleName() + Text.getLineSep();
 			}
 			messageWindowSystem.getBattleResultW().setText(text);
 			messageWindowSystem.getBattleResultW().allText();

@@ -37,13 +37,15 @@ import kinugasa.resource.db.DBRecord;
 @DBRecord
 public class Quest implements Nameable {
 
-	private String id;//クエスト種類
+	private String id;
+	private String type;
 	private int stage;
 	private String visibleName;
 	private String desc;
 
-	public Quest(String id, int stage, String visibleName, String desc) {
+	public Quest(String id, String type, int stage, String visibleName, String desc) {
 		this.id = id;
+		this.type = type;
 		this.stage = stage;
 		this.visibleName = visibleName;
 		this.desc = desc;
@@ -51,6 +53,10 @@ public class Quest implements Nameable {
 
 	public String getId() {
 		return id;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 	public int getStage() {
@@ -94,7 +100,7 @@ public class Quest implements Nameable {
 
 	@Override
 	public String toString() {
-		return "Quest{" + "id=" + id + ", stage=" + stage + ", visibleName=" + visibleName + ", desc=" + desc + '}';
+		return "Quest{" + "id=" + id + ", type=" + type + ", stage=" + stage + ", visibleName=" + visibleName + ", desc=" + desc + '}';
 	}
 
 }

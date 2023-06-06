@@ -241,22 +241,6 @@ public class CachedSound implements Sound {
 			}
 			if (lp != null) {
 				clip.setLoopPoints(lp.getTo(), lp.getFrom());
-			} else {
-				//lp null
-				CachedSound s = this;
-				new Thread(() -> {
-					while (true) {
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException ex) {
-							Logger.getLogger(CachedSound.class.getName()).log(Level.SEVERE, null, ex);
-						}
-						if (s.clip.getFramePosition() >= s.clip.getFrameLength() || !s.playing) {
-							s.dispose();
-							break;
-						}
-					}
-				}, getFileName() + "_DISPOSER").start();
 			}
 		} catch (Exception ex) {
 //			throw new SoundStreamException(ex);
@@ -275,8 +259,12 @@ public class CachedSound implements Sound {
 		return this;
 	}
 
+	Clip getClip() {
+		return clip;
+	}
+
 	@Override
-	public void dispose() {
+	public synchronized void dispose() {
 		if (getStatus() == InputStatus.NOT_LOADED) {
 			return;
 		}

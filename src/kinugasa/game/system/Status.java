@@ -225,7 +225,7 @@ public class Status implements Nameable {
 		tgt.itemBag.add(i);
 		tgt.actions.add(i);
 		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.print("STATUS item pass [" + getName() + "]s[" + i.getName() + "] to [" + tgt.getName() + "]");
+			kinugasa.game.GameLog.print("STATUS item pass [" + getName() + "]s[" + i.getVisibleName() + "] to [" + tgt.getName() + "]");
 		}
 	}
 
@@ -251,12 +251,7 @@ public class Status implements Nameable {
 				actions.add(a);
 				continue;
 			}
-			if (a.getType() == ActionType.MAGIC) {
-				if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
-					actions.add(a);
-					continue;
-				}
-			}
+			//その他(MAGIC,ATTACK
 			if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
 				actions.add(a);
 				continue;
@@ -298,7 +293,7 @@ public class Status implements Nameable {
 		}
 	}
 
-	public boolean isEqip(String itemName) {
+	public boolean isEqip(String id) {
 		if (eqipment.values() == null) {
 			return false;
 		}
@@ -306,7 +301,7 @@ public class Status implements Nameable {
 			if (i == null) {
 				continue;
 			}
-			if (i.getName().equals(itemName)) {
+			if (i.getName().equals(id)) {
 				return true;
 			}
 		}

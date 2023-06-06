@@ -226,7 +226,7 @@ public class BookWindow extends BasicSprite {
 				options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.解体)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.捨てる)));
-				Choice c = new Choice(options, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, getSelectedBook().getName()));
+				Choice c = new Choice(options, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, getSelectedBook().getVisibleName()));
 				choiceUse.setText(c);
 				choiceUse.allText();
 				choiceUse.setSelect(0);
@@ -240,7 +240,7 @@ public class BookWindow extends BasicSprite {
 						//パスターゲットに移動
 						List<Text> options2 = new ArrayList<>();
 						options2.addAll(list.stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
-						tgtSelect.setText(new Choice(options2, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getName()) + I18N.get(GameSystemI18NKeys.Xを誰に渡す, b.getName())));
+						tgtSelect.setText(new Choice(options2, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getName()) + I18N.get(GameSystemI18NKeys.Xを誰に渡す, b.getVisibleName())));
 						tgtSelect.allText();
 						group.show(tgtSelect);
 						mode = Mode.TARGET_SELECT;
@@ -249,7 +249,7 @@ public class BookWindow extends BasicSprite {
 						//CHECKモードでは価値、キーアイテム属性、スロット、攻撃力、DCSを表示すること！
 						//アイテムの詳細をサブに表示
 						StringBuilder sb = new StringBuilder();
-						sb.append(b.getName()).append(Text.getLineSep());
+						sb.append(b.getVisibleName()).append(Text.getLineSep());
 
 						//DESC
 						String desc = b.getDesc();
@@ -283,7 +283,8 @@ public class BookWindow extends BasicSprite {
 						options4.add(new Text(I18N.get(GameSystemI18NKeys.いいえ)));
 						options4.add(new Text(I18N.get(GameSystemI18NKeys.はい)));
 						dissassemblyComfirm.reset();
-						dissassemblyComfirm.setText(new Choice(options4, "DISSASSE_CONFIRM", I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getName()) + I18N.get(GameSystemI18NKeys.Xを本当に解体する, b.getName())));
+						dissassemblyComfirm.setText(new Choice(options4, "DISSASSE_CONFIRM", I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getName())
+								+ I18N.get(GameSystemI18NKeys.Xを本当に解体する, b.getVisibleName())));
 						dissassemblyComfirm.allText();
 						group.show(dissassemblyComfirm);
 						mode = Mode.DISASSEMBLY_CONFIRM;
@@ -294,7 +295,7 @@ public class BookWindow extends BasicSprite {
 						options5.add(new Text(I18N.get(GameSystemI18NKeys.いいえ)));
 						options5.add(new Text(I18N.get(GameSystemI18NKeys.はい)));
 						dropConfirm.reset();
-						dropConfirm.setText(new Choice(options5, "DROP_CONFIRM", I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getName()) + I18N.get(GameSystemI18NKeys.Xを本当にすてる, b.getName())));
+						dropConfirm.setText(new Choice(options5, "DROP_CONFIRM", I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getName()) + I18N.get(GameSystemI18NKeys.Xを本当にすてる, b.getVisibleName())));
 						dropConfirm.allText();
 						group.show(dropConfirm);
 						mode = Mode.DROP_CONFIRM;
@@ -370,11 +371,12 @@ public class BookWindow extends BasicSprite {
 		Book i = getSelectedBook();
 		getSelectedPC().passBook(tgt, i);
 		if (!getSelectedPC().equals(tgt)) {
-			String t = I18N.get(GameSystemI18NKeys.XはXにXを渡した, getSelectedPC().getName(), tgt.getName(), i.getName());
+			String t = I18N.get(GameSystemI18NKeys.XはXにXを渡した, getSelectedPC().getName(), tgt.getName(), i.getVisibleName());
+			GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction());
 			msg.setText(t);
 			mainSelect = 0;
 		} else {
-			String t = I18N.get(GameSystemI18NKeys.XはXを持ち替えた, getSelectedPC().getName(), i.getName());
+			String t = I18N.get(GameSystemI18NKeys.XはXを持ち替えた, getSelectedPC().getName(), i.getVisibleName());
 			msg.setText(t);
 			mainSelect = getSelectedPC().getBookBag().size() - 1;
 		}
@@ -396,7 +398,7 @@ public class BookWindow extends BasicSprite {
 				sb.append("   ");
 			}
 			sb.append("    ");
-			sb.append(b.getName()).append(Text.getLineSep());
+			sb.append(b.getVisibleName()).append(Text.getLineSep());
 			j++;
 		}
 		getSelectedPC().updateAction();
@@ -414,7 +416,7 @@ public class BookWindow extends BasicSprite {
 		Book i = getSelectedBook();
 		//1個しか持っていなかったら装備を外す
 		getSelectedPC().getBookBag().drop(i);
-		msg.setText(I18N.get(GameSystemI18NKeys.XはXを捨てた, getSelectedPC().getName(), i.getName()));
+		msg.setText(I18N.get(GameSystemI18NKeys.XはXを捨てた, getSelectedPC().getName(), i.getVisibleName()));
 		msg.allText();
 		group.show(msg);
 		mainSelect = 0;
@@ -426,7 +428,7 @@ public class BookWindow extends BasicSprite {
 		getSelectedPC().getBookBag().drop(i);
 		GameSystem.getInstance().getBookPageBag().addAll(pages);
 		StringBuilder s = new StringBuilder();
-		s.append(I18N.get(GameSystemI18NKeys.XはXを解体した, getSelectedPC().getName(), i.getName()));
+		s.append(I18N.get(GameSystemI18NKeys.XはXを解体した, getSelectedPC().getName(), i.getVisibleName()));
 		s.append(Text.getLineSep());
 		Map<String, Long> count = pages.stream().collect(Collectors.groupingBy(Page::getDesc, Collectors.counting()));
 		for (Map.Entry<String, Long> e : count.entrySet()) {
@@ -496,7 +498,7 @@ public class BookWindow extends BasicSprite {
 						sb.append("   ");
 					}
 					sb.append("    ");
-					sb.append(i.getName()).append(Text.getLineSep());
+					sb.append(i.getVisibleName()).append(Text.getLineSep());
 					j++;
 				}
 			}

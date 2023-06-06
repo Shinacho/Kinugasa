@@ -110,7 +110,7 @@ public class ActionDescWindow extends PCStatusWindow {
 			//魔法は魔法ウインドウで見れるので表示しない
 			if (a.getType() != ActionType.MAGIC) {
 				sb.append("／");
-				sb.append(a.getDesc());
+				sb.append(a.getVisibleName());
 			}
 			sb.append("(")
 					.append(I18N.get(GameSystemI18NKeys.範囲))

@@ -42,14 +42,14 @@ import kinugasa.resource.db.KResultSet;
 public class Book implements Nameable, Cloneable {
 
 	private String id;
-	private String name;
+	private String visibleName;
 	private String desc;
 	private ArrayList<Page> pages = new ArrayList<>();
 	private int value;
 
 	public Book(String id, String name, String desc, int value) {
 		this.id = id;
-		this.name = name;
+		this.visibleName = name;
 		this.desc = desc;
 		this.value = value;
 	}
@@ -81,6 +81,10 @@ public class Book implements Nameable, Cloneable {
 		return desc;
 	}
 
+	public String getVisibleName() {
+		return visibleName;
+	}
+
 	@Override
 	public Book clone() {
 		try {
@@ -94,13 +98,13 @@ public class Book implements Nameable, Cloneable {
 
 	@Override
 	public String toString() {
-		return "Book{" + "name=" + name + ", desc=" + desc + '}';
+		return "Book{" + "name=" + visibleName + ", desc=" + desc + '}';
 	}
 
 	public List<Action> getBookAction() {
 		if (DBConnection.getInstance().isUsing()) {
 			//BOOK_ACTIONテーブルからアクションIDを取得
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from BOOK_ACTION where BookID='" + this.name + "';");
+			KResultSet kr = DBConnection.getInstance().execDirect("select * from BOOK_ACTION where BookID='" + this.visibleName + "';");
 			List<Action> a = new ArrayList<>();
 			for (List<DBValue> v : kr) {
 				a.add(ActionStorage.getInstance().get(v.get(1).get()));

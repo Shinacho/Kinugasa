@@ -185,7 +185,7 @@ public class BattleMessageWindowSystem implements Drawable {
 	void setItemDesc(Status user, Item i) {
 		//アイテムの詳細をサブに表示
 		StringBuilder sb = new StringBuilder();
-		sb.append(i.getName()).append(Text.getLineSep());
+		sb.append(i.getVisibleName()).append(Text.getLineSep());
 
 		//DESC
 		String desc = i.getDesc();
@@ -484,7 +484,7 @@ public class BattleMessageWindowSystem implements Drawable {
 		options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
 		options.add(new Text(I18N.get(GameSystemI18NKeys.装備)));
 		options.add(new Text(I18N.get(GameSystemI18NKeys.渡す)));
-		itemChoiceUseW.setText(new Choice(options, "BATTLE_MW_SYSTEM_IUC", I18N.get(GameSystemI18NKeys.Xを, i.getName())));
+		itemChoiceUseW.setText(new Choice(options, "BATTLE_MW_SYSTEM_IUC", I18N.get(GameSystemI18NKeys.Xを, i.getVisibleName())));
 		setVisible(StatusVisible.ON, mode.ITEM_USE_SELECT, InfoVisible.OFF);
 	}
 

@@ -99,11 +99,11 @@ public final class GameLog {
 	}
 
 	private static void out(String s) {
-		if (writer == null) {
-			return;
-		}
 		try {
 			System.out.println(s);
+			if (writer == null) {
+				return;
+			}
 			writer.append(s);
 			writer.newLine();
 			writer.flush();

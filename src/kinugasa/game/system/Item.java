@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 import kinugasa.resource.*;
@@ -62,7 +63,6 @@ public class Item extends Action implements Nameable, Cloneable {
 		this.eqStatus = eqStatus;
 		return this;
 	}
-
 
 	public Item setValue(int v) {
 		this.value = v;
@@ -113,8 +113,8 @@ public class Item extends Action implements Nameable, Cloneable {
 	public Map<Material, Integer> getDisasseMaterials() {
 		return dissasseMaterials;
 	}
-	
-	public boolean canDisasse(){
+
+	public boolean canDisasse() {
 		return !dissasseMaterials.isEmpty();
 	}
 
@@ -207,6 +207,28 @@ public class Item extends Action implements Nameable, Cloneable {
 		} catch (CloneNotSupportedException ex) {
 			throw new InternalError(ex);
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 23 * hash + Objects.hashCode(this.id);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Item other = (Item) obj;
+		return Objects.equals(this.id, other.id);
 	}
 
 }

@@ -181,7 +181,7 @@ public class FieldEventSystem implements Drawable {
 		options.add(new Text(I18N.get(GameSystemI18NKeys.諦める)));
 
 		Choice c = new Choice(options, "",
-				I18N.get(GameSystemI18NKeys.Xを手に入れた誰が持つ, item.getName()), new FrameTimeCounter(0), 0);
+				I18N.get(GameSystemI18NKeys.Xを手に入れた誰が持つ, item.getVisibleName()), new FrameTimeCounter(0), 0);
 		c.allText();
 
 		MessageWindow mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(), null, c);

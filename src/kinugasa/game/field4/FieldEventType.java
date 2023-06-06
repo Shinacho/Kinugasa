@@ -370,9 +370,26 @@ public enum FieldEventType {
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
 			int v = Integer.parseInt(e.getValue());
 			//クエスト情報を設定
-			Quest q = QuestStorage.getInstance().get(e.getTargetName());
-			if (CurrentQuest.getInstance().contains(q)) {
-				CurrentQuest.getInstance().remove(q);
+			Quest q = null;
+			for (var t : QuestStorage.getInstance()) {
+				System.out.println(t);
+				if (e.getTargetName().equals(t.getId()) && t.getStage() == v && t.getType().equals(e.getStorageName())) {
+					q = t;
+					break;
+				}
+			}
+			if (q == null) {
+				throw new FieldEventScriptException("SET_QEUST not found : " + e);
+			}
+			Quest remove = null;
+			for (Quest qq : CurrentQuest.getInstance()) {
+				if (qq.getType().equals(q.getType())) {
+					remove = qq;
+					break;
+				}
+			}
+			if (remove != null) {
+				CurrentQuest.getInstance().remove(remove);
 			}
 			CurrentQuest.getInstance().add(q);
 			return UserOperationRequire.CONTINUE;
@@ -600,8 +617,8 @@ public enum FieldEventType {
 	EQIP_ITEM {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
-			Item item = ItemStorage.getInstance().get(e.getValue());
 			int i = Integer.parseInt(e.getTargetName());
+			Item item = GameSystem.getInstance().getParty().get(i).getStatus().getItemBag().get(e.getValue());
 			if (!GameSystem.getInstance().getParty().get(i).getStatus().getItemBag().contains(item)) {
 				throw new GameSystemException("pc " + i + " is not have item :" + item);
 			}

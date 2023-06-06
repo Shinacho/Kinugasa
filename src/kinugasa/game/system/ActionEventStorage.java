@@ -208,6 +208,7 @@ public class ActionEventStorage extends DBStorage<ActionEvent> {
 		String actionID = a.getName();
 		ActionEvents res = new ActionEvents();
 		if (DBConnection.getInstance().isUsing()) {
+			//アクションイベントIDを取得
 			KResultSet ks = DBConnection.getInstance().execDirect("select ActionEventID from ACTION_ACTIONEVENT where actionID='" + actionID + "';");
 			if (ks.isEmpty()) {
 				return res;
@@ -222,6 +223,8 @@ public class ActionEventStorage extends DBStorage<ActionEvent> {
 					res.field.add(v);
 				}
 			}
+			//メモリチェック
+			
 			return res;
 		}
 		return res;

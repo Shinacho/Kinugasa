@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.I18N;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
@@ -133,7 +134,10 @@ public class StatusDescWindow extends PCStatusWindow {
 					sb.append(v.getKey().getDesc()).append(":").append(val).append('／').append(max).append(Text.getLineSep());
 				}
 			} else {
-				if (v.getKey().getMax() == 1f) {
+				if (v.getKey().getName().equals(BattleConfig.StatusKey.canMagic)) {
+					sb.append(v.getKey().getDesc()).append(":").append(v.getValue() == 1
+							? I18N.get(GameSystemI18NKeys.魔術利用可能) : I18N.get(GameSystemI18NKeys.魔術利用不可));
+				} else if (v.getKey().getMax() == 1f) {
 					float val = v.getValue() * 100;
 					sb.append(v.getKey().getDesc()).append(":").append(val).append('%').append(Text.getLineSep());
 				} else {

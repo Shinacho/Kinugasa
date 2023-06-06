@@ -51,6 +51,9 @@ public class DBValue {
 	}
 
 	public int asInt() {
+		if (value == null || value.isEmpty()) {
+			return 0;
+		}
 		return Integer.parseInt(value);
 	}
 
@@ -81,20 +84,29 @@ public class DBValue {
 	}
 
 	public String[] safeSplit(String sep) {
+		if (value == null) {
+			return new String[]{};
+		}
 		if (value.contains(sep)) {
 			return value.split(sep);
+		}
+		if (value.isEmpty()) {
+			return new String[]{};
 		}
 		return new String[]{value};
 	}
 
 	public <T extends Enum<T>> T of(Class<T> c) {
+		if (value == null || value.trim().isEmpty()) {
+			return null;
+		}
 		T[] values = c.getEnumConstants();
 		for (T t : values) {
-			if (t.toString().equals(value)) {
+			if (t.toString().equals(value.toUpperCase())) {
 				return t;
 			}
 		}
-		throw new AssertionError("not found " + value);
+		throw new AssertionError("DBValue : not found " + value);
 	}
 
 	@Override

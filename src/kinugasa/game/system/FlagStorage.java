@@ -62,7 +62,7 @@ public class FlagStorage extends DBStorage<Flag> implements Nameable {
 	@Override
 	protected Flag select(String id) throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from CurrentFlag where name = '" + id + "';");
+			KResultSet kr = DBConnection.getInstance().execDirect("select * from S_CurrentFlag where name = '" + id + "';");
 			if (kr.isEmpty()) {
 				return null;
 			}
@@ -75,7 +75,7 @@ public class FlagStorage extends DBStorage<Flag> implements Nameable {
 	@Override
 	protected List<Flag> selectAll() throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from CurrentFlag;");
+			KResultSet kr = DBConnection.getInstance().execDirect("select * from S_CurrentFlag;");
 			if (kr.isEmpty()) {
 				return Collections.emptyList();
 			}
@@ -93,7 +93,7 @@ public class FlagStorage extends DBStorage<Flag> implements Nameable {
 	@Override
 	protected int count() throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			return DBConnection.getInstance().execDirect("select count(*) from CurrentFlag").row(0).get(0).asInt();
+			return DBConnection.getInstance().execDirect("select count(*) from S_CurrentFlag").row(0).get(0).asInt();
 		}
 		return 0;
 	}

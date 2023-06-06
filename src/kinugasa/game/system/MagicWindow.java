@@ -166,7 +166,7 @@ public class MagicWindow extends BasicSprite {
 				List<Text> options = new ArrayList<>();
 				options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
-				Choice c = new Choice(options, "IMAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, a.getName()));
+				Choice c = new Choice(options, "IMAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, a.getVisibleName()));
 				choiceUse.setText(c);
 				choiceUse.allText();
 				choiceUse.setSelect(0);
@@ -179,7 +179,7 @@ public class MagicWindow extends BasicSprite {
 						//フィールドでは使えない場合
 						if (!a.isFieldUse()) {
 							StringBuilder sb = new StringBuilder();
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
 							sb.append(I18N.get(GameSystemI18NKeys.しかしこの魔法はフィールドでは使えない));
 							msg.setText(sb.toString());
@@ -195,7 +195,7 @@ public class MagicWindow extends BasicSprite {
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 							if (vs.hasMinus()) {
 								StringBuilder sb = new StringBuilder();
-								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
 								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
 								msg.setText(sb.toString());
@@ -209,7 +209,7 @@ public class MagicWindow extends BasicSprite {
 							tgt.setDamageCalcPoint();
 							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true).setSelfTarget(true));
 							StringBuilder sb = new StringBuilder();
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 								//成功
@@ -249,7 +249,7 @@ public class MagicWindow extends BasicSprite {
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 							if (vs.hasMinus()) {
 								StringBuilder sb = new StringBuilder();
-								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
 								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
 								msg.setText(sb.toString());
@@ -265,7 +265,7 @@ public class MagicWindow extends BasicSprite {
 							tgt.setDamageCalcPoint();
 							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
 							StringBuilder sb = new StringBuilder();
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
 							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 								//成功
@@ -305,7 +305,7 @@ public class MagicWindow extends BasicSprite {
 							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 							if (vs.hasMinus()) {
 								StringBuilder sb = new StringBuilder();
-								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
 								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
 								msg.setText(sb.toString());
@@ -320,7 +320,7 @@ public class MagicWindow extends BasicSprite {
 							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
 							StringBuilder sb = new StringBuilder();
 							for (Status s : tgt) {
-								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
 								if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 									//成功
@@ -359,7 +359,7 @@ public class MagicWindow extends BasicSprite {
 						StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
 						if (vs.hasMinus()) {
 							StringBuilder sb = new StringBuilder();
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
 							sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
 							msg.setText(sb.toString());
@@ -371,7 +371,7 @@ public class MagicWindow extends BasicSprite {
 						//その他の場合はターゲット選択へ
 						List<Text> option1 = new ArrayList<>();
 						option1.addAll(GameSystem.getInstance().getPartyStatus().stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
-						tgtSelect.setText(new Choice(option1, "MAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの, a.getName())
+						tgtSelect.setText(new Choice(option1, "MAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの, a.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xを誰に使う, getSelectedAction().getName())));
 						tgtSelect.allText();
 						group.show(tgtSelect);
@@ -379,7 +379,7 @@ public class MagicWindow extends BasicSprite {
 						break;
 					case CHECK:
 						StringBuilder sb = new StringBuilder();
-						sb.append(a.getName()).append(Text.getLineSep());
+						sb.append(a.getVisibleName()).append(Text.getLineSep());
 						//DESC
 						String desc = a.getDesc();
 						if (desc.contains(Text.getLineSep())) {
@@ -616,7 +616,7 @@ public class MagicWindow extends BasicSprite {
 		}
 		ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
 		StringBuilder sb = new StringBuilder();
-		sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getName()));
+		sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
 		sb.append(Text.getLineSep());
 		if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 			//成功
@@ -681,7 +681,7 @@ public class MagicWindow extends BasicSprite {
 		}
 		List<Text> l = new ArrayList<>();
 		l.add(line1);
-		l.addAll(list.stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
+		l.addAll(list.stream().map(p -> new Text(p.getVisibleName())).collect(Collectors.toList()));
 		main.setText(l);
 	}
 

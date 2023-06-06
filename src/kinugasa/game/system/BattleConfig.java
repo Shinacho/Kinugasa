@@ -61,6 +61,7 @@ public class BattleConfig {
 		public static String atk = "ATK";
 		public static String mgk = "M_ATK";
 
+		public static String canMagic = "CAN_MAGIC";
 	}
 
 	public static class Sound {

@@ -23,6 +23,7 @@ package kinugasa.game.system;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
@@ -46,7 +48,7 @@ public class Action implements Nameable, Comparable<Action> {
 	public static int missWaitTime = 66;
 	//
 	private ActionType type;
-	private String id;
+	protected String id;
 	private String visibleName;
 	private String desc;
 	private Sound sound;
@@ -61,6 +63,10 @@ public class Action implements Nameable, Comparable<Action> {
 	private int actionCount = 1;
 	private Set<StatusKey> damageCalcStatusKey = new HashSet<>();
 	private TargetOption tgtOption;
+
+	public String getVisibleName() {
+		return visibleName;
+	}
 
 	public Action(ActionType type, String id, String visibleName, String desc) {
 		this.type = type;
@@ -454,6 +460,28 @@ public class Action implements Nameable, Comparable<Action> {
 			return id.compareTo(o.getName());
 		}
 		return sort - o.sort;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 29 * hash + Objects.hashCode(this.id);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Action other = (Action) obj;
+		return Objects.equals(this.id, other.id);
 	}
 
 }

@@ -95,7 +95,7 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 		if (DBConnection.getInstance().isUsing()) {
 			try {
 				for (var t : selectAll()) {
-					l.put(name, t);
+					l.put(t.getName(), t);
 				}
 			} catch (KSQLException e) {
 				GameLog.print(e);

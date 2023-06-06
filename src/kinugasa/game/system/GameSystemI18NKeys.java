@@ -182,4 +182,8 @@ public class GameSystemI18NKeys {
 	public static String 術者 = "術者";
 	public static String 対象 = "対象";
 	public static String 独自効果 = "独自効果";
+
+	public static String 魔術利用可能 = "魔術利用可能";
+	public static String 魔術利用不可 = "魔術利用不可";
+
 }

@@ -88,7 +88,9 @@ public class ActionStorage extends DBStorage<Action> {
 				//waitTime
 				a.setWaitTime(v.get(5).asInt());
 				//Sound
-				a.setSound(SoundStorage.getInstance().get(v.get(6).get()));
+				if (v.get(6).get() != null && !v.get(6).get().isEmpty()) {
+					a.setSound(SoundStorage.getInstance().get(v.get(6).get()));
+				}
 				//sortID
 				a.setSort(v.get(7).asInt());
 				//spellTime
@@ -103,17 +105,18 @@ public class ActionStorage extends DBStorage<Action> {
 				}
 				a.setDamageCalcStatusKey(dcs);
 				//TARGET_OPTION
-				TargetOption.SelectType selectType = v.get(11).of(TargetOption.SelectType.class);
-				TargetOption.IFF iff = v.get(12).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
-				TargetOption.DefaultTarget defaultTarget = v.get(13).of(TargetOption.DefaultTarget.class);
-				TargetOption.SwitchTeam switchTeam = v.get(14).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
-				TargetOption.Targeting targeting = v.get(15).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
-				TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
-				a.setTargetOption(targetOption);
-
+				if (v.get(11).get() != null && !v.get(11).get().isEmpty()) {
+					TargetOption.SelectType selectType = v.get(11).of(TargetOption.SelectType.class);
+					TargetOption.IFF iff = v.get(12).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
+					TargetOption.DefaultTarget defaultTarget = v.get(13).of(TargetOption.DefaultTarget.class);
+					TargetOption.SwitchTeam switchTeam = v.get(14).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
+					TargetOption.Targeting targeting = v.get(15).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
+					TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
+					a.setTargetOption(targetOption);
+				}
 				//ACTION_TERM
 				KResultSet akr = DBConnection.getInstance().execDirect("select"
-						+ " t.visibleName, "
+						+ " t.ActionTermID, "
 						+ " t.termType, "
 						+ "t.val "
 						+ "from Action_ActionTerm a, ActionTerm t "
@@ -178,7 +181,9 @@ public class ActionStorage extends DBStorage<Action> {
 				//waitTime
 				a.setWaitTime(v.get(5).asInt());
 				//Sound
-				a.setSound(SoundStorage.getInstance().get(v.get(6).get()));
+				if (v.get(6).get() != null && !v.get(6).get().isEmpty()) {
+					a.setSound(SoundStorage.getInstance().get(v.get(6).get()));
+				}
 				//sortID
 				a.setSort(v.get(7).asInt());
 				//spellTime
@@ -193,13 +198,15 @@ public class ActionStorage extends DBStorage<Action> {
 				}
 				a.setDamageCalcStatusKey(dcs);
 				//TARGET_OPTION
-				TargetOption.SelectType selectType = v.get(11).of(TargetOption.SelectType.class);
-				TargetOption.IFF iff = v.get(12).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
-				TargetOption.DefaultTarget defaultTarget = v.get(13).of(TargetOption.DefaultTarget.class);
-				TargetOption.SwitchTeam switchTeam = v.get(14).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
-				TargetOption.Targeting targeting = v.get(15).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
-				TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
-				a.setTargetOption(targetOption);
+				if (v.get(11).get() != null && !v.get(11).get().isEmpty()) {
+					TargetOption.SelectType selectType = v.get(11).of(TargetOption.SelectType.class);
+					TargetOption.IFF iff = v.get(12).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
+					TargetOption.DefaultTarget defaultTarget = v.get(13).of(TargetOption.DefaultTarget.class);
+					TargetOption.SwitchTeam switchTeam = v.get(14).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
+					TargetOption.Targeting targeting = v.get(15).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
+					TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
+					a.setTargetOption(targetOption);
+				}
 
 				//ACTION_TERM
 				KResultSet akr = DBConnection.getInstance().execDirect("select"

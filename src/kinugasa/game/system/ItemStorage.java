@@ -97,14 +97,16 @@ public class ItemStorage extends DBStorage<Item> {
 				boolean canSale = v.get(11).asBoolean();
 				int currentUpgradeNum = v.get(12).asInt();
 				//TargetOption
-				TargetOption.SelectType selectType = v.get(13).of(TargetOption.SelectType.class);
-				TargetOption.IFF iff = v.get(14).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
-				TargetOption.DefaultTarget defaultTarget = v.get(15).of(TargetOption.DefaultTarget.class);
-				TargetOption.SwitchTeam switchTeam = v.get(16).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
-				TargetOption.Targeting targeting = v.get(17).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
-				TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
 				Item i = new Item(id, visibleName, desc);
-				i.setTargetOption(targetOption);
+				if (v.get(13).get() != null && !v.get(13).get().isEmpty()) {
+					TargetOption.SelectType selectType = v.get(13).of(TargetOption.SelectType.class);
+					TargetOption.IFF iff = v.get(14).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
+					TargetOption.DefaultTarget defaultTarget = v.get(15).of(TargetOption.DefaultTarget.class);
+					TargetOption.SwitchTeam switchTeam = v.get(16).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
+					TargetOption.Targeting targeting = v.get(17).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
+					TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
+					i.setTargetOption(targetOption);
+				}
 				i.setValue(val);
 				//スロット
 				if (slotID != null && !slotID.isEmpty()) {
@@ -113,14 +115,14 @@ public class ItemStorage extends DBStorage<Item> {
 				}
 				//WEaponType
 				if (weaponType != null && !weaponType.isEmpty()) {
-					WeaponType type = WeaponTypeStorage.getInstance().get(weaponType);
+					WeaponType type = WeaponTypeStorage.getInstance().get(weaponType.toUpperCase());
 					i.setWeaponMagicType(type);
 				}
 				//DCS
 				if (dcs != null && dcs.length > 0) {
 					Set<StatusKey> dcsKeys = new HashSet<>();
 					for (String sk : dcs) {
-						dcsKeys.add(StatusKeyStorage.getInstance().get(sk));
+						dcsKeys.add(StatusKeyStorage.getInstance().get(sk.toUpperCase()));
 					}
 					i.setDamageCalcStatusKey(dcsKeys);
 				}
@@ -303,14 +305,16 @@ public class ItemStorage extends DBStorage<Item> {
 				boolean canSale = v.get(11).asBoolean();
 				int currentUpgradeNum = v.get(12).asInt();
 				//TargetOption
-				TargetOption.SelectType selectType = v.get(13).of(TargetOption.SelectType.class);
-				TargetOption.IFF iff = v.get(14).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
-				TargetOption.DefaultTarget defaultTarget = v.get(15).of(TargetOption.DefaultTarget.class);
-				TargetOption.SwitchTeam switchTeam = v.get(16).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
-				TargetOption.Targeting targeting = v.get(17).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
-				TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
-
 				Item i = new Item(itemId, visibleName, desc);
+				if (v.get(13).get() != null && !v.get(13).get().isEmpty()) {
+					TargetOption.SelectType selectType = v.get(13).of(TargetOption.SelectType.class);
+					TargetOption.IFF iff = v.get(14).asBoolean() ? TargetOption.IFF.ON : TargetOption.IFF.OFF;
+					TargetOption.DefaultTarget defaultTarget = v.get(15).of(TargetOption.DefaultTarget.class);
+					TargetOption.SwitchTeam switchTeam = v.get(16).asBoolean() ? TargetOption.SwitchTeam.OK : TargetOption.SwitchTeam.NG;
+					TargetOption.Targeting targeting = v.get(17).asBoolean() ? TargetOption.Targeting.ENABLE : TargetOption.Targeting.DISABLE;
+					TargetOption targetOption = TargetOption.of(selectType, iff, defaultTarget, switchTeam, TargetOption.SelfTarget.YES, targeting);
+					i.setTargetOption(targetOption);
+				}
 				i.setValue(val);
 				//スロット
 				if (slotID != null && !slotID.isEmpty()) {

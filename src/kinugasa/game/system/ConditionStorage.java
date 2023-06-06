@@ -60,7 +60,7 @@ public class ConditionStorage extends DBStorage<Condition> {
 			String sql = "select"
 					+ " ce.ConditionEffectID,"
 					+ "ce.EffectContinueType,"
-					+ "ce.time,"
+					+ "ce.tim,"
 					+ "ce.EffectTargetType,"
 					+ "ce.EffectSetType,"
 					+ "ce.targetName,"
@@ -78,12 +78,12 @@ public class ConditionStorage extends DBStorage<Condition> {
 			for (List<DBValue> v : cc) {
 				String eid = v.get(0).get();
 				EffectContinueType continueType = v.get(1).of(EffectContinueType.class);
-				int time = v.get(3).asInt();
-				EffectTargetType targetType = v.get(4).of(EffectTargetType.class);
-				EffectSetType setType = v.get(5).of(EffectSetType.class);
-				String targetName = v.get(6).get();
-				float val = v.get(7).asFloat();
-				float p = v.get(8).asFloat();
+				int time = v.get(2).asInt();
+				EffectTargetType targetType = v.get(3).of(EffectTargetType.class);
+				EffectSetType setType = v.get(4).of(EffectSetType.class);
+				String targetName = v.get(5).get();
+				float val = v.get(6).asFloat();
+				float p = v.get(7).asFloat();
 				effects.add(new ConditionEffect(eid, continueType, targetType, setType, targetName, val, p, time));
 			}
 			c.setEffects(effects);
@@ -109,7 +109,7 @@ public class ConditionStorage extends DBStorage<Condition> {
 				String sql = "select"
 						+ " ce.ConditionEffectID,"
 						+ "ce.EffectContinueType,"
-						+ "ce.time,"
+						+ "ce.tim,"
 						+ "ce.EffectTargetType,"
 						+ "ce.EffectSetType,"
 						+ "ce.targetName,"
@@ -125,12 +125,12 @@ public class ConditionStorage extends DBStorage<Condition> {
 					for (List<DBValue> v : cc) {
 						String eid = v.get(0).get();
 						EffectContinueType continueType = v.get(1).of(EffectContinueType.class);
-						int time = v.get(3).asInt();
-						EffectTargetType targetType = v.get(4).of(EffectTargetType.class);
-						EffectSetType setType = v.get(5).of(EffectSetType.class);
-						String targetName = v.get(6).get();
-						float val = v.get(7).asFloat();
-						float p = v.get(8).asFloat();
+						int time = v.get(2).asInt();
+						EffectTargetType targetType = v.get(3).of(EffectTargetType.class);
+						EffectSetType setType = v.get(4).of(EffectSetType.class);
+						String targetName = v.get(5).get();
+						float val = v.get(6).asFloat();
+						float p = v.get(7).asFloat();
 						effects.add(new ConditionEffect(eid, continueType, targetType, setType, targetName, val, p, time));
 					}
 					c.setEffects(effects);

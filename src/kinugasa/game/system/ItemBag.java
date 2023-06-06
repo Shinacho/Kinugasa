@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import kinugasa.resource.NameNotFoundException;
 
 /**
  * キャラクタ一人のアイテムを定義するクラスです。
@@ -105,6 +106,15 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 
 	public int remainingSize() {
 		return max - size();
+	}
+
+	public Item get(String name) {
+		for (var t : items) {
+			if (t.getName().equals(name)) {
+				return t;
+			}
+		}
+		throw new NameNotFoundException("ItemBag : item is not found : " + name);
 	}
 
 	public Item get(int idx) {
