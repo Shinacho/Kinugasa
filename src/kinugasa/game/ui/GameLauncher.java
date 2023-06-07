@@ -65,18 +65,14 @@ public class GameLauncher extends javax.swing.JFrame {
         lockFileDelete = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         windowSize = new javax.swing.JComboBox<>();
         logFile = new javax.swing.JTextField();
         mouse = new javax.swing.JCheckBox();
         keyboard = new javax.swing.JCheckBox();
         gamepad = new javax.swing.JCheckBox();
-        rendering = new javax.swing.JComboBox<>();
         language = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
-        fps = new javax.swing.JComboBox<>();
         debugMode = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
         args = new javax.swing.JTextField();
@@ -97,10 +93,6 @@ public class GameLauncher extends javax.swing.JFrame {
         jLabel3.setText("ログファイル");
 
         jLabel4.setText("入力デバイス");
-
-        jLabel5.setText("FPS");
-
-        jLabel6.setText("レンダリング品質");
 
         jLabel7.setText("言語/Language");
 
@@ -134,8 +126,6 @@ public class GameLauncher extends javax.swing.JFrame {
         gamepad.setSelected(true);
         gamepad.setText("コントローラー");
 
-        rendering.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "速度（推奨）", "品質", "バランス" }));
-
         jButton1.setFont(new java.awt.Font("MS UI Gothic", 0, 24)); // NOI18N
         jButton1.setText("起動");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -148,9 +138,6 @@ public class GameLauncher extends javax.swing.JFrame {
                 jButton1KeyPressed(evt);
             }
         });
-
-        fps.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "50", "60" }));
-        fps.setSelectedIndex(1);
 
         debugMode.setText("デバッグモードを有効にする");
 
@@ -176,7 +163,6 @@ public class GameLauncher extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel4)
-                                    .addComponent(jLabel5)
                                     .addComponent(jLabel1)
                                     .addComponent(jLabel3))
                                 .addGap(30, 30, 30)
@@ -188,16 +174,11 @@ public class GameLauncher extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(keyboard, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(gamepad, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
-                                    .addComponent(fps, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addComponent(gamepad, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel6))
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(28, 28, 28)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(rendering, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(language, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(language, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
@@ -207,7 +188,7 @@ public class GameLauncher extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(7, 7, 7)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(windowSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -223,29 +204,21 @@ public class GameLauncher extends javax.swing.JFrame {
                     .addComponent(mouse)
                     .addComponent(keyboard)
                     .addComponent(gamepad))
-                .addGap(11, 11, 11)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(fps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(rendering, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(language, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lockFileDelete)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(debugMode)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(args, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -299,19 +272,9 @@ public class GameLauncher extends javax.swing.JFrame {
 		option.setUseKeyboard(keyboard.isSelected());
 		option.setUseGamePad(gamepad.isSelected());
 
-		if (fps.getSelectedItem().toString().equals("120（テスト用）")) {
-			option.setFps(120);
-		} else {
-			option.setFps(Integer.parseInt(fps.getSelectedItem().toString()));
-		}
+		option.setFps(60);
 
-		if (rendering.getSelectedItem().toString().equals("速度（推奨）")) {
-			option.setRenderingQuality(RenderingQuality.SPEED);
-		} else if (rendering.getSelectedItem().toString().equals("品質")) {
-			option.setRenderingQuality(RenderingQuality.QUALITY);
-		} else if (rendering.getSelectedItem().toString().equals("バランス")) {
-			option.setRenderingQuality(RenderingQuality.DEFAULT);
-		}
+		option.setRenderingQuality(RenderingQuality.SPEED);
 
 		String lang = language.getSelectedItem().toString();
 		assert lang.contains(".") : "locale file is missmatch";
@@ -495,15 +458,12 @@ public class GameLauncher extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField args;
     private javax.swing.JCheckBox debugMode;
-    private javax.swing.JComboBox<String> fps;
     private javax.swing.JCheckBox gamepad;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JCheckBox keyboard;
@@ -511,7 +471,6 @@ public class GameLauncher extends javax.swing.JFrame {
     private javax.swing.JCheckBox lockFileDelete;
     private javax.swing.JTextField logFile;
     private javax.swing.JCheckBox mouse;
-    private javax.swing.JComboBox<String> rendering;
     private javax.swing.JComboBox<String> windowSize;
     // End of variables declaration//GEN-END:variables
 }

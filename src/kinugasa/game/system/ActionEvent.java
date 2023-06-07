@@ -32,10 +32,10 @@ import static kinugasa.game.system.ParameterType.ITEM_LOST;
 import static kinugasa.game.system.ParameterType.NONE;
 import static kinugasa.game.system.ParameterType.REMOVE_CONDITION;
 import static kinugasa.game.system.ParameterType.STATUS;
-import static kinugasa.game.system.StatusDamageCalcType.DIRECT;
-import static kinugasa.game.system.StatusDamageCalcType.PERCENT_OF_MAX;
-import static kinugasa.game.system.StatusDamageCalcType.PERCENT_OF_NOW;
-import static kinugasa.game.system.StatusDamageCalcType.USE_DAMAGE_CALC;
+import static kinugasa.game.system.DamageCalcType.DIRECT;
+import static kinugasa.game.system.DamageCalcType.PERCENT_OF_MAX;
+import static kinugasa.game.system.DamageCalcType.PERCENT_OF_NOW;
+import static kinugasa.game.system.DamageCalcType.USE_DAMAGE_CALC;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.ImageEditor;
 import kinugasa.object.AnimationSprite;
@@ -58,7 +58,7 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 	private String tgtName;
 	private AttributeKey attr;
 	private float value;
-	private StatusDamageCalcType damageCalcType;
+	private DamageCalcType damageCalcType;
 	private float p;
 	private float spread;
 	private Animation animation;
@@ -124,7 +124,7 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 		this.value = value;
 	}
 
-	public void setDamageCalcType(StatusDamageCalcType damageCalcType) {
+	public void setDamageCalcType(DamageCalcType damageCalcType) {
 		this.damageCalcType = damageCalcType;
 	}
 
@@ -164,7 +164,7 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 		return value;
 	}
 
-	public StatusDamageCalcType getDamageCalcType() {
+	public DamageCalcType getDamageCalcType() {
 		return damageCalcType;
 	}
 
@@ -189,7 +189,14 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 
 		ActionEventResult result = new ActionEventResult();
 		//セルフイベントの場合
-		if (targetType == TargetType.SELF) {
+		if (targetType == TargetType.SELF) {			//P判定
+			if (!Random.percent(p)) {
+				if (GameSystem.isDebugMode()) {
+					kinugasa.game.GameLog.print(this + " is no exec(P)");
+				}
+				result.addResultTypePerTgt(ActionResultType.MISS);
+				return result;
+			}
 			BattleCharacter c = tgt.getUser();
 			//実行可能
 			switch (parameterType) {

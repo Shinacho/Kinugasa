@@ -56,6 +56,10 @@ public class MusicRoom extends ScrollSelectableMessageWindow {
 		setText(t);
 	}
 
+	public void dispose() {
+		list.forEach(p -> p.dispose());
+	}
+
 	public void play() {
 		list.forEach(p -> p.dispose());
 		SoundStorage.getInstance().dispose();

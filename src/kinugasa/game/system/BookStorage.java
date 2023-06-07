@@ -25,7 +25,9 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.db.DBValue;
@@ -55,19 +57,11 @@ public class BookStorage extends DBStorage<Book> {
 			if (kr.isEmpty()) {
 				return null;
 			}
-			//ページの取得
-			KResultSet pkr = DBConnection.getInstance().execDirect("select * from book_page where bookID='" + id + "';");
-			List<Page> page = new ArrayList();
-			if (!pkr.isEmpty()) {
-				for (List<DBValue> v : pkr) {
-					page.add(PageStorage.getInstance().get(v.get(1).get()));
-				}
-			}
 			for (List<DBValue> v : kr) {
 				String visibleName = v.get(1).get();
 				String desc = v.get(2).get();
 				int val = v.get(3).asInt();
-				return new Book(id, visibleName, desc, val).setPages(page);
+				return new Book(id, visibleName, desc, val);
 			}
 		}
 		return null;
@@ -84,17 +78,10 @@ public class BookStorage extends DBStorage<Book> {
 			List<Book> book = new ArrayList<>();
 			for (List<DBValue> v : kr) {
 				String id = v.get(0).get();
-				KResultSet pkr = DBConnection.getInstance().execDirect("select * from book_page where bookID='" + id + "';");
-				List<Page> page = new ArrayList();
-				if (!pkr.isEmpty()) {
-					for (List<DBValue> vv : pkr) {
-						page.add(PageStorage.getInstance().get(vv.get(1).get()));
-					}
-				}
 				String visibleName = v.get(1).get();
 				String desc = v.get(2).get();
 				int val = v.get(3).asInt();
-				book.add(new Book(id, visibleName, desc, val).setPages(page));
+				book.add(new Book(id, visibleName, desc, val));
 			}
 			return book;
 		}

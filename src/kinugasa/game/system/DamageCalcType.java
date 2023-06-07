@@ -29,7 +29,7 @@ package kinugasa.game.system;
  * @vesion 1.0.0 - 2022/11/16_17:54:58<br>
  * @author Shinacho<br>
  */
-public enum StatusDamageCalcType {
+public enum DamageCalcType {
 	/**
 	 * 最大値のvalue%のダメージ。
 	 */

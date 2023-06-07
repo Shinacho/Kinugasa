@@ -44,7 +44,6 @@ public enum MagicCompositeType {
 	TO_ALL(20),
 	TO_ONE(2),
 	TO_TEAM(10),
-	TO_FIELD(12),
 	ENEMY(6),
 	FRIEND(6),
 	CAST_COST(0),;

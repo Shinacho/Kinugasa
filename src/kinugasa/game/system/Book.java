@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.db.DBRecord;
@@ -44,7 +45,6 @@ public class Book implements Nameable, Cloneable {
 	private String id;
 	private String visibleName;
 	private String desc;
-	private ArrayList<Page> pages = new ArrayList<>();
 	private int value;
 
 	public Book(String id, String name, String desc, int value) {
@@ -54,11 +54,6 @@ public class Book implements Nameable, Cloneable {
 		this.value = value;
 	}
 
-	public Book setPages(List<Page> pages) {
-		this.pages = new ArrayList<>(pages);
-		return this;
-	}
-
 	public Book setValue(int value) {
 		this.value = value;
 		return this;
@@ -66,10 +61,6 @@ public class Book implements Nameable, Cloneable {
 
 	public int getValue() {
 		return value;
-	}
-
-	public List<Page> getPages() {
-		return pages;
 	}
 
 	@Override
@@ -89,7 +80,6 @@ public class Book implements Nameable, Cloneable {
 	public Book clone() {
 		try {
 			Book b = (Book) super.clone();
-			b.pages = (ArrayList<Page>) this.pages.clone();
 			return b;
 		} catch (CloneNotSupportedException ex) {
 			throw new InternalError();
@@ -104,10 +94,10 @@ public class Book implements Nameable, Cloneable {
 	public List<Action> getBookAction() {
 		if (DBConnection.getInstance().isUsing()) {
 			//BOOK_ACTIONテーブルからアクションIDを取得
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from BOOK_ACTION where BookID='" + this.visibleName + "';");
+			KResultSet kr = DBConnection.getInstance().execDirect("select ACTIONID from BOOK_ACTION where BookID='" + this.id + "';");
 			List<Action> a = new ArrayList<>();
 			for (List<DBValue> v : kr) {
-				a.add(ActionStorage.getInstance().get(v.get(1).get()));
+				a.add(ActionStorage.getInstance().get(v.get(0).get()));
 			}
 			return a;
 		}
@@ -119,6 +109,15 @@ public class Book implements Nameable, Cloneable {
 		int hash = 5;
 		hash = 67 * hash + Objects.hashCode(this.id);
 		return hash;
+	}
+
+	public List<Page> getPage() {
+		List<Page> res = new ArrayList<>();
+		for (Action a : getBookAction()) {
+			res.addAll(a.getBattleEvent().stream().map(p -> new Page(p)).collect(Collectors.toSet()));
+			res.addAll(a.getFieldEvent().stream().map(p -> new Page(p)).collect(Collectors.toSet()));
+		}
+		return res;
 	}
 
 	@Override

@@ -25,9 +25,12 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import kinugasa.graphics.Animation;
 import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.db.KResultSet;
@@ -169,6 +172,8 @@ public class ActionStorage extends DBStorage<Action> {
 				return Collections.emptyList();
 			}
 			List<Action> res = new ArrayList<>();
+			
+			
 			for (var v : rs) {
 				//基本情報
 				String actionID = v.get(0).get();

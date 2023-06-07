@@ -106,25 +106,28 @@ public class ActionDescWindow extends PCStatusWindow {
 				continue;
 			}
 			sb.append("  ")
-					.append(a.getName());
+					.append(a.getVisibleName());
 			//魔法は魔法ウインドウで見れるので表示しない
 			if (a.getType() != ActionType.MAGIC) {
 				sb.append("／");
-				sb.append(a.getVisibleName());
+				sb.append(a.getDesc());
 			}
 			sb.append("(")
 					.append(I18N.get(GameSystemI18NKeys.範囲))
 					.append(":")
-					.append(a.getAreaWithEqip(s.get(pcIdx)))
-					.append("、")
+					.append(a.getAreaWithEqip(s.get(pcIdx)));
+
+			sb.append("、")
 					.append(I18N.get(GameSystemI18NKeys.属性))
 					.append(":");
 			sb.append(a.getBattleEvent()
 					.stream()
+					.filter(p -> p.getAttr() != null)
 					.filter(p -> !AttrDescWindow.getUnvisibleAttrName().contains(p.getAttr().getName()))
 					.map(p -> p.getAttr().getDesc())
 					.distinct()
 					.collect(Collectors.toList()));
+
 			sb.append("、")
 					.append(I18N.get(GameSystemI18NKeys.基礎威力))
 					.append(":");

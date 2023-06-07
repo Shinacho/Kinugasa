@@ -447,8 +447,11 @@ public class Action implements Nameable, Comparable<Action> {
 
 	@Override
 	public String toString() {
-		return "CmdAction{" + "type=" + type + ", name=" + id
-				+ "(" + (battleEvent.isEmpty() ? "x" : "B") + (fieldEvent.isEmpty() ? "x" : "F") + ")" + '}';
+		return "CmdAction{" + type + ", " + id
+				+ "(" + (battleEvent.isEmpty() ? "x" : "B")
+				+ (fieldEvent.isEmpty() ? "x" : "F") + ")"
+				+ ", " + visibleName
+				+ '}';
 	}
 
 	@Override

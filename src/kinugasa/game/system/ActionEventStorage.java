@@ -25,8 +25,9 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.SpriteSheet;
@@ -76,28 +77,40 @@ public class ActionEventStorage extends DBStorage<ActionEvent> {
 				if (!battle && !field) {
 					throw new GameSystemException("this action is cant use in battle and field : " + v);
 				}
-				TargetType tt = v.get(3).of(TargetType.class);
-				ParameterType pr = v.get(4).of(ParameterType.class);
 				String tgtName = v.get(5).get();
-				AttributeKey attr = AttributeKeyStorage.getInstance().get(v.get(6).get());
 				float val = v.get(7).asFloat();
 				float p = v.get(8).asFloat();
 				float spread = v.get(9).asFloat();
-				StatusDamageCalcType dct = v.get(10).of(StatusDamageCalcType.class);
 				String desc = v.get(11).get();
 				String animationID = v.get(12).get();
-				AnimationMoveType amt = v.get(13).of(AnimationMoveType.class);
 				ActionEvent e = new ActionEvent(actionEventID);
-				e.setTargetType(tt);
-				e.setParameterType(pr);
+
+				if (v.get(3).get() != null && !v.get(3).get().isEmpty()) {
+					TargetType tt = v.get(3).of(TargetType.class);
+					e.setTargetType(tt);
+				}
+				if (v.get(4).get() != null && !v.get(4).get().isEmpty()) {
+					ParameterType pr = v.get(4).of(ParameterType.class);
+					e.setParameterType(pr);
+				}
+
 				e.setTgtName(tgtName);
-				e.setAttr(attr);
+				if (v.get(6).get() != null && !v.get(6).get().isEmpty()) {
+					AttributeKey attr = AttributeKeyStorage.getInstance().get(v.get(6).get());
+					e.setAttr(attr);
+				}
 				e.setValue(val);
 				e.setP(p);
 				e.setSpread(spread);
-				e.setDamageCalcType(dct);
+				if (v.get(10) != null && !v.get(10).get().isEmpty()) {
+					DamageCalcType dct = v.get(10).of(DamageCalcType.class);
+					e.setDamageCalcType(dct);
+				}
 				e.setDesc(desc);
-				e.setAnimationMoveType(amt);
+				if (v.get(13) != null && !v.get(13).get().isEmpty()) {
+					AnimationMoveType amt = v.get(13).of(AnimationMoveType.class);
+					e.setAnimationMoveType(amt);
+				}
 				//アニメーション取得
 				KResultSet akr = DBConnection.getInstance().execDirect("select animationID, fileName, w, h, tc, mg from actionanimation where animationID='" + animationID + "';");
 				if (!akr.isEmpty()) {
@@ -141,6 +154,25 @@ public class ActionEventStorage extends DBStorage<ActionEvent> {
 			if (kr.isEmpty()) {
 				return Collections.emptyList();
 			}
+			Map<String, Animation> animations = new HashMap<>();
+
+			//アニメーション取得
+			KResultSet akr = DBConnection.getInstance().execDirect("select animationID, fileName, w, h, tc, mg from actionanimation;");
+			if (!akr.isEmpty()) {
+				for (List<DBValue> vv : akr) {
+					//1件しかヒットしない
+					String animationID = vv.get(0).get();
+					String fileName = vv.get(1).get();
+					int w = vv.get(2).asInt();
+					int h = vv.get(3).asInt();
+					int[] tc = vv.get(4).asIntArray(",");
+					float mg = vv.get(5).asFloat();
+					Animation a = new Animation(new FrameTimeCounter(tc),
+							new SpriteSheet(fileName).rows(0, w, h).resizeAll(mg).images());
+					animations.put(animationID, a);
+				}
+			}
+
 			List<ActionEvent> list = new ArrayList<>();
 			for (List<DBValue> v : kr) {
 				String actionEventID = v.get(0).get();
@@ -149,45 +181,46 @@ public class ActionEventStorage extends DBStorage<ActionEvent> {
 				if (!battle && !field) {
 					throw new GameSystemException("this action is cant use in battle and field : " + v);
 				}
-				TargetType tt = v.get(3).of(TargetType.class);
-				ParameterType pr = v.get(4).of(ParameterType.class);
+
 				String tgtName = v.get(5).get();
-				AttributeKey attr = AttributeKeyStorage.getInstance().get(v.get(6).get());
 				float val = v.get(7).asFloat();
 				float p = v.get(8).asFloat();
 				float spread = v.get(9).asFloat();
-				StatusDamageCalcType dct = v.get(10).of(StatusDamageCalcType.class);
 				String desc = v.get(11).get();
-				String animationID = v.get(12).get();
-				AnimationMoveType amt = v.get(13).of(AnimationMoveType.class);
 				ActionEvent e = new ActionEvent(actionEventID);
 				e.setBattle(battle);
 				e.setField(field);
-				e.setTargetType(tt);
-				e.setParameterType(pr);
+				if (v.get(3).get() != null && !v.get(3).get().isEmpty()) {
+					TargetType tt = v.get(3).of(TargetType.class);
+					e.setTargetType(tt);
+				}
+				if (v.get(4).get() != null && !v.get(4).get().isEmpty()) {
+					ParameterType pr = v.get(4).of(ParameterType.class);
+					e.setParameterType(pr);
+				}
+
 				e.setTgtName(tgtName);
-				e.setAttr(attr);
+				if (v.get(6).get() != null && !v.get(6).get().isEmpty()) {
+					AttributeKey attr = AttributeKeyStorage.getInstance().get(v.get(6).get());
+					e.setAttr(attr);
+				}
 				e.setValue(val);
 				e.setP(p);
 				e.setSpread(spread);
-				e.setDamageCalcType(dct);
-				e.setDesc(desc);
-				e.setAnimationMoveType(amt);
-				//アニメーション取得
-				KResultSet akr = DBConnection.getInstance().execDirect("select animationID, fileName, w, h, tc, mg from actionanimation where animationID='" + animationID + "';");
-				if (!akr.isEmpty()) {
-					for (List<DBValue> vv : akr) {
-						//1件しかヒットしない
-						String fileName = vv.get(1).get();
-						int w = vv.get(2).asInt();
-						int h = vv.get(3).asInt();
-						int[] tc = vv.get(4).asIntArray(",");
-						float mg = vv.get(5).asFloat();
-						Animation a = new Animation(new FrameTimeCounter(tc),
-								new SpriteSheet(fileName).rows(0, w, h).resizeAll(mg).images());
-						e.setAnimation(a);
-					}
+				if (v.get(10) != null && !v.get(10).get().isEmpty()) {
+					DamageCalcType dct = v.get(10).of(DamageCalcType.class);
+					e.setDamageCalcType(dct);
 				}
+				e.setDesc(desc);
+				if (v.get(13) != null && !v.get(13).get().isEmpty()) {
+					AnimationMoveType amt = v.get(13).of(AnimationMoveType.class);
+					e.setAnimationMoveType(amt);
+				}
+				String animationID = v.get(12).get();
+				if (animationID != null && !animationID.trim().isEmpty()) {
+					e.setAnimation(animations.get(animationID));
+				}
+
 				list.add(e);
 			}
 			return list;
@@ -223,8 +256,6 @@ public class ActionEventStorage extends DBStorage<ActionEvent> {
 					res.field.add(v);
 				}
 			}
-			//メモリチェック
-			
 			return res;
 		}
 		return res;

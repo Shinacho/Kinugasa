@@ -128,7 +128,7 @@ public class GameSystem {
 	}
 	private PageBag pageBag = new PageBag();
 
-	public PageBag getBookPageBag() {
+	public PageBag getPageBag() {
 		return pageBag;
 	}
 	private MaterialBag materialBag = new MaterialBag();

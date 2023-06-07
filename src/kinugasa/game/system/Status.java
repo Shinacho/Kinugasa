@@ -254,7 +254,6 @@ public class Status implements Nameable {
 			//その他(MAGIC,ATTACK
 			if (a.getTerms() != null && a.getTerms().stream().allMatch(p -> p.canExec(ActionTarget.instantTarget(this, a)))) {
 				actions.add(a);
-				continue;
 			}
 		}
 		if (itemAdd) {
@@ -262,6 +261,15 @@ public class Status implements Nameable {
 				actions.add(i);
 			}
 		}
+		//本から逆移入の処理
+		if (getEffectedStatus().get(Status.canMagicStatusName).getValue() == (Float.parseFloat(Status.canMagicStatusValue))) {
+			for (Book b : getBookBag()) {
+				for (Action a : b.getBookAction()) {
+					actions.add(a);
+				}
+			}
+		}
+
 		actions = actions.stream().distinct().collect(Collectors.toList());
 
 //		if (GameSystem.isDebugMode()) {
@@ -321,7 +329,11 @@ public class Status implements Nameable {
 			if (i == null) {
 				continue;
 			}
-			if (i.getWeaponMagicType() == WeaponTypeStorage.getInstance().get(typeName)) {
+			//防具等
+			if (i.getWeaponMagicType() == null) {
+				continue;
+			}
+			if (i.getWeaponMagicType().equals(WeaponTypeStorage.getInstance().get(typeName))) {
 				return true;
 			}
 		}

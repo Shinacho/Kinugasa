@@ -222,7 +222,7 @@ public class BookWindow extends BasicSprite {
 		switch (mode) {
 			case BOOK_AND_USER_SELECT:
 				List<Text> options = new ArrayList<>();
-				options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
+				options.add(new Text(I18N.get(GameSystemI18NKeys.渡す)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.解体)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.捨てる)));
@@ -268,8 +268,8 @@ public class BookWindow extends BasicSprite {
 						sb.append(Text.getLineSep());
 						//解体素材
 						sb.append(I18N.get(GameSystemI18NKeys.解体すると以下を入手する)).append(Text.getLineSep());
-						for (Page p : b.getPages()) {
-							sb.append("   ").append(p.getDesc()).append(Text.getLineSep());
+						for (Page p : b.getPage()) {
+							sb.append("   ").append(p.getEvent().getDesc()).append(Text.getLineSep());
 						}
 
 						msg.setText(sb.toString());
@@ -373,6 +373,7 @@ public class BookWindow extends BasicSprite {
 		if (!getSelectedPC().equals(tgt)) {
 			String t = I18N.get(GameSystemI18NKeys.XはXにXを渡した, getSelectedPC().getName(), tgt.getName(), i.getVisibleName());
 			GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction());
+			getSelectedPC().updateAction();
 			msg.setText(t);
 			mainSelect = 0;
 		} else {
@@ -401,8 +402,7 @@ public class BookWindow extends BasicSprite {
 			sb.append(b.getVisibleName()).append(Text.getLineSep());
 			j++;
 		}
-		getSelectedPC().updateAction();
-		if (!getSelectedPC().getEffectedStatus().get(Status.canMagicStatusName).equals(Status.canMagicStatusValue)) {
+		if (getSelectedPC().getEffectedStatus().get(Status.canMagicStatusName).getValue() != (Float.parseFloat(Status.canMagicStatusValue))) {
 			List<Action> removeList = getSelectedPC().getActions(ActionType.MAGIC);
 			getSelectedPC().getActions().removeAll(removeList);
 		}
@@ -418,25 +418,27 @@ public class BookWindow extends BasicSprite {
 		getSelectedPC().getBookBag().drop(i);
 		msg.setText(I18N.get(GameSystemI18NKeys.XはXを捨てた, getSelectedPC().getName(), i.getVisibleName()));
 		msg.allText();
+		getSelectedPC().updateAction();
 		group.show(msg);
 		mainSelect = 0;
 	}
 
 	private void commitDissasse() {
 		Book i = getSelectedBook();
-		List<Page> pages = i.getPages();
+		List<Page> pages = i.getPage();
 		getSelectedPC().getBookBag().drop(i);
-		GameSystem.getInstance().getBookPageBag().addAll(pages);
+		GameSystem.getInstance().getPageBag().addAll(pages);
 		StringBuilder s = new StringBuilder();
 		s.append(I18N.get(GameSystemI18NKeys.XはXを解体した, getSelectedPC().getName(), i.getVisibleName()));
 		s.append(Text.getLineSep());
-		Map<String, Long> count = pages.stream().collect(Collectors.groupingBy(Page::getDesc, Collectors.counting()));
+		Map<String, Long> count = pages.stream().map(p -> p.getEvent()).collect(Collectors.groupingBy(ActionEvent::getDesc, Collectors.counting()));
 		for (Map.Entry<String, Long> e : count.entrySet()) {
 			s.append(I18N.get(GameSystemI18NKeys.XをX個入手した, e.getKey(), e.getValue() + ""));
 			s.append(Text.getLineSep());
 		}
 		msg.setText(s.toString());
 		msg.allText();
+		getSelectedPC().updateAction();
 		group.show(msg);
 		mainSelect = 0;
 	}

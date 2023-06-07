@@ -71,7 +71,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						throw new AssertionError("undefined parameter type");
 				}
 				assert ba.getParameterType() == ParameterType.STATUS : "damage calculation: Invalid damage calc type:" + ba;
-				assert ba.getDamageCalcType() == StatusDamageCalcType.USE_DAMAGE_CALC : "damage calculation: Invalid damage calc type:" + ba;
+				assert ba.getDamageCalcType() == DamageCalcType.USE_DAMAGE_CALC : "damage calculation: Invalid damage calc type:" + ba;
 
 				//割合へのダメージの場合エラーとする
 				if (StatusKeyStorage.getInstance().get(ba.getTgtName()).getMax() == 1f) {

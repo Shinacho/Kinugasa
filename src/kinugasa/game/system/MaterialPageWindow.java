@@ -67,9 +67,9 @@ public class MaterialPageWindow extends BasicSprite {
 				}
 				break;
 			case PAGE:
-				Map<Page, Integer> map2 = GameSystem.getInstance().getBookPageBag().getMap();
+				Map<Page, Integer> map2 = GameSystem.getInstance().getPageBag().getMap();
 				for (Map.Entry<Page, Integer> e : map2.entrySet()) {
-					list.add(e.getKey().getName() + ":" + e.getValue() + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getSaleValue()));
+					list.add(e.getKey().getEvent().getDesc() + ":" + e.getValue() + (I18N.get(GameSystemI18NKeys.価値) + ":" + 250));
 				}
 				break;
 		}

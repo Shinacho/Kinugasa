@@ -76,10 +76,16 @@ public class DBValue {
 	}
 
 	public float asFloat() {
+		if (value.trim().isEmpty()) {
+			return 0;
+		}
 		return Float.parseFloat(value);
 	}
 
 	public boolean asBoolean() {
+		if (value.trim().isEmpty()) {
+			return false;
+		}
 		return Boolean.parseBoolean(value);
 	}
 

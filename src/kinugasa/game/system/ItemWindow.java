@@ -749,6 +749,7 @@ public class ItemWindow extends BasicSprite {
 			String t = I18N.get(GameSystemI18NKeys.XはXにXを渡した, getSelectedPC().getName(), tgt.getName(), i.getVisibleName());
 			msg.setText(t);
 			mainSelect = 0;
+			getSelectedPC().updateAction();
 		} else {
 			String t = I18N.get(GameSystemI18NKeys.XはXを持ち替えた, getSelectedPC().getName(), i.getVisibleName());
 			msg.setText(t);
@@ -781,7 +782,6 @@ public class ItemWindow extends BasicSprite {
 			sb.append(item.getVisibleName()).append(Text.getLineSep());
 			j++;
 		}
-		getSelectedPC().updateAction();
 		main.setText(sb.toString());
 		main.allText();
 		main.setVisible(true);
@@ -798,6 +798,7 @@ public class ItemWindow extends BasicSprite {
 		getSelectedPC().getItemBag().drop(i);
 		msg.setText(I18N.get(GameSystemI18NKeys.XはXを捨てた, getSelectedPC().getName(), i.getVisibleName()));
 		msg.allText();
+		getSelectedPC().updateAction();
 		group.show(msg);
 		mainSelect = 0;
 	}
@@ -823,6 +824,7 @@ public class ItemWindow extends BasicSprite {
 		}
 		msg.setText(I18N.get(GameSystemI18NKeys.XはXを解体した, getSelectedPC().getName(), i.getVisibleName()));
 		msg.allText();
+		getSelectedPC().updateAction();
 		group.show(msg);
 		mainSelect = 0;
 	}

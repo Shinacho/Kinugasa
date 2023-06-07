@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2022 Shinacho.
+ * Copyright 2023 Shinacho.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,160 +23,26 @@
  */
 package kinugasa.game.system;
 
-import java.util.Objects;
-import kinugasa.resource.Nameable;
-import kinugasa.resource.db.DBRecord;
-
 /**
- * ブックページは、本を構成するページで、魔法効果か合成効果のどちらかを持っています。
  *
- * @vesion 1.0.0 - 2022/12/25_10:50:45<br>
+ * @vesion 1.0.0 - 2023/06/06_15:45:19<br>
  * @author Shinacho<br>
  */
-@DBRecord
-public class Page implements Nameable {
+public class Page {
 
-	private String id;
-	private MagicCompositeType compositeType;
-	private String name;
-	private String tgtName;
-	private float value;
+	private ActionEvent e;
 
-	public Page(String id, MagicCompositeType compositeType, String name, String tgtName, float value) {
-		this.id = id;
-		this.compositeType = compositeType;
-		this.name = name;
-		this.tgtName = tgtName;
-		this.value = value;
+	public Page(ActionEvent e) {
+		this.e = e;
 	}
 
-	public MagicCompositeType getCompositeType() {
-		return compositeType;
-	}
-
-	public String getTgtName() {
-		return tgtName;
-	}
-
-	public float getValue() {
-		return value;
-	}
-
-	@Override
-	public String getName() {
-		return id;
-	}
-
-	public int getSaleValue() {
-		//TODO:価格ここ
-		return 100;
-	}
-
-	public String getDesc() {
-		//中でtoStringやgetNameを使わないように注意！！！！！！！
-		String s = name;
-		boolean percent = false;
-		switch (compositeType) {
-			case SET_ATTR:
-				percent = true;
-				s += "(" + AttributeKeyStorage.getInstance().get(tgtName).getDesc();
-				break;
-			case HEAL_ATTRIN:
-			case ADD_ATTRIN:
-				percent = true;
-				s += "(" + AttributeKeyStorage.getInstance().get(tgtName).getDesc();
-				break;
-			case DAMAGE_STATUS_DIRECT:
-			case DAMAGE_STATUS_CALC:
-			case HEAL_STATUS:
-			case CAST_COST:
-				percent = StatusKeyStorage.getInstance().get(tgtName).getMax() == 1f;
-				s += "(" + StatusKeyStorage.getInstance().get(tgtName).getDesc();
-				break;
-			case ADD_CONDITION:
-			case REMOVE_CONDITION:
-			case ADD_CONDITION_TIME:
-				if (ConditionStorage.getInstance().contains(tgtName)) {
-					s += "(" + ConditionStorage.getInstance().get(tgtName).getKey().getDesc();
-				} else {
-					throw new GameSystemException("book page condtion name not found: " + tgtName);
-				}
-				break;
-			case ADD_AREA:
-			case ADD_SPELL_TIME:
-			case TO_ALL:
-			case TO_ONE:
-			case TO_TEAM:
-			case TO_FIELD:
-			case ENEMY:
-			case FRIEND:
-				break;
-			case P:
-				percent = true;
-				break;
-		}
-		if (value != 0f) {
-			if (!s.contains("(")) {
-				if (percent) {
-					if (value < 0) {
-						s += "(" + (value * 100) + "%";
-					} else {
-						s += "(+" + (value * 100) + "%";
-					}
-				} else {
-					if (value < 0) {
-						s += "(" + (int) value;
-					} else {
-						s += "(+" + (int) value;
-					}
-				}
-			} else {
-				if (percent) {
-					if (value < 0) {
-						s += "," + (value * 100) + "%";
-					} else {
-						s += ",+" + (value * 100) + "%";
-					}
-				} else {
-					if (value < 0) {
-						s += "," + (int) value;
-					} else {
-						s += ",+" + (int) value;
-					}
-				}
-			}
-		}
-		if (s.contains("(")) {
-			s += ")";
-		}
-		return s;
+	public ActionEvent getEvent() {
+		return e;
 	}
 
 	@Override
 	public String toString() {
-		return getDesc();
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 3;
-		hash = 37 * hash + Objects.hashCode(this.id);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final Page other = (Page) obj;
-		return Objects.equals(this.id, other.id);
+		return "Page{" + "e=" + e + '}';
 	}
 
 }
