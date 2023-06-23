@@ -23,7 +23,6 @@ package kinugasa.game.system;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import kinugasa.object.AnimationSprite;
+import kinugasa.object.Sprite;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
 import kinugasa.util.FrameTimeCounter;
@@ -43,7 +42,7 @@ import kinugasa.util.FrameTimeCounter;
  * @vesion 1.0.0 - 2022/12/01_20:11:07<br>
  * @author Shinacho<br>
  */
-public class Action implements Nameable, Comparable<Action> {
+public class Action implements Nameable, Comparable<Action>, Cloneable {
 
 	public static int missWaitTime = 66;
 	//
@@ -63,6 +62,15 @@ public class Action implements Nameable, Comparable<Action> {
 	private int actionCount = 1;
 	private Set<StatusKey> damageCalcStatusKey = new HashSet<>();
 	private TargetOption tgtOption;
+
+	@Override
+	public Action clone() {
+		try {
+			return (Action) super.clone();
+		} catch (CloneNotSupportedException ex) {
+			throw new InternalError(ex);
+		}
+	}
 
 	public String getVisibleName() {
 		return visibleName;
@@ -249,12 +257,37 @@ public class Action implements Nameable, Comparable<Action> {
 		return type;
 	}
 
+	public static Set<String> magicUserDmage = new HashSet<>();
+
 	public boolean isFieldUse() {
-		return (type == ActionType.MAGIC || type == ActionType.OTHER || type == ActionType.ITEM) && fieldEvent != null && !fieldEvent.isEmpty();
+		boolean f = (type == ActionType.MAGIC || type == ActionType.OTHER || type == ActionType.ITEM) && fieldEvent != null && !fieldEvent.isEmpty();
+		if (!f) {
+			return false;
+		}
+		f = fieldEvent.stream().filter(p -> p.getTargetType() != TargetType.SELF).count() == 0;
+		if (!f) {
+			return false;
+		}
+		f = fieldEvent.stream().filter((p) -> {
+			return !(magicUserDmage.contains(p.getTgtName()) && p.getValue() < 0);
+		}).count() != 0;
+		return f;
+
 	}
 
 	public boolean isBattleUse() {
-		return battleEvent != null && !battleEvent.isEmpty();
+		boolean f = battleEvent != null && !battleEvent.isEmpty();
+		if (!f) {
+			return false;
+		}
+		f = battleEvent.stream().filter(p -> p.getTargetType() != TargetType.SELF).count() != 0;
+		if (!f) {
+			return false;
+		}
+		f = battleEvent.stream().filter((p) -> {
+			return !(magicUserDmage.contains(p.getTgtName()) && p.getValue() < 0);
+		}).count() != 0;
+		return f;
 	}
 
 	public boolean battleEventIsOnly(ParameterType t) {
@@ -403,7 +436,7 @@ public class Action implements Nameable, Comparable<Action> {
 			throw new GameSystemException("this event is cant exec : " + this);
 		}
 		List<List<ActionResultType>> result = new ArrayList<>();
-		List<AnimationSprite> anime = new ArrayList<>();
+		List<Sprite> anime = new ArrayList<>();
 		for (ActionEvent e : battleEvent) {
 			int count = actionCount;
 			if (tgt.getUser().getStatus().getEqipment().get(BattleConfig.weaponSlotName) != null) {

@@ -23,9 +23,27 @@ package kinugasa.game.system;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import kinugasa.game.GameOption;
+import kinugasa.game.GraphicsContext;
+import static kinugasa.game.system.AnimationMoveType.BEAM_BLACK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_BLACK_THICK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_BLUE;
+import static kinugasa.game.system.AnimationMoveType.BEAM_BLUE_THICK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_GREN;
+import static kinugasa.game.system.AnimationMoveType.BEAM_GREN_THICK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_RED;
+import static kinugasa.game.system.AnimationMoveType.BEAM_RED_THICK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_WHITE;
+import static kinugasa.game.system.AnimationMoveType.BEAM_WHITE_THICK;
 import static kinugasa.game.system.ParameterType.ADD_CONDITION;
 import static kinugasa.game.system.ParameterType.ATTR_IN;
 import static kinugasa.game.system.ParameterType.ITEM_LOST;
@@ -36,12 +54,18 @@ import static kinugasa.game.system.DamageCalcType.DIRECT;
 import static kinugasa.game.system.DamageCalcType.PERCENT_OF_MAX;
 import static kinugasa.game.system.DamageCalcType.PERCENT_OF_NOW;
 import static kinugasa.game.system.DamageCalcType.USE_DAMAGE_CALC;
+import static kinugasa.game.system.ParameterType.ITEM_ADD;
 import kinugasa.graphics.Animation;
-import kinugasa.graphics.ImageEditor;
+import kinugasa.graphics.GraphicsUtil;
 import kinugasa.object.AnimationSprite;
-import kinugasa.resource.KImage;
+import kinugasa.object.BasicSprite;
+import kinugasa.object.EmptySprite;
+import kinugasa.object.ImagePainterStorage;
+import kinugasa.object.Sprite;
 import kinugasa.resource.*;
 import kinugasa.resource.db.*;
+import kinugasa.util.FrameTimeCounter;
+import kinugasa.util.MathUtil;
 import kinugasa.util.Random;
 
 /**
@@ -231,6 +255,8 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 						result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
 					}
 					break;
+				case ITEM_ADD:
+					break;
 				case ITEM_LOST:
 					break;
 				case REMOVE_CONDITION:
@@ -324,6 +350,7 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 					}
 					break;
 				case ITEM_LOST:
+				case ITEM_ADD:
 					//アイテムロストは使用側で実施すること
 //					if (targetType == TargetType.SELF) {
 //						tgt.getUser().getStatus().getItemBag().drop(tgtName);
@@ -386,31 +413,83 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 	}
 
 	public boolean hasAnimation() {
-		return animation != null;
+		return animationMoveType != null;
 	}
 
-	public Animation getAnimationClone() {
-		if (animation == null) {
-			return null;
+	public AnimationSprite createAnimationSprite(Point2D.Float user, Point2D.Float tgt) {
+		if (animationMoveType.toString().contains("BEAM")) {
+			final float widthBase = switch (animationMoveType) {
+				case BEAM_WHITE, BEAM_BLACK, BEAM_BLUE, BEAM_GREN, BEAM_RED ->
+					3f;
+				case BEAM_WHITE_THICK, BEAM_BLACK_THICK, BEAM_BLUE_THICK, BEAM_GREN_THICK, BEAM_RED_THICK ->
+					8f;
+				default ->
+					throw new AssertionError("ActionEvent " + this + " undefined animation move type : " + animationMoveType);
+			};
+			final Color color = switch (animationMoveType) {
+				case BEAM_WHITE, BEAM_WHITE_THICK ->
+					GraphicsUtil.transparent(Color.WHITE, 128);
+				case BEAM_BLACK, BEAM_BLACK_THICK ->
+					GraphicsUtil.transparent(Color.BLACK, 128);
+				case BEAM_BLUE, BEAM_BLUE_THICK ->
+					GraphicsUtil.transparent(Color.BLUE, 128);
+				case BEAM_GREN, BEAM_GREN_THICK ->
+					GraphicsUtil.transparent(Color.GREEN, 128);
+				case BEAM_RED, BEAM_RED_THICK ->
+					GraphicsUtil.transparent(Color.RED, 128);
+				default ->
+					throw new AssertionError("ActionEvent " + this + " undefined animation move type : " + animationMoveType);
+			};
+
+			List<Sprite> sp = new ArrayList<>();
+			final int max = 64;
+			for (int i = 0; i < max; i++) {
+				final int w = i;
+				sp.add(new BasicSprite(
+						0, 0,
+						GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize(),
+						GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize()) {
+
+					Point2D.Float p1 = (Point2D.Float) user.clone();
+					Point2D.Float p2 = (Point2D.Float) tgt.clone();
+
+					@Override
+					public void draw(GraphicsContext g) {
+						Graphics2D g2 = g.create();
+						g2.setColor(color);
+						g2.setStroke(new BasicStroke(Random.randomFloat() + widthBase));
+						g2.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
+						g2.dispose();
+					}
+				});
+			}
+			Animation a = Animation.of(new FrameTimeCounter(4), sp);
+			a.setRepeat(false);
+			return new AnimationSprite(a);//0の場合出ない。
 		}
-		return animation.clone();
-	}
+		if (animation == null) {
+			return new AnimationSprite();
+		}
+		Animation a = animation.clone();
+		AnimationSprite s = new AnimationSprite(animation) {
+			final Rectangle2D.Float tgtR = new EmptySprite(tgt.x, tgt.y, 32, 32).getBounds();
 
-	private AnimationSprite createAnimationSprite(Point2D.Float user, Point2D.Float tgt) {
-		Animation a = getAnimationClone();
-		AnimationSprite s = new AnimationSprite(animation);
-		if (animationMoveType == AnimationMoveType.ROTATE_TGT_TO_USER) {
-			//回転の場合
-			KImage[] images = a.getImages();
-
-			float kakudo = animationMoveType.createVector(user, tgt).angle + 90f;
-			BufferedImage[] newImages = new BufferedImage[images.length];
-			for (int i = 0; i < images.length; i++) {
-				newImages[i] = ImageEditor.rotate(images[i].get(), kakudo, null);
+			@Override
+			public void update() {
+				super.update();
+				if (getSpeed() != 0) {
+					if (tgtR.contains(getCenter())) {
+						getAnimation().setStop(true);
+						setVisible(false);
+					}
+				} else {
+					if (a.isEnded()) {
+						setVisible(false);
+					}
+				}
 			}
 
-			a.setImages(images);
-		}
+		};
 		if (animationMoveType == AnimationMoveType.NONE) {
 			s.setVisible(false);
 			return s;

@@ -23,8 +23,13 @@
  */
 package kinugasa.game.system;
 
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import kinugasa.game.GameOption;
 import kinugasa.object.Sprite;
 
@@ -62,6 +67,7 @@ public class BattleConfig {
 		public static String mgk = "M_ATK";
 
 		public static String canMagic = "CAN_MAGIC";
+
 	}
 
 	public static class Sound {
@@ -69,8 +75,11 @@ public class BattleConfig {
 		public static kinugasa.resource.sound.Sound avoidance;
 		public static kinugasa.resource.sound.Sound block;
 		public static kinugasa.resource.sound.Sound spellStart;
+		public static kinugasa.resource.sound.Sound shock;
 
 	}
+	public static kinugasa.game.system.StatusKey shockDamageKey;
+	public static int shockDamageDefault = 2;//ショック演出ダメージ基礎値
 
 	public static float atkDefPercent = 0.75f;//ダメージ効率
 	public static float damageMul = 2.5f;
@@ -163,4 +172,7 @@ public class BattleConfig {
 
 		public static String defaultAttrName = "";
 	}
+
+	public static Map<kinugasa.game.system.StatusKey, Color> damageColor = new HashMap<>();
+
 }

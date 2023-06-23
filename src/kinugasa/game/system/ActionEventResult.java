@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import kinugasa.object.AnimationSprite;
+import kinugasa.object.Sprite;
 
 /**
  *
@@ -36,7 +37,7 @@ import kinugasa.object.AnimationSprite;
 public class ActionEventResult {
 
 	private List<ActionResultType> resultTypePerTgt;
-	private List<AnimationSprite> animation;
+	private List<Sprite> animation;
 
 	public ActionEventResult() {
 		this(new ArrayList<>(), new ArrayList<>());
@@ -46,9 +47,9 @@ public class ActionEventResult {
 		this(List.of(resultTypePerTgt), animation == null ? Collections.emptyList() : List.of(animation));
 	}
 
-	public ActionEventResult(List<ActionResultType> resultTypePerTgt, List<AnimationSprite> animation) {
+	public ActionEventResult(List<ActionResultType> resultTypePerTgt, List<? extends Sprite> animation) {
 		this.resultTypePerTgt = resultTypePerTgt;
-		this.animation = animation;
+		this.animation = new ArrayList<>(animation);
 	}
 
 	public ActionEventResult add(ActionEventResult a) {
@@ -65,7 +66,7 @@ public class ActionEventResult {
 		resultTypePerTgt.add(t);
 	}
 
-	public List<AnimationSprite> getAnimation() {
+	public List<Sprite> getAnimation() {
 		return animation;
 	}
 

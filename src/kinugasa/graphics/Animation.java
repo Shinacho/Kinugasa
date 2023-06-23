@@ -23,10 +23,13 @@
  */
 package kinugasa.graphics;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import kinugasa.object.Sprite;
 import kinugasa.resource.KImage;
 import kinugasa.util.ArrayIndexModel;
 import kinugasa.util.SimpleIndex;
@@ -313,6 +316,22 @@ public class Animation implements Iterable<KImage>, Cloneable {
 	@Override
 	public String toString() {
 		return "Animation{" + "visibleTime=" + visibleTime + ", index=" + index + ", images=" + images + ", repeat=" + repeat + ", stop=" + stop + '}';
+	}
+
+	public static Animation of(TimeCounter tc, List<? extends Sprite> d) {
+		List<BufferedImage> images = new ArrayList<>();
+		for (Sprite s : d) {
+			BufferedImage i = ImageUtil.newImage((int) s.getWidth(), (int) s.getHeight());
+			Graphics2D g2 = ImageUtil.createGraphics2D(i, RenderingQuality.SPEED);
+			s.draw(g2);
+			g2.dispose();
+			images.add(i);
+		}
+		return new Animation(tc, images);
+	}
+
+	public static Animation of(TimeCounter tc, Sprite... d) {
+		return of(tc, Arrays.asList(d));
 	}
 
 }

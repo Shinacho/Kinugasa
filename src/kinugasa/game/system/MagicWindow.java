@@ -261,7 +261,7 @@ public class MagicWindow extends BasicSprite {
 							//即時実行してサブに効果を出力
 							//ターゲットを決定
 
-							Status tgt = Random.random(GameSystem.getInstance().getPartyStatus());
+							Status tgt = Random.randomChoice(GameSystem.getInstance().getPartyStatus());
 							tgt.setDamageCalcPoint();
 							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
 							StringBuilder sb = new StringBuilder();

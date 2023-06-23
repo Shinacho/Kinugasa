@@ -172,6 +172,9 @@ public class AnimationSprite extends ImageSprite {
 			return;
 		}
 		animation.update();
+		if (!animation.isRepeat() && animation.isEnded()) {
+			setVisible(false);
+		}
 		setImage(animation.getCurrentImage());
 	}
 

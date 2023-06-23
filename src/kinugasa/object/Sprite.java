@@ -256,6 +256,13 @@ public abstract class Sprite
 		return new Point2D.Float(bounds.x, bounds.y);
 	}
 
+	public Point2D.Float getRightLowerLocation() {
+		Point2D.Float p = getLocation();
+		p.x += getWidth();
+		p.y += getHeight();
+		return p;
+	}
+
 	/**
 	 * スプライトの左上の位置を設定します.
 	 *
@@ -418,7 +425,6 @@ public abstract class Sprite
 	public void switchVisible() {
 		setVisible(!isVisible());
 	}
-	
 
 	/**
 	 * このスプライトの左上のX座標を取得します.<br>

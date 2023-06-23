@@ -32,15 +32,43 @@ public abstract class ItemEqipTerm {
 
 	public abstract boolean canEqip(Status s, Item i);
 
-	public static final ItemEqipTerm ANY = new ItemEqipTerm() {
+	public enum Type {
+		ANY,
+		STATUS_IS,
+		RACE_IS,
+		STATUS_IS_OVER,;
+	}
+	private Type type;
+	private String tgtName;
+	private float value;
+
+	ItemEqipTerm(Type type, String tgtName, float value) {
+		this.type = type;
+		this.tgtName = tgtName;
+		this.value = value;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public String getTgtName() {
+		return tgtName;
+	}
+
+	public float getValue() {
+		return value;
+	}
+
+	public static final ItemEqipTerm ANY = new ItemEqipTerm(Type.ANY, "", 0f) {
 		@Override
 		public boolean canEqip(Status s, Item i) {
 			return true;
 		}
 	};
 
-	public static ItemEqipTerm statusIs(StatusKey key, int val) {
-		return new ItemEqipTerm() {
+	public static ItemEqipTerm statusIs(StatusKey key, float val) {
+		return new ItemEqipTerm(Type.STATUS_IS, key.getName(), val) {
 			@Override
 			public boolean canEqip(Status s, Item i) {
 				return (int) (s.getBaseStatus().get(key.getName()).getValue()) == val;
@@ -49,7 +77,7 @@ public abstract class ItemEqipTerm {
 	}
 
 	public static ItemEqipTerm raceIs(Race r) {
-		return new ItemEqipTerm() {
+		return new ItemEqipTerm(Type.RACE_IS, r.getName(), 0f) {
 			@Override
 			public boolean canEqip(Status s, Item i) {
 				return s.getRace().equals(r);
@@ -58,7 +86,7 @@ public abstract class ItemEqipTerm {
 	}
 
 	public static ItemEqipTerm statusIsOver(StatusKey key, float val) {
-		return new ItemEqipTerm() {
+		return new ItemEqipTerm(Type.STATUS_IS_OVER, key.getName(), val) {
 			@Override
 			public boolean canEqip(Status s, Item i) {
 				return (int) (s.getBaseStatus().get(key.getName()).getValue()) >= val;

@@ -137,8 +137,8 @@ public class LoopPoint {
 	@Override
 	public int hashCode() {
 		int hash = 3;
-		hash = 13 * hash + this.from;
-		hash = 13 * hash + this.to;
+		hash = (int) (13 * hash + this.from);
+		hash = (int) (13 * hash + this.to);
 		return hash;
 	}
 

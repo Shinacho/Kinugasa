@@ -24,7 +24,7 @@ package kinugasa.game.system;
  * THE SOFTWARE.
  */
 import java.util.List;
-import kinugasa.object.AnimationSprite;
+import kinugasa.object.Sprite;
 import kinugasa.util.FrameTimeCounter;
 
 /**
@@ -38,9 +38,9 @@ public class ActionResult {
 	private List<List<ActionResultType>> resultType;
 
 	private FrameTimeCounter waitTime;
-	private List<AnimationSprite> animation;
+	private List<Sprite> animation;
 
-	public ActionResult(ActionTarget target, List<List<ActionResultType>> resultType, FrameTimeCounter waitTime, List<AnimationSprite> animation) {
+	public ActionResult(ActionTarget target, List<List<ActionResultType>> resultType, FrameTimeCounter waitTime, List<Sprite> animation) {
 		this.target = target;
 		this.resultType = resultType;
 		this.waitTime = waitTime;
@@ -59,7 +59,7 @@ public class ActionResult {
 		return waitTime;
 	}
 
-	public List<AnimationSprite> getAnimation() {
+	public List<Sprite> getAnimation() {
 		return animation;
 	}
 

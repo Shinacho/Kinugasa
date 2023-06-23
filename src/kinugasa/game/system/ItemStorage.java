@@ -31,11 +31,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.db.DBValue;
 import kinugasa.resource.db.KResultSet;
 import kinugasa.resource.db.KSQLException;
 import kinugasa.resource.sound.SoundStorage;
+import kinugasa.util.StringUtil;
 
 /**
  * アイテムの一覧を定義するクラスです。
@@ -167,15 +170,15 @@ public class ItemStorage extends DBStorage<Item> {
 					for (var vv : tks) {
 						String type = vv.get(0).get();
 						String tgtName = vv.get(1).get();
-						switch (type) {
-							case "statusIs":
-								terms.add(ItemEqipTerm.statusIs(StatusKeyStorage.getInstance().get(tgtName), vv.get(2).asInt()));
+						switch (type.toUpperCase()) {
+							case "STATUS_IS":
+								terms.add(ItemEqipTerm.statusIs(StatusKeyStorage.getInstance().get(tgtName), vv.get(2).asFloat()));
 								break;
-							case "raceIs":
+							case "RACE_IS":
 								terms.add(ItemEqipTerm.raceIs(RaceStorage.getInstance().get(tgtName)));
 								break;
-							case "statusIsOver":
-								terms.add(ItemEqipTerm.statusIsOver(StatusKeyStorage.getInstance().get(tgtName), vv.get(2).asInt()));
+							case "STATUS_IS_OVER":
+								terms.add(ItemEqipTerm.statusIsOver(StatusKeyStorage.getInstance().get(tgtName), vv.get(2).asFloat()));
 								break;
 							default:
 								throw new AssertionError("undefined eqipTermType : " + vv);
@@ -375,15 +378,15 @@ public class ItemStorage extends DBStorage<Item> {
 					for (var vv : tks) {
 						String type = vv.get(0).get();
 						String tgtName = vv.get(1).get();
-						switch (type) {
-							case "statusIs":
-								terms.add(ItemEqipTerm.statusIs(StatusKeyStorage.getInstance().get(tgtName), vv.get(2).asInt()));
+						switch (type.toUpperCase()) {
+							case "STATUS_IS":
+								terms.add(ItemEqipTerm.statusIs(StatusKeyStorage.getInstance().get(tgtName), vv.get(2).asFloat()));
 								break;
-							case "raceIs":
+							case "RACE_IS":
 								terms.add(ItemEqipTerm.raceIs(RaceStorage.getInstance().get(tgtName)));
 								break;
-							case "statusIsOver":
-								terms.add(ItemEqipTerm.statusIsOver(StatusKeyStorage.getInstance().get(tgtName), vv.get(2).asInt()));
+							case "STATUS_IS_OVER":
+								terms.add(ItemEqipTerm.statusIsOver(StatusKeyStorage.getInstance().get(tgtName), vv.get(2).asFloat()));
 								break;
 							default:
 								throw new AssertionError("undefined eqipTermType : " + vv);
@@ -477,6 +480,128 @@ public class ItemStorage extends DBStorage<Item> {
 			return DBConnection.getInstance().execDirect("select count(*) from Item;").cell(0, 0).asInt();
 		}
 		return 0;
+	}
+
+	public void insert(Item i) {
+		if (!DBConnection.getInstance().isUsing()) {
+			throw new GameSystemException("DB CONNECTION IS NOT OPEN");
+		}
+		//ID変更前にアップグレード情報とアクションイベント紐づけをコピー
+		int next = asList().stream().mapToInt(p -> Integer.parseInt(p.getName().substring(1))).max().getAsInt() + 1;
+		String nid = "I" + StringUtil.zeroUme(next + "", 5);
+		{
+			String oid = i.getID();
+			DBConnection.getInstance().execDirect("insert into itemUpgradeValue (select '" + nid + "', od, val from itemUpgradeValue where itemID='" + oid + "');");
+			DBConnection.getInstance().execDirect("insert into ItemUpgradeEffect (select '" + nid + "', od, tgtNameCSV, valCSV from itemUpgradeValue where itemID='" + oid + "');");
+			DBConnection.getInstance().execDirect("insert into ITEMUPGRADEMaterial (select '" + nid + "', od, MaterialID, num from itemUpgradeValue where itemID='" + oid + "');");
+		}
+		//ID変更
+		i.setName(nid);
+		//eqipStatus
+		{
+			StatusValueSet eqipStatus = i.getEqStatus();
+			//0を消す
+			Set<StatusValue> remove = new HashSet<>();
+			for (StatusValue v : eqipStatus) {
+				if (v.isZero()) {
+					remove.add(v);
+				}
+			}
+			eqipStatus.removeAll(remove);
+			//delete
+			DBConnection.getInstance().execDirect("delete from EqipStatus where itemID='" + i.getID() + "';");
+			//insert
+			for (StatusValue v : eqipStatus) {
+				DBConnection.getInstance().execDirect("insert into EqipStatus values('" + i.getID() + "', '" + v.getKey().getName() + "', " + v.getValue() + ");");
+			}
+		}
+		//eqipAttr
+		{
+			AttributeValueSet eqipAttr = i.getEqAttr();
+			//0を消す
+			Set<AttributeValue> remove = new HashSet<>();
+			for (AttributeValue v : eqipAttr) {
+				if (v.isZero()) {
+					remove.add(v);
+				}
+			}
+			eqipAttr.removeAll(remove);
+			//delete
+			DBConnection.getInstance().execDirect("delete from EqipAttr where itemID='" + i.getID() + "';");
+			//insert
+			for (AttributeValue v : eqipAttr) {
+				DBConnection.getInstance().execDirect("insert into EqipAttr values('" + i.getID() + "', '" + v.getKey().getName() + "', " + v.getValue() + ");");
+			}
+		}
+		//eqipTerm
+		{
+			DBConnection.getInstance().execDirect("delete from eqipTerm where itemID='" + i.getID() + "';");
+			for (ItemEqipTerm t : i.getEqipTerm()) {
+				String itemID = i.getID();
+				String type = t.getType().toString();
+				String tgtName = t.getTgtName();
+				float val = t.getValue();
+				DBConnection.getInstance().execDirect("insert into eqipTerm values('" + itemID + "','" + type + "','" + tgtName + "'," + val + ");");
+			}
+		}
+		//Item_Material
+		{
+			DBConnection.getInstance().execDirect("delete from Item_Material where itemID='" + i.getID() + "';");
+			Map<Material, Integer> material = i.getDisasseMaterials();
+			for (Map.Entry<Material, Integer> e : material.entrySet()) {
+				for (int j = 0; j < e.getValue(); j++) {
+					DBConnection.getInstance().execDirect("insert into Item_Material values('" + i.getID() + "','" + e.getKey().getName() + "');");
+				}
+			}
+		}
+		{
+			for (ActionEvent e : i.getBattleEvent()) {
+				DBConnection.getInstance().execDirect("insert into item_actionEvent values('" + i.getID() + "', '" + e.getName() + "');");
+			}
+			for (ActionEvent e : i.getFieldEvent()) {
+				DBConnection.getInstance().execDirect("insert into item_actionEvent values('" + i.getID() + "', '" + e.getName() + "');");
+			}
+		}
+		String itemID = i.getID();
+		String visibleName = i.getVisibleName();
+		String desc = i.getDesc();
+		int val = i.getValue();
+		String slotID = i.getEqipmentSlot() == null ? "" : i.getEqipmentSlot().getName();
+		String weaponType = i.getWeaponMagicType() == null ? "" : i.getWeaponMagicType().getName();
+		int area = i.getArea();
+		boolean canSale = i.canSale();
+		int currentUpgradeNum = i.getCurrentUpgrade();
+		String dcsCSv = i.getDamageCalcStatusKey() == null ? "" : String.join(",", i.getDamageCalcStatusKey().stream().map(p -> p.getName()).collect(Collectors.toSet()));
+		int waitTime = i.getWaitTime();
+		String soundID = i.getSound() == null ? "" : i.getSound().getName();
+		int atkCount = i.getActionCount();
+		String selectType = i.getTargetOption() == null ? "" : i.getTargetOption().getSelectType().toString();
+		boolean iff = i.getTargetOption() == null ? false : i.getTargetOption().getIff() == TargetOption.IFF.ON;
+		String defaultTgtTeam = i.getTargetOption() == null ? "" : i.getTargetOption().getDefaultTarget().toString();
+		boolean switchTeam = i.getTargetOption() == null ? false : i.getTargetOption().getSwitchTeam() == TargetOption.SwitchTeam.OK;
+		boolean selfTarge = i.getTargetOption() == null ? false : i.getTargetOption().getSelfTarget() == TargetOption.SelfTarget.YES;
+		boolean targeting = i.getTargetOption() == null ? false : i.getTargetOption().getTargeting() == TargetOption.Targeting.ENABLE;
+		String sql = "insert into Item values("
+				+ "'" + itemID + "', "
+				+ "'" + visibleName + "', "
+				+ val + ", "
+				+ "'" + slotID + "', "
+				+ "'" + weaponType + "', "
+				+ area + ","
+				+ canSale + ", "
+				+ currentUpgradeNum + ","
+				+ "'" + dcsCSv + "', "
+				+ waitTime + ","
+				+ "'" + soundID + "', "
+				+ atkCount + ","
+				+ "'" + selectType + "', "
+				+ iff + ", "
+				+ "'" + defaultTgtTeam + "', "
+				+ switchTeam + ", "
+				+ selfTarge + ", "
+				+ targeting
+				+ ");";
+		DBConnection.getInstance().execDirect(sql);
 	}
 
 	/**

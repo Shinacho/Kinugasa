@@ -80,6 +80,8 @@ public class ActionTerm implements Nameable {
 				return tgt.getUser().getStatus().hasCondition(value);
 			case NO_CONDITION:
 				return !tgt.getUser().getStatus().hasCondition(value);
+			case HAS_ITEM_NAME_CONTAINS:
+				return tgt.getUser().getStatus().getItemBag().getItems().stream().anyMatch(p -> p.getVisibleName().contains(value));
 			case EQ_ANY_ITEM:
 				return tgt.getUser().getStatus().isEqip(ItemEqipmentSlotStorage.getInstance().get(value));
 			case NO_EQ_ANY_ITEM:

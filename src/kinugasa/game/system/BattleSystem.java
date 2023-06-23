@@ -23,6 +23,7 @@
  */
 package kinugasa.game.system;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,7 +98,7 @@ public class BattleSystem implements Drawable {
 	//ターンごとの魔法詠唱完了イベント
 	private LinkedHashMap<Integer, List<MagicSpell>> magics = new LinkedHashMap<>();
 	//表示中バトルアクション・アニメーション
-	private List<AnimationSprite> animation = new ArrayList<>();
+	private List<Sprite> animation = new ArrayList<>();
 	//実行中バトルアクションから生成されたアクション待機時間
 	private FrameTimeCounter currentBAWaitTime;
 	//行動中コマンド
@@ -773,8 +774,32 @@ public class BattleSystem implements Drawable {
 		commandsOfThisTurn.removeAll(remove);
 
 		//状態異常の効果時間を引く
+		enemies.forEach(p -> p.getStatus().setDamageCalcPoint());
 		enemies.stream().map(p -> p.getStatus()).forEach(p -> p.update());
+		GameSystem.getInstance().getPartyStatus().forEach(p -> p.setDamageCalcPoint());
 		GameSystem.getInstance().getPartyStatus().forEach(p -> p.update());
+		//ダメージ表示を可視化
+		for (var bc : List.of(GameSystem.getInstance().getParty(), enemies)
+				.stream().flatMap(p -> p.stream()).collect(Collectors.toList())) {
+
+			Map<StatusKey, Float> damage = bc.getStatus().calcDamage();
+			float damageSpriteLocationXBuf = 0f;
+			float damageSpriteLocationYBuf = 0f;
+			for (var e : BattleConfig.damageColor.entrySet()) {
+				StatusKey sk = e.getKey();
+				if (damage.containsKey(sk)) {
+					float x = bc.getSprite().getX() - 12 + damageSpriteLocationXBuf;
+					float y = bc.getSprite().getY() + damageSpriteLocationYBuf;
+					int val = Math.abs((int) (float) damage.get(sk));
+					Color c = e.getValue();
+					BattleDamageSprite sp = new BattleDamageSprite(x, y, val, c);
+					animation.add(sp);
+					damageSpriteLocationXBuf += 16;
+					damageSpriteLocationYBuf += 8;
+				}
+			}
+
+		}
 
 	}
 	//
@@ -831,6 +856,7 @@ public class BattleSystem implements Drawable {
 		if (prevBGM != null) {
 			prevBGM.play();
 		}
+		enemies.clear();
 		end = true;
 	}
 
@@ -841,6 +867,10 @@ public class BattleSystem implements Drawable {
 		assert battleResultValue != null : "battle is end, but result is null";
 
 		return battleResultValue;
+	}
+
+	public LinkedList<BattleCommand> getCommandsOfThisTurn() {
+		return commandsOfThisTurn;
 	}
 
 	//次のコマンドを取得。NPCまたはPC。NPCの場合は自動実行。魔法詠唱イベントも自動実行。
@@ -1401,10 +1431,16 @@ public class BattleSystem implements Drawable {
 		tgt.getTarget().forEach(p -> p.getStatus().setDamageCalcPoint());
 		ActionResult res = ba.exec(tgt);
 		setMsg(MessageType.ACTION_SUCCESS, currentCmd.getUser().getStatus(), ba, res, actionResultProc(user, ba, tgt));
-		//アイテム除去
-		if (ba instanceof Item) {//NPCの場合だけ
-			if (((Item) ba).hasBattlePT(ParameterType.ITEM_LOST)) {
-				user.getStatus().getItemBag().drop((Item) ba);
+		if (ba instanceof Item) {
+			for (ActionEvent e : ba.getBattleEvent()) {
+				if (e.getP() >= 1f || Random.percent(e.getP())) {
+					if (e.getParameterType() == ParameterType.ITEM_ADD) {
+						user.getStatus().getItemBag().add(ItemStorage.getInstance().get(e.getTgtName()));
+					}
+					if (e.getParameterType() == ParameterType.ITEM_LOST) {
+						user.getStatus().getItemBag().drop((Item) ba);
+					}
+				}
 			}
 		}
 		animation.addAll(res.getAnimation());
@@ -1668,9 +1704,15 @@ public class BattleSystem implements Drawable {
 				tgt.getStatus().setDamageCalcPoint();
 				ActionResult res = itemPassAndUse.exec(BattleTargetSystem.instantTarget(currentCmd.getUser(), itemPassAndUse).setTarget(List.of(tgt)));
 				//ドロップアイテムイベントの実行
-				if (itemPassAndUse.getBattleEvent().stream().filter(p -> p.getParameterType() == ParameterType.ITEM_LOST).count() > 0) {
-					//TODO:暫定
-					currentCmd.getUser().getStatus().getItemBag().drop(itemPassAndUse);
+				for (ActionEvent e : itemPassAndUse.getBattleEvent()) {
+					if (e.getP() >= 1f || Random.percent(e.getP())) {
+						if (itemPassAndUse.hasBattlePT(ParameterType.ITEM_LOST)) {
+							currentCmd.getUser().getStatus().getItemBag().drop(itemPassAndUse);
+						}
+						if (e.getParameterType() == ParameterType.ITEM_ADD) {
+							currentCmd.getUser().getStatus().getItemBag().add(ItemStorage.getInstance().get(e.getTgtName()));
+						}
+					}
 				}
 				//アクション更新
 				GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction(true));
@@ -1705,7 +1747,9 @@ public class BattleSystem implements Drawable {
 			return;
 		}
 		//攻撃ターゲットセレクト確定(ONEのみ
-		assert stage.getStage() == Stage.TARGET_SELECT : "target select not yet :" + stage.getStage();
+
+		assert stage.getStage()
+				== Stage.TARGET_SELECT : "target select not yet :" + stage.getStage();
 		if (!afterMove) {
 			assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.ITEM : "atk commit, but action is item:" + messageWindowSystem.getCmdW().getSelectedCmd();
 			assert messageWindowSystem.getCmdW().getSelectedCmd().getType() != ActionType.OTHER : "atk commit, but action is other:" + messageWindowSystem.getCmdW().getSelectedCmd();
@@ -2074,13 +2118,18 @@ public class BattleSystem implements Drawable {
 
 		//効果の終わったアニメーションを取り除く
 		//アニメーションはアクションの待機時間より長く表示することも可能なためstage外で実施
-		List<AnimationSprite> removeList = new ArrayList<>();
-		for (AnimationSprite a : animation) {
-			if (a.getAnimation() == null) {//nullは基本入っていないのでもしあったら消す
-				removeList.add(a);
-				continue;
+		List<Sprite> removeList = new ArrayList<>();
+		for (Sprite a : animation) {
+			if (a instanceof AnimationSprite) {
+				if (((AnimationSprite) a).getAnimation() == null) {
+					removeList.add(a);
+					continue;
+				}
+				if (((AnimationSprite) a).getAnimation().isEnded()) {
+					removeList.add(a);
+				}
 			}
-			if (a.getAnimation().isEnded() || !a.isVisible() || !a.isExist()) {
+			if (!a.isVisible() || !a.isExist()) {
 				removeList.add(a);
 			}
 		}
@@ -2116,6 +2165,8 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		commandsOfThisTurn.removeAll(removeList2);
+		boolean dead = false;
+		boolean deadIsPlayer = false;
 		//アンターゲット状態異常になったキャラのスプライトを非表示にする
 		for (BattleCharacter c : GameSystem.getInstance().getParty()) {
 			for (String cndKey : BattleConfig.getUntargetConditionNames()) {
@@ -2125,6 +2176,8 @@ public class BattleSystem implements Drawable {
 					}
 					c.getSprite().setVisible(false);
 					deadEnemyName.put(c.getName(), I18N.get(GameSystemI18NKeys.XはX状態になった, c.getName(), ConditionStorage.getInstance().get(cndKey).getKey().getDesc()));
+					dead = true;
+					deadIsPlayer = true;
 				}
 			}
 		}
@@ -2139,27 +2192,78 @@ public class BattleSystem implements Drawable {
 					if (((Enemy) c).getDeadSound() != null) {
 						((Enemy) c).getDeadSound().load().stopAndPlay();
 					}
+					dead = true;
 				}
 			}
 		}
+		//死亡者がいる場合はショック演出
+		if (dead) {
+			if (BattleConfig.Sound.shock != null) {
+				BattleConfig.Sound.shock.load().stopAndPlay();
+			}
+			//味方の場合3倍、敵の場合1倍のSANダメージ
+			int damageP = BattleConfig.shockDamageDefault;
+			int damageE = BattleConfig.shockDamageDefault;
+			if (deadIsPlayer) {
+				damageP *= 5;
+			} else {
+				damageE *= 5;
+			}
+			float damageSpriteLocationXBuf = 0f;
+			float damageSpriteLocationYBuf = 0f;
+			for (BattleCharacter c : GameSystem.getInstance().getParty()) {
+				c.getStatus().getBaseStatus().get(BattleConfig.shockDamageKey.getName()).add(-damageP);
+				Color damageSpriteColor = BattleConfig.damageColor.containsKey(BattleConfig.shockDamageKey)
+						? BattleConfig.damageColor.get(BattleConfig.shockDamageKey)
+						: Color.RED;
+				float x = c.getSprite().getX() - 12 + damageSpriteLocationXBuf;
+				float y = c.getSprite().getY() + damageSpriteLocationYBuf;
+				int v = damageE;
+				BattleDamageSprite sp = new BattleDamageSprite(x, y, v, damageSpriteColor);
+				animation.add(sp);
+				damageSpriteLocationXBuf += 16;
+				damageSpriteLocationYBuf += 8;
+			}
+			damageSpriteLocationXBuf = 0f;
+			damageSpriteLocationYBuf = 0f;
+			for (BattleCharacter c : enemies) {
+				c.getStatus().getBaseStatus().get(BattleConfig.shockDamageKey.getName()).add(-damageE);
+				Color damageSpriteColor = BattleConfig.damageColor.containsKey(BattleConfig.shockDamageKey)
+						? BattleConfig.damageColor.get(BattleConfig.shockDamageKey)
+						: Color.RED;
+				float x = c.getSprite().getX() - 12 + damageSpriteLocationXBuf;
+				float y = c.getSprite().getY() + damageSpriteLocationYBuf;
+				int v = damageE;
+				BattleDamageSprite sp = new BattleDamageSprite(x, y, v, damageSpriteColor);
+				animation.add(sp);
+				damageSpriteLocationXBuf += 16;
+				damageSpriteLocationYBuf += 8;
+			}
+		}
+		try {
+			Thread.sleep(400);//暫定
+		} catch (InterruptedException ex) {
+		}
+
 		List<String> text = new ArrayList<>();
 		//1行目
-		text
-				.add(I18N.get(GameSystemI18NKeys.XのX, user.getName(), ba.getName()) + " !!");//改行不要
+		text.add(I18N.get(GameSystemI18NKeys.XのX, user.getName(), ba.getName()) + " !!");//改行不要
 
 		//2行目以降
 		class Tgt {
 
+			BasicSprite sprite;
 			String name;
 			Map<StatusKey, Float> damage;
 
-			Tgt(String name, Map<StatusKey, Float> damage) {
+			Tgt(String name, BasicSprite sp, Map<StatusKey, Float> damage) {
 				this.name = name;
+				this.sprite = sp;
 				this.damage = damage;
 			}
 
 		}
-		List<Tgt> map = tgt.getTarget().stream().map(p -> new Tgt(p.getName(), p.getStatus().calcDamage())).collect(Collectors.toList());
+		List<Tgt> map = tgt.getTarget().stream().map(p -> new Tgt(p.getName(), p.getSprite(), p.getStatus().calcDamage())).collect(Collectors.toList());
 
 		//ダメージが発生していない場合はミスを表示
 		if (map.stream().flatMap(f -> f.damage.values().stream()).collect(Collectors.toList()).isEmpty()
@@ -2176,6 +2280,20 @@ public class BattleSystem implements Drawable {
 				for (Tgt t : map) {
 					if (t.damage.containsKey(StatusKeyStorage.getInstance().get(statusKey))) {
 						avg += t.damage.get(StatusKeyStorage.getInstance().get(statusKey));
+					}
+					float damageSpriteLocationXBuf = 0f;
+					float damageSpriteLocationYBuf = 0f;
+					for (Map.Entry<StatusKey, Float> d : t.damage.entrySet()) {
+						Color damageSpriteColor = BattleConfig.damageColor.containsKey(d.getKey())
+								? BattleConfig.damageColor.get(d.getKey())
+								: Color.WHITE;
+						float x = t.sprite.getX() - 12 + damageSpriteLocationXBuf;
+						float y = t.sprite.getY() + damageSpriteLocationYBuf;
+						int v = Math.abs((int) (float) d.getValue());
+						BattleDamageSprite sp = new BattleDamageSprite(x, y, v, damageSpriteColor);
+						animation.add(sp);
+						damageSpriteLocationXBuf += 16;
+						damageSpriteLocationYBuf += 8;
 					}
 				}
 				avg /= map.size() == 0 ? 1 : map.size();
@@ -2215,6 +2333,20 @@ public class BattleSystem implements Drawable {
 							txt += deadEnemyName.get(t.name);
 						}
 						text.add(txt);
+					}
+					float damageSpriteLocationXBuf = 0f;
+					float damageSpriteLocationYBuf = 0f;
+					for (Map.Entry<StatusKey, Float> d : t.damage.entrySet()) {
+						Color damageSpriteColor = BattleConfig.damageColor.containsKey(d.getKey())
+								? BattleConfig.damageColor.get(d.getKey())
+								: Color.WHITE;
+						float x = t.sprite.getX() - 12 + damageSpriteLocationXBuf;
+						float y = t.sprite.getY() + damageSpriteLocationYBuf;
+						int v = Math.abs((int) (float) d.getValue());
+						BattleDamageSprite sp = new BattleDamageSprite(x, y, v, damageSpriteColor);
+						animation.add(sp);
+						damageSpriteLocationXBuf += 16;
+						damageSpriteLocationYBuf += 8;
 					}
 				}
 			}
@@ -2300,7 +2432,7 @@ public class BattleSystem implements Drawable {
 		return stage.getStage() == Stage.EXECUTING_ACTION;
 	}
 
-	List<Enemy> getEnemies() {
+	public List<Enemy> getEnemies() {
 		return enemies;
 	}
 

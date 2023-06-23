@@ -25,7 +25,16 @@ package kinugasa.game.system;
 
 import java.awt.image.BufferedImage;
 import kinugasa.game.GameLog;
-import static kinugasa.game.system.AnimationMoveType.ROTATE_TGT_TO_USER;
+import static kinugasa.game.system.AnimationMoveType.BEAM_BLACK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_BLACK_THICK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_BLUE;
+import static kinugasa.game.system.AnimationMoveType.BEAM_BLUE_THICK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_GREN;
+import static kinugasa.game.system.AnimationMoveType.BEAM_GREN_THICK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_RED;
+import static kinugasa.game.system.AnimationMoveType.BEAM_RED_THICK;
+import static kinugasa.game.system.AnimationMoveType.BEAM_WHITE;
+import static kinugasa.game.system.AnimationMoveType.BEAM_WHITE_THICK;
 import kinugasa.graphics.ImageEditor;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.KImage;
@@ -44,22 +53,22 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 	private StatusDamageCalcModelStorage() {
 		add(new StatusDamageCalcModel("DEFAULT") {
 			@Override
-			public ActionEventResult exec(BattleCharacter user, ActionEvent ba, BattleCharacter tgt) {
+			public ActionEventResult exec(BattleCharacter user, ActionEvent be, BattleCharacter tgt) {
 
-				switch (ba.getParameterType()) {
+				switch (be.getParameterType()) {
 					case ADD_CONDITION:
 					case ATTR_IN:
 					case ITEM_ADD:
 					case ITEM_LOST:
 					case NONE:
 					case REMOVE_CONDITION:
-						throw new GameSystemException("damage calculation: Invalid damage calc type:" + ba);
+						throw new GameSystemException("damage calculation: Invalid damage calc type:" + be);
 					case STATUS:
-						switch (ba.getDamageCalcType()) {
+						switch (be.getDamageCalcType()) {
 							case DIRECT:
 							case PERCENT_OF_MAX:
 							case PERCENT_OF_NOW:
-								throw new GameSystemException("damage calculation: Invalid damage calc type:" + ba);
+								throw new GameSystemException("damage calculation: Invalid damage calc type:" + be);
 							case USE_DAMAGE_CALC:
 								//OK
 								break;
@@ -70,23 +79,23 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					default:
 						throw new AssertionError("undefined parameter type");
 				}
-				assert ba.getParameterType() == ParameterType.STATUS : "damage calculation: Invalid damage calc type:" + ba;
-				assert ba.getDamageCalcType() == DamageCalcType.USE_DAMAGE_CALC : "damage calculation: Invalid damage calc type:" + ba;
+				assert be.getParameterType() == ParameterType.STATUS : "damage calculation: Invalid damage calc type:" + be;
+				assert be.getDamageCalcType() == DamageCalcType.USE_DAMAGE_CALC : "damage calculation: Invalid damage calc type:" + be;
 
 				//割合へのダメージの場合エラーとする
-				if (StatusKeyStorage.getInstance().get(ba.getTgtName()).getMax() == 1f) {
+				if (StatusKeyStorage.getInstance().get(be.getTgtName()).getMax() == 1f) {
 					throw new GameSystemException("only non-float status can be used to calc damage.");
 				}
 
 //				//P判定はActionEventで実施済み
-//				if (!Random.percent(ba.getP())) {
+//				if (!Random.percent(be.getP())) {
 //					if (GameSystem.isDebugMode()) {
 //						kinugasa.game.GameLog.print("damage calculation, calceled by P.");
 //					}
 //					return new ActionEventResult(ActionResultType.MISS, null);
 //				}
 				//魔法or攻撃
-				boolean isAtk = ba.getAttr().getOrder() < 10;
+				boolean isAtk = be.getAttr().getOrder() < 10;
 				StringBuilder desc = new StringBuilder();
 				desc.append("SDCM : ").append(user.getName()).append("->").append(tgt.getName()).append(":");
 
@@ -94,8 +103,8 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				if (isAtk) {
 					desc.append("ATK,");
 					//baのvalue * spread
-					float spread = (ba.getValue() * ba.getSpread());
-					float value = ba.getValue();
+					float spread = (be.getValue() * be.getSpread());
+					float value = be.getValue();
 					if (Random.percent(0.5f)) {
 						value += spread;
 					} else {
@@ -127,7 +136,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					}
 
 					//ATTR計算
-					value *= tgt.getStatus().getEffectedAttrIn().get(ba.getAttr().getName()).getValue();
+					value *= tgt.getStatus().getEffectedAttrIn().get(be.getAttr().getName()).getValue();
 					//DCS
 					//ユーザの装備品に計算ステータスキーがあるか検査
 					Item weapon = user.getStatus().getEqipment().get(ItemEqipmentSlotStorage.getInstance().get(BattleConfig.weaponSlotName));
@@ -172,7 +181,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					}
 
 					//ターゲットステータス名をdescに追加
-					desc.append(ba.getTgtName() + ",");
+					desc.append(be.getTgtName() + ",");
 
 					//value設定
 					value *= BattleConfig.damageMul;
@@ -185,17 +194,16 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 					}
 					desc.append("result[" + value + "]");
-					tgt.getStatus().getBaseStatus().get(ba.getTgtName()).add(value);
+					tgt.getStatus().getBaseStatus().get(be.getTgtName()).add(value);
 
 					//アニメーション処理
 					AnimationSprite sprite = null;
-					if (ba.hasAnimation()) {
+					if (be.hasAnimation()) {
 						//アニメーションスプライト
-						sprite = new AnimationSprite(ba.getAnimationClone());
+						sprite = be.createAnimationSprite(user.getCenter(), tgt.getCenter());
 						sprite.update();
 						sprite.setSizeByImage();
-						sprite.getAnimation().setRepeat(false);//重要、アニメーションが消えなくなる
-						switch (ba.getAnimationMoveType()) {
+						switch (be.getAnimationMoveType()) {
 							case NONE:
 								sprite.setVisible(false);
 								sprite.setExist(false);
@@ -206,19 +214,19 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 							case USER:
 								sprite.setLocationByCenter(user.getSprite().getCenter());
 								break;
-							case ROTATE_TGT_TO_USER:
-								//回転の場合
-								KImage[] images = sprite.getAnimation().getImages();
-
-								float kakudo = ba.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()).angle + 90f;
-								BufferedImage[] newImages = new BufferedImage[images.length];
-								for (int i = 0; i < images.length; i++) {
-									newImages[i] = ImageEditor.rotate(images[i].get(), kakudo, null);
-								}
-								sprite.getAnimation().setImages(images);
+							case BEAM_BLACK:
+							case BEAM_BLACK_THICK:
+							case BEAM_BLUE:
+							case BEAM_BLUE_THICK:
+							case BEAM_GREN:
+							case BEAM_GREN_THICK:
+							case BEAM_RED:
+							case BEAM_RED_THICK:
+							case BEAM_WHITE:
+							case BEAM_WHITE_THICK:
 								break;
 							default:
-								sprite.setVector(ba.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()));
+								sprite.setVector(be.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()));
 								break;
 						}
 					}
@@ -233,8 +241,8 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				//魔法----------------------------------------------------------------------------------------------
 				desc.append("MGK,");
 				//baのvalue * spread
-				float spread = (ba.getValue() * ba.getSpread());
-				float value = ba.getValue();
+				float spread = (be.getValue() * be.getSpread());
+				float value = be.getValue();
 				if (Random.percent(0.5f)) {
 					value += spread;
 				} else {
@@ -266,7 +274,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				}
 
 				//ATTR計算
-				value *= tgt.getStatus().getEffectedAttrIn().get(ba.getAttr().getName()).getValue();
+				value *= tgt.getStatus().getEffectedAttrIn().get(be.getAttr().getName()).getValue();
 
 				//DCS
 				//ユーザの装備品に計算ステータスキーがあるか検査
@@ -312,7 +320,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 				}
 
 				//ターゲットステータス名をdescに追加
-				desc.append(ba.getTgtName() + ",");
+				desc.append(be.getTgtName() + ",");
 
 				//value設定
 				value *= BattleConfig.damageMul;
@@ -325,17 +333,16 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 					return new ActionEventResult(ActionResultType.MISS, new AnimationSprite());
 				}
 				desc.append("result[" + value + "]");
-				tgt.getStatus().getBaseStatus().get(ba.getTgtName()).add(value);
+				tgt.getStatus().getBaseStatus().get(be.getTgtName()).add(value);
 
 				//アニメーション処理
 				AnimationSprite sprite = null;
-				if (ba.hasAnimation()) {
+				if (be.hasAnimation()) {
 					//アニメーションスプライト
-					sprite = new AnimationSprite(ba.getAnimationClone());
+					sprite = be.createAnimationSprite(user.getCenter(), tgt.getCenter());
 					sprite.update();
 					sprite.setSizeByImage();
-					sprite.getAnimation().setRepeat(false);//重要、アニメーションが消えなくなる
-					switch (ba.getAnimationMoveType()) {
+					switch (be.getAnimationMoveType()) {
 						case NONE:
 							sprite.setVisible(false);
 							sprite.setExist(false);
@@ -346,19 +353,19 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 						case USER:
 							sprite.setLocationByCenter(user.getSprite().getCenter());
 							break;
-						case ROTATE_TGT_TO_USER:
-							//回転の場合
-							KImage[] images = sprite.getAnimation().getImages();
-
-							float kakudo = ba.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()).angle + 90f;
-							BufferedImage[] newImages = new BufferedImage[images.length];
-							for (int i = 0; i < images.length; i++) {
-								newImages[i] = ImageEditor.rotate(images[i].get(), kakudo, null);
-							}
-							sprite.getAnimation().setImages(images);
+						case BEAM_BLACK:
+						case BEAM_BLACK_THICK:
+						case BEAM_BLUE:
+						case BEAM_BLUE_THICK:
+						case BEAM_GREN:
+						case BEAM_GREN_THICK:
+						case BEAM_RED:
+						case BEAM_RED_THICK:
+						case BEAM_WHITE:
+						case BEAM_WHITE_THICK:
 							break;
 						default:
-							sprite.setVector(ba.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()));
+							sprite.setVector(be.getAnimationMoveType().createVector(user.getCenter(), tgt.getCenter()));
 							break;
 					}
 				}

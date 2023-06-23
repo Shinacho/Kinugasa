@@ -105,7 +105,7 @@ public class BattleTargetSystem implements Drawable {
 	//-------------------------------static-------------------------------------
 	//
 	//eから最も近いPCを返す。
-	static BattleCharacter nearPC(BattleCharacter e) {
+	public static BattleCharacter nearPC(BattleCharacter e) {
 		float distance = Integer.MAX_VALUE;
 		BattleCharacter result = null;
 		for (BattleCharacter c : getInstance().allPCs(e.getSprite().getCenter(), Integer.MAX_VALUE)) {
@@ -117,7 +117,7 @@ public class BattleTargetSystem implements Drawable {
 		return result;
 	}
 
-	static BattleCharacter nearEnemy(BattleCharacter pc) {
+	public static BattleCharacter nearEnemy(BattleCharacter pc) {
 		float distance = Integer.MAX_VALUE;
 		BattleCharacter result = null;
 		for (BattleCharacter c : getInstance().allEnemies(pc.getSprite().getCenter(), Integer.MAX_VALUE)) {

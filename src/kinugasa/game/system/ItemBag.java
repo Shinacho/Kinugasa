@@ -92,11 +92,28 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 	}
 
 	public void drop(Item i) {
-		if (items.contains(i)) {
-			items.remove(i);
-			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.print("ItemBags,dropItem:" + i);
+		Item remove = null;
+		for (Item item : this) {
+			if (i.getName().equals(item.getName())) {
+				remove = item;
+				break;
 			}
+		}
+		if (remove != null) {
+			items.remove(remove);
+		}
+	}
+
+	public void drop(String itemID) {
+		Item remove = null;
+		for (Item item : this) {
+			if (itemID.equals(item.getName())) {
+				remove = item;
+				break;
+			}
+		}
+		if (remove != null) {
+			items.remove(remove);
 		}
 	}
 
@@ -119,10 +136,6 @@ public class ItemBag implements Cloneable, Iterable<Item> {
 
 	public Item get(int idx) {
 		return items.get(idx);
-	}
-
-	void drop(String name) {
-		drop(ItemStorage.getInstance().get(name));
 	}
 
 	public boolean contains(Item i) {

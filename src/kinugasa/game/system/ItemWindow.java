@@ -264,7 +264,9 @@ public class ItemWindow extends BasicSprite {
 							//即時実行してサブに効果を出力
 							Status tgt = getSelectedPC();
 							tgt.setDamageCalcPoint();
-							ActionResult r = i.exec(ActionTarget.instantTarget(getSelectedPC(), i).setInField(true));
+							ActionTarget t;
+							ActionResult r = i.exec(t = ActionTarget.instantTarget(getSelectedPC(), i).setInField(true));
+							ConditionManager.getInstance().setCondition(t.getTarget().stream().map(p -> p.getStatus()).collect(Collectors.toList()));
 							StringBuilder sb = new StringBuilder();
 							sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getVisibleName()));
 							sb.append(Text.getLineSep());
@@ -300,8 +302,11 @@ public class ItemWindow extends BasicSprite {
 							sb.append(Text.getLineSep());
 							for (Status s : GameSystem.getInstance().getPartyStatus()) {
 								s.setDamageCalcPoint();
-								ActionResult r = i.exec(ActionTarget.instantTarget(getSelectedPC(), i).setInField(true));
+								ActionTarget tgt;
+								ActionResult r = i.exec(tgt = ActionTarget.instantTarget(getSelectedPC(), i).setInField(true));
+								ConditionManager.getInstance().setCondition(tgt.getTarget().stream().map(p -> p.getStatus()).collect(Collectors.toList()));
 								if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
+
 									//成功
 									//効果測定・・・全行表示できると思うので、そうする
 									Map<StatusKey, Float> map = s.calcDamage();
@@ -661,7 +666,9 @@ public class ItemWindow extends BasicSprite {
 		Status tgt = GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect());
 		getSelectedPC().passItem(tgt, i);
 		tgt.setDamageCalcPoint();
-		ActionResult r = i.exec(ActionTarget.instantTarget(getSelectedPC(), i, tgt).setInField(true));
+		ActionTarget t;
+		ActionResult r = i.exec(t = ActionTarget.instantTarget(getSelectedPC(), i, tgt).setInField(true));
+		ConditionManager.getInstance().setCondition(t.getTarget().stream().map(p -> p.getStatus()).collect(Collectors.toList()));
 		StringBuilder sb = new StringBuilder();
 		sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getVisibleName()));
 		sb.append(Text.getLineSep());
@@ -697,6 +704,13 @@ public class ItemWindow extends BasicSprite {
 					if (e.getP() >= 1f || Random.percent(e.getP())) {
 						tgt.getItemBag().drop(i);
 						sb.append(I18N.get(GameSystemI18NKeys.Xを失った, i.getVisibleName()));
+						sb.append(Text.getLineSep());
+					}
+				}
+				if (e.getParameterType() == ParameterType.ITEM_ADD) {
+					if (e.getP() >= 1f || Random.percent(e.getP())) {
+						tgt.getItemBag().add(ItemStorage.getInstance().get(e.getTgtName()));
+						sb.append(I18N.get(GameSystemI18NKeys.XをX個入手した, i.getVisibleName(), "1"));
 						sb.append(Text.getLineSep());
 					}
 				}
@@ -796,6 +810,12 @@ public class ItemWindow extends BasicSprite {
 			getSelectedPC().removeEqip(i);
 		}
 		getSelectedPC().getItemBag().drop(i);
+		//アイテム追加
+		for (ActionEvent e : i.getFieldEvent()) {
+			if (e.getParameterType() == ParameterType.ITEM_ADD) {
+				getSelectedPC().getItemBag().add(ItemStorage.getInstance().get(e.getTgtName()));
+			}
+		}
 		msg.setText(I18N.get(GameSystemI18NKeys.XはXを捨てた, getSelectedPC().getName(), i.getVisibleName()));
 		msg.allText();
 		getSelectedPC().updateAction();

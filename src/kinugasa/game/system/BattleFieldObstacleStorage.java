@@ -47,7 +47,7 @@ public class BattleFieldObstacleStorage extends Storage<BattleFieldObstacle> {
 	public List<BattleFieldObstacle> createN(int n, String... name) {
 		List<BattleFieldObstacle> result = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
-			result.add(get(Random.random(name)).clone());
+			result.add(get(Random.randomChoice(name)).clone());
 		}
 		return result;
 	}

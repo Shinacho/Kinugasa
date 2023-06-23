@@ -251,7 +251,7 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 
 	@Override
 	public final T random() {
-		return Random.random(asList());
+		return Random.randomChoice(asList());
 	}
 
 	@Override

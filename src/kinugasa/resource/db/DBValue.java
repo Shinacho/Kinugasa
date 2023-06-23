@@ -57,6 +57,13 @@ public class DBValue {
 		return Integer.parseInt(value);
 	}
 
+	public long asLong() {
+		if (value == null || value.isEmpty()) {
+			return 0L;
+		}
+		return Long.parseLong(value);
+	}
+
 	public int[] asIntArray(String sep) {
 		String[] v = safeSplit(sep);
 		int[] res = new int[v.length];

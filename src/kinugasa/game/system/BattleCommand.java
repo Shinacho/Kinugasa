@@ -64,7 +64,7 @@ public class BattleCommand {
 		assert !ba.isEmpty() : user.getStatus().getName() + " s BA is EMPTY";
 	}
 
-	BattleCommand setAction(List<Action> ba) {
+	public BattleCommand setAction(List<Action> ba) {
 		this.ba = ba;
 		return this;
 	}
@@ -73,7 +73,7 @@ public class BattleCommand {
 		return magicSpell;
 	}
 
-	BattleCommand setMagicSpell(boolean magicSpell) {
+	public BattleCommand setMagicSpell(boolean magicSpell) {
 		this.magicSpell = magicSpell;
 		return this;
 	}

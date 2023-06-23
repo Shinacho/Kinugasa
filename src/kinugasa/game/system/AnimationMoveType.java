@@ -32,13 +32,77 @@ import kinugasa.object.KVector;
  * @author Shinacho<br>
  */
 public enum AnimationMoveType {
-	FIELD(0) {
+	BEAM_WHITE(0) {
+
 		@Override
 		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
 			return new KVector(0, 0);
 		}
 	},
-	ROTATE_TGT_TO_USER(0) {
+	BEAM_BLACK(0) {
+
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	BEAM_RED(0) {
+
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	BEAM_GREN(0) {
+
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	BEAM_BLUE(0) {
+
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	BEAM_WHITE_THICK(0) {
+
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	BEAM_BLACK_THICK(0) {
+
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	BEAM_RED_THICK(0) {
+
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	BEAM_GREN_THICK(0) {
+
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+	},
+	BEAM_BLUE_THICK(0) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			return new KVector(0, 0);
+		}
+
+	},
+	FIELD(0) {
 		@Override
 		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
 			return new KVector(0, 0);
@@ -202,6 +266,15 @@ public enum AnimationMoveType {
 		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
 			KVector v = new KVector();
 			v.setAngle(tgt, user);
+			v.setSpeed(getSpeed());
+			return v;
+		}
+	},
+	USER_TO_TGT_64(64) {
+		@Override
+		public KVector createVector(Point2D.Float user, Point2D.Float tgt) {
+			KVector v = new KVector();
+			v.setAngle(user, tgt);
 			v.setSpeed(getSpeed());
 			return v;
 		}

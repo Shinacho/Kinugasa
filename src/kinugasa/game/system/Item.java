@@ -69,6 +69,11 @@ public class Item extends Action implements Nameable, Cloneable {
 		return this;
 	}
 
+	@Override
+	public void setName(String name) {
+		super.setName(name); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+	}
+
 	//マテリアルと金額は別途判定すること
 	public boolean canUpgrade() {
 		return currentUpgrade < upgradeMaterials.size();
@@ -143,6 +148,10 @@ public class Item extends Action implements Nameable, Cloneable {
 		return super.getName();
 	}
 
+	public String getID() {
+		return getName();
+	}
+
 	public int getValue() {
 		return value;
 	}
@@ -195,18 +204,14 @@ public class Item extends Action implements Nameable, Cloneable {
 
 	@Override
 	public Item clone() {
-		try {
-			Item i = (Item) super.clone();
-			if (eqAttr != null) {
-				i.eqAttr = eqAttr.clone();
-			}
-			if (eqStatus != null) {
-				i.eqStatus = eqStatus.clone();
-			}
-			return i;
-		} catch (CloneNotSupportedException ex) {
-			throw new InternalError(ex);
+		Item i = (Item) super.clone();
+		if (eqAttr != null) {
+			i.eqAttr = eqAttr.clone();
 		}
+		if (eqStatus != null) {
+			i.eqStatus = eqStatus.clone();
+		}
+		return i;
 	}
 
 	@Override

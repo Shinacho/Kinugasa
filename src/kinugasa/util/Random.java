@@ -26,8 +26,13 @@ package kinugasa.util;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import kinugasa.object.KVector;
+import kinugasa.object.Sprite;
+import kinugasa.resource.Nameable;
+import kinugasa.resource.Storage;
 
 /**
  * 乱数とダイスのエミュレートを提供します.
@@ -218,14 +223,20 @@ public final class Random implements Serializable {
 		return to;
 	}
 
-	public static <T> T random(List<T> t) {
-		int i = randomAbsInt(t.size());
-		return t.get(i);
+	public static <V extends Nameable> V randomChoice(Storage<V> v) {
+		return randomChoice(v.asList());
 	}
 
-	public static <T> T random(T... t) {
-		int i = randomAbsInt(t.length);
-		return t[i];
+	public static <K, V> V randomChoice(Map<K, V> map) {
+		return randomChoice(new ArrayList<>(map.values()));
+	}
+
+	public static <T> T randomChoice(List<T> t) {
+		return t.get(randomAbsInt(t.size()));
+	}
+
+	public static <T> T randomChoice(T... t) {
+		return t[randomAbsInt(t.length)];
 	}
 
 	public static Point2D.Float randomLocation(Rectangle2D r) {
@@ -236,6 +247,18 @@ public final class Random implements Serializable {
 		float x = (float) (r.getX() + randomAbsInt((int) (r.getWidth() - w)));
 		float y = (float) (r.getY() + randomAbsInt((int) (r.getHeight() - h)));
 		return new Point2D.Float(x, y);
+	}
+
+	public static Point2D.Float randomLocation(Point2D.Float center, float r) {
+		Point2D.Float p = (Point2D.Float) center.clone();
+		KVector v = new KVector(randomFloat(360), randomFloat(r));
+		p.x += v.getLocation().x;
+		p.y += v.getLocation().y;
+		return p;
+	}
+
+	public static Point2D.Float randomLocation(Sprite s, float r) {
+		return randomLocation(s.getCenter(), r);
 	}
 
 	/**

@@ -35,6 +35,10 @@ import kinugasa.game.GraphicsContext;
  */
 public class EmptySprite extends BasicSprite {
 
+	public EmptySprite() {
+		super(0, 0, 0, 0);
+	}
+
 	public EmptySprite(Point2D.Float p, Dimension d) {
 		this(p.x, p.y, d.width, d.height);
 	}

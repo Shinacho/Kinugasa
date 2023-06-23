@@ -25,10 +25,10 @@ package kinugasa.graphics;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.List;
-import kinugasa.game.GameLog;
 import kinugasa.game.GraphicsContext;
 import kinugasa.util.Random;
 
@@ -85,7 +85,6 @@ public class GraphicsUtil {
 //	public static boolean isUseOpenGL() {
 //		return System.getProperty("sun.java2d.opengl").equals("true");
 //	}
-
 	/**
 	 * Rectangle2Dインスタンスを使用して、clearRectを実行します.
 	 *
@@ -144,5 +143,9 @@ public class GraphicsUtil {
 	 */
 	public static void fillOval(GraphicsContext g, Rectangle2D r) {
 		g.fillOval((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+	}
+
+	public static Color transparent(Color c, int a) {
+		return new Color(c.getRed(), c.getGreen(), c.getBlue(), a);
 	}
 }

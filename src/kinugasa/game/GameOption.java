@@ -29,6 +29,8 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Locale;
 import javax.swing.ImageIcon;
 import kinugasa.game.system.GameSystemI18NKeys;
@@ -65,7 +67,8 @@ public class GameOption {
 	private String[] args = new String[]{};
 	private boolean debugMode = false;
 
-	private String logName = "log_" + new SimpleDateFormat("yyyyMMddHHmmssSSS") + ".log";
+	private String logName = "log_" + new SimpleDateFormat("yyyyMMddHHmmssSSS")
+			.format(Date.from(Instant.now())) + ".log";
 	private ImageIcon icon = new ImageIcon(getClass().getResource("icon.png"));
 	private CloseEvent closeEvent
 			= () -> Dialog.yesOrNo(I18N.get(GameSystemI18NKeys.確認), DialogIcon.QUESTION,

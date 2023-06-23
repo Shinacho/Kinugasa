@@ -24,6 +24,7 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +32,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.SpriteSheet;
+import kinugasa.object.Sprite;
 import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.db.*;
 import kinugasa.util.FrameTimeCounter;
+import kinugasa.util.TimeCounter;
 
 /**
  *
@@ -236,7 +239,6 @@ public class ActionEventStorage extends DBStorage<ActionEvent> {
 		return 0;
 	}
 
-	//BF振り分けは呼び出しもとで！
 	public ActionEvents getActionEvents(Action a) {
 		String actionID = a.getName();
 		ActionEvents res = new ActionEvents();
@@ -259,6 +261,28 @@ public class ActionEventStorage extends DBStorage<ActionEvent> {
 			return res;
 		}
 		return res;
+	}
+
+	public Animation getAnimationByID(String id) {
+		if (DBConnection.getInstance().isUsing()) {
+			//アニメーション取得
+			KResultSet akr = DBConnection.getInstance().execDirect("select animationID, fileName, w, h, tc, mg from actionanimation;");
+			if (!akr.isEmpty()) {
+				for (List<DBValue> vv : akr) {
+					//1件しかヒットしない
+					String animationID = vv.get(0).get();
+					String fileName = vv.get(1).get();
+					int w = vv.get(2).asInt();
+					int h = vv.get(3).asInt();
+					int[] tc = vv.get(4).asIntArray(",");
+					float mg = vv.get(5).asFloat();
+					Animation a = new Animation(new FrameTimeCounter(tc),
+							new SpriteSheet(fileName).rows(0, w, h).resizeAll(mg).images());
+					return a;
+				}
+			}
+		}
+		return null;
 	}
 
 	public static class ActionEvents {

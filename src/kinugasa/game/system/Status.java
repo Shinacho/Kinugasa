@@ -376,9 +376,7 @@ public class Status implements Nameable {
 		return true;
 	}
 
-	//状態異常を追加します
-	public void addCondition(String name) {
-		Condition v = ConditionStorage.getInstance().get(name);
+	public void addCondition(Condition v) {
 		// すでに発生している効果の場合、何もしない
 		if (condition.contains(name)) {
 			assert conditionTimes.containsKey(v.getKey()) : "Condition and effectTimes are out of sync.";
@@ -417,6 +415,12 @@ public class Status implements Nameable {
 		//発生中の効果とエフェクト効果時間に追加
 		condition.add(v);
 		conditionTimes.put(v.getKey(), tc);
+
+	}
+
+	//状態異常を追加します
+	public void addCondition(String name) {
+		addCondition(ConditionStorage.getInstance().get(name));
 	}
 
 	//状態異常を追加します

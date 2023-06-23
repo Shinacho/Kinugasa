@@ -45,6 +45,10 @@ public class AttributeValue implements Nameable, Cloneable, Comparable<Attribute
 		this.max = max;
 	}
 
+	public boolean isZero() {
+		return value == 0;
+	}
+
 	@Override
 	public String getName() {
 		return key.getName();
