@@ -1818,49 +1818,12 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.getTgtW().reset();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.TGT_SELECT);
 	}
-
-//	private void setMsg(MessageType t) {
-//		//t == BATTLE_END
-//		String s = t.get(null, null, null, null);
-//		messageWindowSystem.getActionResultW().setText(s);
-//		messageWindowSystem.getActionResultW().allText();
-//	}
-//
-//	private void setMsg(MessageType t, List<String> option) {
-//		String s = t.get(null, null, option, null);
-//		messageWindowSystem.getActionResultW().setText(s);
-//		messageWindowSystem.getActionResultW().allText();
-//	}
-//
-//	private void setMsg(MessageType t, Action a, ActionResult res) {
-//		String s = t.get(a, null, null, res);
-//		messageWindowSystem.getActionResultW().setText(s);
-//		messageWindowSystem.getActionResultW().allText();
-//	}
 	private void setMsg(MessageType t, Status user, Action a, ActionResult res, List<String> option) {
 		String s = t.get(a, user, option, res);
 		messageWindowSystem.getActionResultW().setText(s);
 		messageWindowSystem.getActionResultW().allText();
 	}
 
-//	private void setMsg(MessageType t, Action a, Status user) {
-//		String s = t.get(a, user, null, null);
-//		messageWindowSystem.getActionResultW().setText(s);
-//		messageWindowSystem.getActionResultW().allText();
-//	}
-//
-//	private void setMsg(MessageType t, Action a, Status user, List<String> option) {
-//		String s = t.get(a, user, option, null);
-//		messageWindowSystem.getActionResultW().setText(s);
-//		messageWindowSystem.getActionResultW().allText();
-//	}
-//
-//	private void setMsg(MessageType t, Action a, Status user, ActionResult res) {
-//		String s = t.get(a, user, null, res);
-//		messageWindowSystem.getActionResultW().setText(s);
-//		messageWindowSystem.getActionResultW().allText();
-//	}
-//
 	public void update() {
 		messageWindowSystem.update();
 		targetSystem.update();
@@ -1869,10 +1832,6 @@ public class BattleSystem implements Drawable {
 			return;
 		}
 
-		//ターゲットシステムのカレント表示位置更新
-//		if (targetSystem.getCurrentArea().isVisible()) {
-//			targetSystem.getCurrentArea().setLocationByCenter(currentCmd.getSpriteCenter());
-//		}
 		//ステージ別処理
 		GameSystem gs = GameSystem.getInstance();
 		List<Status> party = GameSystem.getInstance().getPartyStatus();
