@@ -35,10 +35,15 @@ public class SimpleTooltipModel extends TooltipModel {
 
 	public SimpleTooltipModel() {
 		label = new TextLabelSprite("", new SimpleTextLabelModel(FontModel.DEFAULT), 0, 0, 0, 0);
+		setVisible(true);
 	}
 
 	@Override
 	public void drawTooltip(FieldMap fm, GraphicsContext g) {
+		if (!visible) {
+			label.setVisible(false);
+			return;
+		}
 		String s = FieldMap.getEnterOperation();
 		FieldMapTile t = fm.getCurrentTile();
 		mode = Mode.NONE;
@@ -91,9 +96,13 @@ public class SimpleTooltipModel extends TooltipModel {
 			case SEARCH:
 				if (!t.getEvent().isEmpty()) {
 					if (t.getEvent().stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT)) {
-						s += I18N.get(GameSystemI18NKeys.調べる);
-						label.setText(s);
-						label.setVisible(true);
+						if (fm.getMessageWindow() != null && fm.getMessageWindow().isVisible()) {
+							label.setVisible(false);
+						} else {
+							s += I18N.get(GameSystemI18NKeys.調べる);
+							label.setText(s);
+							label.setVisible(true);
+						}
 					} else {
 						label.setVisible(false);
 					}

@@ -22,6 +22,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import kinugasa.game.GameManager;
 import kinugasa.game.GameOption;
 import kinugasa.game.I18N;
 import kinugasa.graphics.ImageUtil;
@@ -33,8 +34,8 @@ import kinugasa.graphics.ImageUtil;
  */
 public class Dialog {
 
-	public static DialogOption info(String msg) {
-		int r = JOptionPane.showConfirmDialog(null, msg, GameOption.getInstance().getTitle(), JOptionPane.DEFAULT_OPTION);
+	public static DialogOption info(String title, String msg) {
+		int r = JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.DEFAULT_OPTION);
 		return DialogOption.of(r);
 	}
 

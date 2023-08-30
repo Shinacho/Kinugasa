@@ -17,12 +17,16 @@
 package kinugasa.object;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kinugasa.game.GameWindow;
 import kinugasa.game.GraphicsContext;
-import kinugasa.resource.Nameable;
+import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.RenderingQuality;
 
 /**
  * ゲームに表示される自機やキャラクタの基底クラスです.
@@ -30,9 +34,9 @@ import kinugasa.resource.Nameable;
  * スプライトのすべてのサブクラスでは、クローンを適切にオーバーライドする必要があります。<br>
  * <br>
  *
- * @version 3.0 : 12/01/20_18:30-<br>
- * @version 4.0 : 12/02/06_21:00-<br>
- * @version 5.0 : 12/02/18_18:55-21:45<br>
+ * @version 3.0 : 2012/01/20_18:30-<br>
+ * @version 4.0 : 2012/02/06_21:00-<br>
+ * @version 5.0 : 2012/02/18_18:55-21:45<br>
  * @version 6.0.0 - 2012/06/02_16:46:58.<br>
  * @version 6.14.0 - 2012/06/12_20:17.<br>
  * @version 6.18.0 - 2012/06/16_02:26.<br>
@@ -51,6 +55,7 @@ import kinugasa.resource.Nameable;
  * @version 8.4.0 - 2013/04/28_21:54<br>
  * @version 8.5.0 - 2015/01/05_21:14<br>
  * @version 8.6.0 - 2015/03/29_16:26<br>
+ * @version 8.7.0 - 2023/08/26_21:50<br>
  * @author Shinacho<br>
  */
 public abstract class Sprite
@@ -513,6 +518,29 @@ public abstract class Sprite
 	 */
 	public void setZ(float z) {
 		this.z = z;
+	}
+
+	/**
+	 * 個のスプライトの描画ロジックを使用して画像を作成します。
+	 * 画像は座標を持たないため、座標を固定した伊場合はGameWindowを取るオーバーロードを使用してください。
+	 *
+	 * @return このスプライトの描画ロジックから生成された画像。
+	 */
+	@Deprecated
+	public BufferedImage toImage() {
+		BufferedImage image = ImageUtil.newImage((int)getWidth(), (int)getHeight());
+		Graphics2D g2 = ImageUtil.createGraphics2D(image, RenderingQuality.NOT_USE);
+		this.draw(g2);
+		g2.dispose();
+		return image;
+	}
+
+	public BufferedImage toImage(GameWindow window) {
+		BufferedImage image = ImageUtil.newImage(window.getWidth(), window.getHeight());
+		Graphics2D g2 = ImageUtil.createGraphics2D(image, RenderingQuality.NOT_USE);
+		this.draw(g2);
+		g2.dispose();
+		return image;
 	}
 
 	/**

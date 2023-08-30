@@ -120,6 +120,9 @@ public class Status implements Nameable {
 	}
 
 	public boolean hasCondition(String name) {
+		if (name == null) {
+			throw new GameSystemException("condition name is null");
+		}
 		return conditionTimes.containsKey(ConditionStorage.getInstance().get(name).getKey());
 	}
 

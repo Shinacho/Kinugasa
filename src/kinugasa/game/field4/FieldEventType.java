@@ -92,6 +92,7 @@ public enum FieldEventType {
 		}
 	},
 	//アイテム名
+	//強制追加
 	ADD_ITEM {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -101,6 +102,7 @@ public enum FieldEventType {
 			return UserOperationRequire.GET_ITEAM;
 		}
 	},
+	//追加イベント
 	GET_ITEM {
 		@Override
 		UserOperationRequire exec(List<Status> party, FieldEvent e) {
@@ -685,7 +687,11 @@ public enum FieldEventType {
 			DBConnection.getInstance().execDirect(sql);
 			return UserOperationRequire.CONTINUE;
 		}
-	};
+	},
+	
+	
+	
+	;
 
 	abstract UserOperationRequire exec(List<Status> party, FieldEvent e) throws FieldEventScriptException;
 

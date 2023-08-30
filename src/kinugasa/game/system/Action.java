@@ -218,7 +218,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		return area;
 	}
 
-	public int getAreaWithEqip(BattleCharacter user) {
+	public int getAreaWithEqip(Actor user) {
 		return getAreaWithEqip(user.getStatus());
 	}
 

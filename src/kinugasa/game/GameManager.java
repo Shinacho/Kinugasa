@@ -17,6 +17,7 @@
 package kinugasa.game;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -29,8 +30,10 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -73,7 +76,8 @@ public abstract class GameManager {
 	private RenderingHints renderingHints;
 	private int fps;
 	private float drawSize = 0;
-	private Runnable painter;
+	private BufferedImage image;
+	private List<ScreenEffect> effects = new ArrayList<>();
 
 	protected GameManager(GameOption option) throws IllegalStateException {
 		//DBドライバロード
@@ -171,53 +175,34 @@ public abstract class GameManager {
 			GamePadConnection.init();
 		}
 
-		painter = option.getDrawSize() == 1
-				? new Runnable() {
-			@Override
-			public void run() {
-				g = (Graphics2D) graphicsBuffer.getDrawGraphics();
-				g.setClip(clippingRectangle);
-				g.clearRect(clippingRectangle.x, clippingRectangle.y,
-						clippingRectangle.width, clippingRectangle.height);
-				g.setRenderingHints(renderingHints);
-				draw(new GraphicsContext(g));
-				g.dispose();
-				if (graphicsBuffer.contentsRestored()) {
-					repaint();
-				}
-				graphicsBuffer.show();
-				if (graphicsBuffer.contentsLost()) {
-					repaint();
-				}
-			}
-		}
-				: new Runnable() {
-			@Override
-			public void run() {
-				g = ImageUtil.createGraphics2D(image, RenderingQuality.NOT_USE);
-				g.setBackground(window.getBackground());
-				g.setClip(clippingRectangle);
-				g.clearRect(clippingRectangle.x, clippingRectangle.y,
-						clippingRectangle.width, clippingRectangle.height);
-				g.setRenderingHints(renderingHints);
-				draw(new GraphicsContext(g));
-				g.dispose();
-				Graphics2D g2 = (Graphics2D) graphicsBuffer.getDrawGraphics();
-				g2.drawImage(image, 0, 0, (int) (image.getWidth() * drawSize), (int) (image.getHeight() * drawSize), null);
-				g2.dispose();
-
-				if (graphicsBuffer.contentsRestored()) {
-					repaint();
-				}
-				graphicsBuffer.show();
-				if (graphicsBuffer.contentsLost()) {
-					repaint();
-				}
-			}
-		};
-
 		GameSystem.setDebugMode(option.isDebugMode());
 
+	}
+
+	public List<ScreenEffect> getEffects() {
+		return effects;
+	}
+
+	public void setEffects(List<ScreenEffect> effects) {
+		this.effects = effects;
+	}
+
+	public void clearEffects() {
+		effects.clear();
+	}
+
+	public void addEffect(ScreenEffect e) {
+		effects.add(e);
+	}
+
+	public void clearEndedEffects() {
+		List<ScreenEffect> remove = new ArrayList<>();
+		for (ScreenEffect e : effects) {
+			if (e.isEnded()) {
+				remove.add(e);
+			}
+		}
+		effects.removeAll(remove);
 	}
 //
 //	public void reloadInputListener() {
@@ -271,9 +256,7 @@ public abstract class GameManager {
 			clippingRectangle = window.getInternalBounds();
 			started = true;
 			loop.start();
-			if (drawSize != 1) {
-				image = ImageUtil.newImage((int) (window.getInternalBounds().getWidth() / drawSize), (int) (window.getInternalBounds().getHeight() / drawSize));
-			}
+			image = ImageUtil.newImage((int) (window.getInternalBounds().getWidth() / drawSize), (int) (window.getInternalBounds().getHeight() / drawSize));
 		});
 		GameLog.print(getWindow().getTitle() + " is start");
 	}
@@ -330,13 +313,40 @@ public abstract class GameManager {
 	 */
 	@LoopCall
 	protected abstract void draw(GraphicsContext gc);
-	private BufferedImage image;
 
 	/**
 	 * 画面をリペイントします. このメソッドは内部用です。呼び出さないでください。
 	 */
 	@LoopCall
 	final void repaint() {
-		painter.run();
+		g = ImageUtil.createGraphics2D(image, RenderingQuality.NOT_USE);
+		g.setBackground(window.getBackground());
+		g.setClip(clippingRectangle);
+		g.clearRect(clippingRectangle.x, clippingRectangle.y,
+				clippingRectangle.width, clippingRectangle.height);
+		g.setRenderingHints(renderingHints);
+		draw(new GraphicsContext(g));
+		g.dispose();
+		
+		final Dimension imageSize = new Dimension(image.getWidth(), image.getHeight());
+		for(ScreenEffect e : effects){
+			image = e.doIt(image);
+			if(!imageSize.equals(new Dimension(image.getWidth(), image.getHeight()))){
+				throw new ScreenEffectException("screen effect " + e + " s size is missmatch");
+			}
+		}
+		
+		Graphics2D g2 = (Graphics2D) graphicsBuffer.getDrawGraphics();
+		g2.drawImage(image, 0, 0, (int) (image.getWidth() * drawSize), (int) (image.getHeight() * drawSize), null);
+		g2.dispose();
+
+		if (graphicsBuffer.contentsRestored()) {
+			repaint();
+		}
+		graphicsBuffer.show();
+		if (graphicsBuffer.contentsLost()) {
+			repaint();
+		}
+		
 	}
 }

@@ -22,8 +22,6 @@ import java.sql.SQLException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import kinugasa.game.GameLog;
 import kinugasa.resource.text.TextFile;
 import kinugasa.util.StopWatch;

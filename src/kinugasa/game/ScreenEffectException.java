@@ -14,20 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package kinugasa.game.system;
 
-import java.awt.geom.Point2D;
-import java.util.List;
-import kinugasa.resource.Nameable;
+package kinugasa.game;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/02_16:47:42<br>
+ * @vesion 1.0.0 - 2023/08/29_20:14:03<br>
  * @author Shinacho<br>
  */
-public interface EnemyAI extends Nameable {
+public class ScreenEffectException extends RuntimeException {
 
-	Action getNext(Actor user, List<Action> list);
+    /**
+     * Creates a new instance of <code>ScreenEffectException</code> without detail message.
+     */
+    public ScreenEffectException() {
+    }
 
-	Point2D.Float targetLocation(Actor user);
+
+    /**
+     * Constructs an instance of <code>ScreenEffectException</code> with the specified detail message.
+     * @param msg the detail message.
+     */
+    public ScreenEffectException(String msg) {
+        super(msg);
+    }
 }

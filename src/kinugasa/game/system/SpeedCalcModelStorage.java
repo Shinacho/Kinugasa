@@ -34,15 +34,15 @@ public class SpeedCalcModelStorage extends Storage<SpeedCalcModel> {
 	private SpeedCalcModelStorage() {
 		add(new SpeedCalcModel("SPD_50%RANDOM") {
 			@Override
-			public List<BattleCharacter> sort(List<BattleCharacter> s) {
+			public List<Actor> sort(List<Actor> s) {
 				class SpdMap implements Comparable<SpdMap> {
 
-					public SpdMap(BattleCharacter s, float spd) {
+					public SpdMap(Actor s, float spd) {
 						this.s = s;
 						this.spd = spd;
 					}
 
-					BattleCharacter s;
+					Actor s;
 					float spd;
 
 					@Override
@@ -52,14 +52,14 @@ public class SpeedCalcModelStorage extends Storage<SpeedCalcModel> {
 
 				}
 				List<SpdMap> list = new ArrayList<>();
-				for (BattleCharacter st : s) {
+				for (Actor st : s) {
 					float val = st.getStatus().getEffectedStatus().get("SPD").getValue();
 					val = Random.percent(val, 0.50f);
 					list.add(new SpdMap(st, val));
 				}
 				Collections.sort(list);
 				Collections.reverse(list);
-				ArrayList<BattleCharacter> r = new ArrayList<>();
+				ArrayList<Actor> r = new ArrayList<>();
 
 				for (SpdMap spdMap : list) {
 					r.add(spdMap.s);

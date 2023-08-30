@@ -16,13 +16,10 @@
  */
 package kinugasa.game.field4;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import kinugasa.game.GraphicsContext;
 import kinugasa.graphics.Animation;
-import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
-import kinugasa.graphics.RenderingQuality;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Disposable;
 import kinugasa.util.TimeCounter;
@@ -57,7 +54,7 @@ public class BackgroundLayerSprite extends AnimationSprite implements Disposable
 					(int) (images[i].getWidth()),
 					(int) (images[i].getHeight()));
 		}
-		images2 = ImageEditor.resizeAll(images2, mg);
+		images2 = ImageUtil.resizeAll(images2, mg);
 
 		setAnimation(new Animation(tc, images2));
 	}

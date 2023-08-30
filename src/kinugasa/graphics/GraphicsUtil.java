@@ -56,6 +56,14 @@ public class GraphicsUtil {
 		return new Color(r, g, b, a);
 	}
 
+	public static Color reverse(Color c) {
+		int r = 255 - c.getRed();
+		int g = 255 - c.getGreen();
+		int b = 255 - c.getBlue();
+		int a = 255 - c.getAlpha();
+		return new Color(r, g, b, a);
+	}
+
 	/**
 	 * インスタンス化できません.
 	 */

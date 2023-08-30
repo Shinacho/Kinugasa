@@ -34,7 +34,9 @@ import kinugasa.resource.KImage;
  */
 public class ImageSprite extends BasicSprite {
 
+	private KImage prevImage;
 	private KImage image;
+	private KImage tmpImage;
 	private ImagePainter painter;
 
 	/**
@@ -283,6 +285,21 @@ public class ImageSprite extends BasicSprite {
 		ImageSprite sprite = (ImageSprite) super.clone();
 		//sprite.painter = this.painter.clone();
 		return sprite;
+	}
+
+	public KImage getTmpImage() {
+		return tmpImage;
+	}
+
+	public void setTmpImage(KImage tmpImage) {
+		prevImage = image;
+		this.tmpImage = tmpImage;
+		setImage(tmpImage);
+	}
+
+	public void clearTmpImage() {
+		tmpImage = null;
+		setImage(prevImage);
 	}
 
 	@Override

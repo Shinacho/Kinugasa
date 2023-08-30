@@ -17,6 +17,8 @@
 package kinugasa.game.system;
 
 import java.util.List;
+import kinugasa.object.AnimationSprite;
+import kinugasa.object.ImageSprite;
 
 /**
  *
@@ -34,23 +36,46 @@ public class ConditionManager {
 		return INSTANCE;
 	}
 
-	public void setCondition(List<Status> target) {
+	public void setCondition(List<? extends Actor> target) {
 		if (BattleConfig.undeadDebugMode) {
 			return;
 		}
-		for (Status s : target) {
-			for (StatusValue val : s.getEffectedStatus()) {
+		for (Actor s : target) {
+			for (StatusValue val : s.getStatus().getEffectedStatus()) {
+				String condName = val.getKey().getWhen0ConditionName();
 				if (val.getValue() <= 0) {
-					String condName = val.getKey().getWhen0ConditionName();
 					if (condName == null) {
 						continue;
 					}
 					if (!ConditionStorage.getInstance().contains(condName)) {
 						throw new GameSystemException("when 0 condition " + condName + " is not found.");
 					}
-					s.addCondition(condName);
-					if (s.hasConditions(false, BattleConfig.getUntargetConditionNames())) {
-						s.setExists(false);
+					if (!s.getStatus().hasCondition(condName)) {
+						s.getStatus().addCondition(condName);
+					}
+					//
+					if (s.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
+						if (s.getSprite() instanceof AnimationSprite) {
+							((AnimationSprite) s).getAnimation().setStop(true);
+						}
+						if (s.getSprite() instanceof ImageSprite) {
+							((AnimationSprite) s).setTmpImage(BattleConfig.deadCharaImage);
+						}
+					} else if (s.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
+						s.getSprite().setVisible(false);
+						s.getStatus().setExists(false);
+					}
+				} else {
+					if (s.getStatus().hasCondition(condName)) {
+						s.getStatus().removeCondition(condName);
+						s.getSprite().setVisible(true);
+						s.getStatus().setExists(true);
+						if (s.getSprite() instanceof AnimationSprite) {
+							((AnimationSprite) s).getAnimation().setStop(false);
+						}
+						if (s.getSprite() instanceof ImageSprite) {
+							((AnimationSprite) s).clearTmpImage();
+						}
 					}
 				}
 			}

@@ -17,17 +17,42 @@
 package kinugasa.game.system;
 
 import java.awt.geom.Point2D;
-import java.util.List;
-import kinugasa.resource.Nameable;
+import kinugasa.object.BasicSprite;
+import kinugasa.object.FourDirection;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/02_16:47:42<br>
+ * @vesion 1.0.0 - 2022/11/23_13:08:50<br>
  * @author Shinacho<br>
  */
-public interface EnemyAI extends Nameable {
+public interface Actor {
 
-	Action getNext(Actor user, List<Action> list);
+	public BasicSprite getSprite();
 
-	Point2D.Float targetLocation(Actor user);
+	public Status getStatus();
+
+	public void setTargetLocation(Point2D.Float p, int area);
+
+	public void unsetTarget();
+
+	public boolean isMoving();
+
+	public void moveToTgt();
+
+	public void move();
+
+	public void to(FourDirection dir);
+
+	public boolean isPlayer();
+
+	public String getId();
+
+	public default Point2D.Float getCenter() {
+		return getSprite().getCenter();
+	}
+
+	public default String getName() {
+		return getStatus().getName();
+	}
+
 }

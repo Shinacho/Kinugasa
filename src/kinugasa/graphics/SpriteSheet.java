@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import kinugasa.game.GameLog;
 
 /**
  * 1つの画像リソースを切り出して、複数の画像インスタンスを構築するためのビルダです.
@@ -56,7 +55,8 @@ public class SpriteSheet {
 	/**
 	 * 新しいスプライトシートを構築します.
 	 *
-	 * @param filePath ロードする画像のパスを指定します。 このコンストラクタでは、ImageUtilのloadメソッドを使用して画像がロードされます。<br>
+	 * @param filePath ロードする画像のパスを指定します。
+	 * このコンストラクタでは、ImageUtilのloadメソッドを使用して画像がロードされます。<br>
 	 */
 	public SpriteSheet(String filePath) {
 		baseImage = ImageUtil.load(filePath);
@@ -104,7 +104,7 @@ public class SpriteSheet {
 	}
 
 	public SpriteSheet resizeAll(float scale) {
-		BufferedImage[] result = ImageEditor.resizeAll(subImages.<BufferedImage>toArray(new BufferedImage[subImages.size()]), scale);
+		BufferedImage[] result = ImageUtil.resizeAll(subImages.<BufferedImage>toArray(new BufferedImage[subImages.size()]), scale);
 		subImages.clear();
 		addAll(result);
 		return this;
@@ -211,7 +211,8 @@ public class SpriteSheet {
 	}
 
 	/**
-	 * 操作を確定し、追加されている全ての画像を追加された順序の配列として取得します. この操作では、nullインスタンスのsubImageは切り捨てられます。<br>
+	 * 操作を確定し、追加されている全ての画像を追加された順序の配列として取得します.
+	 * この操作では、nullインスタンスのsubImageは切り捨てられます。<br>
 	 *
 	 * @return 追加されている画像の配列.<br>
 	 */

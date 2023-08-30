@@ -39,7 +39,7 @@ public class MusicRoom extends ScrollSelectableMessageWindow {
 		setLine1select(false);
 
 		list.addAll(SoundStorage.getInstance().filter(p -> p.getType() == SoundType.BGM));
-		Collections.sort(list, (Sound o1, Sound o2) -> o1.getName().compareTo(o2.getName()));
+		Collections.sort(list, (Sound o1, Sound o2) -> o1.getFileName().compareTo(o2.getFileName()));
 		List<Text> t = list
 				.stream()
 				.map(p -> ((CachedSound) p).getBuilder().getVisibleName())

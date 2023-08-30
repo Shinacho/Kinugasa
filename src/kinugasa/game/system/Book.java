@@ -90,6 +90,9 @@ public class Book implements Nameable, Cloneable {
 			KResultSet kr = DBConnection.getInstance().execDirect("select ACTIONID from BOOK_ACTION where BookID='" + this.id + "';");
 			List<Action> a = new ArrayList<>();
 			for (List<DBValue> v : kr) {
+				if (!ActionStorage.getInstance().contains(v.get(0).get())) {
+					throw new GameSystemException("action id[" + v.get(0).get() + "] is not found. from book[" + this.id + "]");
+				}
 				a.add(ActionStorage.getInstance().get(v.get(0).get()));
 			}
 			return a;

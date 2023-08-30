@@ -44,7 +44,7 @@ import kinugasa.resource.sound.Sound;
  * @vesion 1.0.0 - 2022/11/16_20:49:18<br>
  * @author Shinacho<br>
  */
-public class Enemy implements Nameable, Drawable, BattleCharacter {
+public class Enemy implements Nameable, Drawable, Actor {
 
 	private String id;
 	private Status status;
@@ -52,7 +52,7 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 	private ImageSprite sprite;
 	private ProgressBarSprite progressBarSprite;
 	private static String progressBarKey = BattleConfig.StatusKey.hp;
-	private List<BattleCharacter> currentTgt;
+	private List<Actor> currentTgt;
 	private Vehicle vehicle;
 	private EnemyAI ai;
 	private Sound deadSound;
@@ -258,21 +258,21 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 		}
 	}
 
-	public void dirTo(BattleCharacter c) {
+	public void dirTo(Actor c) {
 		KVector v = new KVector();
 		v.setAngle(sprite.getCenter(), c.getSprite().getCenter());
 		v.setSpeed(vehicle.getSpeed());
 		sprite.setVector(v);
 	}
 
-	public void dirTo(BattleCharacter c, float speed) {
+	public void dirTo(Actor c, float speed) {
 		KVector v = new KVector();
 		v.setAngle(sprite.getCenter(), c.getSprite().getCenter());
 		v.setSpeed(speed);
 		sprite.setVector(v);
 	}
 
-	public void dirTo(BattleCharacter c, String vehicleName) {
+	public void dirTo(Actor c, String vehicleName) {
 		KVector v = new KVector();
 		v.setAngle(sprite.getCenter(), c.getSprite().getCenter());
 		v.setSpeed(VehicleStorage.getInstance().get(vehicleName).getSpeed());
@@ -333,11 +333,11 @@ public class Enemy implements Nameable, Drawable, BattleCharacter {
 		return sprite;
 	}
 
-	public void setCurrentTgt(List<BattleCharacter> currentTgt) {
+	public void setCurrentTgt(List<Actor> currentTgt) {
 		this.currentTgt = currentTgt;
 	}
 
-	public List<BattleCharacter> getCurrentTgt() {
+	public List<Actor> getCurrentTgt() {
 		return currentTgt;
 	}
 

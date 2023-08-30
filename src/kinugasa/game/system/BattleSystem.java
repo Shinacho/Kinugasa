@@ -124,7 +124,7 @@ public class BattleSystem implements Drawable {
 	//移動後攻撃モードかどうか
 	private boolean afterMove = false;
 	//詠唱中アニメーション
-	private Map<BattleCharacter, Sprite> castingSprite = new HashMap<>();
+	private Map<Actor, Sprite> castingSprite = new HashMap<>();
 	//-----------------------------------------------------------アイテム
 	//アイテムChoiceUseインデックス：-1：ターゲット選択未使用
 	private int itemChoiceMode = -1;
@@ -416,13 +416,13 @@ public class BattleSystem implements Drawable {
 					//アイテム効果判定
 					//ターゲット取得
 					String tgtName = option.get(0);
-					BattleCharacter tgt = null;
-					for (BattleCharacter c : BattleSystem.getInstance().enemies) {
+					Actor tgt = null;
+					for (Actor c : BattleSystem.getInstance().enemies) {
 						if (tgtName.equals(c.getName())) {
 							tgt = c;
 						}
 					}
-					for (BattleCharacter c : GameSystem.getInstance().getParty()) {
+					for (Actor c : GameSystem.getInstance().getParty()) {
 						if (tgtName.equals(c.getName())) {
 							tgt = c;
 						}
@@ -491,8 +491,8 @@ public class BattleSystem implements Drawable {
 		return turn;
 	}
 
-	private List<BattleCharacter> getAllChara() {
-		List<BattleCharacter> result = new ArrayList<>();
+	private List<Actor> getAllChara() {
+		List<Actor> result = new ArrayList<>();
 		result.addAll(enemies);
 		result.addAll(GameSystem.getInstance().getParty());
 		return result;
@@ -668,7 +668,7 @@ public class BattleSystem implements Drawable {
 			kinugasa.game.GameLog.print(" -----------------TURN[" + turn + "] START-----------------");
 		}
 		//このターンのバトルコマンドを作成
-		List<BattleCharacter> list = getAllChara();
+		List<Actor> list = getAllChara();
 		if (SpeedCalcModelStorage.getInstance().getCurrent() == null) {
 			throw new GameSystemException("speed calc model is null");
 		}
@@ -676,7 +676,7 @@ public class BattleSystem implements Drawable {
 
 		//行動順にバトルコマンドを格納
 		assert commandsOfThisTurn.isEmpty() : "turnStart:cmd is not empty";
-		for (BattleCharacter c : list) {
+		for (Actor c : list) {
 			BattleCommand.Mode mode = c.isPlayer() ? BattleCommand.Mode.PC : BattleCommand.Mode.CPU;
 			commandsOfThisTurn.add(new BattleCommand(mode, c));
 		}
@@ -753,8 +753,8 @@ public class BattleSystem implements Drawable {
 	@NoLoopCall
 	private void updateCondition() {
 		//HPが0になったときなどの状態異常を付与する
-		conditionManager.setCondition(GameSystem.getInstance().getPartyStatus());
-		conditionManager.setCondition(enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList()));
+		conditionManager.setCondition(GameSystem.getInstance().getParty());
+		conditionManager.setCondition(enemies);
 		//スプライトの非表示化処理
 		//アンターゲットコンディション発生中のユーザによるコマンドを除去
 		List<BattleCommand> remove = new ArrayList<>();
@@ -879,7 +879,7 @@ public class BattleSystem implements Drawable {
 		currentCmd = commandsOfThisTurn.getFirst();
 		assert currentCmd != null : "currentCMD is null";
 		commandsOfThisTurn.removeFirst();
-		BattleCharacter user = currentCmd.getUser();
+		Actor user = currentCmd.getUser();
 
 		if (GameSystem.isDebugMode()) {
 			kinugasa.game.GameLog.print(" currentCMD:" + currentCmd);
@@ -949,8 +949,8 @@ public class BattleSystem implements Drawable {
 			//詠唱中アニメーション破棄
 			castingSprite.remove(user);
 			//保存したターゲットから距離外れた対象を除去
-			List<BattleCharacter> removeList = new ArrayList<>();
-			for (BattleCharacter c : target.getTarget()) {
+			List<Actor> removeList = new ArrayList<>();
+			for (Actor c : target.getTarget()) {
 				if (ba.getAreaWithEqip(currentCmd.getUser()) < currentCmd.getUser().getCenter().distance(c.getCenter())) {
 					removeList.add(c);
 				}
@@ -1035,12 +1035,12 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 
 		//カレントユーザ
-		BattleCharacter user = currentCmd.getUser();
+		Actor user = currentCmd.getUser();
 
 		//混乱中の場合
 		if (user.getStatus().isConfu()) {
 			//ターゲットシステムのカレント起動しないで対象を取得する
-			ActionTarget tgt = BattleTargetSystem.instantTarget(user, a);
+			ActionTarget tgt = BattleTargetSystem.instantTarget(user, a, false);
 			execAction(a, tgt);
 			return;
 		}
@@ -1048,17 +1048,17 @@ public class BattleSystem implements Drawable {
 		//NPCの場合
 		if (!user.isPlayer()) {
 			//アクションの効果範囲に相手がいるか、インスタント確認
-			ActionTarget tgt = BattleTargetSystem.instantTarget(user, a);
+			ActionTarget tgt = BattleTargetSystem.instantTarget(user, a, false);
 			//アイテム使用の場合
 			if (a instanceof Item) {
 				//自分またはインスタ内の誰かを選択
-				List<BattleCharacter> l = new ArrayList<>();
+				List<Actor> l = new ArrayList<>();
 				l.add(user);
 				l.addAll(tgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 						< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).collect(Collectors.toList()));
 				Collections.shuffle(l);
 				//抽選されたターゲット
-				BattleCharacter t = l.get(0);
+				Actor t = l.get(0);
 				execAction(a, new ActionTarget(user, a).setInField(false).setTarget(List.of(t)).setSelfTarget(t.equals(user)));
 				return;
 			}
@@ -1072,13 +1072,13 @@ public class BattleSystem implements Drawable {
 							< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).collect(Collectors.toList()).size() > 0;
 					if (hpIsUnderHarf || otherHpHarfTgt) {
 						//自分またはインスタ内の誰かを選択
-						List<BattleCharacter> l = new ArrayList<>();
+						List<Actor> l = new ArrayList<>();
 						l.add(user);
 						l.addAll(tgt.getTarget().stream().filter(p -> user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 								< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax()).collect(Collectors.toList()));
 						Collections.shuffle(l);
 						//抽選されたターゲット
-						BattleCharacter t = l.get(0);
+						Actor t = l.get(0);
 						execAction(a, new ActionTarget(user, a).setInField(false).setTarget(List.of(t)).setSelfTarget(t.equals(user)));
 						return;
 					}
@@ -1339,7 +1339,7 @@ public class BattleSystem implements Drawable {
 		//ターゲットシステムが呼ばれているので、初期化
 		targetSystem.unsetCurrent();
 		//カレントユーザ
-		BattleCharacter user = currentCmd.getUser();
+		Actor user = currentCmd.getUser();
 		if (user.isPlayer()) {
 			if (ba.getName().equals(BattleConfig.ActionName.commit)) {
 				//移動終了・キャラクタの向きとターゲット座標のクリアをする
@@ -1455,7 +1455,7 @@ public class BattleSystem implements Drawable {
 		currentCmd.getUser().getSprite().setLocation(moveIinitialLocation);
 		currentCmd.getUser().unsetTarget();
 		//一番近い敵の方向を向く
-		BattleCharacter e = BattleTargetSystem.nearEnemy(currentCmd.getUser());
+		Actor e = BattleTargetSystem.nearEnemy(currentCmd.getUser(), false);
 		KVector v = new KVector();
 		v.setAngle(currentCmd.getUser().getCenter(), e.getCenter());
 		currentCmd.getUser().to(v.round());
@@ -1464,7 +1464,7 @@ public class BattleSystem implements Drawable {
 		stage.setStage(BattleSystem.Stage.CMD_SELECT);
 	}
 
-	private void addSpelling(BattleCharacter user, Action ba) {
+	private void addSpelling(Actor user, Action ba) {
 		if (ba.getSpellTime() == 0) {
 			throw new GameSystemException("this magic is spell time is 0, bud logic : " + ba);
 		}
@@ -1586,7 +1586,7 @@ public class BattleSystem implements Drawable {
 		}
 		//誰に？
 		if (itemChoiceMode >= 0) {
-			ActionTarget t = BattleTargetSystem.instantTarget(currentCmd.getUser(), i);
+			ActionTarget t = BattleTargetSystem.instantTarget(currentCmd.getUser(), i, false);
 			//ターゲット不在の場合
 			if (itemChoiceMode == BattleMessageWindowSystem.ITEM_CHOICE_USE_PASS && t.getTarget().isEmpty()) {
 				//パスする味方がいない
@@ -1690,12 +1690,12 @@ public class BattleSystem implements Drawable {
 				//ターゲットに対してアクションを実行
 				String tgtName = messageWindowSystem.getTgtW().getSelected().getText();
 				//PC,NPCから名前検索
-				List<BattleCharacter> all = new ArrayList();
+				List<Actor> all = new ArrayList();
 				all.addAll(enemies);
 				all.addAll(GameSystem.getInstance().getParty());
-				BattleCharacter tgt = all.stream().filter(p -> p.getName().equals(tgtName)).collect(Collectors.toList()).get(0);
+				Actor tgt = all.stream().filter(p -> p.getName().equals(tgtName)).collect(Collectors.toList()).get(0);
 				tgt.getStatus().setDamageCalcPoint();
-				ActionResult res = itemPassAndUse.exec(BattleTargetSystem.instantTarget(currentCmd.getUser(), itemPassAndUse).setTarget(List.of(tgt)));
+				ActionResult res = itemPassAndUse.exec(BattleTargetSystem.instantTarget(currentCmd.getUser(), itemPassAndUse, false).setTarget(List.of(tgt)));
 				//ドロップアイテムイベントの実行
 				for (ActionEvent e : itemPassAndUse.getBattleEvent()) {
 					if (e.getP() >= 1f || Random.percent(e.getP())) {
@@ -1723,11 +1723,11 @@ public class BattleSystem implements Drawable {
 				//ターゲットに対してパスを実行
 				//PC,NPCから名前検索
 				String tgtName = messageWindowSystem.getTgtW().getSelected().getText();
-				List<BattleCharacter> all = new ArrayList();
+				List<Actor> all = new ArrayList();
 				all.addAll(enemies);
 				all.addAll(GameSystem.getInstance().getParty());
-				BattleCharacter tgt = all.stream().filter(p -> p.getName().equals(tgtName)).collect(Collectors.toList()).get(0);
-				BattleCharacter user = currentCmd.getUser();
+				Actor tgt = all.stream().filter(p -> p.getName().equals(tgtName)).collect(Collectors.toList()).get(0);
+				Actor user = currentCmd.getUser();
 				user.getStatus().passItem(tgt.getStatus(), itemPassAndUse);
 				//アクション更新
 				GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction(true));
@@ -1811,6 +1811,7 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.getTgtW().reset();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.TGT_SELECT);
 	}
+
 	private void setMsg(MessageType t, Status user, Action a, ActionResult res, List<String> option) {
 		String s = t.get(a, user, option, res);
 		messageWindowSystem.getActionResultW().setText(s);
@@ -1861,6 +1862,7 @@ public class BattleSystem implements Drawable {
 					int i = 0;
 					for (; GameSystem.getInstance().getPartyStatus().equals(currentCmd.getUser().getStatus()); i++);
 					currentCmd.getUser().getSprite().setVisible(false);
+					currentCmd.getUser().getSprite().setLocation(Integer.MIN_VALUE, Integer.MIN_VALUE);
 					messageWindowSystem.getStatusW().getMw().get(i).setVisible(false);
 
 					//PC全員逃げ判定、全員逃げた場合、戦闘終了
@@ -1976,7 +1978,7 @@ public class BattleSystem implements Drawable {
 				}
 
 				// イベント対象者別にターゲットを設定
-				ActionTarget tgt = BattleTargetSystem.instantTarget(currentCmd.getUser(), eba);
+				ActionTarget tgt = BattleTargetSystem.instantTarget(currentCmd.getUser(), eba, false);
 
 				//ターゲットがいない場合、何もしない
 				if (tgt.isEmpty()) {
@@ -2089,10 +2091,10 @@ public class BattleSystem implements Drawable {
 	}
 
 	//アクション成功時の処理
-	private List<String> actionResultProc(BattleCharacter user, Action ba, ActionTarget tgt) {
+	private List<String> actionResultProc(Actor user, Action ba, ActionTarget tgt) {
 		//HPが0になったときなどの状態異常を付与する
-		conditionManager.setCondition(GameSystem.getInstance().getPartyStatus());
-		conditionManager.setCondition(enemies.stream().map(p -> p.getStatus()).collect(Collectors.toList()));
+		conditionManager.setCondition(GameSystem.getInstance().getParty());
+		conditionManager.setCondition(enemies);
 		//スプライトの非表示化処理とアンターゲットコンディション発生中のユーザによるコマンドを除去
 		List<BattleCommand> removeList2 = new ArrayList<>();
 		Map<String, String> deadEnemyName = new HashMap<>();//これを表示する
@@ -2120,7 +2122,7 @@ public class BattleSystem implements Drawable {
 		boolean dead = false;
 		boolean deadIsPlayer = false;
 		//アンターゲット状態異常になったキャラのスプライトを非表示にする
-		for (BattleCharacter c : GameSystem.getInstance().getParty()) {
+		for (Actor c : GameSystem.getInstance().getParty()) {
 			for (String cndKey : BattleConfig.getUntargetConditionNames()) {
 				if (c.getStatus().hasCondition(cndKey)) {
 					if (castingSprite.containsKey(c)) {
@@ -2133,7 +2135,7 @@ public class BattleSystem implements Drawable {
 				}
 			}
 		}
-		for (BattleCharacter c : enemies) {
+		for (Actor c : enemies) {
 			for (String cndKey : BattleConfig.getUntargetConditionNames()) {
 				if (c.getStatus().hasCondition(cndKey)) {
 					c.getSprite().setVisible(false);
@@ -2153,24 +2155,20 @@ public class BattleSystem implements Drawable {
 			if (BattleConfig.Sound.shock != null) {
 				BattleConfig.Sound.shock.load().stopAndPlay();
 			}
-			//味方の場合3倍、敵の場合1倍のSANダメージ
-			int damageP = BattleConfig.shockDamageDefault;
-			int damageE = BattleConfig.shockDamageDefault;
-			if (deadIsPlayer) {
-				damageP *= 5;
-			} else {
-				damageE *= 5;
-			}
 			float damageSpriteLocationXBuf = 0f;
 			float damageSpriteLocationYBuf = 0f;
-			for (BattleCharacter c : GameSystem.getInstance().getParty()) {
-				c.getStatus().getBaseStatus().get(BattleConfig.shockDamageKey.getName()).add(-damageP);
+			for (Actor c : GameSystem.getInstance().getParty()) {
+				int damageP = -Random.randomAbsInt(BattleConfig.shockDamageMax);
+				if (deadIsPlayer) {
+					damageP *= 3;
+				}
+				c.getStatus().getBaseStatus().get(BattleConfig.shockDamageKey.getName()).add(damageP);
 				Color damageSpriteColor = BattleConfig.damageColor.containsKey(BattleConfig.shockDamageKey)
 						? BattleConfig.damageColor.get(BattleConfig.shockDamageKey)
 						: Color.RED;
 				float x = c.getSprite().getX() - 12 + damageSpriteLocationXBuf;
 				float y = c.getSprite().getY() + damageSpriteLocationYBuf;
-				int v = damageE;
+				int v = damageP;
 				BattleDamageSprite sp = new BattleDamageSprite(x, y, v, damageSpriteColor);
 				animation.add(sp);
 				damageSpriteLocationXBuf += 16;
@@ -2178,7 +2176,11 @@ public class BattleSystem implements Drawable {
 			}
 			damageSpriteLocationXBuf = 0f;
 			damageSpriteLocationYBuf = 0f;
-			for (BattleCharacter c : enemies) {
+			for (Actor c : enemies) {
+				int damageE = -Random.randomAbsInt(BattleConfig.shockDamageMax);
+				if (!deadIsPlayer) {
+					damageE *= 3;
+				}
 				c.getStatus().getBaseStatus().get(BattleConfig.shockDamageKey.getName()).add(-damageE);
 				Color damageSpriteColor = BattleConfig.damageColor.containsKey(BattleConfig.shockDamageKey)
 						? BattleConfig.damageColor.get(BattleConfig.shockDamageKey)

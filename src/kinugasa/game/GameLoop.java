@@ -16,8 +16,11 @@
  */
 package kinugasa.game;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import kinugasa.game.input.InputState;
 
 /**
@@ -94,6 +97,7 @@ public final class GameLoop implements Runnable {
 						startTime = System.nanoTime();
 						game.update(gtm, InputState.getInstance());
 						game.repaint();
+						game.clearEndedEffects();
 						gtm.sleep(startTime);
 					} else {
 						startTime = System.nanoTime();

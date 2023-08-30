@@ -34,7 +34,7 @@ public abstract class StatusDamageCalcModel extends Model implements Nameable {
 		this.name = name;
 	}
 
-	public abstract ActionEventResult exec(BattleCharacter user, ActionEvent ba, BattleCharacter tgt);
+	public abstract ActionEventResult exec(Actor user, ActionEvent ba, Actor tgt);
 
 	@Override
 	public String getName() {

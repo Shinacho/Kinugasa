@@ -110,16 +110,21 @@ public class ActionDescWindow extends PCStatusWindow {
 					.append(":")
 					.append(a.getAreaWithEqip(s.get(pcIdx)));
 
-			sb.append("、")
-					.append(I18N.get(GameSystemI18NKeys.属性))
-					.append(":");
-			sb.append(a.getBattleEvent()
-					.stream()
-					.filter(p -> p.getAttr() != null)
-					.filter(p -> !AttrDescWindow.getUnvisibleAttrName().contains(p.getAttr().getName()))
-					.map(p -> p.getAttr().getDesc())
-					.distinct()
-					.collect(Collectors.toList()));
+			if (a.getBattleEvent().stream().map(p -> p.getAttr())
+					.filter(p -> p != null)
+					.filter(p -> !AttrDescWindow.getUnvisibleAttrName().contains(p.getName()))
+					.count() > 0) {
+				sb.append("、")
+						.append(I18N.get(GameSystemI18NKeys.属性))
+						.append(":");
+				sb.append(a.getBattleEvent()
+						.stream()
+						.filter(p -> p.getAttr() != null)
+						.filter(p -> !AttrDescWindow.getUnvisibleAttrName().contains(p.getAttr().getName()))
+						.map(p -> p.getAttr().getDesc())
+						.distinct()
+						.collect(Collectors.toList()));
+			}
 
 			sb.append("、")
 					.append(I18N.get(GameSystemI18NKeys.基礎威力))

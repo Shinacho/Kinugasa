@@ -61,7 +61,4 @@ public class KImage {
 		return image;
 	}
 	
-	
-	
-	
 }

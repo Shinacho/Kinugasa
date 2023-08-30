@@ -56,17 +56,17 @@ public class BattleTargetSystem implements Drawable {
 		return INSTANCE;
 	}
 
-	private BattleCharacter currentUser;
+	private Actor currentUser;
 	private Action currentBA;
 	private boolean selfTarget = false;
 	//
 	private BattleActionAreaSprite currentArea;
 	private Color currentAreaColor = Color.BLUE;
 	//キャッシュ
-	private List<BattleCharacter> inArea = new ArrayList<>();
-	private List<BattleCharacter> inAreaTeam = new ArrayList<>();
-	private List<BattleCharacter> inAreaEnemy = new ArrayList<>();
-	private List<BattleCharacter> selected = new ArrayList<>();
+	private List<Actor> inArea = new ArrayList<>();
+	private List<Actor> inAreaTeam = new ArrayList<>();
+	private List<Actor> inAreaEnemy = new ArrayList<>();
+	private List<Actor> selected = new ArrayList<>();
 	//
 	//選択中ターゲットの選択アイコン点滅時間
 	private int blinkTime = 8;
@@ -97,11 +97,24 @@ public class BattleTargetSystem implements Drawable {
 	//
 	//-------------------------------static-------------------------------------
 	//
+	private List<String> untargetCondition = new ArrayList<>();
+
+	{
+		untargetCondition.addAll(BattleConfig.getUntargetConditionNames());
+		untargetCondition.removeAll(BattleConfig.deadConditionNames);
+	}
+
 	//eから最も近いPCを返す。
-	public static BattleCharacter nearPC(BattleCharacter e) {
+	public static Actor nearPC(Actor e, boolean deadTgt) {
 		float distance = Integer.MAX_VALUE;
-		BattleCharacter result = null;
-		for (BattleCharacter c : getInstance().allPCs(e.getSprite().getCenter(), Integer.MAX_VALUE)) {
+		Actor result = null;
+		for (Actor c : getInstance().allPCs(e.getSprite().getCenter(), Integer.MAX_VALUE)) {
+			if (!deadTgt || c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
+				continue;
+			}
+			if (c.getStatus().hasConditions(false, getInstance().untargetCondition)) {
+				continue;
+			}
 			if (e.getSprite().getCenter().distance(c.getSprite().getCenter()) < distance) {
 				distance = (float) e.getSprite().getCenter().distance(c.getSprite().getCenter());
 				result = c;
@@ -110,10 +123,16 @@ public class BattleTargetSystem implements Drawable {
 		return result;
 	}
 
-	public static BattleCharacter nearEnemy(BattleCharacter pc) {
+	public static Actor nearEnemy(Actor pc, boolean deadTgt) {
 		float distance = Integer.MAX_VALUE;
-		BattleCharacter result = null;
-		for (BattleCharacter c : getInstance().allEnemies(pc.getSprite().getCenter(), Integer.MAX_VALUE)) {
+		Actor result = null;
+		for (Actor c : getInstance().allEnemies(pc.getSprite().getCenter(), Integer.MAX_VALUE)) {
+			if (!deadTgt || c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
+				continue;
+			}
+			if (c.getStatus().hasConditions(false, getInstance().untargetCondition)) {
+				continue;
+			}
 			if (pc.getSprite().getCenter().distance(c.getSprite().getCenter()) < distance) {
 				distance = (float) pc.getSprite().getCenter().distance(c.getSprite().getCenter());
 				result = c;
@@ -122,10 +141,16 @@ public class BattleTargetSystem implements Drawable {
 		return result;
 	}
 
-	public BattleCharacter farPC(BattleCharacter e) {
+	public Actor farPC(Actor e, boolean deadTgt) {
 		float distance = Integer.MIN_VALUE;
-		BattleCharacter result = null;
-		for (BattleCharacter c : getInstance().allPCs(e.getSprite().getCenter(), Integer.MAX_VALUE)) {
+		Actor result = null;
+		for (Actor c : getInstance().allPCs(e.getSprite().getCenter(), Integer.MAX_VALUE)) {
+			if (!deadTgt || c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
+				continue;
+			}
+			if (c.getStatus().hasConditions(false, getInstance().untargetCondition)) {
+				continue;
+			}
 			if (e.getSprite().getCenter().distance(c.getSprite().getCenter()) > distance) {
 				distance = (float) e.getSprite().getCenter().distance(c.getSprite().getCenter());
 				result = c;
@@ -135,10 +160,16 @@ public class BattleTargetSystem implements Drawable {
 
 	}
 
-	public BattleCharacter farEnemy(BattleCharacter pc) {
+	public Actor farEnemy(Actor pc, boolean deadTgt) {
 		float distance = Integer.MIN_VALUE;
-		BattleCharacter result = null;
-		for (BattleCharacter c : getInstance().allEnemies(pc.getSprite().getCenter(), Integer.MAX_VALUE)) {
+		Actor result = null;
+		for (Actor c : getInstance().allEnemies(pc.getSprite().getCenter(), Integer.MAX_VALUE)) {
+			if (!deadTgt || c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
+				continue;
+			}
+			if (c.getStatus().hasConditions(false, getInstance().untargetCondition)) {
+				continue;
+			}
 			if (pc.getSprite().getCenter().distance(c.getSprite().getCenter()) > distance) {
 				distance = (float) pc.getSprite().getCenter().distance(c.getSprite().getCenter());
 				result = c;
@@ -149,7 +180,7 @@ public class BattleTargetSystem implements Drawable {
 
 	//カレントを設定せずに、ターゲットを分析する。
 	//空のターゲットインスタンスを返す場合がある。
-	static ActionTarget instantTarget(BattleCharacter user, Action a) {
+	static ActionTarget instantTarget(Actor user, Action a, boolean deadCondition) {
 //		if (GameSystem.isDebugMode()) {
 //			GameLog.print("TS intant Target start : " + a);
 //		}
@@ -159,7 +190,7 @@ public class BattleTargetSystem implements Drawable {
 				: a.getAreaWithEqip(user.getStatus());
 		ActionTarget result = new ActionTarget(user, a);
 
-		List<BattleCharacter> tgt = new ArrayList<>();
+		List<Actor> tgt = new ArrayList<>();
 		boolean isPC = GameSystem.getInstance().getPartyStatus().contains(user.getStatus());
 		TargetOption o = a.getTargetOption();
 		//セルフターゲット要否判定
@@ -223,13 +254,15 @@ public class BattleTargetSystem implements Drawable {
 
 		tgt = tgt.stream().distinct().collect(Collectors.toList());
 		//アンターゲット状態のキャラを除去
-		List<BattleCharacter> removeList = new ArrayList<>();
-		for (BattleCharacter c : tgt) {
-			if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
-				removeList.add(c);
+		if (!deadCondition) {
+			List<Actor> removeList = new ArrayList<>();
+			for (Actor c : tgt) {
+				if (c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
+					removeList.add(c);
+				}
 			}
+			tgt.removeAll(removeList);
 		}
-		tgt.removeAll(removeList);
 		result.setTarget(tgt);
 
 //		if (GameSystem.isDebugMode()) {
@@ -356,19 +389,19 @@ public class BattleTargetSystem implements Drawable {
 		}
 	}
 
-	List<BattleCharacter> getInAreaDirect() {
+	List<Actor> getInAreaDirect() {
 		return inArea;
 	}
 
-	List<BattleCharacter> getInAreaEnemy() {
+	List<Actor> getInAreaEnemy() {
 		return inAreaEnemy;
 	}
 
-	List<BattleCharacter> getInAreaTeam() {
+	List<Actor> getInAreaTeam() {
 		return inAreaTeam;
 	}
 
-	void setCurrent(BattleCharacter pc, Action a) {
+	void setCurrent(Actor pc, Action a) {
 		selectedIdx = 0;
 		currentUser = pc;
 		currentBA = a;
@@ -447,7 +480,7 @@ public class BattleTargetSystem implements Drawable {
 			return;
 		}
 
-		List<BattleCharacter> list = new ArrayList<>();
+		List<Actor> list = new ArrayList<>();
 		Point2D.Float center = currentUser.getSprite().getCenter();
 		int area = currentBA.getAreaWithEqip(currentUser.getStatus());
 		boolean isPC = currentUser.isPlayer();
@@ -461,12 +494,30 @@ public class BattleTargetSystem implements Drawable {
 		inArea.addAll(getInstance().all(currentUser.getCenter(), area));
 
 		//アンターゲットの人を削除
-		List<BattleCharacter> removeList = new ArrayList<>();
-		for (BattleCharacter c : inArea) {
-			if (c.getStatus().hasConditions(false, BattleConfig.getUntargetConditionNames())) {
-				removeList.add(c);
+		boolean deadTgt = false;
+		//アクションが蘇生の場合は死亡状態者もターゲティング可能にする
+		Action a = currentBA.clone();
+		for (ActionEvent e : a.getBattleEvent()) {
+			Status tmpStatus = new Status("TMP", RaceStorage.getInstance().first());
+			BattleConfig.deadConditionNames.forEach(p -> tmpStatus.addCondition(p));
+			ActionEvent ee = e.clone();
+			ee.setP(1.0f);
+			ee.exec(ActionTarget.instantTarget(tmpStatus, a, tmpStatus));
+			if (!tmpStatus.hasConditions(true, BattleConfig.deadConditionNames)) {
+				deadTgt = true;
+				break;
 			}
 		}
+		List<Actor> removeList = new ArrayList<>();
+		if (!deadTgt) {
+			for (Actor c : inArea) {
+				if (c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
+					removeList.add(c);
+				}
+			}
+		}
+		//アンターゲットは強制的に排除
+		removeList.addAll(inArea.stream().filter(p -> p.getStatus().hasConditions(false, this.untargetCondition)).collect(Collectors.toList()));
 		inArea.removeAll(removeList);
 		inArea = inArea.stream().distinct().collect(Collectors.toList());
 
@@ -475,13 +526,13 @@ public class BattleTargetSystem implements Drawable {
 		if (currentBA.getTargetOption().getIff() == TargetOption.IFF.ON) {
 			if (selectedTeam == ENEMY) {
 				if (currentUser.isPlayer()) {
-					for (BattleCharacter c : inArea) {
+					for (Actor c : inArea) {
 						if (c.isPlayer()) {
 							removeList.add(c);
 						}
 					}
 				} else {
-					for (BattleCharacter c : inArea) {
+					for (Actor c : inArea) {
 						if (!c.isPlayer()) {
 							removeList.add(c);
 						}
@@ -489,13 +540,13 @@ public class BattleTargetSystem implements Drawable {
 				}
 			} else {
 				if (currentUser.isPlayer()) {
-					for (BattleCharacter c : inArea) {
+					for (Actor c : inArea) {
 						if (!c.isPlayer()) {
 							removeList.add(c);
 						}
 					}
 				} else {
-					for (BattleCharacter c : inArea) {
+					for (Actor c : inArea) {
 						if (c.isPlayer()) {
 							removeList.add(c);
 						}
@@ -506,7 +557,7 @@ public class BattleTargetSystem implements Drawable {
 		inArea.removeAll(removeList);
 		inArea = inArea.stream().distinct().collect(Collectors.toList());
 		//振り分け実施
-		for (BattleCharacter c : inArea) {
+		for (Actor c : inArea) {
 			if (c.isPlayer()) {
 				inAreaTeam.add(c);
 			} else {
@@ -559,7 +610,7 @@ public class BattleTargetSystem implements Drawable {
 				//チームの場合、何もしないが、ONEの場合はIDX軒目を取る
 				if (currentBA.getTargetOption().getSelectType() == ONE) {
 					if (selected.size() > 1) {
-						BattleCharacter c = selected.get(selectedIdx);
+						Actor c = selected.get(selectedIdx);
 						selected = new ArrayList<>();
 						selected.add(c);
 					}
@@ -577,7 +628,7 @@ public class BattleTargetSystem implements Drawable {
 						selected = inArea.stream().filter(p -> p.isPlayer()).collect(Collectors.toList());
 					}
 					if (selected.size() > 1) {
-						BattleCharacter c = selected.get(selectedIdx);
+						Actor c = selected.get(selectedIdx);
 						selected = new ArrayList<>();
 						selected.add(c);
 					}
@@ -595,7 +646,7 @@ public class BattleTargetSystem implements Drawable {
 		if (selected == null || selected.isEmpty()) {
 			return;
 		}
-		for (BattleCharacter c : selected) {
+		for (Actor c : selected) {
 			float x = c.getSprite().getCenterX();
 			float y = c.getSprite().getCenterY() - iconMaster.getHeight() - 14;
 			Sprite i = iconMaster.clone();
@@ -611,9 +662,9 @@ public class BattleTargetSystem implements Drawable {
 		}
 	}
 
-	private List<BattleCharacter> allEnemies(Point2D.Float center, int area) {
-		List<BattleCharacter> result = new ArrayList<>();
-		for (BattleCharacter e : GameSystem.getInstance().getBattleSystem().getEnemies()) {
+	private List<Actor> allEnemies(Point2D.Float center, int area) {
+		List<Actor> result = new ArrayList<>();
+		for (Actor e : GameSystem.getInstance().getBattleSystem().getEnemies()) {
 			if (e.getSprite().getCenter().distance(center) <= area) {
 				result.add(e);
 			}
@@ -621,9 +672,9 @@ public class BattleTargetSystem implements Drawable {
 		return result;
 	}
 
-	private List<BattleCharacter> allPCs(Point2D.Float center, int area) {
-		List<BattleCharacter> result = new ArrayList<>();
-		for (BattleCharacter pc : GameSystem.getInstance().getParty()) {
+	private List<Actor> allPCs(Point2D.Float center, int area) {
+		List<Actor> result = new ArrayList<>();
+		for (Actor pc : GameSystem.getInstance().getParty()) {
 			if (pc.getSprite().getCenter().distance(center) <= area) {
 				result.add(pc);
 			}
@@ -631,8 +682,8 @@ public class BattleTargetSystem implements Drawable {
 		return result;
 	}
 
-	private List<BattleCharacter> all(Point2D.Float center, int area) {
-		List<BattleCharacter> result = new ArrayList<>();
+	private List<Actor> all(Point2D.Float center, int area) {
+		List<Actor> result = new ArrayList<>();
 		result.addAll(allEnemies(center, area));
 		result.addAll(allPCs(center, area));
 		return result;
@@ -647,17 +698,17 @@ public class BattleTargetSystem implements Drawable {
 		return "BattleTargetSystem{" + "currentUser=" + currentUser + ", currentBA=" + currentBA + ", selfTarget=" + selfTarget + ", inArea=" + inArea + ", selected=" + selected + ", selectedIdx=" + selectedIdx + '}';
 	}
 
-	private Map<BattleCharacter, ActionTarget> saveTargets = new HashMap<>();
+	private Map<Actor, ActionTarget> saveTargets = new HashMap<>();
 
-	public void saveTarget(BattleCharacter c) {
+	public void saveTarget(Actor c) {
 		saveTargets.put(c, getSelected());
 	}
 
-	public void saveTarget(BattleCharacter c, ActionTarget tgt) {
+	public void saveTarget(Actor c, ActionTarget tgt) {
 		saveTargets.put(c, tgt);
 	}
 
-	public ActionTarget getTarget(BattleCharacter c) {
+	public ActionTarget getTarget(Actor c) {
 		ActionTarget r = saveTargets.get(c);
 		saveTargets.remove(c);
 		return r;

@@ -16,7 +16,6 @@
  */
 package kinugasa.game.system;
 
-import java.awt.image.BufferedImage;
 import kinugasa.game.GameLog;
 import static kinugasa.game.system.AnimationMoveType.BEAM_BLACK;
 import static kinugasa.game.system.AnimationMoveType.BEAM_BLACK_THICK;
@@ -28,9 +27,7 @@ import static kinugasa.game.system.AnimationMoveType.BEAM_RED;
 import static kinugasa.game.system.AnimationMoveType.BEAM_RED_THICK;
 import static kinugasa.game.system.AnimationMoveType.BEAM_WHITE;
 import static kinugasa.game.system.AnimationMoveType.BEAM_WHITE_THICK;
-import kinugasa.graphics.ImageEditor;
 import kinugasa.object.AnimationSprite;
-import kinugasa.resource.KImage;
 import kinugasa.resource.Storage;
 import kinugasa.util.Random;
 
@@ -46,7 +43,7 @@ public class StatusDamageCalcModelStorage extends Storage<StatusDamageCalcModel>
 	private StatusDamageCalcModelStorage() {
 		add(new StatusDamageCalcModel("DEFAULT") {
 			@Override
-			public ActionEventResult exec(BattleCharacter user, ActionEvent be, BattleCharacter tgt) {
+			public ActionEventResult exec(Actor user, ActionEvent be, Actor tgt) {
 
 				switch (be.getParameterType()) {
 					case ADD_CONDITION:

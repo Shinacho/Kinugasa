@@ -234,6 +234,13 @@ public final class ARGBColor {
 		return getAlpha(argb) == 0;
 	}
 
+	public static int reverse(int argb) {
+		return toARGB(getAlpha(argb),
+				255 - getRed(argb),
+				255 - getGreen(argb),
+				255 - getBlue(argb));
+	}
+
 	/**
 	 * ARGB列からRED成分を抽出します.
 	 *
@@ -279,7 +286,8 @@ public final class ARGBColor {
 	}
 
 	/**
-	 * 4バイトカラーを整形した文字列を返します. このメソッドは、"ARGB:[getAlpha(argb)], [getRed(argb)], [getGreen(argb)], [getBlue(argb)]"の形式の文字列を 返します.<br>
+	 * 4バイトカラーを整形した文字列を返します. このメソッドは、"ARGB:[getAlpha(argb)], [getRed(argb)],
+	 * [getGreen(argb)], [getBlue(argb)]"の形式の文字列を 返します.<br>
 	 *
 	 * @param argb ARGB形式の4バイトカラー.<br>
 	 *

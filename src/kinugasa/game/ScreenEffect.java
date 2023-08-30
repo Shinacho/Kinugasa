@@ -14,45 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package kinugasa.game.system;
+package kinugasa.game;
 
-import java.awt.geom.Point2D;
-import kinugasa.object.BasicSprite;
-import kinugasa.object.FourDirection;
+import java.awt.image.BufferedImage;
+import kinugasa.object.Statable;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/23_13:08:50<br>
- * @author Shinacho<br>
+ * エフェクトはダブルバッファリングイメージに対する最終的な処理を定義します。 <br>
+ * 例えば、反転や色の変換、シェイク、暗転等いろいろな処理が適用できます。
+ *
+ * @vesion 1.0.0 - 2023/07/19_20:00:02<br>
+ * @author Shinacho
+ *
+ * <br>
  */
-public interface BattleCharacter {
+@FunctionalInterface
+public interface ScreenEffect extends Statable {
 
-	public BasicSprite getSprite();
+	public BufferedImage doIt(BufferedImage src);
 
-	public Status getStatus();
-
-	public void setTargetLocation(Point2D.Float p, int area);
-
-	public void unsetTarget();
-
-	public boolean isMoving();
-
-	public void moveToTgt();
-
-	public void move();
-
-	public void to(FourDirection dir);
-
-	public boolean isPlayer();
-
-	public String getId();
-
-	public default Point2D.Float getCenter() {
-		return getSprite().getCenter();
+	@Override
+	public default boolean isRunning() {
+		return true;
 	}
 
-	public default String getName() {
-		return getStatus().getName();
+	@Override
+	public default boolean isEnded() {
+		return false;
 	}
 
 }

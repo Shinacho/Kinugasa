@@ -30,15 +30,15 @@ import kinugasa.object.FourDirection;
  * @vesion 1.0.0 - 2022/12/01_19:16:09<br>
  * @author Shinacho<br>
  */
-public class ActionTarget implements Iterable<BattleCharacter> {
+public class ActionTarget implements Iterable<Actor> {
 
-	private BattleCharacter user;
+	private Actor user;
 	private Action action;
 	private boolean inField = false;
-	private List<BattleCharacter> target = new ArrayList<>();
+	private List<Actor> target = new ArrayList<>();
 	private boolean selfTarget = false;
 
-	public ActionTarget(BattleCharacter user, Action a) {
+	public ActionTarget(Actor user, Action a) {
 		if (user == null) {
 			throw new GameSystemException("battle action result s user is null");
 		}
@@ -74,7 +74,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 				.setTarget(target.stream().collect(Collectors.toList()));
 	}
 
-	private static class DummyCharacter implements BattleCharacter {
+	private static class DummyCharacter implements Actor {
 
 		private Status s;
 		private boolean player;
@@ -135,7 +135,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 		return this;
 	}
 
-	public ActionTarget setTarget(List< BattleCharacter> target) {
+	public ActionTarget setTarget(List< Actor> target) {
 		this.target = new ArrayList(target);
 		return this;
 	}
@@ -157,7 +157,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 		return inField;
 	}
 
-	public BattleCharacter getUser() {
+	public Actor getUser() {
 		return user;
 	}
 
@@ -165,7 +165,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 		return action;
 	}
 
-	public List<BattleCharacter> getTarget() {
+	public List<Actor> getTarget() {
 		return target;
 	}
 
@@ -178,7 +178,7 @@ public class ActionTarget implements Iterable<BattleCharacter> {
 	}
 
 	@Override
-	public Iterator<BattleCharacter> iterator() {
+	public Iterator<Actor> iterator() {
 		return target.iterator();
 	}
 

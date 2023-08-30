@@ -39,13 +39,13 @@ import kinugasa.util.Random;
  */
 public class ItemWindow extends BasicSprite {
 
-	private List<Status> list;
+	private List<Actor> list;
 	private MessageWindow main;
 	private MessageWindow choiceUse, dropConfirm, disasseConfirm, tgtSelect, msg;//msgはボタン操作で即閉じる
 	private MessageWindowGroup group;
 
 	public ItemWindow(float x, float y, float w, float h) {
-		list = GameSystem.getInstance().getPartyStatus();
+		list = GameSystem.getInstance().getParty().stream().collect(Collectors.toList());
 		main = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		x += 8;
 		y += 8;
@@ -197,7 +197,7 @@ public class ItemWindow extends BasicSprite {
 	}
 
 	public Status getSelectedPC() {
-		return list.get(pcIdx);
+		return list.get(pcIdx).getStatus();
 	}
 
 	public Item getSelectedItem() {
@@ -259,7 +259,8 @@ public class ItemWindow extends BasicSprite {
 							tgt.setDamageCalcPoint();
 							ActionTarget t;
 							ActionResult r = i.exec(t = ActionTarget.instantTarget(getSelectedPC(), i).setInField(true));
-							ConditionManager.getInstance().setCondition(t.getTarget().stream().map(p -> p.getStatus()).collect(Collectors.toList()));
+							ConditionManager.getInstance().setCondition(t.getTarget());
+
 							StringBuilder sb = new StringBuilder();
 							sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getVisibleName()));
 							sb.append(Text.getLineSep());
@@ -297,7 +298,7 @@ public class ItemWindow extends BasicSprite {
 								s.setDamageCalcPoint();
 								ActionTarget tgt;
 								ActionResult r = i.exec(tgt = ActionTarget.instantTarget(getSelectedPC(), i).setInField(true));
-								ConditionManager.getInstance().setCondition(tgt.getTarget().stream().map(p -> p.getStatus()).collect(Collectors.toList()));
+								ConditionManager.getInstance().setCondition(tgt.getTarget());
 								if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
 
 									//成功
@@ -339,10 +340,10 @@ public class ItemWindow extends BasicSprite {
 						if (getSelectedPC().getEqipment().values().contains(i)) {
 							//すでに装備している時は外す
 							//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
-							if (ItemStorage.bagItems.containsKey(i.getVisibleName())) {
+							if (ItemStorage.bagItems.containsKey(i.getName())) {
 								//もともとのサイズ
 								int itemBagDefaultMax = getSelectedPC().getRace().getItemBagSize();
-								//現在のサイズ
+								//現在の持ってる数
 								int currentSize = getSelectedPC().getItemBag().size();
 								//現在のサイズがもともともサイズより大きい場合は外せない
 								if (currentSize > itemBagDefaultMax) {
@@ -661,7 +662,7 @@ public class ItemWindow extends BasicSprite {
 		tgt.setDamageCalcPoint();
 		ActionTarget t;
 		ActionResult r = i.exec(t = ActionTarget.instantTarget(getSelectedPC(), i, tgt).setInField(true));
-		ConditionManager.getInstance().setCondition(t.getTarget().stream().map(p -> p.getStatus()).collect(Collectors.toList()));
+		ConditionManager.getInstance().setCondition(t.getTarget());
 		StringBuilder sb = new StringBuilder();
 		sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getVisibleName()));
 		sb.append(Text.getLineSep());

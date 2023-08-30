@@ -37,7 +37,7 @@ public class BattleCommand {
 	//CPUまたはPC
 	private Mode mode;
 	//このコマンドのユーザ
-	private BattleCharacter user;
+	private Actor user;
 	//取れる行動
 	private List<Action> ba;
 	//状態異常関連
@@ -50,7 +50,7 @@ public class BattleCommand {
 	//詠唱完了イベントのフラグ
 	private boolean magicSpell = false;
 
-	public BattleCommand(Mode mode, BattleCharacter user) {
+	public BattleCommand(Mode mode, Actor user) {
 		this.mode = mode;
 		this.user = user;
 		this.ba = user.getStatus().getActions();
@@ -99,7 +99,7 @@ public class BattleCommand {
 		return mode;
 	}
 
-	public BattleCharacter getUser() {
+	public Actor getUser() {
 		return user;
 	}
 

@@ -16,18 +16,12 @@
  */
 package kinugasa.game.field4;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import kinugasa.game.GraphicsContext;
-import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.object.ImageSprite;
 import kinugasa.object.KVector;
 import kinugasa.resource.Disposable;
-import kinugasa.resource.KImage;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.TempFile;
 import kinugasa.resource.TempFileStorage;
@@ -48,7 +42,7 @@ public class BeforeLayerSprite extends ImageSprite implements Disposable, Nameab
 	private TempFile t;
 
 	public BeforeLayerSprite(String name, BufferedImage image, float tp, float mg, KVector v) throws IllegalArgumentException {
-		super(0, 0, image.getWidth() * mg, image.getHeight() * mg, ImageEditor.transparent(ImageEditor.resize(image, mg), tp, null));
+		super(0, 0, image.getWidth() * mg, image.getHeight() * mg, ImageUtil.transparent(ImageUtil.resize(image, mg), tp, null));
 		this.name = name;
 		setVector(v);
 		t = TempFileStorage.getInstance().create();

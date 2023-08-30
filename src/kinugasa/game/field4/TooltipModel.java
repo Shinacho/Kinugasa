@@ -49,5 +49,14 @@ public abstract class TooltipModel extends Model {
 	public TooltipModel clone() {
 		return (TooltipModel) super.clone(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
 	}
+	protected boolean visible;
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
 
 }

@@ -31,7 +31,6 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.field4.MapChipAttribute;
 import kinugasa.game.field4.MapChipAttributeStorage;
 import kinugasa.graphics.GraphicsUtil;
-import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.object.Sprite;
 import kinugasa.resource.FileNotFoundException;
@@ -255,7 +254,7 @@ public class BattleFieldSystem implements XMLFileSupport {
 			String name = e.getAttributes().get("name").getValue();
 			BufferedImage image = ImageUtil.load(e.getAttributes().get("image").getValue());
 			float mg = e.getAttributes().get("mg").getFloatValue();
-			image = ImageEditor.resize(image, mg);
+			image = ImageUtil.resize(image, mg);
 			int w = (int) (e.getAttributes().get("w").getIntValue() * mg);
 			int h = (int) (e.getAttributes().get("h").getIntValue() * mg);
 			BattleFieldObstacleStorage.getInstance().add(new BattleFieldObstacle(name, w, h, image));

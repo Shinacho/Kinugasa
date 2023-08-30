@@ -17,7 +17,6 @@
 package kinugasa.game.field4;
 
 import kinugasa.object.FourDirection;
-import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
-import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
 import kinugasa.game.system.EncountInfo;
 import kinugasa.game.system.EnemySetStorageStorage;
@@ -44,9 +42,7 @@ import kinugasa.game.ui.TextStorage;
 import kinugasa.game.ui.TextStorageStorage;
 import kinugasa.graphics.ARGBColor;
 import kinugasa.graphics.Animation;
-import kinugasa.graphics.ImageEditor;
 import kinugasa.graphics.ImageUtil;
-import kinugasa.graphics.RenderingQuality;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.Drawable;
 import kinugasa.object.KVector;
@@ -55,12 +51,12 @@ import kinugasa.resource.KImage;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundStorage;
+import kinugasa.resource.sound.SoundType;
 import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.ManualTimeCounter;
 import kinugasa.util.Random;
-import kinugasa.util.TimeCounter;
 
 /**
  *
@@ -526,12 +522,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 						bgm.pause();
 						break;
 					case STOP:
-						SoundStorage.getInstance().stopAll();
-						SoundStorage.getInstance().dispose();
+						SoundStorage.getInstance().stream().filter(p->p.getType()==SoundType.BGM).forEach(p->p.stop());
+						SoundStorage.getInstance().stream().filter(p->p.getType()==SoundType.BGM).forEach(p->p.dispose());
 						break;
 					case STOP_AND_PLAY:
-						SoundStorage.getInstance().stopAll();
-						SoundStorage.getInstance().dispose();
+						SoundStorage.getInstance().stream().filter(p->p.getType()==SoundType.BGM).forEach(p->p.stop());
+						SoundStorage.getInstance().stream().filter(p->p.getType()==SoundType.BGM).forEach(p->p.dispose());
 						bgm.load().stopAndPlay();
 						break;
 					default:
@@ -863,7 +859,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		float ws = w / image.getWidth();
 		float hs = h / image.getHeight();
 
-		return new KImage(ImageEditor.resize(image, ws, hs));
+		return new KImage(ImageUtil.resize(image, ws, hs));
 
 	}
 
@@ -994,6 +990,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (n.getExitNodeName() == null) {
 			fm.setCurrentIdx(n.getIdx());
 		} else {
+			if (!fm.getNodeStorage().contains(n.getExitNodeName())) {
+				throw new GameSystemException("Node not found : " + fm.getName() + "." + n.getExitNodeName() + " from " + this.getName());
+			}
 			fm.setCurrentIdx(fm.getNodeStorage().get(n.getExitNodeName()).getIdx());
 		}
 		fm.getCamera().updateToCenter();

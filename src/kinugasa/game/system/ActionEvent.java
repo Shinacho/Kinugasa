@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import static kinugasa.game.system.AnimationMoveType.BEAM_BLACK;
@@ -67,7 +69,7 @@ import kinugasa.util.Random;
  * @author Shinacho<br>
  */
 @DBRecord
-public class ActionEvent implements Comparable<ActionEvent>, Nameable {
+public class ActionEvent implements Comparable<ActionEvent>, Nameable, Cloneable {
 
 	private String id, desc;
 	private TargetType targetType;
@@ -214,7 +216,7 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 				result.addResultTypePerTgt(ActionResultType.MISS);
 				return result;
 			}
-			BattleCharacter c = tgt.getUser();
+			Actor c = tgt.getUser();
 			//実行可能
 			switch (parameterType) {
 				case NONE:
@@ -296,7 +298,7 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 		}
 
 		//tt != FIELD,ターゲットタイプに基づくターゲットが引数に入っている前提。
-		for (BattleCharacter c : tgt) {
+		for (Actor c : tgt) {
 			//P判定
 			if (!Random.percent(p)) {
 				if (GameSystem.isDebugMode()) {
@@ -529,6 +531,15 @@ public class ActionEvent implements Comparable<ActionEvent>, Nameable {
 	@Override
 	public int compareTo(ActionEvent o) {
 		return parameterType.getValue() - o.parameterType.getValue();
+	}
+
+	@Override
+	protected ActionEvent clone() {
+		try {
+			return (ActionEvent) super.clone(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+		} catch (CloneNotSupportedException ex) {
+			throw new InternalError(ex);
+		}
 	}
 
 }

@@ -39,7 +39,7 @@ public abstract class SpeedCalcModel extends Model implements Nameable {
 		return name;
 	}
 
-	public abstract List<BattleCharacter> sort(List<BattleCharacter> s);
+	public abstract List<Actor> sort(List<Actor> s);
 
 	@Override
 	public SpeedCalcModel clone() {

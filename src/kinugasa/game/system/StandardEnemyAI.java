@@ -38,20 +38,20 @@ import kinugasa.object.KVector;
 public enum StandardEnemyAI implements EnemyAI {
 	SIMPLE {
 		@Override
-		public Action getNext(BattleCharacter user, List<Action> list) {
+		public Action getNext(Actor user, List<Action> list) {
 			assert user.isPlayer() == false : "ENEMY AI but user is not CPU";
 			//HPが半分以下かどうか
 			boolean hpIsUnderHarf = user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getValue()
 					< user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.hp).getMax() / 2;
 			L1:
-			if(hpIsUnderHarf){
+			if (hpIsUnderHarf) {
 				//回復アイテム（valueが＋でバトル利用できるアイテム）を持っているかどうか
 				Item healItem = (Item) getMax(user.getStatus().getItemBag().getItems());
 				if (healItem == null) {
 					break L1;
 				}
 				//回復アイテムインスタ
-				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healItem);
+				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healItem, false);//暫定
 				if (instTgt.getTarget().isEmpty()) {
 					break L1;
 				}
@@ -64,14 +64,14 @@ public enum StandardEnemyAI implements EnemyAI {
 			}
 
 			L2:
-			if(hpIsUnderHarf){
+			if (hpIsUnderHarf) {
 				//回復魔法（valueが＋）持っている場合でHPが低い場合自分に使う
 				Action healMgk = getMax(list.stream().filter(p -> p.getType() == ActionType.MAGIC).collect(Collectors.toList()));
 				if (healMgk == null) {
 					break L2;
 				}
 				//回復魔法インスタ
-				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healMgk);
+				ActionTarget instTgt = BattleTargetSystem.instantTarget(user, healMgk, false);//暫定
 				if (instTgt.getTarget().isEmpty()) {
 					break L2;
 				}
@@ -103,12 +103,12 @@ public enum StandardEnemyAI implements EnemyAI {
 		}
 
 		@Override
-		public Point2D.Float targetLocation(BattleCharacter user) {
+		public Point2D.Float targetLocation(Actor user) {
 			//最も近いPCを返す
 			//ただし足障害物がある場合は障害物をよけるコースで障害物までの位置を返す
 
 			//最も近いPCを検索
-			BattleCharacter pc = BattleTargetSystem.nearPC(user);
+			Actor pc = BattleTargetSystem.nearPC(user, false);
 
 			//現在の障害物リストを取得
 			List<BattleFieldObstacle> oList = GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getObstacle();

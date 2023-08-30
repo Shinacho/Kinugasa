@@ -24,8 +24,6 @@ import java.util.List;
  * @author Shinacho<br>
  */
 public class MagicCompositeSystem {
-//
-//	public static CmdAction create(List<BookPage> list){
-//		
-//	}
+	
+	
 }

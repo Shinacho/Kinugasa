@@ -17,7 +17,6 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,11 +24,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.SpriteSheet;
-import kinugasa.object.Sprite;
 import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.db.*;
 import kinugasa.util.FrameTimeCounter;
-import kinugasa.util.TimeCounter;
 
 /**
  *

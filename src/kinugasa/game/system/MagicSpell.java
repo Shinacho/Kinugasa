@@ -23,11 +23,11 @@ package kinugasa.game.system;
  */
 public class MagicSpell {
 
-	private BattleCharacter user;
+	private Actor user;
 	private Action action;
 	private boolean player;
 
-	public MagicSpell(BattleCharacter user, Action action, boolean player) {
+	public MagicSpell(Actor user, Action action, boolean player) {
 		this.user = user;
 		this.action = action;
 		this.player = player;
@@ -41,7 +41,7 @@ public class MagicSpell {
 		return action;
 	}
 
-	public BattleCharacter getUser() {
+	public Actor getUser() {
 		return user;
 	}
 

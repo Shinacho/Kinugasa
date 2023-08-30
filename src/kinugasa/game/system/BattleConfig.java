@@ -19,12 +19,11 @@ package kinugasa.game.system;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import kinugasa.game.GameOption;
 import kinugasa.object.Sprite;
+import kinugasa.resource.KImage;
 
 /**
  *
@@ -72,7 +71,7 @@ public class BattleConfig {
 
 	}
 	public static kinugasa.game.system.StatusKey shockDamageKey;
-	public static int shockDamageDefault = 2;//ショック演出ダメージ基礎値
+	public static int shockDamageMax = 2;//ショック演出ダメージ基礎値
 
 	public static float atkDefPercent = 0.75f;//ダメージ効率
 	public static float damageMul = 2.5f;
@@ -117,6 +116,7 @@ public class BattleConfig {
 	}
 
 	private static List<String> untargetConditionNames = new ArrayList<>();
+	public static List<String> deadConditionNames = new ArrayList<>();
 
 	public static List<String> getUntargetConditionNames() {
 		return untargetConditionNames;
@@ -139,6 +139,8 @@ public class BattleConfig {
 			}
 		}
 	}
+	
+	public static KImage deadCharaImage = null;
 
 	public static boolean undeadDebugMode = false;
 

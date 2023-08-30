@@ -37,7 +37,7 @@ import kinugasa.util.FrameTimeCounter;
  * @vesion 1.0.0 - 2022/11/23_11:12:33<br>
  * @author Shinacho<br>
  */
-public class PlayerCharacter implements BattleCharacter {
+public class PlayerCharacter implements Actor {
 
 	private Status status;
 	private PlayerCharacterSprite sprite;
@@ -76,14 +76,14 @@ public class PlayerCharacter implements BattleCharacter {
 		return status;
 	}
 
-	public void dirTo(BattleCharacter c, float speed) {
+	public void dirTo(Actor c, float speed) {
 		KVector v = new KVector();
 		v.setAngle(sprite.getCenter(), c.getSprite().getCenter());
 		v.setSpeed(speed);
 		sprite.setVector(v);
 	}
 
-	public void dirTo(BattleCharacter c, String vehicleName) {
+	public void dirTo(Actor c, String vehicleName) {
 		KVector v = new KVector();
 		v.setAngle(sprite.getCenter(), c.getSprite().getCenter());
 		v.setSpeed(VehicleStorage.getInstance().get(vehicleName).getSpeed());
