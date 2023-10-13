@@ -16,7 +16,9 @@
  */
 package kinugasa.game.system;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import kinugasa.object.AnimationSprite;
 import kinugasa.object.ImageSprite;
 
@@ -40,16 +42,14 @@ public class ConditionManager {
 		if (BattleConfig.undeadDebugMode) {
 			return;
 		}
+
 		for (Actor s : target) {
 			for (StatusValue val : s.getStatus().getEffectedStatus()) {
 				String condName = val.getKey().getWhen0ConditionName();
+				if (condName == null) {
+					continue;
+				}
 				if (val.getValue() <= 0) {
-					if (condName == null) {
-						continue;
-					}
-					if (!ConditionStorage.getInstance().contains(condName)) {
-						throw new GameSystemException("when 0 condition " + condName + " is not found.");
-					}
 					if (!s.getStatus().hasCondition(condName)) {
 						s.getStatus().addCondition(condName);
 					}

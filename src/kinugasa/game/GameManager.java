@@ -243,13 +243,8 @@ public abstract class GameManager {
 		}
 		loop = new GameLoop(this, gameTimeManager = new GameTimeManager(fps), updateIfNotActive);
 		gameTimeManager.setStartTime(System.currentTimeMillis());
+		startUp();
 		EventQueue.invokeLater(() -> {
-			try {
-				startUp();
-			} catch (Throwable ex) {
-				GameLog.print(ex);
-				System.exit(1);
-			}
 			window.setVisible(true);
 			window.createBufferStrategy(drawSize == 1 ? 2 : 1);
 			graphicsBuffer = window.getBufferStrategy();
@@ -327,15 +322,15 @@ public abstract class GameManager {
 		g.setRenderingHints(renderingHints);
 		draw(new GraphicsContext(g));
 		g.dispose();
-		
+
 		final Dimension imageSize = new Dimension(image.getWidth(), image.getHeight());
-		for(ScreenEffect e : effects){
+		for (ScreenEffect e : effects) {
 			image = e.doIt(image);
-			if(!imageSize.equals(new Dimension(image.getWidth(), image.getHeight()))){
+			if (!imageSize.equals(new Dimension(image.getWidth(), image.getHeight()))) {
 				throw new ScreenEffectException("screen effect " + e + " s size is missmatch");
 			}
 		}
-		
+
 		Graphics2D g2 = (Graphics2D) graphicsBuffer.getDrawGraphics();
 		g2.drawImage(image, 0, 0, (int) (image.getWidth() * drawSize), (int) (image.getHeight() * drawSize), null);
 		g2.dispose();
@@ -347,6 +342,6 @@ public abstract class GameManager {
 		if (graphicsBuffer.contentsLost()) {
 			repaint();
 		}
-		
+
 	}
 }

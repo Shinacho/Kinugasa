@@ -25,12 +25,22 @@ import kinugasa.resource.Nameable;
  */
 public class Material implements Nameable {
 
-	private String name;
+	private String id;
+	private String visibleName;
 	private int value;
 
-	public Material(String name, int value) {
-		this.name = name;
+	public Material(String id, String visibleName, int value) {
+		this.id = id;
+		this.visibleName = visibleName;
 		this.value = value;
+	}
+
+	public void setVisibleName(String visibleName) {
+		this.visibleName = visibleName;
+	}
+
+	public String getVisibleName() {
+		return visibleName;
 	}
 
 	public int getValue() {
@@ -39,12 +49,12 @@ public class Material implements Nameable {
 
 	@Override
 	public String getName() {
-		return name;
+		return id;
 	}
 
 	@Override
 	public String toString() {
-		return "Material{" + "name=" + name + ", value=" + value + '}';
+		return "Material{" + "name=" + id + ", value=" + value + '}';
 	}
 
 }

@@ -126,27 +126,31 @@ public class ActionDescWindow extends PCStatusWindow {
 						.collect(Collectors.toList()));
 			}
 
-			sb.append("、")
-					.append(I18N.get(GameSystemI18NKeys.基礎威力))
-					.append(":");
-
 			//ENEMYが入っている場合、minを、そうでない場合はMAXを取る
+			int i = 0;
 			if (!a.getBattleEvent().isEmpty()) {
 				if (a.getTargetOption().getDefaultTarget() == TargetOption.DefaultTarget.ENEMY) {
-					sb.append(Math.abs(
+					i = Math.abs(
 							a.getBattleEvent()
 									.stream()
 									.mapToInt(p -> (int) (p.getValue()))
 									.min()
-									.getAsInt()));
+									.getAsInt());
 				} else {
-					sb.append(Math.abs(
+					i = Math.abs(
 							a.getBattleEvent()
 									.stream()
 									.mapToInt(p -> (int) (p.getValue()))
 									.max()
-									.getAsInt()));
+									.getAsInt());
 				}
+			}
+
+			if (i != 0) {
+				sb.append("、")
+						.append(I18N.get(GameSystemI18NKeys.基礎威力))
+						.append(":")
+						.append(i);
 			}
 			sb.append(")");
 

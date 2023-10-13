@@ -520,7 +520,7 @@ public class ItemWindow extends BasicSprite {
 								sb.append(Text.getLineSep());
 								for (Map.Entry<Material, Integer> e : i.getDisasseMaterials().entrySet()) {
 									sb.append("   ");
-									sb.append(e.getKey().getName()).append(":").append(e.getValue());
+									sb.append(e.getKey().getVisibleName()).append(":").append(e.getValue());
 									sb.append(Text.getLineSep());
 								}
 								sb.append(Text.getLineSep());

@@ -181,19 +181,16 @@ public class ItemStorage extends DBStorage<Item> {
 				}
 				//MATERIAL
 				KResultSet mks = DBConnection.getInstance().execDirect("select"
-						+ " m.materialID,"
-						+ "count(*)"
+						+ " materialID, num"
 						+ " from"
-						+ " item_material i,material m"
-						+ " where i.materialID = m.MaterialID"
-						+ " and i.itemID = '" + itemId + "'"
-						+ " group by m.materialID;");
+						+ " item_material"
+						+ " where itemID = '" + itemId + "';");
 				if (!mks.isEmpty()) {
 					Map<Material, Integer> map = new HashMap<>();
 					for (var vv : mks) {
 						Material m = MaterialStorage.getInstance().get(vv.get(0).get());
 						int num = vv.get(1).asInt();
-						map.put(m, val);
+						map.put(m, num);
 					}
 					i.setDisasseMaterials(map);
 				}
