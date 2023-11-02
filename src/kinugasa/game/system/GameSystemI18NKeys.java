@@ -30,48 +30,84 @@ import java.util.stream.Stream;
  */
 public class GameSystemI18NKeys {
 
-	public static List<String> allKeys() {
+	private static List<String> of(Class<?> c) {
+		List<String> r = new ArrayList<>();
 		try {
 			List<Field> f = Stream.of(
-					List.of(GameSystemI18NKeys.class.getDeclaredFields()),
-					List.of(ErrorMsg.class.getDeclaredFields()),
-					List.of(CountKey.class.getDeclaredFields())
+					List.of(c.getDeclaredFields())
 			).flatMap(p -> p.stream())
 					.collect(Collectors.toList());
-			List<String> r = new ArrayList<>();
 			for (Field ff : f) {
 				r.add(ff.get(null).toString());
 			}
-			//関連ENUMを追加
-			r.addAll(List.of(StatusKey.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(AttributeKey.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(ItemStyle.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(ItemEnchant.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(CharaAbility.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(Action.ターゲットモード.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(Action.死亡者ターゲティング.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(ActionEvent.EventType.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(WeaponType.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(EqipSlot.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(ActionType.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(Race.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(BattleResult.values()).stream().map(p -> p.toString()).toList());
-			r.addAll(List.of(BattleSystem.NoTgtDesc.values()).stream().map(p -> p.toString()).toList());
-			//関連ENUMのDESCを追加
-			r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getStartMsgI18NK()).toList());
-			r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getExecMsgI18NK()).toList());
-			r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getEndMsgI18NK()).toList());
-			r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getDescI18NK()).toList());
-			r.addAll(List.of(ItemStyle.values()).stream().map(p -> p.getDescI18NKey()).toList());
-			r.addAll(List.of(ItemEnchant.values()).stream().map(p -> p.getDescI18NKey()).toList());
-			r.addAll(List.of(CharaAbility.values()).stream().map(p -> p.getDescI18NK()).toList());
-
-			r = r.stream().distinct().filter(p -> !p.isEmpty()).toList();
-			return r;
-		} catch (IllegalArgumentException | IllegalAccessException ex) {
-			throw new InternalError(ex);
+		} catch (Exception ex) {
 		}
+		return r;
+	}
+
+	public static List<String> allKeysJAData() {
+		List<String> r = new ArrayList<>();
+		r.add("[GAME_SYSTEM]");
+		r.addAll(of(GameSystemI18NKeys.class));
+		r.add("[ERROR_MSG]");
+		r.addAll(of(ErrorMsg.class));
+		r.add("[COUNT_KEY]");
+		r.addAll(of(CountKey.class));
+		//関連ENUMを追加
+		r.add("[StatusKey]");
+		r.addAll(List.of(StatusKey.values()).stream().map(p -> p.toString()).toList());
+		r.add("[AttributeKey]");
+		r.addAll(List.of(AttributeKey.values()).stream().map(p -> p.toString()).toList());
+		r.add("[ConditionKey]");
+		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.toString()).toList());
+		r.add("[ItemStyle]");
+		r.addAll(List.of(ItemStyle.values()).stream().map(p -> p.toString()).toList());
+		r.add("[ItemEnchant]");
+		r.addAll(List.of(ItemEnchant.values()).stream().map(p -> p.toString()).toList());
+		r.add("[CharaAbility]");
+		r.addAll(List.of(CharaAbility.values()).stream().map(p -> p.toString()).toList());
+		r.add("[Action.ターゲットモード]");
+		r.addAll(List.of(Action.ターゲットモード.values()).stream().map(p -> p.toString()).toList());
+		r.add("[Action.死亡者ターゲティング]");
+		r.addAll(List.of(Action.死亡者ターゲティング.values()).stream().map(p -> p.toString()).toList());
+		r.add("[ActionEvent.EventType]");
+		r.addAll(List.of(ActionEvent.EventType.values()).stream().map(p -> p.toString()).toList());
+		r.add("[WeaponType]");
+		r.addAll(List.of(WeaponType.values()).stream().map(p -> p.toString()).toList());
+		r.add("[EqipSlot]");
+		r.addAll(List.of(EqipSlot.values()).stream().map(p -> p.toString()).toList());
+		r.add("[ActionType]");
+		r.addAll(List.of(ActionType.values()).stream().map(p -> p.toString()).toList());
+		r.add("[Race]");
+		r.addAll(List.of(Race.values()).stream().map(p -> p.toString()).toList());
+		r.add("[BattleResult]");
+		r.addAll(List.of(BattleResult.values()).stream().map(p -> p.toString()).toList());
+		r.add("[BattleSystem.NoTgtDesc]");
+		r.addAll(List.of(BattleSystem.NoTgtDesc.values()).stream().map(p -> p.toString()).toList());
+		//関連ENUMのDESCを追加
+		r.add("[ConditionKey.startMsg]");
+		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getStartMsgI18NK()).toList());
+		r.add("[ConditionKey.execMsg]");
+		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getExecMsgI18NK()).toList());
+		r.add("[ConditionKey.endMsg]");
+		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getEndMsgI18NK()).toList());
+		r.add("[ConditionKey.desc]");
+		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getDescI18NK()).toList());
+		r.add("[ItemStyle.desc]");
+		r.addAll(List.of(ItemStyle.values()).stream().map(p -> p.getDescI18NKey()).toList());
+		r.add("[ItemEnchant.desc]");
+		r.addAll(List.of(ItemEnchant.values()).stream().map(p -> p.getDescI18NKey()).toList());
+		r.add("[CharaAbility.desc]");
+		r.addAll(List.of(CharaAbility.values()).stream().map(p -> p.getDescI18NK()).toList());
+
+		r = r.stream().distinct().filter(p -> !p.isEmpty()).map(p -> {
+			if (!p.contains("[")) {
+				return p + "=" + p;
+			}
+			return p;
+		}).toList();
+
+		return r;
 	}
 	public static final String はい = "はい";
 	public static final String いいえ = "いいえ";

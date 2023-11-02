@@ -42,15 +42,21 @@ public enum StandardEnemyAI implements EnemyAI {
 			//自己ヒール
 			Action a = getHPを自己回復できるアクション(user);
 			if (isそろそろHP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getMPを自己回復できるアクション(user);
 			if (isそろそろMP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getSANを自己回復できるアクション(user);
 			if (isそろそろSAN回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 
 			//自分にかけられるバフがあれば実施
@@ -60,12 +66,14 @@ public enum StandardEnemyAI implements EnemyAI {
 			}
 
 			//攻撃力が高いアクションを取得
-			a = get最大威力攻撃順(user).get(0);
-
-			//ターゲットが射程内にいればそれを実施
-			Actor tgt = getTgt(user);
-			if (is射程内(user, a, tgt)) {
-				return new ActionTarget(user, buf, List.of(tgt), false);
+			for (Action ac : get最大威力攻撃順(user)) {
+				//ターゲットが射程内にいればそれを実施
+				Actor tgt = getTgt(user);
+				if (is射程内(user, a, tgt)) {
+					if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+						return new ActionTarget(user, buf, List.of(tgt), false);
+					}
+				}
 			}
 
 			//最大威力アクションを適用できる場所まで移動するよう指示
@@ -100,15 +108,21 @@ public enum StandardEnemyAI implements EnemyAI {
 			//自己ヒール
 			Action a = getHPを自己回復できるアクション(user);
 			if (isそろそろHP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getMPを自己回復できるアクション(user);
 			if (isそろそろMP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getSANを自己回復できるアクション(user);
 			if (isそろそろSAN回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 
 			//自分にかけられるバフがあれば実施
@@ -120,11 +134,15 @@ public enum StandardEnemyAI implements EnemyAI {
 			Actor tgt = getTgt(user);
 			Action 回復 = getターゲットにかけられるバフでまだかかっていないもの(user, (Enemy) tgt);
 			if (回復 != null) {
-				return new ActionTarget(user, 回復, List.of(tgt), false);
+				if (!回復.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, 回復, List.of(tgt), false);
+				}
 			}
 			for (Action aa : get最大威力回復順(user)) {
 				if (is射程内(user, aa, tgt)) {
-					return new ActionTarget(user, aa, List.of(tgt), false);
+					if (!aa.checkResource(user.getStatus()).is足りないステータスあり()) {
+						return new ActionTarget(user, aa, List.of(tgt), false);
+					}
 				}
 			}
 			return new ActionTarget(user, StandardEnemyAI.移動アクション, null, false);
@@ -158,15 +176,21 @@ public enum StandardEnemyAI implements EnemyAI {
 			//自己ヒール
 			Action a = getHPを自己回復できるアクション(user);
 			if (isそろそろHP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getMPを自己回復できるアクション(user);
 			if (isそろそろMP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getSANを自己回復できるアクション(user);
 			if (isそろそろSAN回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 
 			//自分にかけられるバフがあれば実施
@@ -176,14 +200,17 @@ public enum StandardEnemyAI implements EnemyAI {
 			}
 
 			//攻撃力が高いアクションを取得
-			a = get最大威力攻撃順(user).get(0);
-			Actor tgt = getTgt(user);
-			//ターゲットが射程内にいるか確認
-			if (is射程内(user, a, tgt)) {
-				if (Random.percent(0.5f)) {
-					return new ActionTarget(user, StandardEnemyAI.防御アクション, List.of(user), false);
-				} else {
-					return new ActionTarget(user, a, List.of(tgt), false);
+			for (Action aa : get最大威力攻撃順(user)) {
+				Actor tgt = getTgt(user);
+				//ターゲットが射程内にいるか確認
+				if (is射程内(user, a, tgt)) {
+					if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+						if (Random.percent(0.5f)) {
+							return new ActionTarget(user, StandardEnemyAI.防御アクション, List.of(user), false);
+						} else {
+							return new ActionTarget(user, a, List.of(tgt), false);
+						}
+					}
 				}
 			}
 			//最大威力アクションを適用できる場所まで移動するよう指示
@@ -218,15 +245,21 @@ public enum StandardEnemyAI implements EnemyAI {
 			//自己ヒール
 			Action a = getHPを自己回復できるアクション(user);
 			if (isそろそろHP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getMPを自己回復できるアクション(user);
 			if (isそろそろMP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getSANを自己回復できるアクション(user);
 			if (isそろそろSAN回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 
 			//自分にかけられるバフがあれば実施
@@ -237,7 +270,9 @@ public enum StandardEnemyAI implements EnemyAI {
 			Actor tgt = getTgt(user);
 			for (Action aa : get対象者が多い順(user)) {
 				if (is射程内(user, aa, tgt)) {
-					return new ActionTarget(user, aa, List.of(tgt), false);
+					if (!aa.checkResource(user.getStatus()).is足りないステータスあり()) {
+						return new ActionTarget(user, aa, List.of(tgt), false);
+					}
 				}
 			}
 			//最大威力アクションを適用できる場所まで移動するよう指示
@@ -255,7 +290,7 @@ public enum StandardEnemyAI implements EnemyAI {
 			if (isそろそろSAN回復したほうがいい(user) && getSANを自己回復できるアクション(user) != null) {
 				return user;
 			}
-			return get一番体力が高いPC();
+			return get一番体力が低いPC();
 		}
 
 		@Override
@@ -272,15 +307,21 @@ public enum StandardEnemyAI implements EnemyAI {
 			//自己ヒール
 			Action a = getHPを自己回復できるアクション(user);
 			if (isそろそろHP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getMPを自己回復できるアクション(user);
 			if (isそろそろMP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getSANを自己回復できるアクション(user);
 			if (isそろそろSAN回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 
 			//自分にかけられるバフがあれば実施
@@ -292,7 +333,9 @@ public enum StandardEnemyAI implements EnemyAI {
 			Actor tgt = getTgt(user);
 			for (Action aa : get最大威力攻撃順(user)) {
 				if (is射程内(user, aa, tgt)) {
-					return new ActionTarget(user, aa, List.of(tgt), false);
+					if (!aa.checkResource(user.getStatus()).is足りないステータスあり()) {
+						return new ActionTarget(user, aa, List.of(tgt), false);
+					}
 				}
 			}
 			return new ActionTarget(user, StandardEnemyAI.防御アクション, null, false);
@@ -309,7 +352,7 @@ public enum StandardEnemyAI implements EnemyAI {
 			if (isそろそろSAN回復したほうがいい(user) && getSANを自己回復できるアクション(user) != null) {
 				return user;
 			}
-			return get一番近いPC(user);
+			return get一番体力が低いPC();
 		}
 
 		@Override
@@ -326,15 +369,21 @@ public enum StandardEnemyAI implements EnemyAI {
 			//自己ヒール
 			Action a = getHPを自己回復できるアクション(user);
 			if (isそろそろHP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getMPを自己回復できるアクション(user);
 			if (isそろそろMP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getSANを自己回復できるアクション(user);
 			if (isそろそろSAN回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 
 			//自分にかけられるバフがあれば実施
@@ -347,14 +396,18 @@ public enum StandardEnemyAI implements EnemyAI {
 			Actor t = getTgt(user);
 			Action 回復 = getターゲットにかけられるバフでまだかかっていないもの(user, (Enemy) t);
 			if (回復 != null) {
-				return new ActionTarget(user, 回復, List.of(t), false);
+				if (!回復.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, 回復, List.of(t), false);
+				}
 			}
 			List<Actor> tgt = new ArrayList<>(GameSystem.getInstance().getParty());
 			Collections.shuffle(tgt);
 			for (Actor pc : tgt) {
 				a = getPCにかけられるデバフ(user, pc);
 				if (a != null) {
-					return new ActionTarget(user, a, List.of(pc), false);
+					if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+						return new ActionTarget(user, a, List.of(pc), false);
+					}
 				}
 			}
 			return new ActionTarget(user, StandardEnemyAI.防御アクション, null, false);
@@ -389,15 +442,21 @@ public enum StandardEnemyAI implements EnemyAI {
 			//自己ヒール
 			Action a = getHPを自己回復できるアクション(user);
 			if (isそろそろHP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getMPを自己回復できるアクション(user);
 			if (isそろそろMP回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 			a = getSANを自己回復できるアクション(user);
 			if (isそろそろSAN回復したほうがいい(user) && a != null) {
-				return new ActionTarget(user, a, List.of(user), false);
+				if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, a, List.of(user), false);
+				}
 			}
 
 			//自分にかけられるバフがあれば実施
@@ -410,14 +469,18 @@ public enum StandardEnemyAI implements EnemyAI {
 			Actor t = getTgt(user);
 			Action 回復 = getターゲットにかけられるバフでまだかかっていないもの(user, (Enemy) t);
 			if (回復 != null) {
-				return new ActionTarget(user, 回復, List.of(t), false);
+				if (!回復.checkResource(user.getStatus()).is足りないステータスあり()) {
+					return new ActionTarget(user, 回復, List.of(t), false);
+				}
 			}
 			List<Actor> tgt = new ArrayList<>(GameSystem.getInstance().getParty());
 			Collections.shuffle(tgt);
 			for (Actor pc : tgt) {
 				a = getPCにかけられるデバフ(user, pc);
 				if (a != null) {
-					return new ActionTarget(user, a, List.of(pc), false);
+					if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+						return new ActionTarget(user, a, List.of(pc), false);
+					}
 				}
 			}
 			return new ActionTarget(user, StandardEnemyAI.回避アクション, null, false);
@@ -668,7 +731,9 @@ public enum StandardEnemyAI implements EnemyAI {
 				if (ev.getEventType() == ActionEvent.EventType.状態異常付与) {
 					if (ev.getTgtConditionKey().isデバフ()
 							&& !pc.getStatus().hasCondition(ev.getTgtConditionKey())) {
-						return a;
+						if (!a.checkResource(e.getStatus()).is足りないステータスあり()) {
+							return a;
+						}
 					}
 				}
 			}
@@ -684,9 +749,11 @@ public enum StandardEnemyAI implements EnemyAI {
 		for (Action a : list) {
 			for (ActionEvent ev : a.getAllEvents()) {
 				if (ev.getEventType() == ActionEvent.EventType.状態異常付与) {
-					if (ev.getTgtConditionKey().isバフ()
-							&& !tgt.getStatus().hasCondition(ev.getTgtConditionKey())) {
-						return a;
+					if (ev.getTgtConditionKey().isバフ() && !tgt.getStatus().hasCondition(ev.getTgtConditionKey())) {
+
+						if (!a.checkResource(e.getStatus()).is足りないステータスあり()) {
+							return a;
+						}
 					}
 				}
 			}
@@ -701,9 +768,10 @@ public enum StandardEnemyAI implements EnemyAI {
 		for (Action a : list) {
 			for (ActionEvent ev : a.getAllEvents()) {
 				if (ev.getEventType() == ActionEvent.EventType.状態異常付与) {
-					if (ev.getTgtConditionKey().isバフ()
-							&& !e.getStatus().hasCondition(ev.getTgtConditionKey())) {
-						return a;
+					if (ev.getTgtConditionKey().isバフ() && !e.getStatus().hasCondition(ev.getTgtConditionKey())) {
+						if (!a.checkResource(e.getStatus()).is足りないステータスあり()) {
+							return a;
+						}
 					}
 				}
 			}
@@ -718,21 +786,6 @@ public enum StandardEnemyAI implements EnemyAI {
 			for (Action a : ee.getStatus().getActions()) {
 				float d = ee.getStatus().getEffectedArea(a);
 				if (d < distance) {
-					distance = d;
-					res = ee;
-				}
-			}
-		}
-		return res;
-	}
-
-	static Actor get一番射程が長いアクションを持っているPC() {
-		float distance = Float.MIN_VALUE;
-		Actor res = null;
-		for (Actor ee : GameSystem.getInstance().getParty()) {
-			for (Action a : ee.getStatus().getActions()) {
-				float d = ee.getStatus().getEffectedArea(a);
-				if (d > distance) {
 					distance = d;
 					res = ee;
 				}
@@ -756,46 +809,6 @@ public enum StandardEnemyAI implements EnemyAI {
 						-> (int) (p1.getStatus().getEffectedStatus().get(StatusKey.体力).getValue()
 				- p2.getStatus().getEffectedStatus().get(StatusKey.体力).getValue())).get();
 
-	}
-
-	static boolean is場に自分しかEnemyがいない() {
-		return BattleSystem.getInstance().getEnemies().size() == 1;
-	}
-
-	@Nullable
-	static Actor get自分以外で一番近いタンクのEnemy(Enemy e) {
-		float distance = Float.MAX_VALUE;
-		Enemy res = null;
-		for (Enemy ee : BattleSystem.getInstance().getEnemies()) {
-			if (!ee.equals(e)) {
-				if (ee.getAI() == タンク) {
-					float d = (float) ee.getSprite().getCenter().distance(e.getSprite().getCenter());
-					if (d < distance) {
-						distance = d;
-						res = ee;
-					}
-				}
-			}
-		}
-		return res;
-	}
-
-	@Nullable
-	static Actor get自分以外で一番近いアタッカーのEnemy(Enemy e) {
-		float distance = Float.MAX_VALUE;
-		Enemy res = null;
-		for (Enemy ee : BattleSystem.getInstance().getEnemies()) {
-			if (!ee.equals(e)) {
-				if (ee.getAI() == アタッカー) {
-					float d = (float) ee.getSprite().getCenter().distance(e.getSprite().getCenter());
-					if (d < distance) {
-						distance = d;
-						res = ee;
-					}
-				}
-			}
-		}
-		return res;
 	}
 
 	@NotNull
@@ -826,25 +839,6 @@ public enum StandardEnemyAI implements EnemyAI {
 				int min = (int) res.getStatus().getEffectedStatus().get(StatusKey.体力).getValue();
 				int me = (int) ee.getStatus().getEffectedStatus().get(StatusKey.体力).getValue();
 				if (me < min) {
-					res = ee;
-				}
-			}
-		}
-		assert res != null : "EAI res is null";
-		return res;
-	}
-
-	@NotNull
-	static Actor get自分以外で一番体力が高いEnemy(Enemy e) {
-		Enemy res = null;
-		for (Enemy ee : BattleSystem.getInstance().getEnemies()) {
-			if (!ee.equals(e)) {
-				if (res == null) {
-					res = ee;
-				}
-				int max = (int) res.getStatus().getEffectedStatus().get(StatusKey.体力).getValue();
-				int me = (int) ee.getStatus().getEffectedStatus().get(StatusKey.体力).getValue();
-				if (me > max) {
 					res = ee;
 				}
 			}

@@ -61,8 +61,8 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 
 	private Color border1 = Color.WHITE;
 	private Color border2 = Color.BLACK;
-	private Color inner1 = new Color(0, 0, 136);
-	private Color inner2 = new Color(44, 44, 196);
+	private Color inner1 = new Color(12, 16, 33);
+	private Color inner2 = new Color(33, 33, 128);
 	private FontModel font;
 	private final static int BORDER_SIZE = 2;
 	private Color cColor = Color.WHITE;
@@ -180,6 +180,9 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 			}
 			if (iconVisible) {
 				x = (int) (mw.getX() + mw.getWidth() - 18);
+				if (mw.getText().hasImage()) {
+					x -= CHARA_IMAGE_W;
+				}
 				y = (int) (mw.getY() + mw.getHeight() - 12);
 				g2.drawString(nextIcon, x, y);
 			}
@@ -188,11 +191,11 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 		if (mw.getText().hasImage()) {
 			if (charaImage == null) {
 				charaImage = ImageUtil.resize(mw.getText().getImage(),
-						CHARA_IMAGE_W / mw.getText().getImage().getWidth(),
-						CHARA_IMAGE_H / mw.getText().getImage().getHeight());
+						(CHARA_IMAGE_W / mw.getText().getImage().getWidth()),
+						(CHARA_IMAGE_H / mw.getText().getImage().getHeight()));
 			}
-			x = (int) (mw.getX() + mw.getWidth() - CHARA_IMAGE_W);
-			y = (int) (mw.getY() + mw.getHeight() - CHARA_IMAGE_H);
+			x = (int) (mw.getX() + mw.getWidth() - CHARA_IMAGE_W - (BORDER_SIZE * 3));
+			y = (int) (mw.getY() + mw.getHeight() - CHARA_IMAGE_H - (BORDER_SIZE * 3));
 			g2.drawImage(charaImage, x, y, null);
 		} else {
 			charaImage = null;
