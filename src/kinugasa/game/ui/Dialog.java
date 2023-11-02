@@ -16,16 +16,18 @@
  */
 package kinugasa.game.ui;
 
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import kinugasa.game.GameManager;
-import kinugasa.game.GameOption;
-import kinugasa.game.I18N;
-import kinugasa.graphics.ImageUtil;
 
 /**
  *
@@ -74,5 +76,24 @@ public class Dialog {
 
 	public static void image(String title, BufferedImage image) {
 		JOptionPane.showMessageDialog(null, new ImageIcon(image), title, JOptionPane.DEFAULT_OPTION);
+	}
+
+	public static JDialog progressBar(String title, String msg, JProgressBar bar) {
+		JDialog d = new JDialog();
+		d.setTitle(title);
+		JPanel p = new JPanel();
+		p.add(new JLabel(msg));
+		p.add(bar);
+		d.add(p);
+		d.setSize(300, 100);
+		d.setResizable(false);
+		int x = Toolkit.getDefaultToolkit().getScreenSize().width / 2 - 150;
+		int y = Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 50;
+		d.setLocation(x, y);
+		d.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		d.setModal(true);
+		d.setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+		d.pack();
+		return d;
 	}
 }

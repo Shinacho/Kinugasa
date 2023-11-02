@@ -80,10 +80,11 @@ public class ConditionDescWindow extends PCStatusWindow {
 	private void updateText() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<---");
-		sb.append(I18N.get(GameSystemI18NKeys.Xの発生中の効果, s.get(pcIdx).getName())).append("--->");
+		sb.append(I18N.get(GameSystemI18NKeys.Xの発生中の効果,
+				GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName())).append("--->");
 		List<Text> l = new ArrayList<>();
 		l.add(new Text(sb.toString()));
-		l.addAll(s.get(pcIdx).getCondition().stream().map(p -> new Text(p.getKey().getDesc())).collect(Collectors.toList()));
+		l.addAll(s.get(pcIdx).getCurrentConditions().keySet().stream().map(p -> new Text(p.getVisibleName())).collect(Collectors.toList()));
 		mw.setText(l);
 	}
 

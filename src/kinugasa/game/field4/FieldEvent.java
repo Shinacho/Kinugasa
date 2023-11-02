@@ -62,14 +62,14 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 		}
 		//Termの判定
 		if (term != null) {
-			if (term.stream().anyMatch(p -> !p.canDoThis(GameSystem.getInstance().getPartyStatus(), this))) {
+			if (term.stream().anyMatch(p -> !p.canDoThis(GameSystem.getInstance().getParty(), this))) {
 				kinugasa.game.GameLog.print("->, but this event is disable");
 //				GameLog.print("->, but this event is disable");
 				return UserOperationRequire.CONTINUE;
 			}
 		}
 		//type別実行
-		UserOperationRequire u = eventType.exec(GameSystem.getInstance().getPartyStatus(), this);
+		UserOperationRequire u = eventType.exec(this);
 		//FieldEventScriptExceptionが出たらここで落ちる。
 		//実行後生存状態の更新
 		if (disposeWhenExec) {

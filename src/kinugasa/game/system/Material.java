@@ -16,35 +16,72 @@
  */
 package kinugasa.game.system;
 
+import java.util.Objects;
 import kinugasa.resource.Nameable;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/26_16:44:54<br>
+ * @vesion 1.0.0 - 2023/10/14_19:29:23<br>
  * @author Shinacho<br>
  */
 public class Material implements Nameable {
 
-	private String name;
-	private int value;
+	private String id;
+	private String visibleName;
+	private int price;
 
-	public Material(String name, int value) {
-		this.name = name;
-		this.value = value;
+	Material(String id, String visibleName, int price) {
+		this.id = id;
+		this.visibleName = visibleName;
+		this.price = price;
 	}
 
-	public int getValue() {
-		return value;
+	public String getId() {
+		return id;
+	}
+
+	public String getVisibleName() {
+		return visibleName;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return id;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
 	}
 
 	@Override
 	public String toString() {
-		return "Material{" + "name=" + name + ", value=" + value + '}';
+		return "Material{" + "id=" + id + ", visibleName=" + visibleName + '}';
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 59 * hash + Objects.hashCode(this.id);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Material other = (Material) obj;
+		return Objects.equals(this.id, other.id);
 	}
 
 }

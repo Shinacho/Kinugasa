@@ -17,500 +17,564 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import kinugasa.object.Sprite;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import kinugasa.game.GameLog;
+import kinugasa.game.I18N;
+import kinugasa.game.Nullable;
+import static kinugasa.game.system.ActionEvent.CalcMode.ADD;
+import static kinugasa.game.system.ActionEvent.CalcMode.MUL;
+import static kinugasa.game.system.ActionEvent.CalcMode.TO;
+import static kinugasa.game.system.ActionEvent.CalcMode.TO_MAX;
+import static kinugasa.game.system.ActionEvent.CalcMode.TO_ZERO;
+import static kinugasa.game.system.ActionEvent.EventType.ATTR_IN;
+import static kinugasa.game.system.ActionEvent.EventType.ATTR_OUT;
+import static kinugasa.game.system.ActionEvent.EventType.CND_REGIST;
+import static kinugasa.game.system.ActionEvent.EventType.アイテムロスト;
+import static kinugasa.game.system.ActionEvent.EventType.アイテム追加;
+import static kinugasa.game.system.ActionEvent.EventType.ステータス回復;
+import static kinugasa.game.system.ActionEvent.EventType.ステータス攻撃;
+import static kinugasa.game.system.ActionEvent.EventType.状態異常付与;
+import static kinugasa.game.system.ActionEvent.EventType.状態異常解除;
+import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
-import kinugasa.resource.sound.Sound;
-import kinugasa.util.FrameTimeCounter;
 
 /**
+ * イベントの数が攻撃回数です。
  *
- * @vesion 1.0.0 - 2022/12/01_20:11:07<br>
+ * @vesion 1.0.0 - 2023/10/14_11:41:31<br>
  * @author Shinacho<br>
  */
 public class Action implements Nameable, Comparable<Action>, Cloneable {
 
-	public static int missWaitTime = 66;
-	//
-	private ActionType type;
-	protected String id;
-	private String visibleName;
-	private String desc;
-	private Sound sound;
-	private int waitTime;
-	private boolean stop = false;
-	private final List<ActionEvent> battleEvent = new ArrayList<>();
-	private final List<ActionEvent> fieldEvent = new ArrayList<>();
-	private int area;
-	private List<ActionTerm> terms = new ArrayList<>();
-	private int sort;
-	private int spellTime;
-	private int actionCount = 1;
-	private Set<StatusKey> damageCalcStatusKey = new HashSet<>();
-	private TargetOption tgtOption;
+	public enum ターゲットモード {
+		自身のみ,
+		単体_敵のみ,
+		単体_味方のみ_自身含む,
+		単体_味方のみ_自身含まない,
+		単体_切替可能_自身含む_初期選択敵,
+		単体_切替可能_自身含まない_初期選択敵,
+		単体_切替可能_自身含む_初期選択味方,
+		単体_切替可能_自身含まない_初期選択味方,
+		グループ_味方全員,
+		グループ_敵全員,
+		グループ_切替可能_初期選択敵,
+		グループ_切替可能_初期選択味方,
+		全員,
+		グループ_味方全員_自身除く,
+		グループ_敵全員_自身除く,
+		グループ_切替可能_初期選択敵_自身除く,
+		グループ_切替可能_初期選択味方_自身除く,
+		全員_自身除く,;
 
-	@Override
-	public Action clone() {
-		try {
-			return (Action) super.clone();
-		} catch (CloneNotSupportedException ex) {
-			throw new InternalError(ex);
+		public String getVisibleName() {
+			return I18N.get(this.toString());
+		}
+
+		public boolean isチーム切替可能() {
+			return this.toString().contains("切替可能");
+		}
+
+	}
+
+	//死亡状態の対象を選択できるかどうか
+	public enum 死亡者ターゲティング {
+		気絶損壊解脱者を選択可能,
+		気絶損壊解脱者は選択不可能,
+		解脱者を選択可能,
+		損壊者を選択可能,
+		気絶者を選択可能,;
+
+		public String getVisibleName() {
+			return I18N.get(this.toString());
 		}
 	}
+	private final String id;
+	private final String visibleName;
+	private String desc, summary;
+	private ActionType type;
+	private List<ActionEvent> mainEvents = new ArrayList<>();
+	private List<ActionEvent> userEvents = new ArrayList<>();
+	private boolean field, battle;
+	private int area, castTime;
+	private AnimationSprite userAnimation;
+	private ターゲットモード tgtType;
+	private 死亡者ターゲティング deadTgt;
 
-	public String getVisibleName() {
-		return visibleName;
-	}
-
-	public Action(ActionType type, String id, String visibleName, String desc) {
-		this.type = type;
+	Action(String id, String visibleName, ActionType typ) {
 		this.id = id;
 		this.visibleName = visibleName;
-		this.desc = desc;
+		this.type = typ;
 	}
 
-	public Set<StatusKey> getDamageCalcStatusKey() {
-		return damageCalcStatusKey;
+	public List<ActionEvent.Term> getAllTerms() {
+		return Stream.of(mainEvents, userEvents)
+				.flatMap(p -> p.stream())
+				.map(p -> p.getTerms())
+				.flatMap(p -> p.stream())
+				.distinct()
+				.collect(Collectors.toList());
 	}
 
-	public TargetOption getTargetOption() {
-		return tgtOption;
-	}
+	public Action pack() throws GameSystemException {
+		//イベントソート
+		Collections.sort(mainEvents);
+		Collections.sort(userEvents);
 
-	public Action setTargetOption(TargetOption tgtOption) {
-		this.tgtOption = tgtOption;
-		return this;
-	}
-
-	public Action setDamageCalcStatusKey(Set<StatusKey> damageCalcStatusKey) {
-		this.damageCalcStatusKey = damageCalcStatusKey;
-		return this;
-	}
-
-	public void setActionCount(int actionCount) {
-		this.actionCount = actionCount;
-	}
-
-	public int getActionCount() {
-		return actionCount;
-	}
-
-	public void setName(String name) {
-		this.id = name;
-	}
-
-	public int getSpellTime() {
-		return spellTime;
-	}
-
-	public Action setSpellTime(int spellTime) {
-		this.spellTime = spellTime;
-		return this;
-	}
-
-	public int getSort() {
-		return sort;
-	}
-
-	public Action setSort(int sort) {
-		this.sort = sort;
-		return this;
-	}
-
-	public Action setSound(Sound sound) {
-		this.sound = sound;
-		return this;
-	}
-
-	public Action setWaitTime(int waitTime) {
-		this.waitTime = waitTime;
-		return this;
-	}
-
-//	public Action setBattleEvent(List<ActionEvent> battleEvent) {
-//		this.battleEvent = battleEvent;
-//		return this;
-//	}
-	public Action addBattleEvent(ActionEvent... e) {
-		this.battleEvent.addAll(Arrays.asList(e));
-		return this;
-	}
-
-	public Action addBattleEvent(List<ActionEvent> e) {
-		this.battleEvent.addAll(e);
-		return this;
-	}
-
-//	public Action setFieldEvent(List<ActionEvent> fieldEvent) {
-//		this.fieldEvent = fieldEvent;
-//		return this;
-//	}
-	public Action addFieldEvent(ActionEvent... e) {
-		this.fieldEvent.addAll(Arrays.asList(e));
-		return this;
-	}
-
-	public Action addFieldEvent(List<ActionEvent> e) {
-		this.fieldEvent.addAll(e);
-		return this;
-	}
-
-	public Action addTerm(ActionTerm t) {
-		this.terms.add(t);
-		return this;
-	}
-
-	public Action setArea(int area) {
-		this.area = area;
-		return this;
-	}
-
-	public Action setTerms(List<ActionTerm> terms) {
-		this.terms = terms;
-		return this;
-	}
-
-	@Override
-	public String getName() {
-		return id;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public Sound getSound() {
-		return sound;
-	}
-
-	public int getWaitTime() {
-		return waitTime;
-	}
-
-	private boolean battleActionSorted = false;
-
-	public List<ActionEvent> getBattleEvent() {
-		if (!battleActionSorted) {
-			Collections.sort(battleEvent);
-			battleActionSorted = true;
+		if (id == null || id.isEmpty()) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.IDが入ってません) + " : " + this);
 		}
-		return new ArrayList<>(battleEvent);
+		if (visibleName == null || visibleName.isEmpty()) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.名前が入ってません) + " : " + this);
+		}
+		if (type == null) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アクションタイプが入ってません) + " : " + this);
+		}
+		if ((type == ActionType.魔法 || type == ActionType.攻撃) && (mainEvents.isEmpty() && userEvents.isEmpty())) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アクションタイプが攻撃または魔法ですがイベントが入ってません) + " : " + this);
+		}
+		//アクションの状態チェック
+		if (tgtType == null && (!mainEvents.isEmpty() || !userEvents.isEmpty())) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントがありますがターゲット選択情報が空です) + " : " + this);
+		}
+		if (desc == null || desc.isEmpty()) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.DESCが入っていません) + " : " + this);
+		}
+		if (area == 0 && (!mainEvents.isEmpty() || !userEvents.isEmpty())) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントがありますがAREAが０です) + " : " + this);
+		}
+		if (deadTgt == null && (!mainEvents.isEmpty() || !userEvents.isEmpty())) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントがありますが死亡者ターゲット可否が空です) + " : " + this);
+		}
+		if ((!field && !battle) && (!mainEvents.isEmpty() || !userEvents.isEmpty())) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントがありますがFIELDとBATTLEがOFFです) + " : " + this);
+		}
+
+		//イベントの必須項目チェック
+		for (ActionEvent e : userEvents) {
+			checkEvent(e);
+		}
+		for (ActionEvent e : mainEvents) {
+			checkEvent(e);
+		}
+
+		return this;
 	}
 
-	private boolean fieldActionSorted = false;
-
-	public List<ActionEvent> getFieldEvent() {
-		if (!fieldActionSorted) {
-			Collections.sort(fieldEvent);
-			fieldActionSorted = true;
+	private void checkEvent(ActionEvent e) throws GameSystemException {
+		if (e.getEventType() == null) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントのタイプが空です) + " : " + this + " : " + e);
 		}
-		return new ArrayList<>(fieldEvent);
+		if (e.getP() <= 0) {
+			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントの発生確率が０です) + " : " + this + " : " + e);
+		}
+		if (!e.getTerms().isEmpty()) {
+			int size = e.getTerms().size();
+			if (size != e.getTerms().stream().distinct().count()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントTermが重複しています) + " : " + this + " : " + e);
+			}
+		}
+		switch (e.getEventType()) {
+			case ATTR_IN: {
+				if (e.getTgtAttrIn() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ATTRINイベントですがATTRINが設定されていません) + " : " + this + " : " + e);
+				}
+				if (e.getValue() == 0) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ATTRイベントですがVALUEが０です) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case ATTR_OUT: {
+				if (e.getTgtAttrOut() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ATTROUTイベントですがATTROUTが設定されていません) + " : " + this + " : " + e);
+				}
+				if (e.getValue() == 0) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ATTRイベントですがVALUEが０です) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case アイテムロスト:
+			case アイテム追加: {
+				if (e.getTgtItemID() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDが設定されていません) + " : " + this + " : " + e);
+				}
+				if (!ActionStorage.getInstance().contains(e.getTgtItemID())) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDのアイテムが存在しません) + " : " + this + " : " + e);
+				}
+				if (ActionStorage.getInstance().get(e.getTgtItemID()).getType() != ActionType.アイテム) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですが対象IDがアイテムではありません) + " : " + this + " : " + e);
+				}
+
+				break;
+			}
+			case ステータス回復:
+			case ステータス攻撃: {
+				if (e.getValue() == 0) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがVALUEが０です) + " : " + this + " : " + e);
+				}
+				if (e.getTgtStatusKey() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがステータスキーが入ってません) + " : " + this + " : " + e);
+				}
+				if (e.getCalcMode() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがCALC_MODEが入ってません) + " : " + this + " : " + e);
+				}
+				if (e.getAtkAttr() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがATK_ATTRが入ってません) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case 状態異常付与:
+			case 状態異常解除: {
+				if (e.getTgtConditionKey() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.状態異常イベントですが状態異常キーが入ってません) + " : " + this + " : " + e);
+				}
+				if (e.getCndTime() == 0 && e.getEventType() == 状態異常付与) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.状態異常付与イベントですが持続時間が入ってません) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case CND_REGIST: {
+				if (e.getTgtCndRegist() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.CND_REGISTイベントですがCND_KEYが入ってません) + " : " + this + " : " + e);
+				}
+				if (e.getValue() == 0) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.CND_REGISTイベントですがVALUEが０です) + " : " + this + " : " + e);
+				}
+				if (!e.getTgtCndRegist().isRegistOn()) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.CND_REGISTイベントですがキーが耐性付き状態異常ではありません) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case 独自効果: {
+				break;
+			}
+			default:
+				throw new AssertionError("undefined type : " + this + " : " + e);
+		}
 	}
 
 	public int getArea() {
 		return area;
 	}
 
-	public int getAreaWithEqip(Actor user) {
-		return getAreaWithEqip(user.getStatus());
-	}
-
-	public int getAreaWithEqip(Status user) {
-		if (type == ActionType.MAGIC) {
-			return this.area;
-		}
-		if (type == ActionType.OTHER) {
-			return this.area;
-		}
-		return user.getWeaponArea() + this.area;
-	}
-
-	@Deprecated
-	public List<ActionTerm> getTerms() {
-		return terms;
-	}
-
-	public boolean isStop() {
-		return stop;
-	}
-
-	public Action setStop(boolean stop) {
-		this.stop = stop;
+	Action setArea(int area) {
+		this.area = area;
 		return this;
 	}
 
-	public ActionType getType() {
+	Action setDesc(String desc) {
+		this.desc = desc;
+		return this;
+	}
+
+	Action setMainEvents(List<ActionEvent> mainEvents) {
+		this.mainEvents = mainEvents;
+		return this;
+	}
+
+	Action setUserEvents(List<ActionEvent> userEvents) {
+		this.userEvents = userEvents;
+		return this;
+	}
+
+	Action setField(boolean field) {
+		this.field = field;
+		return this;
+	}
+
+	Action setBattle(boolean battle) {
+		this.battle = battle;
+		return this;
+	}
+
+	Action setUserAnimation(AnimationSprite userAnimation) {
+		this.userAnimation = userAnimation;
+		return this;
+	}
+
+	Action set死亡者ターゲティング(死亡者ターゲティング a) {
+		this.deadTgt = a;
+		return this;
+	}
+
+	Action setCastTime(int castTime) {
+		this.castTime = castTime;
+		return this;
+	}
+
+	Action setSummary(String summary) {
+		this.summary = summary;
+		return this;
+	}
+
+	@Deprecated
+	@Override
+	public final String getName() {
+		return id;
+	}
+
+	public final String getId() {
+		return id;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public String getVisibleName() {
+		return visibleName;
+	}
+
+	public final String getDesc() {
+		return desc;
+	}
+
+	public int getCastTime() {
+		return castTime;
+	}
+
+	public final ActionType getType() {
 		return type;
 	}
 
-	public static Set<String> magicUserDmage = new HashSet<>();
-
-	public boolean isFieldUse() {
-		boolean f = (type == ActionType.MAGIC || type == ActionType.OTHER || type == ActionType.ITEM) && fieldEvent != null && !fieldEvent.isEmpty();
-		if (!f) {
-			return false;
-		}
-		f = fieldEvent.stream().filter(p -> p.getTargetType() != TargetType.SELF).count() == 0;
-		if (!f) {
-			return false;
-		}
-		f = fieldEvent.stream().filter((p) -> {
-			return !(magicUserDmage.contains(p.getTgtName()) && p.getValue() < 0);
-		}).count() != 0;
-		return f;
-
+	public List<ActionEvent> getUserEvents() {
+		return userEvents;
 	}
 
-	public boolean isBattleUse() {
-		boolean f = battleEvent != null && !battleEvent.isEmpty();
-		if (!f) {
-			return false;
-		}
-		f = battleEvent.stream().filter(p -> p.getTargetType() != TargetType.SELF).count() != 0;
-		if (!f) {
-			return false;
-		}
-		f = battleEvent.stream().filter((p) -> {
-			return !(magicUserDmage.contains(p.getTgtName()) && p.getValue() < 0);
-		}).count() != 0;
-		return f;
+	public List<ActionEvent> getMainEvents() {
+		return mainEvents;
 	}
 
-	public boolean battleEventIsOnly(ParameterType t) {
-		return battleEvent != null && battleEvent.stream().allMatch(p -> p.getParameterType() == t);
+	public boolean hasMainEvent() {
+		return mainEvents != null && !mainEvents.isEmpty();
 	}
 
-	public boolean fieldEventIsOnly(ParameterType t) {
-		return fieldEvent != null && fieldEvent.stream().allMatch(p -> p.getParameterType() == t);
+	public boolean hasUserEvent() {
+		return userEvents != null && !userEvents.isEmpty();
 	}
 
-	public boolean battleEventIsOnly(TargetType t) {
-		return battleEvent != null && battleEvent.stream().allMatch(p -> p.getTargetType() == t);
+	public 死亡者ターゲティング getDeadTgt() {
+		return deadTgt;
 	}
 
-	public boolean fieldEventIsOnly(TargetType t) {
-		return fieldEvent == null && fieldEvent.stream().allMatch(p -> p.getTargetType() == t);
+	public boolean isField() {
+		return field;
 	}
 
-	public boolean hasBattleTT(TargetType t) {
-		return getBattleEvent().stream().anyMatch(p -> p.getTargetType() == t);
+	public boolean isBattle() {
+		return battle;
 	}
 
-	public boolean hasBattlePT(ParameterType t) {
-		return getBattleEvent().stream().anyMatch(p -> p.getParameterType() == t);
-	}
-
-	private boolean canDoThis(ActionTarget tgt) {
-		return terms == null ? true : getTerms().stream().allMatch(p -> p.canExec(tgt));
-	}
-
-	public Map<StatusKey, Integer> selfFieldDirectDamage() {
-		Map<StatusKey, Integer> result = new HashMap<>();
-
-		for (ActionEvent a : fieldEvent) {
-			if (a.getTargetType() == TargetType.SELF) {
-				if (a.getParameterType() == ParameterType.STATUS) {
-					StatusKey key = StatusKeyStorage.getInstance().get(a.getTgtName());
-					int value = 0;
-					switch (a.getDamageCalcType()) {
-						case DIRECT:
-							value += a.getValue();
-							break;
-						case PERCENT_OF_MAX:
-							//計算不能
-							break;
-						case PERCENT_OF_NOW:
-							//計算不能
-							break;
-						case USE_DAMAGE_CALC:
-							//計算不能
-							break;
-					}
-					if (value != 0) {
-						if (result.containsKey(key)) {
-							int v = result.get(key);
-							v += value;
-							result.put(key, v);
-						} else {
-							result.put(key, value);
-						}
-					}
-
-				}
+	public boolean hasEvent() {
+		if (mainEvents != null) {
+			if (!mainEvents.isEmpty()) {
+				return true;
 			}
 		}
-
-		return result;
-	}
-
-	public Map<StatusKey, Integer> selfBattleDirectDamage() {
-		Map<StatusKey, Integer> result = new HashMap<>();
-
-		for (ActionEvent a : battleEvent) {
-			if (a.getTargetType() == TargetType.SELF) {
-				if (a.getParameterType() == ParameterType.STATUS) {
-					StatusKey key = StatusKeyStorage.getInstance().get(a.getTgtName());
-					int value = 0;
-					switch (a.getDamageCalcType()) {
-						case DIRECT:
-							value += a.getValue();
-							break;
-						case PERCENT_OF_MAX:
-							//計算不能
-							break;
-						case PERCENT_OF_NOW:
-							//計算不能
-							break;
-						case USE_DAMAGE_CALC:
-							//計算不能
-							break;
-					}
-					if (value != 0) {
-						if (result.containsKey(key)) {
-							int v = result.get(key);
-							v += value;
-							result.put(key, v);
-						} else {
-							result.put(key, value);
-						}
-					}
-
-				}
+		if (userEvents != null) {
+			if (!userEvents.isEmpty()) {
+				return true;
 			}
 		}
-
-		return result;
+		return false;
 	}
 
-	//effect ->targtet
+	public AnimationSprite getUserAnimation() {
+		return userAnimation;
+	}
+
+	public StatusValueSet simuleteSelfStatusDamage(Actor user) {
+		StatusValueSet res = user.getStatus().getEffectedStatus().clone();
+		if (userEvents == null || userEvents.isEmpty()) {
+			return res;
+		}
+		for (ActionEvent e : userEvents) {
+			if (e.getTgtStatusKey() == null) {
+				continue;
+			}
+			StatusKey key = e.getTgtStatusKey();
+			switch (e.getCalcMode()) {
+				case ADD:
+					res.get(key).add(e.getValue());
+					break;
+				case MUL:
+					res.get(key).mul(e.getValue());
+					break;
+				case TO_MAX:
+					res.get(key).toMax();
+					break;
+				case TO_ZERO:
+					res.get(key).toZero();
+					break;
+				case TO:
+					res.get(key).setValue(e.getValue());
+					break;
+				default:
+					throw new AssertionError("undefined calc mode : Action.java");
+			}
+		}
+		return res;
+	}
+
+	public static class ResourceShortage {
+
+		public Set<StatusKey> keys;
+
+		public ResourceShortage(Set<StatusKey> keys) {
+			this.keys = keys;
+		}
+
+		public boolean is足りないステータスあり() {
+			return !keys.isEmpty();
+		}
+
+		@Override
+		public String toString() {
+			return "ResourceShortage{" + "keys=" + keys + '}';
+		}
+
+	}
+
+	Action setTgtType(ターゲットモード tgtType) {
+		this.tgtType = tgtType;
+		return this;
+	}
+
+	public ターゲットモード getTgtType() {
+		return tgtType;
+	}
+
+	public List<ActionEvent> getAllEvents() {
+		return Stream.of(mainEvents, userEvents)
+				.flatMap(p -> p.stream())
+				.collect(Collectors.toList());
+	}
+
+	@Nullable
+	public ResourceShortage checkResource(Status user) {
+		StatusValueSet res = user.getEffectedStatus().clone();
+		if (userEvents == null || userEvents.isEmpty()) {
+			throw new GameSystemException("this action is not have event : " + this);
+		}
+		Set<StatusKey> keys = new HashSet<>();
+		for (ActionEvent e : userEvents) {
+			if (e.getTgtStatusKey() == null) {
+				continue;
+			}
+			StatusKey key = e.getTgtStatusKey();
+			switch (e.getCalcMode()) {
+				case ADD:
+					res.get(key).add(e.getValue(), false);
+					if (res.get(key).isMinus()) {
+						keys.add(key);
+					}
+					break;
+				case MUL:
+					res.get(key).mul(e.getValue());
+					if (res.get(key).isMinus()) {
+						keys.add(key);
+					}
+					break;
+				case TO_MAX:
+					res.get(key).toMax();
+					break;
+				case TO_ZERO:
+					res.get(key).toZero();
+					break;
+				case TO:
+					res.get(key).setValue(e.getValue());
+					if (res.get(key).isMinus()) {
+						keys.add(key);
+					}
+					break;
+				default:
+					throw new AssertionError("undefined calc mode : Action.java");
+			}
+		}
+		return new ResourceShortage(keys);
+	}
+
+	public boolean canDo(Status a) {
+		if (!checkResource(a).keys.isEmpty()) {
+			return false;
+		}
+		return Stream.of(mainEvents, userEvents)
+				.flatMap(p -> p.stream())
+				.map(p -> p.getTerms())
+				.flatMap(p -> p.stream())
+				.allMatch(p -> p.canDo(a));
+	}
+
 	public ActionResult exec(ActionTarget tgt) {
-		if (stop || !canDoThis(tgt)) {
-			if (tgt.isInField()) {
-				List<ActionResultType> list = Collections.nCopies(tgt.getTarget().size(), ActionResultType.MISS);
-				List<List<ActionResultType>> res = Collections.nCopies(battleEvent.size(), list);
-				return new ActionResult(tgt, res, new FrameTimeCounter(missWaitTime), null);
-			} else {
-				List<ActionResultType> list = Collections.nCopies(tgt.getTarget().size(), ActionResultType.MISS);
-				List<List<ActionResultType>> res = Collections.nCopies(fieldEvent.size(), list);
-				return new ActionResult(tgt, res, new FrameTimeCounter(missWaitTime), null);
-			}
+		if (!hasMainEvent() && !hasUserEvent()) {
+			ActionResult r = new ActionResult(this, tgt, ActionResultSummary.失敗＿このアクションにはイベントがない);
+			GameLog.print(r);
+			return r;
 		}
-		if (tgt.isInField()) {
-			//フィールド
-			if (fieldEvent == null || fieldEvent.isEmpty()) {
-				throw new GameSystemException("this event is cant exec : " + this);
-			}
-			List<List<ActionResultType>> result = new ArrayList<>();
-			for (ActionEvent e : fieldEvent) {
-				int count = actionCount;
-				if (tgt.getUser().getStatus().getEqipment().get(BattleConfig.weaponSlotName) != null) {
-					count *= tgt.getUser().getStatus().getEqipment().get(BattleConfig.weaponSlotName).getActionCount();
-				}
-				for (int i = 0; i < count; i++) {
-					ActionEventResult r = e.exec(tgt);
-					result.add(r.getResultTypePerTgt());
-				}
-			}
-			if (result.stream().flatMap(p -> p.stream()).anyMatch(p -> p == ActionResultType.SUCCESS)) {
-				playSound();
-			}
-			return new ActionResult(tgt, result, createWaitTime(), new ArrayList<>());
+		if (tgt.isInField() && !field) {
+			throw new GameSystemException("tgt is in field, but this ac tion is not field :  " + this);
+		}
+		if (tgt.isInField() && GameSystem.getInstance().getMode() == GameMode.BATTLE) {
+			throw new GameSystemException("field-battle mode missmatch :  " + this);
+		}
+		if (!tgt.isInField() && GameSystem.getInstance().getMode() == GameMode.FIELD) {
+			throw new GameSystemException("field-battle mode missmatch :  " + this);
 		}
 
-		//バトル
-		if (battleEvent == null || battleEvent.isEmpty()) {
-			throw new GameSystemException("this event is cant exec : " + this);
+		if (checkResource(tgt.getUser().getStatus()).is足りないステータスあり()) {
+			ActionResult r = new ActionResult(this, tgt, ActionResultSummary.失敗＿リソースが足りない);
+			GameLog.print(r);
+			return r;
 		}
-		List<List<ActionResultType>> result = new ArrayList<>();
-		List<Sprite> anime = new ArrayList<>();
-		for (ActionEvent e : battleEvent) {
-			int count = actionCount;
-			if (tgt.getUser().getStatus().getEqipment().get(BattleConfig.weaponSlotName) != null) {
-				count *= tgt.getUser().getStatus().getEqipment().get(BattleConfig.weaponSlotName).getActionCount();
-			}
-			for (int i = 0; i < count; i++) {
-				ActionEventResult r = e.exec(tgt);
-				result.add(r.getResultTypePerTgt());
-				anime.addAll(r.getAnimation());
-				if (result.stream().flatMap(p -> p.stream()).anyMatch(p -> p == ActionResultType.SUCCESS)) {
-					playSound();
-				}
-				if (i > 0) {
-					try {
-						Thread.sleep(20);
-					} catch (InterruptedException ex) {
-					}
-//					new Thread(() -> {
-//						try {
-//							Thread.sleep(20);
-//						} catch (InterruptedException ex) {
-//						}
-//						playSound();
-//					}).start();
+		List<ActionResult.EventResult> userEventResult = new ArrayList<>();
+		for (ActionEvent e : userEvents) {
+			userEventResult.add(e.exec(tgt.getUser(), this, tgt.getUser()));
+		}
+		ActionResult r = new ActionResult(this, tgt, userEventResult);
+		if (r.getUserDamage().isDead) {
+			r = new ActionResult(this, tgt, ActionResultSummary.失敗＿術者死亡);
+			GameLog.print(r);
+			return r;
+		}
+
+		for (Actor a : tgt.getTgt()) {
+			for (ActionEvent e : mainEvents) {
+				for (int i = 0; i < a.getStatus().getEffectedAtkCount(); i++) {
+					r.add(a, e.exec(tgt.getUser(), this, a));
 				}
 			}
 		}
-		return new ActionResult(tgt, result, createWaitTime(), anime);
-
-	}
-
-	private final void playSound() {
-		if (sound != null) {
-			sound.load().stopAndPlay();
+		if (userAnimation != null) {
+			AnimationSprite s = userAnimation.clone();
+			s.setLocationByCenter(tgt.getUser().getSprite().getCenter());
+			s.getAnimation().setRepeat(false);
+			r.setUserAnimation(userAnimation);
 		}
-	}
-
-	final FrameTimeCounter createWaitTime() {
-		return new FrameTimeCounter(waitTime);
-	}
-
-	@Override
-	public String toString() {
-		return "CmdAction{" + type + ", " + id
-				+ "(" + (battleEvent.isEmpty() ? "x" : "B")
-				+ (fieldEvent.isEmpty() ? "x" : "F") + ")"
-				+ ", " + visibleName
-				+ '}';
+		GameLog.print(r);
+		return r;
 	}
 
 	@Override
 	public int compareTo(Action o) {
-		if (sort == o.sort) {
-			if (id.length() != o.id.length()) {
-				return id.length() - o.id.length();
-			}
-			return id.compareTo(o.getName());
-		}
-		return sort - o.sort;
+		return id.compareTo(o.id);
 	}
 
 	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 29 * hash + Objects.hashCode(this.id);
-		return hash;
+	public String toString() {
+		return "Action{" + "id=" + id + ", visibleName=" + visibleName + '}';
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	protected Action clone() {
+		try {
+			return (Action) super.clone();
+		} catch (CloneNotSupportedException ex) {
+			throw new InternalError(ex);
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final Action other = (Action) obj;
-		return Objects.equals(this.id, other.id);
 	}
 
 }

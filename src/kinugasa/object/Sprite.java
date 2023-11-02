@@ -25,8 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import kinugasa.game.GameWindow;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.NewInstance;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.graphics.RenderingQuality;
+import kinugasa.resource.Nameable;
 
 /**
  * ゲームに表示される自機やキャラクタの基底クラスです.
@@ -56,11 +58,13 @@ import kinugasa.graphics.RenderingQuality;
  * @version 8.5.0 - 2015/01/05_21:14<br>
  * @version 8.6.0 - 2015/03/29_16:26<br>
  * @version 8.7.0 - 2023/08/26_21:50<br>
+ * @version 8.8.0 - 2023/10/28_15:15<br>
  * @author Shinacho<br>
  */
 public abstract class Sprite
-		implements Drawable, Shapeable, Cloneable, Comparable<Sprite> {
+		implements Drawable, Shapeable, Cloneable, Comparable<Sprite>, Nameable {
 
+	private String id;
 	/**
 	 * 領域.
 	 */
@@ -302,6 +306,7 @@ public abstract class Sprite
 	 *
 	 * @return スプライトの中心の座標.ウインドウ上での絶対座標.<Br>
 	 */
+	@NewInstance
 	public Point2D.Float getCenter() {
 		return (Point2D.Float) center.clone();
 	}
@@ -528,7 +533,7 @@ public abstract class Sprite
 	 */
 	@Deprecated
 	public BufferedImage toImage() {
-		BufferedImage image = ImageUtil.newImage((int)getWidth(), (int)getHeight());
+		BufferedImage image = ImageUtil.newImage((int) getWidth(), (int) getHeight());
 		Graphics2D g2 = ImageUtil.createGraphics2D(image, RenderingQuality.NOT_USE);
 		this.draw(g2);
 		g2.dispose();
@@ -573,6 +578,20 @@ public abstract class Sprite
 	@Override
 	public final int compareTo(Sprite spr) {
 		return java.lang.Float.compare(z, spr.z);
+	}
+
+	@Deprecated
+	@Override
+	public String getName() {
+		return id;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	@Override

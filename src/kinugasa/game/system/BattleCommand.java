@@ -40,9 +40,6 @@ public class BattleCommand {
 	private Actor user;
 	//取れる行動
 	private List<Action> ba;
-	//状態異常関連
-	private boolean stop = false;
-	private boolean confu = false;
 	//ユーザオペレーション要否フラグ
 	//注意：PCでもユーザオペレーション不要という場合がある
 	private boolean userOperation = false;
@@ -50,10 +47,13 @@ public class BattleCommand {
 	//詠唱完了イベントのフラグ
 	private boolean magicSpell = false;
 
+	private boolean userIsEnemy = false;
+
 	public BattleCommand(Mode mode, Actor user) {
 		this.mode = mode;
 		this.user = user;
-		this.ba = user.getStatus().getActions();
+		userIsEnemy = user instanceof Enemy;
+		this.ba = user.getStatus().getActions().asList();
 		assert !ba.isEmpty() : user.getStatus().getName() + " s BA is EMPTY";
 	}
 
@@ -79,22 +79,6 @@ public class BattleCommand {
 		this.userOperation = userOperation;
 	}
 
-	public boolean isStop() {
-		return stop;
-	}
-
-	public void setStop(boolean stop) {
-		this.stop = stop;
-	}
-
-	public boolean isConfu() {
-		return confu;
-	}
-
-	public void setConfu(boolean confu) {
-		this.confu = confu;
-	}
-
 	public Mode getMode() {
 		return mode;
 	}
@@ -104,61 +88,36 @@ public class BattleCommand {
 	}
 
 	public Action randomAction() {
-		int i = Random.randomAbsInt(ba.size());
-		return ba.get(i);
+		return Random.randomChoice(ba.stream().filter(p -> p.getType() != ActionType.行動).toList());
 	}
 
-	public List<Action> getBattleActions() {
+	public List<Action> getActions() {
 		return ba;
 	}
 
 	public Action getFirstBattleAction() {
-		return getBattleActions().get(0);
+		return getActions().get(0);
 	}
 
-	public Action getBattleAction(EnemyAI mode) {
-		return mode.getNext(user, getBattleActions());
+	public List<Action> getActionEx(ActionType at) {
+		return getActions().stream().filter(p -> p.getType() != at).collect(Collectors.toList());
 	}
 
-	public Action getBattleActionEx(EnemyAI mode, ActionType at) {
-		List<Action> a = getBattleActions().stream().filter(p -> p.getType() != at).collect(Collectors.toList());
-		return mode.getNext(user, a);
+	public List<Action> getActionEx(ActionType... at) {
+		return getActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
 	}
 
-	public Action getBattleActionEx(EnemyAI mode, ActionType... at) {
-		List<Action> a = getBattleActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
-		return mode.getNext(user, a);
+	public List<Action> getActionOf(ActionType at) {
+		return getActions().stream().filter(p -> p.getType() == at).collect(Collectors.toList());
 	}
 
-	public Action getBattleActionOf(EnemyAI mode, ActionType at) {
-		List<Action> a = getBattleActions().stream().filter(p -> p.getType() == at).collect(Collectors.toList());
-		return mode.getNext(user, a);
+	public List<Action> getActionOf(ActionType... at) {
+		return getActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
 	}
 
-	public Action getBattleActionOf(EnemyAI mode, ActionType... at) {
-		List<Action> a = getBattleActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
-		return mode.getNext(user, a);
-	}
-
-	public List<Action> getBattleActionEx(ActionType at) {
-		return getBattleActions().stream().filter(p -> p.getType() != at).collect(Collectors.toList());
-	}
-
-	public List<Action> getBattleActionEx(ActionType... at) {
-		return getBattleActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
-	}
-
-	public List<Action> getBattleActionOf(ActionType at) {
-		return getBattleActions().stream().filter(p -> p.getType() == at).collect(Collectors.toList());
-	}
-
-	public List<Action> getBattleActionOf(ActionType... at) {
-		return getBattleActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
-	}
-
-	public boolean hasAction(String name) {
+	public boolean hasAction(String id) {
 		for (Action a : ba) {
-			if (a.getName().equals(name)) {
+			if (a.getId().equals(id)) {
 				return true;
 			}
 		}
@@ -167,15 +126,11 @@ public class BattleCommand {
 
 	public boolean hasMoveAction() {
 		for (Action a : ba) {
-			if (a.getName().equals(BattleConfig.ActionName.move)) {
+			if (a.getName().equals(BattleConfig.ActionID.移動)) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	public Point2D.Float getSpriteCenter() {
-		return getUser().getSprite().getCenter();
 	}
 
 	@Override

@@ -16,6 +16,7 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.game.GameLog;
 import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
@@ -25,6 +26,7 @@ import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
 
 /**
+ * E3SはESSを保管する唯一の場所です
  *
  * @vesion 1.0.0 - 2022/11/21_22:08:18<br>
  * @author Shinacho<br>
@@ -49,11 +51,28 @@ public class EnemySetStorageStorage extends Storage<EnemySetStorage> implements 
 
 		XMLElement root = file.load().getFirst();
 		for (XMLElement e : root.getElement("enemySet")) {
-			String name = e.getAttributes().get("name").getValue();
+			String name = e.getAttributes().get("id").getValue();
 			String f = e.getAttributes().get("file").getValue();
 			add(new EnemySetStorage(name, f));
 		}
 		file.dispose();
+	}
+
+	//すべてのファイルがロードできるかを検査します
+	public void pack() throws GameSystemException {
+		try {
+			for (EnemySetStorage ess : this) {
+				ess.build();
+				for (EnemySet es : ess) {
+					for (Enemy e : es.create()) {
+						GameLog.print("ESS->" + es.getName() + "->" + e.getId() + " : OK");
+					}
+				}
+				ess.dispose();
+			}
+		} catch (Exception ex) {
+			throw new GameSystemException(ex);
+		}
 	}
 
 }

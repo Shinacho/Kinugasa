@@ -16,74 +16,46 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.game.I18N;
+
 /**
  *
- * @vesion 1.0.0 - 2023/01/01_12:46:11<br>
+ * @vesion 1.0.0 - 2023/10/15_18:36:21<br>
  * @author Shinacho<br>
  */
-public abstract class ItemEqipTerm {
-
-	public abstract boolean canEqip(Status s, Item i);
-
-	public enum Type {
-		ANY,
-		STATUS_IS,
-		RACE_IS,
-		STATUS_IS_OVER,;
-	}
-	private Type type;
-	private String tgtName;
-	private float value;
-
-	ItemEqipTerm(Type type, String tgtName, float value) {
-		this.type = type;
-		this.tgtName = tgtName;
-		this.value = value;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public String getTgtName() {
-		return tgtName;
-	}
-
-	public float getValue() {
-		return value;
-	}
-
-	public static final ItemEqipTerm ANY = new ItemEqipTerm(Type.ANY, "", 0f) {
+public enum ItemEqipTerm {
+	ステータス_装備属性一致_0("男性のみ装備できる") {
 		@Override
-		public boolean canEqip(Status s, Item i) {
-			return true;
+		public boolean canEqip(Actor a) {
+			return a.getStatus().getEffectedStatus().get(StatusKey.装備属性).getValue() == 0f;
 		}
+	},
+	ステータス_装備属性一致_1("女性のみ装備できる") {
+		@Override
+		public boolean canEqip(Actor a) {
+			return a.getStatus().getEffectedStatus().get(StatusKey.装備属性).getValue() == 1f;
+		}
+	},
+	ステータス_魔術使用可否_使用可能("魔法が使用できる者のみ装備できる") {
+		@Override
+		public boolean canEqip(Actor a) {
+			return a.getStatus().getEffectedStatus().get(StatusKey.魔術使用可否).getValue() == StatusKey.魔術使用可否＿使用可能;
+		}
+
 	};
+	private String descI18NKey;
 
-	public static ItemEqipTerm statusIs(StatusKey key, float val) {
-		return new ItemEqipTerm(Type.STATUS_IS, key.getName(), val) {
-			@Override
-			public boolean canEqip(Status s, Item i) {
-				return (int) (s.getBaseStatus().get(key.getName()).getValue()) == val;
-			}
-		};
+	private ItemEqipTerm(String descI18NKey) {
+		this.descI18NKey = descI18NKey;
 	}
 
-	public static ItemEqipTerm raceIs(Race r) {
-		return new ItemEqipTerm(Type.RACE_IS, r.getName(), 0f) {
-			@Override
-			public boolean canEqip(Status s, Item i) {
-				return s.getRace().equals(r);
-			}
-		};
+	public String i18N() {
+		return I18N.get(toString());
 	}
 
-	public static ItemEqipTerm statusIsOver(StatusKey key, float val) {
-		return new ItemEqipTerm(Type.STATUS_IS_OVER, key.getName(), val) {
-			@Override
-			public boolean canEqip(Status s, Item i) {
-				return (int) (s.getBaseStatus().get(key.getName()).getValue()) >= val;
-			}
-		};
+	public String descI18N() {
+		return I18N.get(descI18NKey);
 	}
+
+	public abstract boolean canEqip(Actor a);
 }

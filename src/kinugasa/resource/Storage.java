@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kinugasa.game.GameLog;
@@ -76,6 +77,16 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 		map = new HashMap<String, T>(initialSize);
 	}
 
+	public Storage(T... t) {
+		map = new HashMap<String, T>(32);
+		addAll(t);
+	}
+
+	public Storage(Iterable<? extends T> t) {
+		map = new HashMap<String, T>(32);
+		addAll(t);
+	}
+
 	/**
 	 * 指定した名前のオブジェクトを取得します.
 	 *
@@ -102,6 +113,22 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 
 	public T first() {
 		return asList().get(0);
+	}
+
+	public T getOrCreate(String key, Supplier<? extends T> s) {
+		if (contains(key)) {
+			return get(key);
+		}
+		add(s.get());
+		return get(key);
+	}
+
+	public T getOrCreate(Nameable key, Supplier<? extends T> s) {
+		if (contains(key.getName())) {
+			return get(key.getName());
+		}
+		add(s.get());
+		return get(key.getName());
 	}
 
 	/**
@@ -218,6 +245,12 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 */
 	public void addAll(T... values) throws DuplicateNameException {
 		addAll(Arrays.asList(values));
+	}
+
+	public void addAll(Iterable<? extends T> values) throws DuplicateNameException {
+		for (T t : values) {
+			add(t);
+		}
 	}
 
 	public void addAll(Storage<? extends T> s) throws DuplicateNameException {

@@ -18,15 +18,21 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import static kinugasa.game.system.ParameterType.ITEM_LOST;
-import static kinugasa.game.system.ParameterType.STATUS;
-import static kinugasa.game.system.DamageCalcType.PERCENT_OF_MAX;
-import static kinugasa.game.system.DamageCalcType.PERCENT_OF_NOW;
-import static kinugasa.game.system.DamageCalcType.USE_DAMAGE_CALC;
+import static kinugasa.game.system.ActionEvent.CalcMode.DC;
+import static kinugasa.game.system.ActionEvent.EventType.ATTR_IN;
+import static kinugasa.game.system.ActionEvent.EventType.ATTR_OUT;
+import static kinugasa.game.system.ActionEvent.EventType.CND_REGIST;
+import static kinugasa.game.system.ActionEvent.EventType.アイテムロスト;
+import static kinugasa.game.system.ActionEvent.EventType.アイテム追加;
+import static kinugasa.game.system.ActionEvent.EventType.ステータス回復;
+import static kinugasa.game.system.ActionEvent.EventType.ステータス攻撃;
+import static kinugasa.game.system.ActionEvent.EventType.状態異常付与;
+import static kinugasa.game.system.ActionEvent.EventType.状態異常解除;
+import static kinugasa.game.system.ActionEvent.EventType.独自効果;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.MessageWindowGroup;
@@ -34,7 +40,6 @@ import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
-import kinugasa.util.Random;
 
 /**
  *
@@ -59,6 +64,14 @@ public class MagicWindow extends BasicSprite {
 		msg.setVisible(false);
 		group = new MessageWindowGroup(choiceUse, tgtSelect, msg);
 		updateText();
+	}
+
+	private Actor getPC() {
+		return GameSystem.getInstance().getPCbyID(getSelectedPC().getId());
+	}
+
+	private Actor getPC(String id) {
+		return GameSystem.getInstance().getPCbyID(id);
 	}
 
 	public enum Mode {
@@ -148,7 +161,7 @@ public class MagicWindow extends BasicSprite {
 	}
 
 	public void select() {
-		if (getSelectedPC().getActions(ActionType.MAGIC).isEmpty()) {
+		if (getSelectedPC().getActions().stream().filter(p -> p.getType() == ActionType.魔法).toList().isEmpty()) {
 			group.closeAll();
 			mode = Mode.MAGIC_AND_USER_SELECT;
 			return;
@@ -170,9 +183,9 @@ public class MagicWindow extends BasicSprite {
 				switch (choiceUse.getSelect()) {
 					case USE:
 						//フィールドでは使えない場合
-						if (!a.isFieldUse()) {
+						if (!a.isField()) {
 							StringBuilder sb = new StringBuilder();
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
 							sb.append(I18N.get(GameSystemI18NKeys.しかしこの魔法はフィールドでは使えない));
 							msg.setText(sb.toString());
@@ -182,15 +195,14 @@ public class MagicWindow extends BasicSprite {
 							return;
 						}
 						//SELFのみの場合即時実行
-						if (a.fieldEventIsOnly(TargetType.SELF)) {
+						if (a.getMainEvents().isEmpty()) {
 							//代償が支払えるかのチェック
-							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
-							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
-							if (vs.hasMinus()) {
+							Action.ResourceShortage s = a.checkResource(getSelectedPC());
+							if (s.is足りないステータスあり()) {
 								StringBuilder sb = new StringBuilder();
-								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
-								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
+								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toString()));
 								msg.setText(sb.toString());
 								msg.allText();
 								group.show(msg);
@@ -199,80 +211,24 @@ public class MagicWindow extends BasicSprite {
 							}
 							//即時実行してサブに効果を出力
 							Status tgt = getSelectedPC();
-							tgt.setDamageCalcPoint();
-							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true).setSelfTarget(true));
+							tgt.saveBeforeDamageCalc();
+							ActionResult r = a.exec(new ActionTarget(getPC(), a, List.of(getPC(tgt.getId())), true));
 							StringBuilder sb = new StringBuilder();
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
-							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
+							if (r.is成功あり()) {
 								//成功
 								//効果測定
-								Map<StatusKey, Float> map = tgt.calcDamage();
-								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
+								StatusValueSet map = tgt.getDamageFromSavePoint();
+								for (StatusValue e : map) {
 									if (e.getValue() < 0f) {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
-										sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xの, getPC().getVisibleName()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getVisibleName()));
 										sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
 										sb.append(Text.getLineSep());
 									} else if (e.getValue() > 0f) {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
-										sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()));
-										sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
-										sb.append(Text.getLineSep());
-									} else {
-										//==0
-										sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
-										sb.append(Text.getLineSep());
-									}
-								}
-							} else {
-								//失敗
-								sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
-							}
-							msg.setText(sb.toString());
-							msg.allText();
-							group.show(msg);
-							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
-							return;
-						}
-						//ターゲットタイプランダムの場合は即時実行
-						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.RANDOM)) {
-							//代償が支払えるかのチェック
-							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
-							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
-							if (vs.hasMinus()) {
-								StringBuilder sb = new StringBuilder();
-								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
-								sb.append(Text.getLineSep());
-								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
-								msg.setText(sb.toString());
-								msg.allText();
-								group.show(msg);
-								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
-								return;
-							}
-							//即時実行してサブに効果を出力
-							//ターゲットを決定
-
-							Status tgt = Random.randomChoice(GameSystem.getInstance().getPartyStatus());
-							tgt.setDamageCalcPoint();
-							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
-							StringBuilder sb = new StringBuilder();
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
-							sb.append(Text.getLineSep());
-							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
-								//成功
-								//効果測定
-								Map<StatusKey, Float> map = tgt.calcDamage();
-								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
-									if (e.getValue() < 0f) {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
-										sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()));
-										sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
-										sb.append(Text.getLineSep());
-									} else if (e.getValue() > 0f) {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
-										sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xの, getPC().getVisibleName()));
+										sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getVisibleName()));
 										sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
 										sb.append(Text.getLineSep());
 									} else {
@@ -292,15 +248,21 @@ public class MagicWindow extends BasicSprite {
 							return;
 						}
 						//チームが入っている場合即時実行
-						if (a.getFieldEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.TEAM)) {
+						if (a.getTgtType() == Action.ターゲットモード.全員
+								|| a.getTgtType() == Action.ターゲットモード.グループ_味方全員
+								|| a.getTgtType() == Action.ターゲットモード.グループ_切替可能_初期選択味方
+								|| a.getTgtType() == Action.ターゲットモード.グループ_切替可能_初期選択敵
+								|| a.getTgtType() == Action.ターゲットモード.全員_自身除く
+								|| a.getTgtType() == Action.ターゲットモード.グループ_味方全員_自身除く
+								|| a.getTgtType() == Action.ターゲットモード.グループ_切替可能_初期選択味方_自身除く
+								|| a.getTgtType() == Action.ターゲットモード.グループ_切替可能_初期選択敵_自身除く) {
 							//代償が支払えるかのチェック
-							Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
-							StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
-							if (vs.hasMinus()) {
+							Action.ResourceShortage s = a.checkResource(getSelectedPC());
+							if (s.is足りないステータスあり()) {
 								StringBuilder sb = new StringBuilder();
-								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
+								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
-								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
+								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toString()));
 								msg.setText(sb.toString());
 								msg.allText();
 								group.show(msg);
@@ -308,31 +270,26 @@ public class MagicWindow extends BasicSprite {
 								return;
 							}
 							//即時実行してサブに効果を出力
-							List<Status> tgt = GameSystem.getInstance().getPartyStatus();
-							tgt.forEach(p -> p.setDamageCalcPoint());
-							ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
+							GameSystem.getInstance().getParty().forEach(p -> p.getStatus().saveBeforeDamageCalc());
+							ActionResult r = a.exec(new ActionTarget(getPC(), a, GameSystem.getInstance().getParty(), true));
 							StringBuilder sb = new StringBuilder();
-							for (Status s : tgt) {
-								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
-								sb.append(Text.getLineSep());
-								if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
+							sb.append(Text.getLineSep());
+							for (Status st : GameSystem.getInstance().getPartyStatus()) {
+								if (r.is成功あり()) {
 									//成功
 									//効果測定
-									Map<StatusKey, Float> map = s.calcDamage();
-									for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
+									StatusValueSet map = st.getDamageFromSavePoint();
+									for (StatusValue e : map) {
 										if (e.getValue() < 0f) {
 											sb.append(I18N.get(GameSystemI18NKeys.Xの, I18N.get(GameSystemI18NKeys.全員)));
-											sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()));
+											sb.append(I18N.get(GameSystemI18NKeys.Xが, e.getKey().getVisibleName()));
 											sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
 											sb.append(Text.getLineSep());
 										} else if (e.getValue() > 0f) {
 											sb.append(I18N.get(GameSystemI18NKeys.Xの, I18N.get(GameSystemI18NKeys.全員)));
-											sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()));
+											sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getVisibleName()));
 											sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
-											sb.append(Text.getLineSep());
-										} else {
-											//==0
-											sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 											sb.append(Text.getLineSep());
 										}
 									}
@@ -348,13 +305,12 @@ public class MagicWindow extends BasicSprite {
 							return;
 						}
 						//代償が支払えるかのチェック
-						Map<StatusKey, Integer> selfDamage = a.selfFieldDirectDamage();
-						StatusValueSet vs = getSelectedPC().simulateDamage(selfDamage);
-						if (vs.hasMinus()) {
+						Action.ResourceShortage s = a.checkResource(getSelectedPC());
+						if (s.is足りないステータスあり()) {
 							StringBuilder sb = new StringBuilder();
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
-							sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, vs.stream().filter(p -> p.getValue() < 0).map(p -> StatusKeyStorage.getInstance().get(p.getName()).getDesc()).collect(Collectors.toList()).toString()));
+							sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toString()));
 							msg.setText(sb.toString());
 							msg.allText();
 							group.show(msg);
@@ -363,9 +319,10 @@ public class MagicWindow extends BasicSprite {
 						}
 						//その他の場合はターゲット選択へ
 						List<Text> option1 = new ArrayList<>();
-						option1.addAll(GameSystem.getInstance().getPartyStatus().stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
+						option1.addAll(GameSystem.getInstance().getPartyStatus().stream()
+								.map(p -> new Text(getPC(p.getId()).getVisibleName())).collect(Collectors.toList()));
 						tgtSelect.setText(new Choice(option1, "MAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの, a.getVisibleName())
-								+ I18N.get(GameSystemI18NKeys.Xを誰に使う, getSelectedAction().getName())));
+								+ I18N.get(GameSystemI18NKeys.Xを誰に使う, getSelectedAction().getVisibleName())));
 						tgtSelect.allText();
 						group.show(tgtSelect);
 						mode = Mode.TARGET_SELECT;
@@ -387,193 +344,209 @@ public class MagicWindow extends BasicSprite {
 						}
 						//イベント詳細
 						sb.append("--").append(I18N.get(GameSystemI18NKeys.戦闘効果)).append(Text.getLineSep());
-						if (a.isBattleUse()) {
+						if (a.isBattle()) {
 							//SPELL_TIME
 							sb.append("  ");
-							sb.append(I18N.get(GameSystemI18NKeys.詠唱時間)).append(":").append(a.getSpellTime()).append(I18N.get(GameSystemI18NKeys.ターン));
+							sb.append(I18N.get(GameSystemI18NKeys.詠唱時間))
+									.append(":").append(a.getCastTime()).append(I18N.get(GameSystemI18NKeys.ターン));
 							sb.append(Text.getLineSep());
 							//AREA
 							sb.append("  ");
 							sb.append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(a.getArea());
 							sb.append(Text.getLineSep());
-						}
-						if (a.isBattleUse()) {
-							for (ActionEvent e : a.getBattleEvent()) {
+
+							for (ActionEvent e : Stream.of(a.getMainEvents(), a.getUserEvents()).flatMap(p -> p.stream()).toList()) {
 								sb.append("  ");
-								if (e instanceof CustomActionEvent) {
-									sb.append(I18N.get(GameSystemI18NKeys.独自効果));
-									continue;
-								}
-								switch (e.getParameterType()) {
-									case ADD_CONDITION:
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを追加する, ConditionStorage.getInstance().get(e.getTgtName()).getKey().getDesc()));
+								switch (e.getEventType()) {
+									case ATTR_IN: {
+										sb.append(I18N.get(GameSystemI18NKeys.被耐性XをXの確率でX変更する,
+												e.getTgtAttrIn().getVisibleName(),
+												e.getP() + "%",
+												e.getValue() + ""));
 										break;
-									case ATTR_IN:
-										sb.append(I18N.get(GameSystemI18NKeys.Xの有効度を変更する, AttributeKeyStorage.getInstance().get(e.getTgtName()).getDesc()));
-										sb.append(",");
-										//dct
-										switch (e.getDamageCalcType()) {
-											case DIRECT:
-												sb.append(I18N.get(GameSystemI18NKeys.直接作用));
+									}
+									case ATTR_OUT: {
+										sb.append(I18N.get(GameSystemI18NKeys.与耐性XをXの確率でX変更する,
+												e.getTgtAttrOut().getVisibleName(),
+												e.getP() + "%",
+												e.getValue() + ""));
+										break;
+									}
+									case CND_REGIST: {
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xの耐性をXの確率でX変更する,
+												e.getTgtCndRegist().getVisibleName(),
+												e.getP() + "%",
+												e.getValue() + ""));
+										break;
+									}
+									case アイテムロスト: {
+										Item i = ActionStorage.getInstance().itemOf(e.getTgtItemID());
+										sb.append(I18N.get(GameSystemI18NKeys.アイテムXをXの確率で失う,
+												i.getVisibleName(),
+												e.getP() + "%"));
+										break;
+									}
+									case アイテム追加: {
+										Item i = ActionStorage.getInstance().itemOf(e.getTgtItemID());
+										sb.append(I18N.get(GameSystemI18NKeys.アイテムXをXの確率で入手する,
+												i.getVisibleName(),
+												e.getP() + "%"));
+										break;
+									}
+									case ステータス回復: {
+										sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを回復する,
+												e.getP() + "%",
+												e.getTgtStatusKey().getVisibleName()));
+										sb.append(Text.getLineSep());
+										switch (e.getCalcMode()) {
+											case DC: {
+												sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
 												break;
-											case PERCENT_OF_MAX:
-												sb.append(I18N.get(GameSystemI18NKeys.最大値の割合));
+											}
+											default: {
 												break;
-											case PERCENT_OF_NOW:
-												sb.append(I18N.get(GameSystemI18NKeys.現在値の割合));
-												break;
-											case USE_DAMAGE_CALC:
-												sb.append(I18N.get(GameSystemI18NKeys.標準ダメージ計算));
-												break;
+											}
 										}
 										break;
-									case ITEM_ADD:
-										sb.append(I18N.get(GameSystemI18NKeys.アイテムXを追加する, e.getTgtName()));
-										break;
-									case ITEM_LOST:
-										sb.append(I18N.get(GameSystemI18NKeys.アイテムXを破棄する, e.getTgtName()));
-										break;
-									case NONE:
-										break;
-									case REMOVE_CONDITION:
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを回復する, e.getTgtName()));
-										break;
-									case STATUS:
-										if (e.getTargetType() == TargetType.SELF) {
-											sb.append(I18N.get(GameSystemI18NKeys.術者));
-										} else {
-											sb.append(I18N.get(GameSystemI18NKeys.対象));
-										}
-										sb.append(I18N.get(GameSystemI18NKeys.ダメージ)).append(":");
-										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getDesc());
-										sb.append(",");
-										//dct
-										switch (e.getDamageCalcType()) {
-											case DIRECT:
-												sb.append(I18N.get(GameSystemI18NKeys.直接作用));
+									}
+									case ステータス攻撃: {
+										sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+												e.getP() + "%",
+												e.getAtkAttr().toString(),
+												e.getTgtStatusKey().getVisibleName()));
+										sb.append(Text.getLineSep());
+										switch (e.getCalcMode()) {
+											case DC: {
+												sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
 												break;
-											case PERCENT_OF_MAX:
-												sb.append(I18N.get(GameSystemI18NKeys.最大値の割合));
+											}
+											default: {
 												break;
-											case PERCENT_OF_NOW:
-												sb.append(I18N.get(GameSystemI18NKeys.現在値の割合));
-												break;
-											case USE_DAMAGE_CALC:
-												sb.append(I18N.get(GameSystemI18NKeys.標準ダメージ計算));
-												break;
+											}
 										}
 										break;
-								}
-								sb.append(",");
-								if (e.getParameterType() == ParameterType.STATUS) {
-									sb.append(I18N.get(GameSystemI18NKeys.基礎威力)).append(":").append(Math.abs((int) e.getValue()));
-								}
-								sb.append(",");
-								sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append((int) (e.getP() * 100)).append("%");
-								if (e.getAttr() != null) {
-									sb.append(",");
-									sb.append(I18N.get(GameSystemI18NKeys.属性)).append(":").append(e.getAttr().getDesc()).append(Text.getLineSep());
-								}
-							}
+									}
+									case 状態異常付与: {
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で追加する,
+												e.getTgtConditionKey().getVisibleName(),
+												e.getP() + "%"));
+										break;
+									}
+									case 状態異常解除: {
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で解除する,
+												e.getTgtConditionKey().getVisibleName(),
+												e.getP() + "%"));
+										break;
+									}
+									case 独自効果: {
+										sb.append(GameSystemI18NKeys.不明な効果);
+										break;
+									}
+								}//switch
+							}//event  for
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法は戦闘中使えない)).append(Text.getLineSep());
 						}
 						sb.append("--").append(I18N.get(GameSystemI18NKeys.フィールド効果)).append(Text.getLineSep());
-						if (a.isFieldUse()) {
-							for (ActionEvent e : a.getFieldEvent()) {
+						if (a.isField()) {
+							for (ActionEvent e : Stream.of(a.getMainEvents(), a.getUserEvents()).flatMap(p -> p.stream()).toList()) {
 								sb.append("  ");
-								if (e instanceof CustomActionEvent) {
-									sb.append(I18N.get(GameSystemI18NKeys.独自効果));
-									continue;
-								}
-								switch (e.getParameterType()) {
-									case ADD_CONDITION:
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを追加する, e.getTgtName()));
+								switch (e.getEventType()) {
+									case ATTR_IN: {
+										sb.append(I18N.get(GameSystemI18NKeys.被耐性XをXの確率でX変更する,
+												e.getTgtAttrIn().getVisibleName(),
+												e.getP() + "%",
+												e.getValue() + ""));
 										break;
-									case ATTR_IN:
-										sb.append(I18N.get(GameSystemI18NKeys.Xの有効度を変更する, AttributeKeyStorage.getInstance().get(e.getTgtName()).getDesc()));
-										sb.append(",");
-										//dct
-										switch (e.getDamageCalcType()) {
-											case DIRECT:
-												sb.append(I18N.get(GameSystemI18NKeys.直接作用));
+									}
+									case ATTR_OUT: {
+										sb.append(I18N.get(GameSystemI18NKeys.与耐性XをXの確率でX変更する,
+												e.getTgtAttrOut().getVisibleName(),
+												e.getP() + "%",
+												e.getValue() + ""));
+										break;
+									}
+									case CND_REGIST: {
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xの耐性をXの確率でX変更する,
+												e.getTgtCndRegist().getVisibleName(),
+												e.getP() + "%",
+												e.getValue() + ""));
+										break;
+									}
+									case アイテムロスト: {
+										Item i = ActionStorage.getInstance().itemOf(e.getTgtItemID());
+										sb.append(I18N.get(GameSystemI18NKeys.アイテムXをXの確率で失う,
+												i.getVisibleName(),
+												e.getP() + "%"));
+										break;
+									}
+									case アイテム追加: {
+										Item i = ActionStorage.getInstance().itemOf(e.getTgtItemID());
+										sb.append(I18N.get(GameSystemI18NKeys.アイテムXをXの確率で入手する,
+												i.getVisibleName(),
+												e.getP() + "%"));
+										break;
+									}
+									case ステータス回復: {
+										sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを回復する,
+												e.getP() + "%",
+												e.getTgtStatusKey().getVisibleName()));
+										sb.append(Text.getLineSep());
+										switch (e.getCalcMode()) {
+											case DC: {
+												sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
 												break;
-											case PERCENT_OF_MAX:
-												sb.append(I18N.get(GameSystemI18NKeys.最大値の割合));
+											}
+											default: {
 												break;
-											case PERCENT_OF_NOW:
-												sb.append(I18N.get(GameSystemI18NKeys.現在値の割合));
-												break;
-											case USE_DAMAGE_CALC:
-												sb.append(I18N.get(GameSystemI18NKeys.標準ダメージ計算));
-												break;
+											}
 										}
 										break;
-									case ITEM_ADD:
-										sb.append(I18N.get(GameSystemI18NKeys.アイテムXを追加する, e.getTgtName()));
-										break;
-									case ITEM_LOST:
-										sb.append(I18N.get(GameSystemI18NKeys.アイテムXを破棄する, e.getTgtName()));
-										break;
-									case NONE:
-										break;
-									case REMOVE_CONDITION:
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xを回復する, e.getTgtName()));
-										break;
-									case STATUS:
-										sb.append(I18N.get(GameSystemI18NKeys.ダメージ)).append(":");
-										sb.append(StatusKeyStorage.getInstance().get(e.getTgtName()).getDesc());
-										sb.append(",");
-										//dct
-										switch (e.getDamageCalcType()) {
-											case DIRECT:
-												sb.append(I18N.get(GameSystemI18NKeys.直接作用));
+									}
+									case ステータス攻撃: {
+										sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+												e.getP() + "%",
+												e.getAtkAttr().toString(),
+												e.getTgtStatusKey().getVisibleName()));
+										sb.append(Text.getLineSep());
+										switch (e.getCalcMode()) {
+											case DC: {
+												sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
 												break;
-											case PERCENT_OF_MAX:
-												sb.append(I18N.get(GameSystemI18NKeys.最大値の割合));
+											}
+											default: {
 												break;
-											case PERCENT_OF_NOW:
-												sb.append(I18N.get(GameSystemI18NKeys.現在値の割合));
-												break;
-											case USE_DAMAGE_CALC:
-												sb.append(I18N.get(GameSystemI18NKeys.標準ダメージ計算));
-												break;
+											}
 										}
 										break;
-								}
-								sb.append(",");
-								if (e.getParameterType() == ParameterType.STATUS) {
-									sb.append(I18N.get(GameSystemI18NKeys.基礎威力)).append(":").append(Math.abs((int) e.getValue()));
-								}
-								sb.append(",");
-								sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append((int) (e.getP() * 100)).append("%");
-								if (e.getAttr() != null) {
-									sb.append(",");
-									sb.append(I18N.get(GameSystemI18NKeys.属性)).append(":").append(e.getAttr().getDesc()).append(Text.getLineSep());
-								}
-							}
+									}
+									case 状態異常付与: {
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で追加する,
+												e.getTgtConditionKey().getVisibleName(),
+												e.getP() + "%"));
+										break;
+									}
+									case 状態異常解除: {
+										sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で解除する,
+												e.getTgtConditionKey().getVisibleName(),
+												e.getP() + "%"));
+										break;
+									}
+									case 独自効果: {
+										sb.append(GameSystemI18NKeys.不明な効果);
+										break;
+									}
+								}//switch
+							}//event  for
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法はフィールドでは使えない)).append(Text.getLineSep());
 						}
 						//ターゲティング情報
-						sb.append("--").append(GameSystemI18NKeys.戦闘時ターゲット情報).append(Text.getLineSep());
-						String s = a.getTargetOption().getSelectType() == TargetOption.SelectType.IN_AREA
-								? I18N.get(GameSystemI18NKeys.全体)
-								: I18N.get(GameSystemI18NKeys.単体);
-						sb.append("  ").append(I18N.get(GameSystemI18NKeys.効果対象)).append(":").append(s).append(Text.getLineSep());
-						s = a.getTargetOption().getIff() == TargetOption.IFF.ON
-								? I18N.get(GameSystemI18NKeys.有効)
-								: I18N.get(GameSystemI18NKeys.無効);
-						sb.append("  ").append(I18N.get(GameSystemI18NKeys.敵味方識別)).append(":").append(s).append(Text.getLineSep());
-						s = a.getTargetOption().getSwitchTeam() == TargetOption.SwitchTeam.OK
-								? I18N.get(GameSystemI18NKeys.有効)
-								: I18N.get(GameSystemI18NKeys.無効);
-						sb.append("  ").append(I18N.get(GameSystemI18NKeys.敵味方切替)).append(":").append(s).append(Text.getLineSep());
-						s = a.getTargetOption().getTargeting() == TargetOption.Targeting.ENABLE
-								? I18N.get(GameSystemI18NKeys.有効)
-								: I18N.get(GameSystemI18NKeys.無効);
-						sb.append("  ").append(I18N.get(GameSystemI18NKeys.標的選択)).append(":").append(s).append(Text.getLineSep());
-
+						if (a.isBattle()) {
+							sb.append("--").append(GameSystemI18NKeys.戦闘時ターゲット情報).append(Text.getLineSep());
+							sb.append("  ").append(I18N.get(GameSystemI18NKeys.ターゲット)).append(a.getTgtType().getVisibleName()).append(Text.getLineSep());
+							sb.append("  ").append(I18N.get(GameSystemI18NKeys.死亡者ターゲット)).append(a.getDeadTgt().getVisibleName()).append(Text.getLineSep());
+						}
 						msg.setText(sb.toString());
 						msg.allText();
 						group.show(msg);
@@ -602,40 +575,34 @@ public class MagicWindow extends BasicSprite {
 		Status tgt = GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect());
 
 		//使用者のMP計算のためDCP設定
-		getSelectedPC().setDamageCalcPoint();
+		getSelectedPC().saveBeforeDamageCalc();
 		//使用者とターゲットが違う場合はターゲットもDCP設定
 		if (!getSelectedPC().equals(tgt)) {
-			tgt.setDamageCalcPoint();
+			tgt.saveBeforeDamageCalc();
 		}
-		ActionResult r = a.exec(ActionTarget.instantTarget(getSelectedPC(), a, tgt).setInField(true));
+		ActionResult r = a.exec(new ActionTarget(getPC(), a, List.of(getPC(tgt.getId())), true));
 		StringBuilder sb = new StringBuilder();
-		sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getSelectedPC().getName(), a.getVisibleName()));
+		sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 		sb.append(Text.getLineSep());
-		if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
+		if (r.is成功あり()) {
 			//成功
 			//ターゲットへの効果測定
-			Map<StatusKey, Float> map = getSelectedPC().calcDamage();
-			for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
+			StatusValueSet vs = tgt.getDamageFromSavePoint();
+			for (StatusValue e : vs) {
 				if (e.getValue() < 0f) {
-					sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()));
+					sb.append(I18N.get(GameSystemI18NKeys.Xの, getPC(tgt.getId()).getVisibleName()));
+					sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getVisibleName()));
 					sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
 					sb.append(Text.getLineSep());
 				} else if (e.getValue() > 0f) {
-					sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()));
+					sb.append(I18N.get(GameSystemI18NKeys.Xの, getPC(tgt.getId()).getVisibleName()));
+					sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getVisibleName()));
 					sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
-					sb.append(Text.getLineSep());
-				} else {
-					//==0
-					sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 					sb.append(Text.getLineSep());
 				}
 			}
-			//SELFへのダメージ
-			//TODO:
-
-			if (map.isEmpty()) {
+			//SELFへのダメージは表示しない
+			if (vs.isEmpty()) {
 				sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 				sb.append(Text.getLineSep());
 			}
@@ -652,7 +619,9 @@ public class MagicWindow extends BasicSprite {
 	}
 
 	public Action getSelectedAction() {
-		return GameSystem.getInstance().getPartyStatus().get(pcIdx).getActions(ActionType.MAGIC).get(main.getSelectedIdx() - 1);
+		return GameSystem.getInstance().getPartyStatus().get(pcIdx)
+				.getActions().stream().filter(p -> p.getType() == ActionType.魔法)
+				.toList().get(main.getSelectedIdx() - 1);
 	}
 
 	public Status getSelectedPC() {
@@ -664,9 +633,10 @@ public class MagicWindow extends BasicSprite {
 	}
 
 	private void updateText() {
-		Text line1 = new Text("<---" + I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getName()) + I18N.get(GameSystemI18NKeys.魔術) + "--->");
+		Text line1 = new Text("<---" + I18N.get(GameSystemI18NKeys.Xの,
+				getPC().getVisibleName()) + I18N.get(GameSystemI18NKeys.魔術) + "--->");
 
-		List<Action> list = getSelectedPC().getActions(ActionType.MAGIC);
+		List<Action> list = getSelectedPC().getActions().stream().filter(p -> p.getType() == ActionType.魔法).toList();
 		if (list.isEmpty()) {
 			Text line2 = new Text(I18N.get(GameSystemI18NKeys.使える魔術はない));
 			main.setText(List.of(line1, line2));

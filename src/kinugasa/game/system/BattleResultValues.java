@@ -17,7 +17,6 @@
 package kinugasa.game.system;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -29,12 +28,14 @@ public class BattleResultValues {
 	private BattleResult battleResult;
 	private int exp;
 	private List<Item> dropItems;
+	private List<Material> dropMaterials;
 	private String nextLogicName;
 
-	public BattleResultValues(BattleResult battleResult, int exp, List<Item> dropItems, String nextLogicName) {
+	public BattleResultValues(BattleResult battleResult, int exp, List<Item> dropItems, List<Material> dropMaterials, String nextLogicName) {
 		this.battleResult = battleResult;
 		this.exp = exp;
 		this.dropItems = dropItems;
+		this.dropMaterials = dropMaterials;
 		this.nextLogicName = nextLogicName;
 	}
 
@@ -52,6 +53,10 @@ public class BattleResultValues {
 
 	public BattleResult getBattleResult() {
 		return battleResult;
+	}
+
+	public List<Material> getDropMaterials() {
+		return dropMaterials;
 	}
 
 	@Override

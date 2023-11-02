@@ -93,4 +93,9 @@ public class ManualTimeCounter extends TimeCounter {
 		this.currentTime = r;
 	}
 
+	@Override
+	public String toString() {
+		return "ManualTimeCounter{" + "currentTime=" + currentTime + '}';
+	}
+
 }

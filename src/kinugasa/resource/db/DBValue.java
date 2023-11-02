@@ -40,6 +40,9 @@ public class DBValue {
 	}
 
 	public String get() {
+		if (value == null || value.isEmpty()) {
+			return null;
+		}
 		return value;
 	}
 
@@ -57,7 +60,7 @@ public class DBValue {
 		return Long.parseLong(value);
 	}
 
-	public int[] asIntArray(String sep) {
+	public int[] asSafeIntArray(String sep) {
 		String[] v = safeSplit(sep);
 		int[] res = new int[v.length];
 		for (int i = 0; i < v.length; i++) {
@@ -113,6 +116,19 @@ public class DBValue {
 			}
 		}
 		throw new AssertionError("DBValue : not found " + value);
+	}
+
+	public <T extends Enum<T>> T orNull(Class<T> c) {
+		if (value == null || value.trim().isEmpty()) {
+			return null;
+		}
+		T[] values = c.getEnumConstants();
+		for (T t : values) {
+			if (t.toString().equals(value.toUpperCase())) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 	@Override

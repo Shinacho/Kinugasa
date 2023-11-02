@@ -17,14 +17,12 @@
 package kinugasa.game.system;
 
 import kinugasa.resource.Nameable;
-import kinugasa.resource.db.DBRecord;
 
 /**
  *
  * @vesion 1.0.0 - 2022/11/12_20:19:10<br>
  * @author Shinacho<br>
  */
-@DBRecord
 public class Flag implements Nameable {
 
 	private String name;

@@ -73,10 +73,12 @@ public class EqipItemWindow extends PCStatusWindow {
 	@Override
 	public void update() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<---").append(I18N.get(GameSystemI18NKeys.Xの装備, s.get(pcIdx).getName())).append("--->").append(Text.getLineSep());
+		sb.append("<---").append(I18N.get(GameSystemI18NKeys.Xの装備,
+				GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName()))
+				.append("--->").append(Text.getLineSep());
 
-		for (Map.Entry<ItemEqipmentSlot, Item> e : s.get(pcIdx).getEqipment().entrySet()) {
-			String key = e.getKey().getName();
+		for (Map.Entry<EqipSlot, Item> e : s.get(pcIdx).getEqip().entrySet()) {
+			String key = e.getKey().getVisibleName();
 			String value = e.getValue() == null ? I18N.get(GameSystemI18NKeys.なし) : e.getValue().getVisibleName();
 			sb.append("  ").append(key).append(":").append(value).append(Text.getLineSep());
 		}

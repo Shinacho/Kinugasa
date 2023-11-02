@@ -29,6 +29,8 @@ import javax.sound.sampled.Control;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import kinugasa.game.GameLog;
+import kinugasa.game.system.Counts;
+import kinugasa.game.system.GameSystemI18NKeys;
 import kinugasa.resource.ContentsIOException;
 import kinugasa.resource.InputStatus;
 import kinugasa.resource.NotYetLoadedException;
@@ -148,8 +150,10 @@ public class CachedSound implements Sound {
 				clip.setFramePosition(framePos);
 				framePos = 0;
 				clip.start();
+				Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
 			} else {
 				clip.start();
+				Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
 			}
 		}
 		playing = true;

@@ -16,46 +16,45 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.game.I18N;
 import kinugasa.resource.Nameable;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_12:00:00<br>
+ * @vesion 1.0.0 - 2023/10/14_14:41:12<br>
  * @author Shinacho<br>
  */
-public class AttributeKey implements Nameable, Comparable<AttributeKey> {
+public enum AttributeKey implements Nameable {
+	斬撃,
+	刺突,
+	衝撃,
+	炎,
+	氷,
+	水,
+	雷,
+	風,
+	土,
+	光,
+	闇,
+	神秘,
+	精神,
+	錬金,
+	時空,;
 
-	private String name;
-	private String desc;
-	private int order;
+	public boolean is物理() {
+		return this == 斬撃 || this == 刺突 || this == 衝撃;
+	}
 
-	public AttributeKey(String name, String desc, int order) {
-		this.name = name;
-		this.desc = desc;
-		this.order = order;
+	public boolean is魔法() {
+		return this != 斬撃 && this != 刺突 && this != 衝撃;
+	}
+
+	public String getVisibleName() {
+		return I18N.get(toString());
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return toString();
 	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public int getOrder() {
-		return order;
-	}
-
-	@Override
-	public int compareTo(AttributeKey o) {
-		return order - o.order;
-	}
-
-	@Override
-	public String toString() {
-		return "AttributeKey{" + "name=" + name + ", order=" + order + '}';
-	}
-
 }

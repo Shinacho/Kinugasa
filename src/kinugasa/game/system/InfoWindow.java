@@ -18,6 +18,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
@@ -39,14 +40,22 @@ public class InfoWindow extends BasicSprite {
 	}
 
 	public enum Mode {
-		MONEY,
-		QUEST
+		お金,
+		クエスト,
+		統計,
 	}
-	private Mode mode = Mode.MONEY;
+	private Mode mode = Mode.お金;
 	private ScrollSelectableMessageWindow main;
 
 	public void switchMode() {
-		mode = mode == Mode.MONEY ? Mode.QUEST : Mode.MONEY;
+		mode = switch (mode) {
+			case お金 ->
+				Mode.クエスト;
+			case クエスト ->
+				Mode.統計;
+			case 統計 ->
+				Mode.お金;
+		};
 		main.reset();
 		updateText();
 	}
@@ -63,16 +72,16 @@ public class InfoWindow extends BasicSprite {
 		List<Text> t = new ArrayList<>();
 
 		//line1
-		t.add(new Text("<---" + I18N.get(mode == Mode.MONEY ? GameSystemI18NKeys.お金 : GameSystemI18NKeys.クエスト) + "--->"));
+		t.add(new Text("<---" + I18N.get(mode) + "--->"));
 
 		//data
 		switch (mode) {
-			case MONEY:
+			case お金:
 				for (Money m : GameSystem.getInstance().getMoneySystem()) {
 					t.add(new Text(m.getVisibleText()));
 				}
 				break;
-			case QUEST:
+			case クエスト:
 				//MAIN
 				t.add(new Text("--" + I18N.get(GameSystemI18NKeys.メインクエスト)));
 				Quest qs = QuestStorage.getInstance().get("QS0001");
@@ -85,10 +94,17 @@ public class InfoWindow extends BasicSprite {
 				}
 
 				break;
+			case 統計: {
+				for (Counts.Value v : Counts.getInstance().stream().sorted((c1, c2) -> {
+					return c1.getVisibleName().compareTo(c2.getVisibleName());
+				}).toList()) {
+					t.add(new Text("  " + v.getVisibleName() + " : " + v.num));
+				}
+				break;
+			}
 			default:
 				throw new AssertionError();
 		}
-
 		main.setText(t);
 	}
 

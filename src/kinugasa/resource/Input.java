@@ -16,6 +16,7 @@
  */
 package kinugasa.resource;
 
+import java.io.File;
 import kinugasa.resource.text.FileIOException;
 
 /**
@@ -24,6 +25,8 @@ import kinugasa.resource.text.FileIOException;
  * @author Shinacho<br>
  */
 public interface Input<T> {
+	
+	public File getFile();
 
 	public T load() throws FileIOException;
 

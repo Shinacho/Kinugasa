@@ -16,22 +16,76 @@
  */
 package kinugasa.game.system;
 
-import kinugasa.resource.Storage;
+import java.util.ArrayList;
+import java.util.List;
+import kinugasa.resource.db.DBConnection;
+import kinugasa.resource.db.DBStorage;
+import kinugasa.resource.db.DBValue;
+import kinugasa.resource.db.KResultSet;
+import kinugasa.resource.db.KSQLException;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/26_16:48:06<br>
+ * @vesion 1.0.0 - 2023/10/14_19:29:37<br>
  * @author Shinacho<br>
  */
-public class MaterialStorage extends Storage<Material> {
-
-	private static final MaterialStorage INSTANCE = new MaterialStorage();
+public class MaterialStorage extends DBStorage<Material> {
 
 	private MaterialStorage() {
 	}
 
+	private static final MaterialStorage INSTANCE = new MaterialStorage();
+
 	public static MaterialStorage getInstance() {
 		return INSTANCE;
+	}
+
+	@Override
+	protected Material select(String id) throws KSQLException {
+		if (DBConnection.getInstance().isUsing()) {
+			String sql = "select id, visibleName, price from material where id = '" + id + "';";
+			KResultSet r = DBConnection.getInstance().execDirect(sql);
+			if (r.isEmpty()) {
+				return null;
+			}
+			for (List<DBValue> v : r) {
+				String mid = v.get(0).get();
+				String visibleName = v.get(1).get();
+				int price = v.get(2).asInt();
+				Material m = new Material(mid, visibleName, price);
+				return m;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	protected List<Material> selectAll() throws KSQLException {
+		List<Material> res = new ArrayList<>();
+		if (DBConnection.getInstance().isUsing()) {
+			String sql = "select id, visibleName, price from material;";
+			KResultSet r = DBConnection.getInstance().execDirect(sql);
+			if (r.isEmpty()) {
+				return res;
+			}
+			for (List<DBValue> v : r) {
+				String mid = v.get(0).get();
+				String visibleName = v.get(1).get();
+				int price = v.get(2).asInt();
+				Material m = new Material(mid, visibleName, price);
+				res.add(m);
+			}
+		}
+		return res;
+	}
+
+	@Override
+	protected int count() throws KSQLException {
+		if (DBConnection.getInstance().isUsing()) {
+			String sql = "select count(*) from material;";
+			return DBConnection.getInstance().execDirect(sql).cell(0, 0).asInt();
+		}
+		return 0;
 	}
 
 }

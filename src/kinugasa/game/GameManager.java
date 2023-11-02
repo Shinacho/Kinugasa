@@ -39,6 +39,9 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import kinugasa.game.input.GamePadConnection;
 import kinugasa.game.input.InputState;
 import kinugasa.game.input.KeyConnection;
@@ -86,6 +89,15 @@ public abstract class GameManager {
 		} catch (Throwable a) {
 			a.printStackTrace();
 		}
+		try {
+			//LnF切替
+			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		} catch (ClassNotFoundException
+				| InstantiationException
+				| IllegalAccessException
+				| UnsupportedLookAndFeelException ex) {
+		}
+
 		this.option = option;
 		updateOption();
 	}
@@ -124,7 +136,9 @@ public abstract class GameManager {
 			GameLog.print("this is " + option.getLogPath() + option.getLogName());
 		}
 		CMDargs.init(option.getArgs());
-		I18N.init(option.getLang());
+		if (option.getLang() != null) {
+			I18N.init(option.getLang());
+		}
 
 		if (option.isLock()) {
 			if (LockUtil.isExistsLockFile()) {
@@ -133,7 +147,9 @@ public abstract class GameManager {
 			LockUtil.createLockFile();
 		}
 		window = new AWTGameWindow();
-		renderingHints = option.getRenderingQuality().getRenderingHints();
+		if (option.getRenderingQuality() != null) {
+			renderingHints = option.getRenderingQuality().getRenderingHints();
+		}
 
 		window.addWindowListener(new WindowAdapter() {
 			@Override
@@ -243,13 +259,8 @@ public abstract class GameManager {
 		}
 		loop = new GameLoop(this, gameTimeManager = new GameTimeManager(fps), updateIfNotActive);
 		gameTimeManager.setStartTime(System.currentTimeMillis());
+		startUp();
 		EventQueue.invokeLater(() -> {
-			try {
-				startUp();
-			} catch (Throwable ex) {
-				GameLog.print(ex);
-				System.exit(1);
-			}
 			window.setVisible(true);
 			window.createBufferStrategy(drawSize == 1 ? 2 : 1);
 			graphicsBuffer = window.getBufferStrategy();
@@ -324,18 +335,20 @@ public abstract class GameManager {
 		g.setClip(clippingRectangle);
 		g.clearRect(clippingRectangle.x, clippingRectangle.y,
 				clippingRectangle.width, clippingRectangle.height);
-		g.setRenderingHints(renderingHints);
+		if (renderingHints != null) {
+			g.setRenderingHints(renderingHints);
+		}
 		draw(new GraphicsContext(g));
 		g.dispose();
-		
+
 		final Dimension imageSize = new Dimension(image.getWidth(), image.getHeight());
-		for(ScreenEffect e : effects){
+		for (ScreenEffect e : effects) {
 			image = e.doIt(image);
-			if(!imageSize.equals(new Dimension(image.getWidth(), image.getHeight()))){
+			if (!imageSize.equals(new Dimension(image.getWidth(), image.getHeight()))) {
 				throw new ScreenEffectException("screen effect " + e + " s size is missmatch");
 			}
 		}
-		
+
 		Graphics2D g2 = (Graphics2D) graphicsBuffer.getDrawGraphics();
 		g2.drawImage(image, 0, 0, (int) (image.getWidth() * drawSize), (int) (image.getHeight() * drawSize), null);
 		g2.dispose();
@@ -347,6 +360,6 @@ public abstract class GameManager {
 		if (graphicsBuffer.contentsLost()) {
 			repaint();
 		}
-		
+
 	}
 }

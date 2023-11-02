@@ -60,6 +60,11 @@ public class IniFile implements Input<IniFile>, Output {
 		return this;
 	}
 
+	@Override
+	public File getFile() {
+		return file;
+	}
+
 	private IniFile addAll(File file) {
 
 		if (file == null || !file.exists()) {

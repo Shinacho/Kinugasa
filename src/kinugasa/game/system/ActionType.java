@@ -20,28 +20,16 @@ import kinugasa.game.I18N;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/20_15:14:04<br>
+ * @vesion 1.0.0 - 2023/10/15_14:23:10<br>
  * @author Shinacho<br>
  */
 public enum ActionType {
-	ATTACK,
-	MAGIC,
-	ITEM,
-	OTHER,;
+	行動,
+	魔法,
+	攻撃,
+	アイテム,;
 
-	public String displayName() {
-		switch (this) {
-			case ATTACK:
-				return I18N.get(GameSystemI18NKeys.攻撃);
-			case ITEM:
-				return I18N.get(GameSystemI18NKeys.道具);
-			case MAGIC:
-				return I18N.get(GameSystemI18NKeys.魔術);
-			case OTHER:
-				return I18N.get(GameSystemI18NKeys.行動);
-			default:
-				throw new AssertionError("undefined ActionType");
-		}
+	public String getVisibleName() {
+		return I18N.get(toString());
 	}
-
 }

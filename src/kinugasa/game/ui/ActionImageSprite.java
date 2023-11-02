@@ -36,80 +36,80 @@ import kinugasa.resource.KImage;
  */
 public class ActionImageSprite extends ImageSprite implements ActionSupport {
 
-	private List<Action> actions;
+	private List<UIAction> actions;
 
-	public ActionImageSprite(float x, float y, float w, float h, Action... actions) {
+	public ActionImageSprite(float x, float y, float w, float h, UIAction... actions) {
 		super(x, y, w, h);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
-	public ActionImageSprite(float x, float y, float w, float h, BufferedImage image, Action... actions) {
+	public ActionImageSprite(float x, float y, float w, float h, BufferedImage image, UIAction... actions) {
 		super(x, y, w, h, image);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
-	public ActionImageSprite(float x, float y, float w, float h, KImage image, Action... actions) {
+	public ActionImageSprite(float x, float y, float w, float h, KImage image, UIAction... actions) {
 		super(x, y, w, h, image);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
-	public ActionImageSprite(float w, float h, KVector vector, MovingModel mm, BufferedImage image, ImagePainter dm, Action... actions) {
+	public ActionImageSprite(float w, float h, KVector vector, MovingModel mm, BufferedImage image, ImagePainter dm, UIAction... actions) {
 		super(w, h, vector, mm, image, dm);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
-	public ActionImageSprite(float w, float h, KVector vector, MovingModel mm, KImage image, ImagePainter dm, Action... actions) {
+	public ActionImageSprite(float w, float h, KVector vector, MovingModel mm, KImage image, ImagePainter dm, UIAction... actions) {
 		super(w, h, vector, mm, image, dm);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
-	public ActionImageSprite(float x, float y, float w, float h, BufferedImage image, ImagePainter model, Action... actions) {
+	public ActionImageSprite(float x, float y, float w, float h, BufferedImage image, ImagePainter model, UIAction... actions) {
 		super(x, y, w, h, image, model);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
-	public ActionImageSprite(float x, float y, float w, float h, KImage image, ImagePainter model, Action... actions) {
+	public ActionImageSprite(float x, float y, float w, float h, KImage image, ImagePainter model, UIAction... actions) {
 		super(x, y, w, h, image, model);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
-	public ActionImageSprite(float x, float y, float w, float h, KVector vector, MovingModel mm, BufferedImage image, ImagePainter dm, Action... actions) {
+	public ActionImageSprite(float x, float y, float w, float h, KVector vector, MovingModel mm, BufferedImage image, ImagePainter dm, UIAction... actions) {
 		super(x, y, w, h, vector, mm, image, dm);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
-	public ActionImageSprite(float x, float y, float w, float h, KVector vector, MovingModel mm, KImage image, ImagePainter dm, Action... actions) {
+	public ActionImageSprite(float x, float y, float w, float h, KVector vector, MovingModel mm, KImage image, ImagePainter dm, UIAction... actions) {
 		super(x, y, w, h, vector, mm, image, dm);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
 	@Override
-	public void addAction(Action... actions) {
+	public void addAction(UIAction... actions) {
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
 	@Override
-	public Action[] getActions() {
-		return (Action[]) actions.toArray();
+	public UIAction[] getActions() {
+		return (UIAction[]) actions.toArray();
 	}
 
 	@Override
-	public Action getAction() {
+	public UIAction getAction() {
 		return actions.isEmpty() ? null : actions.get(0);
 	}
 
 	@Override
-	public void setActions(Action... actions) {
-		this.actions = new ArrayList<Action>();
+	public void setActions(UIAction... actions) {
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 

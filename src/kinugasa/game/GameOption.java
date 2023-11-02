@@ -240,6 +240,12 @@ public class GameOption {
 
 	public GameOption(String name) {
 		this.title = name;
+		setWindowLocation(new Point(0, 0));
+		setWindowSize(new Dimension(640, 480));
+		fps = 60;
+		setBackColor(new Color(0, 133, 116));
+		drawSize = 1f;
+		useKeyboard = useMouse = true;
 		INSTANCE = this;
 	}
 

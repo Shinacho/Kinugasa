@@ -18,13 +18,12 @@ package kinugasa.game.field4;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kinugasa.game.system.Actor;
 import kinugasa.game.system.CurrentQuest;
 import kinugasa.game.system.Flag;
 import kinugasa.game.system.FlagStatus;
 import kinugasa.game.system.FlagStorage;
 import kinugasa.game.system.GameSystem;
-import kinugasa.game.system.QuestStorage;
-import kinugasa.game.system.Status;
 
 /**
  * ステータスやゲームシステムと密接に結びついたイベントの発生条件です。
@@ -37,70 +36,70 @@ public enum EventTermType {
 	//TGTのキャラがvalueのアイテムを持っていることを確認する
 	TGT_HAS_ITEM {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
-			List<Status> list = party.stream().filter(p -> p.getName().equals(t.getTargetName())).collect(Collectors.toList());
+		public boolean canExec(List<Actor> party, EventTerm t) {
+			List<Actor> list = party.stream().filter(p -> p.getId().equals(t.getTargetName())).collect(Collectors.toList());
 			if (list.isEmpty()) {
 				return false;
 			}
-			return list.get(0).getItemBag().contains(t.getValue());
+			return list.get(0).getStatus().getItemBag().contains(t.getValue());
 		}
 	},
 	TGT_HASNT_ITEM {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
-			List<Status> list = party.stream().filter(p -> p.getName().equals(t.getTargetName())).collect(Collectors.toList());
+		public boolean canExec(List<Actor> party, EventTerm t) {
+			List<Actor> list = party.stream().filter(p -> p.getId().equals(t.getTargetName())).collect(Collectors.toList());
 			if (list.isEmpty()) {
 				return false;
 			}
-			return !list.get(0).getItemBag().contains(t.getValue());
+			return !list.get(0).getStatus().getItemBag().contains(t.getValue());
 		}
 	},
 	HAS_ITEM_ANY_PC {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
-			return party.stream().map(p -> p.getItemBag()).anyMatch(p -> p.contains(t.getValue()));
+		public boolean canExec(List<Actor> party, EventTerm t) {
+			return party.stream().map(p -> p.getStatus().getItemBag()).anyMatch(p -> p.contains(t.getValue()));
 		}
 	},
 	HASNT_ITEM_ANY_PC {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
-			return party.stream().map(p -> p.getItemBag()).allMatch(p -> !p.contains(t.getValue()));
+		public boolean canExec(List<Actor> party, EventTerm t) {
+			return party.stream().map(p -> p.getStatus().getItemBag()).allMatch(p -> !p.contains(t.getValue()));
 		}
 	},
 	//tgtNameのキャラがいるかどうか
-	PARTY_CONTAINS {
+	PARTY_CONTAINS_BYID {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
-			return party.stream().anyMatch(p -> p.getName().equals(t.getTargetName()));
+		public boolean canExec(List<Actor> party, EventTerm t) {
+			return party.stream().anyMatch(p -> p.getId().equals(t.getTargetName()));
 		}
 	},
-	PARTY_NO_CONTAINS {
+	PARTY_NO_CONTAINS_BYID {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
-			return party.stream().allMatch(p -> !p.getName().equals(t.getTargetName()));
+		public boolean canExec(List<Actor> party, EventTerm t) {
+			return party.stream().allMatch(p -> !p.getId().equals(t.getTargetName()));
 		}
 	},
 	MONEY_IS_OVER {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
+		public boolean canExec(List<Actor> party, EventTerm t) {
 			return GameSystem.getInstance().getMoneySystem().get(t.getTargetName()).getValue() > Integer.parseInt(t.getValue());
 		}
 	},
 	MONEY_IS_ZERO {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
+		public boolean canExec(List<Actor> party, EventTerm t) {
 			return GameSystem.getInstance().getMoneySystem().get(t.getTargetName()).getValue() <= 0;
 		}
 	},
 	PARTY_SIZE_IS {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
+		public boolean canExec(List<Actor> party, EventTerm t) {
 			return party.size() == Integer.parseInt(t.getValue());
 		}
 	},
 	FLG_IS {
 		@Override
-		boolean canExec(List<Status> party, EventTerm t) {
+		boolean canExec(List<Actor> party, EventTerm t) {
 			FlagStorage s = FlagStorage.getInstance();
 			if (s == null) {
 				return false;
@@ -117,7 +116,7 @@ public enum EventTermType {
 	},
 	NO_EXISTS_FLG {
 		@Override
-		boolean canExec(List<Status> party, EventTerm t) {
+		boolean canExec(List<Actor> party, EventTerm t) {
 			FlagStorage s = FlagStorage.getInstance();
 			if (s == null) {
 				return true;
@@ -134,7 +133,7 @@ public enum EventTermType {
 	},
 	EXISTS_FLG {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
+		public boolean canExec(List<Actor> party, EventTerm t) {
 			FlagStorage s = FlagStorage.getInstance();
 			if (s == null) {
 				return false;
@@ -151,17 +150,17 @@ public enum EventTermType {
 	},
 	QUEST_LINE_IS {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
+		public boolean canExec(List<Actor> party, EventTerm t) {
 			return CurrentQuest.getInstance().get(t.getTargetName()).getStage() == Integer.parseInt(t.getValue());
 		}
 	},
 	QUEST_LINE_IS_OVER {
 		@Override
-		public boolean canExec(List<Status> party, EventTerm t) {
+		public boolean canExec(List<Actor> party, EventTerm t) {
 			return CurrentQuest.getInstance().get(t.getTargetName()).getStage() >= Integer.parseInt(t.getValue());
 		}
 	},;
 
-	abstract boolean canExec(List<Status> party, EventTerm t);
+	abstract boolean canExec(List<Actor> party, EventTerm t);
 
 }

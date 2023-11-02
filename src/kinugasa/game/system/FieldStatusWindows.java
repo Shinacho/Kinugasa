@@ -49,18 +49,18 @@ public class FieldStatusWindows extends BasicSprite {
 		for (Status s : status) {
 			List<ProgressBarSprite> p = new ArrayList<>();
 			//表示文字列の生成
-			String text = s.getName() + Text.getLineSep();
+			String text = GameSystem.getInstance().getPCbyID(s.getId()).getVisibleName() + Text.getLineSep();
 			int i = 1;
-			for (String vs : BattleConfig.getVisibleStatus()) {
-				text += "  " + StatusKeyStorage.getInstance().get(vs).getDesc() + ":" + Text.getLineSep();
+			for (StatusKey k : StatusKey.values()) {
+				text += "  " + k.getVisibleName() + ":" + Text.getLineSep();
 				float xx = x + 56;
 				float yy = y + 20 + (18 * i);
 				ProgressBarSprite pp
 						= new ProgressBarSprite(xx, yy,
 								w - 70, 6,
-								(int) s.getEffectedStatus().get(vs).getValue(),
-								(int) s.getEffectedStatus().get(vs).getValue(),
-								(int) s.getEffectedStatus().get(vs).getMax());
+								(int) s.getEffectedStatus().get(k).getValue(),
+								(int) s.getEffectedStatus().get(k).getValue(),
+								(int) s.getEffectedStatus().get(k).getMax());
 //				pp.setVal((int) s.getEffectedStatus().get(vs).getValue());
 				p.add(pp);
 				i++;
@@ -91,18 +91,18 @@ public class FieldStatusWindows extends BasicSprite {
 		for (Status s : status) {
 			List<ProgressBarSprite> p = new ArrayList<>();
 			//表示文字列の生成
-			String text = s.getName() + Text.getLineSep();
+			String text = GameSystem.getInstance().getPCbyID(s.getId()).getVisibleName() + Text.getLineSep();
 			int i = 1;
-			for (String vs : BattleConfig.getVisibleStatus()) {
-				text += "  " + StatusKeyStorage.getInstance().get(vs).getDesc() + ":" + Text.getLineSep();
+			for (StatusKey k : StatusKey.values()) {
+				text += "  " + k.getVisibleName() + ":" + Text.getLineSep();
 				float xx = x + 56;
 				float yy = y + 20 + (18 * i);
 				ProgressBarSprite pp
 						= new ProgressBarSprite(xx, yy,
 								w - 70, 6,
-								(int) s.getEffectedStatus().get(vs).getValue(),
-								(int) s.getEffectedStatus().get(vs).getValue(),
-								(int) s.getEffectedStatus().get(vs).getMax());
+								(int) s.getEffectedStatus().get(k).getValue(),
+								(int) s.getEffectedStatus().get(k).getValue(),
+								(int) s.getEffectedStatus().get(k).getMax());
 //				pp.setVal((int) s.getEffectedStatus().get(vs).getValue());
 				p.add(pp);
 				i++;

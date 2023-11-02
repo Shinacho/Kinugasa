@@ -16,6 +16,7 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.NPCSprite;
 import kinugasa.game.system.GameSystemI18NKeys;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -28,14 +29,14 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
 import kinugasa.game.NoLoopCall;
+import kinugasa.game.system.ActionStorage;
+import kinugasa.game.system.Actor;
 import kinugasa.game.system.EncountInfo;
 import kinugasa.game.system.Flag;
 import kinugasa.game.system.FlagStatus;
 import kinugasa.game.system.FlagStorage;
 import kinugasa.game.system.GameSystem;
 import kinugasa.game.system.Item;
-import kinugasa.game.system.ItemStorage;
-import kinugasa.game.system.PlayerCharacter;
 import kinugasa.game.system.ScriptFormatException;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
@@ -73,7 +74,7 @@ public class FieldEventSystem implements Drawable {
 	//
 	private boolean executing = false;
 	private FieldEvent currentEvent;
-	private List<NPC> watchingPC = new ArrayList<>();
+	private List<NPCSprite> watchingPC = new ArrayList<>();
 	private Node node;
 	private LinkedList<FieldEvent> event = new LinkedList<>();
 	private LinkedList<FieldEvent> prevEvent = new LinkedList<>();
@@ -86,7 +87,8 @@ public class FieldEventSystem implements Drawable {
 		Collections.sort(event);
 		prevEvent = (LinkedList<FieldEvent>) event.clone();
 		this.event = event;
-		if (!event.isEmpty() && event.stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT)) {
+		if (!event.isEmpty()
+				&& event.stream().anyMatch(p -> p.getEventType().toString().startsWith("MANUAL_EVENT"))) {
 			manual = true;
 		}
 		if (event.isEmpty()) {
@@ -144,11 +146,8 @@ public class FieldEventSystem implements Drawable {
 		setEvent(prevEvent);
 	}
 
-	void setItem(String item) {
-		Item i = ItemStorage.getInstance().get(item);
-		if (i == null) {
-			throw new ScriptFormatException("item is null : " + item);
-		}
+	void setItem(String itemID) {
+		Item i = ActionStorage.getInstance().itemOf(itemID);
 		this.item = i;
 	}
 
@@ -157,7 +156,7 @@ public class FieldEventSystem implements Drawable {
 	}
 
 	public Item getItem() {
-		return item == null ? null : item.clone();
+		return item;
 	}
 
 	//誰が持つ？ウインドウの表示
@@ -168,7 +167,7 @@ public class FieldEventSystem implements Drawable {
 		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - (buffer * 2);
 		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
 		List<Text> options = new ArrayList<>();
-		for (PlayerCharacter pc : GameSystem.getInstance().getParty()) {
+		for (Actor pc : GameSystem.getInstance().getParty()) {
 			options.add(new Text(pc.getName() + " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().remainingSize() + "")));
 		}
 		options.add(new Text(I18N.get(GameSystemI18NKeys.諦める)));
@@ -186,7 +185,7 @@ public class FieldEventSystem implements Drawable {
 		if (event == null || event.isEmpty() || reset) {
 			return false;
 		}
-		return event.stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT);
+		return event.stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT_CHECK);
 	}
 
 	void setUserOperation(boolean userOperation) {
@@ -254,13 +253,15 @@ public class FieldEventSystem implements Drawable {
 			return UserOperationRequire.CONTINUE;
 		}
 		if (currentEvent.getEventType() == FieldEventType.END) {
-			if (currentEvent.getTerm() != null && currentEvent.getTerm().stream().allMatch(p -> p.canDoThis(GameSystem.getInstance().getPartyStatus(), currentEvent))) {
+			if (currentEvent.getTerm() != null
+					&& currentEvent.getTerm().stream().allMatch(p -> p.canDoThis(GameSystem.getInstance().getParty(), currentEvent))) {
 				endEvent();
 				return UserOperationRequire.CONTINUE;
 			}
 		}
 		if (currentEvent.getEventType() == FieldEventType.END_AND_RESET_EVENT) {
-			if (currentEvent.getTerm() != null && currentEvent.getTerm().stream().allMatch(p -> p.canDoThis(GameSystem.getInstance().getPartyStatus(), currentEvent))) {
+			if (currentEvent.getTerm() != null
+					&& currentEvent.getTerm().stream().allMatch(p -> p.canDoThis(GameSystem.getInstance().getParty(), currentEvent))) {
 				reset = true;
 				endEvent();
 				reset();
@@ -277,7 +278,7 @@ public class FieldEventSystem implements Drawable {
 		return res;
 	}
 
-	List<NPC> getWatchingPC() {
+	List<NPCSprite> getWatchingPC() {
 		return watchingPC;
 	}
 

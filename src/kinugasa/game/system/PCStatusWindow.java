@@ -17,7 +17,6 @@
 package kinugasa.game.system;
 
 import kinugasa.game.ui.MessageWindow;
-import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.object.BasicSprite;
 
 /**

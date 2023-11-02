@@ -20,7 +20,9 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.image.BufferedImage;
 import kinugasa.game.GraphicsContext;
+import kinugasa.graphics.ImageUtil;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.TimeCounter;
 
@@ -64,6 +66,9 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	private FontModel font;
 	private final static int BORDER_SIZE = 2;
 	private Color cColor = Color.WHITE;
+	private static final float CHARA_IMAGE_W = 235;
+	private static final float CHARA_IMAGE_H = 235;
+	private BufferedImage charaImage;
 
 	public SimpleMessageWindowModel() {
 		font = FontModel.DEFAULT.clone();
@@ -178,6 +183,19 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 				y = (int) (mw.getY() + mw.getHeight() - 12);
 				g2.drawString(nextIcon, x, y);
 			}
+		}
+
+		if (mw.getText().hasImage()) {
+			if (charaImage == null) {
+				charaImage = ImageUtil.resize(mw.getText().getImage(),
+						CHARA_IMAGE_W / mw.getText().getImage().getWidth(),
+						CHARA_IMAGE_H / mw.getText().getImage().getHeight());
+			}
+			x = (int) (mw.getX() + mw.getWidth() - CHARA_IMAGE_W);
+			y = (int) (mw.getY() + mw.getHeight() - CHARA_IMAGE_H);
+			g2.drawImage(charaImage, x, y, null);
+		} else {
+			charaImage = null;
 		}
 
 		g2.dispose();

@@ -18,6 +18,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
@@ -69,7 +70,7 @@ public class BattleMessageWindowSystem implements Drawable {
 	private MessageWindow battleResultW;
 
 	void init() {
-		List<Status> statusList = GameSystem.getInstance().getPartyStatus();
+		List<Actor> statusList = GameSystem.getInstance().getParty();
 		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - 6;
 		float h = (float) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3.66f);
 		cmdW = new BattleCommandMessageWindow(3, (int) messageWindowY, (int) w, (int) h);
@@ -80,7 +81,7 @@ public class BattleMessageWindowSystem implements Drawable {
 				if (text.size() <= 1) {
 					throw new GameSystemException("BMWS target window contents is 0");
 				}
-				super.setText(text); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+				super.setText(text);
 			}
 
 		};
@@ -175,7 +176,7 @@ public class BattleMessageWindowSystem implements Drawable {
 		statusDescW.setPcIdx(pcIdx);
 	}
 
-	void setItemDesc(Status user, Item i) {
+	void setItemDesc(Actor user, Item i) {
 		//アイテムの詳細をサブに表示
 		StringBuilder sb = new StringBuilder();
 		sb.append(i.getVisibleName()).append(Text.getLineSep());
@@ -192,86 +193,148 @@ public class BattleMessageWindowSystem implements Drawable {
 			sb.append(" ").append(i.getDesc());
 			sb.append(Text.getLineSep());
 		}
+		//装備品の場合、スタイルとエンチャを表示
+		if (i.getSlot() != null) {
+			//スタイル
+			if (i.getStyle() != null) {
+				sb.append(I18N.get(GameSystemI18NKeys.様式))
+						.append(":")
+						.append(i.getStyle().getVisibleName())
+						.append("(")
+						.append(i.getStyle().descI18N())
+						.append(")")
+						.append(Text.getLineSep());
+			}
+			//エンチャント
+			if (i.getEnchant() != null) {
+				sb.append(I18N.get(GameSystemI18NKeys.エンチャント))
+						.append(":")
+						.append(i.getEnchant().getVisibleName())
+						.append("(")
+						.append(i.getEnchant().descI18N())
+						.append(")")
+						.append(Text.getLineSep());
+			}
+		}
 		//価値
-		sb.append(" ").append(I18N.get(GameSystemI18NKeys.価値)).append(":").append(i.getValue());
-		sb.append(Text.getLineSep());
+		if (i.canSale()) {
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.価値))
+					.append(":").append(i.getPrice());
+			sb.append(Text.getLineSep());
+		}
 		//装備スロット
-		sb.append(" ").append(I18N.get(GameSystemI18NKeys.装備スロット)).append(":").append(i.getEqipmentSlot() != null
-				? i.getEqipmentSlot().getName()
-				: I18N.get(GameSystemI18NKeys.なし));
-		sb.append(Text.getLineSep());
+		if (i.getSlot() != null) {
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.装備スロット))
+					.append(":").append(i.getSlot().getVisibleName());
+			sb.append(Text.getLineSep());
+		}
 		//WMT
-		if (i.getWeaponMagicType() != null) {
-			sb.append(" ").append(I18N.get(GameSystemI18NKeys.武器種別)).append(":").append(i.getWeaponMagicType().getName());
+		if (i.getWeaponType() != null) {
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.武器種別))
+					.append(":").append(i.getWeaponType().getVisibleName());
 			sb.append(Text.getLineSep());
 		}
 		//area
 		int area = 0;
-		if (i.isEqipItem()) {
+		if (i.isWeapon()) {
 			//範囲表示するのは武器だけ
-			if (i.getWeaponMagicType() != null) {
-				area = i.getArea();
-			}
-		} else {
-			if (i.getBattleEvent() != null && !i.getBattleEvent().isEmpty()) {
-				area = (int) (user.getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
-			}
+			area = i.getArea();
 		}
 		if (area != 0) {
 			sb.append(" ").append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(area);
 			sb.append(Text.getLineSep());
 		}
+		//キーアイテム属性
+		if (!i.canSale()) {
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムは売ったり捨てたり解体したりできない));
+			sb.append(Text.getLineSep());
+		}
 		//DCS
-		if (i.getDamageCalcStatusKey() != null && !i.getDamageCalcStatusKey().isEmpty()) {
-			String dcs = "";
-			for (StatusKey s : i.getDamageCalcStatusKey()) {
-				dcs += s.getDesc() + ",";
-			}
+		if (i.getDcs() != null) {
+			String dcs = i.getDcs().getVisibleName();
 			dcs = dcs.substring(0, dcs.length() - 1);
-			sb.append(" ").append(I18N.get(GameSystemI18NKeys.ダメージ計算方式)).append(":").append(dcs);
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.ダメージ計算ステータス)).append(":").append(dcs);
 			sb.append(Text.getLineSep());
 		}
 		//戦闘中アクション
-		if (i.getBattleEvent() != null && !i.getBattleEvent().isEmpty()) {
+		if (i.isBattle()) {
 			sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムは戦闘中使える));
 			sb.append(Text.getLineSep());
 		}
-		if (i.isEqipItem()) {
+		//フィールドアクション
+		if (i.isField()) {
+			sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムはフィールドで使える));
+			sb.append(Text.getLineSep());
+		}
+		if (i.getSlot() != null) {
+			if (user.getStatus().getEqip().values().contains(i)) {
+				sb.append("[").append(I18N.get(GameSystemI18NKeys.装備中)).append("]");
+				sb.append(Text.getLineSep());
+			}
 			//攻撃回数
-			if (i.getActionCount() > 1) {
-				sb.append(" ").append(I18N.get(GameSystemI18NKeys.攻撃回数).replaceAll("n", i.getActionCount() + ""));
+			if (i.isWeapon() && i.getEffectedATKCount() > 1) {
+				sb.append(" ").append(I18N.get(GameSystemI18NKeys.攻撃回数)).append(":")
+						.append(i.getEffectedATKCount() + "");
 				sb.append(Text.getLineSep());
 			}
 			//eqStatus
-			if (i.getEqStatus() != null && !i.getEqStatus().isEmpty()) {
-				for (StatusValue s : i.getEqStatus()) {
-					if (StatusDescWindow.getUnvisibleStatusList().contains(s.getName())) {
+			sb.append(I18N.get(GameSystemI18NKeys.ステータス));
+			if (i.getEffectedStatus() != null && !i.getEffectedStatus().isEmpty()) {
+				for (StatusValue s : i.getEffectedStatus()) {
+					if (!s.getKey().isVisible()) {
 						continue;
 					}
 					String v;
-					if (s.getKey().getMax() <= 1f) {
+					if (s.getKey().isPercent()) {
 						v = (float) (s.getValue() * 100) + "%";//1%単位
 					} else {
 						v = (int) s.getValue() + "";
 					}
 					if (!v.startsWith("0")) {
 						sb.append(" ");
-						sb.append(s.getKey().getDesc()).append(":").append(v);
+						sb.append(s.getKey().getVisibleName()).append(":").append(v);
 						sb.append(Text.getLineSep());
 					}
 				}
 			}
 			//eqAttr
-			if (i.getEqAttr() != null && !i.getEqAttr().isEmpty()) {
-				for (AttributeValue a : i.getEqAttr()) {
+			sb.append(I18N.get(GameSystemI18NKeys.被属性));
+			sb.append(Text.getLineSep());
+			if (i.getEffectedAttrIn() != null && !i.getEffectedAttrIn().isEmpty()) {
+				for (AttributeValue a : i.getEffectedAttrIn()) {
 					String v = (float) (a.getValue() * 100) + "%";
 					if (!v.startsWith("0")) {
 						sb.append(" ");
-						sb.append(a.getKey().getDesc()).append(":").append(v);
+						sb.append(a.getKey().getVisibleName()).append(":").append(v);
 						sb.append(Text.getLineSep());
 					}
 				}
 			}
+			sb.append(I18N.get(GameSystemI18NKeys.与属性));
+			sb.append(Text.getLineSep());
+			if (i.getEffectedAttrOut() != null && !i.getEffectedAttrOut().isEmpty()) {
+				for (AttributeValue a : i.getEffectedAttrOut()) {
+					String v = (float) (a.getValue() * 100) + "%";
+					if (!v.startsWith("0")) {
+						sb.append(" ");
+						sb.append(a.getKey().getVisibleName()).append(":").append(v);
+						sb.append(Text.getLineSep());
+					}
+				}
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.状態異常耐性));
+			sb.append(Text.getLineSep());
+			if (i.getEffectedConditionRegist() != null && !i.getEffectedConditionRegist().isEmpty()) {
+				for (Map.Entry<ConditionKey, Float> e : i.getEffectedConditionRegist().entrySet()) {
+					String v = (float) (e.getValue() * 100) + "%";
+					if (!v.startsWith("0")) {
+						sb.append(" ");
+						sb.append(e.getKey().getVisibleName()).append(":").append(v);
+						sb.append(Text.getLineSep());
+					}
+				}
+			}
+			sb.append(Text.getLineSep());
 		}
 		itemDescW.setText(sb.toString());
 		itemDescW.allText();
@@ -464,7 +527,6 @@ public class BattleMessageWindowSystem implements Drawable {
 	public static final int ITEM_CHOICE_USE_CHECK = 0;
 	public static final int ITEM_CHOICE_USE_USE = 1;
 	public static final int ITEM_CHOICE_USE_EQIP = 2;
-	public static final int ITEM_CHOICE_USE_PASS = 3;
 	private int itemChoiceUseSelected = -1;
 
 	void openItemChoiceUse() {
@@ -473,10 +535,17 @@ public class BattleMessageWindowSystem implements Drawable {
 		}
 		Item i = (Item) cmdW.getSelectedCmd();
 		List<Text> options = new ArrayList<>();
+		Actor user = BattleSystem.getInstance().getCurrentCmd().getUser();
 		options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
 		options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
-		options.add(new Text(I18N.get(GameSystemI18NKeys.装備)));
-		options.add(new Text(I18N.get(GameSystemI18NKeys.渡す)));
+		if (user.getStatus().getEqip().values().contains(i)) {
+			options.add(new Text(I18N.get(GameSystemI18NKeys.装備解除)));
+		} else {
+			options.add(new Text(I18N.get(GameSystemI18NKeys.装備)));
+		}
+		for (Actor a : BattleSystem.getInstance().getTargetSystem().itemPassTarget(user)) {
+			options.add(new Text(I18N.get(GameSystemI18NKeys.Xに, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.渡す)));
+		}
 		itemChoiceUseW.setText(new Choice(options, "BATTLE_MW_SYSTEM_IUC", I18N.get(GameSystemI18NKeys.Xを, i.getVisibleName())));
 		setVisible(StatusVisible.ON, mode.ITEM_USE_SELECT, InfoVisible.OFF);
 	}

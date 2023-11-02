@@ -238,7 +238,6 @@ public class SpriteSheet {
 		}
 		return result;
 	}
-
 	@Override
 	public String toString() {
 		return "SpriteSheet{" + "baseImage=" + baseImage + ", subImages=" + subImages + '}';

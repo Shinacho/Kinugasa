@@ -16,6 +16,8 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.NPCSprite;
+import kinugasa.game.system.PCSprite;
 import kinugasa.object.FourDirection;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -93,11 +95,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		return debugMode;
 	}
 
-	public static List<PlayerCharacterSprite> getPlayerCharacter() {
+	public static List<PCSprite> getPlayerCharacter() {
 		return playerCharacter;
 	}
 
-	public static void setPlayerCharacter(List<PlayerCharacterSprite> playerCharacter) {
+	public static void setPlayerCharacter(List<PCSprite> playerCharacter) {
 		FieldMap.playerCharacter = playerCharacter;
 	}
 
@@ -106,14 +108,14 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	//------------------------------------------------
 	private BackgroundLayerSprite backgroundLayerSprite; //nullable
 	private List<FieldMapLayerSprite> backlLayeres = new ArrayList<>();
-	private static List<PlayerCharacterSprite> playerCharacter = new ArrayList<>();
+	private static List<PCSprite> playerCharacter = new ArrayList<>();
 	private List<FieldMapLayerSprite> frontlLayeres = new ArrayList<>();
 	private List<FieldAnimationSprite> frontAnimation = new ArrayList<>();
 	private List<BeforeLayerSprite> beforeLayerSprites = new ArrayList<>();
 	//------------------------------------------------
 	private NPCStorage npcStorage = new NPCStorage();
 	private static Map<String, List<String>> removedNPC = new HashMap<>();
-	private static Map<String, List<NPC>> addedNPC = new HashMap<>();
+	private static Map<String, List<NPCSprite>> addedNPC = new HashMap<>();
 	private FieldEventStorage fieldEventStorage;//nullable
 	private NodeStorage nodeStorage = new NodeStorage();
 	private TextStorage textStorage;//nullable
@@ -134,7 +136,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private String enemyStorageName;
 	//
 
-	public static Map<String, List<NPC>> getAddedNPC() {
+	public static Map<String, List<NPCSprite>> getAddedNPC() {
 		return addedNPC;
 	}
 
@@ -223,8 +225,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	}
 
 	public EncountInfo createEncountInfo() {
-		EncountInfo ei = new EncountInfo(bgm, EnemySetStorageStorage.getInstance().get(enemyStorageName), getCurrentTile().get0Attr());
-		return ei;
+		return new EncountInfo(bgm,
+				EnemySetStorageStorage.getInstance().get(enemyStorageName),
+				getCurrentTile().get0Attr());
 	}
 	private static FieldMap currentInstance;
 
@@ -262,7 +265,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 
 		//エンカウントマップの名前
-		enemyStorageName = root.getAttributes().contains("esName") ? root.getAttributes().get("esName").getValue() : null;
+		enemyStorageName = root.getAttributes().contains("ess") 
+				? root.getAttributes().get("ess").getValue() : null;
 
 		//エンカウントカウンターの処理
 		//定義されていない場合はエンカウントしない
@@ -497,7 +501,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				int h = sh;
 				float x = getBaseLayer().getX() + idx.x * chipW;
 				float y = getBaseLayer().getY() + idx.y * chipH;
-				npcStorage.add(new NPC(name, currentIdx, moveModel, v, this, textID, x, y, w, h, idx, anime, initialDir));
+				npcStorage.add(new NPCSprite(name, currentIdx, moveModel, v, this, textID, x, y, w, h, idx, anime, initialDir));
 			}
 			//追加NPCを設定
 			if (addedNPC.containsKey(getName())) {
@@ -522,12 +526,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 						bgm.pause();
 						break;
 					case STOP:
-						SoundStorage.getInstance().stream().filter(p->p.getType()==SoundType.BGM).forEach(p->p.stop());
-						SoundStorage.getInstance().stream().filter(p->p.getType()==SoundType.BGM).forEach(p->p.dispose());
+						SoundStorage.getInstance().stream().filter(p -> p.getType() == SoundType.BGM).forEach(p -> p.stop());
+						SoundStorage.getInstance().stream().filter(p -> p.getType() == SoundType.BGM).forEach(p -> p.dispose());
 						break;
 					case STOP_AND_PLAY:
-						SoundStorage.getInstance().stream().filter(p->p.getType()==SoundType.BGM).forEach(p->p.stop());
-						SoundStorage.getInstance().stream().filter(p->p.getType()==SoundType.BGM).forEach(p->p.dispose());
+						SoundStorage.getInstance().stream().filter(p -> p.getType() == SoundType.BGM).forEach(p -> p.stop());
+						SoundStorage.getInstance().stream().filter(p -> p.getType() == SoundType.BGM).forEach(p -> p.dispose());
 						bgm.load().stopAndPlay();
 						break;
 					default:
@@ -546,9 +550,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		return bgm;
 	}
 
-	private static final Comparator<PlayerCharacterSprite> Y_COMPARATOR = new Comparator<>() {
+	private static final Comparator<PCSprite> Y_COMPARATOR = new Comparator<>() {
 		@Override
-		public int compare(PlayerCharacterSprite o1, PlayerCharacterSprite o2) {
+		public int compare(PCSprite o1, PCSprite o2) {
 			return (int) o1.getY() - (int) o2.getY();
 		}
 
@@ -565,7 +569,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		backlLayeres.forEach(e -> e.draw(g));
 
 		if (playerCharacter != null) {
-			List<PlayerCharacterSprite> list = npcStorage.asList().stream().map(c -> c).collect(Collectors.toList());
+			List<PCSprite> list = npcStorage.asList().stream().map(c -> c).collect(Collectors.toList());
 			list.addAll(playerCharacter);
 			Collections.sort(list, Y_COMPARATOR);
 			list.forEach(v -> v.draw(g));
@@ -678,7 +682,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		D2Idx prevIdx = currentIdx.clone();
 		camera.move();
 		if (!prevIdx.equals(currentIdx)) {
-			//新しいチップに乗った場合、エンカウントカウンターの処理
+			//新しいチップに乗った場合、状態異常の更新
+			GameSystem.getInstance().getParty().stream().forEach(p -> p.getStatus().updateCondition());
+			//エンカウントカウンターの処理
 			int x = 0;
 			for (MapChip c : getCurrentTile().getChip()) {
 				x += c.getAttr().getEncountBaseValue();
@@ -769,7 +775,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		for (FieldMapLayerSprite s : frontlLayeres) {
 			chip.add(s.getChip(idx.x, idx.y));
 		}
-		NPC npc = npcStorage.get(idx);
+		NPCSprite npc = npcStorage.get(idx);
 		List<FieldEvent> event = fieldEventStorage == null ? null : fieldEventStorage.get(idx);
 		Node node = nodeStorage.get(idx);
 
@@ -910,7 +916,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 */
 	public MessageWindow talk() {
 		D2Idx idx = playerDirIdx();
-		NPC n = getTile(idx).getNpc();
+		NPCSprite n = getTile(idx).getNpc();
 		if (n != null) {
 			n.notMove();
 		}

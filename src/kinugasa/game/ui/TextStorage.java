@@ -25,6 +25,7 @@ import kinugasa.game.GameLog;
 import static kinugasa.game.I18N.get;
 import kinugasa.game.field4.FieldEventParser;
 import kinugasa.game.system.GameSystem;
+import kinugasa.graphics.ImageUtil;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.text.FileIOException;
@@ -85,6 +86,9 @@ public class TextStorage extends Storage<Text> implements Nameable {
 			if (e.hasAttribute("eventScript")) {
 				t.setEvents(FieldEventParser.parse(id, e.getAttributes().get("eventScript").getValue()));
 			}
+			if(e.hasAttribute("image")){
+				t.setImage(ImageUtil.load(e.getAttributes().get("image").getValue()));
+			}
 			if (!contains(t)) {
 				add(t);
 			}
@@ -115,6 +119,9 @@ public class TextStorage extends Storage<Text> implements Nameable {
 			}
 			FrameTimeCounter ftc = new FrameTimeCounter(tcvalues);
 			Choice c = new Choice(options, id, value, ftc, 0);
+			if(e.hasAttribute("image")){
+				c.setImage(ImageUtil.load(e.getAttributes().get("image").getValue()));
+			}
 			if (!contains(c)) {
 				add(c);
 			}

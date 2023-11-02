@@ -16,6 +16,8 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.NPCSprite;
+import kinugasa.game.system.PCSprite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -29,7 +31,7 @@ import kinugasa.game.GraphicsContext;
  */
 public class DebugLayerSprite {
 
-	public static void debugDrawPC(GraphicsContext g, List<PlayerCharacterSprite> pcList, D2Idx idx, Point2D.Float base, int chipW, int chipH) {
+	public static void debugDrawPC(GraphicsContext g, List<PCSprite> pcList, D2Idx idx, Point2D.Float base, int chipW, int chipH) {
 		float drawX = base.x + (idx.x * chipW);
 		float drawY = base.y + (idx.y * chipH);
 		Graphics2D g2 = g.create();
@@ -37,7 +39,7 @@ public class DebugLayerSprite {
 		g2.drawRect((int) drawX + 1, (int) drawY + 1, chipW - 2, chipH - 2);
 
 		int i = 1;
-		for (PlayerCharacterSprite c : pcList) {
+		for (PCSprite c : pcList) {
 			g2.setColor(Color.BLUE);
 			D2Idx tgt = c.getTargetIdx();
 			if (tgt != null) {
@@ -51,9 +53,9 @@ public class DebugLayerSprite {
 		g2.dispose();
 	}
 
-	public static void debugDrawNPC(GraphicsContext g, List<NPC> npc, Point2D.Float base, int chipW, int chipH) {
+	public static void debugDrawNPC(GraphicsContext g, List<NPCSprite> npc, Point2D.Float base, int chipW, int chipH) {
 		Graphics2D g2 = g.create();
-		for (NPC n : npc) {
+		for (NPCSprite n : npc) {
 			D2Idx idx = n.getCurrentIdx();
 			float drawX = base.x + (idx.x * chipW);
 			float drawY = base.y + (idx.y * chipH);

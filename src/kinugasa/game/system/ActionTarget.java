@@ -16,145 +16,25 @@
  */
 package kinugasa.game.system;
 
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
-import kinugasa.object.BasicSprite;
-import kinugasa.object.EmptySprite;
-import kinugasa.object.FourDirection;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/01_19:16:09<br>
+ * @vesion 1.0.0 - 2023/10/14_22:12:30<br>
  * @author Shinacho<br>
  */
-public class ActionTarget implements Iterable<Actor> {
+public class ActionTarget {
 
 	private Actor user;
 	private Action action;
-	private boolean inField = false;
-	private List<Actor> target = new ArrayList<>();
-	private boolean selfTarget = false;
+	private List<Actor> tgt;
+	private boolean inField;
 
-	public ActionTarget(Actor user, Action a) {
-		if (user == null) {
-			throw new GameSystemException("battle action result s user is null");
-		}
+	public ActionTarget(Actor user, Action action, List<Actor> tgt, boolean inField) {
 		this.user = user;
-		this.action = a;
-	}
-
-	public static ActionTarget instantTarget(Status user, Action a) {
-		return instantTarget(user, a, new Status[]{});
-	}
-
-	public static ActionTarget instantTarget(Status user, Action a, List<Status> tgt) {
-		boolean userIsPlayer = GameSystem.getInstance().getPartyStatus().contains(user);
-		List<DummyCharacter> target = new ArrayList<>();
-		for (Status s : tgt) {
-			boolean f = GameSystem.getInstance().getPartyStatus().contains(s);
-			target.add(new DummyCharacter(s, f));
-		}
-
-		return new ActionTarget(new DummyCharacter(user, userIsPlayer), a)
-				.setTarget(target.stream().collect(Collectors.toList()));
-	}
-
-	public static ActionTarget instantTarget(Status user, Action a, Status... tgt) {
-		boolean userIsPlayer = GameSystem.getInstance().getPartyStatus().contains(user);
-		List<DummyCharacter> target = new ArrayList<>();
-		for (Status s : tgt) {
-			boolean f = GameSystem.getInstance().getPartyStatus().contains(s);
-			target.add(new DummyCharacter(s, f));
-		}
-
-		return new ActionTarget(new DummyCharacter(user, userIsPlayer), a)
-				.setTarget(target.stream().collect(Collectors.toList()));
-	}
-
-	private static class DummyCharacter implements Actor {
-
-		private Status s;
-		private boolean player;
-
-		public DummyCharacter(Status s, boolean player) {
-			this.s = s;
-			this.player = player;
-		}
-
-		@Override
-		public BasicSprite getSprite() {
-			return new EmptySprite(-123, -123, 1, 1);
-		}
-
-		@Override
-		public Status getStatus() {
-			return s;
-		}
-
-		@Override
-		public void setTargetLocation(Point2D.Float p, int area) {
-		}
-
-		@Override
-		public void unsetTarget() {
-		}
-
-		@Override
-		public boolean isMoving() {
-			return false;
-		}
-
-		@Override
-		public void moveToTgt() {
-		}
-
-		@Override
-		public void move() {
-		}
-
-		@Override
-		public void to(FourDirection dir) {
-		}
-
-		@Override
-		public boolean isPlayer() {
-			return player;
-		}
-
-		@Override
-		public String getId() {
-			return getName();
-		}
-	}
-
-	public ActionTarget setInField(boolean inField) {
+		this.action = action;
+		this.tgt = tgt;
 		this.inField = inField;
-		return this;
-	}
-
-	public ActionTarget setTarget(List< Actor> target) {
-		this.target = new ArrayList(target);
-		return this;
-	}
-
-	public ActionTarget setSelfTarget(boolean f) {
-		this.selfTarget = f;
-		return this;
-	}
-
-	public int getArea() {
-		return action.getAreaWithEqip(user.getStatus());
-	}
-
-	public Point2D.Float centerLocation() {
-		return user.getSprite().getCenter();
-	}
-
-	public boolean isInField() {
-		return inField;
 	}
 
 	public Actor getUser() {
@@ -165,33 +45,17 @@ public class ActionTarget implements Iterable<Actor> {
 		return action;
 	}
 
-	public List<Actor> getTarget() {
-		return target;
+	public List<Actor> getTgt() {
+		return tgt;
 	}
 
-	public boolean hasAnyTargetChara() {
-		return !target.isEmpty();
-	}
-
-	public boolean isSelfEvent() {
-		return selfTarget && action.getBattleEvent().stream().allMatch(p -> p.getTargetType() == TargetType.SELF);
-	}
-
-	@Override
-	public Iterator<Actor> iterator() {
-		return target.iterator();
-	}
-
-	public boolean isEmpty() {
-		if (selfTarget) {
-			return user == null || (target == null || target.isEmpty());//基本入ってる
-		}
-		return target == null || target.isEmpty();
+	public boolean isInField() {
+		return inField;
 	}
 
 	@Override
 	public String toString() {
-		return "BattleActionTarget{" + "user=" + user + ", action=" + action + ", inField=" + inField + ", target=" + target + '}';
+		return "ActionTarget{" + "user=" + user + ", action=" + action + ", tgt=" + tgt + ", inField=" + inField + '}';
 	}
 
 }

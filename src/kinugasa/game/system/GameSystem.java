@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.field4.*;
+import kinugasa.resource.NameNotFoundException;
 
 /**
  * ステータス管理系のマスターです。
@@ -61,37 +62,47 @@ public class GameSystem {
 	//
 	//--------------------------------------------------------------------------
 	//
-	private List<PlayerCharacter> party = new ArrayList();
+	private List<Actor> party = new ArrayList();
 
 	private final MoneySystem moneySystem;
 	;
 	private final BattleSystem battleSystem;
 	private GameMode mode = GameMode.FIELD;
 
-	public void initBattleSystem(List<PlayerCharacter> chara) {
+	public void initBattleSystem(List<Actor> chara) {
 		party = new ArrayList<>(chara);
-		for (int i = 0; i < chara.size(); i++) {
-			chara.get(i).setOrder(i);
-		}
+//		for (int i = 0; i < chara.size(); i++) {
+//			chara.get(i).setOrder(i);
+//		}
 	}
 
-	public void initFieldSystem(List<PlayerCharacter> chara) {
+	public void initFieldSystem(List<Actor> chara) {
+		party = new ArrayList<>(chara);
 		FieldMap.setPlayerCharacter(chara.stream().map(v -> v.getSprite()).collect(Collectors.toList()));
 	}
 
-	public List<PlayerCharacter> getParty() {
+	public List<Actor> getParty() {
 		return party;
 	}
 
 	public void updateParty() {
-		for (PlayerCharacter pc : party) {
+		for (Actor pc : party) {
 			if (!FieldMap.getPlayerCharacter().contains(pc.getSprite())) {
 				FieldMap.getPlayerCharacter().add(pc.getSprite());
 			}
 		}
 	}
 
-	public List<PlayerCharacterSprite> getPartySprite() {
+	public Actor getPCbyID(String id) {
+		for (Actor a : party) {
+			if (a.getId().equals(id)) {
+				return a;
+			}
+		}
+		throw new NameNotFoundException("actor " + id + " is not found");
+	}
+
+	public List<PCSprite> getPartySprite() {
 		return party.stream().map(v -> v.getSprite()).collect(Collectors.toList());
 	}
 
@@ -105,6 +116,11 @@ public class GameSystem {
 
 	private void setMode(GameMode mode) {
 		this.mode = mode;
+	}
+
+	@Deprecated
+	public void setModeOverride(GameMode m) {
+		this.mode = m;
 	}
 
 	private String icon;
@@ -136,6 +152,21 @@ public class GameSystem {
 
 	public Counts getCountSystem() {
 		return Counts.getInstance();
+	}
+
+	private EnchantBag enchantBag = new EnchantBag();
+
+	public EnchantBag getEnchantBag() {
+		return enchantBag;
+	}
+
+	public int getOrder(Actor a) {
+		for (int i = 0; i < party.size(); i++) {
+			if (party.get(i).equals(a)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }

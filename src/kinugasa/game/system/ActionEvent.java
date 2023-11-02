@@ -16,530 +16,757 @@
  */
 package kinugasa.game.system;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import kinugasa.game.GameOption;
-import kinugasa.game.GraphicsContext;
-import static kinugasa.game.system.AnimationMoveType.BEAM_BLACK;
-import static kinugasa.game.system.AnimationMoveType.BEAM_BLACK_THICK;
-import static kinugasa.game.system.AnimationMoveType.BEAM_BLUE;
-import static kinugasa.game.system.AnimationMoveType.BEAM_BLUE_THICK;
-import static kinugasa.game.system.AnimationMoveType.BEAM_GREN;
-import static kinugasa.game.system.AnimationMoveType.BEAM_GREN_THICK;
-import static kinugasa.game.system.AnimationMoveType.BEAM_RED;
-import static kinugasa.game.system.AnimationMoveType.BEAM_RED_THICK;
-import static kinugasa.game.system.AnimationMoveType.BEAM_WHITE;
-import static kinugasa.game.system.AnimationMoveType.BEAM_WHITE_THICK;
-import static kinugasa.game.system.ParameterType.ADD_CONDITION;
-import static kinugasa.game.system.ParameterType.ATTR_IN;
-import static kinugasa.game.system.ParameterType.ITEM_LOST;
-import static kinugasa.game.system.ParameterType.NONE;
-import static kinugasa.game.system.ParameterType.REMOVE_CONDITION;
-import static kinugasa.game.system.ParameterType.STATUS;
-import static kinugasa.game.system.DamageCalcType.DIRECT;
-import static kinugasa.game.system.DamageCalcType.PERCENT_OF_MAX;
-import static kinugasa.game.system.DamageCalcType.PERCENT_OF_NOW;
-import static kinugasa.game.system.DamageCalcType.USE_DAMAGE_CALC;
-import static kinugasa.game.system.ParameterType.ITEM_ADD;
-import kinugasa.graphics.Animation;
-import kinugasa.graphics.GraphicsUtil;
+import kinugasa.game.I18N;
+import static kinugasa.game.system.ActionType.攻撃;
+import static kinugasa.game.system.ActionType.魔法;
 import kinugasa.object.AnimationSprite;
-import kinugasa.object.BasicSprite;
-import kinugasa.object.EmptySprite;
-import kinugasa.object.ImagePainterStorage;
-import kinugasa.object.Sprite;
-import kinugasa.resource.*;
-import kinugasa.resource.db.*;
-import kinugasa.util.FrameTimeCounter;
-import kinugasa.util.MathUtil;
+import kinugasa.resource.Nameable;
+import kinugasa.resource.sound.Sound;
 import kinugasa.util.Random;
 
 /**
  *
- * @vesion 1.0.0 - 2022/12/01_21:23:55<br>
+ * @vesion 1.0.0 - 2023/10/14_14:19:45<br>
  * @author Shinacho<br>
  */
-@DBRecord
-public class ActionEvent implements Comparable<ActionEvent>, Nameable, Cloneable {
+public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 
-	private String id, desc;
-	private TargetType targetType;
-	private ParameterType parameterType;
-	private String tgtName;
-	private AttributeKey attr;
-	private float value;
-	private DamageCalcType damageCalcType;
+	public static class Term implements Nameable {
+
+		public static enum Type {
+			指定の状態異常を持っている,
+			指定の状態異常を持っていない,
+			指定の武器タイプの武器を装備している,
+			指定のアイテムを持っている,
+			指定のアイテムのいずれかを持っている,
+			指定の名前のアイテムを持っている,
+			指定のステータスの現在値が指定の割合以上,
+		}
+		public final String id;
+		public final Type type;
+		public final float value;
+		public final String tgtName;
+
+		public Term(String id, Type type, float value, String tgtName) {
+			this.id = id;
+			this.type = type;
+			this.value = value;
+			this.tgtName = tgtName;
+		}
+
+		public boolean canDo(Status a) {
+			switch (type) {
+				case 指定の状態異常を持っている: {
+					return a.getCurrentConditions().containsKey(ConditionKey.valueOf(tgtName));
+				}
+				case 指定の状態異常を持っていない: {
+					return !a.getCurrentConditions().containsKey(ConditionKey.valueOf(tgtName));
+				}
+				case 指定の武器タイプの武器を装備している: {
+					if (a.getEqip().get(EqipSlot.右手) != null) {
+						if (a.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.valueOf(tgtName)) {
+							return true;
+						}
+					}
+					if (a.getEqip().get(EqipSlot.左手) != null) {
+						if (a.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.valueOf(tgtName)) {
+							return true;
+						}
+					}
+					return false;
+				}
+				case 指定のアイテムを持っている: {
+					return a.getItemBag().contains(tgtName);
+				}
+				case 指定のアイテムのいずれかを持っている: {
+					String[] ids = tgtName.contains(",") ? tgtName.split(",") : new String[]{tgtName};
+					for (String id : ids) {
+						if (a.getItemBag().contains(id)) {
+							return true;
+						}
+					}
+					return false;
+				}
+				case 指定の名前のアイテムを持っている: {
+					return a.getItemBag().getItems().stream().anyMatch(p -> p.getVisibleName().contains(tgtName));
+				}
+				case 指定のステータスの現在値が指定の割合以上: {
+					return a.getEffectedStatus().get(StatusKey.valueOf(tgtName)).get割合() >= value;
+				}
+				default:
+					throw new AssertionError("undefined term type : " + type);
+			}
+		}
+
+		@Deprecated
+		@Override
+		public String getName() {
+			return id;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+	}
+
+	public enum CalcMode {
+		MUL,
+		ADD,
+		TO,
+		TO_ZERO,
+		TO_MAX,
+		DC;
+
+		public String getVisibleName() {
+			return I18N.get(toString());
+		}
+	}
+
+	public enum EventType {
+		ステータス攻撃,
+		ステータス回復,
+		ATTR_IN,
+		ATTR_OUT,
+		CND_REGIST,
+		状態異常付与,
+		状態異常解除,
+		アイテム追加,
+		アイテムロスト,
+		独自効果,;
+
+		public String getVisibleName() {
+			return I18N.get(toString());
+		}
+	}
+
+	private String id;
+	private int sort;
+	private EventType type;
+	private List<Term> terms = new ArrayList<>();
+	private StatusKey tgtStatusKey;
 	private float p;
-	private float spread;
-	private Animation animation;
-	private AnimationMoveType animationMoveType = AnimationMoveType.TGT;
-	private boolean battle, field;
-
-	@Override
-	public String getName() {
-		return id;
-	}
-
-	public boolean isBattle() {
-		return battle;
-	}
-
-	public void setBattle(boolean battle) {
-		this.battle = battle;
-	}
-
-	public boolean isField() {
-		return field;
-	}
-
-	public void setField(boolean field) {
-		this.field = field;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
+	private ConditionKey tgtConditionKey;
+	private int cndTime;
+	private AttributeKey atkAttr;
+	private AttributeKey tgtAttrKeyOut;
+	private AttributeKey tgtAttrKeyIn;
+	private ConditionKey tgtCndRegist;
+	private String tgtItemID;
+	private boolean noLimit;
+	private float value;
+	private CalcMode calcMode;
+	private Sound successSound;
+	private AnimationSprite tgtAnimation, otherAnimation;
 
 	public ActionEvent(String id) {
 		this.id = id;
 	}
 
-	public ActionEvent(String id, TargetType tt, ParameterType pt) {
-		this.id = id;
-		this.targetType = tt;
-		this.parameterType = pt;
+	//Actorごとに呼び出される。このアクションイベントを実行してイベントリザルトを戻す
+	public ActionResult.EventResult exec(Actor user, Action a, Actor tgt) {
+		if (!Random.percent(p)) {
+			return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
+		}
+		StatusValueSet tgtStatus = tgt.getStatus().getEffectedStatus();
+		tgt.getStatus().saveBeforeDamageCalc();
+		switch (type) {
+			case 独自効果: {
+				throw new GameSystemException("custom action event, but exec is not overrided : " + this);
+			}
+			case ステータス攻撃: {
+				if (tgtStatusKey == null) {
+					throw new GameSystemException("status damage, but status key is null : " + this);
+				}
+				float value = this.value;
+				float prev = tgtStatus.get(tgtStatusKey).getValue();
+				switch (calcMode) {
+					case ADD: {
+						if (noLimit) {
+							tgt.getStatus().getBaseStatus().get(tgtStatusKey).addMax(value);
+						}
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).add(value);
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case MUL: {
+						if (noLimit) {
+							tgt.getStatus().getBaseStatus().get(tgtStatusKey).mulMax(value);
+						}
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).mul(value);
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case TO: {
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).setValue(value);
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case TO_MAX: {
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).toMax();
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case TO_ZERO: {
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).toZero();
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case DC: {
+						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+							throw new GameSystemException("damage calc is cant exec in field : " + this);
+						}
+						//攻撃タイプ調整
+						DamageCalcSystem.ActionType actionType
+								= switch (a.getType()) {
+							case 攻撃 ->
+								DamageCalcSystem.ActionType.物理攻撃;
+							case 魔法 ->
+								DamageCalcSystem.ActionType.魔法攻撃;
+							default ->
+								throw new AssertionError("damage calc cant exec : " + this);
+						};
+
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+							if (i == null) {
+								dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+							}
+						}
+						//ダメージ計算実行
+						DamageCalcSystem.Result r
+								= DamageCalcSystem.calcDamage(
+										new DamageCalcSystem.Param(
+												user,
+												tgt,
+												atkAttr,
+												actionType,
+												value,
+												tgtStatusKey,
+												dcs)
+								);
+
+						//r評価
+						return convert(r);
+					}
+					default:
+						throw new AssertionError("undefined calc mode");
+				}//switch
+			}
+			case ステータス回復: {
+				if (tgtStatusKey == null) {
+					throw new GameSystemException("status heal, but status key is null : " + this);
+				}
+				float value = this.value;
+				float prev = tgtStatus.get(tgtStatusKey).getValue();
+				switch (calcMode) {
+					case ADD: {
+						if (noLimit) {
+							tgt.getStatus().getBaseStatus().get(tgtStatusKey).addMax(value);
+						}
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).add(value);
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case MUL: {
+						if (noLimit) {
+							tgt.getStatus().getBaseStatus().get(tgtStatusKey).mulMax(value);
+						}
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).mul(value);
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case TO: {
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).setValue(value);
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case TO_MAX: {
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).toMax();
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case TO_ZERO: {
+						tgt.getStatus().getBaseStatus().get(tgtStatusKey).toZero();
+						return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt);
+					}
+					case DC: {
+						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+							throw new GameSystemException("damage calc is cant exec in field : " + this);
+						}
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						//攻撃タイプ調整
+						DamageCalcSystem.ActionType actionType
+								= switch (a.getType()) {
+							case 攻撃 ->
+								DamageCalcSystem.ActionType.物理回復;
+							case 魔法 ->
+								DamageCalcSystem.ActionType.魔法回復;
+							default ->
+								throw new AssertionError("damage calc cant exec : " + this);
+						};
+
+						//ダメージ計算実行
+						DamageCalcSystem.Result r
+								= DamageCalcSystem.calcDamage(
+										new DamageCalcSystem.Param(
+												user,
+												tgt,
+												atkAttr,
+												actionType,
+												value,
+												tgtStatusKey,
+												dcs)
+								);
+
+						//r評価
+						return convert(r);
+					}
+					default:
+						throw new AssertionError("undefined calc mode");
+				}//switch
+			}
+			case CND_REGIST: {
+				if (this.tgtCndRegist == null) {
+					throw new GameSystemException("tgt cndRegist is null" + this);
+				}
+				float v = tgt.getStatus().getConditionRegist().get(tgtCndRegist);
+				tgt.getStatus().getConditionRegist().put(tgtCndRegist, v + value);
+				return getResult(true, tgt);
+			}
+			case ATTR_IN: {
+				if (this.tgtAttrKeyIn == null) {
+					throw new GameSystemException("tgt attr_in is null" + this);
+				}
+				tgt.getStatus().getAttrIn().get(tgtAttrKeyOut).add(value);
+				return getResult(true, tgt);
+			}
+			case ATTR_OUT: {
+				if (this.tgtAttrKeyOut == null) {
+					throw new GameSystemException("tgt attr_out is null" + this);
+				}
+				tgt.getStatus().getAttrOut().get(tgtAttrKeyOut).add(value);
+				return getResult(true, tgt);
+			}
+			case 状態異常付与: {
+				if (this.tgtConditionKey == null) {
+					throw new GameSystemException("tgt cnd is null" + this);
+				}
+				String msg = tgt.getStatus().addCondition(tgtConditionKey, cndTime);
+				ActionResult.EventResult r = getResult(msg != null, tgt);
+				r.msgI18Nd = msg;
+				return r;
+			}
+			case 状態異常解除: {
+				if (this.tgtConditionKey == null) {
+					throw new GameSystemException("tgt cnd is null" + this);
+				}
+				String msg = tgt.getStatus().removeCondition(tgtConditionKey);
+				ActionResult.EventResult r = getResult(msg != null, tgt);
+				r.msgI18Nd = msg;
+				return r;
+			}
+			case アイテム追加: {
+				if (tgtItemID == null) {
+					throw new GameSystemException("tgt item id is null : " + this);
+				}
+				Item i = ActionStorage.getInstance().itemOf(id);
+				if (i == null) {
+					throw new GameSystemException("tgt item is null : " + this);
+				}
+				if (noLimit || tgt.getStatus().getItemBag().canAdd()) {
+					tgt.getStatus().getItemBag().add(i);
+				}
+				ActionResult.EventResult ae = new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
+				if (this.otherAnimation != null) {
+					ae.otherAnimation = this.otherAnimation.clone();
+				}
+				if (this.tgtAnimation != null) {
+					ae.tgtAnimation = this.tgtAnimation.clone();
+				}
+				if (successSound != null) {
+					successSound.load().stopAndPlay();
+				}
+				return ae;
+			}
+			case アイテムロスト: {
+				if (tgtItemID == null) {
+					throw new GameSystemException("tgt item id is null : " + this);
+				}
+				Item i = ActionStorage.getInstance().itemOf(id);
+				if (i == null) {
+					throw new GameSystemException("tgt item is null : " + this);
+				}
+				if (tgt.getStatus().getItemBag().contains(i)) {
+					tgt.getStatus().getItemBag().drop(i);
+				}
+				ActionResult.EventResult ae = new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
+				if (this.otherAnimation != null) {
+					ae.otherAnimation = this.otherAnimation.clone();
+				}
+				if (this.tgtAnimation != null) {
+					ae.tgtAnimation = this.tgtAnimation.clone();
+				}
+				if (successSound != null) {
+					successSound.load().stopAndPlay();
+				}
+				return ae;
+			}
+			default:
+				throw new AssertionError("undefined event type : " + this);
+		}
+
 	}
 
-	public void setTargetType(TargetType targetType) {
-		this.targetType = targetType;
+	private ActionResult.EventResult getResult(boolean is成功, Actor tgt) {
+		if (is成功) {
+			tgt.getStatus().addWhen0Condition();
+			ActionResult.EventResult er = new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
+			//ERへのアニメーションなどのセット
+			if (this.tgtAnimation != null) {
+				er.tgtAnimation = this.tgtAnimation.clone();
+				er.tgtAnimation.setLocationByCenter(tgt.getSprite().getCenter());
+				er.tgtAnimation.getAnimation().setRepeat(false);
+			}
+			if (this.otherAnimation != null) {
+				er.otherAnimation = this.otherAnimation.clone();
+				er.otherAnimation.setLocation(0, 0);
+				er.otherAnimation.getAnimation().setRepeat(false);
+			}
+			StatusValueSet tgtVs = tgt.getStatus().getDamageFromSavePoint();
+			if (tgtVs.contains(StatusKey.体力)) {
+				er.tgtDamageHp = (int) tgtVs.get(StatusKey.体力).getValue();
+			}
+			if (tgtVs.contains(StatusKey.魔力)) {
+				er.tgtDamageMp = (int) tgtVs.get(StatusKey.魔力).getValue();
+			}
+			if (tgtVs.contains(StatusKey.正気度)) {
+				er.tgtDamageSAN = (int) tgtVs.get(StatusKey.正気度).getValue();
+			}
+			er.tgtIsDead = tgt.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊);
+			if (successSound != null) {
+				successSound.load().stopAndPlay();
+			}
+			return er;
+		}
+		return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿計算結果０, this);
 	}
 
-	public void setParameterType(ParameterType parameterType) {
-		this.parameterType = parameterType;
+	private ActionResult.EventResult convert(DamageCalcSystem.Result r) {
+		r.param.tgt.getStatus().addWhen0Condition();
+		ActionResult.EventResult er = new ActionResult.EventResult(
+				r.param.tgt,
+				r.summary,
+				this);
+		//ERへのアニメーションなどのセット
+		if (r.summary == ActionResultSummary.成功
+				|| r.summary == ActionResultSummary.成功＿クリティカル
+				|| r.summary == ActionResultSummary.成功＿ブロックされたが１以上) {
+			if (this.tgtAnimation != null) {
+				er.tgtAnimation = this.tgtAnimation.clone();
+				er.tgtAnimation.setLocationByCenter(r.param.tgt.getSprite().getCenter());
+				er.tgtAnimation.getAnimation().setRepeat(false);
+			}
+			if (this.otherAnimation != null) {
+				er.otherAnimation = this.otherAnimation.clone();
+				er.otherAnimation.setLocation(0, 0);
+				er.otherAnimation.getAnimation().setRepeat(false);
+			}
+			StatusValueSet tgtVs = r.param.tgt.getStatus().getDamageFromSavePoint();
+			if (tgtVs.contains(StatusKey.体力)) {
+				er.tgtDamageHp = (int) tgtVs.get(StatusKey.体力).getValue();
+			}
+			if (tgtVs.contains(StatusKey.魔力)) {
+				er.tgtDamageMp = (int) tgtVs.get(StatusKey.魔力).getValue();
+			}
+			if (tgtVs.contains(StatusKey.正気度)) {
+				er.tgtDamageSAN = (int) tgtVs.get(StatusKey.正気度).getValue();
+			}
+			er.tgtIsDead = r.param.tgt.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊);
+			if (successSound != null) {
+				successSound.load().stopAndPlay();
+			}
+		}
+		return er;
 	}
 
-	public void setTgtName(String tgtName) {
-		this.tgtName = tgtName;
+	//このイベントの情報を返す
+	public String getDescI18Nd() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getEventType().getVisibleName()).append(":").append(type.getVisibleName());
+
+		switch (type) {
+			case ATTR_IN: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs(value) * 100 + "%");
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(tgtAttrKeyIn.getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case ATTR_OUT: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs(value) * 100 + "%");
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(tgtAttrKeyOut.getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case CND_REGIST: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs(value) * 100 + "%");
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(tgtCndRegist.getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case アイテムロスト: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(ActionStorage.getInstance().itemOf(tgtItemID).getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case アイテム追加: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(ActionStorage.getInstance().itemOf(tgtItemID).getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case ステータス回復: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.基礎威力)).append(":").append((int) Math.abs(value));
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(getTgtStatusKey().getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.属性)).append(":").append(getAtkAttr().getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case ステータス攻撃: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.基礎威力)).append(":").append((int) Math.abs(value));
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(getTgtStatusKey().getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.属性)).append(":").append(getAtkAttr().getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case 状態異常付与: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(getTgtConditionKey().getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case 状態異常解除: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(getTgtConditionKey().getVisibleName());
+				sb.append(", ");
+				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case 独自効果: {
+				sb.append(I18N.get(GameSystemI18NKeys.不明な効果));
+				break;
+			}
+		}
+
+		return sb.toString();
 	}
 
-	public void setAttr(AttributeKey attr) {
-		this.attr = attr;
+	ActionEvent setEventType(EventType type) {
+		this.type = type;
+		return this;
 	}
 
-	public void setValue(float value) {
-		this.value = value;
+	ActionEvent setTerms(List<Term> terms) {
+		this.terms = terms;
+		return this;
 	}
 
-	public void setDamageCalcType(DamageCalcType damageCalcType) {
-		this.damageCalcType = damageCalcType;
+	ActionEvent setAtkAttr(AttributeKey atkAttr) {
+		this.atkAttr = atkAttr;
+		return this;
 	}
 
-	public void setP(float p) {
+	ActionEvent setTgtStatusKey(StatusKey tgtStatusKey) {
+		this.tgtStatusKey = tgtStatusKey;
+		return this;
+	}
+
+	ActionEvent setP(float p) {
 		this.p = p;
+		return this;
 	}
 
-	public void setSpread(float spread) {
-		this.spread = spread;
+	ActionEvent setTgtItemID(String tgtItemID) {
+		this.tgtItemID = tgtItemID;
+		return this;
 	}
 
-	public void setAnimation(Animation animation) {
-		this.animation = animation;
+	ActionEvent setTgtConditionKey(ConditionKey tgtConditionKey) {
+		this.tgtConditionKey = tgtConditionKey;
+		return this;
 	}
 
-	public void setAnimationMoveType(AnimationMoveType animationMoveType) {
-		this.animationMoveType = animationMoveType;
+	ActionEvent setTgtAttrKeyOut(AttributeKey tgtAttrKeyOut) {
+		this.tgtAttrKeyOut = tgtAttrKeyOut;
+		return this;
 	}
 
-	public TargetType getTargetType() {
-		return targetType;
+	ActionEvent setTgtAttrKeyin(AttributeKey tgtAttrKeyin) {
+		this.tgtAttrKeyIn = tgtAttrKeyin;
+		return this;
 	}
 
-	public ParameterType getParameterType() {
-		return parameterType;
+	ActionEvent setValue(float value) {
+		this.value = value;
+		return this;
 	}
 
-	public String getTgtName() {
-		return tgtName;
+	ActionEvent setCalcMode(CalcMode calcMode) {
+		this.calcMode = calcMode;
+		return this;
 	}
 
-	public AttributeKey getAttr() {
-		return attr;
+	ActionEvent setCndTime(int time) {
+		this.cndTime = time;
+		return this;
 	}
 
-	public float getValue() {
-		return value;
+	ActionEvent setSuccessSound(Sound successSound) {
+		this.successSound = successSound;
+		return this;
 	}
 
-	public DamageCalcType getDamageCalcType() {
-		return damageCalcType;
+	ActionEvent setTgtAnimation(AnimationSprite tgtAnimation) {
+		this.tgtAnimation = tgtAnimation;
+		return this;
+	}
+
+	ActionEvent setOtherAnimation(AnimationSprite otherAnimation) {
+		this.otherAnimation = otherAnimation;
+		return this;
+	}
+
+	ActionEvent setNoLimit(boolean s) {
+		this.noLimit = s;
+		return this;
+	}
+
+	ActionEvent setSort(int sort) {
+		this.sort = sort;
+		return this;
+	}
+
+	ActionEvent setCndRegist(ConditionKey r) {
+		this.tgtCndRegist = r;
+		return this;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public int getCndTime() {
+		return cndTime;
+	}
+
+	public ConditionKey getTgtCndRegist() {
+		return tgtCndRegist;
+	}
+
+	public EventType getEventType() {
+		return type;
+	}
+
+	public boolean isNoLimit() {
+		return noLimit;
+	}
+
+	public AttributeKey getAtkAttr() {
+		return atkAttr;
+	}
+
+	public String getTgtItemID() {
+		return tgtItemID;
+	}
+
+	public List<Term> getTerms() {
+		return terms;
+	}
+
+	public StatusKey getTgtStatusKey() {
+		return tgtStatusKey;
 	}
 
 	public float getP() {
 		return p;
 	}
 
-	public float getSpread() {
-		return spread;
+	public ConditionKey getTgtConditionKey() {
+		return tgtConditionKey;
 	}
 
-	public AnimationMoveType getAnimationMoveType() {
-		return animationMoveType;
+	public AttributeKey getTgtAttrOut() {
+		return tgtAttrKeyOut;
 	}
 
-	//この実行はダメージ計算式を使用しない
-	//ターゲットシステムによりAREA内の正しい敵が入っている前提。
-	//FIELDターゲットの成否は、RESULTから取れる。アクションのDESCを表示できる。
-	public ActionEventResult exec(ActionTarget tgt) {
-		//フィールドモードの場合、アニメーションは無視される。
-		//すべてのtgtに対して行う。その結果をTypeとして返す
+	public AttributeKey getTgtAttrIn() {
+		return tgtAttrKeyIn;
+	}
 
-		ActionEventResult result = new ActionEventResult();
-		//セルフイベントの場合
-		if (targetType == TargetType.SELF) {			//P判定
-			if (!Random.percent(p)) {
-				if (GameSystem.isDebugMode()) {
-					kinugasa.game.GameLog.print(this + " is no exec(P)");
-				}
-				result.addResultTypePerTgt(ActionResultType.MISS);
-				return result;
-			}
-			Actor c = tgt.getUser();
-			//実行可能
-			switch (parameterType) {
-				case NONE:
-					result.addResultTypePerTgt(ActionResultType.SUCCESS);
-					break;
-				case ADD_CONDITION:
-					c.getStatus().addCondition(tgtName);
-					result.addResultTypePerTgt(ActionResultType.SUCCESS);
-					break;
-				case ATTR_IN:
-					switch (damageCalcType) {
-						case DIRECT:
-							c.getStatus().getBaseAttrIn().get(tgtName).add(value);
-							break;
-						case PERCENT_OF_MAX:
-							float v1 = c.getStatus().getBaseAttrIn().get(tgtName).getMax() * value;
-							c.getStatus().getBaseAttrIn().get(tgtName).set(v1);
-							break;
-						case PERCENT_OF_NOW:
-							float v2 = c.getStatus().getBaseAttrIn().get(tgtName).getValue() * value;
-							c.getStatus().getBaseAttrIn().get(tgtName).set(v2);
-							break;
-						//ATTR_INではダメージ計算式は使えない
-						case USE_DAMAGE_CALC:
-							throw new GameSystemException("cant user damage calc model " + this);
-						default:
-							throw new AssertionError("undefined damageCalcType " + this);
-					}
-					result.addResultTypePerTgt(ActionResultType.SUCCESS);
-					if (hasAnimation()) {
-						result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
-					}
-					break;
-				case ITEM_ADD:
-					break;
-				case ITEM_LOST:
-					break;
-				case REMOVE_CONDITION:
-					c.getStatus().removeCondition(tgtName);
-					result.addResultTypePerTgt(ActionResultType.SUCCESS);
-					break;
-				case STATUS:
-					switch (damageCalcType) {
-						case DIRECT:
-							c.getStatus().getBaseStatus().get(tgtName).add(value);
-							result.addResultTypePerTgt(ActionResultType.SUCCESS);
-							if (hasAnimation()) {
-								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
-							}
-							break;
-						case PERCENT_OF_MAX:
-							float v3 = c.getStatus().getBaseStatus().get(tgtName).getMax() * value;
-							c.getStatus().getBaseStatus().get(tgtName).set(v3);
-							result.addResultTypePerTgt(ActionResultType.SUCCESS);
-							if (hasAnimation()) {
-								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
-							}
-							break;
-						case PERCENT_OF_NOW:
-							float v4 = c.getStatus().getBaseStatus().get(tgtName).getValue() * value;
-							c.getStatus().getBaseStatus().get(tgtName).set(v4);
-							result.addResultTypePerTgt(ActionResultType.SUCCESS);
-							if (hasAnimation()) {
-								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
-							}
-							break;
-						case USE_DAMAGE_CALC:
-							result.add(StatusDamageCalcModelStorage.getInstance().getCurrent().exec(tgt.getUser(), this, c));
-							break;
-						default:
-							throw new AssertionError("undefined damageCalcType " + this);
-					}
-					break;
-				default:
-					throw new AssertionError("indefined parameter type " + this);
+	public float getValue() {
+		return value;
+	}
 
-			}
-			return result;
-		}
+	public CalcMode getCalcMode() {
+		return calcMode;
+	}
 
-		//tt != FIELD,ターゲットタイプに基づくターゲットが引数に入っている前提。
-		for (Actor c : tgt) {
-			//P判定
-			if (!Random.percent(p)) {
-				if (GameSystem.isDebugMode()) {
-					kinugasa.game.GameLog.print(this + " is no exec(P)");
-				}
-				result.addResultTypePerTgt(ActionResultType.MISS);
-				continue;
-			}
-			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.print("ACTION:" + c.getName() + ":" + parameterType + ":" + damageCalcType + ":" + tgtName + ":" + value);
-			}
+	public Sound getSuccessSound() {
+		return successSound;
+	}
 
-			//実行可能
-			switch (parameterType) {
-				case NONE:
-					result.addResultTypePerTgt(ActionResultType.SUCCESS);
-					break;
-				case ADD_CONDITION:
-					c.getStatus().addCondition(tgtName);
-					result.addResultTypePerTgt(ActionResultType.SUCCESS);
-					break;
-				case ATTR_IN:
-					switch (damageCalcType) {
-						case DIRECT:
-							c.getStatus().getBaseAttrIn().get(tgtName).add(value);
-							break;
-						case PERCENT_OF_MAX:
-							float v1 = c.getStatus().getBaseAttrIn().get(tgtName).getMax() * value;
-							c.getStatus().getBaseAttrIn().get(tgtName).set(v1);
-							break;
-						case PERCENT_OF_NOW:
-							float v2 = c.getStatus().getBaseAttrIn().get(tgtName).getValue() * value;
-							c.getStatus().getBaseAttrIn().get(tgtName).set(v2);
-							break;
-						//ATTR_INではダメージ計算式は使えない
-						case USE_DAMAGE_CALC:
-							throw new GameSystemException("cant user damage calc model " + this);
-						default:
-							throw new AssertionError("undefined damageCalcType " + this);
-					}
-					result.addResultTypePerTgt(ActionResultType.SUCCESS);
-					if (hasAnimation()) {
-						result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
-					}
-					break;
-				case ITEM_LOST:
-				case ITEM_ADD:
-					//アイテムロストは使用側で実施すること
-//					if (targetType == TargetType.SELF) {
-//						tgt.getUser().getStatus().getItemBag().drop(tgtName);
-//					} else {
-//						c.getStatus().getItemBag().drop(tgtName);
-//					}
-//					result.addResultTypePerTgt(ActionResultType.SUCCESS);
-					break;
-				case REMOVE_CONDITION:
-					c.getStatus().removeCondition(tgtName);
-					result.addResultTypePerTgt(ActionResultType.SUCCESS);
-					break;
-				case STATUS:
-					switch (damageCalcType) {
-						case DIRECT:
-							c.getStatus().getBaseStatus().get(tgtName).add(value);
-							result.addResultTypePerTgt(ActionResultType.SUCCESS);
-							if (hasAnimation()) {
-								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
-							}
-							break;
-						case PERCENT_OF_MAX:
-							float v3 = c.getStatus().getBaseStatus().get(tgtName).getMax() * value;
-							c.getStatus().getBaseStatus().get(tgtName).set(v3);
-							result.addResultTypePerTgt(ActionResultType.SUCCESS);
-							if (hasAnimation()) {
-								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
-							}
-							break;
-						case PERCENT_OF_NOW:
-							float v4 = c.getStatus().getBaseStatus().get(tgtName).getValue() * value;
-							c.getStatus().getBaseStatus().get(tgtName).set(v4);
-							result.addResultTypePerTgt(ActionResultType.SUCCESS);
-							if (hasAnimation()) {
-								result.addAnimation(createAnimationSprite(tgt.getUser().getCenter(), c.getCenter()));
-							}
-							break;
-						case USE_DAMAGE_CALC:
-							result.add(StatusDamageCalcModelStorage.getInstance().getCurrent().exec(tgt.getUser(), this, c));
-							break;
-						default:
-							throw new AssertionError("undefined damageCalcType " + this);
-					}
-					break;
-				default:
-					throw new AssertionError("indefined parameter type " + this);
+	public AnimationSprite getTgtAnimation() {
+		return tgtAnimation;
+	}
 
-			}
-		}
+	public AnimationSprite getOtherAnimation() {
+		return otherAnimation;
+	}
 
-		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.print("ACTION RESULT:" + result);
-		}
-		return result;
+	public int getSort() {
+		return sort;
 	}
 
 	@Deprecated
-	public Animation getAnimation() {
-		return animation;
-	}
-
-	public boolean hasAnimation() {
-		return animationMoveType != null;
-	}
-
-	public AnimationSprite createAnimationSprite(Point2D.Float user, Point2D.Float tgt) {
-		if (animationMoveType.toString().contains("BEAM")) {
-			final float widthBase = switch (animationMoveType) {
-				case BEAM_WHITE, BEAM_BLACK, BEAM_BLUE, BEAM_GREN, BEAM_RED ->
-					3f;
-				case BEAM_WHITE_THICK, BEAM_BLACK_THICK, BEAM_BLUE_THICK, BEAM_GREN_THICK, BEAM_RED_THICK ->
-					8f;
-				default ->
-					throw new AssertionError("ActionEvent " + this + " undefined animation move type : " + animationMoveType);
-			};
-			final Color color = switch (animationMoveType) {
-				case BEAM_WHITE, BEAM_WHITE_THICK ->
-					GraphicsUtil.transparent(Color.WHITE, 128);
-				case BEAM_BLACK, BEAM_BLACK_THICK ->
-					GraphicsUtil.transparent(Color.BLACK, 128);
-				case BEAM_BLUE, BEAM_BLUE_THICK ->
-					GraphicsUtil.transparent(Color.BLUE, 128);
-				case BEAM_GREN, BEAM_GREN_THICK ->
-					GraphicsUtil.transparent(Color.GREEN, 128);
-				case BEAM_RED, BEAM_RED_THICK ->
-					GraphicsUtil.transparent(Color.RED, 128);
-				default ->
-					throw new AssertionError("ActionEvent " + this + " undefined animation move type : " + animationMoveType);
-			};
-
-			List<Sprite> sp = new ArrayList<>();
-			final int max = 64;
-			for (int i = 0; i < max; i++) {
-				final int w = i;
-				sp.add(new BasicSprite(
-						0, 0,
-						GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize(),
-						GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize()) {
-
-					Point2D.Float p1 = (Point2D.Float) user.clone();
-					Point2D.Float p2 = (Point2D.Float) tgt.clone();
-
-					@Override
-					public void draw(GraphicsContext g) {
-						Graphics2D g2 = g.create();
-						g2.setColor(color);
-						g2.setStroke(new BasicStroke(Random.randomFloat() + widthBase));
-						g2.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
-						g2.dispose();
-					}
-				});
-			}
-			Animation a = Animation.of(new FrameTimeCounter(4), sp);
-			a.setRepeat(false);
-			return new AnimationSprite(a);//0の場合出ない。
-		}
-		if (animation == null) {
-			return new AnimationSprite();
-		}
-		Animation a = animation.clone();
-		AnimationSprite s = new AnimationSprite(animation) {
-			final Rectangle2D.Float tgtR = new EmptySprite(tgt.x, tgt.y, 32, 32).getBounds();
-
-			@Override
-			public void update() {
-				super.update();
-				if (getSpeed() != 0) {
-					if (tgtR.contains(getCenter())) {
-						getAnimation().setStop(true);
-						setVisible(false);
-					}
-				} else {
-					if (a.isEnded()) {
-						setVisible(false);
-					}
-				}
-			}
-
-		};
-		if (animationMoveType == AnimationMoveType.NONE) {
-			s.setVisible(false);
-			return s;
-		}
-		if (animationMoveType == AnimationMoveType.TGT) {
-			s.setLocationByCenter(tgt);
-			return s;
-		}
-		if (animationMoveType == AnimationMoveType.USER) {
-			s.setLocationByCenter(user);
-			return s;
-		}
-		s.setVector(animationMoveType.createVector(user, tgt));
-		return s;
-	}
-
 	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 37 * hash + Objects.hashCode(this.id);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final ActionEvent other = (ActionEvent) obj;
-		return Objects.equals(this.id, other.id);
+	public String getName() {
+		return id;
 	}
 
 	@Override
 	public String toString() {
-		return "ActionEvent{" + "id=" + id + ", targetType=" + targetType + ", parameterType=" + parameterType + ", tgtName=" + tgtName + ", attr=" + attr + ", value=" + value + ", damageCalcType=" + damageCalcType + ", p=" + p + ", spread=" + spread + ", animation=" + animation + ", animationMoveType=" + animationMoveType + '}';
+		return "ActionEvent{" + "id=" + id + ", type=" + type + '}';
 	}
 
 	@Override
 	public int compareTo(ActionEvent o) {
-		return parameterType.getValue() - o.parameterType.getValue();
-	}
-
-	@Override
-	protected ActionEvent clone() {
-		try {
-			return (ActionEvent) super.clone(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-		} catch (CloneNotSupportedException ex) {
-			throw new InternalError(ex);
-		}
+		return sort - o.sort;
 	}
 
 }

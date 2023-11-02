@@ -16,6 +16,7 @@
  */
 package kinugasa.game.system;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ import kinugasa.game.I18N;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
+import kinugasa.graphics.ImageUtil;
 import kinugasa.object.BasicSprite;
 
 /**
@@ -33,28 +35,9 @@ import kinugasa.object.BasicSprite;
  */
 public class StatusDescWindow extends PCStatusWindow {
 
-	private static List<String> unvisibleStatusList = new ArrayList<>();
-
-	public static void setUnvisibleStatusList(List<String> unvisibleStatusList) {
-		StatusDescWindow.unvisibleStatusList = unvisibleStatusList;
-	}
-
-	public static List<String> getUnvisibleStatusList() {
-		return unvisibleStatusList;
-	}
-
-	private static List<String> visibleMaxStatusList = new ArrayList<>();
-
-	public static void setVisibleMaxStatusList(List<String> visibleMaxStatusList) {
-		StatusDescWindow.visibleMaxStatusList = visibleMaxStatusList;
-	}
-
-	public static List<String> getVisibleMaxStatusList() {
-		return visibleMaxStatusList;
-	}
-
 	private List<Status> s;
 	private MessageWindow main;
+	private BufferedImage faceImage;
 
 	public StatusDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
@@ -62,6 +45,8 @@ public class StatusDescWindow extends PCStatusWindow {
 
 		main = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		pcIdx = 0;
+		faceImage = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getFaceImage();
+		resizeFaceImage();
 		update();
 	}
 	private int pcIdx;
@@ -91,6 +76,8 @@ public class StatusDescWindow extends PCStatusWindow {
 		if (pcIdx >= s.size()) {
 			pcIdx = 0;
 		}
+		faceImage = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getFaceImage();
+		resizeFaceImage();
 	}
 
 	@Override
@@ -99,6 +86,15 @@ public class StatusDescWindow extends PCStatusWindow {
 		if (pcIdx < 0) {
 			pcIdx = s.size() - 1;
 		}
+		faceImage = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getFaceImage();
+		resizeFaceImage();
+	}
+
+	private void resizeFaceImage() {
+		if (faceImage == null) {
+			return;
+		}
+		faceImage = ImageUtil.resize(faceImage, 128 / faceImage.getWidth(), 128 / faceImage.getHeight());
 	}
 
 	@Override
@@ -110,33 +106,40 @@ public class StatusDescWindow extends PCStatusWindow {
 	public void update() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<---");
-		sb.append(s.get(pcIdx).getName());
+		sb.append(GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName());
 		sb.append("--->").append(Text.getLineSep());
 		for (StatusValue v : s.get(pcIdx).getEffectedStatus().stream().sorted().collect(Collectors.toList())) {
-			if (unvisibleStatusList.contains(v.getKey().getName())) {
+			if (!v.getKey().isVisible()) {
 				continue;
 			}
 			sb.append(" ");
-			if (visibleMaxStatusList.contains(v.getKey().getName())) {
-				if (v.getKey().getMax() == 1f) {
+			if (v.isUseMax()) {
+				if (v.getKey().isPercent()) {
 					float val = v.getValue() * 100;
-					sb.append(v.getKey().getDesc()).append(":").append(val).append('%').append(Text.getLineSep());
+					sb.append(v.getKey().getVisibleName()).append(":").append(val).append('%').append(Text.getLineSep());
 				} else {
 					int val = (int) v.getValue();
 					int max = (int) v.getMax();
-					sb.append(v.getKey().getDesc()).append(":").append(val).append('／').append(max).append(Text.getLineSep());
+					sb.append(v.getKey().getVisibleName()).append(":").append(val).append('／').append(max).append(Text.getLineSep());
 				}
 			} else {
-				if (v.getKey().getName().equals(BattleConfig.StatusKey.canMagic)) {
-					sb.append(v.getKey().getDesc()).append(":").append(v.getValue() == 1
-							? I18N.get(GameSystemI18NKeys.魔術利用可能) : I18N.get(GameSystemI18NKeys.魔術利用不可));
-				} else if (v.getKey().getMax() == 1f) {
+				if (v.getKey() == StatusKey.魔術使用可否) {
+					sb.append(v.getKey().getVisibleName()).append(":")
+							.append(
+									v.getValue() == StatusKey.魔術使用可否＿使用可能
+									? I18N.get(GameSystemI18NKeys.魔術利用可能) : I18N.get(GameSystemI18NKeys.魔術利用不可));
+				} else if (v.getKey().isPercent()) {
 					float val = v.getValue() * 100;
-					sb.append(v.getKey().getDesc()).append(":").append(val).append('%').append(Text.getLineSep());
+					sb.append(v.getKey().getVisibleName()).append(":").append(val).append('%').append(Text.getLineSep());
 				} else {
 					int val = (int) v.getValue();
-					sb.append(v.getKey().getDesc()).append(":").append(val).append(Text.getLineSep());
+					sb.append(v.getKey().getVisibleName()).append(":").append(val).append(Text.getLineSep());
 				}
+			}
+			if (s.get(pcIdx).getAbility() != null) {
+				sb.append(Text.getLineSep());
+				sb.append(I18N.get(GameSystemI18NKeys.特性)).append(":");
+				sb.append(s.get(pcIdx).getAbility().getDescI18Nd());
 			}
 		}
 
@@ -151,6 +154,11 @@ public class StatusDescWindow extends PCStatusWindow {
 			return;
 		}
 		main.draw(g);
+		if (faceImage != null) {
+			int x = (int) (main.getX() + main.getWidth() - 128);
+			int y = (int) (main.getY() + main.getHeight() - 128);
+			g.drawImage(faceImage, x, y);
+		}
 	}
 
 }

@@ -23,8 +23,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GameLog;
+import kinugasa.game.NewInstance;
 import kinugasa.resource.text.TextFile;
 import kinugasa.util.StopWatch;
+import kinugasa.game.NotNull;
 
 /**
  *
@@ -93,6 +95,8 @@ public class DBConnection {
 		return result;
 	}
 
+	@NewInstance
+	@NotNull
 	public KResultSet execDirect(String sql) throws KSQLException {
 		StopWatch sw = new StopWatch().start();
 		try {

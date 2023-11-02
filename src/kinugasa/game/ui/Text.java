@@ -16,11 +16,13 @@
  */
 package kinugasa.game.ui;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import kinugasa.game.Nullable;
 import kinugasa.game.field4.FieldEvent;
 import kinugasa.resource.Nameable;
 import kinugasa.util.FrameTimeCounter;
@@ -76,6 +78,7 @@ public class Text implements Nameable {
 	private static int autoId = 0;
 	private static String lineSep = "/";
 	private List<FieldEvent> events;
+	private BufferedImage image;
 
 	public static void setLineSep(String lineSep) {
 		Text.lineSep = lineSep;
@@ -106,6 +109,19 @@ public class Text implements Nameable {
 		setText(text);
 		this.tc = tc;
 		this.visibleIdx = visibleIdx;
+	}
+
+	public boolean hasImage() {
+		return image != null;
+	}
+
+	@Nullable
+	public BufferedImage getImage() {
+		return image;
+	}
+
+	public void setImage(BufferedImage image) {
+		this.image = image;
 	}
 
 	private void setText(String t) {

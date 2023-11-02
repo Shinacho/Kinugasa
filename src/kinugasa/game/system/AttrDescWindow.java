@@ -33,16 +33,6 @@ import kinugasa.game.ui.Text;
  */
 public class AttrDescWindow extends PCStatusWindow {
 
-	private static List<String> unvisibleAttrName = new ArrayList<>();
-
-	public static List<String> getUnvisibleAttrName() {
-		return unvisibleAttrName;
-	}
-
-	public static void setUnvisibleAttrName(List<String> unvisibleConditionName) {
-		AttrDescWindow.unvisibleAttrName = unvisibleConditionName;
-	}
-
 	private ScrollSelectableMessageWindow mw;
 	private List<Status> s;
 
@@ -88,23 +78,29 @@ public class AttrDescWindow extends PCStatusWindow {
 
 	private void updateText() {
 
-		Text line1 = new Text("<---" + I18N.get(GameSystemI18NKeys.Xの有効度, s.get(pcIdx).getName()) + "--->");
+		Text midashi1 = new Text("<---" + I18N.get(GameSystemI18NKeys.Xの被属性,
+				GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName()
+		) + "--->");
 
-		List<AttributeValue> list = s.get(pcIdx).getEffectedAttrIn().stream().sorted().collect(Collectors.toList());
 		List<Text> l = new ArrayList<>();
-		l.add(line1);
-		assert list != null;
-		boolean midashi = false;
-		for (AttributeValue v : list) {
-			if (unvisibleAttrName.contains(v.getKey().getName())) {
-				continue;
-			}
-			if (v.getKey().getOrder() > 100 && !midashi) {
-				l.add(new Text("--" + I18N.get(GameSystemI18NKeys.状態異常)));
-				midashi = true;
-			}
-			l.add(new Text("  " + v.getKey().getDesc() + ":" + (v.getValue() * 100) + '%'));
+		//ATTR_IN
+		l.add(midashi1);
+		for (AttributeValue v : s.get(pcIdx).getEffectedAttrIn().stream().sorted().collect(Collectors.toList())) {
+			l.add(new Text("  " + v.getKey().getVisibleName() + ":" + (v.getValue() * 100) + '%'));
 		}
+		//ATTR_OUT
+		Text midashi2 = new Text("---" + I18N.get(GameSystemI18NKeys.Xの与属性, s.get(pcIdx).getName()) + "---");
+		l.add(midashi2);
+		for (AttributeValue v : s.get(pcIdx).getEffectedAttrOut().stream().sorted().collect(Collectors.toList())) {
+			l.add(new Text("  " + v.getKey().getVisibleName() + ":" + (v.getValue() * 100) + '%'));
+		}
+		//CND_REGIST
+		Text midashi3 = new Text("---" + I18N.get(GameSystemI18NKeys.Xの状態異常耐性, s.get(pcIdx).getName()) + "---");
+		l.add(midashi3);
+		for (ConditionKey k : s.get(pcIdx).getEffectedConditionRegist().keySet().stream().sorted().collect(Collectors.toList())) {
+			l.add(new Text("  " + k.getVisibleName() + ":" + (s.get(pcIdx).getEffectedConditionRegist().get(k) * 100) + '%'));
+		}
+
 		mw.setText(l);
 	}
 

@@ -16,69 +16,24 @@
  */
 package kinugasa.game.system;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import kinugasa.resource.Nameable;
-
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_12:07:46<br>
+ * @vesion 1.0.0 - 2023/10/14_11:27:58<br>
  * @author Shinacho<br>
  */
-public class Condition implements Nameable, Cloneable {
+public class Condition {
 
 	private ConditionKey key;
-	private List<ConditionEffect> effects = new ArrayList<>();
 
-	public Condition(ConditionKey key) {
+	private int time;
+
+	public Condition(ConditionKey key, int time) {
 		this.key = key;
+		this.time = time;
 	}
+	private int c = 0;
 
-	public Condition(ConditionKey key, ConditionEffect e) {
-		this.key = key;
-		this.effects.add(e);
+	public boolean isEnded() {
+		return time <= c;
 	}
-
-	public Condition(ConditionKey key, List<ConditionEffect> effects) {
-		this.key = key;
-		this.effects = effects;
-	}
-
-	@Override
-	public String getName() {
-		return key.getName();
-	}
-
-	public ConditionKey getKey() {
-		return key;
-	}
-
-	public List<ConditionEffect> getEffects() {
-		return effects;
-	}
-
-	public void setEffects(List<ConditionEffect> effects) {
-		this.effects = effects;
-	}
-
-	@Override
-	public String toString() {
-		return super.toString(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-	}
-
-	@Override
-	public Condition clone() {
-		try {
-			Condition c = (Condition) super.clone();
-			c.effects = (List<ConditionEffect>) ((ArrayList<ConditionEffect>) effects).clone();
-			return c;
-		} catch (CloneNotSupportedException ex) {
-			throw new InternalError(ex);
-		}
-	}
-
 }

@@ -23,18 +23,24 @@ package kinugasa.game.system;
  */
 public class GameSystemException extends RuntimeException {
 
-    /**
-     * Creates a new instance of <code>GameSystemException</code> without detail message.
-     */
-    public GameSystemException() {
-    }
+	/**
+	 * Creates a new instance of <code>GameSystemException</code> without detail
+	 * message.
+	 */
+	public GameSystemException() {
+	}
 
+	public GameSystemException(Throwable t) {
+		super(t);
+	}
 
-    /**
-     * Constructs an instance of <code>GameSystemException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public GameSystemException(String msg) {
-        super(msg);
-    }
+	/**
+	 * Constructs an instance of <code>GameSystemException</code> with the
+	 * specified detail message.
+	 *
+	 * @param msg the detail message.
+	 */
+	public GameSystemException(String msg) {
+		super(msg);
+	}
 }

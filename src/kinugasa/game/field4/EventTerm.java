@@ -17,7 +17,7 @@
 package kinugasa.game.field4;
 
 import java.util.List;
-import kinugasa.game.system.Status;
+import kinugasa.game.system.Actor;
 import kinugasa.resource.Nameable;
 
 /**
@@ -41,7 +41,7 @@ public class EventTerm implements Nameable {
 		this.value = value;
 	}
 
-	public boolean canDoThis(List<Status> party, FieldEvent e) {
+	public boolean canDoThis(List<Actor> party, FieldEvent e) {
 		return termType.canExec(party, this);
 	}
 

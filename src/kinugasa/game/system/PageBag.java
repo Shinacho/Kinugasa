@@ -27,17 +27,17 @@ import java.util.Map;
  */
 public class PageBag {
 
-	private Map<Page, Integer> map = new HashMap<>();
+	private Map<BookPage, Integer> map = new HashMap<>();
 
 	public PageBag() {
 	}
 
-	public Map<Page, Integer> getMap() {
+	public Map<BookPage, Integer> getMap() {
 		return map;
 	}
 
-	public void addAll(List<Page> list) {
-		for (Page p : list) {
+	public void addAll(List<BookPage> list) {
+		for (BookPage p : list) {
 			if (map.containsKey(p) && map.get(p) == 99) {
 				continue;
 			}
@@ -50,7 +50,7 @@ public class PageBag {
 		}
 	}
 
-	public void add(Page p) {
+	public void add(BookPage p) {
 		if (map.containsKey(p) && map.get(p) == 99) {
 			return;
 		}

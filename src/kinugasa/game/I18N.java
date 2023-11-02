@@ -17,11 +17,7 @@
 package kinugasa.game;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.util.logging.Level;
-import kinugasa.game.system.GameSystemException;
 import kinugasa.resource.text.IniFile;
-import kinugasa.resource.text.FileFormatException;
 
 /**
  *
@@ -65,20 +61,26 @@ public class I18N {
 	}
 
 	public static String get(String key) {
+		if(ini == null ){
+			GameLog.print("WARNING : I18N is not loaded : " + key);
+			return key;
+		}
 		if (!ini.containsKey(key)) {
-			throw new GameSystemException("undefined I18N key : " + key);
+			GameLog.print("WARNING : I18N key is not found : " + key);
+			return key;
 		}
 		return ini.get(key).get().value();
 	}
 
-	public static String get(String key, String... value) {
+	public static String get(String key, String... param) {
 		if (!ini.containsKey(key)) {
-			throw new GameSystemException("undefined I18N key : " + key);
+			GameLog.print("WARNING : I18N key is not found : " + key);
+			return key;
 		}
 
 		String res = ini.get(key).get().value();
-		for (int i = 0; i < value.length; i++) {
-			res = res.replaceAll("!" + i, value[i]);
+		for (int i = 0; i < param.length; i++) {
+			res = res.replaceAll("!" + i, param[i]);
 		}
 		return res;
 	}

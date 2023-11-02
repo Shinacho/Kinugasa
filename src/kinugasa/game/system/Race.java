@@ -16,72 +16,45 @@
  */
 package kinugasa.game.system;
 
-import java.util.Objects;
-import java.util.Set;
-import kinugasa.resource.Nameable;
-import kinugasa.resource.db.DBRecord;
+import java.util.Arrays;
+import java.util.List;
+import kinugasa.game.I18N;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/16_13:27:22<br>
+ * @vesion 1.0.0 - 2023/10/14_19:23:46<br>
  * @author Shinacho<br>
  */
-@DBRecord
-public class Race implements Nameable {
+public enum Race {
+	人間(12, 8, Arrays.asList(EqipSlot.values())),
+	ベルマ人(8, 14, Arrays.asList(EqipSlot.values())),
+	やどかり(3, 0, List.of(EqipSlot.頭)),
+	魔法生物(3, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.装飾品)),
+	野生生物(3, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.足, EqipSlot.装飾品)),;
+	private int itemBagSize;
+	private int bookBagSize;
+	private List<EqipSlot> slots;
 
-	private String name;
-	private int itemBagSize, bookBagSize;
-	private Set<ItemEqipmentSlot> eqipSlot;
-
-	public Race(String name, int itemBagSize, int bookBagSize, Set<ItemEqipmentSlot> eqipSlot) {
-		this.name = name;
+	private Race(int itemBagSize, int bookBagSize, List<EqipSlot> slots) {
 		this.itemBagSize = itemBagSize;
 		this.bookBagSize = bookBagSize;
-		this.eqipSlot = eqipSlot;
+		this.slots = slots;
 	}
 
-	public int getBookBagSize() {
-		return bookBagSize;
+	public List<EqipSlot> getEqipSlots() {
+		return slots;
+	}
+
+	public String getVisibleName() {
+		return I18N.get(toString());
 	}
 
 	public int getItemBagSize() {
 		return itemBagSize;
 	}
 
-	public Set<ItemEqipmentSlot> getEqipSlot() {
-		return eqipSlot;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public String toString() {
-		return "Race{" + "name=" + name + ", eqipSlot=" + eqipSlot + '}';
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 97 * hash + Objects.hashCode(this.name);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final Race other = (Race) obj;
-		return Objects.equals(this.name, other.name);
+	public int getBookBagSize() {
+		return bookBagSize;
 	}
 
 }

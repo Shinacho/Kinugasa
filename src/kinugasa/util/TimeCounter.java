@@ -30,8 +30,6 @@ import kinugasa.object.Statable;
  */
 public abstract class TimeCounter extends Model implements Statable {
 
-	private static final long serialVersionUID = -7448317548464780917L;
-
 	/**
 	 * 設定された時間が経過したかを検査します.
 	 *
@@ -148,7 +146,7 @@ public abstract class TimeCounter extends Model implements Statable {
 			public int getCurrentTime() {
 				return v;
 			}
-			
+
 		};
 	}
 }
