@@ -32,13 +32,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kinugasa.game.GameLog;
-import kinugasa.game.NoNull;
 import kinugasa.game.Nullable;
 import kinugasa.game.system.GameSystem;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Storage;
 import kinugasa.util.Random;
+import kinugasa.game.NotNull;
 
 /**
  * メモリ上になければDBを読みに行くStorageの拡張です。 DB呼び出し部分はサブクラスで定義する必要がありますが、それ以外の処理は自動で行われます。
@@ -58,15 +58,44 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 		this.name = name;
 	}
 
+	public DBStorage(boolean allLoad) {
+		this();
+		loadAll();
+	}
+
+	public DBStorage(String name, boolean allLoad) {
+		this(name);
+		loadAll();
+	}
+
 	@Override
 	public String getName() {
 		return name;
 	}
 
+	private boolean allLoaded = false;
+
+	//DBに変化があった場合、リロードすることは可能
+	public final void loadAll() {
+		if (DBConnection.getInstance().isUsing() && !allLoaded) {
+			addAll(selectAll());
+		}
+		allLoaded = true;
+	}
+
+	public boolean isAllLoaded() {
+		return allLoaded;
+	}
+
+	//全量搭載済みフラグを初期化しなければ全量リロードできない。
+	public void setAllLoaded(boolean allLoaded) {
+		this.allLoaded = allLoaded;
+	}
+
 	@Nullable
 	protected abstract T select(String id) throws KSQLException;
 
-	@NoNull
+	@NotNull
 	protected abstract List<T> selectAll() throws KSQLException;
 
 	protected abstract int count() throws KSQLException;
@@ -85,7 +114,7 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 		for (Map.Entry<String, T> e : getDirect().entrySet()) {
 			l.put(e.getKey(), e.getValue());
 		}
-		if (DBConnection.getInstance().isUsing()) {
+		if (DBConnection.getInstance().isUsing() && !allLoaded) {
 			try {
 				for (var t : selectAll()) {
 					if (!l.containsKey(t.getName())) {
@@ -129,7 +158,7 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 	@Override
 	public final Set<String> keySet() {
 		Set<String> set = super.keySet();
-		if (DBConnection.getInstance().isUsing()) {
+		if (DBConnection.getInstance().isUsing() && !allLoaded) {
 			try {
 				set.addAll(selectAll().stream().map(p -> p.getName()).collect(Collectors.toSet()));
 			} catch (KSQLException e) {
@@ -143,7 +172,7 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 	public final Map<String, T> getAsNewMap(String... names) {
 		Map<String, T> res = new HashMap<>();
 		res.putAll(super.getAsNewMap(names));
-		if (DBConnection.getInstance().isUsing()) {
+		if (DBConnection.getInstance().isUsing() && !allLoaded) {
 			try {
 				for (String v : names) {
 					T obj = select(v);
@@ -170,7 +199,7 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 			GameLog.print("  " + obj.getName() + (valueOut ? obj : ""));
 			stream.println();
 		}
-		if (DBConnection.getInstance().isUsing()) {
+		if (DBConnection.getInstance().isUsing() && !allLoaded) {
 			try {
 				stream.println("--DB");
 				GameLog.print("--DB");
@@ -215,7 +244,7 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 
 	@Override
 	public final int size() {
-		if (DBConnection.getInstance().isUsing()) {
+		if (DBConnection.getInstance().isUsing() && !allLoaded) {
 			try {
 				return super.size() + count();
 			} catch (KSQLException e) {
@@ -251,7 +280,7 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 
 	@Override
 	public final boolean contains(String key) {
-		if (DBConnection.getInstance().isUsing()) {
+		if (DBConnection.getInstance().isUsing() && !allLoaded) {
 			try {
 				return super.contains(key) || select(key) != null;
 			} catch (KSQLException e) {
@@ -294,7 +323,7 @@ public abstract class DBStorage<T extends Nameable> extends Storage<T> implement
 		if (getDirect().containsKey(key)) {
 			return getDirect().get(key);
 		}
-		if (DBConnection.getInstance().isUsing()) {
+		if (DBConnection.getInstance().isUsing() && !allLoaded) {
 			try {
 				T obj = select(key);
 				if (obj == null) {

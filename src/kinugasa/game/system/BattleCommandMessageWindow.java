@@ -19,6 +19,7 @@ package kinugasa.game.system;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
@@ -41,11 +42,11 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		updateText();
 	}
 	private int typeIdx = ActionType.values().length - 1;
-	private ActionType type = ActionType.OTHER;
+	private ActionType type = ActionType.行動;
 	private Action selected;
 
 	public void resetSelect() {
-		setType(ActionType.OTHER);
+		setType(ActionType.行動);
 		reset();
 	}
 
@@ -91,8 +92,8 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		return selected;
 	}
 
-	public boolean isSelected(String name) {
-		return selected.getName().equals(name);
+	public boolean isSelected(String visibleName) {
+		return selected.getVisibleName().equals(visibleName);
 	}
 
 	public BattleCommand getCmd() {
@@ -118,29 +119,28 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 			}
 			return;
 		}
-		String text = cmd.getUser().getStatus().getName();
+		String text = cmd.getUser().getVisibleName();
 		text = I18N.get(GameSystemI18NKeys.どうする) + ", " + text + " ! ! ";
-		text += "         <------------------[ " + type.displayName() + " ]------------------>";
+		text += "         <------------------[ " + type.getVisibleName() + " ]------------------>";
 		text += Text.getLineSep();
 		int i = 0;
-		cmd.getUser().getStatus().updateAction(true);
-		List<Action> actionList = cmd.getBattleActionOf(type);
+		List<Action> actionList = cmd.getActionOf(type);
 		//アイテム以外の場合はバトル利用可能なアクションにフィルター
-		if (type != ActionType.ITEM) {
-			actionList = actionList.stream().filter(p -> p.isBattleUse()).collect(Collectors.toList());
+		if (type != ActionType.アイテム) {
+			actionList = actionList.stream().filter(p -> p.isBattle()).collect(Collectors.toList());
 		}
 
 		Collections.sort(actionList);
 
 		if (actionList.isEmpty()) {
 			switch (type) {
-				case ATTACK:
-				case OTHER:
+				case 攻撃:
+				case 行動:
 					throw new GameSystemException("ATTACK,OTHER action is empty");
-				case ITEM:
+				case アイテム:
 					text += I18N.get(GameSystemI18NKeys.何も持っていない) + Text.getLineSep();
 					break;
-				case MAGIC:
+				case 魔法:
 					text += I18N.get(GameSystemI18NKeys.使える魔術はない) + Text.getLineSep();
 					break;
 				default:
@@ -157,55 +157,66 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		selected = actionList.get(0);
 		for (Action b : actionList) {
 			switch (type) {
-				case ATTACK:
-					text += b.getName() + ":" + b.getDesc();
+				case 攻撃:
+					text += b.getVisibleName() + ":" + b.getDesc();
 					text += ("、")
 							+ (I18N.get(GameSystemI18NKeys.属性))
 							+ (":");
-					text += (b.getBattleEvent()
+					text += (b.getMainEvents()
 							.stream()
-							.filter(p -> !AttrDescWindow.getUnvisibleAttrName().contains(p.getAttr().getName()))
-							.map(p -> p.getAttr().getDesc())
+							.filter(p -> p.getAtkAttr() != null)
+							.map(p -> p.getAtkAttr().getVisibleName())
 							.distinct()
 							.collect(Collectors.toList()));
 					text += ("、")
 							+ (I18N.get(GameSystemI18NKeys.基礎威力))
 							+ (":");
 					//ENEMYが入っている場合、minを、そうでない場合はMAXを取る
-					if (b.getBattleEvent().stream().anyMatch(p -> p.getTargetType().toString().contains("ENEMY"))) {
-						text += (Math.abs(b.getBattleEvent()
-								.stream()
-								.mapToInt(p -> (int) (p.getValue()))
-								.min()
-								.getAsInt()));
-					} else {
-						text += (Math.abs(b.getBattleEvent()
-								.stream()
-								.mapToInt(p -> (int) (p.getValue()))
-								.max()
-								.getAsInt()));
-					}
+					text += (Math.abs(b.getMainEvents()
+							.stream()
+							.mapToInt(p -> (int) (p.getValue()))
+							.map(p -> Math.abs(p))
+							.sum()));
+					text += "、" + b.getSummary();
 					text += Text.getLineSep();
 					break;
-				case ITEM:
+				case アイテム:
+					assert b instanceof Item : "b is not item(BCMW)";
 					Item item = (Item) b;
-					String e = (item.getEqipmentSlot() != null && getCmd().getUser().getStatus().isEqip(item.getName()))
+					String e = (item.getSlot() != null && getCmd().getUser().getStatus().getEqip().values().contains(item))
 							? "(E)"
-							: "";
-					text += e + b.getName() + Text.getLineSep();
+							: "   ";
+					text += e + b.getVisibleName() + Text.getLineSep();
 					break;
-				case MAGIC:
-					String status = "";
-					for (String s : BattleConfig.getMagicVisibleStatusKey()) {
-						Map<StatusKey, Integer> map = b.selfBattleDirectDamage();
-						int val = map.containsKey(StatusKeyStorage.getInstance().get(s)) ? map.get(StatusKeyStorage.getInstance().get(s)) : 0;
-						status += " " + StatusKeyStorage.getInstance().get(s).getDesc() + ":" + val;
-					}
-					status += " (" + I18N.get(GameSystemI18NKeys.詠唱時間) + ":" + b.getSpellTime() + I18N.get(GameSystemI18NKeys.ターン) + ")";
-					text += b.getName() + " : " + status + Text.getLineSep();
+				case 魔法:
+					text += b.getVisibleName() + ":" + b.getDesc();
+					text += ("、")
+							+ (I18N.get(GameSystemI18NKeys.属性))
+							+ (":");
+					text += (b.getMainEvents()
+							.stream()
+							.filter(p -> p.getAtkAttr() != null)
+							.map(p -> p.getAtkAttr().getVisibleName())
+							.distinct()
+							.collect(Collectors.toList()));
+					text += ("、")
+							+ (I18N.get(GameSystemI18NKeys.基礎威力))
+							+ (":");
+					//ENEMYが入っている場合、minを、そうでない場合はMAXを取る
+					text += (Math.abs(b.getMainEvents()
+							.stream()
+							.mapToInt(p -> (int) (p.getValue()))
+							.map(p -> Math.abs(p))
+							.sum()));
+					text += ("、")
+							+ (I18N.get(GameSystemI18NKeys.詠唱時間))
+							+ (":")
+							+ b.getCastTime() + (I18N.get(GameSystemI18NKeys.ターン));
+					text += "、" + b.getSummary();
+					text += Text.getLineSep();
 					break;
-				case OTHER:
-					text += b.getName() + Text.getLineSep();
+				case 行動:
+					text += b.getVisibleName() + Text.getLineSep();
 					break;
 				default:
 					throw new AssertionError("BCMW undefined type");
@@ -215,12 +226,15 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		}
 
 		List<Text> t = Text.split(new Text(text));
+
 		setText(t);
-		super.getWindow().allText();
+
+		super.getWindow()
+				.allText();
 	}
 
 	public void nextAction() {
-		List<Action> actionList = cmd.getBattleActionOf(type);
+		List<Action> actionList = cmd.getActionOf(type);
 		if (actionList.isEmpty()) {
 			return;
 		}
@@ -235,7 +249,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 
 	public void prevAction() {
 		super.prevSelect();
-		List<Action> actionList = cmd.getBattleActionOf(type);
+		List<Action> actionList = cmd.getActionOf(type);
 		if (actionList.isEmpty()) {
 			return;
 		}

@@ -27,6 +27,9 @@ import kinugasa.resource.db.KResultSet;
 import kinugasa.resource.db.KSQLException;
 
 /**
+ * このクラスはクエストのDBデータを管理します。カレントクエストはメモリ上で動作するので、ＤＢから取ってきたデータを入れます。
+ * クエストはＤＢにすべてのステージのマスタデータが入っていて、それを取ってきて使うのみで、ＤＢを書き換えることはしません。
+ * 詳しくはEventTermTypeやFieldEventTypeを見てください。
  *
  * @vesion 1.0.0 - 2022/12/13_15:18:12<br>
  * @author Shinacho<br>
@@ -45,12 +48,14 @@ public class QuestStorage extends DBStorage<Quest> {
 	@Override
 	protected Quest select(String id) throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from Quest where QuestID='" + id + "';");
+			KResultSet kr = DBConnection.getInstance().execDirect("select"
+					+ " id,typ,stage,visibleName,Description"
+					+ " from Quest where id='" + id + "';");
 			if (kr.isEmpty()) {
 				return null;
 			}
 			String qid = kr.row(0).get(0).get();
-			String typ = kr.row(0).get(1).get();
+			Quest.Type typ = kr.row(0).get(1).of(Quest.Type.class);
 			int stage = kr.row(0).get(2).asInt();
 			String title = kr.row(0).get(3).get();
 			String desc = kr.row(0).get(4).get();
@@ -62,14 +67,16 @@ public class QuestStorage extends DBStorage<Quest> {
 	@Override
 	protected List<Quest> selectAll() throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
-			KResultSet kr = DBConnection.getInstance().execDirect("select * from Quest;");
+			KResultSet kr = DBConnection.getInstance().execDirect("select"
+					+ " id,typ,stage,visibleName,Description"
+					+ " from Quest;");
 			if (kr.isEmpty()) {
 				return Collections.emptyList();
 			}
 			List<Quest> q = new ArrayList<>();
 			for (List<DBValue> v : kr) {
 				String qid = v.get(0).get();
-				String typ = v.get(1).get();
+				Quest.Type typ = kr.row(0).get(1).of(Quest.Type.class);
 				int stage = v.get(2).asInt();
 				String title = v.get(3).get();
 				String desc = v.get(4).get();

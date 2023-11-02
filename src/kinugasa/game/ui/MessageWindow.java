@@ -16,10 +16,12 @@
  */
 package kinugasa.game.ui;
 
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.LinkedList;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LoopCall;
+import kinugasa.game.Nullable;
 import kinugasa.game.field4.FieldEventSystem;
 import kinugasa.object.BasicSprite;
 import kinugasa.resource.NameNotFoundException;

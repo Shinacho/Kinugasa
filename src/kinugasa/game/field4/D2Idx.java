@@ -85,7 +85,7 @@ public class D2Idx implements Nameable, Cloneable {
 	}
 
 	@Override
-	protected D2Idx clone() {
+	public D2Idx clone() {
 		try {
 			return (D2Idx) super.clone();
 		} catch (CloneNotSupportedException ex) {

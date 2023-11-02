@@ -16,6 +16,7 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.NPCSprite;
 import java.awt.Point;
 import kinugasa.object.Model;
 import kinugasa.resource.Nameable;
@@ -38,13 +39,13 @@ public abstract class NPCMoveModel extends Model implements Nameable {
 		return name;
 	}
 
-	public abstract D2Idx getNextTargetIdx(NPC n, FieldMap map);
+	public abstract D2Idx getNextTargetIdx(NPCSprite n, FieldMap map);
 
-	public abstract int nextMoveFrameTime(NPC n, FieldMap map);
+	public abstract int nextMoveFrameTime(NPCSprite n, FieldMap map);
 
-	public abstract D2Idx getMin(NPC n);
+	public abstract D2Idx getMin(NPCSprite n);
 
-	public abstract D2Idx getMax(NPC n);
+	public abstract D2Idx getMax(NPCSprite n);
 
 	@Override
 	public NPCMoveModel clone() {

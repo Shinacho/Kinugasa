@@ -16,6 +16,7 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.NPCSprite;
 import java.awt.Point;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -47,22 +48,22 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 	private NPCMoveModelStorage() {
 		add(new NPCMoveModel("NOT_MOVE") {
 			@Override
-			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+			public D2Idx getNextTargetIdx(NPCSprite n, FieldMap map) {
 				return n.getInitialIdx();
 			}
 
 			@Override
-			public int nextMoveFrameTime(NPC n, FieldMap map) {
+			public int nextMoveFrameTime(NPCSprite n, FieldMap map) {
 				return Integer.MAX_VALUE;//MAX_VALUE後のフレームでも移動することはない。
 			}
 
 			@Override
-			public D2Idx getMax(NPC n) {
+			public D2Idx getMax(NPCSprite n) {
 				return n.getInitialIdx().clone();
 			}
 
 			@Override
-			public D2Idx getMin(NPC n) {
+			public D2Idx getMin(NPCSprite n) {
 				return n.getInitialIdx().clone();
 			}
 
@@ -71,7 +72,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 1;
 
 			@Override
-			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+			public D2Idx getNextTargetIdx(NPCSprite n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
 					tgt = new D2Idx(n.getCurrentIdx());
@@ -117,12 +118,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public int nextMoveFrameTime(NPC n, FieldMap map) {
+			public int nextMoveFrameTime(NPCSprite n, FieldMap map) {
 				return 60 + Random.randomAbsInt(541);
 			}
 
 			@Override
-			public D2Idx getMax(NPC n) {
+			public D2Idx getMax(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x += VALUE;
 				idx.y += VALUE;
@@ -130,7 +131,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public D2Idx getMin(NPC n) {
+			public D2Idx getMin(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x -= VALUE;
 				idx.y -= VALUE;
@@ -142,7 +143,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 2;
 
 			@Override
-			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+			public D2Idx getNextTargetIdx(NPCSprite n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
 					tgt = new D2Idx(n.getCurrentIdx());
@@ -185,12 +186,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public int nextMoveFrameTime(NPC n, FieldMap map) {
+			public int nextMoveFrameTime(NPCSprite n, FieldMap map) {
 				return 60 + Random.randomAbsInt(541);
 			}
 
 			@Override
-			public D2Idx getMax(NPC n) {
+			public D2Idx getMax(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x += VALUE;
 				idx.y += VALUE;
@@ -198,7 +199,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public D2Idx getMin(NPC n) {
+			public D2Idx getMin(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x -= VALUE;
 				idx.y -= VALUE;
@@ -209,7 +210,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 3;
 
 			@Override
-			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+			public D2Idx getNextTargetIdx(NPCSprite n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
 					tgt = new D2Idx(n.getCurrentIdx());
@@ -252,12 +253,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public int nextMoveFrameTime(NPC n, FieldMap map) {
+			public int nextMoveFrameTime(NPCSprite n, FieldMap map) {
 				return 60 + Random.randomAbsInt(541);
 			}
 
 			@Override
-			public D2Idx getMax(NPC n) {
+			public D2Idx getMax(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x += VALUE;
 				idx.y += VALUE;
@@ -265,7 +266,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public D2Idx getMin(NPC n) {
+			public D2Idx getMin(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x -= VALUE;
 				idx.y -= VALUE;
@@ -276,7 +277,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 4;
 
 			@Override
-			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+			public D2Idx getNextTargetIdx(NPCSprite n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
 					tgt = new D2Idx(n.getCurrentIdx());
@@ -319,12 +320,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public int nextMoveFrameTime(NPC n, FieldMap map) {
+			public int nextMoveFrameTime(NPCSprite n, FieldMap map) {
 				return 60 + Random.randomAbsInt(541);
 			}
 
 			@Override
-			public D2Idx getMax(NPC n) {
+			public D2Idx getMax(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x += VALUE;
 				idx.y += VALUE;
@@ -332,7 +333,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public D2Idx getMin(NPC n) {
+			public D2Idx getMin(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x -= VALUE;
 				idx.y -= VALUE;
@@ -343,7 +344,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private static final int VALUE = 5;
 
 			@Override
-			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+			public D2Idx getNextTargetIdx(NPCSprite n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
 					tgt = new D2Idx(n.getCurrentIdx());
@@ -386,12 +387,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public int nextMoveFrameTime(NPC n, FieldMap map) {
+			public int nextMoveFrameTime(NPCSprite n, FieldMap map) {
 				return 60 + Random.randomAbsInt(541);
 			}
 
 			@Override
-			public D2Idx getMax(NPC n) {
+			public D2Idx getMax(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x += VALUE;
 				idx.y += VALUE;
@@ -399,7 +400,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public D2Idx getMin(NPC n) {
+			public D2Idx getMin(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x -= VALUE;
 				idx.y -= VALUE;
@@ -408,12 +409,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 		});
 		add(new NPCMoveModel("LOOK_AROUND") {
 			@Override
-			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+			public D2Idx getNextTargetIdx(NPCSprite n, FieldMap map) {
 				return n.getInitialIdx();
 			}
 
 			@Override
-			public int nextMoveFrameTime(NPC n, FieldMap map) {
+			public int nextMoveFrameTime(NPCSprite n, FieldMap map) {
 				int r = Random.randomAbsInt(4);
 				switch (r) {
 					case 0:
@@ -433,12 +434,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public D2Idx getMin(NPC n) {
+			public D2Idx getMin(NPCSprite n) {
 				return n.getInitialIdx();
 			}
 
 			@Override
-			public D2Idx getMax(NPC n) {
+			public D2Idx getMax(NPCSprite n) {
 				return n.getInitialIdx();
 			}
 		});
@@ -449,7 +450,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			private final int VALUE = size;
 
 			@Override
-			public D2Idx getNextTargetIdx(NPC n, FieldMap map) {
+			public D2Idx getNextTargetIdx(NPCSprite n, FieldMap map) {
 				D2Idx tgt = null;
 				for (int i = 0; i < 600; i++) {
 					tgt = new D2Idx(n.getCurrentIdx());
@@ -492,12 +493,12 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public int nextMoveFrameTime(NPC n, FieldMap map) {
+			public int nextMoveFrameTime(NPCSprite n, FieldMap map) {
 				return minTime + Random.randomAbsInt(maxTime + 1 - minTime);
 			}
 
 			@Override
-			public D2Idx getMax(NPC n) {
+			public D2Idx getMax(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x += VALUE;
 				idx.y += VALUE;
@@ -505,7 +506,7 @@ public class NPCMoveModelStorage extends Storage<NPCMoveModel> {
 			}
 
 			@Override
-			public D2Idx getMin(NPC n) {
+			public D2Idx getMin(NPCSprite n) {
 				D2Idx idx = n.getInitialIdx();
 				idx.x -= VALUE;
 				idx.y -= VALUE;

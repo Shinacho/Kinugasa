@@ -39,6 +39,9 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import kinugasa.game.input.GamePadConnection;
 import kinugasa.game.input.InputState;
 import kinugasa.game.input.KeyConnection;
@@ -86,6 +89,15 @@ public abstract class GameManager {
 		} catch (Throwable a) {
 			a.printStackTrace();
 		}
+		try {
+			//LnF切替
+			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		} catch (ClassNotFoundException
+				| InstantiationException
+				| IllegalAccessException
+				| UnsupportedLookAndFeelException ex) {
+		}
+
 		this.option = option;
 		updateOption();
 	}
@@ -124,7 +136,9 @@ public abstract class GameManager {
 			GameLog.print("this is " + option.getLogPath() + option.getLogName());
 		}
 		CMDargs.init(option.getArgs());
-		I18N.init(option.getLang());
+		if (option.getLang() != null) {
+			I18N.init(option.getLang());
+		}
 
 		if (option.isLock()) {
 			if (LockUtil.isExistsLockFile()) {
@@ -133,7 +147,9 @@ public abstract class GameManager {
 			LockUtil.createLockFile();
 		}
 		window = new AWTGameWindow();
-		renderingHints = option.getRenderingQuality().getRenderingHints();
+		if (option.getRenderingQuality() != null) {
+			renderingHints = option.getRenderingQuality().getRenderingHints();
+		}
 
 		window.addWindowListener(new WindowAdapter() {
 			@Override
@@ -319,7 +335,9 @@ public abstract class GameManager {
 		g.setClip(clippingRectangle);
 		g.clearRect(clippingRectangle.x, clippingRectangle.y,
 				clippingRectangle.width, clippingRectangle.height);
-		g.setRenderingHints(renderingHints);
+		if (renderingHints != null) {
+			g.setRenderingHints(renderingHints);
+		}
 		draw(new GraphicsContext(g));
 		g.dispose();
 

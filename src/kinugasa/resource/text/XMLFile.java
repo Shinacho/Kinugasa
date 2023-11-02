@@ -59,6 +59,7 @@ public final class XMLFile implements Input<XMLFile>, Output, Nameable, Iterable
 		this(new File(filePath));
 	}
 
+	@Override
 	public File getFile() {
 		return file;
 	}

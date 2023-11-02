@@ -30,7 +30,7 @@ import kinugasa.util.TimeCounter;
  * @version 1.0.0 - 2013/01/14_20:10:48<br>
  * @author Shinacho<br>
  */
-public class FlashEffect extends ScreenEffect {
+public class FlashEffect extends Effect {
 
 	private Color color;
 	private TimeCounter blinkRate;//TRUEでフラッシュ
@@ -62,6 +62,7 @@ public class FlashEffect extends ScreenEffect {
 		}
 		if (flashTime.isReaching()) {
 			ended = true;
+			setVisible(false);
 		}
 	}
 

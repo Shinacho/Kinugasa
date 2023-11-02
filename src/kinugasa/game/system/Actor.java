@@ -16,43 +16,252 @@
  */
 package kinugasa.game.system;
 
-import java.awt.geom.Point2D;
-import kinugasa.object.BasicSprite;
-import kinugasa.object.FourDirection;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import kinugasa.game.NotNewInstance;
+import kinugasa.game.Nullable;
+import kinugasa.graphics.ImageUtil;
+import kinugasa.resource.FileNotFoundException;
+import kinugasa.resource.NameNotFoundException;
+import kinugasa.resource.Nameable;
+import kinugasa.resource.text.FileIOException;
+import kinugasa.resource.text.IllegalXMLFormatException;
+import kinugasa.resource.text.XMLElement;
+import kinugasa.resource.text.XMLFile;
+import kinugasa.resource.text.XMLFileSupport;
+import kinugasa.game.NotNull;
 
 /**
+ * アクターはステータスとスプライトを持つ、登場人物のクラスです。<br>
+ * フィールドマップ上のNPCはステータスがないので、このクラスは使用せず、スプライトだけです（→NPCSprite）。<br>
+ * 戦闘時の敵キャラはステータスを持つので、このクラスの派生です。（→Enemy）
  *
- * @vesion 1.0.0 - 2022/11/23_13:08:50<br>
+ * @vesion 1.0.0 - 2023/10/14_22:15:56<br>
  * @author Shinacho<br>
  */
-public interface Actor {
+public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor> permits Enemy {
 
-	public BasicSprite getSprite();
+	private String id;
+	private String visibleName;
+	private PCSprite sprite;
+	private Status status;
+	private String iniStatusFile;
+	private BufferedImage faceImage;
+	private boolean isSummoned = false;//召喚された人フラグ
 
-	public Status getStatus();
-
-	public void setTargetLocation(Point2D.Float p, int area);
-
-	public void unsetTarget();
-
-	public boolean isMoving();
-
-	public void moveToTgt();
-
-	public void move();
-
-	public void to(FourDirection dir);
-
-	public boolean isPlayer();
-
-	public String getId();
-
-	public default Point2D.Float getCenter() {
-		return getSprite().getCenter();
+	public Actor(String id, String visibleName, Race r, PCSprite sprite) {
+		if (id == null || visibleName == null || r == null || sprite == null) {
+			throw new GameSystemException("actor value is null : " + id + " / " + visibleName);
+		}
+		if (id.isEmpty() || visibleName.isEmpty()) {
+			throw new GameSystemException("actor value is empty : " + id + " / " + visibleName);
+		}
+		this.id = id;
+		this.visibleName = visibleName;
+		this.sprite = sprite;
+		this.status = new Status(id, r);
 	}
 
-	public default String getName() {
-		return getStatus().getName();
+	public Actor(String fileName) {
+		readFromXML(iniStatusFile = fileName);
+	}
+
+	public void setFaceImage(BufferedImage faceImage) {
+		this.faceImage = faceImage;
+	}
+
+	@Nullable
+	public BufferedImage getFaceImage() {
+		return faceImage;
+	}
+
+	@NotNewInstance
+	@NotNull
+	public PCSprite getSprite() {
+		return sprite;
+	}
+
+	@NotNewInstance
+	@NotNull
+	public Status getStatus() {
+		return status;
+	}
+
+	@NotNewInstance
+	@Nullable
+	public String getStatusFile() {
+		return iniStatusFile;
+	}
+
+	public void setSummoned(boolean isSummoned) {
+		this.isSummoned = isSummoned;
+	}
+
+	public boolean isSummoned() {
+		return isSummoned;
+	}
+
+	protected void setVisibleName(String name) {
+		this.visibleName = name;
+	}
+
+	public void readFromXML() throws GameSystemException {
+		if (this.iniStatusFile == null) {
+			throw new GameSystemException("im not have xml : " + this);
+		}
+		readFromXML(iniStatusFile);
+	}
+
+	private StatusValueSet vs;
+
+	public void 退避＿ステータスの初期化されない項目() {
+		vs = this.status.getBaseStatus().clone();
+		List<StatusKey> list = new ArrayList<>();
+		list.add(StatusKey.レベル);
+		list.add(StatusKey.次のレベルの経験値);
+		list.add(StatusKey.保有経験値);
+		list.add(StatusKey.筋力);
+		list.add(StatusKey.器用さ);
+		list.add(StatusKey.素早さ);
+		list.add(StatusKey.精神力);
+		list.add(StatusKey.信仰);
+		list.add(StatusKey.詠唱);
+		for (StatusKey k : list) {
+			this.status.getBaseStatus().remove(k.getName());
+		}
+	}
+
+	public void 復元＿ステータスの初期化されない項目() {
+		vs = this.status.getBaseStatus().clone();
+		List<StatusKey> list = new ArrayList<>();
+		list.add(StatusKey.レベル);
+		list.add(StatusKey.次のレベルの経験値);
+		list.add(StatusKey.保有経験値);
+		list.add(StatusKey.筋力);
+		list.add(StatusKey.器用さ);
+		list.add(StatusKey.素早さ);
+		list.add(StatusKey.精神力);
+		list.add(StatusKey.信仰);
+		list.add(StatusKey.詠唱);
+		for (StatusKey k : list) {
+			this.status.getBaseStatus().remove(k.getName());
+			this.status.getBaseStatus().add(vs.get(k));
+		}
+	}
+
+	public void setIniStatusFile(String iniStatusFile) {
+		this.iniStatusFile = iniStatusFile;
+	}
+
+	@Override
+	public void readFromXML(String filePath) throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
+		XMLFile f = new XMLFile(filePath);
+		if (!f.exists()) {
+			throw new FileNotFoundException(f);
+		}
+		try {
+			XMLElement root = f.load().getFirst();
+			String id = root.getAttributes().get("id").getValue();
+			String visibleName = root.getAttributes().get("visibleName").getValue();
+			Race r = root.getAttributes().get("race").of(Race.class);
+			//ID
+			this.id = id;
+			this.visibleName = visibleName;
+			this.status = new Status(id, r);
+			//アビリティ
+			if (root.hasAttribute("ability")) {
+				CharaAbility ca = root.getAttributes().get("ability").of(CharaAbility.class);
+				this.status.setAbility(ca);
+			}
+			//スプライトシート
+			if (root.hasElement("spriteSheet")) {
+				if (this instanceof Enemy) {
+					sprite = new EnemySprite(root.getElement("spriteSheet").get(0));
+				} else {
+					sprite = new PCSprite(root.getElement("spriteSheet").get(0));
+				}
+			} else {
+				throw new IllegalXMLFormatException("i dont have sprite : " + this);
+			}
+			//faceImage
+			if (root.hasElement("faceImage")) {
+				this.faceImage = ImageUtil.load(root.getElement("faceImage").get(0).getAttributes().get("fileName").getValue());
+			}
+			//reset
+			this.status.getBaseStatus().clear();
+			this.status.getAttrIn().clear();
+			this.status.getAttrOut().clear();
+			this.status.getConditionRegist().clear();
+			this.status.clearCondition();//暫定
+			//ATTR_IN
+			for (XMLElement e : root.getElement("attr_in")) {
+				AttributeKey k = e.getAttributes().get("key").of(AttributeKey.class);
+				float val = e.getAttributes().get("value").getFloatValue();
+				this.status.getAttrIn().add(new AttributeValue(k, val));
+			}
+			//ATTR_OUT
+			for (XMLElement e : root.getElement("attr_out")) {
+				AttributeKey k = e.getAttributes().get("key").of(AttributeKey.class);
+				float val = e.getAttributes().get("value").getFloatValue();
+				this.status.getAttrIn().add(new AttributeValue(k, val));
+			}
+			//CND_REGIST
+			for (XMLElement e : root.getElement("cndRegist")) {
+				ConditionKey k = e.getAttributes().get("key").of(ConditionKey.class);
+				float val = e.getAttributes().get("value").getFloatValue();
+				this.status.getConditionRegist().put(k, val);
+			}
+			//STATUS
+			for (XMLElement e : root.getElement("status")) {
+				StatusKey k = e.getAttributes().get("key").of(StatusKey.class);
+				float val = e.getAttributes().get("value").getFloatValue();
+				float max = e.getAttributes().get("max").getFloatValue();
+				this.status.getBaseStatus().add(new StatusValue(k, val, 0, max));
+			}
+			//ITEM
+			for (XMLElement e : root.getElement("item")) {
+				String itemID = e.getAttributes().get("id").getValue();
+				Item i = ActionStorage.getInstance().itemOf(id);
+				this.status.getItemBag().add(i);
+			}
+			//EQIP
+			for (XMLElement e : root.getElement("eqip")) {
+				String itemID = e.getAttributes().get("id").getValue();
+				this.status.eqip(this.status.getItemBag().get(itemID));
+			}
+			f.dispose();
+		} catch (FileIOException | NameNotFoundException e) {
+			throw new IllegalXMLFormatException(e.getMessage());
+		}
+	}
+
+	@Deprecated
+	@Override
+	public final String getName() {
+		return id;
+	}
+
+	public final String getVisibleName() {
+		return visibleName;
+	}
+
+	public final String getId() {
+		return id;
+	}
+
+	public boolean isPlayer() {
+		return GameSystem.getInstance().getPartyStatus().contains(status);
+	}
+
+	@Override
+	public String toString() {
+		return "Actor{" + "id=" + id + ", visibleName=" + visibleName + ", iniStatusFile=" + iniStatusFile + '}';
+	}
+
+	@Override
+	public int compareTo(Actor o) {
+		return id.compareTo(o.id);
 	}
 
 }

@@ -20,23 +20,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import kinugasa.resource.Nameable;
-import kinugasa.resource.db.DBRecord;
 
 /**
  *
  * @vesion 1.0.0 - 2022/12/11_16:56:15<br>
  * @author Shinacho<br>
  */
-@DBRecord
 public class Quest implements Nameable {
 
+	public enum Type {
+		メイン,
+		サブ,
+	}
+
 	private String id;
-	private String type;
+	private Type type;
 	private int stage;
 	private String visibleName;
 	private String desc;
 
-	public Quest(String id, String type, int stage, String visibleName, String desc) {
+	public Quest(String id, Type type, int stage, String visibleName, String desc) {
 		this.id = id;
 		this.type = type;
 		this.stage = stage;
@@ -48,7 +51,7 @@ public class Quest implements Nameable {
 		return id;
 	}
 
-	public String getType() {
+	public Type getType() {
 		return type;
 	}
 

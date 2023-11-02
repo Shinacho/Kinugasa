@@ -124,8 +124,8 @@ public class XMLAttribute implements Nameable, Serializable {
 		return Boolean.parseBoolean(value);
 	}
 
-	public int[] parseInt(String separator) {
-		String[] data = value.split(separator);
+	public int[] safeParseInt(String separator) {
+		String[] data = safeSplit(separator);
 		return Arrays.stream(data).mapToInt(s -> Integer.parseInt(s)).toArray();
 	}
 

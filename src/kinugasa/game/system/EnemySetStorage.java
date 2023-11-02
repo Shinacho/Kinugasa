@@ -31,6 +31,7 @@ import kinugasa.resource.text.XMLFile;
 import kinugasa.util.Random;
 
 /**
+ * ESSはファイル内に複数または単一の敵出現セットを持ち、それらのうちどれかを返す機能を持っています。 敵出現セットには敵の他、BGMや出現率があります。
  *
  * @vesion 1.0.0 - 2022/11/21_21:39:55<br>
  * @author Shinacho<br>
@@ -50,6 +51,7 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 		return name;
 	}
 
+	// Pに基づいてエネミーセットストレージ内のエネミーセットを１つ選んで返す。
 	public EnemySet get() {
 		List<EnemySet> list = asList();
 		Collections.sort(list);
@@ -62,6 +64,7 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 		return random();
 	}
 
+	// fileNameをロード
 	public EnemySetStorage build() throws IllegalXMLFormatException, FileNotFoundException, FileIOException {
 		XMLFile file = new XMLFile(fileName);
 		if (!file.exists()) {
@@ -89,7 +92,7 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 			String lose = e.getAttributes().get("lose").getValue();
 			List<EnemyBlueprint> list = new ArrayList<>();
 			for (XMLElement ee : e.getElement("enemy")) {
-				list.add(EnemyStorage.getInstance().getByVisibleName(ee.getAttributes().get("name").getValue()));
+				list.add(new EnemyBlueprint(ee.getAttributes().get("fileName").getValue()));
 			}
 			EnemySet es = new EnemySet(id, list, p, bgmName, bgmMode, winBgmName, win, lose);
 			add(es);

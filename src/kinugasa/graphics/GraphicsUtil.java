@@ -23,6 +23,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.List;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.NewInstance;
 import kinugasa.util.Random;
 
 /**
@@ -146,6 +147,7 @@ public class GraphicsUtil {
 		g.fillOval((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 
+	@NewInstance
 	public static Color transparent(Color c, int a) {
 		return new Color(c.getRed(), c.getGreen(), c.getBlue(), a);
 	}

@@ -16,119 +16,66 @@
  */
 package kinugasa.game.system;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import kinugasa.game.I18N;
 import kinugasa.resource.Nameable;
-import kinugasa.resource.db.DBConnection;
-import kinugasa.resource.db.DBRecord;
-import kinugasa.resource.db.DBValue;
-import kinugasa.resource.db.KResultSet;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/23_18:56:25<br>
+ * @vesion 1.0.0 - 2023/10/14_19:23:33<br>
  * @author Shinacho<br>
  */
-@DBRecord
 public class Book implements Nameable, Cloneable {
 
-	private String id;
-	private String visibleName;
-	private String desc;
-	private int value;
+	private Action action;
 
-	public Book(String id, String name, String desc, int value) {
-		this.id = id;
-		this.visibleName = name;
-		this.desc = desc;
-		this.value = value;
+	public Book(Action action) {
+		if (action.getType() != ActionType.魔法) {
+			throw new GameSystemException("this book action is not a magic : " + action);
+		}
+		this.action = action;
 	}
 
-	public Book setValue(int value) {
-		this.value = value;
-		return this;
-	}
-
-	public int getValue() {
-		return value;
-	}
-
-	@Override
-	public String getName() {
-		return id;
-	}
-
-	public String getDesc() {
-		return desc;
+	public String getID() {
+		return action.getId();
 	}
 
 	public String getVisibleName() {
-		return visibleName;
+		return action.getVisibleName() + I18N.get(GameSystemI18NKeys.の本);
 	}
 
+	@Deprecated
 	@Override
-	public Book clone() {
-		try {
-			Book b = (Book) super.clone();
-			return b;
-		} catch (CloneNotSupportedException ex) {
-			throw new InternalError();
-		}
+	public String getName() {
+		return action.getId();
+	}
+
+	public Action getAction() {
+		return action;
+	}
+
+	public List<BookPage> doDisasse() {
+		return action.getAllEvents().stream().map(p -> new BookPage(p)).collect(Collectors.toList());
 	}
 
 	@Override
 	public String toString() {
-		return "Book{" + "name=" + visibleName + ", desc=" + desc + '}';
+		return "Book{" + "action=" + action + '}';
 	}
 
-	public List<Action> getBookAction() {
-		if (DBConnection.getInstance().isUsing()) {
-			//BOOK_ACTIONテーブルからアクションIDを取得
-			KResultSet kr = DBConnection.getInstance().execDirect("select ACTIONID from BOOK_ACTION where BookID='" + this.id + "';");
-			List<Action> a = new ArrayList<>();
-			for (List<DBValue> v : kr) {
-				if (!ActionStorage.getInstance().contains(v.get(0).get())) {
-					throw new GameSystemException("action id[" + v.get(0).get() + "] is not found. from book[" + this.id + "]");
-				}
-				a.add(ActionStorage.getInstance().get(v.get(0).get()));
-			}
-			return a;
-		}
-		return Collections.emptyList();
+	//自動計算された金額を返す
+	public int getPrice() {
+		return action.getAllEvents().stream().map(p -> new BookPage(p)).mapToInt(BookPage::getPrice).sum();
 	}
 
 	@Override
-	public int hashCode() {
-		int hash = 5;
-		hash = 67 * hash + Objects.hashCode(this.id);
-		return hash;
-	}
-
-	public List<Page> getPage() {
-		List<Page> res = new ArrayList<>();
-		for (Action a : getBookAction()) {
-			res.addAll(a.getBattleEvent().stream().map(p -> new Page(p)).collect(Collectors.toSet()));
-			res.addAll(a.getFieldEvent().stream().map(p -> new Page(p)).collect(Collectors.toSet()));
+	protected Book clone() {
+		try {
+			return (Book) super.clone();
+		} catch (CloneNotSupportedException ex) {
+			throw new InternalError(ex);
 		}
-		return res;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final Book other = (Book) obj;
-		return Objects.equals(this.id, other.id);
 	}
 
 }

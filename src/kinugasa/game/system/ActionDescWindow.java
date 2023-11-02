@@ -82,68 +82,55 @@ public class ActionDescWindow extends PCStatusWindow {
 		//SSMWに文字列を設定
 
 		List<Text> t = new ArrayList<>();
-		t.add(new Text("<---" + I18N.get(GameSystemI18NKeys.Xの行動, s.get(pcIdx).getName()) + "--->"));
+		t.add(new Text("<---" + I18N.get(GameSystemI18NKeys.Xの行動,
+				GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName()) + "--->"));
 
 		for (Action a : s.get(pcIdx).getActions()
 				.stream()
-				.filter(p -> p.isBattleUse())
+				.filter(p -> p.isBattle())
 				.sorted()
 				.collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
-			if (a.getType() == ActionType.ITEM) {
+			if (a.getType() == ActionType.アイテム) {
 				//表示しない
 				continue;
 			}
-			if (a.getType() == ActionType.OTHER) {
+			if (a.getType() == ActionType.行動) {
 				//表示しない
 				continue;
 			}
-			sb.append("  ")
-					.append(a.getVisibleName());
+			sb.append("  ").append(a.getVisibleName());
 			//魔法は魔法ウインドウで見れるので表示しない
-			if (a.getType() != ActionType.MAGIC) {
+			if (a.getType() != ActionType.魔法) {
 				sb.append("／");
 				sb.append(a.getDesc());
 			}
 			sb.append("(")
 					.append(I18N.get(GameSystemI18NKeys.範囲))
 					.append(":")
-					.append(a.getAreaWithEqip(s.get(pcIdx)));
+					.append(s.get(pcIdx).getAreaWithEqip(a));
 
-			if (a.getBattleEvent().stream().map(p -> p.getAttr())
+			if (a.getMainEvents().stream().map(p -> p.getAtkAttr())
 					.filter(p -> p != null)
-					.filter(p -> !AttrDescWindow.getUnvisibleAttrName().contains(p.getName()))
 					.count() > 0) {
 				sb.append("、")
 						.append(I18N.get(GameSystemI18NKeys.属性))
 						.append(":");
-				sb.append(a.getBattleEvent()
+				sb.append(a.getMainEvents()
 						.stream()
-						.filter(p -> p.getAttr() != null)
-						.filter(p -> !AttrDescWindow.getUnvisibleAttrName().contains(p.getAttr().getName()))
-						.map(p -> p.getAttr().getDesc())
+						.filter(p -> p.getAtkAttr() != null)
+						.map(p -> p.getAtkAttr().getVisibleName())
 						.distinct()
 						.collect(Collectors.toList()));
 			}
 
-			//ENEMYが入っている場合、minを、そうでない場合はMAXを取る
 			int i = 0;
-			if (!a.getBattleEvent().isEmpty()) {
-				if (a.getTargetOption().getDefaultTarget() == TargetOption.DefaultTarget.ENEMY) {
-					i = Math.abs(
-							a.getBattleEvent()
-									.stream()
-									.mapToInt(p -> (int) (p.getValue()))
-									.min()
-									.getAsInt());
-				} else {
-					i = Math.abs(
-							a.getBattleEvent()
-									.stream()
-									.mapToInt(p -> (int) (p.getValue()))
-									.max()
-									.getAsInt());
-				}
+			if (!a.getMainEvents().isEmpty()) {
+				i = a.getMainEvents()
+						.stream()
+						.mapToInt(p -> (int) (p.getValue()))
+						.map(p -> Math.abs(p))
+						.sum();
 			}
 
 			if (i != 0) {

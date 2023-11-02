@@ -18,6 +18,7 @@ package kinugasa.object;
 
 import kinugasa.game.GraphicsContext;
 import kinugasa.graphics.Animation;
+import kinugasa.resource.Nameable;
 
 /**
  * 画像配列をアニメーションとして表示するための ImageSpriteの拡張です.
@@ -31,8 +32,9 @@ import kinugasa.graphics.Animation;
  * @version 1.0.0 - 2013/01/14_20:49:20<br>
  * @author Shinacho<br>
  */
-public class AnimationSprite extends ImageSprite {
+public class AnimationSprite extends ImageSprite{
 
+	private String id;
 	private Animation animation;
 	private boolean imageUpdate = true;
 

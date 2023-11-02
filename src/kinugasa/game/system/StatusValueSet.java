@@ -16,98 +16,77 @@
  */
 package kinugasa.game.system;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import kinugasa.game.NewInstance;
 import kinugasa.resource.Storage;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_12:23:37<br>
+ * @vesion 1.0.0 - 2023/10/14_11:23:58<br>
  * @author Shinacho<br>
  */
 public class StatusValueSet extends Storage<StatusValue> implements Cloneable {
 
 	public StatusValueSet() {
-		for (StatusKey k : StatusKeyStorage.getInstance()) {
-			add(new StatusValue(k, 0, 0, 0, 0));
+	}
+
+	public void init() {
+		for (StatusKey k : StatusKey.values()) {
+			switch (k) {
+				case 体力:
+				case 正気度:
+				case 魔力:
+					add(new StatusValue(k, 0, k.getMin(), k.getMax()));
+					break;
+				default:
+					add(new StatusValue(k, 0));
+					break;
+			}
 		}
 	}
 
-	public void setAll(float val) {
-		for (StatusValue v : this) {
-			v.set(val);
-		}
+	public boolean contains(StatusKey s) {
+		return contains(s.getName());
+	}
+
+	public StatusValue get(StatusKey key) {
+		return get(key.getName());
 	}
 
 	@Override
 	public StatusValueSet clone() {
 		StatusValueSet r = new StatusValueSet();
 		for (StatusValue v : this) {
-			r.put(v.clone());
+			r.add(v.clone());
 		}
 		return r;
 	}
 
-	public boolean isZero(String name) {
-		return get(name).getValue() <= 0;
-	}
+	@NewInstance
+	public StatusValueSet composite(StatusValueSet v) {
+		StatusValueSet r = clone();
 
-	public boolean hasZero() {
-		for (StatusValue v : this) {
-			if (v.getValue() <= 0) {
-				return true;
+		//thisには全キーが入っている
+		for (StatusKey k : StatusKey.values()) {
+			StatusValue sv = r.get(k);
+			if (!v.contains(k.getName())) {
+				continue;
 			}
-		}
-		return false;
-	}
-
-	public boolean hasMinus() {
-		for (StatusValue v : this) {
-			if (v.getValue() < 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean isZero(boolean and, List<StatusKey> key) {
-		boolean result = and;
-		for (StatusValue v : this) {
-			if (key.contains(v.getKey())) {
-				if (and) {
-					result &= v.isZero();
-				} else {
-					result |= v.isZero();
+			switch (k) {
+				case 体力:
+				case 正気度:
+				case 魔力: {
+					float 割合 = sv.get割合();
+					sv.setMax(r.get(k).getMax() + v.get(k).getMax());
+					sv.setBy割合(割合);
+					break;
+				}
+				default: {
+					sv.add(v.get(k).getValue());
+					break;
 				}
 			}
 		}
-		return result;
-	}
-
-	public List<StatusKey> getZeroStatus() {
-		List<StatusKey> result = new ArrayList<>();
-		for (StatusValue v : this) {
-			if (v.getValue() <= 0) {
-				result.add(v.getKey());
-			}
-		}
-		return result;
-	}
-
-	public void addAll(Map<StatusKey, Float> v) {
-		for (Map.Entry<StatusKey, Float> e : v.entrySet()) {
-			for (StatusValue av : this) {
-				if (av.getKey().equals(e.getKey())) {
-					av.add(e.getValue());
-				}
-			}
-		}
-	}
-
-	@Override
-	public String toString() {
-		return super.toString(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+		return r;
 	}
 
 }

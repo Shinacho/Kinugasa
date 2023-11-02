@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import kinugasa.game.NoLoopCall;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
@@ -45,24 +44,24 @@ public class MaterialPageWindow extends BasicSprite {
 	private ScrollSelectableMessageWindow mw;
 
 	public enum Mode {
-		MATERIAL,
-		PAGE,
+		素材,
+		術式,
 	}
-	private Mode mode = Mode.MATERIAL;
+	private Mode mode = Mode.素材;
 
 	private void updateText() {
 		List<String> list = new ArrayList<>();
 		switch (mode) {
-			case MATERIAL:
+			case 素材:
 				Map<Material, Integer> map1 = GameSystem.getInstance().getMaterialBag().getMap();
 				for (Map.Entry<Material, Integer> e : map1.entrySet()) {
-					list.add(e.getKey().getName() + ":" + e.getValue() + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getValue()));
+					list.add(e.getKey().getName() + ":" + e.getValue() + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getVisibleName()));
 				}
 				break;
-			case PAGE:
-				Map<Page, Integer> map2 = GameSystem.getInstance().getPageBag().getMap();
-				for (Map.Entry<Page, Integer> e : map2.entrySet()) {
-					list.add(e.getKey().getEvent().getDesc() + ":" + e.getValue() + (I18N.get(GameSystemI18NKeys.価値) + ":" + 250));
+			case 術式:
+				Map<BookPage, Integer> map2 = GameSystem.getInstance().getPageBag().getMap();
+				for (Map.Entry<BookPage, Integer> e : map2.entrySet()) {
+					list.add(e.getKey().getVisibleName() + ":" + e.getValue() + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getPrice()));
 				}
 				break;
 		}
@@ -71,7 +70,7 @@ public class MaterialPageWindow extends BasicSprite {
 			list.add(I18N.get(GameSystemI18NKeys.何も持っていない));
 		}
 
-		list.add(0, "<----" + I18N.get(mode == Mode.MATERIAL ? GameSystemI18NKeys.素材 : GameSystemI18NKeys.術式) + "---->");
+		list.add(0, "<----" + I18N.get(mode) + "---->");
 
 		mw.setText(list.stream().map(p -> new Text(p)).collect(Collectors.toList()));
 	}
@@ -83,11 +82,11 @@ public class MaterialPageWindow extends BasicSprite {
 
 	public void switchMode() {
 		switch (mode) {
-			case MATERIAL:
-				mode = Mode.PAGE;
+			case 素材:
+				mode = Mode.術式;
 				break;
-			case PAGE:
-				mode = Mode.MATERIAL;
+			case 術式:
+				mode = Mode.素材;
 				break;
 		}
 		updateText();

@@ -16,103 +16,68 @@
  */
 package kinugasa.game.system;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import kinugasa.resource.Nameable;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_12:01:53<br>
+ * @vesion 1.0.0 - 2023/10/14_11:23:39<br>
  * @author Shinacho<br>
  */
-public class AttributeValue implements Nameable, Cloneable, Comparable<AttributeValue> {
+public class AttributeValue implements Nameable, Cloneable {
 
 	private AttributeKey key;
-	private float value, initial, min, max;
+	private float value;
 
-	public AttributeValue(AttributeKey key, float value, float initial, float min, float max) {
+	public AttributeValue(AttributeKey key, float value) {
 		this.key = key;
 		this.value = value;
-		this.initial = initial;
-		this.min = min;
-		this.max = max;
-	}
-
-	public boolean isZero() {
-		return value == 0;
-	}
-
-	@Override
-	public String getName() {
-		return key.getName();
 	}
 
 	public AttributeKey getKey() {
 		return key;
 	}
 
-	public void setKey(AttributeKey key) {
-		this.key = key;
+	@Override
+	public String getName() {
+		return key.toString();
 	}
 
-	public float getValue() {
-		return value;
+	public void to1() {
+		value = 1;
+	}
+
+	public void toZero() {
+		value = 0;
+	}
+
+	public void add(float v) {
+		value += v;
+		if (value < 0) {
+			value = 0;
+		}
+	}
+
+	public void mul(float v) {
+		value *= v;
+		if (value < 0) {
+			value = 0;
+		}
+	}
+
+	public boolean isZero() {
+		return value == 0;
+	}
+
+	public boolean isMinus() {
+		return value < 0;
 	}
 
 	public void setValue(float value) {
 		this.value = value;
 	}
 
-	public void set(float value) {
-		this.value = value;
-	}
-
-	public void add(float value) {
-		this.value += value;
-	}
-
-	public float getInitial() {
-		return initial;
-	}
-
-	public void toInitial() {
-		setValue(initial);
-	}
-
-	public void saveInitial() {
-		initial = value;
-	}
-
-	public void setInitialIfChange() {
-		if (value != initial) {
-			toInitial();
-		}
-	}
-
-	public void setMaxIfOverMax() {
-		if (value > max) {
-			value = max;
-		}
-	}
-
-	public void setInitial(float initial) {
-		this.initial = initial;
-	}
-
-	public float getMin() {
-		return min;
-	}
-
-	public void setMin(float min) {
-		this.min = min;
-	}
-
-	public float getMax() {
-		return max;
-	}
-
-	public void setMax(float max) {
-		this.max = max;
+	public float getValue() {
+		return value;
 	}
 
 	@Override
@@ -120,18 +85,13 @@ public class AttributeValue implements Nameable, Cloneable, Comparable<Attribute
 		try {
 			return (AttributeValue) super.clone();
 		} catch (CloneNotSupportedException ex) {
-			throw new InternalError(ex);
+			throw new InternalError();
 		}
 	}
 
 	@Override
-	public int compareTo(AttributeValue o) {
-		return key.compareTo(o.key);
-	}
-
-	@Override
 	public String toString() {
-		return "AttributeValue{" + "key=" + key + ", value=" + value + ", min=" + min + '}';
+		return "AttributeValue{" + "key=" + key + ", value=" + value + '}';
 	}
 
 }

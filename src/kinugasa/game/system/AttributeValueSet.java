@@ -16,47 +16,50 @@
  */
 package kinugasa.game.system;
 
-import java.util.Map;
+import kinugasa.game.NewInstance;
 import kinugasa.resource.Storage;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/15_12:21:49<br>
+ * @vesion 1.0.0 - 2023/10/14_11:23:52<br>
  * @author Shinacho<br>
  */
 public class AttributeValueSet extends Storage<AttributeValue> implements Cloneable {
 
 	public AttributeValueSet() {
-		for (AttributeKey k : AttributeKeyStorage.getInstance()) {
-			add(new AttributeValue(k, 1, 1, 0, 1));
-		}
-
 	}
 
-	public void setAll(float val) {
-		for (AttributeValue v : this) {
-			v.set(val);
+	public void init() {
+		for (AttributeKey k : AttributeKey.values()) {
+			add(new AttributeValue(k, 1.0f));
 		}
+	}
+
+	public AttributeValue get(AttributeKey key) {
+		return get(key.getName());
 	}
 
 	@Override
 	public AttributeValueSet clone() {
 		AttributeValueSet r = new AttributeValueSet();
-		r.clear();
 		for (AttributeValue v : this) {
 			r.add(v.clone());
 		}
 		return r;
 	}
 
-	public void addAll(Map<AttributeKey, Float> v) {
-		for (Map.Entry<AttributeKey, Float> e : v.entrySet()) {
-			for (AttributeValue av : this) {
-				if (av.getKey().equals(e.getKey())) {
-					av.add(e.getValue());
-				}
-			}
-		}
-	}
+	@NewInstance
+	public AttributeValueSet composite(AttributeValueSet v) {
+		AttributeValueSet r = clone();
 
+		//thisには全キーが入っている
+		for (AttributeKey k : AttributeKey.values()) {
+			AttributeValue sv = r.get(k);
+			if (!v.contains(k.getName())) {
+				continue;
+			}
+			sv.add(v.get(k).getValue());
+		}
+		return r;
+	}
 }

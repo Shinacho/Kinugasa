@@ -201,7 +201,7 @@ public final class Random implements Serializable {
 	}
 
 	// spread%上下した値を返します。
-	public static float percent(float num, float spread) {
+	public static float spread(float num, float spread) {
 		if (spread >= 1) {
 			return num * spread;
 		}

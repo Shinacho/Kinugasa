@@ -33,9 +33,9 @@ import kinugasa.object.BasicSprite;
 public class BattleStatusWindows extends BasicSprite {
 
 	private List<MessageWindow> mw = new ArrayList<>();
-	private List<Status> status;
+	private List<Actor> status;
 
-	BattleStatusWindows(List<Status> s) {
+	BattleStatusWindows(List<Actor> s) {
 		status = s;
 		init();
 	}
@@ -50,23 +50,23 @@ public class BattleStatusWindows extends BasicSprite {
 		float x = 3;
 		float y = 3;
 		float w = (GameOption.getInstance().getWindowSize().width - 6) / status.size() / GameOption.getInstance().getDrawSize();
-		for (Status s : status) {
+		for (Actor s : status) {
 			//表示文字列の生成
-			String text = s.getName() + " | ";
-			StatusValueSet es = s.getEffectedStatus();
+			String text = s + s.getVisibleName() + " | ";
+			StatusValueSet es = s.getStatus().getEffectedStatus();
 			int j = 0;
-			for (String vs : BattleConfig.getVisibleStatus()) {
+			for (StatusValue vs : es) {
 				if (j != 0) {
-					if (s.getName().substring(0, 1).getBytes().length == 1) {
-						text += " ".repeat(s.getName().length());
+					if (s.getVisibleName().substring(0, 1).getBytes().length == 1) {
+						text += " ".repeat(s.getVisibleName().length());
 					} else {
-						text += "　".repeat(s.getName().length());
+						text += "　".repeat(s.getVisibleName().length());
 					}
 					text += " | ";
 				}
-				text += StatusKeyStorage.getInstance().get(vs).getDesc()
+				text += vs.getKey().getVisibleName()
 						+ ":"
-						+ (int) (es.get(vs.trim()).getValue()) + Text.getLineSep();
+						+ (int) (vs.getValue()) + Text.getLineSep();
 				j++;
 			}
 			//座標の計算
@@ -83,23 +83,23 @@ public class BattleStatusWindows extends BasicSprite {
 	@Override
 	public void update() {
 		int i = 0;
-		for (Status s : status) {
+		for (Actor s : status) {
 			//表示文字列の生成
-			String text = s.getName() + " | ";
-			StatusValueSet es = s.getEffectedStatus();
+			String text = s.getVisibleName() + " | ";
+			StatusValueSet es = s.getStatus().getEffectedStatus();
 			int j = 0;
-			for (String vs : BattleConfig.getVisibleStatus()) {
+			for (StatusValue vs : es) {
 				if (j != 0) {
-					if (s.getName().substring(0, 1).getBytes().length == 1) {
-						text += " ".repeat(s.getName().length());
+					if (s.getVisibleName().substring(0, 1).getBytes().length == 1) {
+						text += " ".repeat(s.getVisibleName().length());
 					} else {
-						text += "　".repeat(s.getName().length());
+						text += "　".repeat(s.getVisibleName().length());
 					}
 					text += " | ";
 				}
-				text += StatusKeyStorage.getInstance().get(vs).getDesc()
+				text += vs.getKey().getVisibleName()
 						+ ":"
-						+ (int) (es.get(vs.trim()).getValue()) + Text.getLineSep();
+						+ (int) (vs.getValue()) + Text.getLineSep();
 				j++;
 			}
 			Text t = new Text(text);

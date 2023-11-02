@@ -16,6 +16,7 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.NPCSprite;
 import kinugasa.resource.Storage;
 
 /**
@@ -23,10 +24,10 @@ import kinugasa.resource.Storage;
  * @vesion 1.0.0 - 2022/11/08_19:25:01<br>
  * @author Shinacho<br>
  */
-public class NPCStorage extends Storage<NPC> {
+public class NPCStorage extends Storage<NPCSprite> {
 
-	public NPC get(D2Idx idx) {
-		for (NPC n : this) {
+	public NPCSprite get(D2Idx idx) {
+		for (NPCSprite n : this) {
 			if (n.getCurrentIdx().equals(idx)) {
 				return n;
 			}

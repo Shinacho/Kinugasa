@@ -24,21 +24,38 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LoopCall;
+import kinugasa.game.NewInstance;
+import kinugasa.game.Nullable;
 import kinugasa.game.OneceTime;
-import static kinugasa.game.system.TargetOption.DefaultTarget.ENEMY;
-import static kinugasa.game.system.TargetOption.SelectType.IN_AREA;
-import static kinugasa.game.system.TargetOption.SelectType.ONE;
+import static kinugasa.game.system.Action.ターゲットモード.グループ_切替可能_初期選択味方;
+import static kinugasa.game.system.Action.ターゲットモード.グループ_切替可能_初期選択味方_自身除く;
+import static kinugasa.game.system.Action.ターゲットモード.グループ_切替可能_初期選択敵;
+import static kinugasa.game.system.Action.ターゲットモード.グループ_切替可能_初期選択敵_自身除く;
+import static kinugasa.game.system.Action.ターゲットモード.グループ_味方全員;
+import static kinugasa.game.system.Action.ターゲットモード.グループ_味方全員_自身除く;
+import static kinugasa.game.system.Action.ターゲットモード.グループ_敵全員;
+import static kinugasa.game.system.Action.ターゲットモード.グループ_敵全員_自身除く;
+import static kinugasa.game.system.Action.ターゲットモード.全員;
+import static kinugasa.game.system.Action.ターゲットモード.全員_自身除く;
+import static kinugasa.game.system.Action.ターゲットモード.単体_切替可能_自身含まない_初期選択味方;
+import static kinugasa.game.system.Action.ターゲットモード.単体_切替可能_自身含まない_初期選択敵;
+import static kinugasa.game.system.Action.ターゲットモード.単体_切替可能_自身含む_初期選択味方;
+import static kinugasa.game.system.Action.ターゲットモード.単体_切替可能_自身含む_初期選択敵;
+import static kinugasa.game.system.Action.ターゲットモード.単体_味方のみ_自身含まない;
+import static kinugasa.game.system.Action.ターゲットモード.単体_味方のみ_自身含む;
+import static kinugasa.game.system.Action.ターゲットモード.単体_敵のみ;
+import static kinugasa.game.system.Action.ターゲットモード.自身のみ;
 import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.SimpleTextLabelModel;
 import kinugasa.game.ui.TextLabelSprite;
 import kinugasa.object.Drawable;
 import kinugasa.object.Sprite;
 import kinugasa.util.FrameTimeCounter;
+import kinugasa.game.NotNull;
+import static kinugasa.game.system.Action.死亡者ターゲティング.気絶損壊解脱者を選択可能;
 import kinugasa.util.Random;
-import static kinugasa.game.system.TargetOption.DefaultTarget.PARTY;
 
 /**
  *
@@ -56,623 +73,275 @@ public class BattleTargetSystem implements Drawable {
 		return INSTANCE;
 	}
 
+	@NewInstance
+	@NotNull
+	static List<Actor> recalcDistance(List<Actor> tgt, Point2D.Float p, int area) {
+		List<Actor> res = new ArrayList<>();
+		for (Actor a : tgt) {
+			if (a.getSprite().getCenter().distance(p) < area) {
+				res.add(a);
+			}
+		}
+		return res;
+	}
+
+	enum TeamSelect {
+		未使用,
+		味方選択中,
+		敵選択中,;
+
+		TeamSelect switchTeam() {
+			return switch (this) {
+				case 未使用 ->
+					throw new GameSystemException("missing team switch(TS)");
+				case 味方選択中 ->
+					TeamSelect.敵選択中;
+				case 敵選択中 ->
+					TeamSelect.味方選択中;
+			};
+		}
+	}
+
+	//選択中PC
 	private Actor currentUser;
+	//選択中アクション
 	private Action currentBA;
-	private boolean selfTarget = false;
-	//
-	private BattleActionAreaSprite currentArea;
-	private Color currentAreaColor = Color.BLUE;
-	//キャッシュ
-	private List<Actor> inArea = new ArrayList<>();
-	private List<Actor> inAreaTeam = new ArrayList<>();
-	private List<Actor> inAreaEnemy = new ArrayList<>();
-	private List<Actor> selected = new ArrayList<>();
-	//
+	//エリア表示
+	//常に選択中のPCを中心にするエリア
+	private BattleActionAreaSprite pcCenterArea;
+	private static final Color PC_CENTER_AREA_COLOR = Color.GREEN;
+	//移動時だけ出てPCの初期位置を中心にするエリア（注意：クローンの座標をセットせよ！
+	private BattleActionAreaSprite initialCenterArea;
+	private static final Color INITIAL_CENTER_AREA_COLOR = Color.BLUE;
+
 	//選択中ターゲットの選択アイコン点滅時間
-	private int blinkTime = 8;
-	private FrameTimeCounter iconBlinkTC = new FrameTimeCounter(blinkTime);
+	private static final int ICON_BLINK_TIME = 8;
+	private FrameTimeCounter iconBlinkTC = new FrameTimeCounter(ICON_BLINK_TIME);
 	//選択中アイコンのマスタ
 	private Sprite iconMaster;
 	//選択中アイコンの実態
 	private List<Sprite> icons = new ArrayList<>();
-	//
+	//状態
+	//INAREA内の選択されている標的のIDX
 	private int selectedIdx;
-	//スイッチチーム状況
-	private TargetOption.DefaultTarget selectedTeam;
+	//スイッチチームの状況（初期選択によって最初はどちらかになる
+	private TeamSelect teamSelect;
+	//
+	//キャッシュ
+	//現在のINAREA（SELFも入る可能性あり
+	private List<Actor> inArea候補者 = new ArrayList<>();
+	//
+	//魔法詠唱時の保存
+	private Map<Actor, List<Actor>> castTgt = new HashMap<>();
+
+	@Nullable
+	public static Actor random(Actor user, Action a) {
+		if (a.getType() == ActionType.行動) {
+			return null;
+		}
+		int area;
+		if (a.getType() == ActionType.アイテム) {
+			area = (int) (user.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue() / 2);
+		} else {
+			area = user.getStatus().getEffectedArea(a);
+		}
+		List<Actor> tgt = new ArrayList<>();
+		tgt.addAll(getInstance().allEnemyOf(user.getSprite().getCenter(), area));
+		tgt.addAll(getInstance().allPartyOf(user.getSprite().getCenter(), area));
+		if (tgt.isEmpty()) {
+			return null;
+		}
+		return Random.randomChoice(tgt);
+	}
+
+	public void saveNowTgt(Actor a) {
+		castTgt.put(a, getSelected());
+	}
+
+	public void saveTgt(Actor a, List<Actor> tgt) {
+		castTgt.put(a, tgt);
+	}
+
+	@Nullable
+	public List<Actor> getSavedTarget(Actor a) {
+		return castTgt.get(a);
+	}
 
 	@OneceTime
 	void init() {
-		iconBlinkTC = new FrameTimeCounter(blinkTime);
+		iconBlinkTC = new FrameTimeCounter(ICON_BLINK_TIME);
 		//アイコンマスタをみえない位置に配置
 		iconMaster = new TextLabelSprite("↓", new SimpleTextLabelModel(FontModel.DEFAULT.clone().setColor(Color.BLACK).setFontStyle(Font.BOLD)), -123, -123, 12, 12);
 		selectedIdx = 0;
-		currentArea = new BattleActionAreaSprite(currentAreaColor);
-		currentArea.setVisible(false);
-		selected.clear();
-		inArea.clear();
+		pcCenterArea = new BattleActionAreaSprite(PC_CENTER_AREA_COLOR);
+		pcCenterArea.setVisible(false);
+		initialCenterArea = new BattleActionAreaSprite(INITIAL_CENTER_AREA_COLOR);
+		initialCenterArea.setVisible(false);
+		inArea候補者.clear();
 		icons.clear();
-		selfTarget = false;
 	}
 
-	//
-	//-------------------------------static-------------------------------------
-	//
-	private List<String> untargetCondition = new ArrayList<>();
-
-	{
-		untargetCondition.addAll(BattleConfig.getUntargetConditionNames());
-		untargetCondition.removeAll(BattleConfig.deadConditionNames);
-	}
-
-	//eから最も近いPCを返す。
-	public static Actor nearPC(Actor e, boolean deadTgt) {
-		float distance = Integer.MAX_VALUE;
-		Actor result = null;
-		for (Actor c : getInstance().allPCs(e.getSprite().getCenter(), Integer.MAX_VALUE)) {
-			if (!deadTgt || c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
-				continue;
-			}
-			if (c.getStatus().hasConditions(false, getInstance().untargetCondition)) {
-				continue;
-			}
-			if (e.getSprite().getCenter().distance(c.getSprite().getCenter()) < distance) {
-				distance = (float) e.getSprite().getCenter().distance(c.getSprite().getCenter());
-				result = c;
-			}
-		}
-		return result;
-	}
-
-	public static Actor nearEnemy(Actor pc, boolean deadTgt) {
-		float distance = Integer.MAX_VALUE;
-		Actor result = null;
-		for (Actor c : getInstance().allEnemies(pc.getSprite().getCenter(), Integer.MAX_VALUE)) {
-			if (!deadTgt || c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
-				continue;
-			}
-			if (c.getStatus().hasConditions(false, getInstance().untargetCondition)) {
-				continue;
-			}
-			if (pc.getSprite().getCenter().distance(c.getSprite().getCenter()) < distance) {
-				distance = (float) pc.getSprite().getCenter().distance(c.getSprite().getCenter());
-				result = c;
-			}
-		}
-		return result;
-	}
-
-	public Actor farPC(Actor e, boolean deadTgt) {
-		float distance = Integer.MIN_VALUE;
-		Actor result = null;
-		for (Actor c : getInstance().allPCs(e.getSprite().getCenter(), Integer.MAX_VALUE)) {
-			if (!deadTgt || c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
-				continue;
-			}
-			if (c.getStatus().hasConditions(false, getInstance().untargetCondition)) {
-				continue;
-			}
-			if (e.getSprite().getCenter().distance(c.getSprite().getCenter()) > distance) {
-				distance = (float) e.getSprite().getCenter().distance(c.getSprite().getCenter());
-				result = c;
-			}
-		}
-		return result;
-
-	}
-
-	public Actor farEnemy(Actor pc, boolean deadTgt) {
-		float distance = Integer.MIN_VALUE;
-		Actor result = null;
-		for (Actor c : getInstance().allEnemies(pc.getSprite().getCenter(), Integer.MAX_VALUE)) {
-			if (!deadTgt || c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
-				continue;
-			}
-			if (c.getStatus().hasConditions(false, getInstance().untargetCondition)) {
-				continue;
-			}
-			if (pc.getSprite().getCenter().distance(c.getSprite().getCenter()) > distance) {
-				distance = (float) pc.getSprite().getCenter().distance(c.getSprite().getCenter());
-				result = c;
-			}
-		}
-		return result;
-	}
-
-	//カレントを設定せずに、ターゲットを分析する。
-	//空のターゲットインスタンスを返す場合がある。
-	static ActionTarget instantTarget(Actor user, Action a, boolean deadCondition) {
-//		if (GameSystem.isDebugMode()) {
-//			GameLog.print("TS intant Target start : " + a);
-//		}
-		Point2D.Float center = user.getSprite().getCenter();
-		int area = a instanceof Item
-				? (int) user.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2
-				: a.getAreaWithEqip(user.getStatus());
-		ActionTarget result = new ActionTarget(user, a);
-
-		List<Actor> tgt = new ArrayList<>();
-		boolean isPC = GameSystem.getInstance().getPartyStatus().contains(user.getStatus());
-		TargetOption o = a.getTargetOption();
-		//セルフターゲット要否判定
-		if (o.getSelfTarget() == TargetOption.SelfTarget.YES) {
-			result.setSelfTarget(true);
-		}
-		//INAREAかつIFFOFFの場合全キャラを返す
-		if (o.getSelectType() == TargetOption.SelectType.IN_AREA && o.getIff() == TargetOption.IFF.OFF) {
-			tgt.addAll(getInstance().all(user.getCenter(), area));
-		} else {
-			if (!isPC) {
-				switch (o.getDefaultTarget()) {
-					case ENEMY:
-						tgt.addAll(getInstance().allPCs(user.getCenter(), area));
-						break;
-					case PARTY:
-						tgt.addAll(getInstance().allEnemies(user.getCenter(), area));
-						break;
-					default:
-						throw new AssertionError();
-				}
-				switch (o.getSelectType()) {
-					case IN_AREA:
-						//処理なし
-						break;
-					case ONE:
-						if (tgt.size() > 1) {
-							tgt.subList(0, 1);
-						}
-						break;
-					default:
-						throw new AssertionError();
-				}
-
-			}
-			if (isPC) {
-				switch (o.getDefaultTarget()) {
-					case ENEMY:
-						tgt.addAll(getInstance().allEnemies(user.getCenter(), area));
-						break;
-					case PARTY:
-						tgt.addAll(getInstance().allPCs(user.getCenter(), area));
-						break;
-					default:
-						throw new AssertionError();
-				}
-				switch (o.getSelectType()) {
-					case IN_AREA:
-						//処理なし
-						break;
-					case ONE:
-						if (tgt.size() > 1) {
-							tgt.subList(0, 1);
-						}
-						break;
-					default:
-						throw new AssertionError();
-				}
-			}
-		}
-
-		tgt = tgt.stream().distinct().collect(Collectors.toList());
-		//アンターゲット状態のキャラを除去
-		if (!deadCondition) {
-			List<Actor> removeList = new ArrayList<>();
-			for (Actor c : tgt) {
-				if (c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
-					removeList.add(c);
-				}
-			}
-			tgt.removeAll(removeList);
-		}
-		result.setTarget(tgt);
-
-//		if (GameSystem.isDebugMode()) {
-//			kinugasa.game.GameLog.print("TS instantTarget " + result);
-//		}
-		return result;
-	}
-	//
-	//-------------------------------non-static---------------------------------
-	//
-
-	public TargetOption.DefaultTarget switchTeam() {
-		if (currentBA.getTargetOption().getSwitchTeam() == TargetOption.SwitchTeam.NG) {
-			throw new GameSystemException("this action cant switch team : " + currentBA);
-		}
-		selectedTeam = selectedTeam == ENEMY ? PARTY : ENEMY;
-		updateSelected();
-		updateIcon();
-		return selectedTeam;
-	}
-
-	public void next() {
-		//inAreaを取ったときの順番は同一になるのでそれを利用する。inAreaはLoopCall
-		int maxSize = selectedTeam == ENEMY
-				? (int) inArea.stream().filter(p -> !p.isPlayer()).count()
-				: (int) inArea.stream().filter(p -> p.isPlayer()).count();
-		selectedIdx++;
-		if (selectedIdx >= maxSize) {
-			selectedIdx = 0;
-		}
-		updateSelected();
-		updateIcon();
-	}
-
-	public void prev() {
-		//inAreaを取ったときの順番は同一になるのでそれを利用する。inAreaはLoopCall
-		int maxSize = selectedTeam == ENEMY
-				? (int) inArea.stream().filter(p -> !p.isPlayer()).count()
-				: (int) inArea.stream().filter(p -> p.isPlayer()).count();
-		selectedIdx--;
-		if (selectedIdx < 0) {
-			selectedIdx = maxSize - 1;
-		}
-		updateSelected();
-		updateIcon();
-	}
-
-	public ActionTarget getSelected() {
-		return new ActionTarget(currentUser, currentBA)
-				.setInField(false)
-				.setTarget(selected)
-				.setSelfTarget(selfTarget);
-	}
-
-	//これいる？
-	public ActionTarget getSelectedInArea() {
-		return new ActionTarget(currentUser, currentBA)
-				.setInField(false)
-				.setTarget(inArea)
-				.setSelfTarget(selfTarget);
-	}
-
-	public void randomSelect() {
-		selectedIdx = Random.randomAbsInt(inArea.size());
-		updateSelected();
-		updateIcon();
-	}
-
-	@LoopCall
-	@Override
-	public void draw(GraphicsContext g) {
-		currentArea.draw(g);
-		icons.forEach(p -> p.draw(g));
-	}
-
-	//
-	//--------------------------pp----------------------------------------------
-	//
-	boolean isEmpty() {
-		return selectedIdx < 0;
-	}
-
-	void setCurrent(CommandWindow w) {
-		//CMDWindowから遷移したIFF=OFF
-		if (currentUser == null) {
-			throw new GameSystemException("TS setCurrent(Window), but user is null");
-		}
-		if (w.getSelectedCmd() == null) {
-			//魔法やアイテムがない場合。
-			//エリア初期化のみ
-			currentArea.setArea(0);
-			currentArea.setVisible(false);
-			return;
-		}
-		selectedIdx = 0;
-		currentBA = w.getSelectedCmd();
-		selfTarget = currentBA.getTargetOption() == null ? false : currentBA.getTargetOption().getSelfTarget() == TargetOption.SelfTarget.YES;
-		selectedTeam = currentBA.getTargetOption() == null ? null : currentBA.getTargetOption().getDefaultTarget();
-		//カレントエリアの更新
-		//アイテムの場合はMOV/2
-		//防御、回避、状態はエリア表示しない
-		int area = 0;
-		if (currentBA.getName().equals(BattleConfig.ActionName.avoidance)
-				|| currentBA.getName().equals(BattleConfig.ActionName.defence)
-				|| currentBA.getName().equals(BattleConfig.ActionName.status)
-				|| currentBA.getName().equals(BattleConfig.ActionName.commit)) {
-			area = 0;
-		} else if (currentBA.getType() == ActionType.ITEM) {
-			area = (int) (currentUser.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
-		} else if (currentBA.getName().equals(BattleConfig.ActionName.move)
-				|| currentBA.getName().equals(BattleConfig.ActionName.escape)) {
-			area = (int) currentUser.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue();
-		} else {
-			area = currentBA.getAreaWithEqip(currentUser.getStatus());
-		}
-		currentArea.setArea(area);
-		currentArea.setLocationByCenter((Point2D.Float) currentUser.getSprite().getCenter().clone());
-		currentArea.setVisible(true);
-		updateInArea();
-		updateSelected();
-		updateIcon();
-		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.print("TS current:" + currentBA);
-		}
-	}
-
-	List<Actor> getInAreaDirect() {
-		return inArea;
-	}
-
-	List<Actor> getInAreaEnemy() {
-		return inAreaEnemy;
-	}
-
-	List<Actor> getInAreaTeam() {
-		return inAreaTeam;
-	}
-
-	void setCurrent(Actor pc, Action a) {
-		selectedIdx = 0;
-		currentUser = pc;
-		currentBA = a;
-		selfTarget = a.getBattleEvent().stream().anyMatch(p -> p.getTargetType() == TargetType.SELF);
-		selectedTeam = a.getTargetOption() == null ? null : a.getTargetOption().getDefaultTarget();
-
-		if (a.getName().equals(BattleConfig.ActionName.move)) {
-			//カレントエリアの更新
-			int area = (int) (pc.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue());
-			currentArea.setArea(area);
-			currentArea.setLocationByCenter((Point2D.Float) pc.getSprite().getCenter().clone());
-			currentArea.setVisible(true);
-		} else {
-			//カレントエリアの更新
-			int area = 0;
-			if (currentBA.getName().equals(BattleConfig.ActionName.avoidance)
-					|| currentBA.getName().equals(BattleConfig.ActionName.defence)
-					|| currentBA.getName().equals(BattleConfig.ActionName.status)) {
-				area = 0;
-			} else if (currentBA.getType() == ActionType.ITEM) {
-				area = (int) (currentUser.getStatus().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
-			} else {
-				area = currentBA.getAreaWithEqip(currentUser.getStatus());
-			}
-			currentArea.setArea(area);
-			currentArea.setLocationByCenter((Point2D.Float) pc.getSprite().getCenter().clone());
-			currentArea.setVisible(true);
-		}
-		//チーム選択の場合、初期状態を設定
-		updateInArea();
-		updateSelected();
-		updateIcon();
-		if (GameSystem.isDebugMode()) {
-			kinugasa.game.GameLog.print("TS : " + this);
-		}
-	}
-
-	void unsetCurrent() {
-		selectedIdx = -1;
-		selected.clear();
-		selfTarget = false;
-		inArea.clear();
-		currentArea.setVisible(false);
-		icons.clear();
-		selectedTeam = ENEMY;
+	public void setAreaVisible(boolean ini, boolean cur) {
+		initialCenterArea.setVisible(ini);
+		pcCenterArea.setVisible(cur);
 	}
 
 	@LoopCall
 	void update() {
-		//点滅を制御
-		if (iconBlinkTC.isReaching()) {
-			iconBlinkTC = new FrameTimeCounter(blinkTime);
-			icons.forEach(v -> v.switchVisible());
+		//アイコン点滅制御
+		if (!icons.isEmpty()) {
+			if (iconBlinkTC.isReaching()) {
+				iconBlinkTC = new FrameTimeCounter(ICON_BLINK_TIME);
+				icons.forEach(p -> p.switchVisible());
+			}
 		}
-		//カレントキャラの移動に合わせてinArea更新
-		if (currentUser == null) {
-			return;
-		}
-		updateInArea();
-		updateSelected();
 	}
 
-	//
-	//---------------------------------private----------------------------------
-	//
-	private void updateInArea() {
-		//カレントに基づいてINAREAを更新する
-		inArea.clear();
-		inAreaTeam.clear();;
-		inAreaEnemy.clear();
-
-		if (currentBA.getType() == ActionType.OTHER) {
-			return;
-		}
-		if (currentBA.getType() == ActionType.ITEM && !currentBA.isBattleUse()) {
-			return;
-		}
-
-		List<Actor> list = new ArrayList<>();
-		Point2D.Float center = currentUser.getSprite().getCenter();
-		int area = currentBA.getAreaWithEqip(currentUser.getStatus());
-		boolean isPC = currentUser.isPlayer();
-		TargetOption o = currentBA.getTargetOption();
-		//セルフターゲット要否判定
-		if (o.getSelfTarget() == TargetOption.SelfTarget.YES) {
-			selfTarget = true;
-		} else {
-			selfTarget = false;
-		}
-		inArea.addAll(getInstance().all(currentUser.getCenter(), area));
-
-		//アンターゲットの人を削除
-		boolean deadTgt = false;
-		//アクションが蘇生の場合は死亡状態者もターゲティング可能にする
-		Action a = currentBA.clone();
-		for (ActionEvent e : a.getBattleEvent()) {
-			Status tmpStatus = new Status("TMP", RaceStorage.getInstance().first());
-			BattleConfig.deadConditionNames.forEach(p -> tmpStatus.addCondition(p));
-			ActionEvent ee = e.clone();
-			ee.setP(1.0f);
-			ee.exec(ActionTarget.instantTarget(tmpStatus, a, tmpStatus));
-			if (!tmpStatus.hasConditions(true, BattleConfig.deadConditionNames)) {
-				deadTgt = true;
-				break;
-			}
-		}
-		List<Actor> removeList = new ArrayList<>();
-		if (!deadTgt) {
-			for (Actor c : inArea) {
-				if (c.getStatus().hasConditions(false, BattleConfig.deadConditionNames)) {
-					removeList.add(c);
-				}
-			}
-		}
-		//アンターゲットは強制的に排除
-		removeList.addAll(inArea.stream().filter(p -> p.getStatus().hasConditions(false, this.untargetCondition)).collect(Collectors.toList()));
-		inArea.removeAll(removeList);
-		inArea = inArea.stream().distinct().collect(Collectors.toList());
-
-		//IFF_ONの場合、INAREAから選択しているチーム以外を削除
-		removeList.clear();
-		if (currentBA.getTargetOption().getIff() == TargetOption.IFF.ON) {
-			if (selectedTeam == ENEMY) {
-				if (currentUser.isPlayer()) {
-					for (Actor c : inArea) {
-						if (c.isPlayer()) {
-							removeList.add(c);
-						}
-					}
-				} else {
-					for (Actor c : inArea) {
-						if (!c.isPlayer()) {
-							removeList.add(c);
-						}
-					}
-				}
-			} else {
-				if (currentUser.isPlayer()) {
-					for (Actor c : inArea) {
-						if (!c.isPlayer()) {
-							removeList.add(c);
-						}
-					}
-				} else {
-					for (Actor c : inArea) {
-						if (c.isPlayer()) {
-							removeList.add(c);
-						}
-					}
-				}
-			}
-		}
-		inArea.removeAll(removeList);
-		inArea = inArea.stream().distinct().collect(Collectors.toList());
-		//振り分け実施
-		for (Actor c : inArea) {
-			if (c.isPlayer()) {
-				inAreaTeam.add(c);
-			} else {
-				inAreaEnemy.add(c);
-			}
-		}
-
+	void setInitialAreaLocation(Point2D.Float p) {
+		initialCenterArea.setLocationByCenter(p);
+		initialCenterArea.setArea((int) currentUser.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
+		initialCenterArea.setVisible(true);
 	}
 
-	//INAREAには正しい対象が入っている。
-	private void updateSelected() {
-		//カレントに基づいてSELECTEDを更新する、先にINAREAを更新しておくこと		
-		selected.clear();
-		if (currentBA.getType() == ActionType.OTHER) {
-			return;
-		}
-		//SELFの場合SELECTED必要なし
-		if (currentBA.battleEventIsOnly(TargetType.SELF)) {
-			return;
-		}
-		//アンセットされている場合、selectedを空にしただけで戻る
-		if (selectedIdx < 0) {
-			return;
-		}
+	void setCurrentLocation() {
+		pcCenterArea.setLocationByCenter(currentUser.getSprite().getLocation());
+		pcCenterArea.setArea(
+				(int) currentUser.getStatus().getEffectedStatus().get(StatusKey.残り行動力).getValue());
+		pcCenterArea.setVisible(true);
+	}
 
-		if (inArea.isEmpty()) {
-			return;
+	void setCurrent(Actor a) {
+		if (a == null) {
+			throw new GameSystemException("current user is null : " + this);
 		}
-		//ターゲティングできない場合ランダム対象になる
-		if (currentBA.getTargetOption().getTargeting() == TargetOption.Targeting.DISABLE) {
-			if (currentBA.hasBattleTT(TargetType.RANDOM)) {
-				Collections.shuffle(inArea);
-				selected.add(inArea.get(0));
-			} else {
-				if (currentBA.getTargetOption().getSelectType() == IN_AREA) {
-					selected.addAll(inArea);
+		this.currentUser = a;
+		//各種フラグの初期化
+		initTeamSelect();
+		selectedIdx = 0;
+	}
+
+	void setCurrent(Action a) {
+		if (a == null) {
+			throw new GameSystemException("current action is null : " + this);
+		}
+		this.currentBA = a;
+		if (currentUser.isPlayer()) {
+			pcCenterArea.setLocationByCenter(currentUser.getSprite().getCenter());
+			if (a.getType() == ActionType.行動) {
+				if (BattleConfig.ActionID.移動.equals(a.getId()) || BattleConfig.ActionID.逃走.equals(a.getId())) {
+					pcCenterArea.setArea((int) currentUser.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
+					pcCenterArea.setVisible(true);
 				} else {
-					selected.add(inArea.get(0));
+					pcCenterArea.setVisible(false);
 				}
+			} else if (a.getType() == ActionType.アイテム) {
+				pcCenterArea.setArea((int) currentUser.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue() / 2);
+				pcCenterArea.setVisible(true);
+			} else {
+				pcCenterArea.setArea(currentUser.getStatus().getEffectedArea(a));
+				pcCenterArea.setVisible(true);
 			}
 		} else {
-			//ENABLE
-			if (currentBA.getTargetOption().getIff() == TargetOption.IFF.ON) {
-				//IFF ON
-				if (currentUser.isPlayer()) {
-					selected = inArea.stream().filter(p -> !p.isPlayer()).collect(Collectors.toList());
-				} else {
-					selected = inArea.stream().filter(p -> p.isPlayer()).collect(Collectors.toList());
-				}
-				//チームの場合、何もしないが、ONEの場合はIDX軒目を取る
-				if (currentBA.getTargetOption().getSelectType() == ONE) {
-					if (selected.size() > 1) {
-						Actor c = selected.get(selectedIdx);
-						selected = new ArrayList<>();
-						selected.add(c);
-					}
-				}
-			} else {
-				//IFF OFF・・INAREAはそのまま
-				//チームの場合、何もしないが、ONの場合はIDX軒目を取る
-				if (currentBA.getTargetOption().getSelectType() == IN_AREA) {
-					selected.addAll(inArea);
-				} else {
-					//ONE
-					if (selectedTeam == ENEMY) {
-						selected = inArea.stream().filter(p -> !p.isPlayer()).collect(Collectors.toList());
-					} else {
-						selected = inArea.stream().filter(p -> p.isPlayer()).collect(Collectors.toList());
-					}
-					if (selected.size() > 1) {
-						Actor c = selected.get(selectedIdx);
-						selected = new ArrayList<>();
-						selected.add(c);
-					}
-				}
-			}
-
+			pcCenterArea.setVisible(false);
 		}
-		selected = selected.stream().distinct().collect(Collectors.toList());
-
+		initTeamSelect();
+		selectedIdx = 0;
 	}
 
-	private void updateIcon() {
-		//カレントに基づいてアイコンを設定する
+	void setCurrent(CommandWindow w) {
+		setCurrent(w.getSelectedCmd());
+	}
+
+	void setIconVisible(boolean f) {
+		if (f) {
+			updateIcons();
+		} else {
+			icons.clear();
+		}
+	}
+
+	void unset() {
+		inArea候補者.clear();
 		icons.clear();
-		if (selected == null || selected.isEmpty()) {
+		selectedIdx = 0;
+		pcCenterArea.setVisible(false);
+		initialCenterArea.setVisible(false);
+		teamSelect = TeamSelect.未使用;
+	}
+
+	void nextTgt() {
+		if (inArea候補者.isEmpty()) {
 			return;
 		}
-		for (Actor c : selected) {
-			float x = c.getSprite().getCenterX();
-			float y = c.getSprite().getCenterY() - iconMaster.getHeight() - 14;
-			Sprite i = iconMaster.clone();
-			i.setLocationByCenter(new Point2D.Float(x, y));
-			icons.add(i);
-		}
-		if (selfTarget) {
-			Sprite i = iconMaster.clone();
-			float x = currentUser.getSprite().getCenterX();
-			float y = currentUser.getSprite().getCenterY() - iconMaster.getHeight() - 14;
-			i.setLocationByCenter(new Point2D.Float(x, y));
-			icons.add(i);
+		selectedIdx++;
+		if (selectedIdx > inArea候補者.size()) {
+			selectedIdx = 0;
 		}
 	}
 
-	private List<Actor> allEnemies(Point2D.Float center, int area) {
-		List<Actor> result = new ArrayList<>();
-		for (Actor e : GameSystem.getInstance().getBattleSystem().getEnemies()) {
-			if (e.getSprite().getCenter().distance(center) <= area) {
-				result.add(e);
-			}
+	void prevTgt() {
+		if (inArea候補者.isEmpty()) {
+			return;
 		}
-		return result;
+		selectedIdx--;
+		if (selectedIdx < 0) {
+			selectedIdx = inArea候補者.size() - 1;
+		}
 	}
 
-	private List<Actor> allPCs(Point2D.Float center, int area) {
+	//グループで切替可能な時だけ発動する。グループを切り替える。これはgetSElectedのリストに影響する
+	void switchTeam() {
+		if (currentBA.getTgtType().isチーム切替可能()) {
+			teamSelect = teamSelect.switchTeam();
+			updateInArea();
+			updateIcons();
+		}
+	}
+
+	//init
+	private void initTeamSelect() {
+		//カレントに基づいてTEAM＿SELECTの初期値設定
+		this.teamSelect = switch (currentBA.getTgtType()) {
+			case グループ_切替可能_初期選択味方 ->
+				TeamSelect.味方選択中;
+			case 単体_切替可能_自身含まない_初期選択味方 ->
+				TeamSelect.味方選択中;
+			case 単体_切替可能_自身含む_初期選択味方 ->
+				TeamSelect.味方選択中;
+			case グループ_切替可能_初期選択敵 ->
+				TeamSelect.敵選択中;
+			case 単体_切替可能_自身含まない_初期選択敵 ->
+				TeamSelect.敵選択中;
+			case 単体_切替可能_自身含む_初期選択敵 ->
+				TeamSelect.敵選択中;
+			case グループ_味方全員 ->
+				TeamSelect.未使用;
+			case グループ_敵全員 ->
+				TeamSelect.未使用;
+			case 全員 ->
+				TeamSelect.未使用;
+			case 単体_味方のみ_自身含まない ->
+				TeamSelect.未使用;
+			case 単体_味方のみ_自身含む ->
+				TeamSelect.未使用;
+			case 単体_敵のみ ->
+				TeamSelect.未使用;
+			case 自身のみ ->
+				TeamSelect.未使用;
+			case グループ_切替可能_初期選択味方_自身除く ->
+				TeamSelect.味方選択中;
+			case グループ_切替可能_初期選択敵_自身除く ->
+				TeamSelect.敵選択中;
+			case グループ_味方全員_自身除く ->
+				TeamSelect.味方選択中;
+			case グループ_敵全員_自身除く ->
+				TeamSelect.敵選択中;
+			case 全員_自身除く ->
+				TeamSelect.未使用;
+		};
+	}
+
+	List<Actor> allPartyOf(Point2D.Float center, int area) {
 		List<Actor> result = new ArrayList<>();
 		for (Actor pc : GameSystem.getInstance().getParty()) {
 			if (pc.getSprite().getCenter().distance(center) <= area) {
@@ -682,36 +351,353 @@ public class BattleTargetSystem implements Drawable {
 		return result;
 	}
 
-	private List<Actor> all(Point2D.Float center, int area) {
+	List<Actor> allEnemyOf(Point2D.Float center, int area) {
 		List<Actor> result = new ArrayList<>();
-		result.addAll(allEnemies(center, area));
-		result.addAll(allPCs(center, area));
+		for (Actor e : BattleSystem.getInstance().getEnemies()) {
+			if (e.getSprite().getCenter().distance(center) <= area) {
+				result.add(e);
+			}
+		}
 		return result;
 	}
 
-	BattleActionAreaSprite getCurrentArea() {
-		return currentArea;
+	List<Actor> itemPassTarget(Actor user) {
+		int area = (int) (user.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue() / 2);
+		Point2D.Float center = user.getSprite().getCenter();
+		List<Actor> result = new ArrayList<>();
+		for (Actor e : BattleSystem.getInstance().getEnemies()) {
+			if (e.getSprite().getCenter().distance(center) <= area) {
+				if (!e.isSummoned()) {
+					if (e.getStatus().getItemBag().canAdd()) {
+						result.add(e);
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	@NotNull
+	@NewInstance
+	public List<Actor> getSelected() {
+		if (inArea候補者.isEmpty()) {
+			return Collections.emptyList();
+		}
+		switch (currentBA.getTgtType()) {
+			case グループ_味方全員:
+			case グループ_敵全員:
+			case 全員:
+			case グループ_切替可能_初期選択味方:
+			case グループ_切替可能_初期選択敵:
+			case グループ_味方全員_自身除く:
+			case グループ_敵全員_自身除く:
+			case 全員_自身除く:
+			case グループ_切替可能_初期選択味方_自身除く:
+			case グループ_切替可能_初期選択敵_自身除く:
+				return new ArrayList<>(inArea候補者);
+			case 自身のみ:
+				return List.of(currentUser);
+			case 単体_切替可能_自身含む_初期選択味方:
+			case 単体_切替可能_自身含む_初期選択敵:
+			case 単体_味方のみ_自身含む:
+			case 単体_切替可能_自身含まない_初期選択味方:
+			case 単体_切替可能_自身含まない_初期選択敵:
+			case 単体_味方のみ_自身含まない:
+			case 単体_敵のみ: {
+				//inareaはソートされているし、自身も含む
+				return List.of(inArea候補者.get(selectedIdx));
+			}
+			default:
+				throw new GameSystemException("teamSelect mismatch (TS)");
+		}
+	}
+
+	//getSElectedにアイコンを設置する
+	private void updateIcons() {
+		if (!currentUser.isPlayer()) {
+			icons.clear();
+			return;
+		}
+		List<Actor> selected = getSelected();
+		if (selected.isEmpty()) {
+			return;
+		}
+		for (Actor c : selected) {
+			float x = c.getSprite().getCenterX();
+			float y = c.getSprite().getCenterY() - iconMaster.getHeight() - 14;
+			Sprite i = iconMaster.clone();
+			i.setLocationByCenter(new Point2D.Float(x, y));
+			icons.add(i);
+			i.setVisible(true);
+		}
+	}
+
+	void updateInArea() {
+		//カレントに基づいてINAREAを更新する]
+		//INAREAに入るのは以下の条件
+		//1:アクション＋ユーザのエリア内であること
+		//2:アクションのターゲット候補であること（＝敵のみアクションでは味方は入らない
+		//3:ユーザアクションを持っている場合、ユーザも入る
+		//
+		//INAREAに追加する順序はTGTTYPの初期選択より異なる。
+		inArea候補者.clear();
+
+		//行動アクションのときはINAREAなし
+		if (currentBA.getType() == ActionType.行動) {
+			return;
+		}
+		//アイテムで戦闘中使えない場合もINAREAなし
+		if (currentBA.getType() == ActionType.アイテム && !currentBA.isBattle()) {
+			return;
+		}
+
+		Point2D.Float center = currentUser.getSprite().getCenter();
+		int area = currentUser.getStatus().getEffectedArea(currentBA);
+		if (area == 0) {
+			return;
+		}
+		boolean isPC = currentUser.isPlayer();
+
+		//INAREA 更新
+		switch (currentBA.getTgtType()) {
+			case グループ_切替可能_初期選択味方:
+			case グループ_切替可能_初期選択敵: {
+				if (isPC) {
+					switch (teamSelect) {
+						case 味方選択中:
+							inArea候補者.addAll(allPartyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 敵選択中:
+							inArea候補者.addAll(allEnemyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 未使用:
+							break;
+					}
+				} else {
+					switch (teamSelect) {
+						case 味方選択中:
+							inArea候補者.addAll(allEnemyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 敵選択中:
+							inArea候補者.addAll(allPartyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 未使用:
+							break;
+					}
+				}
+				break;
+			}
+			case グループ_切替可能_初期選択味方_自身除く:
+			case グループ_切替可能_初期選択敵_自身除く: {
+				if (isPC) {
+					switch (teamSelect) {
+						case 味方選択中:
+							inArea候補者.addAll(allPartyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 敵選択中:
+							inArea候補者.addAll(allEnemyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 未使用:
+							break;
+					}
+				} else {
+					switch (teamSelect) {
+						case 味方選択中:
+							inArea候補者.addAll(allEnemyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 敵選択中:
+							inArea候補者.addAll(allPartyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 未使用:
+							break;
+					}
+				}
+				inArea候補者.remove(currentUser);
+				break;
+			}
+			case グループ_味方全員_自身除く: {
+				if (isPC) {
+					inArea候補者.addAll(allPartyOf(center, area));
+					inArea候補者.remove(currentUser);
+				} else {
+					inArea候補者.addAll(allEnemyOf(center, area));
+					inArea候補者.remove(currentUser);
+				}
+				break;
+			}
+			case グループ_敵全員_自身除く: {
+				if (isPC) {
+					inArea候補者.addAll(allEnemyOf(center, area));
+					inArea候補者.remove(currentUser);
+				} else {
+					inArea候補者.addAll(allPartyOf(center, area));
+					inArea候補者.remove(currentUser);
+				}
+				break;
+			}
+			case グループ_味方全員: {
+				if (isPC) {
+					inArea候補者.addAll(allPartyOf(center, area));
+				} else {
+					inArea候補者.addAll(allEnemyOf(center, area));
+				}
+				break;
+			}
+			case グループ_敵全員: {
+				if (isPC) {
+					inArea候補者.addAll(allEnemyOf(center, area));
+				} else {
+					inArea候補者.addAll(allPartyOf(center, area));
+				}
+				break;
+			}
+			case 全員: {
+				inArea候補者.addAll(allPartyOf(center, area));
+				inArea候補者.addAll(allEnemyOf(center, area));
+				break;
+			}
+			case 全員_自身除く: {
+				inArea候補者.addAll(allPartyOf(center, area));
+				inArea候補者.addAll(allEnemyOf(center, area));
+				inArea候補者.remove(currentUser);
+				break;
+			}
+			case 単体_切替可能_自身含まない_初期選択敵:
+			case 単体_切替可能_自身含まない_初期選択味方: {
+				if (isPC) {
+					switch (teamSelect) {
+						case 味方選択中:
+							inArea候補者.addAll(allPartyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 敵選択中:
+							inArea候補者.addAll(allEnemyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 未使用:
+							break;
+					}
+				} else {
+					switch (teamSelect) {
+						case 味方選択中:
+							inArea候補者.addAll(allEnemyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 敵選択中:
+							inArea候補者.addAll(allPartyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 未使用:
+							break;
+					}
+				}
+				inArea候補者.remove(currentUser);
+				break;
+			}
+			case 単体_切替可能_自身含む_初期選択味方:
+			case 単体_切替可能_自身含む_初期選択敵: {
+				if (isPC) {
+					switch (teamSelect) {
+						case 味方選択中:
+							inArea候補者.addAll(allPartyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 敵選択中:
+							inArea候補者.addAll(allEnemyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 未使用:
+							break;
+					}
+				} else {
+					switch (teamSelect) {
+						case 味方選択中:
+							inArea候補者.addAll(allEnemyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 敵選択中:
+							inArea候補者.addAll(allPartyOf(center, area));
+							inArea候補者.remove(currentUser);
+						case 未使用:
+							break;
+					}
+				}
+				break;
+			}
+			case 単体_味方のみ_自身含まない: {
+				if (isPC) {
+					inArea候補者.addAll(allPartyOf(center, area));
+				} else {
+					inArea候補者.addAll(allEnemyOf(center, area));
+				}
+				inArea候補者.remove(currentUser);
+				break;
+			}
+			case 単体_味方のみ_自身含む: {
+				if (isPC) {
+					inArea候補者.addAll(allPartyOf(center, area));
+				} else {
+					inArea候補者.addAll(allEnemyOf(center, area));
+				}
+				break;
+			}
+			case 単体_敵のみ: {
+				if (isPC) {
+					inArea候補者.addAll(allEnemyOf(center, area));
+				} else {
+					inArea候補者.addAll(allPartyOf(center, area));
+				}
+				break;
+			}
+			case 自身のみ: {
+				inArea候補者.add(currentUser);
+				break;
+			}
+			default:
+				throw new AssertionError("undefined tgt mode : " + this);
+		}
+		inArea候補者 = inArea候補者.stream().distinct().toList();
+
+		List<Actor> remove = new ArrayList<>();
+		//死亡者ターゲティング可否の判定
+		assert currentBA.getDeadTgt() != null : "currentBA s dead tgt is null (TS) : " + this;
+		switch (currentBA.getDeadTgt()) {
+			case 気絶損壊解脱者は選択不可能: {
+				remove.addAll(inArea候補者.stream()
+						.filter(p -> p.getStatus().hasCondition(ConditionKey.解脱)
+						|| p.getStatus().hasCondition(ConditionKey.損壊)
+						|| p.getStatus().hasCondition(ConditionKey.気絶)
+						).toList());
+				break;
+			}
+			case 損壊者を選択可能:
+				remove.addAll(inArea候補者.stream()
+						.filter(p -> p.getStatus().hasCondition(ConditionKey.解脱)
+						|| p.getStatus().hasCondition(ConditionKey.気絶)
+						).toList());
+				break;
+			case 気絶者を選択可能:
+				remove.addAll(inArea候補者.stream()
+						.filter(p -> p.getStatus().hasCondition(ConditionKey.解脱)
+						|| p.getStatus().hasCondition(ConditionKey.損壊)
+						).toList());
+				break;
+			case 解脱者を選択可能:
+				remove.addAll(inArea候補者.stream()
+						.filter(p -> p.getStatus().hasCondition(ConditionKey.損壊)
+						|| p.getStatus().hasCondition(ConditionKey.気絶)
+						).toList());
+				break;
+			case 気絶損壊解脱者を選択可能:
+		}
+		inArea候補者.removeAll(remove);
+
+	}
+
+	@LoopCall
+	@Override
+	public void draw(GraphicsContext g) {
+		pcCenterArea.draw(g);
+		initialCenterArea.draw(g);
+		icons.forEach(p -> p.draw(g));
 	}
 
 	@Override
 	public String toString() {
-		return "BattleTargetSystem{" + "currentUser=" + currentUser + ", currentBA=" + currentBA + ", selfTarget=" + selfTarget + ", inArea=" + inArea + ", selected=" + selected + ", selectedIdx=" + selectedIdx + '}';
-	}
-
-	private Map<Actor, ActionTarget> saveTargets = new HashMap<>();
-
-	public void saveTarget(Actor c) {
-		saveTargets.put(c, getSelected());
-	}
-
-	public void saveTarget(Actor c, ActionTarget tgt) {
-		saveTargets.put(c, tgt);
-	}
-
-	public ActionTarget getTarget(Actor c) {
-		ActionTarget r = saveTargets.get(c);
-		saveTargets.remove(c);
-		return r;
+		return "BattleTargetSystem{" + "currentUser=" + currentUser + ", currentBA=" + currentBA + ", pcCenterArea=" + pcCenterArea + ", initialCenterArea=" + initialCenterArea + ", iconBlinkTC=" + iconBlinkTC + ", iconMaster=" + iconMaster + ", icons=" + icons + ", selectedIdx=" + selectedIdx + ", teamSelect=" + teamSelect + ", inArea\u5019\u88dc\u8005=" + inArea候補者 + '}';
 	}
 
 }

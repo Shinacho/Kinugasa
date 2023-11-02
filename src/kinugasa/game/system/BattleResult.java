@@ -16,14 +16,20 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.game.I18N;
+
 /**
  *
  * @vesion 1.0.0 - 2022/11/26_17:22:59<br>
  * @author Shinacho<br>
  */
 public enum BattleResult {
-	NOT_YET,
-	WIN,
-	LOSE,
-	ESCAPE;
+	勝利_敵全滅,
+	勝利_敵が全員逃げた,
+	敗北_味方全滅,
+	敗北_こちらが全員逃げた,;
+
+	public String getVisibleName() {
+		return I18N.get(toString());
+	}
 }

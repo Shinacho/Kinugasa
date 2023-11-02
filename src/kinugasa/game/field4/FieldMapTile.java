@@ -16,6 +16,8 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.NPCSprite;
+import kinugasa.game.system.PCSprite;
 import java.util.List;
 
 /**
@@ -27,12 +29,12 @@ import java.util.List;
 public class FieldMapTile {
 
 	private List<MapChip> chip;
-	private NPC npc;
-	private PlayerCharacterSprite playerCharacter;
+	private NPCSprite npc;
+	private PCSprite playerCharacter;
 	private List<FieldEvent> event;
 	private Node node;
 
-	public FieldMapTile(List<MapChip> chip, NPC npc, PlayerCharacterSprite playerCharacter, List<FieldEvent> event, Node node) {
+	public FieldMapTile(List<MapChip> chip, NPCSprite npc, PCSprite playerCharacter, List<FieldEvent> event, Node node) {
 		this.chip = chip;
 		this.npc = npc;
 		this.playerCharacter = playerCharacter;
@@ -48,7 +50,7 @@ public class FieldMapTile {
 		return node;
 	}
 
-	public NPC getNpc() {
+	public NPCSprite getNpc() {
 		return npc;
 	}
 
@@ -64,7 +66,7 @@ public class FieldMapTile {
 		return VehicleStorage.getInstance().getCurrentVehicle().isStepOn(chip);
 	}
 
-	public PlayerCharacterSprite getPlayerCharacter() {
+	public PCSprite getPlayerCharacter() {
 		return playerCharacter;
 	}
 

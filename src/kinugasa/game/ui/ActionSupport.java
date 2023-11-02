@@ -26,13 +26,13 @@ package kinugasa.game.ui;
  */
 public interface ActionSupport {
 
-	public void addAction(Action... actions);
+	public void addAction(UIAction... actions);
 
-	public Action[] getActions();
+	public UIAction[] getActions();
 
-	public Action getAction();
+	public UIAction getAction();
 
-	public void setActions(Action... actions);
+	public void setActions(UIAction... actions);
 
 	public void exec();
 

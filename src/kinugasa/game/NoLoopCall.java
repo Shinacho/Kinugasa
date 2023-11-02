@@ -25,5 +25,5 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 public @interface NoLoopCall {
-
+	String value() default "";
 }

@@ -16,60 +16,99 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.game.I18N;
 import kinugasa.resource.Nameable;
 
 /**
- * ステータス1項目の名前と説明です
+ * ステータスのキーです.
  *
- * @vesion 1.0.0 - 2022/11/15_11:11:32<br>
+ * @vesion 1.0.0 - 2023/10/14_11:23:22<br>
  * @author Shinacho<br>
  */
-public class StatusKey implements Nameable, Comparable<StatusKey> {
+public enum StatusKey implements Nameable {
+	体力(true, 0, 9999, ConditionKey.損壊),
+	魔力(true, 0, 9999, ConditionKey.気絶),
+	正気度(true, 0, 99, ConditionKey.解脱),
+	//
+	筋力(true, 0, 99, null),//DCS
+	器用さ(true, 0, 99, null),//DCS
+	素早さ(true, 0, 99, null),//ターン内の行動順
+	精神力(true, 0, 99, null),//DCS
+	信仰(true, 0, 99, null),//DCS
+	詠唱(true, 0, 99, null),//ターン内の行動順
+	//
+	攻撃力(true, 0, 999, null),
+	魔法攻撃力(true, 0, 999, null),
+	防御力(true, 0, 999, null),
+	魔法防御力(true, 0, 999, null),
+	//
+	クリティカル率(true, 0, 1, null),
+	クリティカルダメージ倍数(true, 0, 32f, null),
+	魔法クリティカル率(true, 0, 1, null),
+	魔法クリティカルダメージ倍数(true, 0, 32f, null),
+	//
+	命中率(true, 0, 1, null),
+	回避率(true, 0, 1, null),
+	ブロック率(true, 0, 1, null),
+	ブロックダメージ倍率(true, 0, 1, null),
+	魔法命中率(true, 0, 1, null),
+	魔法回避率(true, 0, 1, null),
+	魔法ブロック率(true, 0, 1, null),
+	魔法ブロックダメージ倍率(true, 0, 1, null),
+	//
+	行動力(true, 0, 512, null),
+	残り行動力(false, 0, 512, null),
+	//
+	魔術使用可否(true, 0, 7, null),
+	装備属性(false, 0, 7, null),
+	//
+	レベル(true, 1, 99, null),
+	保有経験値(true, 0, 99999999, null),
+	次のレベルの経験値(true, 0, 99999999, null),
+	レベルアップ未使用スキルポイント(false, 0, 99, null);
 
-	private String name;
-	private String desc;
-	private int order;
+	public static final float 魔術使用可否＿使用可能 = 1f;
+
+	private boolean visible;
 	private float min, max;
-	private String when0ConditionName;
+	private boolean isPercent;
+	private ConditionKey when0Condition;
 
-	public StatusKey(String name, String desc, int order, float min, float max, String when0ConditionName) {
-		this.name = name;
-		this.desc = desc;
-		this.order = order;
+	private StatusKey(boolean visible, float min, float max, ConditionKey when0Condition) {
+		this.visible = visible;
 		this.min = min;
 		this.max = max;
-		this.when0ConditionName = when0ConditionName;
+		this.isPercent = max == 1f;
+		this.when0Condition = when0Condition;
 	}
 
-	public String getWhen0ConditionName() {
-		return when0ConditionName;
+	public String getVisibleName() {
+		return I18N.get(toString());
 	}
 
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public float getMax() {
-		return max;
+	public boolean isVisible() {
+		return visible;
 	}
 
 	public float getMin() {
 		return min;
 	}
 
-	@Override
-	public String toString() {
-		return "StatusKey{" + "name=" + name + ", desc=" + desc + ", order=" + order + ", min=" + min + ", max=" + max + ", when0ConditionName=" + when0ConditionName + '}';
+	public float getMax() {
+		return max;
+	}
+
+	public boolean isPercent() {
+		return isPercent;
+	}
+
+	public ConditionKey getWhen0Condition() {
+		return when0Condition;
 	}
 
 	@Override
-	public int compareTo(StatusKey o) {
-		return order - o.order;
+	public String getName() {
+		return toString();
 	}
 
 }

@@ -16,66 +16,35 @@
  */
 package kinugasa.game.system;
 
-import java.util.Objects;
-import kinugasa.resource.db.DBRecord;
-import kinugasa.resource.*;
+import kinugasa.game.I18N;
 
 /**
  *
- * @vesion 1.0.0 - 2022/11/16_16:55:03<br>
+ * @vesion 1.0.0 - 2023/10/15_11:14:55<br>
  * @author Shinacho<br>
  */
-@DBRecord
-public class WeaponType implements Nameable {
-
-	private String id;
-	private String visibleName;
-	private String desc;
-
-	public WeaponType(String id, String name, String desc) {
-		this.id = id;
-		this.visibleName = name;
-		this.desc = desc;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	@Override
-	public String getName() {
-		return id;
-	}
+public enum WeaponType {
+	剣,
+	盾,
+	刀,
+	短剣,
+	細剣,
+	大剣,
+	魔法剣,
+	槌,
+	槍,
+	薙刀,
+	大杖,
+	小杖,
+	棒,
+	棍,
+	鞭,
+	フレイル,
+	弓,
+	弩,
+	銃,;
 
 	public String getVisibleName() {
-		return visibleName;
+		return I18N.get(toString());
 	}
-
-	@Override
-	public String toString() {
-		return "WeaponMagicType{" + "id=" + id + ", visibleName=" + visibleName + '}';
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 97 * hash + Objects.hashCode(this.id);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final WeaponType other = (WeaponType) obj;
-		return Objects.equals(this.id, other.id);
-	}
-
 }

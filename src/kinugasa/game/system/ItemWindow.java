@@ -207,9 +207,11 @@ public class ItemWindow extends BasicSprite {
 	private static final int CHECK = 0;
 	private static final int USE = 1;
 	private static final int EQIP = 2;
-	private static final int PASS = 3;
-	private static final int DISASSEMBLY = 4;
-	private static final int DROP = 5;
+	private static final int EQIP_LEFT = 3;
+	private static final int EQIP_TWO_HAND = 4;
+	private static final int PASS = 5;
+	private static final int DISASSEMBLY = 6;
+	private static final int DROP = 7;
 
 	public void select() {
 		if (getSelectedPC().getItemBag().isEmpty()) {
@@ -224,10 +226,13 @@ public class ItemWindow extends BasicSprite {
 				options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.装備)));
+				options.add(new Text(I18N.get(GameSystemI18NKeys.左手に装備)));
+				options.add(new Text(I18N.get(GameSystemI18NKeys.両手持ちで装備)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.渡す)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.解体)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.捨てる)));
-				Choice c = new Choice(options, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, getSelectedItem().getVisibleName()));
+				Choice c = new Choice(options, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを,
+						getSelectedItem().getVisibleName()));
 				choiceUse.setText(c);
 				choiceUse.allText();
 				choiceUse.setSelect(0);
@@ -239,7 +244,7 @@ public class ItemWindow extends BasicSprite {
 				switch (choiceUse.getSelect()) {
 					case USE:
 						//アイテムがフィールドで使えるなら対象者選択へ
-						if (!i.isFieldUse()) {
+						if (!i.isField()) {
 							//フィールドでは使えません
 							msg.setText(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getVisibleName())
 									+ Text.getLineSep()
@@ -251,32 +256,37 @@ public class ItemWindow extends BasicSprite {
 						}
 						//ターゲット確認
 						//SELFのみの場合即時実行
-						//ターゲットタイプランダムの場合は即時実行
-
-						if (i.fieldEventIsOnly(TargetType.SELF) || i.fieldEventIsOnly(TargetType.RANDOM)) {
+						if (i.getMainEvents().isEmpty()) {
 							//即時実行してサブに効果を出力
 							Status tgt = getSelectedPC();
-							tgt.setDamageCalcPoint();
-							ActionTarget t;
-							ActionResult r = i.exec(t = ActionTarget.instantTarget(getSelectedPC(), i).setInField(true));
-							ConditionManager.getInstance().setCondition(t.getTarget());
-
+							tgt.saveBeforeDamageCalc();
+							ActionTarget t = new ActionTarget(
+									GameSystem.getInstance().getPCbyID(getSelectedPC().getId()),
+									i,
+									List.of(GameSystem.getInstance().getPCbyID(getSelectedPC().getId())),
+									true);
+							ActionResult r = i.exec(t);
+							//ActionEventでaddWhen0Condition実行済み
 							StringBuilder sb = new StringBuilder();
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getVisibleName()));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した,
+									GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
+									i.getVisibleName()));
 							sb.append(Text.getLineSep());
-							if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
+							if (r.is成功あり()) {
 								//成功
 								//効果測定
-								Map<StatusKey, Float> map = tgt.calcDamage();
-								for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
-									if (e.getValue() > 0) {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()))
-												.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()))
-												.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
+								StatusValueSet vs = tgt.getDamageFromSavePoint();
+								for (StatusValue v : vs) {
+									if (v.getValue() > 0) {
+										sb.append(I18N.get(GameSystemI18NKeys.Xの,
+												GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName()))
+												.append(I18N.get(GameSystemI18NKeys.Xは, v.getKey().getVisibleName()))
+												.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()) + ""));
 									} else {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()))
-												.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()))
-												.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
+										sb.append(I18N.get(GameSystemI18NKeys.Xの,
+												GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName()))
+												.append(I18N.get(GameSystemI18NKeys.Xに, v.getKey().getVisibleName()))
+												.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()) + ""));
 									}
 								}
 							} else {
@@ -289,37 +299,46 @@ public class ItemWindow extends BasicSprite {
 							return;
 						}
 						//チームが入っている場合即時実行
-						if (i.fieldEventIsOnly(TargetType.TEAM)) {
+						//USERリザルトは表示しないでいい
+						if (i.getTgtType() == Action.ターゲットモード.全員
+								|| i.getTgtType() == Action.ターゲットモード.グループ_味方全員
+								|| i.getTgtType() == Action.ターゲットモード.グループ_切替可能_初期選択味方
+								|| i.getTgtType() == Action.ターゲットモード.グループ_切替可能_初期選択敵
+								|| i.getTgtType() == Action.ターゲットモード.全員_自身除く
+								|| i.getTgtType() == Action.ターゲットモード.グループ_味方全員_自身除く
+								|| i.getTgtType() == Action.ターゲットモード.グループ_切替可能_初期選択味方_自身除く
+								|| i.getTgtType() == Action.ターゲットモード.グループ_切替可能_初期選択敵_自身除く) {
 							StringBuilder sb = new StringBuilder();
 							//即時実行してサブに効果を出力
-							sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getVisibleName()));
+							sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した,
+									GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
+									i.getVisibleName()));
 							sb.append(Text.getLineSep());
-							for (Status s : GameSystem.getInstance().getPartyStatus()) {
-								s.setDamageCalcPoint();
-								ActionTarget tgt;
-								ActionResult r = i.exec(tgt = ActionTarget.instantTarget(getSelectedPC(), i).setInField(true));
-								ConditionManager.getInstance().setCondition(tgt.getTarget());
-								if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
-
-									//成功
-									//効果測定・・・全行表示できると思うので、そうする
-									Map<StatusKey, Float> map = s.calcDamage();
-									for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
-										if (e.getValue() > 0) {
-											sb.append(I18N.get(GameSystemI18NKeys.Xの, s.getName()))
-													.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()))
-													.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""))
-													.append(Text.getLineSep());
-										} else {
-											sb.append(I18N.get(GameSystemI18NKeys.Xの, s.getName()))
-													.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()))
-													.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""))
-													.append(Text.getLineSep());
-										}
-									}
+							GameSystem.getInstance().getParty().forEach(p -> p.getStatus().saveBeforeDamageCalc());
+							ActionTarget t = new ActionTarget(
+									GameSystem.getInstance().getPCbyID(getSelectedPC().getId()),
+									i,
+									GameSystem.getInstance().getParty(),
+									true);
+							ActionResult r = i.exec(t);
+							for (Map.Entry<Actor, List<ActionResult.EventResult>> e : r.getResult().entrySet()) {
+								StatusValueSet vs = e.getKey().getStatus().getDamageFromSavePoint();
+								if (vs.isEmpty() || vs.stream().allMatch(p -> p.getValue() == 0)) {
+									sb.append(I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, e.getKey().getVisibleName()));
+									sb.append(Text.getLineSep());
 								} else {
-									//失敗
-									sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
+									for (StatusValue v : vs) {
+										if (v.getValue() > 0) {
+											sb.append(I18N.get(GameSystemI18NKeys.Xの, e.getKey().getVisibleName()))
+													.append(I18N.get(GameSystemI18NKeys.Xは, v.getKey().getVisibleName()))
+													.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()) + ""));
+										} else {
+											sb.append(I18N.get(GameSystemI18NKeys.Xの, e.getKey().getVisibleName()))
+													.append(I18N.get(GameSystemI18NKeys.Xに, v.getKey().getVisibleName()))
+													.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()) + ""));
+										}
+										sb.append(Text.getLineSep());
+									}
 								}
 							}
 							msg.setText(sb.toString());
@@ -329,18 +348,19 @@ public class ItemWindow extends BasicSprite {
 						}
 						//その他の場合はターゲット選択へ
 						List<Text> options3 = new ArrayList<>();
-						options3.addAll(list.stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
-						tgtSelect.setText(new Choice(options3, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを誰に使う, i.getVisibleName())));
+						options3.addAll(list.stream().map(p -> new Text(p.getVisibleName())).collect(Collectors.toList()));
+						tgtSelect.setText(new Choice(options3, "ITEM_WINDOW_SUB",
+								I18N.get(GameSystemI18NKeys.Xを誰に使う, i.getVisibleName())));
 						tgtSelect.allText();
 						group.show(tgtSelect);
 						mode = Mode.TARGET_SELECT;
 						break;
 					case EQIP:
 						//装備できるアイテムかどうかで分岐
-						if (getSelectedPC().getEqipment().values().contains(i)) {
+						if (getSelectedPC().getEqip().values().contains(i)) {
 							//すでに装備している時は外す
 							//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
-							if (ItemStorage.bagItems.containsKey(i.getName())) {
+							if (ActionStorage.isItemBagItem(i.getId())) {
 								//もともとのサイズ
 								int itemBagDefaultMax = getSelectedPC().getRace().getItemBagSize();
 								//現在の持ってる数
@@ -355,24 +375,87 @@ public class ItemWindow extends BasicSprite {
 									break;
 								}
 							}
-							getSelectedPC().getEqipment().put(i.getEqipmentSlot(), null);
+							if (ActionStorage.isBookBagItem(i.getId())) {
+								//もともとのサイズ
+								int itemBagDefaultMax = getSelectedPC().getRace().getBookBagSize();
+								//現在の持ってる数
+								int currentSize = getSelectedPC().getBookBag().size();
+								//現在のサイズがもともともサイズより大きい場合は外せない
+								if (currentSize > itemBagDefaultMax) {
+									//外せない
+									msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+									msg.allText();
+									group.show(msg);
+									mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+									break;
+								}
+							}
+							//外すスロットを設定
+							//iが弓の場合、左手を外す（同時に右手も外す
+							if (i.getWeaponType() == WeaponType.弓) {
+								getSelectedPC().unEqip(EqipSlot.右手);
+								getSelectedPC().unEqip(EqipSlot.左手);
+							} else {
+								//このアイテムを左手に装備している場合は左てを、そうでなければアイテムのスロットを利用
+								EqipSlot tgtSlot
+										= i.equals(getSelectedPC().getEqip().get(EqipSlot.左手))
+										? EqipSlot.左手 : i.getSlot();
+								getSelectedPC().unEqip(tgtSlot);
+								//右手を外した場合で左手が両手持ちの場合は左手も外す
+								if (tgtSlot == EqipSlot.右手) {
+									if (ActionStorage.両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
+										getSelectedPC().unEqip(EqipSlot.左手);
+									}
+								}
+							}
+
 							getSelectedPC().updateAction();
+							String cnd = getSelectedPC().addWhen0Condition();
 							//アイテム所持数の再計算
-							getSelectedPC().updateItemBagSize();
-							msg.setText(I18N.get(GameSystemI18NKeys.Xを外した, i.getVisibleName()));
+							getSelectedPC().updateBagSize();
+							if (cnd == null) {
+								msg.setText(I18N.get(GameSystemI18NKeys.Xを外した, i.getVisibleName()));
+							} else {
+								msg.setText(I18N.get(GameSystemI18NKeys.Xを外した, i.getVisibleName())
+										+ Text.getLineSep() + cnd);
+							}
 							msg.allText();
-							GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction());
 							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
-						} else if (getSelectedPC().canEqip(i)) {
+						} else if (i.canEqip(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()))) {
 							//装備する
-							getSelectedPC().addEqip(i);
+							getSelectedPC().eqip(i);
+							//両手持ち武器の場合は左手を強制的に両手持ちにする
+							boolean ryoute = false;
+							if (i.getWeaponType() == WeaponType.弓) {
+								getSelectedPC().eqip(EqipSlot.右手, ActionStorage.両手持ち_弓);
+								getSelectedPC().eqip(EqipSlot.左手, i);
+								ryoute = true;
+							} else if (Set.of(WeaponType.大剣, WeaponType.大杖, WeaponType.銃, WeaponType.弩, WeaponType.薙刀)
+									.contains(i.getWeaponType())) {
+								getSelectedPC().eqipLeftHand(ActionStorage.両手持ち);
+								ryoute = true;
+							}
 							getSelectedPC().updateAction();
+							String cnd = getSelectedPC().addWhen0Condition();
 							//アイテム所持数の再計算
-							getSelectedPC().updateItemBagSize();
-							msg.setText(I18N.get(GameSystemI18NKeys.Xを装備した, i.getVisibleName()));
+							getSelectedPC().updateBagSize();
+							if (cnd == null) {
+								if (ryoute) {
+									msg.setText(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName()));
+								} else {
+									msg.setText(I18N.get(GameSystemI18NKeys.Xを装備した, i.getVisibleName()));
+								}
+							} else {
+								if (ryoute) {
+									msg.setText(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName())
+											+ Text.getLineSep() + cnd);
+								} else {
+									msg.setText(I18N.get(GameSystemI18NKeys.Xを装備した, i.getVisibleName())
+											+ Text.getLineSep() + cnd);
+								}
+							}
 							msg.allText();
-							GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction());
 							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
@@ -383,11 +466,100 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						}
 						break;
+					case EQIP_LEFT: {
+						//武器じゃなかったら装備できないを表示
+						if (!i.isWeapon()) {
+							msg.setText(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
+							msg.allText();
+							group.show(msg);
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+							return;
+						}
+						//両手持ち武器の場合は左手に装備できない
+						if (Set.of(WeaponType.大剣, WeaponType.大杖, WeaponType.銃, WeaponType.弩, WeaponType.薙刀)
+								.contains(i.getWeaponType())) {
+							msg.setText(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
+							msg.allText();
+							group.show(msg);
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+							return;
+						}
+						if (i.canEqip(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()))) {
+							//装備する
+							getSelectedPC().eqip(EqipSlot.左手, i);
+							//弓の場合は右手を両手持ちにする
+							if (i.getWeaponType() == WeaponType.弓) {
+								getSelectedPC().eqip(EqipSlot.右手, ActionStorage.両手持ち_弓);
+							}
+							getSelectedPC().updateAction();
+							String cnd = getSelectedPC().addWhen0Condition();
+							//アイテム所持数の再計算
+							getSelectedPC().updateBagSize();
+							if (cnd == null) {
+								msg.setText(I18N.get(GameSystemI18NKeys.Xを左手に装備した, i.getVisibleName()));
+							} else {
+								msg.setText(I18N.get(GameSystemI18NKeys.Xを左手に装備した, i.getVisibleName())
+										+ Text.getLineSep() + cnd);
+							}
+							msg.allText();
+							group.show(msg);
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+						} else {
+							//装備できない
+							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
+							msg.allText();
+							group.show(msg);
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+						}
+						break;
+					}
+					case EQIP_TWO_HAND: {
+						//武器じゃなかったら装備できないを表示
+						if (!i.isWeapon()) {
+							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
+							msg.allText();
+							group.show(msg);
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+							return;
+						}
+						if (i.canEqip(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()))) {
+							//装備する
+							//弓の場合は右手を両手持ちにする
+							if (i.getWeaponType() == WeaponType.弓) {
+								getSelectedPC().eqip(EqipSlot.右手, ActionStorage.両手持ち_弓);
+							} else {
+								getSelectedPC().eqip(EqipSlot.右手, i);
+								//左手に両手持ちを装備
+								getSelectedPC().eqipLeftHand(ActionStorage.両手持ち);
+							}
+							getSelectedPC().updateAction();
+							String cnd = getSelectedPC().addWhen0Condition();
+							//アイテム所持数の再計算
+							getSelectedPC().updateBagSize();
+							if (cnd == null) {
+								msg.setText(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName()));
+							} else {
+								msg.setText(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName())
+										+ Text.getLineSep() + cnd);
+							}
+							msg.allText();
+							group.show(msg);
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+						} else {
+							//装備できない
+							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
+							msg.allText();
+							group.show(msg);
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+						}
+						break;
+					}
 					case PASS:
 						//パスターゲットに移動
 						List<Text> options2 = new ArrayList<>();
-						options2.addAll(list.stream().map(p -> new Text(p.getName())).collect(Collectors.toList()));
-						tgtSelect.setText(new Choice(options2, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを誰に渡す, i.getVisibleName())));
+						options2.addAll(list.stream().map(p -> new Text(p.getVisibleName())).collect(Collectors.toList()));
+						tgtSelect.setText(new Choice(options2, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを誰に渡す,
+								i.getVisibleName())));
 						tgtSelect.allText();
 						group.show(tgtSelect);
 						mode = Mode.TARGET_SELECT;
@@ -410,33 +582,52 @@ public class ItemWindow extends BasicSprite {
 							sb.append(" ").append(i.getDesc());
 							sb.append(Text.getLineSep());
 						}
+						//装備品の場合、スタイルとエンチャを表示
+						if (i.getSlot() != null) {
+							//スタイル
+							if (i.getStyle() != null) {
+								sb.append(I18N.get(GameSystemI18NKeys.様式))
+										.append(":")
+										.append(i.getStyle().getVisibleName())
+										.append("(")
+										.append(i.getStyle().descI18N())
+										.append(")")
+										.append(Text.getLineSep());
+							}
+							//エンチャント
+							if (i.getEnchant() != null) {
+								sb.append(I18N.get(GameSystemI18NKeys.エンチャント))
+										.append(":")
+										.append(i.getEnchant().getVisibleName())
+										.append("(")
+										.append(i.getEnchant().descI18N())
+										.append(")")
+										.append(Text.getLineSep());
+							}
+						}
 						//価値
-						sb.append(" ").append(I18N.get(GameSystemI18NKeys.価値))
-								.append(":").append(i.getValue());
-						sb.append(Text.getLineSep());
+						if (i.canSale()) {
+							sb.append(" ").append(I18N.get(GameSystemI18NKeys.価値))
+									.append(":").append(i.getPrice());
+							sb.append(Text.getLineSep());
+						}
 						//装備スロット
-						sb.append(" ").append(I18N.get(GameSystemI18NKeys.装備スロット))
-								.append(":").append(i.getEqipmentSlot() != null
-								? i.getEqipmentSlot().getName()
-								: I18N.get(GameSystemI18NKeys.なし));
-						sb.append(Text.getLineSep());
+						if (i.getSlot() != null) {
+							sb.append(" ").append(I18N.get(GameSystemI18NKeys.装備スロット))
+									.append(":").append(i.getSlot().getVisibleName());
+							sb.append(Text.getLineSep());
+						}
 						//WMT
-						if (i.getWeaponMagicType() != null) {
+						if (i.getWeaponType() != null) {
 							sb.append(" ").append(I18N.get(GameSystemI18NKeys.武器種別))
-									.append(":").append(i.getWeaponMagicType().getVisibleName());
+									.append(":").append(i.getWeaponType().getVisibleName());
 							sb.append(Text.getLineSep());
 						}
 						//area
 						int area = 0;
-						if (i.isEqipItem()) {
+						if (i.isWeapon()) {
 							//範囲表示するのは武器だけ
-							if (i.getWeaponMagicType() != null) {
-								area = i.getArea();
-							}
-						} else {
-							if (i.getBattleEvent() != null && !i.getBattleEvent().isEmpty()) {
-								area = (int) (getSelectedPC().getEffectedStatus().get(BattleConfig.StatusKey.move).getValue() / 2);
-							}
+							area = i.getArea();
 						}
 						if (area != 0) {
 							sb.append(" ").append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(area);
@@ -448,57 +639,82 @@ public class ItemWindow extends BasicSprite {
 							sb.append(Text.getLineSep());
 						}
 						//DCS
-						if (i.getDamageCalcStatusKey() != null && !i.getDamageCalcStatusKey().isEmpty()) {
-							String dcs = "";
-							for (StatusKey s : i.getDamageCalcStatusKey()) {
-								dcs += s.getDesc() + ",";
-							}
+						if (i.getDcs() != null) {
+							String dcs = i.getDcs().getVisibleName();
 							dcs = dcs.substring(0, dcs.length() - 1);
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.ダメージ計算方式)).append(":").append(dcs);
+							sb.append(" ").append(I18N.get(GameSystemI18NKeys.ダメージ計算ステータス)).append(":").append(dcs);
 							sb.append(Text.getLineSep());
 						}
 						//戦闘中アクション
-						if (i.getBattleEvent() != null && !i.getBattleEvent().isEmpty()) {
+						if (i.isBattle()) {
 							sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムは戦闘中使える));
 							sb.append(Text.getLineSep());
 						}
 						//フィールドアクション
-						if (i.getFieldEvent() != null && !i.getFieldEvent().isEmpty()) {
+						if (i.isField()) {
 							sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムはフィールドで使える));
 							sb.append(Text.getLineSep());
 						}
-						if (i.isEqipItem()) {
+						if (i.getSlot() != null) {
 							//攻撃回数
-							if (i.getActionCount() > 1) {
-								sb.append(" ").append(I18N.get(GameSystemI18NKeys.攻撃回数)).append(":").append(i.getActionCount() + "");
+							if (i.isWeapon() && i.getEffectedATKCount() > 1) {
+								sb.append(" ").append(I18N.get(GameSystemI18NKeys.攻撃回数)).append(":")
+										.append(i.getEffectedATKCount() + "");
 								sb.append(Text.getLineSep());
 							}
 							//eqStatus
-							if (i.getEqStatus() != null && !i.getEqStatus().isEmpty()) {
-								for (StatusValue s : i.getEqStatus()) {
-									if (StatusDescWindow.getUnvisibleStatusList().contains(s.getName())) {
+							sb.append(I18N.get(GameSystemI18NKeys.ステータス));
+							if (i.getEffectedStatus() != null && !i.getEffectedStatus().isEmpty()) {
+								for (StatusValue s : i.getEffectedStatus()) {
+									if (!s.getKey().isVisible()) {
 										continue;
 									}
 									String v;
-									if (s.getKey().getMax() <= 1f) {
+									if (s.getKey().isPercent()) {
 										v = (float) (s.getValue() * 100) + "%";//1%単位
 									} else {
 										v = (int) s.getValue() + "";
 									}
 									if (!v.startsWith("0")) {
 										sb.append(" ");
-										sb.append(s.getKey().getDesc()).append(":").append(v);
+										sb.append(s.getKey().getVisibleName()).append(":").append(v);
 										sb.append(Text.getLineSep());
 									}
 								}
 							}
 							//eqAttr
-							if (i.getEqAttr() != null && !i.getEqAttr().isEmpty()) {
-								for (AttributeValue a : i.getEqAttr()) {
+							sb.append(I18N.get(GameSystemI18NKeys.被属性));
+							sb.append(Text.getLineSep());
+							if (i.getEffectedAttrIn() != null && !i.getEffectedAttrIn().isEmpty()) {
+								for (AttributeValue a : i.getEffectedAttrIn()) {
 									String v = (float) (a.getValue() * 100) + "%";
 									if (!v.startsWith("0")) {
 										sb.append(" ");
-										sb.append(a.getKey().getDesc()).append(":").append(v);
+										sb.append(a.getKey().getVisibleName()).append(":").append(v);
+										sb.append(Text.getLineSep());
+									}
+								}
+							}
+							sb.append(I18N.get(GameSystemI18NKeys.与属性));
+							sb.append(Text.getLineSep());
+							if (i.getEffectedAttrOut() != null && !i.getEffectedAttrOut().isEmpty()) {
+								for (AttributeValue a : i.getEffectedAttrOut()) {
+									String v = (float) (a.getValue() * 100) + "%";
+									if (!v.startsWith("0")) {
+										sb.append(" ");
+										sb.append(a.getKey().getVisibleName()).append(":").append(v);
+										sb.append(Text.getLineSep());
+									}
+								}
+							}
+							sb.append(I18N.get(GameSystemI18NKeys.状態異常耐性));
+							sb.append(Text.getLineSep());
+							if (i.getEffectedConditionRegist() != null && !i.getEffectedConditionRegist().isEmpty()) {
+								for (Map.Entry<ConditionKey, Float> e : i.getEffectedConditionRegist().entrySet()) {
+									String v = (float) (e.getValue() * 100) + "%";
+									if (!v.startsWith("0")) {
+										sb.append(" ");
+										sb.append(e.getKey().getVisibleName()).append(":").append(v);
 										sb.append(Text.getLineSep());
 									}
 								}
@@ -506,7 +722,8 @@ public class ItemWindow extends BasicSprite {
 							//強化
 							if (i.canUpgrade()) {
 								sb.append(" ");
-								sb.append(I18N.get(GameSystemI18NKeys.このアイテムはあとX回強化できる, i.getUpgradeMaterials().size() + ""));
+								sb.append(I18N.get(GameSystemI18NKeys.このアイテムはあとX回強化できる,
+										i.get残り強化回数() + ""));
 								sb.append(Text.getLineSep());
 							} else {
 								sb.append(" ");
@@ -514,20 +731,25 @@ public class ItemWindow extends BasicSprite {
 								sb.append(Text.getLineSep());
 							}
 							//解体
-							if (!i.getDisasseMaterials().isEmpty()) {
+							if (!i.canDisasse()) {
 								sb.append(" ");
-								sb.append(I18N.get(GameSystemI18NKeys.解体すると以下を入手する));
-								sb.append(Text.getLineSep());
-								for (Map.Entry<Material, Integer> e : i.getDisasseMaterials().entrySet()) {
-									sb.append("   ");
-									sb.append(e.getKey().getVisibleName()).append(":").append(e.getValue());
-									sb.append(Text.getLineSep());
-								}
+								sb.append(I18N.get(GameSystemI18NKeys.このアイテムは解体できる));
 								sb.append(Text.getLineSep());
 							} else {
 								sb.append(" ");
 								sb.append(I18N.get(GameSystemI18NKeys.このアイテムは解体できない));
+								sb.append(Text.getLineSep());
 							}
+							sb.append(" ");
+							sb.append(I18N.get(GameSystemI18NKeys.解体＿強化時の素材));
+							sb.append(Text.getLineSep());
+							for (Map.Entry<Material, Integer> e : i.getEffectedMaterials().entrySet()) {
+								sb.append("   ");
+								sb.append(e.getKey().getVisibleName()).append(":").append(e.getValue());
+								sb.append(Text.getLineSep());
+							}
+							sb.append(Text.getLineSep());
+
 						}
 						msg.setText(sb.toString());
 						msg.allText();
@@ -537,7 +759,7 @@ public class ItemWindow extends BasicSprite {
 					case DROP:
 						//drop確認ウインドウを有効化
 						if (!i.canSale()) {
-							msg.setText(I18N.get(GameSystemI18NKeys.このアイテムは売ったり捨てたり解体したりできない));
+							msg.setText(I18N.get(GameSystemI18NKeys.このアイテムは捨てられない));
 							msg.allText();
 							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -555,7 +777,7 @@ public class ItemWindow extends BasicSprite {
 					case DISASSEMBLY:
 						//解体できるアイテムか判定
 						if (!i.canSale() || !i.canDisasse()) {
-							msg.setText(I18N.get(GameSystemI18NKeys.このアイテムは売ったり捨てたり解体したりできない));
+							msg.setText(I18N.get(GameSystemI18NKeys.このアイテムは解体できない));
 							msg.allText();
 							group.show(msg);
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -589,7 +811,9 @@ public class ItemWindow extends BasicSprite {
 					//パスタの相手がこれ以上物を持てない場合失敗
 					//TODO:交換機能が必要
 					if (!GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect()).getItemBag().canAdd()) {
-						String m = I18N.get(GameSystemI18NKeys.Xはこれ以上物を持てない, GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect()).getName());
+						String m = I18N.get(GameSystemI18NKeys.Xはこれ以上物を持てない,
+								GameSystem.getInstance().getParty().get(tgtSelect.getSelect()).getVisibleName()
+						);
 						this.msg.setText(m);
 						this.msg.allText();
 						group.show(msg);
@@ -658,55 +882,48 @@ public class ItemWindow extends BasicSprite {
 	private void commitUse() {
 		Item i = getSelectedItem();
 		Status tgt = GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect());
-		getSelectedPC().passItem(tgt, i);
-		tgt.setDamageCalcPoint();
+		getSelectedPC().pass(i, tgt);
+		tgt.saveBeforeDamageCalc();
 		ActionTarget t;
-		ActionResult r = i.exec(t = ActionTarget.instantTarget(getSelectedPC(), i, tgt).setInField(true));
-		ConditionManager.getInstance().setCondition(t.getTarget());
+		ActionResult r = i.exec(new ActionTarget(
+				GameSystem.getInstance().getPCbyID(getSelectedPC().getId()),
+				i,
+				List.of(GameSystem.getInstance().getPCbyID(tgt.getId())), true));
+		getSelectedPC().updateAction();
+		tgt.updateAction();
+		tgt.addWhen0Condition();
 		StringBuilder sb = new StringBuilder();
-		sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getName(), i.getVisibleName()));
+		sb.append(I18N.get(GameSystemI18NKeys.XはXを使用した,
+				GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
+				i.getVisibleName()));
 		sb.append(Text.getLineSep());
-		if (r.getResultType().stream().flatMap(p -> p.stream()).allMatch(p -> p == ActionResultType.SUCCESS)) {
+		if (r.is成功あり()) {
 			//成功
 			//効果測定
-			Map<StatusKey, Float> map = tgt.calcDamage();
-			for (Map.Entry<StatusKey, Float> e : map.entrySet()) {
-				if (e.getValue() < 0) {
-					sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()))
-							.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getDesc()))
-							.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
-					sb.append(Text.getLineSep());
-				} else if (e.getValue() > 0) {
-					sb.append(I18N.get(GameSystemI18NKeys.Xの, tgt.getName()))
-							.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getDesc()))
-							.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
-					sb.append(Text.getLineSep());
-				} else {
-					//==0
-					sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
-					sb.append(Text.getLineSep());
-				}
-				sb.append(Text.getLineSep());
-			}
-			if (map.isEmpty()) {
+			StatusValueSet vs = tgt.getDamageFromSavePoint();
+			if (vs.isEmpty()) {
 				sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 				sb.append(Text.getLineSep());
-			}
-			//DROP_ITEMイベントの判定
-			for (ActionEvent e : i.getFieldEvent()) {
-				if (e.getParameterType() == ParameterType.ITEM_LOST) {
-					if (e.getP() >= 1f || Random.percent(e.getP())) {
-						tgt.getItemBag().drop(i);
-						sb.append(I18N.get(GameSystemI18NKeys.Xを失った, i.getVisibleName()));
+			} else {
+				for (StatusValue e : vs) {
+					if (e.getValue() < 0) {
+						sb.append(I18N.get(GameSystemI18NKeys.Xの,
+								GameSystem.getInstance().getPCbyID(tgt.getId()).getVisibleName()))
+								.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getVisibleName()))
+								.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
+						sb.append(Text.getLineSep());
+					} else if (e.getValue() > 0) {
+						sb.append(I18N.get(GameSystemI18NKeys.Xの,
+								GameSystem.getInstance().getPCbyID(tgt.getId()).getVisibleName()))
+								.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getVisibleName()))
+								.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
+						sb.append(Text.getLineSep());
+					} else {
+						//==0
+						sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 						sb.append(Text.getLineSep());
 					}
-				}
-				if (e.getParameterType() == ParameterType.ITEM_ADD) {
-					if (e.getP() >= 1f || Random.percent(e.getP())) {
-						tgt.getItemBag().add(ItemStorage.getInstance().get(e.getTgtName()));
-						sb.append(I18N.get(GameSystemI18NKeys.XをX個入手した, i.getVisibleName(), "1"));
-						sb.append(Text.getLineSep());
-					}
+					sb.append(Text.getLineSep());
 				}
 			}
 		} else {
@@ -719,10 +936,10 @@ public class ItemWindow extends BasicSprite {
 		msg.allText();
 		group.show(msg);
 
-		ItemBag ib = getSelectedPC().getItemBag();
+		PersonalBag<Item> ib = getSelectedPC().getItemBag();
 		sb = new StringBuilder();
 		sb.append("<---");
-		sb.append(getSelectedPC().getName());
+		sb.append(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName());
 		sb.append("--->");
 		sb.append(Text.getLineSep());
 		int j = 0;
@@ -732,9 +949,9 @@ public class ItemWindow extends BasicSprite {
 			} else {
 				sb.append("   ");
 			}
-			if (getSelectedPC().getEqipment().values() != null
-					&& !getSelectedPC().getEqipment().values().isEmpty()
-					&& getSelectedPC().getEqipment().values().contains(i)) {
+			if (getSelectedPC().getEqip().values() != null
+					&& !getSelectedPC().getEqip().values().isEmpty()
+					&& getSelectedPC().getEqip().values().contains(i)) {
 				sb.append(" (E)");
 			} else {
 				sb.append("    ");
@@ -752,14 +969,14 @@ public class ItemWindow extends BasicSprite {
 	private void commitPass() {
 		Status tgt = GameSystem.getInstance().getPartyStatus().get(tgtSelect.getSelect());
 		Item i = getSelectedItem();
-		getSelectedPC().passItem(tgt, i);
+		getSelectedPC().pass(i, tgt);
 		if (!getSelectedPC().equals(tgt)) {
-			String t = I18N.get(GameSystemI18NKeys.XはXにXを渡した, getSelectedPC().getName(), tgt.getName(), i.getVisibleName());
+			String t = I18N.get(GameSystemI18NKeys.XはXにXを渡した, getSelectedPC().getVisibleName(), tgt.getVisibleName(), i.getVisibleName());
 			msg.setText(t);
 			mainSelect = 0;
 			getSelectedPC().updateAction();
 		} else {
-			String t = I18N.get(GameSystemI18NKeys.XはXを持ち替えた, getSelectedPC().getName(), i.getVisibleName());
+			String t = I18N.get(GameSystemI18NKeys.XはXを持ち替えた, getSelectedPC().getVisibleName(), i.getVisibleName());
 			msg.setText(t);
 			mainSelect = getSelectedPC().getItemBag().size() - 1;
 		}
@@ -767,10 +984,10 @@ public class ItemWindow extends BasicSprite {
 		group.show(msg);
 
 		StringBuilder sb = new StringBuilder();
-		ItemBag ib = getSelectedPC().getItemBag();
+		PersonalBag<Item> ib = getSelectedPC().getItemBag();
 		sb = new StringBuilder();
 		sb.append("<---");
-		sb.append(getSelectedPC().getName());
+		sb.append(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName());
 		sb.append("--->");
 		sb.append(Text.getLineSep());
 		int j = 0;
@@ -780,9 +997,9 @@ public class ItemWindow extends BasicSprite {
 			} else {
 				sb.append("   ");
 			}
-			if (getSelectedPC().getEqipment().values() != null
-					&& !getSelectedPC().getEqipment().values().isEmpty()
-					&& getSelectedPC().getEqipment().values().contains(i)) {
+			if (getSelectedPC().getEqip().values() != null
+					&& !getSelectedPC().getEqip().values().isEmpty()
+					&& getSelectedPC().getEqip().values().contains(i)) {
 				sb.append(" (E)");
 			} else {
 				sb.append("    ");
@@ -798,19 +1015,32 @@ public class ItemWindow extends BasicSprite {
 	private void commitDrop() {
 		dropConfirm.close();
 		Item i = getSelectedItem();
-		assert i.canSale() : "item is cant disassembly : " + i;
-		//1個しか持っていなかったら装備を外す
-		if (getSelectedPC().isEqip(i.getVisibleName()) && getSelectedPC().getItemBag().getItems().stream().filter(p -> p.equals(i)).count() == 1) {
-			getSelectedPC().removeEqip(i);
+		assert i.canSale() : "item is cant dispose : " + i;
+		//もしこのアイテムを装備していたら、外す。外すのは1スロットだけ。
+		//（もし両手に持っている場合、左手を外す
+		if (i.isWeapon()) {
+			//iを右手に装備中
+			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
+				//両手持ちの場合、左手を外す
+				if (ActionStorage.両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
+					getSelectedPC().unEqip(EqipSlot.左手);
+				}
+				//右手の装備iを外す
+				getSelectedPC().unEqip(EqipSlot.右手);
+			}
+			//iを左手に装備中
+			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
+				//左手の装備iを外す
+				getSelectedPC().unEqip(EqipSlot.左手);
+			}
+		} else {
+			//防具類。そのまま外す
+			getSelectedPC().unEqip(i.getSlot());
 		}
 		getSelectedPC().getItemBag().drop(i);
-		//アイテム追加
-		for (ActionEvent e : i.getFieldEvent()) {
-			if (e.getParameterType() == ParameterType.ITEM_ADD) {
-				getSelectedPC().getItemBag().add(ItemStorage.getInstance().get(e.getTgtName()));
-			}
-		}
-		msg.setText(I18N.get(GameSystemI18NKeys.XはXを捨てた, getSelectedPC().getName(), i.getVisibleName()));
+		msg.setText(I18N.get(GameSystemI18NKeys.XはXを捨てた,
+				GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
+				i.getVisibleName()));
 		msg.allText();
 		getSelectedPC().updateAction();
 		group.show(msg);
@@ -822,21 +1052,39 @@ public class ItemWindow extends BasicSprite {
 		Item i = getSelectedItem();
 		assert i.canDisasse() : "item is cant disassembly : " + i;
 		assert i.canSale() : "item is cant disassembly : " + i;
-		//1個しか持っていなかったら装備を外す
-		if (getSelectedPC().isEqip(i.getVisibleName()) && getSelectedPC().getItemBag().getItems().stream().filter(p -> p.equals(i)).count() == 1) {
-			getSelectedPC().removeEqip(i);
+		if (i.isWeapon()) {
+			//iを右手に装備中
+			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
+				//両手持ちの場合、左手を外す
+				if (ActionStorage.両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
+					getSelectedPC().unEqip(EqipSlot.左手);
+				}
+				//右手の装備iを外す
+				getSelectedPC().unEqip(EqipSlot.右手);
+			}
+			//iを左手に装備中
+			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
+				//左手の装備iを外す
+				getSelectedPC().unEqip(EqipSlot.左手);
+			}
+		} else {
+			//防具類。そのまま外す
+			getSelectedPC().unEqip(i.getSlot());
 		}
 		getSelectedPC().getItemBag().drop(i);
 		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<Material, Integer> e : i.getDisasseMaterials().entrySet()) {
+		sb.append(Text.getLineSep());
+		for (Map.Entry<Material, Integer> e : i.getEffectedMaterials().entrySet()) {
 			sb.append(" ");
-			sb.append(I18N.get(GameSystemI18NKeys.XをX個入手した, e.getKey().getName(), e.getValue() + ""));
+			sb.append(I18N.get(GameSystemI18NKeys.XをX個入手した, e.getKey().getVisibleName(), e.getValue() + ""));
 			sb.append(Text.getLineSep());
 			for (int j = 0; j < e.getValue(); j++) {
 				GameSystem.getInstance().getMaterialBag().add(e.getKey());
 			}
 		}
-		msg.setText(I18N.get(GameSystemI18NKeys.XはXを解体した, getSelectedPC().getName(), i.getVisibleName()));
+		msg.setText(I18N.get(GameSystemI18NKeys.XはXを解体した,
+				GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
+				i.getVisibleName()) + sb.toString());
 		msg.allText();
 		getSelectedPC().updateAction();
 		group.show(msg);
@@ -847,10 +1095,10 @@ public class ItemWindow extends BasicSprite {
 	public void update() {
 		//メインウインドウの内容更新
 		if (mode == Mode.ITEM_AND_USER_SELECT) {
-			ItemBag ib = getSelectedPC().getItemBag();
+			PersonalBag<Item> ib = getSelectedPC().getItemBag();
 			StringBuilder sb = new StringBuilder();
 			sb.append("<---");
-			sb.append(getSelectedPC().getName());
+			sb.append(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName());
 			sb.append("--->");
 			sb.append(Text.getLineSep());
 			if (ib.isEmpty()) {
@@ -867,9 +1115,9 @@ public class ItemWindow extends BasicSprite {
 					} else {
 						sb.append("   ");
 					}
-					if (getSelectedPC().getEqipment().values() != null
-							&& !getSelectedPC().getEqipment().values().isEmpty()
-							&& getSelectedPC().getEqipment().values().contains(i)
+					if (getSelectedPC().getEqip().values() != null
+							&& !getSelectedPC().getEqip().values().isEmpty()
+							&& getSelectedPC().getEqip().values().contains(i)
 							&& !eqip.contains(i)) {
 						sb.append(" (E)");
 						eqip.add(i);

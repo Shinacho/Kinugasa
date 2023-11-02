@@ -32,38 +32,38 @@ import kinugasa.game.ui.TextLabelSprite;
  */
 public class ActionTextSprite extends TextLabelSprite implements ActionSupport {
 
-	private List<Action> actions;
+	private List<UIAction> actions;
 
-	public ActionTextSprite(CharSequence text, TextLabelModel labelModel, float x, float y, Action... actions) {
+	public ActionTextSprite(CharSequence text, TextLabelModel labelModel, float x, float y, UIAction... actions) {
 		super(text, labelModel, x, y);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
-	public ActionTextSprite(String text, TextLabelModel labelModel, float x, float y, float w, float h, Action... actions) {
+	public ActionTextSprite(String text, TextLabelModel labelModel, float x, float y, float w, float h, UIAction... actions) {
 		super(text, labelModel, x, y, w, h);
-		this.actions = new ArrayList<Action>();
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
 	@Override
-	public void addAction(Action... actions) {
+	public void addAction(UIAction... actions) {
 		this.actions.addAll(Arrays.asList(actions));
 	}
 
 	@Override
-	public Action[] getActions() {
-		return (Action[]) actions.toArray();
+	public UIAction[] getActions() {
+		return (UIAction[]) actions.toArray();
 	}
 
 	@Override
-	public Action getAction() {
+	public UIAction getAction() {
 		return actions.isEmpty() ? null : actions.get(0);
 	}
 
 	@Override
-	public void setActions(Action... actions) {
-		this.actions = new ArrayList<Action>();
+	public void setActions(UIAction... actions) {
+		this.actions = new ArrayList<UIAction>();
 		this.actions.addAll(Arrays.asList(actions));
 	}
 

@@ -29,7 +29,7 @@ import kinugasa.graphics.GraphicsUtil;
  * @version 1.0.0 - 2013/01/14_19:55:37<br>
  * @author Shinacho<br>
  */
-public class FadeEffect extends ScreenEffect {
+public class FadeEffect extends Effect {
 
 	private ColorChanger color;
 	private ColorChanger initialColor;

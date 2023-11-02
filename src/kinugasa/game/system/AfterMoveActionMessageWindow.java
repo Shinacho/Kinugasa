@@ -17,17 +17,12 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.I18N;
-import kinugasa.game.ui.MessageWindow;
+import static kinugasa.game.system.ActionType.攻撃;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
-import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
-import kinugasa.game.ui.TextStorage;
 
 /**
  *
@@ -72,41 +67,34 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 			Action b = actions.get(i);
 			String text = "";
 			switch (type) {
-				case ATTACK:
-					text += b.getName() + ":" + b.getDesc();
+				case 攻撃:
+					text += b.getVisibleName() + ":" + b.getDesc();
 					text += ("、")
 							+ (I18N.get(GameSystemI18NKeys.属性))
 							+ (":");
-					text += (b.getBattleEvent()
+					text += (b.getMainEvents()
 							.stream()
-							.filter(p -> !AttrDescWindow.getUnvisibleAttrName().contains(p.getAttr().getName()))
-							.map(p -> p.getAttr().getDesc())
+							.filter(p -> p.getAtkAttr() != null)
+							.map(p -> p.getAtkAttr().getVisibleName())
 							.distinct()
 							.collect(Collectors.toList()));
 					text += ("、")
 							+ (I18N.get(GameSystemI18NKeys.基礎威力))
 							+ (":");
 					//ENEMYが入っている場合、minを、そうでない場合はMAXを取る
-					if (b.getBattleEvent().stream().anyMatch(p -> p.getTargetType().toString().contains("ENEMY"))) {
-						text += (Math.abs(b.getBattleEvent()
-								.stream()
-								.mapToInt(p -> (int) (p.getValue()))
-								.min()
-								.getAsInt()));
-					} else {
-						text += (Math.abs(b.getBattleEvent()
-								.stream()
-								.mapToInt(p -> (int) (p.getValue()))
-								.max()
-								.getAsInt()));
-					}
+					text += (Math.abs(b.getMainEvents()
+							.stream()
+							.mapToInt(p -> (int) (p.getValue()))
+							.map(p -> Math.abs(p))
+							.sum()));
+					text += Text.getLineSep();
 					break;
-				case ITEM:
-				case MAGIC:
+				case アイテム:
+				case 魔法:
 					//処理なし（入らない）
 					break;
-				case OTHER:
-					text += b.getName();
+				case 行動:
+					text += b.getVisibleName();
 					break;
 				default:
 					throw new AssertionError("BCMW undefined type");

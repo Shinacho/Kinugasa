@@ -16,6 +16,8 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.system.NPCSprite;
+import kinugasa.game.system.PCSprite;
 import java.awt.geom.Point2D;
 import kinugasa.game.GameOption;
 import kinugasa.game.system.GameSystem;
@@ -139,7 +141,7 @@ public class FieldMapCamera {
 		//NPCの位置更新
 		int chipW = map.getChipW();
 		int chipH = map.getChipH();
-//		for (NPC n : map.getNpcStorage()) {
+//		for (NPCSprite n : map.getNpcStorage()) {
 //			float nx = map.getBaseLayer().getX() + n.getCurrentIdx().x * chipW;
 //			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;
 //			n.setLocation(nx, ny);
@@ -306,13 +308,13 @@ public class FieldMapCamera {
 		FieldMap.getPlayerCharacter().forEach(v -> v.setLocation(cx, cy));
 
 		//NPCの位置更新
-		for (NPC n : map.getNpcStorage()) {
+		for (NPCSprite n : map.getNpcStorage()) {
 			float nx = map.getBaseLayer().getX() + n.getCurrentIdx().x * chipW;
 			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;
 			n.setLocation(nx, ny);
 		}
 		//PCの位置更新
-		for (PlayerCharacterSprite c : FieldMap.getPlayerCharacter().subList(1, FieldMap.getPlayerCharacter().size())) {
+		for (PCSprite c : FieldMap.getPlayerCharacter().subList(1, FieldMap.getPlayerCharacter().size())) {
 			if (c.getCurrentIdx() != null) {
 				float nx = map.getBaseLayer().getX() + c.getCurrentIdx().x * chipW;
 				float ny = map.getBaseLayer().getY() + c.getCurrentIdx().y * chipH;
@@ -338,7 +340,7 @@ public class FieldMapCamera {
 		setLocation(-x, -y);
 
 		//NPCの位置更新
-		for (NPC n : map.getNpcStorage()) {
+		for (NPCSprite n : map.getNpcStorage()) {
 			float nx = map.getBaseLayer().getX() + n.getCurrentIdx().x * chipW;
 			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;
 			n.setLocation(nx, ny);

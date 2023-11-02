@@ -17,6 +17,7 @@
 package kinugasa.resource;
 
 import java.io.File;
+import kinugasa.resource.text.XMLFile;
 
 /**
  *
@@ -30,6 +31,10 @@ public class FileNotFoundException extends NotFoundException {
 
 	public FileNotFoundException(File f) {
 		this(f.getName() + " is not found");
+	}
+
+	public FileNotFoundException(Input<?> i) {
+		this(i.getFile());
 	}
 
 	public FileNotFoundException(String val) {

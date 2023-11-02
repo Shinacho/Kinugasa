@@ -16,12 +16,18 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.field4.BGMMode;
+import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundStorage;
+import kinugasa.resource.text.FileIOException;
+import kinugasa.resource.text.IllegalXMLFormatException;
+import kinugasa.resource.text.XMLElement;
+import kinugasa.resource.text.XMLFile;
 
 /**
  *
@@ -102,6 +108,7 @@ public class EnemySet implements Nameable, Comparable<EnemySet> {
 	public float getP() {
 		return p;
 	}
+
 
 	@Override
 	public int compareTo(EnemySet o) {

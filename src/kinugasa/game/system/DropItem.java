@@ -18,6 +18,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import kinugasa.game.Nullable;
 
 /**
  *
@@ -27,17 +28,33 @@ import java.util.List;
 public class DropItem {
 
 	private Item item;
+	private Material m;
 	private int n;
 	private float p;
 
-	public DropItem(Item item, int n, float p) {
+	public static DropItem itemOf(Item i, int n, float p) {
+		return new DropItem(i, null, n, p);
+	}
+
+	public static DropItem materialOf(Material i, int n, float p) {
+		return new DropItem(null, i, n, p);
+	}
+
+	private DropItem(Item item, Material m, int n, float p) {
 		this.item = item;
+		this.m = m;
 		this.n = n;
 		this.p = p;
 	}
 
+	@Nullable
 	public Item getItem() {
 		return item;
+	}
+
+	@Nullable
+	public Material getMaterial() {
+		return m;
 	}
 
 	public int getN() {
@@ -48,10 +65,18 @@ public class DropItem {
 		return p;
 	}
 
-	public List<Item> cloneN() {
+	public List<Item> cloneItems() {
 		List<Item> result = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
 			result.add(item.clone());
+		}
+		return result;
+	}
+
+	public List<Material> cloneMaterials() {
+		List<Material> result = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			result.add(m);
 		}
 		return result;
 	}
