@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import kinugasa.game.I18N;
 import kinugasa.game.NewInstance;
+import kinugasa.game.NotNull;
+import kinugasa.game.Nullable;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.AnimationSprite;
@@ -52,19 +54,14 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private ActionStorage() {
 	}
-	public static final Item 両手持ち
+	public final Item 両手持ち
 			= new Item("TWO_HAND", I18N.get(GameSystemI18NKeys.両手持ち))
 					.setSlot(EqipSlot.左手)
 					.setDesc(I18N.get(GameSystemI18NKeys.両手持ちすると右手の効果が２倍になる));//no pack!;
-	public static final Item 両手持ち_弓
+	public final Item 両手持ち_弓
 			= new Item("TWO_HAND_BOW", I18N.get(GameSystemI18NKeys.両手持ち))
 					.setSlot(EqipSlot.右手)
 					.setDesc(I18N.get(GameSystemI18NKeys.弓は両手で持つ必要がある));//no pack!;
-
-	{
-		add(両手持ち);
-
-	}
 
 	public static ActionStorage getInstance() {
 		return INSTANCE;
@@ -108,7 +105,7 @@ public class ActionStorage extends DBStorage<Action> {
 				sql = "select ID,VISIBLENAME,"
 						+ "DESCRIPTION,FIELD,BATTLE,AREA,"
 						+ "TGTTYPE,TGTDEAD,PRICE,EQIPSLOT,"
-						+ "AKTCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY"
+						+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY"
 						+ " from item"
 						+ " where id = '" + id + "';";
 				r = DBConnection.getInstance().execDirect(sql);
@@ -174,7 +171,7 @@ public class ActionStorage extends DBStorage<Action> {
 				return a.pack();
 			}
 		}
-		return null;
+		throw new NameNotFoundException("action / item not found : " + id);
 	}
 
 	@Override
@@ -206,7 +203,7 @@ public class ActionStorage extends DBStorage<Action> {
 			sql = "select ID,VISIBLENAME,"
 					+ "DESCRIPTION,FIELD,BATTLE,AREA,"
 					+ "TGTTYPE,TGTDEAD,PRICE,EQIPSLOT,"
-					+ "AKTCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY"
+					+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY"
 					+ " from item;";
 			r = DBConnection.getInstance().execDirect(sql);
 			//item
@@ -300,7 +297,7 @@ public class ActionStorage extends DBStorage<Action> {
 			String sql = "select ID,VISIBLENAME,"
 					+ "DESCRIPTION,FIELD,BATTLE,AREA,"
 					+ "TGTTYPE,TGTDEAD,PRICE,EQIPSLOT,"
-					+ "AKTCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY"
+					+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY"
 					+ " from item;";
 			KResultSet r = DBConnection.getInstance().execDirect(sql);
 			//item
@@ -345,6 +342,18 @@ public class ActionStorage extends DBStorage<Action> {
 		return res;
 	}
 
+	{
+		//行動アクションのデータをメモリに搭載してしまう
+		add(new Action(BattleConfig.ActionID.移動, I18N.get(GameSystemI18NKeys.移動), ActionType.行動));
+		add(new Action(BattleConfig.ActionID.確定, I18N.get(GameSystemI18NKeys.確定), ActionType.行動));
+		add(new Action(BattleConfig.ActionID.防御, I18N.get(GameSystemI18NKeys.防御), ActionType.行動));
+		add(new Action(BattleConfig.ActionID.回避, I18N.get(GameSystemI18NKeys.回避), ActionType.行動));
+		add(new Action(BattleConfig.ActionID.状態, I18N.get(GameSystemI18NKeys.状態), ActionType.行動));
+		add(new Action(BattleConfig.ActionID.逃走, I18N.get(GameSystemI18NKeys.逃走), ActionType.行動));
+		add(両手持ち);
+		add(両手持ち_弓);
+	}
+
 	@NewInstance
 	public Action actionOf(String id) throws NameNotFoundException {
 		//メモリ探索
@@ -354,7 +363,7 @@ public class ActionStorage extends DBStorage<Action> {
 			}
 		}
 		//DB検索
-		Action a = select(id);
+		Action a = get(id);
 		if (a != null) {
 			return a;
 		}
@@ -370,7 +379,7 @@ public class ActionStorage extends DBStorage<Action> {
 			}
 		}
 		//DB検索
-		Action a = select(id);
+		Action a = get(id);
 		if (a instanceof Item) {
 			return (Item) a;
 		}
@@ -395,6 +404,8 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private boolean loaded = false;
 
+	@NewInstance
+	@NotNull
 	public List<Action> allOf(ActionType t) {
 		//初回呼び出しでメモリ搭載する
 		List<Action> l = stream().filter(p -> p.getType() == t).collect(Collectors.toList());
@@ -1124,8 +1135,8 @@ public class ActionStorage extends DBStorage<Action> {
 		s.setId(id);
 		return s;
 	}
-	
-	public AnimationSprite getAnimation(String animationId){
+
+	public AnimationSprite getAnimation(String animationId) {
 		String sql = "select ANIMATIONID,FILENAME,WSIZE,HSIZE,SPEED"
 				+ " from animation a "
 				+ " where a.id = '" + animationId + "';";

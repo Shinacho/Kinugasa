@@ -19,6 +19,7 @@ package kinugasa.game.system;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import kinugasa.game.GameLog;
 import kinugasa.game.NotNewInstance;
 import kinugasa.game.Nullable;
 import kinugasa.graphics.ImageUtil;
@@ -42,6 +43,27 @@ import kinugasa.game.NotNull;
  */
 public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor> permits Enemy {
 
+	//テスト用。
+	@Deprecated
+	public static void printXMLFormat() {
+		for (var v : StatusKey.values()) {
+			System.out.println("\t<status key=\"" + v + "\" value=\"\" />");
+		}
+		System.out.println();
+		for (var v : AttributeKey.values()) {
+			System.out.println("\t<attrIn key=\"" + v + "\" value=\"\" />");
+		}
+		System.out.println();
+		for (var v : AttributeKey.values()) {
+			System.out.println("\t<attrOut key=\"" + v + "\" value=\"\" />");
+		}
+		System.out.println();
+		for (var v : ConditionKey.values()) {
+			if (v.isRegistOn()) {
+				System.out.println("\t<cndRegist key=\"" + v + "\" value=\"\" />");
+			}
+		}
+	}
 	private String id;
 	private String visibleName;
 	private PCSprite sprite;
@@ -195,16 +217,16 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			this.status.getConditionRegist().clear();
 			this.status.clearCondition();//暫定
 			//ATTR_IN
-			for (XMLElement e : root.getElement("attr_in")) {
+			for (XMLElement e : root.getElement("attrIn")) {
 				AttributeKey k = e.getAttributes().get("key").of(AttributeKey.class);
 				float val = e.getAttributes().get("value").getFloatValue();
 				this.status.getAttrIn().add(new AttributeValue(k, val));
 			}
 			//ATTR_OUT
-			for (XMLElement e : root.getElement("attr_out")) {
+			for (XMLElement e : root.getElement("attrOut")) {
 				AttributeKey k = e.getAttributes().get("key").of(AttributeKey.class);
 				float val = e.getAttributes().get("value").getFloatValue();
-				this.status.getAttrIn().add(new AttributeValue(k, val));
+				this.status.getAttrOut().add(new AttributeValue(k, val));
 			}
 			//CND_REGIST
 			for (XMLElement e : root.getElement("cndRegist")) {
@@ -216,8 +238,12 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			for (XMLElement e : root.getElement("status")) {
 				StatusKey k = e.getAttributes().get("key").of(StatusKey.class);
 				float val = e.getAttributes().get("value").getFloatValue();
-				float max = e.getAttributes().get("max").getFloatValue();
-				this.status.getBaseStatus().add(new StatusValue(k, val, 0, max));
+				if (e.hasAttribute("max")) {
+					float max = e.getAttributes().get("max").getFloatValue();
+					this.status.getBaseStatus().add(new StatusValue(k, val, 0, max));
+				} else {
+					this.status.getBaseStatus().add(new StatusValue(k, val));
+				}
 			}
 			//ITEM
 			for (XMLElement e : root.getElement("item")) {
@@ -231,6 +257,14 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 				this.status.eqip(this.status.getItemBag().get(itemID));
 			}
 			f.dispose();
+
+			//保有経験値とレベルの整合性チェック
+			if ((int) this.status.getEffectedStatus().get(StatusKey.レベル).getValue()
+					!= LevelSystem.経験値からレベル算出(this.status.getEffectedStatus().get(StatusKey.保有経験値).getValue())) {
+				throw new GameSystemException("lv - exp missmatch : " + this);
+			}
+			GameLog.print("Actor : " + this + " is loaded");
+
 		} catch (FileIOException | NameNotFoundException e) {
 			throw new IllegalXMLFormatException(e.getMessage());
 		}

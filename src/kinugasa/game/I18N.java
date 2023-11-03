@@ -17,6 +17,8 @@
 package kinugasa.game;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 import kinugasa.resource.text.IniFile;
 
 /**
@@ -27,6 +29,7 @@ import kinugasa.resource.text.IniFile;
 public class I18N {
 
 	private static IniFile ini;
+	private static Set<String> notFoundKeyMap = new HashSet<>();
 
 	/**
 	 * I18Nマップを初期化します。gameStart時に自動で実行されるため、通常は呼び出す必要はありません。
@@ -36,6 +39,10 @@ public class I18N {
 	public static void init(String lang) {
 		ini = new IniFile("translate/" + lang + ".ini").load();
 
+	}
+
+	public static Set<String> getNotFoundKeyMap() {
+		return notFoundKeyMap;
 	}
 
 	public I18N add(String lang, File dir) throws IllegalArgumentException {
@@ -61,20 +68,29 @@ public class I18N {
 	}
 
 	public static String get(String key) {
-		if(ini == null ){
+		if(notFoundKeyMap.contains(key)){
+			return key;
+		}
+		if (ini == null) {
 			GameLog.print("WARNING : I18N is not loaded : " + key);
+			notFoundKeyMap.add(key);
 			return key;
 		}
 		if (!ini.containsKey(key)) {
 			GameLog.print("WARNING : I18N key is not found : " + key);
+			notFoundKeyMap.add(key);
 			return key;
 		}
 		return ini.get(key).get().value();
 	}
 
 	public static String get(String key, String... param) {
+		if(notFoundKeyMap.contains(key)){
+			return key;
+		}
 		if (!ini.containsKey(key)) {
 			GameLog.print("WARNING : I18N key is not found : " + key);
+			notFoundKeyMap.add(key);
 			return key;
 		}
 

@@ -16,18 +16,35 @@
  */
 package kinugasa.game.system;
 
-import kinugasa.resource.Storage;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import kinugasa.game.Nullable;
 
 /**
  *
  * @vesion 1.0.0 - May 28, 2023_1:31:44 PM<br>
  * @author Shinacho<br>
  */
-public class CurrentQuest extends Storage<Quest> {
+public class CurrentQuest {
 
+	private HashMap<String, Quest> questMap = new HashMap<>();
 	private static final CurrentQuest INSTANCE = new CurrentQuest();
 
 	public static CurrentQuest getInstance() {
 		return INSTANCE;
+	}
+
+	public void put(Quest q) {
+		questMap.put(q.getQid(), q);
+	}
+
+	public Set<Quest> get() {
+		return new HashSet<>(questMap.values());
+	}
+
+	@Nullable
+	public Quest get(String qid) {
+		return questMap.get(qid);
 	}
 }

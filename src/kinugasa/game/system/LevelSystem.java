@@ -26,7 +26,7 @@ import java.util.Map;
  * @vesion 1.0.0 - 2023/11/01_19:04:37<br>
  * @author Shinacho<br>
  */
-public class LevelManagerSystem {
+public class LevelSystem {
 
 	public static final float 必要経験値倍率 = 1.15139f;
 	public static final float レベル１初期経験値 = 100f;
@@ -34,6 +34,7 @@ public class LevelManagerSystem {
 
 	static {
 		float needExp = レベル１初期経験値;
+		必要経験値テーブル.put(1, 100f);
 		for (int i = 2; i <= 99; i++) {
 			needExp *= 必要経験値倍率;
 			必要経験値テーブル.put(i, needExp);
@@ -56,11 +57,13 @@ public class LevelManagerSystem {
 				res.add(a);
 			}
 			a.getStatus().getBaseStatus().get(StatusKey.レベルアップ未使用スキルポイント).setValue(maxLv - nowLv);
+			a.getStatus().getBaseStatus().get(StatusKey.次のレベルの経験値).setValue(必要経験値テーブル.get(maxLv));
+
 		}
 		return res;
 	}
 
-	private static int 経験値からレベル算出(float 保有経験値) {
+	public static int 経験値からレベル算出(float 保有経験値) {
 		for (int i = 1; i <= 99; i++) {
 			if (必要経験値テーブル.get(i) > 保有経験値) {
 				return i - 1;
@@ -68,4 +71,9 @@ public class LevelManagerSystem {
 		}
 		return 99;
 	}
+
+	public static Map<Integer, Float> get必要経験値テーブル() {
+		return 必要経験値テーブル;
+	}
+
 }

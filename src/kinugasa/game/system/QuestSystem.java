@@ -34,65 +34,36 @@ import kinugasa.resource.db.KSQLException;
  * @vesion 1.0.0 - 2022/12/13_15:18:12<br>
  * @author Shinacho<br>
  */
-public class QuestStorage extends DBStorage<Quest> {
+public class QuestSystem {
 
-	private static final QuestStorage INSTANCE = new QuestStorage();
+	private static final QuestSystem INSTANCE = new QuestSystem();
 
-	private QuestStorage() {
+	private QuestSystem() {
 	}
 
-	public static QuestStorage getInstance() {
+	public static QuestSystem getInstance() {
 		return INSTANCE;
 	}
 
-	@Override
-	protected Quest select(String id) throws KSQLException {
+	public Quest get(String qid, int stage) throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
 			KResultSet kr = DBConnection.getInstance().execDirect("select"
-					+ " id,typ,stage,visibleName,Description"
-					+ " from Quest where id='" + id + "';");
+					+ " qid,typ,stage,visibleName,Description"
+					+ " from Quest where qid='" + qid + "' and stage=" + stage + ";");
 			if (kr.isEmpty()) {
 				return null;
 			}
-			String qid = kr.row(0).get(0).get();
-			Quest.Type typ = kr.row(0).get(1).of(Quest.Type.class);
-			int stage = kr.row(0).get(2).asInt();
-			String title = kr.row(0).get(3).get();
-			String desc = kr.row(0).get(4).get();
-			return new Quest(qid, typ, stage, title, desc);
-		}
-		return null;
-	}
-
-	@Override
-	protected List<Quest> selectAll() throws KSQLException {
-		if (DBConnection.getInstance().isUsing()) {
-			KResultSet kr = DBConnection.getInstance().execDirect("select"
-					+ " id,typ,stage,visibleName,Description"
-					+ " from Quest;");
-			if (kr.isEmpty()) {
-				return Collections.emptyList();
-			}
 			List<Quest> q = new ArrayList<>();
 			for (List<DBValue> v : kr) {
-				String qid = v.get(0).get();
-				Quest.Type typ = kr.row(0).get(1).of(Quest.Type.class);
-				int stage = v.get(2).asInt();
-				String title = v.get(3).get();
+				String dqid = v.get(0).get();
+				Quest.Type typ = v.get(1).of(Quest.Type.class);
+				int dstage = v.get(2).asInt();
+				String visibleName = v.get(3).get();
 				String desc = v.get(4).get();
-				q.add(new Quest(qid, typ, stage, title, desc));
+				return new Quest(dqid, typ, dstage, visibleName, desc);
 			}
-			return q;
 		}
-		return Collections.emptyList();
-	}
-
-	@Override
-	protected int count() throws KSQLException {
-		if (DBConnection.getInstance().isUsing()) {
-			return DBConnection.getInstance().execDirect("select count(*) from Quest;").row(0).get(0).asInt();
-		}
-		return 0;
+		return null;
 	}
 
 }

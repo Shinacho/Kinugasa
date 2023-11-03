@@ -32,7 +32,7 @@ import kinugasa.util.Random;
  * @vesion 1.0.0 - 2022/12/02_16:46:35<br>
  * @author Shinacho<br>
  */
-public enum StandardEnemyAI implements EnemyAI {
+public enum EnemyAIImpl implements EnemyAI {
 	/**
 	 * ダメージロールはHPが高い敵に強力な攻撃を続けます
 	 */
@@ -77,7 +77,7 @@ public enum StandardEnemyAI implements EnemyAI {
 			}
 
 			//最大威力アクションを適用できる場所まで移動するよう指示
-			return new ActionTarget(user, StandardEnemyAI.移動アクション, null, false);
+			return new ActionTarget(user, EnemyAIImpl.移動アクション, null, false);
 		}
 
 		@Override
@@ -145,7 +145,7 @@ public enum StandardEnemyAI implements EnemyAI {
 					}
 				}
 			}
-			return new ActionTarget(user, StandardEnemyAI.移動アクション, null, false);
+			return new ActionTarget(user, EnemyAIImpl.移動アクション, null, false);
 		}
 
 		@Override
@@ -206,7 +206,7 @@ public enum StandardEnemyAI implements EnemyAI {
 				if (is射程内(user, a, tgt)) {
 					if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
 						if (Random.percent(0.5f)) {
-							return new ActionTarget(user, StandardEnemyAI.防御アクション, List.of(user), false);
+							return new ActionTarget(user, EnemyAIImpl.防御アクション, List.of(user), false);
 						} else {
 							return new ActionTarget(user, a, List.of(tgt), false);
 						}
@@ -214,7 +214,7 @@ public enum StandardEnemyAI implements EnemyAI {
 				}
 			}
 			//最大威力アクションを適用できる場所まで移動するよう指示
-			return new ActionTarget(user, StandardEnemyAI.移動アクション, null, false);
+			return new ActionTarget(user, EnemyAIImpl.移動アクション, null, false);
 		}
 
 		@Override
@@ -276,7 +276,7 @@ public enum StandardEnemyAI implements EnemyAI {
 				}
 			}
 			//最大威力アクションを適用できる場所まで移動するよう指示
-			return new ActionTarget(user, StandardEnemyAI.移動アクション, null, false);
+			return new ActionTarget(user, EnemyAIImpl.移動アクション, null, false);
 		}
 
 		@Override
@@ -338,7 +338,7 @@ public enum StandardEnemyAI implements EnemyAI {
 					}
 				}
 			}
-			return new ActionTarget(user, StandardEnemyAI.防御アクション, null, false);
+			return new ActionTarget(user, EnemyAIImpl.防御アクション, null, false);
 		}
 
 		@Override
@@ -410,7 +410,7 @@ public enum StandardEnemyAI implements EnemyAI {
 					}
 				}
 			}
-			return new ActionTarget(user, StandardEnemyAI.防御アクション, null, false);
+			return new ActionTarget(user, EnemyAIImpl.防御アクション, null, false);
 
 		}
 
@@ -483,7 +483,7 @@ public enum StandardEnemyAI implements EnemyAI {
 					}
 				}
 			}
-			return new ActionTarget(user, StandardEnemyAI.回避アクション, null, false);
+			return new ActionTarget(user, EnemyAIImpl.回避アクション, null, false);
 
 		}
 
@@ -507,9 +507,6 @@ public enum StandardEnemyAI implements EnemyAI {
 		}
 	};
 
-	static {
-		EnemyAIStorage.getInstance().addAll(StandardEnemyAI.values());
-	}
 	private static Action 移動アクション = ActionStorage.getInstance().actionOf(BattleConfig.ActionID.移動);
 	private static Action 防御アクション = ActionStorage.getInstance().actionOf(BattleConfig.ActionID.防御);
 	private static Action 回避アクション = ActionStorage.getInstance().actionOf(BattleConfig.ActionID.回避);
@@ -565,7 +562,7 @@ public enum StandardEnemyAI implements EnemyAI {
 		return e.getStatus().getEffectedStatus().get(StatusKey.正気度).get割合() < 0.6f;
 	}
 
-	static Point2D.Float getPCの射程外の位置(Enemy e, float area, StandardEnemyAI ai) {
+	static Point2D.Float getPCの射程外の位置(Enemy e, float area, EnemyAIImpl ai) {
 		//eからターゲットへの方向と逆に移動。
 		Point2D.Float tgtLocation = ai.getTgt(e).getSprite().getCenter();
 		EmptySprite s = new EmptySprite(e.getSprite().getLocation(), new Dimension(2, 2));
@@ -580,7 +577,7 @@ public enum StandardEnemyAI implements EnemyAI {
 		}
 	}
 
-	static Point2D.Float getターゲットに届く位置(Enemy e, float distance, StandardEnemyAI ai) {
+	static Point2D.Float getターゲットに届く位置(Enemy e, float distance, EnemyAIImpl ai) {
 		Actor tgt = ai.getTgt(e);
 		Point2D.Float tgtLocation = tgt.getSprite().getCenter();
 		if (tgt.equals(e)) {

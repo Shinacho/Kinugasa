@@ -150,10 +150,14 @@ public class CachedSound implements Sound {
 				clip.setFramePosition(framePos);
 				framePos = 0;
 				clip.start();
-				Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+				if (getType() == SoundType.BGM) {
+					Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+				}
 			} else {
 				clip.start();
-				Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+				if (getType() == SoundType.BGM) {
+					Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+				}
 			}
 		}
 		playing = true;

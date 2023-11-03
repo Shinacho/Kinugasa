@@ -34,7 +34,7 @@ import kinugasa.game.system.GameSystem;
 import kinugasa.game.system.GameSystemException;
 import kinugasa.game.system.Item;
 import kinugasa.game.system.Quest;
-import kinugasa.game.system.QuestStorage;
+import kinugasa.game.system.QuestSystem;
 import kinugasa.game.system.ScriptFormatException;
 import kinugasa.game.system.Status;
 import kinugasa.game.ui.Text;
@@ -253,7 +253,7 @@ public enum FieldEventType {
 			return UserOperationRequire.WAIT_FOR_EVENT;
 		}
 	},
-	NPC_REMOVE {
+	NPC_REMOVE_CURRENT_MAP {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
 			String name = FieldMap.getCurrentInstance().getName();
@@ -268,7 +268,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	NPC_ADD {
+	NPC_ADD_CURRENT_MAP {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
 			NPCSprite n = new NPCSprite(e.getValue());
@@ -352,27 +352,15 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//クエストID、ステージ値
+	//QIDに対してステージを指定する。
 	SET_QUEST {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
-			int v = Integer.parseInt(e.getValue());
+			String qid = e.getValue();
+			int stage = Integer.parseInt(e.getValue());
 			//クエスト情報を設定
-			Quest q = QuestStorage.getInstance().get(e.getTargetName());
-			if (q == null) {
-				throw new FieldEventScriptException("SET_QEUST not found : " + e);
-			}
-			Quest remove = null;
-			for (Quest qq : CurrentQuest.getInstance()) {
-				if (qq.getType().equals(q.getType())) {
-					remove = qq;
-					break;
-				}
-			}
-			if (remove != null) {
-				CurrentQuest.getInstance().remove(remove);
-			}
-			CurrentQuest.getInstance().add(q);
+			Quest q = QuestSystem.getInstance().get(qid, stage);
+			CurrentQuest.getInstance().put(q);
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -504,6 +492,7 @@ public enum FieldEventType {
 			Actor pc = GameSystem.getInstance().getPCbyID(e.getValue());
 			FieldMap.getPlayerCharacter().remove(pc.getSprite());
 			GameSystem.getInstance().getParty().remove(pc);
+			Text.getReplaceMap().remove("!" + pc.getId());
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -514,6 +503,7 @@ public enum FieldEventType {
 			Actor pc = new Actor(e.getValue());
 			FieldMap.getPlayerCharacter().add(pc.getSprite());
 			GameSystem.getInstance().getParty().add(pc);
+			Text.getReplaceMap().put("!" + pc.getId(), pc.getVisibleName());
 			return UserOperationRequire.CONTINUE;
 		}
 	},

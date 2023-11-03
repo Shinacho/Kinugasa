@@ -190,9 +190,13 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 
 		if (mw.getText().hasImage()) {
 			if (charaImage == null) {
-				charaImage = ImageUtil.resize(mw.getText().getImage(),
-						(CHARA_IMAGE_W / mw.getText().getImage().getWidth()),
-						(CHARA_IMAGE_H / mw.getText().getImage().getHeight()));
+				if (mw.getText().getImage().getWidth() == CHARA_IMAGE_W && mw.getText().getImage().getHeight() == CHARA_IMAGE_H) {
+					charaImage = mw.getText().getImage();
+				} else {
+					charaImage = ImageUtil.resize(mw.getText().getImage(),
+							(CHARA_IMAGE_W / mw.getText().getImage().getWidth()),
+							(CHARA_IMAGE_H / mw.getText().getImage().getHeight()));
+				}
 			}
 			x = (int) (mw.getX() + mw.getWidth() - CHARA_IMAGE_W - (BORDER_SIZE * 3));
 			y = (int) (mw.getY() + mw.getHeight() - CHARA_IMAGE_H - (BORDER_SIZE * 3));

@@ -68,7 +68,7 @@ public class Counts extends DBStorage<Counts.Value> {
 			remove(name);
 		}
 		c++;
-		Counts.Value v = v = new Value(name, c);
+		Counts.Value v = new Value(name, c);
 		add(v);
 		commit();
 	}
@@ -123,8 +123,13 @@ public class Counts extends DBStorage<Counts.Value> {
 
 	public void commit() {
 		for (Value v : this) {
-			String sql = "update from counts set num = " + v.num + " where id = '" + v.name + "';";
-			DBConnection.getInstance().execDirect(sql);
+			if (select(v.name) == null) {
+				String sql = "insert into counts values('" + v.name + "'," + v.num + ");";
+				DBConnection.getInstance().execDirect(sql);
+			} else {
+				String sql = "update counts set num = " + v.num + " where id = '" + v.name + "';";
+				DBConnection.getInstance().execDirect(sql);
+			}
 		}
 		clear();
 	}

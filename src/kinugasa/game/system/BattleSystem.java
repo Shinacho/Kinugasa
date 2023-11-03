@@ -46,11 +46,10 @@ import kinugasa.util.Random;
 import kinugasa.game.NotNull;
 import static kinugasa.game.system.Action.死亡者ターゲティング.気絶損壊解脱者を選択可能;
 import static kinugasa.game.system.ActionType.行動;
-import kinugasa.graphics.Animation;
 import kinugasa.graphics.GraphicsUtil;
-import kinugasa.object.AnimationSprite;
 import kinugasa.object.Effect;
 import kinugasa.object.FlashEffect;
+import kinugasa.object.ImageSprite;
 
 /**
  *
@@ -454,7 +453,7 @@ public class BattleSystem implements Drawable {
 		}
 		//レベルアップシステムの起動
 		//レベルアップ結果がある場合はメッセージに追加
-		for (Actor a : LevelManagerSystem.addExp(exp)) {
+		for (Actor a : LevelSystem.addExp(exp)) {
 			text += I18N.get(GameSystemI18NKeys.Xはレベルアップできる, a.getVisibleName()) + Text.getLineSep();
 		}
 		messageWindowSystem.getBattleResultW().setText(text);
@@ -814,6 +813,9 @@ public class BattleSystem implements Drawable {
 		}
 		//----------------------------------PCの場合-------------------------------------
 
+		if (BattleConfig.Sounds.手番開始 != null) {
+			BattleConfig.Sounds.手番開始.load().stopAndPlay();
+		}
 		//コマンドウインドウを出す
 		targetSystem.setCurrent(user);
 		messageWindowSystem.getCmdW().setCmd(currentCmd);
@@ -830,6 +832,12 @@ public class BattleSystem implements Drawable {
 			magics.get(t).add(s);
 		} else {
 			magics.put(t, new ArrayList<>(List.of(s)));
+		}
+		//詠唱アニメーション
+		if (BattleConfig.castingAnimationMaster != null) {
+			ImageSprite sp = BattleConfig.castingAnimationMaster.clone();
+			sp.setLocationByCenter(s.getUser().getSprite().getCenter());
+			castingSprites.put(s.getUser(), sp);
 		}
 	}
 
@@ -1101,7 +1109,7 @@ public class BattleSystem implements Drawable {
 						user.getStatus().unEqip(tgtSlot);
 						//右手を外した場合で左手が両手持ちの場合は左手も外す
 						if (tgtSlot == EqipSlot.右手) {
-							if (ActionStorage.両手持ち.equals(user.getStatus().getEqip().get(EqipSlot.左手))) {
+							if (ActionStorage.getInstance().両手持ち.equals(user.getStatus().getEqip().get(EqipSlot.左手))) {
 								user.getStatus().unEqip(EqipSlot.左手);
 							}
 						}
@@ -1128,12 +1136,12 @@ public class BattleSystem implements Drawable {
 					//両手持ち武器の場合は左手を強制的に両手持ちにする
 					boolean ryoute = false;
 					if (i.getWeaponType() == WeaponType.弓) {
-						user.getStatus().eqip(EqipSlot.右手, ActionStorage.両手持ち_弓);
+						user.getStatus().eqip(EqipSlot.右手, ActionStorage.getInstance().両手持ち_弓);
 						user.getStatus().eqip(EqipSlot.左手, i);
 						ryoute = true;
 					} else if (Set.of(WeaponType.大剣, WeaponType.大杖, WeaponType.銃, WeaponType.弩, WeaponType.薙刀)
 							.contains(i.getWeaponType())) {
-						user.getStatus().eqipLeftHand(ActionStorage.両手持ち);
+						user.getStatus().eqipLeftHand(ActionStorage.getInstance().両手持ち);
 						ryoute = true;
 					}
 					user.getStatus().updateAction();
@@ -1529,7 +1537,12 @@ public class BattleSystem implements Drawable {
 		int party = 0, enemy = 0;
 		for (ActionResult.EventResult r : res.allResults()) {
 			party += (GameSystem.getInstance().getParty().contains(r.tgt) && !r.tgt.isSummoned() && r.tgtIsDead) ? 1 : 0;
-			enemy += (!GameSystem.getInstance().getParty().contains(r.tgt) && r.tgtIsDead) ? 1 : 0;
+			enemy += (!GameSystem.getInstance().getParty().contains(r.tgt) && !r.tgt.isSummoned() && r.tgtIsDead) ? 1 : 0;
+			if (r.tgtIsDead) {
+				if (BattleConfig.deadCharaImage != null) {
+					r.tgt.getSprite().setImage(BattleConfig.deadCharaImage);
+				}
+			}
 		}
 		//エフェクト追加
 		if (party != 0 || enemy != 0) {
@@ -1646,6 +1659,12 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		animation.removeAll(remove);
+		Set<Actor> removeCastAnimation = castingSprites
+				.keySet()
+				.stream()
+				.filter(p -> !p.getStatus().hasCondition(ConditionKey.詠唱中))
+				.collect(Collectors.toSet());
+		removeCastAnimation.forEach(p -> castingSprites.remove(p));
 
 		//ステージ別処理
 		switch (stage) {
@@ -1726,7 +1745,8 @@ public class BattleSystem implements Drawable {
 				//残り行動力の更新
 				float distance = (float) currentCmd.getUser().getSprite().getLocation().distance(moveIinitialLocation);
 				currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残り行動力).setValue(distance);
-				String v = (int) currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.残り行動力).getValue() + "%";
+				String v = (int) (currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.残り行動力).getValue()
+						/ currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.行動力).getValue()) + "%";
 				messageWindowSystem.getInfoW().setText(v);
 				targetSystem.setCurrentLocation();
 				break;
@@ -2201,6 +2221,10 @@ public class BattleSystem implements Drawable {
 	@Deprecated
 	public void setBattleResultValue(BattleResultValues battleResultValue) {
 		this.battleResultValue = battleResultValue;
+	}
+
+	public void initBattleResult() {
+		this.battleResultValue = null;
 	}
 
 	public int getRemMovePoint() {

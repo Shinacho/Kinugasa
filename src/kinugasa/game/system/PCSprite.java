@@ -35,6 +35,7 @@ import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
 import kinugasa.util.FrameTimeCounter;
+import kinugasa.util.TimeCounter;
 
 /**
  *
@@ -296,27 +297,45 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport {
 	}
 
 	private void parse(XMLElement e) {
-		int w = e.getAttributes().get("w").getIntValue();
-		int h = e.getAttributes().get("h").getIntValue();
-		int[] tc = e.getAttributes().get("tc").safeParseInt(",");
-		int ny = e.getAttributes().get("ny").getIntValue();
-		int sy = e.getAttributes().get("sy").getIntValue();
-		int ey = e.getAttributes().get("ey").getIntValue();
-		int wy = e.getAttributes().get("wy").getIntValue();
-		String fileName = e.getAttributes().get("image").getValue();
+		if (e.getAttributes().contains("tc")) {
+			//アニメーション
+			int w = e.getAttributes().get("w").getIntValue();
+			int h = e.getAttributes().get("h").getIntValue();
+			int[] tc = e.getAttributes().get("tc").safeParseInt(",");
+			int ny = e.getAttributes().get("ny").getIntValue();
+			int sy = e.getAttributes().get("sy").getIntValue();
+			int ey = e.getAttributes().get("ey").getIntValue();
+			int wy = e.getAttributes().get("wy").getIntValue();
+			String fileName = e.getAttributes().get("image").getValue();
 
-		this.fAnimation = new FourDirAnimation(
-				new Animation(new FrameTimeCounter(tc), new SpriteSheet(fileName).rows(sy, w, h).images()),
-				new Animation(new FrameTimeCounter(tc), new SpriteSheet(fileName).rows(wy, w, h).images()),
-				new Animation(new FrameTimeCounter(tc), new SpriteSheet(fileName).rows(ey, w, h).images()),
-				new Animation(new FrameTimeCounter(tc), new SpriteSheet(fileName).rows(ny, w, h).images()));
+			this.fAnimation = new FourDirAnimation(
+					new Animation(new FrameTimeCounter(tc), new SpriteSheet(fileName).rows(sy, w, h).images()),
+					new Animation(new FrameTimeCounter(tc), new SpriteSheet(fileName).rows(wy, w, h).images()),
+					new Animation(new FrameTimeCounter(tc), new SpriteSheet(fileName).rows(ey, w, h).images()),
+					new Animation(new FrameTimeCounter(tc), new SpriteSheet(fileName).rows(ny, w, h).images()));
 
-		if (e.hasAttribute("ide")) {
+		} else {
+			//イメージ
+			int w = e.getAttributes().get("w").getIntValue();
+			int h = e.getAttributes().get("h").getIntValue();
+			String fileName = e.getAttributes().get("image").getValue();
+
+			this.fAnimation = new FourDirAnimation(
+					new Animation(TimeCounter.FALSE, new SpriteSheet(fileName).rows(0, w, h).images()),
+					new Animation(TimeCounter.FALSE, new SpriteSheet(fileName).rows(0, w, h).images()),
+					new Animation(TimeCounter.FALSE, new SpriteSheet(fileName).rows(0, w, h).images()),
+					new Animation(TimeCounter.FALSE, new SpriteSheet(fileName).rows(0, w, h).images()));
+		}
+		if (e.hasAttribute("idx")) {
 			int[] idx = e.getAttributes().get("idx").safeParseInt(",");
 			this.initialIdx = new D2Idx(idx[0], idx[1]);
 		}
-
-		this.currentDir = e.getAttributes().get("dir").of(FourDirection.class);
+		if (e.hasAttribute("dir")) {
+			this.currentDir = e.getAttributes().get("dir").of(FourDirection.class);
+		} else {
+			currentDir = FourDirection.SOUTH;
+		}
+		setAnimation(this.fAnimation.get(currentDir));
 	}
 
 	@Override

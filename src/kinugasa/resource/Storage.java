@@ -227,6 +227,9 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 * @throws DuplicateNameException valの名前が既に使用されているときに投げられます。<br>
 	 */
 	public void add(T val) throws DuplicateNameException {
+		if (val == null) {
+			throw new NullPointerException("null : " + this + "/" + getClass());
+		}
 		if (val.getName() == null) {
 			throw new NameNotFoundException("null key : " + this);
 		}
@@ -276,6 +279,9 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 * @param val 追加するオブジェクトを指定します。<br>
 	 */
 	public void put(T val) {
+		if (val == null) {
+			throw new NameNotFoundException("null : " + this);
+		}
 		map.put(val.getName(), val);
 	}
 
@@ -314,6 +320,9 @@ public class Storage<T extends Nameable> implements Iterable<T> {
 	 * @param val 削除するオブジェクトを指定します。<br>
 	 */
 	public void remove(T val) {
+		if (val == null) {
+			throw new NameNotFoundException("null : " + this);
+		}
 		remove(val.getName());
 	}
 

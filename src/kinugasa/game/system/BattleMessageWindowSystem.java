@@ -86,7 +86,7 @@ public class BattleMessageWindowSystem implements Drawable {
 
 		};
 		infoW = new MessageWindow(480, messageWindowY, w - 480, h, new SimpleMessageWindowModel().setNextIcon(""));
-		statusW = new BattleStatusWindows(statusList);
+		statusW = new BattleStatusWindows(statusList.stream().filter(p -> !p.isSummoned()).toList());
 		itemChoiceUseW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		itemCommitResultW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		actionResultW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));

@@ -18,6 +18,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import kinugasa.game.I18N;
 import static kinugasa.game.system.ActionType.攻撃;
 import static kinugasa.game.system.ActionType.魔法;
@@ -135,6 +136,8 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		状態異常解除,
 		アイテム追加,
 		アイテムロスト,
+		ドロップアイテム追加,
+		ユーザの武器を装備解除してドロップアイテムに追加,
 		独自効果,;
 
 		public String getVisibleName() {
@@ -175,6 +178,46 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		switch (type) {
 			case 独自効果: {
 				throw new GameSystemException("custom action event, but exec is not overrided : " + this);
+			}
+			case ユーザの武器を装備解除してドロップアイテムに追加: {
+				//このアクションが紐づく武器タイプを逆引き検索
+				WeaponType t = a.getWeaponType();
+				if (t == null) {
+					throw new GameSystemException("uneqip, but this action is not weapon action : " + this);
+				}
+				EqipSlot slot = null;
+				Map<EqipSlot, Item> eqip = user.getStatus().getEqip();
+				for (EqipSlot e : EqipSlot.values()) {
+					if (!eqip.containsKey(e)) {
+						continue;
+					}
+					if (eqip.get(e) == null) {
+						continue;
+					}
+					if (eqip.get(e).getWeaponType() == t) {
+						slot = e;
+						break;
+					}
+				}
+				if (slot == null) {
+					throw new GameSystemException("uneqip, but item not found : " + this);
+				}
+				Item tgtItem = eqip.get(slot);
+				user.getStatus().unEqip(slot);
+
+				//アイテムドロップ
+				user.getStatus().getItemBag().drop(tgtItem);
+
+				//ドロップアイテムに追加
+				if (tgt instanceof Enemy) {
+					((Enemy) tgt).getDropItem().add(DropItem.itemOf(tgtItem, 1, 1f));
+				} else {
+					//PCの場合アイテムバッグに追加、追加できなかったらロストする
+					if (tgt.getStatus().getItemBag().canAdd()) {
+						tgt.getStatus().getItemBag().add(tgtItem);
+					}
+				}
+				return getResult(true, tgt);
 			}
 			case ステータス攻撃: {
 				if (tgtStatusKey == null) {
@@ -231,9 +274,15 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 							if (i != null && i.getDcs() != null) {
 								dcs = i.getDcs();
 							}
-							if (i == null) {
-								dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						}
+						if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.左手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
 							}
+						}
+						if (dcs == null) {
+							dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
 						}
 						//ダメージ計算実行
 						DamageCalcSystem.Result r
@@ -292,14 +341,6 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
 							throw new GameSystemException("damage calc is cant exec in field : " + this);
 						}
-						//アイテムからDCS取得
-						StatusKey dcs = null;
-						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-							if (i != null && i.getDcs() != null) {
-								dcs = i.getDcs();
-							}
-						}
 						//攻撃タイプ調整
 						DamageCalcSystem.ActionType actionType
 								= switch (a.getType()) {
@@ -310,6 +351,23 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 							default ->
 								throw new AssertionError("damage calc cant exec : " + this);
 						};
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.左手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (dcs == null) {
+							dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						}
 
 						//ダメージ計算実行
 						DamageCalcSystem.Result r
@@ -576,6 +634,11 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(getTgtConditionKey().getVisibleName());
 				sb.append(", ");
 				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
+				break;
+			}
+			case ユーザの武器を装備解除してドロップアイテムに追加: {
+				sb.append(" ");
+				sb.append(I18N.get(GameSystemI18NKeys.自身の武器装備を解除して敵のドロップアイテムに追加する));
 				break;
 			}
 			case 独自効果: {

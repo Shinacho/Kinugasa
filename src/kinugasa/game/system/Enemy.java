@@ -67,13 +67,18 @@ public final class Enemy extends Actor {
 				dropItem.add(i);
 			}
 			//AI
-			ai = EnemyAIStorage.getInstance().get(
-					root.getElement("ai").get(0).getAttributes().get("id").getValue()
+			if (!root.hasElement("ai")) {
+				throw new IllegalXMLFormatException("enemy, but ai is undefined. " + this);
+			}
+			ai = EnemyAIImpl.valueOf(
+					root.getElement("ai").get(0).getAttributes().get("name").getValue()
 			);
 			//DEADSOUND
-			deadSound = SoundStorage.getInstance().get(
-					root.getElement("deadSound").get(0).getAttributes().get("id").getValue()
-			);
+			if (root.hasElement("deadSound")) {
+				deadSound = SoundStorage.getInstance().get(
+						root.getElement("deadSound").get(0).getAttributes().get("id").getValue()
+				);
+			}
 			f.dispose();
 		} catch (Exception ex) {
 			throw new IllegalXMLFormatException(ex);

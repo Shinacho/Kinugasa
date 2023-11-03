@@ -267,11 +267,16 @@ public class GameSystemI18NKeys {
 	public static final String しかしXは吸収した = "しかしXは吸収した";
 	public static final String Xに平均Xのダメージ = "Xに平均Xのダメージ";
 	public static final String 装備中 = "装備中";
-	public static final String Eで装備解除する = "Eで装備解除する";
-	public static final String Eで装備する = "Eで装備する";
 	public static final String しかしXは行動力が０のため移動できない = "しかしXは行動力が０のため移動できない";
 	public static final String 装備解除 = "装備解除";
 	public static final String Xは混乱している = "Xは混乱している";
+	public static final String 移動 = "移動";
+	public static final String 確定 = "確定";
+	public static final String 防御 = "防御";
+	public static final String 回避 = "回避";
+	public static final String 状態 = "状態";
+	public static final String 逃走 = "逃走";
+	public static final String 自身の武器装備を解除して敵のドロップアイテムに追加する = "自身の武器装備を解除して敵のドロップアイテムに追加する";
 
 	public static class CountKey {
 
@@ -341,7 +346,8 @@ public class GameSystemI18NKeys {
 		public static final String CND_REGISTイベントですがCND_KEYが入ってません = "CND_REGISTイベントですがCND_KEYが入ってません";
 		public static final String CND_REGISTイベントですがVALUEが０です = "CND_REGISTイベントですがVALUEが０です";
 		public static final String CND_REGISTイベントですがキーが耐性付き状態異常ではありません = "CND_REGISTイベントですがキーが耐性付き状態異常ではありません";
-
+		public static final String 武装解除イベントですがアクションが武器のアクションではありません = "武装解除イベントですがアクションが武器のアクションではありません";
+		
 		public static final String スロットと武器タイプの整合性がとれていません = "スロットと武器タイプの整合性がとれていません";
 		public static final String 武器ですが攻撃回数が０です = "武器ですが攻撃回数が０です";
 		public static final String 装備品ですがスタイルが入っていません = "装備品ですがスタイルが入っていません";

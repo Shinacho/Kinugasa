@@ -403,7 +403,7 @@ public class ItemWindow extends BasicSprite {
 								getSelectedPC().unEqip(tgtSlot);
 								//右手を外した場合で左手が両手持ちの場合は左手も外す
 								if (tgtSlot == EqipSlot.右手) {
-									if (ActionStorage.両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
+									if (ActionStorage.getInstance().両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
 										getSelectedPC().unEqip(EqipSlot.左手);
 									}
 								}
@@ -428,12 +428,12 @@ public class ItemWindow extends BasicSprite {
 							//両手持ち武器の場合は左手を強制的に両手持ちにする
 							boolean ryoute = false;
 							if (i.getWeaponType() == WeaponType.弓) {
-								getSelectedPC().eqip(EqipSlot.右手, ActionStorage.両手持ち_弓);
+								getSelectedPC().eqip(EqipSlot.右手, ActionStorage.getInstance().両手持ち_弓);
 								getSelectedPC().eqip(EqipSlot.左手, i);
 								ryoute = true;
 							} else if (Set.of(WeaponType.大剣, WeaponType.大杖, WeaponType.銃, WeaponType.弩, WeaponType.薙刀)
 									.contains(i.getWeaponType())) {
-								getSelectedPC().eqipLeftHand(ActionStorage.両手持ち);
+								getSelectedPC().eqipLeftHand(ActionStorage.getInstance().両手持ち);
 								ryoute = true;
 							}
 							getSelectedPC().updateAction();
@@ -489,7 +489,7 @@ public class ItemWindow extends BasicSprite {
 							getSelectedPC().eqip(EqipSlot.左手, i);
 							//弓の場合は右手を両手持ちにする
 							if (i.getWeaponType() == WeaponType.弓) {
-								getSelectedPC().eqip(EqipSlot.右手, ActionStorage.両手持ち_弓);
+								getSelectedPC().eqip(EqipSlot.右手, ActionStorage.getInstance().両手持ち_弓);
 							}
 							getSelectedPC().updateAction();
 							String cnd = getSelectedPC().addWhen0Condition();
@@ -526,11 +526,11 @@ public class ItemWindow extends BasicSprite {
 							//装備する
 							//弓の場合は右手を両手持ちにする
 							if (i.getWeaponType() == WeaponType.弓) {
-								getSelectedPC().eqip(EqipSlot.右手, ActionStorage.両手持ち_弓);
+								getSelectedPC().eqip(EqipSlot.右手, ActionStorage.getInstance().両手持ち_弓);
 							} else {
 								getSelectedPC().eqip(EqipSlot.右手, i);
 								//左手に両手持ちを装備
-								getSelectedPC().eqipLeftHand(ActionStorage.両手持ち);
+								getSelectedPC().eqipLeftHand(ActionStorage.getInstance().両手持ち);
 							}
 							getSelectedPC().updateAction();
 							String cnd = getSelectedPC().addWhen0Condition();
@@ -1022,7 +1022,7 @@ public class ItemWindow extends BasicSprite {
 			//iを右手に装備中
 			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
 				//両手持ちの場合、左手を外す
-				if (ActionStorage.両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
+				if (ActionStorage.getInstance().両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
 					getSelectedPC().unEqip(EqipSlot.左手);
 				}
 				//右手の装備iを外す
@@ -1056,7 +1056,7 @@ public class ItemWindow extends BasicSprite {
 			//iを右手に装備中
 			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
 				//両手持ちの場合、左手を外す
-				if (ActionStorage.両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
+				if (ActionStorage.getInstance().両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
 					getSelectedPC().unEqip(EqipSlot.左手);
 				}
 				//右手の装備iを外す

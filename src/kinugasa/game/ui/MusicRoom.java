@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import kinugasa.game.I18N;
 import kinugasa.resource.sound.*;
 
 /**
@@ -42,8 +43,8 @@ public class MusicRoom extends ScrollSelectableMessageWindow {
 		Collections.sort(list, (Sound o1, Sound o2) -> o1.getFileName().compareTo(o2.getFileName()));
 		List<Text> t = list
 				.stream()
-				.map(p -> ((CachedSound) p).getBuilder().getVisibleName())
-				.map(p -> new Text(p))
+				.map(p -> ((CachedSound) p).getBuilder().getVisibleName().replaceAll(".wav", ""))
+				.map(p -> new Text(I18N.get(p)))
 				.collect(Collectors.toList());
 		t.add(0, new Text("--" + "BGM"));
 		setText(t);

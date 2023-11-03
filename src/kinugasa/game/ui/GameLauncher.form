@@ -28,71 +28,74 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
+          </Group>
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jButton1" max="32767" attributes="0"/>
-                          <Component id="debugMode" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lockFileDelete" alignment="0" pref="422" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="logFile" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="windowSize" alignment="1" max="32767" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Component id="mouse" min="-2" pref="87" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="keyboard" min="-2" pref="119" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="gamepad" pref="117" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
+              <EmptySpace min="13" pref="13" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="jButton1" alignment="0" max="32767" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel7" min="-2" pref="90" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                              <Component id="language" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="args" max="32767" attributes="0"/>
+                          <EmptySpace min="31" pref="31" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
+                                  <Component id="keyboard" min="-2" pref="107" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="gamepad" pref="129" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="logFile" alignment="1" max="32767" attributes="0"/>
+                              <Component id="windowSize" alignment="1" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jLabel7" min="-2" pref="90" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="mouse" min="-2" pref="107" max="-2" attributes="0"/>
+                                  <EmptySpace pref="235" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="language" min="-2" pref="94" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="debugMode" min="-2" pref="216" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                      <Component id="args" pref="348" max="32767" attributes="0"/>
                   </Group>
               </Group>
+              <EmptySpace min="0" pref="17" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="windowSize" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="logFile" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="logFile" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="mouse" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -103,19 +106,18 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="language" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="debugMode" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="lockFileDelete" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="debugMode" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="args" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton1" min="-2" pref="43" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="jButton1" min="-2" pref="31" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -133,13 +135,6 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
     </Container>
-    <Component class="javax.swing.JCheckBox" name="lockFileDelete">
-      <Properties>
-        <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="&#x30ed;&#x30c3;&#x30af;&#x30d5;&#x30a1;&#x30a4;&#x30eb;&#x3092;&#x524a;&#x9664;&#x3059;&#x308b;&#xff08;&#x30b2;&#x30fc;&#x30e0;&#x304c;&#x6b63;&#x5e38;&#x7d42;&#x4e86;&#x3057;&#x306a;&#x304b;&#x3063;&#x305f;&#x5834;&#x5408;&#x306b;&#x9078;&#x629e;&#x3057;&#x3066;&#x304f;&#x3060;&#x3055;&#x3044;&#xff09;"/>
-        <Property name="toolTipText" type="java.lang.String" value="OFF&#x306b;&#x3059;&#x308b;&#x3068;&#x3001;&#x30b2;&#x30fc;&#x30e0;&#x3092;&#x591a;&#x91cd;&#x8d77;&#x52d5;&#x3067;&#x304d;&#x306a;&#x304f;&#x306a;&#x308a;&#x307e;&#x3059;&#x3002;&#x30b2;&#x30fc;&#x30e0;&#x304c;&#x6b63;&#x5e38;&#x306b;&#x7d42;&#x4e86;&#x3057;&#x306a;&#x304b;&#x3063;&#x305f;&#x5834;&#x5408;&#x306f;&#x30ed;&#x30c3;&#x30af;&#x30d5;&#x30a1;&#x30a4;&#x30eb;&#x304c;&#x6b8b;&#x3063;&#x3066;&#x3044;&#x308b;&#x305f;&#x3081;&#x3001;ON&#x306b;&#x3057;&#x3066;&#x304f;&#x3060;&#x3055;&#x3044;&#x3002;"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
         <Property name="text" type="java.lang.String" value="&#x30ed;&#x30b0;&#x30d5;&#x30a1;&#x30a4;&#x30eb;"/>
@@ -201,6 +196,7 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="&#x30b3;&#x30f3;&#x30c8;&#x30ed;&#x30fc;&#x30e9;&#x30fc;"/>
+        <Property name="toolTipText" type="java.lang.String" value="&#x30b3;&#x30f3;&#x30c8;&#x30ed;&#x30fc;&#x30e9;&#x3092;&#x4f7f;&#x7528;&#x3057;&#x306a;&#x3044;&#x5834;&#x5408;&#x3067;&#x3082;OK&#x306e;&#x307e;&#x307e;&#x3067;&#x69cb;&#x3044;&#x307e;&#x305b;&#x3093;&#x304c;&#x3001;OFF&#x306b;&#x3059;&#x308b;&#x3068;&#x5c11;&#x3057;&#x30d1;&#x30d5;&#x30a9;&#x30fc;&#x30de;&#x30f3;&#x30b9;&#x304c;&#x6539;&#x5584;&#x3057;&#x307e;&#x3059;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="language">

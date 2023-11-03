@@ -18,6 +18,8 @@ package kinugasa.game.system;
 
 import java.util.function.IntSupplier;
 import kinugasa.game.GameOption;
+import kinugasa.object.ImageSprite;
+import kinugasa.resource.KImage;
 import kinugasa.resource.sound.Sound;
 import kinugasa.util.Random;
 
@@ -43,6 +45,7 @@ public class BattleConfig {
 		public static Sound 魔法吸収;
 		public static Sound 魔法詠唱開始;
 		public static Sound 死亡演出;
+		public static Sound 手番開始;
 	}
 	//攻撃防御有効度
 	public static float ATK_DEF_PERCENT = 0.85f;
@@ -58,7 +61,9 @@ public class BattleConfig {
 
 	public static IntSupplier 死亡演出＿敵の場合 = () -> Random.d3(1);
 	public static IntSupplier 死亡演出＿味方の場合 = () -> Random.d6(1);
-
+	public static ImageSprite castingAnimationMaster;
+	public static KImage deadCharaImage;
+	
 	public static class ActionID {
 
 		public static final String 移動 = "A001_MOV";

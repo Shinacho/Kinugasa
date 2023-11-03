@@ -73,7 +73,7 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 		XMLElement root = file.load().getFirst();
 
 		for (XMLElement e : root.getElement("set")) {
-			String id = e.getAttributes().get("name").getValue();
+			String id = e.getAttributes().get("id").getValue();
 			float p = e.getAttributes().get("p").getFloatValue();
 			String bgmName = null;
 			if (e.getAttributes().contains("BGM")) {

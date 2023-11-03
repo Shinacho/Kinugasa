@@ -386,6 +386,11 @@ public class MagicWindow extends BasicSprite {
 												e.getP() + "%"));
 										break;
 									}
+									case ユーザの武器を装備解除してドロップアイテムに追加: {
+										sb.append(I18N.get(GameSystemI18NKeys.自身の武器装備を解除して敵のドロップアイテムに追加する,
+												e.getP() + "%"));
+										break;
+									}
 									case アイテム追加: {
 										Item i = ActionStorage.getInstance().itemOf(e.getTgtItemID());
 										sb.append(I18N.get(GameSystemI18NKeys.アイテムXをXの確率で入手する,

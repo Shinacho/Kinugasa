@@ -19,6 +19,7 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kinugasa.game.Nullable;
 import kinugasa.game.field4.*;
 import kinugasa.resource.NameNotFoundException;
 
@@ -93,13 +94,14 @@ public class GameSystem {
 		}
 	}
 
+	@Nullable
 	public Actor getPCbyID(String id) {
 		for (Actor a : party) {
 			if (a.getId().equals(id)) {
 				return a;
 			}
 		}
-		throw new NameNotFoundException("actor " + id + " is not found");
+		return null;
 	}
 
 	public List<PCSprite> getPartySprite() {

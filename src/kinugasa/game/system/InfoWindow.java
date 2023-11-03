@@ -18,7 +18,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Set;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
@@ -84,13 +84,15 @@ public class InfoWindow extends BasicSprite {
 			case クエスト:
 				//MAIN
 				t.add(new Text("--" + I18N.get(GameSystemI18NKeys.メインクエスト)));
-				Quest qs = QuestStorage.getInstance().get("QS0001");
-				t.add(new Text("  " + qs.getVisibleName() + Text.getLineSep() + "   　　　 " + qs.getDesc().replaceAll("/", "/   　　　 ")));
+				Set<Quest> q = CurrentQuest.getInstance().get();
+				for (Quest qs : q.stream().filter(p -> p.getType() == Quest.Type.メイン).toList()) {
+					t.add(new Text("  " + qs.getVisibleName() + Text.getLineSep() + "   　　　 " + qs.getDesc().replaceAll("/", "/   　　　 ")));
+				}
 
 				//SUB
 				t.add(new Text("--" + I18N.get(GameSystemI18NKeys.サブクエスト)));
-				for (Quest ql : QuestStorage.getInstance().filter(p -> !p.getName().equals("QS0001"))) {
-					t.add(new Text("  " + ql.getVisibleName() + Text.getLineSep() + "  " + ql.getDesc()));
+				for (Quest qs : q.stream().filter(p -> p.getType() == Quest.Type.サブ).toList()) {
+					t.add(new Text("  " + qs.getVisibleName() + Text.getLineSep() + "  " + qs.getDesc().replaceAll("/", "/   　　　 ")));
 				}
 
 				break;

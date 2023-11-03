@@ -298,6 +298,9 @@ public final class Status implements Nameable, Cloneable {
 		actions.clear();
 		//行動アクションの導入
 		actions.addAll(ActionStorage.getInstance().allOf(ActionType.行動));
+		if (GameSystem.getInstance().getPCbyID(id) == null) {
+			actions.remove(BattleConfig.ActionID.状態);
+		}
 		//アイテム
 		actions.addAll(getItemBag().getItems().stream().filter(p -> p.hasEvent()).collect(Collectors.toList()));
 		//魔法（本から移入
@@ -326,7 +329,7 @@ public final class Status implements Nameable, Cloneable {
 				case 右手: {
 					if (eqip.containsKey(EqipSlot.左手)
 							&& eqip.get(EqipSlot.左手) != null
-							&& eqip.get(EqipSlot.左手).getId().equals(ActionStorage.両手持ち.getId())) {
+							&& eqip.get(EqipSlot.左手).equals(ActionStorage.getInstance().両手持ち)) {
 						if (!Set.of(WeaponType.大剣, WeaponType.大杖, WeaponType.弓, WeaponType.銃, WeaponType.弩, WeaponType.薙刀)
 								.contains(e.getValue().getWeaponType())) {
 							s = s.composite(e.getValue().getEffectedStatus());

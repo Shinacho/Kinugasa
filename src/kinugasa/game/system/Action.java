@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kinugasa.game.GameLog;
 import kinugasa.game.I18N;
+import kinugasa.game.NoLoopCall;
 import kinugasa.game.Nullable;
 import static kinugasa.game.system.ActionEvent.CalcMode.ADD;
 import static kinugasa.game.system.ActionEvent.CalcMode.MUL;
@@ -38,6 +39,7 @@ import static kinugasa.game.system.ActionEvent.EventType.アイテムロスト;
 import static kinugasa.game.system.ActionEvent.EventType.アイテム追加;
 import static kinugasa.game.system.ActionEvent.EventType.ステータス回復;
 import static kinugasa.game.system.ActionEvent.EventType.ステータス攻撃;
+import static kinugasa.game.system.ActionEvent.EventType.ユーザの武器を装備解除してドロップアイテムに追加;
 import static kinugasa.game.system.ActionEvent.EventType.状態異常付与;
 import static kinugasa.game.system.ActionEvent.EventType.状態異常解除;
 import kinugasa.object.AnimationSprite;
@@ -161,6 +163,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		for (ActionEvent e : mainEvents) {
 			checkEvent(e);
 		}
+		GameLog.print("action : " + this + " is loaded");
 
 		return this;
 	}
@@ -249,12 +252,31 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 				}
 				break;
 			}
+			case ユーザの武器を装備解除してドロップアイテムに追加: {
+				if (getWeaponType() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.武装解除イベントですがアクションが武器のアクションではありません) + " : " + this + " : " + e);
+				}
+				break;
+			}
 			case 独自効果: {
 				break;
 			}
 			default:
 				throw new AssertionError("undefined type : " + this + " : " + e);
 		}
+	}
+
+	@Nullable
+	@NoLoopCall("its heavy")
+	public WeaponType getWeaponType() {
+		for (ActionEvent e : getAllEvents()) {
+			for (ActionEvent.Term t : e.getTerms()) {
+				if (t.type == ActionEvent.Term.Type.指定の武器タイプの武器を装備している) {
+					return WeaponType.valueOf(t.tgtName);
+				}
+			}
+		}
+		return null;
 	}
 
 	public int getArea() {

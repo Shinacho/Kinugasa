@@ -198,6 +198,7 @@ public class BookPage implements Nameable {
 				val += Math.abs(event.getValue()) * 100 * event.getP();
 				break;
 			}
+			case ユーザの武器を装備解除してドロップアイテムに追加:
 			case 独自効果: {
 				break;
 			}

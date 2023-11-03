@@ -26,37 +26,33 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2022/12/11_16:56:15<br>
  * @author Shinacho<br>
  */
-public class Quest implements Nameable {
+public class Quest {
 
 	public enum Type {
 		メイン,
 		サブ,
 	}
 
-	private String id;
-	private Type type;
-	private int stage;
-	private String visibleName;
-	private String desc;
+	private final String qid;
+	private final Type type;
+	private final int stage;
+	private final String visibleName;
+	private final String desc;
 
-	public Quest(String id, Type type, int stage, String visibleName, String desc) {
-		this.id = id;
+	public Quest(String qid, Type type, int stage, String visibleName, String desc) {
+		this.qid = qid;
 		this.type = type;
 		this.stage = stage;
 		this.visibleName = visibleName;
 		this.desc = desc;
 	}
 
-	public String getId() {
-		return id;
+	public String getQid() {
+		return qid;
 	}
 
 	public Type getType() {
 		return type;
-	}
-
-	public int getStage() {
-		return stage;
 	}
 
 	public String getVisibleName() {
@@ -67,36 +63,13 @@ public class Quest implements Nameable {
 		return desc;
 	}
 
-	@Override
-	public String getName() {
-		return id;
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 61 * hash + Objects.hashCode(this.id);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final Quest other = (Quest) obj;
-		return Objects.equals(this.id, other.id);
+	public int getStage() {
+		return stage;
 	}
 
 	@Override
 	public String toString() {
-		return "Quest{" + "id=" + id + ", type=" + type + ", stage=" + stage + ", visibleName=" + visibleName + ", desc=" + desc + '}';
+		return "Quest{" + "qid=" + qid + ", type=" + type + ", stage=" + stage + ", visibleName=" + visibleName + ", desc=" + desc + '}';
 	}
 
 }

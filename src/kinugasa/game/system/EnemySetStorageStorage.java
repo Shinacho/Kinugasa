@@ -60,19 +60,22 @@ public class EnemySetStorageStorage extends Storage<EnemySetStorage> implements 
 
 	//すべてのファイルがロードできるかを検査します
 	public void pack() throws GameSystemException {
+		GameLog.print("------------check enemy xml ----------------");
 		try {
 			for (EnemySetStorage ess : this) {
 				ess.build();
 				for (EnemySet es : ess) {
 					for (Enemy e : es.create()) {
-						GameLog.print("ESS->" + es.getName() + "->" + e.getId() + " : OK");
+						GameLog.print("E3S->" + es.getName() + "->" + e.getId() + " : OK");
 					}
 				}
 				ess.dispose();
 			}
+			EnemyBlueprint.initEnemyNoMap();
 		} catch (Exception ex) {
 			throw new GameSystemException(ex);
 		}
+		GameLog.print("------------check enemy xml end----------------");
 	}
 
 }
