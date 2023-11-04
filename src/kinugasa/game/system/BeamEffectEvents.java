@@ -128,7 +128,7 @@ public class BeamEffectEvents {
 			super(key.toString());
 			this.key = key;
 			setP(1f);
-			setEventType(EventType.独自効果);
+			setEventType(ActionEventType.ビームエフェクト);
 		}
 
 		public Key getKey() {

@@ -17,6 +17,7 @@
 package kinugasa.game.system;
 
 import kinugasa.game.ui.MessageWindow;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.object.BasicSprite;
 
 /**
@@ -30,7 +31,7 @@ public abstract class PCStatusWindow extends BasicSprite {
 		super(x, y, w, h);
 	}
 
-	public abstract MessageWindow getWindow();
+	public abstract ScrollSelectableMessageWindow getWindow();
 
 	public abstract void nextPc();
 

@@ -1031,6 +1031,9 @@ public final class ImageUtil {
 		if (wScale == 1f && hScale == 1f) {
 			return copy(src);
 		}
+		if (wScale == 0 || hScale == 0) {
+			throw new IllegalArgumentException("IU scale is 0. Check the parameter is not int.");
+		}
 		int newWidth = (int) (src.getWidth() * wScale);
 		int newHeight = (int) (src.getHeight() * hScale);
 		BufferedImage dst = newImage(newWidth, newHeight);

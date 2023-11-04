@@ -74,7 +74,7 @@ public class FieldEventParser {
 		for (XMLElement e : root.getElement("event")) {
 			int pri = e.getAttributes().get("order").getIntValue();
 			if (!Arrays.asList(FieldEventType.values()).stream().map(p -> p.toString()).collect(Collectors.toList()).contains(e.getAttributes().get("fet").getValue())) {
-				throw new ScriptFormatException("fet is not found" + this + " / " + e.getAttributes().get("fet"));
+				throw new ScriptFormatException("fet is not found　" + this + " / " + e.getAttributes().get("fet"));
 			}
 			FieldEventType fet = e.getAttributes().get("fet").of(FieldEventType.class);
 			String storageName = null;

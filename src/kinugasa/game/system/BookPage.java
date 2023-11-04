@@ -17,16 +17,16 @@
 package kinugasa.game.system;
 
 import kinugasa.game.I18N;
-import static kinugasa.game.system.ActionEvent.EventType.ATTR_IN;
-import static kinugasa.game.system.ActionEvent.EventType.ATTR_OUT;
-import static kinugasa.game.system.ActionEvent.EventType.CND_REGIST;
-import static kinugasa.game.system.ActionEvent.EventType.アイテムロスト;
-import static kinugasa.game.system.ActionEvent.EventType.アイテム追加;
-import static kinugasa.game.system.ActionEvent.EventType.ステータス回復;
-import static kinugasa.game.system.ActionEvent.EventType.ステータス攻撃;
-import static kinugasa.game.system.ActionEvent.EventType.状態異常付与;
-import static kinugasa.game.system.ActionEvent.EventType.状態異常解除;
-import static kinugasa.game.system.ActionEvent.EventType.独自効果;
+import static kinugasa.game.system.ActionEventType.ATTR_IN;
+import static kinugasa.game.system.ActionEventType.ATTR_OUT;
+import static kinugasa.game.system.ActionEventType.CND_REGIST;
+import static kinugasa.game.system.ActionEventType.アイテムロスト;
+import static kinugasa.game.system.ActionEventType.アイテム追加;
+import static kinugasa.game.system.ActionEventType.ステータス回復;
+import static kinugasa.game.system.ActionEventType.ステータス攻撃;
+import static kinugasa.game.system.ActionEventType.状態異常付与;
+import static kinugasa.game.system.ActionEventType.状態異常解除;
+import static kinugasa.game.system.ActionEventType.独自効果;
 import kinugasa.resource.Nameable;
 
 /**
@@ -52,124 +52,7 @@ public class BookPage implements Nameable {
 	}
 
 	public String getVisibleName() {
-		StringBuilder sb = new StringBuilder();
-		switch (event.getEventType()) {
-			case ATTR_IN: {
-				sb.append(I18N.get(GameSystemI18NKeys.被属性変化の術式));
-				sb.append(":");
-				sb.append(event.getTgtAttrIn().getVisibleName());
-				sb.append(event.getValue() < 0 ? "-" : "+");
-				sb.append((int) (event.getValue() * 100));
-				sb.append("%(");
-				sb.append(GameSystemI18NKeys.確率);
-				sb.append(((int) (event.getP() * 100))).append("%");
-				sb.append(")");
-				break;
-			}
-			case ATTR_OUT: {
-				sb.append(I18N.get(GameSystemI18NKeys.与属性変化の術式));
-				sb.append(":");
-				sb.append(event.getTgtAttrOut().getVisibleName());
-				sb.append(event.getValue() < 0 ? "-" : "+");
-				sb.append((int) (event.getValue() * 100));
-				sb.append("%(");
-				sb.append(GameSystemI18NKeys.確率);
-				sb.append(((int) (event.getP() * 100))).append("%");
-				sb.append(")");
-				break;
-			}
-			case CND_REGIST: {
-				sb.append(I18N.get(GameSystemI18NKeys.状態異常耐性変化の術式));
-				sb.append(":");
-				sb.append(event.getTgtCndRegist().getVisibleName());
-				sb.append(event.getValue() < 0 ? "-" : "+");
-				sb.append((int) (event.getValue() * 100));
-				sb.append("%(");
-				sb.append(GameSystemI18NKeys.確率);
-				sb.append(((int) (event.getP() * 100))).append("%");
-				sb.append(")");
-				break;
-			}
-			case アイテムロスト: {
-				sb.append(I18N.get(GameSystemI18NKeys.アイテムロストの術式));
-				sb.append(":");
-				sb.append(ActionStorage.getInstance().itemOf(event.getTgtItemID()).getVisibleName());
-				sb.append("(");
-				sb.append(GameSystemI18NKeys.確率);
-				sb.append(((int) (event.getP() * 100))).append("%");
-				sb.append(")");
-				break;
-			}
-			case アイテム追加: {
-				sb.append(I18N.get(GameSystemI18NKeys.アイテム追加の術式));
-				sb.append(":");
-				sb.append(ActionStorage.getInstance().itemOf(event.getTgtItemID()).getVisibleName());
-				sb.append("(");
-				sb.append(GameSystemI18NKeys.確率);
-				sb.append(((int) (event.getP() * 100))).append("%");
-				sb.append(")");
-				break;
-			}
-			case ステータス回復: {
-				sb.append(I18N.get(GameSystemI18NKeys.X回復の術式, event.getTgtStatusKey().getVisibleName()));
-				sb.append(":");
-				sb.append(event.getAtkAttr().getVisibleName());
-				sb.append(event.getValue() < 0 ? "-" : "+");
-				sb.append((int) (event.getValue()));
-				sb.append("%(");
-				sb.append(GameSystemI18NKeys.確率);
-				sb.append(((int) (event.getP() * 100))).append("%");
-				sb.append(")");
-				if (event.getCalcMode() == ActionEvent.CalcMode.DC) {
-					sb.append("[");
-					sb.append(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる);
-					sb.append("]");
-				}
-				break;
-			}
-			case ステータス攻撃: {
-				sb.append(I18N.get(GameSystemI18NKeys.Xダメージの術式, event.getTgtStatusKey().getVisibleName()));
-				sb.append(":");
-				sb.append(event.getAtkAttr().getVisibleName());
-				sb.append(event.getValue() < 0 ? "-" : "+");
-				sb.append((int) (event.getValue()));
-				sb.append("%(");
-				sb.append(GameSystemI18NKeys.確率);
-				sb.append(((int) (event.getP() * 100))).append("%");
-				sb.append(")");
-				if (event.getCalcMode() == ActionEvent.CalcMode.DC) {
-					sb.append("[");
-					sb.append(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる);
-					sb.append("]");
-				}
-				break;
-			}
-			case 状態異常付与: {
-				sb.append(I18N.get(GameSystemI18NKeys.状態異常付与の術式));
-				sb.append(":");
-				sb.append(event.getTgtConditionKey().getVisibleName());
-				sb.append("(");
-				sb.append(GameSystemI18NKeys.確率);
-				sb.append(((int) (event.getP() * 100))).append("%");
-				sb.append(")");
-				break;
-			}
-			case 状態異常解除: {
-				sb.append(I18N.get(GameSystemI18NKeys.状態異常解除の術式));
-				sb.append(":");
-				sb.append(event.getTgtConditionKey().getVisibleName());
-				sb.append("(");
-				sb.append(GameSystemI18NKeys.確率);
-				sb.append(((int) (event.getP() * 100))).append("%");
-				sb.append(")");
-				break;
-			}
-			case 独自効果: {
-				sb.append(I18N.get(GameSystemI18NKeys.不明な効果));
-				break;
-			}
-		}
-		return sb.toString();
+		return event.getEventType().getPageDescI18Nd(event);
 	}
 
 	public int getPrice() {
@@ -198,8 +81,7 @@ public class BookPage implements Nameable {
 				val += Math.abs(event.getValue()) * 100 * event.getP();
 				break;
 			}
-			case ユーザの武器を装備解除してドロップアイテムに追加:
-			case 独自効果: {
+			default: {
 				break;
 			}
 		}

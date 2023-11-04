@@ -49,7 +49,7 @@ public class SimpleTooltipModel extends TooltipModel {
 		mode = Mode.NONE;
 		if (t.getEvent() != null
 				&& !t.getEvent().isEmpty()
-				&& t.getEvent().stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT_CHECK)) {
+				&& t.getEvent().stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT)) {
 			mode = Mode.SEARCH;
 		}
 		if (!FieldMap.getPlayerCharacter().isEmpty() && fm.canTalk()) {
@@ -95,7 +95,7 @@ public class SimpleTooltipModel extends TooltipModel {
 				break;
 			case SEARCH:
 				if (!t.getEvent().isEmpty()) {
-					if (t.getEvent().stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT_CHECK)) {
+					if (t.getEvent().stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT)) {
 						if (fm.getMessageWindow() != null && fm.getMessageWindow().isVisible()) {
 							label.setVisible(false);
 						} else {

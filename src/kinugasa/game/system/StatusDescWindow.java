@@ -17,16 +17,13 @@
 package kinugasa.game.system;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import kinugasa.game.ui.MessageWindow;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.graphics.ImageUtil;
-import kinugasa.object.BasicSprite;
 
 /**
  *
@@ -36,38 +33,41 @@ import kinugasa.object.BasicSprite;
 public class StatusDescWindow extends PCStatusWindow {
 
 	private List<Status> s;
-	private MessageWindow main;
+	private ScrollSelectableMessageWindow main;
 	private BufferedImage faceImage;
 
 	public StatusDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
 
-		main = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
+		main = new ScrollSelectableMessageWindow(x, y, w, h, 23, false);
+		main.setLoop(true);
 		pcIdx = 0;
 		faceImage = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getFaceImage();
 		resizeFaceImage();
-		update();
+		updateText();
 	}
 	private int pcIdx;
 
 	@Override
 	public void setPcIdx(int pcIdx) {
 		this.pcIdx = pcIdx;
-		update();
+		updateText();
 	}
 
 	@Override
-	public MessageWindow getWindow() {
+	public ScrollSelectableMessageWindow getWindow() {
 		return main;
 	}
 
 	@Override
-	public void next() {
+	public void prev() {
+		main.prevSelect();
 	}
 
 	@Override
-	public void prev() {
+	public void next() {
+		main.nextSelect();
 	}
 
 	@Override
@@ -78,6 +78,8 @@ public class StatusDescWindow extends PCStatusWindow {
 		}
 		faceImage = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getFaceImage();
 		resizeFaceImage();
+		main.reset();
+		updateText();
 	}
 
 	@Override
@@ -88,13 +90,21 @@ public class StatusDescWindow extends PCStatusWindow {
 		}
 		faceImage = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getFaceImage();
 		resizeFaceImage();
+		main.reset();
+		updateText();
+	}
+
+	@Override
+	public void update() {
+		main.update();
 	}
 
 	private void resizeFaceImage() {
 		if (faceImage == null) {
 			return;
 		}
-		faceImage = ImageUtil.resize(faceImage, 128 / faceImage.getWidth(), 128 / faceImage.getHeight());
+		faceImage = ImageUtil.resize(faceImage,
+				(float) ((190f) / faceImage.getWidth()), (float) ((190f) / faceImage.getHeight()));
 	}
 
 	@Override
@@ -102,17 +112,16 @@ public class StatusDescWindow extends PCStatusWindow {
 		return pcIdx;
 	}
 
-	@Override
-	public void update() {
+	public void updateText() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<---");
 		sb.append(GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName());
 		sb.append("--->").append(Text.getLineSep());
-		for (StatusValue v : s.get(pcIdx).getEffectedStatus().stream().sorted().collect(Collectors.toList())) {
+		for (StatusValue v : s.get(pcIdx).getEffectedStatus().stream().sorted().toList()) {
 			if (!v.getKey().isVisible()) {
 				continue;
 			}
-			sb.append(" ");
+			sb.append("  ");
 			if (v.isUseMax()) {
 				if (v.getKey().isPercent()) {
 					float val = v.getValue() * 100;
@@ -127,7 +136,8 @@ public class StatusDescWindow extends PCStatusWindow {
 					sb.append(v.getKey().getVisibleName()).append(":")
 							.append(
 									v.getValue() == StatusKey.魔術使用可否＿使用可能
-									? I18N.get(GameSystemI18NKeys.魔術利用可能) : I18N.get(GameSystemI18NKeys.魔術利用不可));
+									? I18N.get(GameSystemI18NKeys.魔術利用可能) : I18N.get(GameSystemI18NKeys.魔術利用不可))
+							.append(Text.getLineSep());
 				} else if (v.getKey().isPercent()) {
 					float val = v.getValue() * 100;
 					sb.append(v.getKey().getVisibleName()).append(":").append(val).append('%').append(Text.getLineSep());
@@ -136,16 +146,15 @@ public class StatusDescWindow extends PCStatusWindow {
 					sb.append(v.getKey().getVisibleName()).append(":").append(val).append(Text.getLineSep());
 				}
 			}
-			if (s.get(pcIdx).getAbility() != null) {
-				sb.append(Text.getLineSep());
-				sb.append(I18N.get(GameSystemI18NKeys.特性)).append(":");
-				sb.append(s.get(pcIdx).getAbility().getDescI18Nd());
-			}
+		}
+		if (s.get(pcIdx).getAbility() != null) {
+			sb.append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.特性)).append(":");
+			sb.append(s.get(pcIdx).getAbility().getVisibleName())
+					.append("(").append(s.get(pcIdx).getAbility().getDescI18Nd()).append(")");
 		}
 
-		main.setText(new Text(sb.toString()));
-		main.allText();
-
+		main.setText(Text.split(new Text(sb.toString())));
 	}
 
 	@Override
@@ -155,8 +164,8 @@ public class StatusDescWindow extends PCStatusWindow {
 		}
 		main.draw(g);
 		if (faceImage != null) {
-			int x = (int) (main.getX() + main.getWidth() - 128);
-			int y = (int) (main.getY() + main.getHeight() - 128);
+			int x = (int) (getX() + getWidth() - (190f)) - SimpleMessageWindowModel.BORDER_SIZE * 3;
+			int y = (int) (getY() + getHeight() - (190f)) - SimpleMessageWindowModel.BORDER_SIZE * 3;
 			g.drawImage(faceImage, x, y);
 		}
 	}

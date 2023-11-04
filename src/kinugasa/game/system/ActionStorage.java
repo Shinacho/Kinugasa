@@ -344,14 +344,14 @@ public class ActionStorage extends DBStorage<Action> {
 
 	{
 		//行動アクションのデータをメモリに搭載してしまう
-		add(new Action(BattleConfig.ActionID.移動, I18N.get(GameSystemI18NKeys.移動), ActionType.行動));
-		add(new Action(BattleConfig.ActionID.確定, I18N.get(GameSystemI18NKeys.確定), ActionType.行動));
-		add(new Action(BattleConfig.ActionID.防御, I18N.get(GameSystemI18NKeys.防御), ActionType.行動));
-		add(new Action(BattleConfig.ActionID.回避, I18N.get(GameSystemI18NKeys.回避), ActionType.行動));
-		add(new Action(BattleConfig.ActionID.状態, I18N.get(GameSystemI18NKeys.状態), ActionType.行動));
-		add(new Action(BattleConfig.ActionID.逃走, I18N.get(GameSystemI18NKeys.逃走), ActionType.行動));
-		add(両手持ち);
-		add(両手持ち_弓);
+		super.add(new Action(BattleConfig.ActionID.移動, I18N.get(GameSystemI18NKeys.移動), ActionType.行動));
+		super.add(new Action(BattleConfig.ActionID.確定, I18N.get(GameSystemI18NKeys.確定), ActionType.行動));
+		super.add(new Action(BattleConfig.ActionID.防御, I18N.get(GameSystemI18NKeys.防御), ActionType.行動));
+		super.add(new Action(BattleConfig.ActionID.回避, I18N.get(GameSystemI18NKeys.回避), ActionType.行動));
+		super.add(new Action(BattleConfig.ActionID.状態, I18N.get(GameSystemI18NKeys.状態), ActionType.行動));
+		super.add(new Action(BattleConfig.ActionID.逃走, I18N.get(GameSystemI18NKeys.逃走), ActionType.行動));
+		super.add(両手持ち);
+		super.add(両手持ち_弓);
 	}
 
 	@NewInstance
@@ -407,9 +407,9 @@ public class ActionStorage extends DBStorage<Action> {
 	@NewInstance
 	@NotNull
 	public List<Action> allOf(ActionType t) {
-		//初回呼び出しでメモリ搭載する
+		//初回呼び出しでメモリ搭載する。行動アクションは最初から乗ってる。
 		List<Action> l = stream().filter(p -> p.getType() == t).collect(Collectors.toList());
-		if (!loaded) {
+		if (!loaded && (t == ActionType.攻撃)) {
 			super.addAll(l);
 			loaded = true;
 		}
@@ -498,7 +498,7 @@ public class ActionStorage extends DBStorage<Action> {
 			v.add(val(e.getTgtAttrIn()));
 			v.add(val(e.getTgtAttrOut()));
 			v.add(val(e.getTgtCndRegist()));
-			v.add(val(e.getTgtItemID()));
+			v.add(val(e.getTgtID()));
 			v.add(val(e.isNoLimit()));
 			v.add(val(e.getValue()));
 			v.add(val(e.getCalcMode()));
@@ -704,7 +704,7 @@ public class ActionStorage extends DBStorage<Action> {
 			v.add(val(e.getTgtAttrIn()));
 			v.add(val(e.getTgtAttrOut()));
 			v.add(val(e.getTgtCndRegist()));
-			v.add(val(e.getTgtItemID()));
+			v.add(val(e.getTgtID()));
 			v.add(val(e.isNoLimit()));
 			v.add(val(e.getValue()));
 			v.add(val(e.getCalcMode()));
@@ -1161,7 +1161,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private List<ActionEvent> getMainEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,"
-				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,ITEMID,ITEMADDNOLIMIT,VAL,CALCMODE,SOUNDID"
+				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,ITEMADDNOLIMIT,VAL,CALCMODE,SOUNDID"
 				+ " from action_mainEvent me left join actionEvent e on me.eventId = e.id"
 				+ " where me.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -1179,7 +1179,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 			ActionEvent e = new ActionEvent(l.get(1).get());
 			e.setSort(l.get(2).asInt());
-			e.setEventType(l.get(3).of(ActionEvent.EventType.class));
+			e.setEventType(l.get(3).of(ActionEventType.class));
 			e.setTgtStatusKey(l.get(4).orNull(StatusKey.class));
 			e.setP(l.get(5).asFloat());
 			e.setTgtConditionKey(l.get(6).orNull(ConditionKey.class));
@@ -1188,7 +1188,7 @@ public class ActionStorage extends DBStorage<Action> {
 			e.setTgtAttrKeyin(l.get(9).orNull(AttributeKey.class));
 			e.setTgtAttrKeyOut(l.get(10).orNull(AttributeKey.class));
 			e.setCndRegist(l.get(11).orNull(ConditionKey.class));
-			e.setTgtItemID(l.get(12).get());
+			e.setTgtID(l.get(12).get());
 			e.setNoLimit(l.get(13).asBoolean());
 			e.setValue(l.get(14).asFloat());
 			e.setCalcMode(l.get(15).orNull(ActionEvent.CalcMode.class));
@@ -1222,7 +1222,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private List<ActionEvent> getUserEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,P,"
-				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,ITEMID,ITEMADDNOLIMIT,VAL,CALCMODE,SOUNDID"
+				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,ITEMADDNOLIMIT,VAL,CALCMODE,SOUNDID"
 				+ " from action_userEvent ue left join actionEvent e on ue.eventId = e.id"
 				+ " where ue.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -1233,7 +1233,7 @@ public class ActionStorage extends DBStorage<Action> {
 		for (List<DBValue> l : r) {
 			ActionEvent e = new ActionEvent(l.get(1).get());
 			e.setSort(l.get(2).asInt());
-			e.setEventType(l.get(3).of(ActionEvent.EventType.class));
+			e.setEventType(l.get(3).of(ActionEventType.class));
 			e.setTgtStatusKey(l.get(4).orNull(StatusKey.class));
 			e.setP(l.get(5).asFloat());
 			e.setTgtConditionKey(l.get(6).orNull(ConditionKey.class));
@@ -1242,7 +1242,7 @@ public class ActionStorage extends DBStorage<Action> {
 			e.setTgtAttrKeyin(l.get(9).orNull(AttributeKey.class));
 			e.setTgtAttrKeyOut(l.get(10).orNull(AttributeKey.class));
 			e.setCndRegist(l.get(11).orNull(ConditionKey.class));
-			e.setTgtItemID(l.get(12).get());
+			e.setTgtID(l.get(12).get());
 			e.setNoLimit(l.get(13).asBoolean());
 			e.setValue(l.get(14).asFloat());
 			e.setCalcMode(l.get(15).orNull(ActionEvent.CalcMode.class));

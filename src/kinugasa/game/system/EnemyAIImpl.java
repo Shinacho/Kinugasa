@@ -516,7 +516,7 @@ public enum EnemyAIImpl implements EnemyAI {
 		for (Action a : e.getStatus().getActions()) {
 			if (a.getAllEvents()
 					.stream()
-					.anyMatch(p -> p.getEventType() == ActionEvent.EventType.ステータス回復
+					.anyMatch(p -> p.getEventType() == ActionEventType.ステータス回復
 					&& p.getTgtStatusKey() == StatusKey.体力)) {
 				return a;
 			}
@@ -533,7 +533,7 @@ public enum EnemyAIImpl implements EnemyAI {
 		for (Action a : e.getStatus().getActions()) {
 			if (a.getAllEvents()
 					.stream()
-					.anyMatch(p -> p.getEventType() == ActionEvent.EventType.ステータス回復
+					.anyMatch(p -> p.getEventType() == ActionEventType.ステータス回復
 					&& p.getTgtStatusKey() == StatusKey.魔力)) {
 				return a;
 			}
@@ -550,7 +550,7 @@ public enum EnemyAIImpl implements EnemyAI {
 		for (Action a : e.getStatus().getActions()) {
 			if (a.getAllEvents()
 					.stream()
-					.anyMatch(p -> p.getEventType() == ActionEvent.EventType.ステータス回復
+					.anyMatch(p -> p.getEventType() == ActionEventType.ステータス回復
 					&& p.getTgtStatusKey() == StatusKey.正気度)) {
 				return a;
 			}
@@ -725,7 +725,7 @@ public enum EnemyAIImpl implements EnemyAI {
 		Collections.shuffle(list);
 		for (Action a : list) {
 			for (ActionEvent ev : a.getAllEvents()) {
-				if (ev.getEventType() == ActionEvent.EventType.状態異常付与) {
+				if (ev.getEventType() == ActionEventType.状態異常付与) {
 					if (ev.getTgtConditionKey().isデバフ()
 							&& !pc.getStatus().hasCondition(ev.getTgtConditionKey())) {
 						if (!a.checkResource(e.getStatus()).is足りないステータスあり()) {
@@ -745,7 +745,7 @@ public enum EnemyAIImpl implements EnemyAI {
 		Collections.shuffle(list);
 		for (Action a : list) {
 			for (ActionEvent ev : a.getAllEvents()) {
-				if (ev.getEventType() == ActionEvent.EventType.状態異常付与) {
+				if (ev.getEventType() == ActionEventType.状態異常付与) {
 					if (ev.getTgtConditionKey().isバフ() && !tgt.getStatus().hasCondition(ev.getTgtConditionKey())) {
 
 						if (!a.checkResource(e.getStatus()).is足りないステータスあり()) {
@@ -764,7 +764,7 @@ public enum EnemyAIImpl implements EnemyAI {
 		Collections.shuffle(list);
 		for (Action a : list) {
 			for (ActionEvent ev : a.getAllEvents()) {
-				if (ev.getEventType() == ActionEvent.EventType.状態異常付与) {
+				if (ev.getEventType() == ActionEventType.状態異常付与) {
 					if (ev.getTgtConditionKey().isバフ() && !e.getStatus().hasCondition(ev.getTgtConditionKey())) {
 						if (!a.checkResource(e.getStatus()).is足りないステータスあり()) {
 							return a;

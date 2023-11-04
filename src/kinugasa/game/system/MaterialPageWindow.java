@@ -37,7 +37,7 @@ public class MaterialPageWindow extends BasicSprite {
 
 	public MaterialPageWindow(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		mw = new ScrollSelectableMessageWindow(x, y, w, h, 20, false);
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, 23, false);
 		mw.setLoop(true);
 		updateText();
 	}

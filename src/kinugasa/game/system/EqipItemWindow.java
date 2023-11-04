@@ -16,12 +16,13 @@
  */
 package kinugasa.game.system;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.ui.MessageWindow;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 
@@ -32,21 +33,22 @@ import kinugasa.game.ui.Text;
  */
 public class EqipItemWindow extends PCStatusWindow {
 
-	private MessageWindow mw;
+	private ScrollSelectableMessageWindow mw;
 	private List<Status> s;
 
 	public EqipItemWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
-		update();
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, 23);
+		mw.setLoop(true);
+		updateText();
 	}
 	private int pcIdx;
 
 	@Override
 	public void setPcIdx(int pcIdx) {
 		this.pcIdx = pcIdx;
-		update();
+		updateText();
 	}
 
 	@Override
@@ -55,6 +57,8 @@ public class EqipItemWindow extends PCStatusWindow {
 		if (pcIdx >= s.size()) {
 			pcIdx = 0;
 		}
+		mw.reset();
+		updateText();
 	}
 
 	@Override
@@ -63,6 +67,8 @@ public class EqipItemWindow extends PCStatusWindow {
 		if (pcIdx < 0) {
 			pcIdx = s.size() - 1;
 		}
+		mw.reset();
+		updateText();
 	}
 
 	@Override
@@ -70,33 +76,41 @@ public class EqipItemWindow extends PCStatusWindow {
 		return pcIdx;
 	}
 
-	@Override
-	public void update() {
+	public void updateText() {
 		StringBuilder sb = new StringBuilder();
+		Actor a = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId());
 		sb.append("<---").append(I18N.get(GameSystemI18NKeys.Xの装備,
-				GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName()))
+				a.getVisibleName()))
 				.append("--->").append(Text.getLineSep());
 
-		for (Map.Entry<EqipSlot, Item> e : s.get(pcIdx).getEqip().entrySet()) {
-			String key = e.getKey().getVisibleName();
-			String value = e.getValue() == null ? I18N.get(GameSystemI18NKeys.なし) : e.getValue().getVisibleName();
-			sb.append("  ").append(key).append(":").append(value).append(Text.getLineSep());
+		for (EqipSlot s : EqipSlot.values()) {
+			String key = s.getVisibleName();
+			if (a.getStatus().getRace().getEqipSlots().contains(s)) {
+				String value = a.getStatus().getEqip().get(s) == null ? I18N.get(GameSystemI18NKeys.なし) : a.getStatus().getEqip().get(s).getVisibleName();
+				sb.append("  ").append(key).append(":").append(value).append(Text.getLineSep());
+			}
 		}
 
-		mw.setText(new Text(sb.toString()));
-		mw.allText();
+		mw.setText(Text.split(new Text(sb.toString())));
 	}
 
 	@Override
 	public void prev() {
+		mw.prevSelect();
 	}
 
 	@Override
 	public void next() {
+		mw.nextSelect();
 	}
 
 	@Override
-	public MessageWindow getWindow() {
+	public void update() {
+		mw.update();
+	}
+
+	@Override
+	public ScrollSelectableMessageWindow getWindow() {
 		return mw;
 	}
 

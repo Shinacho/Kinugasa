@@ -34,7 +34,7 @@ public class InfoWindow extends BasicSprite {
 
 	public InfoWindow(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		main = new ScrollSelectableMessageWindow(x, y, w, h, 20, false);
+		main = new ScrollSelectableMessageWindow(x, y, w, h, 23, false);
 		main.setLoop(true);
 		updateText();
 	}
@@ -47,7 +47,7 @@ public class InfoWindow extends BasicSprite {
 	private Mode mode = Mode.お金;
 	private ScrollSelectableMessageWindow main;
 
-	public void switchMode() {
+	public void nextMode() {
 		mode = switch (mode) {
 			case お金 ->
 				Mode.クエスト;
@@ -55,6 +55,19 @@ public class InfoWindow extends BasicSprite {
 				Mode.統計;
 			case 統計 ->
 				Mode.お金;
+		};
+		main.reset();
+		updateText();
+	}
+
+	public void prevMode() {
+		mode = switch (mode) {
+			case お金 ->
+				Mode.統計;
+			case クエスト ->
+				Mode.お金;
+			case 統計 ->
+				Mode.クエスト;
 		};
 		main.reset();
 		updateText();
@@ -97,7 +110,7 @@ public class InfoWindow extends BasicSprite {
 
 				break;
 			case 統計: {
-				for (Counts.Value v : Counts.getInstance().stream().sorted((c1, c2) -> {
+				for (Counts.Value v : Counts.getInstance().selectAll().stream().sorted((c1, c2) -> {
 					return c1.getVisibleName().compareTo(c2.getVisibleName());
 				}).toList()) {
 					t.add(new Text("  " + v.getVisibleName() + " : " + v.num));

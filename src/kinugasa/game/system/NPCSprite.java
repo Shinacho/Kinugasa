@@ -18,6 +18,7 @@ package kinugasa.game.system;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import kinugasa.game.GraphicsContext;
 import kinugasa.game.field4.D2Idx;
 import kinugasa.game.field4.FieldMap;
 import kinugasa.game.field4.FourDirAnimation;
@@ -71,6 +72,7 @@ public class NPCSprite extends PCSprite implements Nameable {
 			setSpeed(vehicle.getSpeed());
 		}
 		to(initialDir);
+		animationUpdate = false;
 	}
 
 	public NPCSprite(String f) {
@@ -91,11 +93,11 @@ public class NPCSprite extends PCSprite implements Nameable {
 		this.vehicle = VehicleStorage.getInstance()
 				.get(r.getElement("vehicle").get(0).getAttributes().get("name").getValue());
 
-		this.textId = 
-				r.getElement("text").get(0).getAttributes().get("id").getValue();
-		
+		this.textId
+				= r.getElement("text").get(0).getAttributes().get("id").getValue();
+
 		this.currentIdx = getInitialIdx().clone();
-		
+
 		f.dispose();;
 	}
 
@@ -171,10 +173,10 @@ public class NPCSprite extends PCSprite implements Nameable {
 
 	@Override
 	public void update() {
-		super.update();
 		if (moveStop) {
 			return;
 		}
+		updateAnimation();
 		switch (stage) {
 			case 0:
 				if (outerTarget) {

@@ -30,7 +30,6 @@ import kinugasa.game.ui.MessageWindowGroup;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
-import kinugasa.util.Random;
 
 /**
  *
@@ -1127,13 +1126,13 @@ public class ItemWindow extends BasicSprite {
 					sb.append(i.getVisibleName()).append(Text.getLineSep());
 					j++;
 				}
-				sb.append(Text.getLineSep());
-				sb.append(Text.getLineSep());
-				sb.append(I18N.get(GameSystemI18NKeys.あとX個持てる, getSelectedPC().getItemBag().remainingSize() + ""));
-				main.setText(sb.toString());
-				main.allText();
-				main.setVisible(true);
 			}
+			sb.append(Text.getLineSep());
+			sb.append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.あとX個持てる, getSelectedPC().getItemBag().remainingSize() + ""));
+			main.setText(sb.toString());
+			main.allText();
+			main.setVisible(true);
 		}
 	}
 

@@ -51,10 +51,10 @@ public class FieldStatusWindows extends BasicSprite {
 			//表示文字列の生成
 			String text = GameSystem.getInstance().getPCbyID(s.getId()).getVisibleName() + Text.getLineSep();
 			int i = 1;
-			for (StatusKey k : StatusKey.values()) {
-				text += "  " + k.getVisibleName() + ":" + Text.getLineSep();
-				float xx = x + 56;
-				float yy = y + 20 + (18 * i);
+			for (StatusKey k : List.of(StatusKey.体力, StatusKey.魔力, StatusKey.正気度)) {
+				text += " " + k.getVisibleName() + ":" + Text.getLineSep();
+				float xx = x + 60;
+				float yy = y + 14  + (14 * i);
 				ProgressBarSprite pp
 						= new ProgressBarSprite(xx, yy,
 								w - 70, 6,

@@ -272,11 +272,15 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport {
 		return moving;
 	}
 
+	protected boolean animationUpdate = true;
+
 	@Override
 	public void move() {
 		super.move();
-		getAnimation().update();
-		setImage(getAnimation().getCurrentImage());
+		if (animationUpdate) {
+			getAnimation().update();
+			setImage(getAnimation().getCurrentImage());
+		}
 	}
 
 	public void moveToTgt() {

@@ -39,7 +39,7 @@ public class ActionDescWindow extends PCStatusWindow {
 	public ActionDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new ScrollSelectableMessageWindow(x, y, w, h, SimpleMessageWindowModel.maxLine, false);
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, 23, false);
 		mw.setLoop(true);
 		updateText();
 	}
@@ -75,8 +75,6 @@ public class ActionDescWindow extends PCStatusWindow {
 	public int getPcIdx() {
 		return pcIdx;
 	}
-
-	private static final int MAX_LINE = SimpleMessageWindowModel.maxLine - 1;
 
 	private void updateText() {
 		//SSMWに文字列を設定
@@ -152,8 +150,8 @@ public class ActionDescWindow extends PCStatusWindow {
 	}
 
 	@Override
-	public MessageWindow getWindow() {
-		return mw.getWindow();
+	public ScrollSelectableMessageWindow getWindow() {
+		return mw;
 	}
 
 	@Override

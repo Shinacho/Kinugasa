@@ -124,7 +124,8 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 		return isSummoned;
 	}
 
-	protected void setVisibleName(String name) {
+	//注意：ファイルには反映されない
+	public void setVisibleName(String name) {
 		this.visibleName = name;
 	}
 
@@ -136,6 +137,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 	}
 
 	private StatusValueSet vs;
+	private String visibleName退避;
 
 	public void 退避＿ステータスの初期化されない項目() {
 		vs = this.status.getBaseStatus().clone();
@@ -152,6 +154,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 		for (StatusKey k : list) {
 			this.status.getBaseStatus().remove(k.getName());
 		}
+		visibleName退避 = visibleName;
 	}
 
 	public void 復元＿ステータスの初期化されない項目() {
@@ -170,6 +173,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			this.status.getBaseStatus().remove(k.getName());
 			this.status.getBaseStatus().add(vs.get(k));
 		}
+		visibleName = visibleName退避;
 	}
 
 	public void setIniStatusFile(String iniStatusFile) {

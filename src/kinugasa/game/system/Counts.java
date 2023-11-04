@@ -18,9 +18,11 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import static kinugasa.game.I18N.contains;
+import static kinugasa.game.I18N.get;
 import kinugasa.resource.Nameable;
+import kinugasa.resource.Storage;
 import kinugasa.resource.db.DBConnection;
-import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.db.DBValue;
 import kinugasa.resource.db.KResultSet;
 import kinugasa.resource.db.KSQLException;
@@ -30,7 +32,7 @@ import kinugasa.resource.db.KSQLException;
  * @vesion 1.0.0 - 2023/05/31_19:57:01<br>
  * @author Shinacho<br>
  */
-public class Counts extends DBStorage<Counts.Value> {
+public class Counts {
 
 	public static class Value implements Nameable {
 
@@ -61,19 +63,24 @@ public class Counts extends DBStorage<Counts.Value> {
 	private Counts() {
 	}
 
+	private Storage<Counts.Value> storage = new Storage<>();
+
 	public void add1count(String name) {
-		long c = 0;
-		if (contains(name)) {
-			c = get(name).num;
-			remove(name);
+		Counts.Value v = null;
+		if (storage.contains(name)) {
+			v = storage.get(name);
+			storage.remove(name);
+		} else if ((v = select(name)) != null) {
 		}
-		c++;
-		Counts.Value v = new Value(name, c);
-		add(v);
+		if (v == null) {
+			v = new Value(name, 1);
+		} else {
+			v = new Value(v.name, v.num + 1);
+		}
+		storage.add(v);
 		commit();
 	}
 
-	@Override
 	protected Value select(String id) throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
 			String sql = "select id, num from counts where id = '" + id + "';";
@@ -90,7 +97,6 @@ public class Counts extends DBStorage<Counts.Value> {
 		return null;
 	}
 
-	@Override
 	protected List<Value> selectAll() throws KSQLException {
 		List<Value> res = new ArrayList<>();
 		if (DBConnection.getInstance().isUsing()) {
@@ -108,21 +114,8 @@ public class Counts extends DBStorage<Counts.Value> {
 		return res;
 	}
 
-	@Override
-	protected int count() throws KSQLException {
-		if (DBConnection.getInstance().isUsing()) {
-			String sql = "select count(*) from counts;";
-			KResultSet r = DBConnection.getInstance().execDirect(sql);
-			if (r.isEmpty()) {
-				return 0;
-			}
-			return r.cell(0, 0).asInt();
-		}
-		return 0;
-	}
-
-	public void commit() {
-		for (Value v : this) {
+	private void commit() {
+		for (Value v : storage) {
 			if (select(v.name) == null) {
 				String sql = "insert into counts values('" + v.name + "'," + v.num + ");";
 				DBConnection.getInstance().execDirect(sql);
@@ -131,7 +124,7 @@ public class Counts extends DBStorage<Counts.Value> {
 				DBConnection.getInstance().execDirect(sql);
 			}
 		}
-		clear();
+		storage.clear();
 	}
 
 }

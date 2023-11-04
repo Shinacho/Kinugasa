@@ -42,7 +42,8 @@ public enum WeaponType {
 	フレイル,
 	弓,
 	弩,
-	銃,;
+	銃,
+	斧;
 
 	public String getVisibleName() {
 		return I18N.get(toString());

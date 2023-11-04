@@ -23,7 +23,7 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2023/10/14_11:23:39<br>
  * @author Shinacho<br>
  */
-public class AttributeValue implements Nameable, Cloneable {
+public class AttributeValue implements Nameable, Cloneable, Comparable<AttributeValue> {
 
 	private AttributeKey key;
 	private float value;
@@ -92,6 +92,11 @@ public class AttributeValue implements Nameable, Cloneable {
 	@Override
 	public String toString() {
 		return "AttributeValue{" + "key=" + key + ", value=" + value + '}';
+	}
+
+	@Override
+	public int compareTo(AttributeValue o) {
+		return key.compareTo(o.key);
 	}
 
 }

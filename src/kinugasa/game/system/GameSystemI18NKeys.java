@@ -29,6 +29,12 @@ import java.util.stream.Stream;
  * @author Shinacho<br>
  */
 public class GameSystemI18NKeys {
+	
+	public static void main(String[] args) {
+		for(var v : GameSystemI18NKeys.allKeysJAData()){
+			System.out.println(v);
+		}
+	}
 
 	private static List<String> of(Class<?> c) {
 		List<String> r = new ArrayList<>();
@@ -71,7 +77,7 @@ public class GameSystemI18NKeys {
 		r.add("[Action.死亡者ターゲティング]");
 		r.addAll(List.of(Action.死亡者ターゲティング.values()).stream().map(p -> p.toString()).toList());
 		r.add("[ActionEvent.EventType]");
-		r.addAll(List.of(ActionEvent.EventType.values()).stream().map(p -> p.toString()).toList());
+		r.addAll(List.of(ActionEventType.values()).stream().map(p -> p.toString()).toList());
 		r.add("[WeaponType]");
 		r.addAll(List.of(WeaponType.values()).stream().map(p -> p.toString()).toList());
 		r.add("[EqipSlot]");
@@ -107,7 +113,28 @@ public class GameSystemI18NKeys {
 			return p;
 		}).toList();
 
-		return r;
+		List<String> res = new ArrayList<>();
+		for (var v : r) {
+			if (!v.startsWith("[") && v.contains("X")) {
+				String key = v.split("=")[0];
+				String value = v.split("=")[1];
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0, p = 0; i < value.length(); i++) {
+					char a = value.charAt(i);
+					if (a != 'X') {
+						sb.append(a);
+					} else {
+						sb.append("!" + p);
+						p++;
+					}
+				}
+				res.add(key + "=" + sb.toString());
+			} else {
+				res.add(v);
+			}
+		}
+
+		return res;
 	}
 	public static final String はい = "はい";
 	public static final String いいえ = "いいえ";
@@ -154,7 +181,7 @@ public class GameSystemI18NKeys {
 	public static final String 回復 = "回復";
 	public static final String 確率 = "確率";
 	public static final String 対象 = "対象";
-	public static final String 不明な効果 = "不明な効果";
+	public static final String この効果は特殊なもので分析ができない = "この効果は特殊なもので分析ができない";
 	public static final String 値 = "値";
 	public static final String Xを本当に解体する = "Xを本当に解体する";
 	public static final String Xを本当にすてる = "Xを本当にすてる";
@@ -220,8 +247,8 @@ public class GameSystemI18NKeys {
 	public static final String 被耐性XをXの確率でX変更する = "被耐性XをXの確率でX変更する";
 	public static final String 与耐性XをXの確率でX変更する = "与耐性XをXの確率でX変更する";
 	public static final String 状態異常Xの耐性をXの確率でX変更する = "状態異常Xの耐性をXの確率でX変更する";
-	public static final String アイテムXをXの確率で失う = "アイテムXをXの確率で失う";
-	public static final String アイテムXをXの確率で入手する = "アイテムXをXの確率で入手る";
+	public static final String XをXの確率で失う = "アイテムXをXの確率で失う";
+	public static final String XをXの確率で入手する = "アイテムXをXの確率で入手る";
 	public static final String Xの確率でXを回復する = "Xの確率でXを回復する";
 	public static final String Xの確率でX属性のダメージをXに与える = "Xの確率でX属性のダメージをXに与える";
 	public static final String この値は基礎値でありダメージ計算が行われる = "この値は基礎値でありダメージ計算が行われる";
@@ -276,7 +303,105 @@ public class GameSystemI18NKeys {
 	public static final String 回避 = "回避";
 	public static final String 状態 = "状態";
 	public static final String 逃走 = "逃走";
-	public static final String 自身の武器装備を解除して敵のドロップアイテムに追加する = "自身の武器装備を解除して敵のドロップアイテムに追加する";
+	public static final String Xの確率で自身の武器装備を解除して敵のドロップアイテムに追加する = "Xの確率で自身の武器装備を解除して敵のドロップアイテムに追加する";
+	public static final String Xの確率でXを召喚する = "Xの確率でXを召喚する";
+	public static final String 召喚の術式 = "召喚の術式";
+	public static final String 戦闘に勝利したときXをXの確率で入手する = "戦闘に勝利したときXを入手する";
+	public static final String ドロップアイテム追加の術式 = "ドロップアイテム追加の術式";
+	public static final String Xの確率で対象者は直ちにX回行動できる = "Xの確率で対象者は直ちにX回行動できる";
+	public static final String 武器投擲の術式 = "武器投擲の術式";
+	public static final String 即時行動の術式 = "即時行動の術式";
+	public static final String X回 = "X回";
+	public static final String Xの確率で対象者はこのターンの最後にX回行動できる = "Xの確率で対象者はこのターンの最後にX回行動できる";
+	public static final String 遅延行動の術式 = "遅延行動の術式";
+	public static final String Xの確率で対象者は魔法詠唱を中断する = "Xの確率で対象者は魔法詠唱を中断する";
+	public static final String 詠唱中断の術式 = "詠唱中断の術式";
+	public static final String Xの確率で対象者の詠唱完了イベントをXターン移動する = "Xの確率で対象者の詠唱完了イベントをXターン移動する";
+	public static final String 詠唱時間変更の術式 = "詠唱時間変更の術式";
+	public static final String Xの確率で自身のクローンを召喚する = "Xの確率で自身のクローンを召喚する";
+	public static final String 術者クローニングの術式 = "術者クローニングの術式";
+	public static final String Xの確率で対象者の行動順を早める = "Xの確率で対象者の行動順を早める";
+	public static final String ヘイストの術式 = "ヘイストの術式";
+	public static final String Xの確率で対象者はそのターン行動できなくなる = "Xの確率で対象者はそのターン行動できなくなる";
+	public static final String 行動阻止の術式 = "行動阻止の術式";
+	public static final String Xの確率でそのターンの行動順を反転させる = "Xの確率でそのターンの行動順を反転させる";
+	public static final String トリックルームの術式 = "トリックルームの術式";
+	public static final String Xの確率で対象者は最大48ノックバックする = "Xの確率で対象者は最大48ノックバックする";
+	public static final String 弱ノックバックの術式 = "弱ノックバックの術式";
+	public static final String Xの確率で対象者は最大116ノックバックする = "Xの確率で対象者は最大116ノックバックする";
+	public static final String 中ノックバックの術式 = "中ノックバックの術式";
+	public static final String Xの確率で対象者は最大255ノックバックする = "Xの確率で対象者は最大255ノックバックする";
+	public static final String 強ノックバックの術式 = "強ノックバックの術式";
+	public static final String Xの確率で対象者は中心からXの範囲内に転送される = "Xの確率で対象者は中心からXの範囲内に転送される";
+	public static final String 集結の術式 = "集結の術式";
+	public static final String Xの確率で対象者はすぐ逃げられる位置に転送される = "Xの確率で対象者はすぐ逃げられる位置に転送される";
+	public static final String 退避の術式 = "退避の術式";
+	public static final String Xの確率で対象者は一番近い敵対者のそばに転送される = "Xの確率で対象者は一番近い敵対者のそばに転送される";
+	public static final String 接近の術式 = "接近の術式";
+	public static final String Xの確率で術者は対象者のそばに転送される = "Xの確率で術者は対象者のそばに転送される";
+	public static final String 術者転送の術式 = "術者転送の術式";
+	public static final String Xの確率で術者は対象者と位置が入れ替わる = "Xの確率で術者は対象者と位置が入れ替わる";
+	public static final String 位置交換の術式 = "位置交換の術式";
+	public static final String Xの確率で術者は特定のアイテムを手に入れる = "Xの確率で術者は特定のアイテムを手に入れる";
+	public static final String ランダムアイテムの術式 = "ランダムアイテムの術式";
+	public static final String Xの確率で戦闘が終了し逃走扱いになる = "Xの確率で戦闘が終了し逃走扱いになる";
+	public static final String 強制逃走の術式 = "強制逃走の術式";
+	public static final String Xの確率でXにワープする = "Xの確率でXにワープする";
+	public static final String マップ間ワープの術式 = "マップ間ワープの術式";
+	public static final String Xの確率で現在のマップのランダムな出入り口に移動する = "Xの確率で現在のマップのランダムな出入り口に移動する";
+	public static final String テレポートの術式 = "テレポートの術式";
+	public static final String Xの確率で現在のセーブデータを破壊しセーブせずにゲームを終了した場合はセーブデータをロストする = "Xの確率で現在のセーブデータを破壊しセーブせずにゲームを終了した場合はセーブデータをロストする";
+	public static final String 現在記録抹消の術式 = "現在記録抹消の術式";
+	public static final String Xの確率でゲームがセーブされずに終了する = "Xの確率でゲームがセーブされずに終了する";
+	public static final String 次元崩壊の術式 = "次元崩壊の術式";
+	public static final String Xの確率で他のセーブデータを破壊する = "Xの確率で他のセーブデータを破壊する";
+	public static final String 別次元破壊の術式 = "別次元破壊の術式";
+	public static final String Xの確率ですべてのセーブデータを破壊する = "Xの確率ですべてのセーブデータを破壊する";
+	public static final String 全空間破壊の術式 = "全空間破壊の術式";
+	public static final String このイベントがあると術者から対象者へビームを発射するアニメーションが追加される = "このイベントがあると術者から対象者へビームを発射するアニメーションが追加される";
+	public static final String 起動するとファイル選択が開き選んだファイルに応じて属性とダメージが決まる = "起動するとファイル選択が開き選んだファイルに応じて属性とダメージが決まる";
+	public static final String 上位者の情報の術式 = "上位者の情報の術式";
+	public static final String 起動するとファイル選択が開き選んだファイルのサイズに応じて属性とダメージが決まる = "起動するとファイル選択が開き選んだファイルのサイズに応じて属性とダメージが決まる";
+	public static final String 上位者の巨大情報の術式 = "上位者の巨大情報の術式";
+	public static final String 倒した敵の数に応じて属性とダメージが決まる = "倒した敵の数に応じて属性とダメージが決まる";
+	public static final String 勇者の絶望の術式 = "勇者の絶望の術式";
+	public static final String ターン数が小さいほどダメージが上がる = "ターン数が小さいほどダメージが上がる";
+	public static final String 速攻戦の術式 = "速攻戦の術式";
+	public static final String ターン数が大きいほどダメージが上がる = "ターン数が大きいほどダメージが上がる";
+	public static final String 遅滞戦術の術式 = "遅滞戦術の術式";
+	public static final String 使用しているコンピュータのコアによって属性とダメージが決まる = "使用しているコンピュータのコアによって属性とダメージが決まる";
+	public static final String 上位者の脳の術式 = "上位者の脳の術式";
+	public static final String 持っているアイテムの重さによってダメージが決まる = "持っているアイテムの重さによってダメージが決まる";
+	public static final String ヘビーボンバーの術式 = "ヘビーボンバーの術式";
+	public static final String Xの確率でXターン内の詠唱完了を反転させる = "Xの確率でXターン内の詠唱完了を反転させる";
+	public static final String 詠唱時間逆転の術式 = "詠唱時間逆転の術式";
+	public static final String 上位者の情報Xを閲覧する = "上位者の情報Xを閲覧する";
+	public static final String 上位者の情報閲覧の術式 = "上位者の情報閲覧の術式";
+	public static final String このダメージは倒した敵の数が多いほど大きくなる = "このダメージは倒した敵の数が多いほど大きくなる";
+	public static final String このダメージはターン数が小さいほど大きくなる = "このダメージはターン数が小さいほど大きくなる";
+	public static final String このダメージはターン数が経過しているほど大きくなる = "このダメージはターン数が経過しているほど大きくなる";
+	public static final String このダメージは使用しているコンピュータのコア数により変化する = "このダメージは使用しているコンピュータのコア数により変化する";
+	public static final String このダメージはアイテムをたくさん持っているほど大きくなる = "このダメージはアイテムをたくさん持っているほど大きくなる";
+	public static final String このダメージは自身の体力が減っているほど高くなる = "このダメージは自身の体力が減っているほど高くなる";
+	public static final String このダメージは自身の魔力が減っているほど高くなる = "このダメージは自身の魔力が減っているほど高くなる";
+	public static final String このダメージは自身の正気度が減っているほど高くなる = "このダメージは自身の正気度が減っているほど高くなる";
+	public static final String 背水の陣の術式 = "背水の陣の術式";
+	public static final String 精神限界の術式 = "精神限界の術式";
+	public static final String 狂気の笑みの術式 = "狂気の笑みの術式";
+	public static final String Xの確率でXをこのターンの最後にX回発動する = "Xの確率でXをこのターンの最後にX回発動する";
+	public static final String 高速詠唱の術式 = "高速詠唱の術式";
+	public static final String Xの確率でランダムな属性のランダムなダメージをXに与える = "Xの確率でランダムな属性のランダムなダメージをXに与える";
+	public static final String ランダムシードの術式 = "ランダムシードの術式";
+	public static final String Xの確率で術者のX装備の攻撃回数をX上げる = "Xの確率で術者のX装備の攻撃回数をX上げる";
+	public static final String 攻撃回数増加の術式 = "攻撃回数増加の術式";
+	public static final String Xの確率で術者のX装備の価値をX倍にする = "Xの確率で術者のX装備の価値をX倍にする";
+	public static final String 装備価値変更の術式 = "装備価値変更の術式";
+	public static final String 指定したマップの指定した座標にワープする = "指定したマップの指定した座標にワープする";
+	public static final String 転送の術式 = "転送の術式";
+	public static final String Xの確率で対象者は行動がそのターンの最後になる = "Xの確率で対象者は行動がそのターンの最後になる";
+	public static final String スローの術式 = "スローの術式";
+	public static final String Xの確率で対象者は術者からXの範囲内に転送される = "Xの確率で対象者は術者からXの範囲内に転送される";
+	public static final String 引き寄せの術式 = "引き寄せの術式";
 
 	public static class CountKey {
 
@@ -347,7 +472,13 @@ public class GameSystemI18NKeys {
 		public static final String CND_REGISTイベントですがVALUEが０です = "CND_REGISTイベントですがVALUEが０です";
 		public static final String CND_REGISTイベントですがキーが耐性付き状態異常ではありません = "CND_REGISTイベントですがキーが耐性付き状態異常ではありません";
 		public static final String 武装解除イベントですがアクションが武器のアクションではありません = "武装解除イベントですがアクションが武器のアクションではありません";
-		
+		public static final String 召喚イベントですがステータスファイルパスが入っていません = "召喚イベントですがステータスファイルパスが入っていません";
+		public static final String マップ転送イベントですがマップIDが入っていません = "マップ転送イベントですがマップIDが入っていません";
+		public static final String ドロップアイテム追加イベントですがアイテムがTGTIDに入ってません = "ドロップアイテム追加イベントですがアイテムがTGTIDに入ってません";
+		public static final String 召喚イベントのステータスファイルが誤っています = "召喚イベントのステータスファイルが誤っています";
+		public static final String ドロップアイテム追加イベントですがTGTIDがアイテムではありません = "ドロップアイテム追加イベントですがTGTIDがアイテムではありません";
+		public static final String マップ転送イベントですがマップIDが誤ってます = "マップ転送イベントですがマップIDが誤ってます";
+
 		public static final String スロットと武器タイプの整合性がとれていません = "スロットと武器タイプの整合性がとれていません";
 		public static final String 武器ですが攻撃回数が０です = "武器ですが攻撃回数が０です";
 		public static final String 装備品ですがスタイルが入っていません = "装備品ですがスタイルが入っていません";

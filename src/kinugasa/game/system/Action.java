@@ -27,23 +27,24 @@ import kinugasa.game.GameLog;
 import kinugasa.game.I18N;
 import kinugasa.game.NoLoopCall;
 import kinugasa.game.Nullable;
+import kinugasa.game.field4.FieldMapStorage;
 import static kinugasa.game.system.ActionEvent.CalcMode.ADD;
 import static kinugasa.game.system.ActionEvent.CalcMode.MUL;
 import static kinugasa.game.system.ActionEvent.CalcMode.TO;
 import static kinugasa.game.system.ActionEvent.CalcMode.TO_MAX;
 import static kinugasa.game.system.ActionEvent.CalcMode.TO_ZERO;
-import static kinugasa.game.system.ActionEvent.EventType.ATTR_IN;
-import static kinugasa.game.system.ActionEvent.EventType.ATTR_OUT;
-import static kinugasa.game.system.ActionEvent.EventType.CND_REGIST;
-import static kinugasa.game.system.ActionEvent.EventType.アイテムロスト;
-import static kinugasa.game.system.ActionEvent.EventType.アイテム追加;
-import static kinugasa.game.system.ActionEvent.EventType.ステータス回復;
-import static kinugasa.game.system.ActionEvent.EventType.ステータス攻撃;
-import static kinugasa.game.system.ActionEvent.EventType.ユーザの武器を装備解除してドロップアイテムに追加;
-import static kinugasa.game.system.ActionEvent.EventType.状態異常付与;
-import static kinugasa.game.system.ActionEvent.EventType.状態異常解除;
+import static kinugasa.game.system.ActionEventType.ATTR_IN;
+import static kinugasa.game.system.ActionEventType.ATTR_OUT;
+import static kinugasa.game.system.ActionEventType.CND_REGIST;
+import static kinugasa.game.system.ActionEventType.アイテムロスト;
+import static kinugasa.game.system.ActionEventType.アイテム追加;
+import static kinugasa.game.system.ActionEventType.ステータス回復;
+import static kinugasa.game.system.ActionEventType.ステータス攻撃;
+import static kinugasa.game.system.ActionEventType.状態異常付与;
+import static kinugasa.game.system.ActionEventType.状態異常解除;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
+import static kinugasa.game.system.ActionEventType.ユーザの武器をドロップしてドロップアイテムに追加;
 
 /**
  * イベントの数が攻撃回数です。
@@ -202,13 +203,13 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 			}
 			case アイテムロスト:
 			case アイテム追加: {
-				if (e.getTgtItemID() == null) {
+				if (e.getTgtID() == null) {
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDが設定されていません) + " : " + this + " : " + e);
 				}
-				if (!ActionStorage.getInstance().contains(e.getTgtItemID())) {
+				if (!ActionStorage.getInstance().contains(e.getTgtID())) {
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDのアイテムが存在しません) + " : " + this + " : " + e);
 				}
-				if (ActionStorage.getInstance().get(e.getTgtItemID()).getType() != ActionType.アイテム) {
+				if (ActionStorage.getInstance().get(e.getTgtID()).getType() != ActionType.アイテム) {
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですが対象IDがアイテムではありません) + " : " + this + " : " + e);
 				}
 
@@ -252,9 +253,45 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 				}
 				break;
 			}
-			case ユーザの武器を装備解除してドロップアイテムに追加: {
+			case ユーザの武器をドロップしてドロップアイテムに追加: {
 				if (getWeaponType() == null) {
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.武装解除イベントですがアクションが武器のアクションではありません) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case ドロップアイテム追加: {
+				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ドロップアイテム追加イベントですがアイテムがTGTIDに入ってません) + " : " + this + " : " + e);
+				}
+				try {
+					ActionStorage.getInstance().itemOf(e.getTgtID());
+
+				} catch (Exception ex) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ドロップアイテム追加イベントですがTGTIDがアイテムではありません) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case 召喚: {
+				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.召喚イベントですがステータスファイルパスが入っていません) + " : " + this + " : " + e);
+				}
+				try {
+					new Actor(e.getTgtID()).getVisibleName();
+				} catch (Exception ex) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.召喚イベントのステータスファイルが誤っています) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case TGTIDのマップIDのランダムな出口ノードに転送: {
+				if (e.getTgtID() == null || e.getTgtID().isEmpty() || e.getTgtID().split(",").length != 2) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.マップ転送イベントですがマップIDが入っていません) + " : " + this + " : " + e);
+				}
+				//マップチェック
+				String mapID = e.getTgtID().split(",")[0];
+				try {
+					FieldMapStorage.getInstance().get(mapID);
+				} catch (Exception ex) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.マップ転送イベントですがマップIDが誤ってます) + " : " + this + " : " + e);
 				}
 				break;
 			}

@@ -168,7 +168,7 @@ public class FieldEventSystem implements Drawable {
 		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
 		List<Text> options = new ArrayList<>();
 		for (Actor pc : GameSystem.getInstance().getParty()) {
-			options.add(new Text(pc.getName() + " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().remainingSize() + "")));
+			options.add(new Text(pc.getVisibleName()+ " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().remainingSize() + "")));
 		}
 		options.add(new Text(I18N.get(GameSystemI18NKeys.諦める)));
 
@@ -185,7 +185,7 @@ public class FieldEventSystem implements Drawable {
 		if (event == null || event.isEmpty() || reset) {
 			return false;
 		}
-		return event.stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT_CHECK);
+		return event.stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT);
 	}
 
 	void setUserOperation(boolean userOperation) {

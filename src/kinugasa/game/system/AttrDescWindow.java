@@ -39,7 +39,7 @@ public class AttrDescWindow extends PCStatusWindow {
 	public AttrDescWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new ScrollSelectableMessageWindow(x, y, w, h, SimpleMessageWindowModel.maxLine, false);
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, 23, false);
 		mw.setLoop(true);
 		updateText();
 	}
@@ -89,13 +89,13 @@ public class AttrDescWindow extends PCStatusWindow {
 			l.add(new Text("  " + v.getKey().getVisibleName() + ":" + (v.getValue() * 100) + '%'));
 		}
 		//ATTR_OUT
-		Text midashi2 = new Text("---" + I18N.get(GameSystemI18NKeys.Xの与属性, s.get(pcIdx).getName()) + "---");
+		Text midashi2 = new Text("---" + I18N.get(GameSystemI18NKeys.Xの与属性, s.get(pcIdx).getVisibleName()) + "---");
 		l.add(midashi2);
 		for (AttributeValue v : s.get(pcIdx).getEffectedAttrOut().stream().sorted().collect(Collectors.toList())) {
 			l.add(new Text("  " + v.getKey().getVisibleName() + ":" + (v.getValue() * 100) + '%'));
 		}
 		//CND_REGIST
-		Text midashi3 = new Text("---" + I18N.get(GameSystemI18NKeys.Xの状態異常耐性, s.get(pcIdx).getName()) + "---");
+		Text midashi3 = new Text("---" + I18N.get(GameSystemI18NKeys.Xの状態異常耐性, s.get(pcIdx).getVisibleName()) + "---");
 		l.add(midashi3);
 		for (ConditionKey k : s.get(pcIdx).getEffectedConditionRegist().keySet().stream().sorted().collect(Collectors.toList())) {
 			l.add(new Text("  " + k.getVisibleName() + ":" + (s.get(pcIdx).getEffectedConditionRegist().get(k) * 100) + '%'));
@@ -120,8 +120,8 @@ public class AttrDescWindow extends PCStatusWindow {
 	}
 
 	@Override
-	public MessageWindow getWindow() {
-		return mw.getWindow();
+	public ScrollSelectableMessageWindow getWindow() {
+		return mw;
 	}
 
 	@Override

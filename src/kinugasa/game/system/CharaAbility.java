@@ -99,7 +99,9 @@ public enum CharaAbility implements AbilityEffect {
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			StatusValueSet r = v.clone();
+			float 割合 = r.get(StatusKey.魔力).get割合();
 			r.get(StatusKey.魔力).mulMax(1.14f);
+			r.get(StatusKey.魔力).setBy割合(割合);
 			return r;
 		}
 
@@ -124,7 +126,9 @@ public enum CharaAbility implements AbilityEffect {
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			StatusValueSet r = v.clone();
+			float 割合 = r.get(StatusKey.体力).get割合();
 			r.get(StatusKey.体力).mulMax(1.14f);
+			r.get(StatusKey.体力).setBy割合(割合);
 			return r;
 		}
 	},
@@ -132,7 +136,9 @@ public enum CharaAbility implements AbilityEffect {
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			StatusValueSet r = v.clone();
+			float 割合 = r.get(StatusKey.正気度).get割合();
 			r.get(StatusKey.正気度).mulMax(1.14f);
+			r.get(StatusKey.正気度).setBy割合(割合);
 			return r;
 		}
 	},

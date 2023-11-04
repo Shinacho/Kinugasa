@@ -20,8 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import kinugasa.game.I18N;
+import kinugasa.game.field4.FieldMap;
+import kinugasa.game.field4.FieldMapStorage;
 import static kinugasa.game.system.ActionType.攻撃;
 import static kinugasa.game.system.ActionType.魔法;
+import kinugasa.game.ui.Text;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
@@ -126,28 +129,9 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		}
 	}
 
-	public enum EventType {
-		ステータス攻撃,
-		ステータス回復,
-		ATTR_IN,
-		ATTR_OUT,
-		CND_REGIST,
-		状態異常付与,
-		状態異常解除,
-		アイテム追加,
-		アイテムロスト,
-		ドロップアイテム追加,
-		ユーザの武器を装備解除してドロップアイテムに追加,
-		独自効果,;
-
-		public String getVisibleName() {
-			return I18N.get(toString());
-		}
-	}
-
 	private String id;
 	private int sort;
-	private EventType type;
+	private ActionEventType type;
 	private List<Term> terms = new ArrayList<>();
 	private StatusKey tgtStatusKey;
 	private float p;
@@ -157,7 +141,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	private AttributeKey tgtAttrKeyOut;
 	private AttributeKey tgtAttrKeyIn;
 	private ConditionKey tgtCndRegist;
-	private String tgtItemID;
+	private String tgtId;
 	private boolean noLimit;
 	private float value;
 	private CalcMode calcMode;
@@ -176,48 +160,9 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		StatusValueSet tgtStatus = tgt.getStatus().getEffectedStatus();
 		tgt.getStatus().saveBeforeDamageCalc();
 		switch (type) {
+			case ビームエフェクト:
 			case 独自効果: {
 				throw new GameSystemException("custom action event, but exec is not overrided : " + this);
-			}
-			case ユーザの武器を装備解除してドロップアイテムに追加: {
-				//このアクションが紐づく武器タイプを逆引き検索
-				WeaponType t = a.getWeaponType();
-				if (t == null) {
-					throw new GameSystemException("uneqip, but this action is not weapon action : " + this);
-				}
-				EqipSlot slot = null;
-				Map<EqipSlot, Item> eqip = user.getStatus().getEqip();
-				for (EqipSlot e : EqipSlot.values()) {
-					if (!eqip.containsKey(e)) {
-						continue;
-					}
-					if (eqip.get(e) == null) {
-						continue;
-					}
-					if (eqip.get(e).getWeaponType() == t) {
-						slot = e;
-						break;
-					}
-				}
-				if (slot == null) {
-					throw new GameSystemException("uneqip, but item not found : " + this);
-				}
-				Item tgtItem = eqip.get(slot);
-				user.getStatus().unEqip(slot);
-
-				//アイテムドロップ
-				user.getStatus().getItemBag().drop(tgtItem);
-
-				//ドロップアイテムに追加
-				if (tgt instanceof Enemy) {
-					((Enemy) tgt).getDropItem().add(DropItem.itemOf(tgtItem, 1, 1f));
-				} else {
-					//PCの場合アイテムバッグに追加、追加できなかったらロストする
-					if (tgt.getStatus().getItemBag().canAdd()) {
-						tgt.getStatus().getItemBag().add(tgtItem);
-					}
-				}
-				return getResult(true, tgt);
 			}
 			case ステータス攻撃: {
 				if (tgtStatusKey == null) {
@@ -430,7 +375,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 				return r;
 			}
 			case アイテム追加: {
-				if (tgtItemID == null) {
+				if (tgtId == null) {
 					throw new GameSystemException("tgt item id is null : " + this);
 				}
 				Item i = ActionStorage.getInstance().itemOf(id);
@@ -453,7 +398,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 				return ae;
 			}
 			case アイテムロスト: {
-				if (tgtItemID == null) {
+				if (tgtId == null) {
 					throw new GameSystemException("tgt item id is null : " + this);
 				}
 				Item i = ActionStorage.getInstance().itemOf(id);
@@ -474,6 +419,149 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 					successSound.load().stopAndPlay();
 				}
 				return ae;
+			}
+			case 召喚: {
+				String fileName = tgtId;
+				if (user.isPlayer()) {
+					Actor ac = new Actor(fileName);
+					ac.setSummoned(true);
+					ac.getSprite().setLocationByCenter(Random.randomLocation(user.getSprite().getCenter(), 75f));
+					GameSystem.getInstance().getParty().add(ac);
+					return getResult(true, ac);
+				}
+				Enemy e = new Enemy(fileName);
+				e.setSummoned(true);
+				e.getSprite().setLocationByCenter(Random.randomLocation(user.getSprite().getCenter(), 75f));
+				BattleSystem.getInstance().getEnemies().add(e);
+				return getResult(true, e);
+			}
+			case ユーザの武器をドロップしてドロップアイテムに追加: {
+				//このアクションが紐づく武器タイプを逆引き検索
+				WeaponType t = a.getWeaponType();
+				if (t == null) {
+					throw new GameSystemException("uneqip, but this action is not weapon action : " + this);
+				}
+				EqipSlot slot = null;
+				Map<EqipSlot, Item> eqip = user.getStatus().getEqip();
+				for (EqipSlot e : EqipSlot.values()) {
+					if (!eqip.containsKey(e)) {
+						continue;
+					}
+					if (eqip.get(e) == null) {
+						continue;
+					}
+					if (eqip.get(e).getWeaponType() == t) {
+						slot = e;
+						break;
+					}
+				}
+				if (slot == null) {
+					throw new GameSystemException("uneqip, but item not found : " + this);
+				}
+				Item tgtItem = eqip.get(slot);
+				user.getStatus().unEqip(slot);
+
+				//アイテムドロップ
+				user.getStatus().getItemBag().drop(tgtItem);
+
+				//ドロップアイテムに追加
+				if (tgt instanceof Enemy) {
+					((Enemy) tgt).getDropItem().add(DropItem.itemOf(tgtItem, 1, 1f));
+				} else {
+					//PCの場合アイテムバッグに追加、追加できなかったらロストする
+					if (tgt.getStatus().getItemBag().canAdd()) {
+						tgt.getStatus().getItemBag().add(tgtItem);
+					}
+				}
+				return getResult(true, tgt);
+			}
+			case TGTを逃げられる位置に転送: {
+			}
+			case TGTIDのマップIDのランダムな出口ノードに転送: {
+			}
+			case TGTの行動をVALUE回数この直後に追加: {
+			}
+			case TGTの行動をVALUE回数ターン最後に追加: {
+			}
+			case TGTの魔法詠唱を中断: {
+			}
+			case TGTの魔法詠唱完了をVALUEターン分ずらす: {
+			}
+			case 詠唱完了イベントをVALUEターン内で反転: {
+			}
+			case USERのクローンをパーティーまたはENEMYに追加: {
+			}
+			case TGTを一番近い敵対者の至近距離に転送: {
+			}
+			case USERをTGTの至近距離に転送: {
+			}
+			case このターンのTGTの行動を破棄: {
+			}
+			case このターンのTGTの行動をこの次にする: {
+			}
+			case このターンのTGTの行動を最後にする: {
+			}
+			case このターンの行動順を反転させる: {
+			}
+			case カレントマップのランダムな出口ノードに転送: {
+			}
+			case 中心位置からVALUEの場所に転送: {
+			}
+			case TGTを術者の近くに転送: {
+			}
+			case 逃走で戦闘終了: {
+			}
+			case ドロップアイテム追加: {
+			}
+			case ノックバック＿弱: {
+			}
+			case ノックバック＿中: {
+			}
+			case ノックバック＿強: {
+			}
+			case カレントセーブデータロスト: {
+			}
+			case カレント以外のセーブデータを１つロスト: {
+			}
+			case セーブデータ全ロスト: {
+			}
+			case クラッシュの術式: {
+			}
+			case DC_CPUのコア数: {
+			}
+			case DC_USERの持っているアイテムの重さ: {
+			}
+			case DC_ターン数が大きい: {
+			}
+			case DC_ターン数が小さい: {
+			}
+			case DC_ファイル選択からのハッシュ: {
+			}
+			case DC_ファイル選択からのサイズ: {
+			}
+			case DC_倒した敵の数: {
+			}
+			case DC_ランダム属性のランダムダメージ: {
+			}
+			case DC_減っている体力: {
+			}
+			case DC_減っている正気度: {
+			}
+			case DC_減っている魔力: {
+			}
+			case USERとTGTの位置を交換: {
+			}
+			case USERによる指定IDの魔法の詠唱完了をこのターンの最後にVALUE回数追加: {
+			}
+			case USERの指定スロットの装備品の価値をVALUE倍にする: {
+			}
+			case USERの指定スロットの装備品の攻撃回数をVALUE上げる: {
+			}
+			case マップIDと座標を入力させて移動する: {
+			}
+			case TGTIDのCSVにあるアイテムのいずれかをUSERに追加: {
+			}
+			case WEBサイト起動: {
 			}
 			default:
 				throw new AssertionError("undefined event type : " + this);
@@ -557,100 +645,12 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	public String getDescI18Nd() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getEventType().getVisibleName()).append(":").append(type.getVisibleName());
-
-		switch (type) {
-			case ATTR_IN: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs(value) * 100 + "%");
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(tgtAttrKeyIn.getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
-				break;
-			}
-			case ATTR_OUT: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs(value) * 100 + "%");
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(tgtAttrKeyOut.getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
-				break;
-			}
-			case CND_REGIST: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs(value) * 100 + "%");
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(tgtCndRegist.getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
-				break;
-			}
-			case アイテムロスト: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(ActionStorage.getInstance().itemOf(tgtItemID).getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
-				break;
-			}
-			case アイテム追加: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(ActionStorage.getInstance().itemOf(tgtItemID).getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
-				break;
-			}
-			case ステータス回復: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.基礎威力)).append(":").append((int) Math.abs(value));
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(getTgtStatusKey().getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.属性)).append(":").append(getAtkAttr().getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
-				break;
-			}
-			case ステータス攻撃: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.基礎威力)).append(":").append((int) Math.abs(value));
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(getTgtStatusKey().getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.属性)).append(":").append(getAtkAttr().getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
-				break;
-			}
-			case 状態異常付与: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(getTgtConditionKey().getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
-				break;
-			}
-			case 状態異常解除: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.対象)).append(":").append(getTgtConditionKey().getVisibleName());
-				sb.append(", ");
-				sb.append(I18N.get(GameSystemI18NKeys.確率)).append(":").append(getP() * 100 + "%");
-				break;
-			}
-			case ユーザの武器を装備解除してドロップアイテムに追加: {
-				sb.append(" ");
-				sb.append(I18N.get(GameSystemI18NKeys.自身の武器装備を解除して敵のドロップアイテムに追加する));
-				break;
-			}
-			case 独自効果: {
-				sb.append(I18N.get(GameSystemI18NKeys.不明な効果));
-				break;
-			}
-		}
+		sb.append(type.getEventDescI18Nd(this));
 
 		return sb.toString();
 	}
 
-	ActionEvent setEventType(EventType type) {
+	ActionEvent setEventType(ActionEventType type) {
 		this.type = type;
 		return this;
 	}
@@ -675,8 +675,8 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		return this;
 	}
 
-	ActionEvent setTgtItemID(String tgtItemID) {
-		this.tgtItemID = tgtItemID;
+	ActionEvent setTgtID(String tgtID) {
+		this.tgtId = tgtID;
 		return this;
 	}
 
@@ -752,7 +752,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		return tgtCndRegist;
 	}
 
-	public EventType getEventType() {
+	public ActionEventType getEventType() {
 		return type;
 	}
 
@@ -764,8 +764,8 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		return atkAttr;
 	}
 
-	public String getTgtItemID() {
-		return tgtItemID;
+	public String getTgtID() {
+		return tgtId;
 	}
 
 	public List<Term> getTerms() {

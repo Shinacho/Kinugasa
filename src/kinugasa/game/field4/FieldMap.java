@@ -265,7 +265,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 
 		//エンカウントマップの名前
-		enemyStorageName = root.getAttributes().contains("ess") 
+		enemyStorageName = root.getAttributes().contains("ess")
 				? root.getAttributes().get("ess").getValue() : null;
 
 		//エンカウントカウンターの処理
@@ -820,13 +820,17 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 * @return 指定の拡大率で描画された画像。
 	 */
 	public KImage createMiniMap(int w, int h, boolean pcLocation) {
+		//ベースレイヤーが全部同じタイルの場合は背景と判断して1を取る
+		FieldMapLayerSprite tgt
+				= getBaseLayer().allIs(getBaseLayer().getChip(0, 0)) && backlLayeres.size() >= 2
+				? this.backlLayeres.get(1) : getBaseLayer();
 
-		int imageW = (int) (getBaseLayer().getChip(0, 0).getImage().getWidth() * mg);
-		int imageH = (int) (getBaseLayer().getChip(0, 0).getImage().getHeight() * mg);
-		BufferedImage[][] baseImage = ImageUtil.splitAsArray(getBaseLayer().getImage(), imageW, imageH);
+		int imageW = (int) (tgt.getChip(0, 0).getImage().getWidth() * mg);
+		int imageH = (int) (tgt.getChip(0, 0).getImage().getHeight() * mg);
+		BufferedImage[][] baseImage = ImageUtil.splitAsArray(tgt.getImage(), imageW, imageH);
 
-		BufferedImage image = ImageUtil.newImage(getBaseLayer().getDataWidth(), getBaseLayer().getDataHeight());
-		int[] pix = new int[getBaseLayer().getDataWidth() * getBaseLayer().getDataHeight()];
+		BufferedImage image = ImageUtil.newImage(tgt.getDataWidth(), tgt.getDataHeight());
+		int[] pix = new int[tgt.getDataWidth() * tgt.getDataHeight()];
 
 		if (getBackgroundLayerSprite() != null) {
 			int col = ARGBColor.toARGB(ImageUtil.averageColor(getBackgroundLayerSprite().getImage().get()));;

@@ -60,7 +60,7 @@ public class BattleConfig {
 	public static float SPEED_SPREAD = 0.1f;
 
 	public static IntSupplier 死亡演出＿敵の場合 = () -> Random.d3(1);
-	public static IntSupplier 死亡演出＿味方の場合 = () -> Random.d6(1);
+	public static IntSupplier 死亡演出＿味方の場合 = () -> Random.d6(2);
 	public static ImageSprite castingAnimationMaster;
 	public static KImage deadCharaImage;
 	

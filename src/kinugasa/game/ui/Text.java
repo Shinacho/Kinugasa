@@ -129,7 +129,6 @@ public class Text implements Nameable {
 		for (Map.Entry<String, String> e : replaceMap.entrySet()) {
 			text = text.replaceAll(e.getKey(), e.getValue());
 		}
-
 	}
 
 	List<FieldEvent> getEvents() {

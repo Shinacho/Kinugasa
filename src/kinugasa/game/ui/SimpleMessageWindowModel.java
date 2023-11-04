@@ -33,7 +33,6 @@ import kinugasa.util.TimeCounter;
  */
 public class SimpleMessageWindowModel extends MessageWindowModel {
 
-	public static int maxLine = 20;
 	private String nextIcon = ">";
 	private boolean iconVisible = false;
 
@@ -64,7 +63,7 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	private Color inner1 = new Color(12, 16, 33);
 	private Color inner2 = new Color(33, 33, 128);
 	private FontModel font;
-	private final static int BORDER_SIZE = 2;
+	public final static int BORDER_SIZE = 2;
 	private Color cColor = Color.WHITE;
 	private static final float CHARA_IMAGE_W = 235;
 	private static final float CHARA_IMAGE_H = 235;

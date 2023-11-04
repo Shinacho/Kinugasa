@@ -77,6 +77,16 @@ public class FieldMapLayerSprite extends BasicSprite implements Disposable {
 	public MapChip getChip(int x, int y) throws ArrayIndexOutOfBoundsException {
 		return data[y][x];
 	}
+	
+	public boolean allIs(MapChip c){
+		boolean res = true;
+		for(MapChip[] l : data){
+			for(MapChip m : l ){
+				res &= c.equals(m);
+			}
+		}
+		return res;
+	}
 
 	public int getDataWidth() {
 		return data[0].length;

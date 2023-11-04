@@ -1641,6 +1641,121 @@ public class BattleSystem implements Drawable {
 		return Stage.待機中＿時間あり＿手番送り;
 	}
 
+	private Stage deadEffect() {
+		//エフェクト
+		int party = 0, enemy = 0;
+		for (Actor a : allActors()) {
+			if (!a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶)) {
+				String v = a.getStatus().addWhen0Condition();
+				if (v != null) {
+					if (a.isPlayer() && !a.isSummoned()) {
+						a.getSprite().setImage(BattleConfig.deadCharaImage);
+						party++;
+					}
+					if (!a.isPlayer() && !a.isSummoned()) {
+						a.getSprite().setImage(BattleConfig.deadCharaImage);
+						enemy++;
+					}
+				}
+			}
+		}
+		//エフェクト追加
+		if (party != 0 || enemy != 0) {
+			this.effect = new FlashEffect(
+					GraphicsUtil.transparent(Color.RED, 128),
+					new FrameTimeCounter(20),
+					new FrameTimeCounter(4),
+					0, 0,
+					(int) GameOption.getInstance().getWindowSize().getWidth(),
+					(int) GameOption.getInstance().getWindowSize().getHeight());
+		}
+		if (party != 0) {
+			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
+				int damage = 0;
+				for (int i = 0; i < party; i++) {
+					damage += BattleConfig.死亡演出＿味方の場合.getAsInt();
+				}
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						a.getSprite().getX() + 12,
+						a.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+			for (Enemy e : this.enemies) {
+				int damage = 0;
+				for (int i = 0; i < party; i++) {
+					damage += BattleConfig.死亡演出＿敵の場合.getAsInt();
+				}
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						e.getSprite().getX() + 12,
+						e.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+		}
+		if (enemy != 0) {
+			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
+				int damage = 0;
+				for (int i = 0; i < party; i++) {
+					damage += BattleConfig.死亡演出＿敵の場合.getAsInt();
+				}
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						a.getSprite().getX() + 12,
+						a.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+			for (Enemy e : this.enemies) {
+				int damage = 0;
+				for (int i = 0; i < party; i++) {
+					damage += BattleConfig.死亡演出＿味方の場合.getAsInt();
+				}
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						e.getSprite().getX() + 12,
+						e.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+		}
+		if (party != 0 || enemy != 0) {
+			return Stage.エフェクト再生中_終了待ち;
+		}
+
+		return Stage.待機中＿時間あり＿手番送り;
+	}
+
 	@LoopCall
 	public void update() {
 		GameSystem gs = GameSystem.getInstance();
@@ -1810,7 +1925,8 @@ public class BattleSystem implements Drawable {
 			case エフェクト再生中_終了待ち: {
 				assert effect != null : "effect is null : " + this;
 				if (effect.isEnded()) {
-					setStage(Stage.EXECコール待機);
+					//再度死亡者がいるかチェックする。
+					setStage(deadEffect());
 				}
 				break;
 			}

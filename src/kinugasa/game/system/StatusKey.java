@@ -26,6 +26,7 @@ import kinugasa.resource.Nameable;
  * @author Shinacho<br>
  */
 public enum StatusKey implements Nameable {
+	レベル(true, 1, 99, null),
 	体力(true, 0, 9999, ConditionKey.損壊),
 	魔力(true, 0, 9999, ConditionKey.気絶),
 	正気度(true, 0, 99, ConditionKey.解脱),
@@ -43,18 +44,18 @@ public enum StatusKey implements Nameable {
 	魔法防御力(true, 0, 999, null),
 	//
 	クリティカル率(true, 0, 1, null),
-	クリティカルダメージ倍数(true, 0, 32f, null),
+	クリティカルダメージ倍数(true, 0, 3, null, true),
 	魔法クリティカル率(true, 0, 1, null),
-	魔法クリティカルダメージ倍数(true, 0, 32f, null),
+	魔法クリティカルダメージ倍数(true, 0, 3, null, true),
 	//
-	命中率(true, 0, 1, null),
-	回避率(true, 0, 1, null),
-	ブロック率(true, 0, 1, null),
-	ブロックダメージ倍率(true, 0, 1, null),
-	魔法命中率(true, 0, 1, null),
-	魔法回避率(true, 0, 1, null),
-	魔法ブロック率(true, 0, 1, null),
-	魔法ブロックダメージ倍率(true, 0, 1, null),
+	命中率(true, 0, 3, null, true),
+	回避率(true, 0, 3, null, true),
+	ブロック率(true, 0, 3, null, true),
+	ブロックダメージ倍率(true, 0, 3, null, true),
+	魔法命中率(true, 0, 3, null, true),
+	魔法回避率(true, 0, 3, null, true),
+	魔法ブロック率(true, 0, 3, null, true),
+	魔法ブロックダメージ倍率(true, 0, 3, null, true),
 	//
 	行動力(true, 0, 512, null),
 	残り行動力(false, 0, 512, null),
@@ -62,7 +63,6 @@ public enum StatusKey implements Nameable {
 	魔術使用可否(true, 0, 7, null),
 	装備属性(false, 0, 7, null),
 	//
-	レベル(true, 1, 99, null),
 	保有経験値(true, 0, 99999999, null),
 	次のレベルの経験値(true, 0, 99999999, null),
 	レベルアップ未使用スキルポイント(false, 0, 99, null);
@@ -73,6 +73,14 @@ public enum StatusKey implements Nameable {
 	private float min, max;
 	private boolean isPercent;
 	private ConditionKey when0Condition;
+
+	private StatusKey(boolean visible, float min, float max, ConditionKey when0Condition, boolean isP) {
+		this.visible = visible;
+		this.min = min;
+		this.max = max;
+		this.isPercent = isP;
+		this.when0Condition = when0Condition;
+	}
 
 	private StatusKey(boolean visible, float min, float max, ConditionKey when0Condition) {
 		this.visible = visible;

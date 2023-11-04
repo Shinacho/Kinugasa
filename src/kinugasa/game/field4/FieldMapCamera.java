@@ -141,11 +141,7 @@ public class FieldMapCamera {
 		//NPCの位置更新
 		int chipW = map.getChipW();
 		int chipH = map.getChipH();
-//		for (NPCSprite n : map.getNpcStorage()) {
-//			float nx = map.getBaseLayer().getX() + n.getCurrentIdx().x * chipW;
-//			float ny = map.getBaseLayer().getY() + n.getCurrentIdx().y * chipH;
-//			n.setLocation(nx, ny);
-//		}
+
 		BasicSprite base = map.getBaseLayer();
 		float fieldMapX = ((-base.getX() + (chipW / 2) - (chipW / 4) + base.getVector().reverse().getLocation().x)) / chipW;
 		float fieldMapY = ((-base.getY() + (chipH / 2) + (chipH / 4) + base.getVector().reverse().getLocation().y)) / chipH;

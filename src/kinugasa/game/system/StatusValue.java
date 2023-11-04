@@ -27,7 +27,7 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2023/10/14_11:23:15<br>
  * @author Shinacho<br>
  */
-public class StatusValue implements Nameable, Cloneable {
+public class StatusValue implements Nameable, Cloneable, Comparable<StatusValue> {
 
 	private StatusKey key;
 	private float value;
@@ -225,5 +225,11 @@ public class StatusValue implements Nameable, Cloneable {
 		}
 		return "StatusValue{" + "key=" + key + ", value=" + value + '}';
 	}
+
+	@Override
+	public int compareTo(StatusValue o) {
+		return key.compareTo(o.key);
+	}
+	
 
 }

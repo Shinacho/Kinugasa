@@ -16,6 +16,7 @@
  */
 package kinugasa.game.field4;
 
+import java.awt.geom.Point2D;
 import kinugasa.game.system.NPCSprite;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public enum FieldEventType {
 	 * 通常、イベントはそのマスを踏むと自動起動しますが、
 	 * スクリプトにこのイベントが入っていると、フィールド上で「調べる」コマンドを実行してから、イベントが起動します。
 	 */
-	MANUAL_EVENT_CHECK {
+	MANUAL_EVENT {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
 			return UserOperationRequire.CONTINUE;
@@ -314,7 +315,11 @@ public enum FieldEventType {
 	PC_DIR_TO {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
-			GameSystem.getInstance().getPCbyID(e.getTargetName()).getSprite().to(FourDirection.valueOf(e.getValue()));
+			Actor a = GameSystem.getInstance().getPCbyID(e.getTargetName());
+			if (a == null) {
+				throw new FieldEventScriptException("FET actor id is not found : " + e);
+			}
+			a.getSprite().to(FourDirection.valueOf(e.getValue()));
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -356,10 +361,13 @@ public enum FieldEventType {
 	SET_QUEST {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
-			String qid = e.getValue();
+			String qid = e.getTargetName();
 			int stage = Integer.parseInt(e.getValue());
 			//クエスト情報を設定
 			Quest q = QuestSystem.getInstance().get(qid, stage);
+			if (q == null) {
+				throw new FieldEventScriptException("FET : quest not found : " + e);
+			}
 			CurrentQuest.getInstance().put(q);
 			return UserOperationRequire.CONTINUE;
 		}
@@ -503,6 +511,11 @@ public enum FieldEventType {
 			Actor pc = new Actor(e.getValue());
 			FieldMap.getPlayerCharacter().add(pc.getSprite());
 			GameSystem.getInstance().getParty().add(pc);
+			if (GameSystem.getInstance().getParty().isEmpty()) {
+				throw new GameSystemException("I tried to add a pc but the idx(D2IDX) was unknown. Please add the first pc.");
+			}
+			pc.getSprite().setCurrentIdx(GameSystem.getInstance().getParty().get(0).getSprite().getCurrentIdx().clone());
+			pc.getSprite().setLocation((Point2D.Float) GameSystem.getInstance().getParty().get(0).getSprite().getLocation().clone());
 			Text.getReplaceMap().put("!" + pc.getId(), pc.getVisibleName());
 			return UserOperationRequire.CONTINUE;
 		}
@@ -545,7 +558,7 @@ public enum FieldEventType {
 	UPDATE_ACTION_OF_ALL_PC {
 		@Override
 		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
-			GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction());
+			GameSystem.getInstance().getParty().forEach(p -> p.getStatus().updateAction());
 			return UserOperationRequire.CONTINUE;
 		}
 
@@ -562,27 +575,13 @@ public enum FieldEventType {
 	PC_ANIMATION_IDX_TO {
 		@Override
 		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
-			AnimationSprite s = GameSystem.getInstance().getPCbyID(e.getTargetName()).getSprite();
+			Actor a = GameSystem.getInstance().getPCbyID(e.getTargetName());
+			if (a == null) {
+				throw new FieldEventScriptException("FET PC is not found : " + this);
+			}
+			AnimationSprite s = a.getSprite();
 			Animation ani = s.getAnimation();
 			s.setImage(ani.getImage(Integer.parseInt(e.getValue())));
-			return UserOperationRequire.CONTINUE;
-		}
-	},
-	DB_CONNECTION_OPEN {
-		@Override
-		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
-			String fileName = e.getValue().split("/")[0];
-			String user = e.getValue().split("/")[1];
-			String pass = e.getValue().split("/")[2];
-			DBConnection.getInstance().close();
-			DBConnection.getInstance().open(fileName, user, pass);
-			return UserOperationRequire.CONTINUE;
-		}
-	},
-	DB_CONNECTION_CLOSE {
-		@Override
-		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
-			DBConnection.getInstance().close();
 			return UserOperationRequire.CONTINUE;
 		}
 	},

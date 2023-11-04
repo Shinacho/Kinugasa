@@ -110,4 +110,8 @@ public final class StringUtil {
 		}
 		return dg;
 	}
+
+	public String[] safeSplit(String val, String sep) {
+		return val.contains(sep) ? val.split(sep) : new String[]{val};
+	}
 }

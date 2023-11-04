@@ -22,17 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import static kinugasa.game.system.ActionEvent.CalcMode.DC;
-import static kinugasa.game.system.ActionEvent.EventType.ATTR_IN;
-import static kinugasa.game.system.ActionEvent.EventType.ATTR_OUT;
-import static kinugasa.game.system.ActionEvent.EventType.CND_REGIST;
-import static kinugasa.game.system.ActionEvent.EventType.アイテムロスト;
-import static kinugasa.game.system.ActionEvent.EventType.アイテム追加;
-import static kinugasa.game.system.ActionEvent.EventType.ステータス回復;
-import static kinugasa.game.system.ActionEvent.EventType.ステータス攻撃;
-import static kinugasa.game.system.ActionEvent.EventType.状態異常付与;
-import static kinugasa.game.system.ActionEvent.EventType.状態異常解除;
-import static kinugasa.game.system.ActionEvent.EventType.独自効果;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.MessageWindowGroup;
@@ -50,7 +39,7 @@ public class MagicWindow extends BasicSprite {
 
 	public MagicWindow(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		main = new ScrollSelectableMessageWindow(x, y, w, h, 20, false);
+		main = new ScrollSelectableMessageWindow(x, y, w, h, 23, false);
 		main.setLoop(true);
 		x += 8;
 		y += 8;
@@ -356,98 +345,7 @@ public class MagicWindow extends BasicSprite {
 							sb.append(Text.getLineSep());
 
 							for (ActionEvent e : Stream.of(a.getMainEvents(), a.getUserEvents()).flatMap(p -> p.stream()).toList()) {
-								sb.append("  ");
-								switch (e.getEventType()) {
-									case ATTR_IN: {
-										sb.append(I18N.get(GameSystemI18NKeys.被耐性XをXの確率でX変更する,
-												e.getTgtAttrIn().getVisibleName(),
-												e.getP() + "%",
-												e.getValue() + ""));
-										break;
-									}
-									case ATTR_OUT: {
-										sb.append(I18N.get(GameSystemI18NKeys.与耐性XをXの確率でX変更する,
-												e.getTgtAttrOut().getVisibleName(),
-												e.getP() + "%",
-												e.getValue() + ""));
-										break;
-									}
-									case CND_REGIST: {
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xの耐性をXの確率でX変更する,
-												e.getTgtCndRegist().getVisibleName(),
-												e.getP() + "%",
-												e.getValue() + ""));
-										break;
-									}
-									case アイテムロスト: {
-										Item i = ActionStorage.getInstance().itemOf(e.getTgtItemID());
-										sb.append(I18N.get(GameSystemI18NKeys.アイテムXをXの確率で失う,
-												i.getVisibleName(),
-												e.getP() + "%"));
-										break;
-									}
-									case ユーザの武器を装備解除してドロップアイテムに追加: {
-										sb.append(I18N.get(GameSystemI18NKeys.自身の武器装備を解除して敵のドロップアイテムに追加する,
-												e.getP() + "%"));
-										break;
-									}
-									case アイテム追加: {
-										Item i = ActionStorage.getInstance().itemOf(e.getTgtItemID());
-										sb.append(I18N.get(GameSystemI18NKeys.アイテムXをXの確率で入手する,
-												i.getVisibleName(),
-												e.getP() + "%"));
-										break;
-									}
-									case ステータス回復: {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを回復する,
-												e.getP() + "%",
-												e.getTgtStatusKey().getVisibleName()));
-										sb.append(Text.getLineSep());
-										switch (e.getCalcMode()) {
-											case DC: {
-												sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
-												break;
-											}
-											default: {
-												break;
-											}
-										}
-										break;
-									}
-									case ステータス攻撃: {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-												e.getP() + "%",
-												e.getAtkAttr().toString(),
-												e.getTgtStatusKey().getVisibleName()));
-										sb.append(Text.getLineSep());
-										switch (e.getCalcMode()) {
-											case DC: {
-												sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
-												break;
-											}
-											default: {
-												break;
-											}
-										}
-										break;
-									}
-									case 状態異常付与: {
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で追加する,
-												e.getTgtConditionKey().getVisibleName(),
-												e.getP() + "%"));
-										break;
-									}
-									case 状態異常解除: {
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で解除する,
-												e.getTgtConditionKey().getVisibleName(),
-												e.getP() + "%"));
-										break;
-									}
-									case 独自効果: {
-										sb.append(GameSystemI18NKeys.不明な効果);
-										break;
-									}
-								}//switch
+								sb.append("  ").append(e.getEventType().getEventDescI18Nd(e));
 							}//event  for
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法は戦闘中使えない)).append(Text.getLineSep());
@@ -456,92 +354,7 @@ public class MagicWindow extends BasicSprite {
 						if (a.isField()) {
 							for (ActionEvent e : Stream.of(a.getMainEvents(), a.getUserEvents()).flatMap(p -> p.stream()).toList()) {
 								sb.append("  ");
-								switch (e.getEventType()) {
-									case ATTR_IN: {
-										sb.append(I18N.get(GameSystemI18NKeys.被耐性XをXの確率でX変更する,
-												e.getTgtAttrIn().getVisibleName(),
-												e.getP() + "%",
-												e.getValue() + ""));
-										break;
-									}
-									case ATTR_OUT: {
-										sb.append(I18N.get(GameSystemI18NKeys.与耐性XをXの確率でX変更する,
-												e.getTgtAttrOut().getVisibleName(),
-												e.getP() + "%",
-												e.getValue() + ""));
-										break;
-									}
-									case CND_REGIST: {
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常Xの耐性をXの確率でX変更する,
-												e.getTgtCndRegist().getVisibleName(),
-												e.getP() + "%",
-												e.getValue() + ""));
-										break;
-									}
-									case アイテムロスト: {
-										Item i = ActionStorage.getInstance().itemOf(e.getTgtItemID());
-										sb.append(I18N.get(GameSystemI18NKeys.アイテムXをXの確率で失う,
-												i.getVisibleName(),
-												e.getP() + "%"));
-										break;
-									}
-									case アイテム追加: {
-										Item i = ActionStorage.getInstance().itemOf(e.getTgtItemID());
-										sb.append(I18N.get(GameSystemI18NKeys.アイテムXをXの確率で入手する,
-												i.getVisibleName(),
-												e.getP() + "%"));
-										break;
-									}
-									case ステータス回復: {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを回復する,
-												e.getP() + "%",
-												e.getTgtStatusKey().getVisibleName()));
-										sb.append(Text.getLineSep());
-										switch (e.getCalcMode()) {
-											case DC: {
-												sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
-												break;
-											}
-											default: {
-												break;
-											}
-										}
-										break;
-									}
-									case ステータス攻撃: {
-										sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-												e.getP() + "%",
-												e.getAtkAttr().toString(),
-												e.getTgtStatusKey().getVisibleName()));
-										sb.append(Text.getLineSep());
-										switch (e.getCalcMode()) {
-											case DC: {
-												sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
-												break;
-											}
-											default: {
-												break;
-											}
-										}
-										break;
-									}
-									case 状態異常付与: {
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で追加する,
-												e.getTgtConditionKey().getVisibleName(),
-												e.getP() + "%"));
-										break;
-									}
-									case 状態異常解除: {
-										sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で解除する,
-												e.getTgtConditionKey().getVisibleName(),
-												e.getP() + "%"));
-										break;
-									}
-									case 独自効果: {
-										sb.append(GameSystemI18NKeys.不明な効果);
-										break;
-									}
-								}//switch
+								sb.append(e.getEventType().getEventDescI18Nd(e));
 							}//event  for
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法はフィールドでは使えない)).append(Text.getLineSep());
