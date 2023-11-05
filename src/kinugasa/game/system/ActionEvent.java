@@ -16,19 +16,32 @@
  */
 package kinugasa.game.system;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import kinugasa.game.I18N;
+import kinugasa.game.PlayerConstants;
 import kinugasa.game.field4.FieldMap;
 import kinugasa.game.field4.FieldMapStorage;
+import kinugasa.game.field4.Node;
 import static kinugasa.game.system.ActionType.攻撃;
 import static kinugasa.game.system.ActionType.魔法;
-import kinugasa.game.ui.Text;
+import kinugasa.game.ui.Dialog;
+import kinugasa.game.ui.DialogIcon;
+import kinugasa.game.ui.DialogOption;
 import kinugasa.object.AnimationSprite;
+import kinugasa.object.FourDirection;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
 import kinugasa.util.Random;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -525,15 +538,189 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			}
 			case セーブデータ全ロスト: {
 			}
-			case クラッシュの術式: {
+			case ゲームクラッシュ: {
+				Object ぬるぽ = null;
+				ぬるぽ.toString();
+				throw new InternalError("なんででた？");
 			}
 			case DC_CPUのコア数: {
+				if (tgtStatusKey == null) {
+					throw new GameSystemException("status damage, but status key is null : " + this);
+				}
+				float value = -(Runtime.getRuntime().availableProcessors()) * this.value;
+				float prev = tgtStatus.get(tgtStatusKey).getValue();
+				switch (calcMode) {
+					case DC: {
+						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+							throw new GameSystemException("damage calc is cant exec in field : " + this);
+						}
+						//攻撃タイプ調整
+						DamageCalcSystem.ActionType actionType
+								= switch (a.getType()) {
+							case 攻撃 ->
+								DamageCalcSystem.ActionType.物理攻撃;
+							case 魔法 ->
+								DamageCalcSystem.ActionType.魔法攻撃;
+							default ->
+								throw new AssertionError("damage calc cant exec : " + this);
+						};
+
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.左手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (dcs == null) {
+							dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						}
+						//ダメージ計算実行
+						DamageCalcSystem.Result r
+								= DamageCalcSystem.calcDamage(
+										new DamageCalcSystem.Param(
+												user,
+												tgt,
+												atkAttr,
+												actionType,
+												value,
+												tgtStatusKey,
+												dcs)
+								);
+
+						//r評価
+						return convert(r);
+					}
+					default:
+						throw new AssertionError("cant use no DC mode : " + this);
+				}//switch
 			}
 			case DC_USERの持っているアイテムの重さ: {
 			}
 			case DC_ターン数が大きい: {
+				if (tgtStatusKey == null) {
+					throw new GameSystemException("status damage, but status key is null : " + this);
+				}
+				float value = -BattleSystem.getInstance().getTurn();
+				float prev = tgtStatus.get(tgtStatusKey).getValue();
+				switch (calcMode) {
+					case DC: {
+						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+							throw new GameSystemException("damage calc is cant exec in field : " + this);
+						}
+						//攻撃タイプ調整
+						DamageCalcSystem.ActionType actionType
+								= switch (a.getType()) {
+							case 攻撃 ->
+								DamageCalcSystem.ActionType.物理攻撃;
+							case 魔法 ->
+								DamageCalcSystem.ActionType.魔法攻撃;
+							default ->
+								throw new AssertionError("damage calc cant exec : " + this);
+						};
+
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.左手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (dcs == null) {
+							dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						}
+						//ダメージ計算実行
+						DamageCalcSystem.Result r
+								= DamageCalcSystem.calcDamage(
+										new DamageCalcSystem.Param(
+												user,
+												tgt,
+												atkAttr,
+												actionType,
+												value,
+												tgtStatusKey,
+												dcs)
+								);
+
+						//r評価
+						return convert(r);
+					}
+					default:
+						throw new AssertionError("cant use no DC mode : " + this);
+				}//switch
 			}
 			case DC_ターン数が小さい: {
+				if (tgtStatusKey == null) {
+					throw new GameSystemException("status damage, but status key is null : " + this);
+				}
+				float value = -(128 - BattleSystem.getInstance().getTurn());
+				float prev = tgtStatus.get(tgtStatusKey).getValue();
+				switch (calcMode) {
+					case DC: {
+						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+							throw new GameSystemException("damage calc is cant exec in field : " + this);
+						}
+						//攻撃タイプ調整
+						DamageCalcSystem.ActionType actionType
+								= switch (a.getType()) {
+							case 攻撃 ->
+								DamageCalcSystem.ActionType.物理攻撃;
+							case 魔法 ->
+								DamageCalcSystem.ActionType.魔法攻撃;
+							default ->
+								throw new AssertionError("damage calc cant exec : " + this);
+						};
+
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.左手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (dcs == null) {
+							dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						}
+						//ダメージ計算実行
+						DamageCalcSystem.Result r
+								= DamageCalcSystem.calcDamage(
+										new DamageCalcSystem.Param(
+												user,
+												tgt,
+												atkAttr,
+												actionType,
+												value,
+												tgtStatusKey,
+												dcs)
+								);
+
+						//r評価
+						return convert(r);
+					}
+					default:
+						throw new AssertionError("cant use no DC mode : " + this);
+				}//switch
 			}
 			case DC_ファイル選択からのハッシュ: {
 			}
@@ -558,11 +745,70 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			case USERの指定スロットの装備品の攻撃回数をVALUE上げる: {
 			}
 			case マップIDと座標を入力させて移動する: {
+				class Map {
+
+					final String id;
+					final String visibleName;
+
+					public Map(String id, String visibleName) {
+						this.id = id;
+						this.visibleName = visibleName;
+					}
+
+					@Override
+					public String toString() {
+						return visibleName;
+					}
+
+				}
+				List<Map> mapList = new ArrayList<>();
+				JComboBox comboBox = new JComboBox();
+				for (FieldMap m : FieldMapStorage.getInstance()) {
+					Map map = new Map(m.getName(), I18N.get(m.getName()));
+					mapList.add(map);
+					comboBox.addItem(map);
+				}
+				if (DialogOption.OK != Dialog.okOrCancel("teleport mapName", DialogIcon.QUESTION, comboBox)) {
+					return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
+				}
+				Map tgtMap = mapList.get(comboBox.getSelectedIndex());
+				JSpinner x = new JSpinner();
+				x.setModel(new SpinnerNumberModel(0, 0, 999, 1));
+				JSpinner y = new JSpinner();
+				y.setModel(new SpinnerNumberModel(0, 0, 999, 1));
+				JPanel p = new JPanel();
+				p.add(x);
+				p.add(y);
+				if (DialogOption.OK != Dialog.okOrCancel("teleport x,y", DialogIcon.QUESTION, p)) {
+					return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
+				}
+				FieldMap.getCurrentInstance().changeMap(Node.ofOutNode("AUTO_NODE_FROM_AE", tgtMap.id,
+						(Integer) x.getValue(), (Integer) y.getValue(), FourDirection.NORTH));
+				return new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
+
 			}
 			case TGTIDのCSVにあるアイテムのいずれかをUSERに追加: {
+				List<Item> items = new ArrayList<>(Arrays.asList(StringUtil.safeSplit(tgtId, ","))
+						.stream().map(p -> Item.of(p)).toList());
+				Collections.shuffle(items);
+				if (user.getStatus().getItemBag().canAdd()) {
+					user.getStatus().getItemBag().add(items.get(0));
+				}
+				return new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
 			}
 			case WEBサイト起動: {
+				try {
+					if (PlayerConstants.getInstance().OS_NAME.toLowerCase().contains("windows")) {
+						Runtime.getRuntime().exec("cmd /q/c start " + tgtId);
+					} else {
+						Runtime.getRuntime().exec("open " + tgtId);
+					}
+					return new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
+				} catch (IOException ex) {
+				}
+				return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
 			}
+
 			default:
 				throw new AssertionError("undefined event type : " + this);
 		}

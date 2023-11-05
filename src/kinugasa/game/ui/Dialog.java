@@ -73,6 +73,11 @@ public class Dialog {
 		int r = JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.YES_NO_OPTION, icon.getOption());
 		return DialogOption.of(r);
 	}
+	
+	public static DialogOption okOrCancel(String title, DialogIcon icon, Object msg){
+		int r = JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.DEFAULT_OPTION, icon.getOption());
+		return DialogOption.of(r);
+	}
 
 	public static void image(String title, BufferedImage image) {
 		JOptionPane.showMessageDialog(null, new ImageIcon(image), title, JOptionPane.DEFAULT_OPTION);

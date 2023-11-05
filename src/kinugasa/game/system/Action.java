@@ -36,6 +36,7 @@ import static kinugasa.game.system.ActionEvent.CalcMode.TO_ZERO;
 import static kinugasa.game.system.ActionEventType.ATTR_IN;
 import static kinugasa.game.system.ActionEventType.ATTR_OUT;
 import static kinugasa.game.system.ActionEventType.CND_REGIST;
+import static kinugasa.game.system.ActionEventType.WEBサイト起動;
 import static kinugasa.game.system.ActionEventType.アイテムロスト;
 import static kinugasa.game.system.ActionEventType.アイテム追加;
 import static kinugasa.game.system.ActionEventType.ステータス回復;
@@ -45,6 +46,7 @@ import static kinugasa.game.system.ActionEventType.状態異常解除;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
 import static kinugasa.game.system.ActionEventType.ユーザの武器をドロップしてドロップアイテムに追加;
+import kinugasa.util.StringUtil;
 
 /**
  * イベントの数が攻撃回数です。
@@ -170,6 +172,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	}
 
 	private void checkEvent(ActionEvent e) throws GameSystemException {
+
 		if (e.getEventType() == null) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントのタイプが空です) + " : " + this + " : " + e);
 		}
@@ -203,7 +206,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 			}
 			case アイテムロスト:
 			case アイテム追加: {
-				if (e.getTgtID() == null) {
+				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDが設定されていません) + " : " + this + " : " + e);
 				}
 				if (!ActionStorage.getInstance().contains(e.getTgtID())) {
@@ -215,6 +218,17 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 
 				break;
 			}
+			case DC_CPUのコア数:
+			case DC_ターン数が大きい:
+			case DC_ターン数が小さい:
+			case DC_ファイル選択からのハッシュ:
+			case DC_ファイル選択からのサイズ:
+			case DC_USERの持っているアイテムの重さ:
+			case DC_ランダム属性のランダムダメージ:
+			case DC_倒した敵の数:
+			case DC_減っている体力:
+			case DC_減っている正気度:
+			case DC_減っている魔力:
 			case ステータス回復:
 			case ステータス攻撃: {
 				if (e.getValue() == 0) {
@@ -295,6 +309,124 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 				}
 				break;
 			}
+			case TGTIDのCSVにあるアイテムのいずれかをUSERに追加: {
+				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDが設定されていません) + " : " + this + " : " + e);
+				}
+				for (var v : StringUtil.safeSplit(e.getTgtID(), ",")) {
+					try {
+						Item i_ = ActionStorage.getInstance().itemOf(v);
+					} catch (Exception ex) {
+						throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDのアイテムが存在しません) + " : " + this + " : " + e);
+					}
+				}
+				break;
+			}
+			case TGTの行動をVALUE回数この直後に追加: {
+				if (e.getValue() == 0) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.行動をVALUE回数追加イベントですがVALUEが０です) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case TGTの行動をVALUE回数ターン最後に追加: {
+				if (e.getValue() == 0) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.行動をVALUE回数追加イベントですがVALUEが０です) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case TGTの魔法詠唱を中断: {
+				break;
+			}
+			case TGTの魔法詠唱完了をVALUEターン分ずらす: {
+				if (e.getValue() == 0) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.VALUEターン移動追加イベントですがVALUEが０です) + " : " + this + " : " + e);
+				}
+				break;
+			}
+			case TGTを一番近い敵対者の至近距離に転送: {
+				break;
+			}
+			case TGTを術者の近くに転送: {
+				break;
+			}
+			case TGTを逃げられる位置に転送: {
+				break;
+			}
+			case USERとTGTの位置を交換: {
+				break;
+			}
+			case USERによる指定IDの魔法の詠唱完了をこのターンの最後にVALUE回数追加: {
+				break;
+			}
+			case USERのクローンをパーティーまたはENEMYに追加: {
+				break;
+			}
+			case USERの指定スロットの装備品の価値をVALUE倍にする: {
+				break;
+			}
+			case USERの指定スロットの装備品の攻撃回数をVALUE上げる: {
+				break;
+			}
+			case USERをTGTの至近距離に転送: {
+				break;
+			}
+			case このターンのTGTの行動をこの次にする: {
+				break;
+			}
+			case このターンのTGTの行動を最後にする: {
+				break;
+			}
+			case このターンのTGTの行動を破棄: {
+				break;
+			}
+			case このターンの行動順を反転させる: {
+				break;
+			}
+			case カレントセーブデータロスト: {
+				break;
+			}
+			case カレントマップのランダムな出口ノードに転送: {
+				break;
+			}
+			case カレント以外のセーブデータを１つロスト: {
+				break;
+			}
+			case ゲームクラッシュ: {
+				break;
+			}
+			case セーブデータ全ロスト: {
+				break;
+			}
+			case ノックバック＿中: {
+				break;
+			}
+			case ノックバック＿弱: {
+				break;
+			}
+			case ノックバック＿強: {
+				break;
+			}
+			case ビームエフェクト: {
+				break;
+			}
+			case マップIDと座標を入力させて移動する: {
+				break;
+			}
+			case 中心位置からVALUEの場所に転送: {
+				break;
+			}
+			case 詠唱完了イベントをVALUEターン内で反転: {
+				break;
+			}
+			case 逃走で戦闘終了: {
+				break;
+			}
+			case WEBサイト起動: {
+				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.WEBサイト起動イベントですがTGTIDが入っていません) + " : " + this + " : " + e);
+				}
+				break;
+			}
 			case 独自効果: {
 				break;
 			}
@@ -302,6 +434,8 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 				throw new AssertionError("undefined type : " + this + " : " + e);
 		}
 	}
+
+	;
 
 	@Nullable
 	@NoLoopCall("its heavy")

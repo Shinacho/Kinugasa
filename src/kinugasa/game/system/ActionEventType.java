@@ -763,7 +763,7 @@ public enum ActionEventType {
 			return sb.toString();
 		}
 	},
-	クラッシュの術式 {
+	ゲームクラッシュ {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();

@@ -202,6 +202,11 @@ public class NPCSprite extends PCSprite implements Nameable {
 				if (getTargetIdx().equals(map.getCurrentIdx())) {
 					//移動不能のため戻る
 					stage = 0;
+					return;
+				}
+				if(map.getNpcStorage().get(getTargetIdx()) != null){
+					stage = 0;
+					return;
 				}
 				float speed = vehicle == null ? 1f : vehicle.getSpeed() / 2;
 				Point2D.Float p = (Point2D.Float) getLocation().clone();

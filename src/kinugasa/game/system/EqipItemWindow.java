@@ -39,7 +39,7 @@ public class EqipItemWindow extends PCStatusWindow {
 	public EqipItemWindow(int x, int y, int w, int h, List<Status> s) {
 		super(x, y, w, h);
 		this.s = s;
-		mw = new ScrollSelectableMessageWindow(x, y, w, h, 23);
+		mw = new ScrollSelectableMessageWindow(x, y, w, h, 23, false);
 		mw.setLoop(true);
 		updateText();
 	}

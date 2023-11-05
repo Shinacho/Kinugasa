@@ -24,17 +24,17 @@ import java.util.List;
  * @vesion 1.0.0 - 2021/08/17_12:03:01<br>
  * @author Shinacho<br>
  */
-public class TColorException extends RuntimeException{
+public class ColorException extends RuntimeException{
 
-	public TColorException(Exception ex) {
+	public ColorException(Exception ex) {
 		super(ex);
 	}
 	
-	public TColorException(String... msg) {
+	public ColorException(String... msg) {
 		super(Arrays.toString(msg) + " is illegal color value");
 	}
 	
-	public TColorException(List<String> msg) {
+	public ColorException(List<String> msg) {
 		super(msg + " is illegal color value");
 	}
 

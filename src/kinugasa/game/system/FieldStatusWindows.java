@@ -54,7 +54,7 @@ public class FieldStatusWindows extends BasicSprite {
 			for (StatusKey k : List.of(StatusKey.体力, StatusKey.魔力, StatusKey.正気度)) {
 				text += " " + k.getVisibleName() + ":" + Text.getLineSep();
 				float xx = x + 60;
-				float yy = y + 14  + (14 * i);
+				float yy = y + 16  + (16 * i);
 				ProgressBarSprite pp
 						= new ProgressBarSprite(xx, yy,
 								w - 70, 6,

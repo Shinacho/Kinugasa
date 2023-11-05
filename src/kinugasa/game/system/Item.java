@@ -50,6 +50,10 @@ public class Item extends Action implements Cloneable {
 	private StatusKey dcs = null;
 	private int currentUpgradeNum = 0;
 
+	public static Item of(String id) {
+		return ActionStorage.getInstance().itemOf(id);
+	}
+
 	Item(String id, String visibleName) {
 		super(id, visibleName, ActionType.アイテム);
 	}

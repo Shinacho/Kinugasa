@@ -33,9 +33,9 @@ import kinugasa.util.Random;
  */
 public class GraphicsUtil {
 
-	public static Color createColor(List<String> rgba) throws TColorException {
+	public static Color createColor(List<String> rgba) throws ColorException {
 		if (rgba.isEmpty() || rgba.size() <= 2 || rgba.size() >= 5) {
-			throw new TColorException(rgba);
+			throw new ColorException(rgba);
 		}
 		int r = Integer.parseInt(rgba.get(0));
 		int g = Integer.parseInt(rgba.get(1));
@@ -44,7 +44,7 @@ public class GraphicsUtil {
 		return new Color(r, g, b, a);
 	}
 
-	public static Color createColor(String[] rgba) throws TColorException {
+	public static Color createColor(String[] rgba) throws ColorException {
 		return createColor(Arrays.asList(rgba));
 
 	}

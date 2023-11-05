@@ -45,6 +45,7 @@ import kinugasa.graphics.Animation;
 import kinugasa.graphics.ColorChanger;
 import kinugasa.graphics.ColorTransitionModel;
 import kinugasa.graphics.FadeCounter;
+import kinugasa.graphics.ImageUtil;
 import kinugasa.object.AnimationSprite;
 import kinugasa.object.FadeEffect;
 import kinugasa.object.FourDirection;
@@ -302,7 +303,11 @@ public enum FieldEventType {
 	SHOW_MESSAGE_DIRECT {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
-			FieldEventSystem.getInstance().setText(new Text(e.getValue()));
+			Text t = new Text(e.getValue());
+			if (e.getTargetName() != null && !e.getTargetName().isEmpty()) {
+				t.setImage(ImageUtil.load(e.getTargetName()));
+			}
+			FieldEventSystem.getInstance().setText(t);
 			return UserOperationRequire.SHOW_MESSAGE;
 		}
 	},
@@ -569,6 +574,7 @@ public enum FieldEventType {
 			NPCSprite n = FieldMap.getCurrentInstance().getNpcStorage().get(e.getTargetName());
 			Animation ani = n.getAnimation();
 			n.setImage(ani.getImage(Integer.parseInt(e.getValue())));
+			n.setMoveStop(true);
 			return UserOperationRequire.CONTINUE;
 		}
 	},

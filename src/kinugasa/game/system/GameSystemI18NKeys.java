@@ -29,9 +29,9 @@ import java.util.stream.Stream;
  * @author Shinacho<br>
  */
 public class GameSystemI18NKeys {
-	
+
 	public static void main(String[] args) {
-		for(var v : GameSystemI18NKeys.allKeysJAData()){
+		for (var v : GameSystemI18NKeys.allKeysJAData()) {
 			System.out.println(v);
 		}
 	}
@@ -478,6 +478,9 @@ public class GameSystemI18NKeys {
 		public static final String 召喚イベントのステータスファイルが誤っています = "召喚イベントのステータスファイルが誤っています";
 		public static final String ドロップアイテム追加イベントですがTGTIDがアイテムではありません = "ドロップアイテム追加イベントですがTGTIDがアイテムではありません";
 		public static final String マップ転送イベントですがマップIDが誤ってます = "マップ転送イベントですがマップIDが誤ってます";
+		public static final String WEBサイト起動イベントですがTGTIDが入っていません = "WEBサイト起動イベントですがTGTIDが入っていません";
+		public static final String 行動をVALUE回数追加イベントですがVALUEが０です = "行動をVALUE回数追加イベントですがVALUEが０です";
+		public static final String VALUEターン移動追加イベントですがVALUEが０です = "VALUEターン移動追加イベントですがVALUEが０です";
 
 		public static final String スロットと武器タイプの整合性がとれていません = "スロットと武器タイプの整合性がとれていません";
 		public static final String 武器ですが攻撃回数が０です = "武器ですが攻撃回数が０です";
