@@ -277,7 +277,8 @@ public class NPCSprite extends PCSprite implements Nameable {
 			case 3:
 				//NPCの位置更新
 				lx = ly = 0;
-				float nx = map.getBaseLayer().getX() + getCurrentIdx().x * map.getChipW();
+
+				float nx = (map.getBaseLayer().getX() + getCurrentIdx().x * map.getChipW());
 				float ny = map.getBaseLayer().getY() + getCurrentIdx().y * map.getChipH();
 				setLocation(nx, ny);
 				moveStop = outerTarget;

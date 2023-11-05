@@ -19,12 +19,12 @@ package kinugasa.game.system;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.field4.D2Idx;
 import kinugasa.game.field4.FieldMap;
 import kinugasa.game.field4.FourDirAnimation;
 import kinugasa.game.field4.VehicleStorage;
-import kinugasa.game.system.Actor;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.AnimationSprite;
@@ -50,7 +50,6 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport {
 	private int order = 0;
 	private Point2D.Float tgt;
 	private boolean moving = false;
-	private boolean shadow = true;
 	private static final Color SHADOW = new Color(0, 0, 0, 128);
 	private int stage = 0;
 	private int ly, lx;
@@ -95,25 +94,20 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport {
 		setImage(getAnimation().getCurrentImage());
 	}
 
-	public void setShadow(boolean shadow) {
-		this.shadow = shadow;
-	}
-
 	@Override
 	public void draw(GraphicsContext g) {
 		if (!isVisible() || !isExist()) {
 			return;
 		}
+		Graphics2D g2 = g.create();
+		g2.setColor(SHADOW);
+		g2.fillOval(
+				(int) (getX() + getWidth() / 4),
+				(int) (getY() + getHeight() - 10),
+				(int) (getWidth() / 2),
+				(int) 12f);
+		g2.dispose();
 		super.draw(g);
-		if (shadow) {
-			Graphics2D g2 = g.create();
-			g2.setColor(SHADOW);
-			g2.fillOval((int) (getX() + getWidth() / 8),
-					(int) (getY() + getHeight() - getHeight() / 16),
-					(int) (getWidth() - getWidth() / 4),
-					(int) (getHeight() / 8));
-			g2.dispose();
-		}
 	}
 
 	public void setCurrentIdx(D2Idx currentIdx) {
@@ -310,6 +304,7 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport {
 			int sy = e.getAttributes().get("sy").getIntValue();
 			int ey = e.getAttributes().get("ey").getIntValue();
 			int wy = e.getAttributes().get("wy").getIntValue();
+			setSize(w, h);
 			String fileName = e.getAttributes().get("image").getValue();
 
 			this.fAnimation = new FourDirAnimation(
@@ -322,6 +317,7 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport {
 			//イメージ
 			int w = e.getAttributes().get("w").getIntValue();
 			int h = e.getAttributes().get("h").getIntValue();
+			setSize(w, h);
 			String fileName = e.getAttributes().get("image").getValue();
 
 			this.fAnimation = new FourDirAnimation(
