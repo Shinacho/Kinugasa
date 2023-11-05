@@ -18,8 +18,10 @@ package kinugasa.game.system;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import kinugasa.game.GraphicsContext;
+import java.util.LinkedList;
 import kinugasa.game.field4.D2Idx;
+import kinugasa.game.field4.FieldEventParser;
+import kinugasa.game.field4.FieldEventSystem;
 import kinugasa.game.field4.FieldMap;
 import kinugasa.game.field4.FourDirAnimation;
 import kinugasa.game.field4.NPCMoveModel;
@@ -49,6 +51,7 @@ public class NPCSprite extends PCSprite implements Nameable {
 	private Vehicle vehicle;
 	private FieldMap map;
 	private String textId;
+	private String touchEventFileName;
 	//
 
 	public NPCSprite(String name,
@@ -77,6 +80,14 @@ public class NPCSprite extends PCSprite implements Nameable {
 
 	public NPCSprite(String f) {
 		super(f);
+	}
+
+	public void setTouchEvent(String touchEventFileName) {
+		this.touchEventFileName = touchEventFileName;
+	}
+
+	public String getTouchEvent() {
+		return touchEventFileName;
 	}
 
 	@Override
@@ -200,11 +211,15 @@ public class NPCSprite extends PCSprite implements Nameable {
 			case 2:
 				//移動実行
 				if (getTargetIdx().equals(map.getCurrentIdx())) {
-					//移動不能のため戻る
+					if (touchEventFileName != null) {
+						FieldEventSystem.getInstance()
+								.setEvent(new LinkedList<>(FieldEventParser.parse(getId() + "_TE", touchEventFileName)));
+						FieldEventSystem.getInstance().exec();
+					}
 					stage = 0;
 					return;
 				}
-				if(map.getNpcStorage().get(getTargetIdx()) != null){
+				if (map.getNpcStorage().get(getTargetIdx()) != null) {
 					stage = 0;
 					return;
 				}

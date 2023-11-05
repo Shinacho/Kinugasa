@@ -501,7 +501,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				int h = sh;
 				float x = getBaseLayer().getX() + idx.x * chipW;
 				float y = getBaseLayer().getY() + idx.y * chipH;
-				npcStorage.add(new NPCSprite(name, currentIdx, moveModel, v, this, textID, x, y, w, h, idx, anime, initialDir));
+				NPCSprite npc = new NPCSprite(name, currentIdx, moveModel, v, this, textID, x, y, w, h, idx, anime, initialDir);
+				//タッチイベント
+				if (e.hasAttribute("touchEvent")) {
+					npc.setTouchEvent(e.getAttributes().get("touchEvent").getValue());
+				}
+				npcStorage.add(npc);
 			}
 			//追加NPCを設定
 			if (addedNPC.containsKey(getName())) {

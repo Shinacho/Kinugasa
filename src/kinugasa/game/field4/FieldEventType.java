@@ -197,7 +197,6 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	//tgtのNPCをvalueの位置に移動させる。コンテニューさせる
 	ALL_NPC_LOCK_LOCATION {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {

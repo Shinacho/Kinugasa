@@ -19,6 +19,7 @@ package kinugasa.game.field4;
 import kinugasa.game.system.NPCSprite;
 import kinugasa.game.system.PCSprite;
 import java.awt.geom.Point2D;
+import java.util.LinkedList;
 import kinugasa.game.GameOption;
 import kinugasa.game.system.GameSystem;
 import kinugasa.object.KVector;
@@ -109,6 +110,12 @@ public class FieldMapCamera {
 			//NPC衝突判定
 			if (map.getNpcStorage().get(new D2Idx(x, y)) != null) {
 				cameraCantMoveDesc = "[1]NPC hit[" + map.getNpcStorage().get(new D2Idx(x, y)) + "]";
+				NPCSprite npc = map.getNpcStorage().get(new D2Idx(x, y));
+				if (npc.getTouchEvent() != null) {
+					FieldEventSystem.getInstance()
+							.setEvent(new LinkedList<>(FieldEventParser.parse(npc.getId() + "_TE", npc.getTouchEvent())));
+					FieldEventSystem.getInstance().exec();
+				}
 				return;
 			}
 
@@ -165,6 +172,12 @@ public class FieldMapCamera {
 				//NPC衝突判定
 				if (map.getNpcStorage().get(new D2Idx(x, y)) != null) {
 					cameraCantMoveDesc = "[2]NPC hit[" + map.getNpcStorage().get(new D2Idx(x, y)) + "]";
+					NPCSprite npc = map.getNpcStorage().get(new D2Idx(x, y));
+					if (npc.getTouchEvent() != null) {
+						FieldEventSystem.getInstance()
+								.setEvent(new LinkedList<>(FieldEventParser.parse(npc.getId() + "_TE", npc.getTouchEvent())));
+						FieldEventSystem.getInstance().exec();
+					}
 					return;
 				}
 
