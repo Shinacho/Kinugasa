@@ -55,7 +55,8 @@ public class BattleStatusWindows extends BasicSprite {
 			String text = s + s.getVisibleName() + " | ";
 			StatusValueSet es = s.getStatus().getEffectedStatus();
 			int j = 0;
-			for (StatusValue vs : es) {
+			for (StatusKey k : List.of(StatusKey.体力,StatusKey.魔力,StatusKey.正気度)) {
+				StatusValue vs = es.get(k);
 				if (j != 0) {
 					if (s.getVisibleName().substring(0, 1).getBytes().length == 1) {
 						text += " ".repeat(s.getVisibleName().length());
@@ -88,7 +89,8 @@ public class BattleStatusWindows extends BasicSprite {
 			String text = s.getVisibleName() + " | ";
 			StatusValueSet es = s.getStatus().getEffectedStatus();
 			int j = 0;
-			for (StatusValue vs : es) {
+			for (StatusKey k : List.of(StatusKey.体力,StatusKey.魔力,StatusKey.正気度)) {
+				StatusValue vs = es.get(k);
 				if (j != 0) {
 					if (s.getVisibleName().substring(0, 1).getBytes().length == 1) {
 						text += " ".repeat(s.getVisibleName().length());

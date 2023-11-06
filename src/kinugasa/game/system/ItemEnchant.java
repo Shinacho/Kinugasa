@@ -363,11 +363,56 @@ public enum ItemEnchant implements ItemEqipEffect {
 			return r;
 		}
 	},
-	不敗("物理防御力が７上がる"),
-	結界("魔法防御力が７上がる"),
-	躍動("行動力が７上がる"),
-	誘導("命中が７％上がる"),
-	予言("魔法命中が７％上がる"),
+	不敗("物理防御力が７上がる") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = v.clone();
+			StatusKey k = StatusKey.防御力;
+			StatusValue sv = r.getOrCreate(k, () -> new StatusValue(k, 0));
+			sv.add(7f);
+			return r;
+		}
+	},
+	結界("魔法防御力が７上がる") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = v.clone();
+			StatusKey k = StatusKey.魔法防御力;
+			StatusValue sv = r.getOrCreate(k, () -> new StatusValue(k, 0));
+			sv.add(7f);
+			return r;
+		}
+	},
+	躍動("行動力が７上がる") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = v.clone();
+			StatusKey k = StatusKey.行動力;
+			StatusValue sv = r.getOrCreate(k, () -> new StatusValue(k, 0));
+			sv.add(7f);
+			return r;
+		}
+	},
+	誘導("命中が７％上がる") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = v.clone();
+			StatusKey k = StatusKey.命中率;
+			StatusValue sv = r.getOrCreate(k, () -> new StatusValue(k, 0));
+			sv.mul(7f);
+			return r;
+		}
+	},
+	予言("魔法命中が７％上がる") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = v.clone();
+			StatusKey k = StatusKey.魔法命中率;
+			StatusValue sv = r.getOrCreate(k, () -> new StatusValue(k, 0));
+			sv.mul(7f);
+			return r;
+		}
+	},
 	鳴神("雷属性攻撃の与ダメージが７％上がる"),
 	炎帝("火属性攻撃の与ダメージが７％上がる"),
 	雪霙("氷属性攻撃の与ダメージが７％上がる"),
@@ -391,18 +436,200 @@ public enum ItemEnchant implements ItemEqipEffect {
 	夢想("精神属性攻撃の被ダメージが７％下がる"),
 	耐性("錬金属性攻撃の被ダメージが７％下がる"),
 	延伸("攻撃範囲が１８上がる"),
-	絶望("攻撃時７％の確率で敵を解脱させる"),
-	粉砕("攻撃時７％の確率で敵を損壊させる"),
-	気絶("攻撃時７％の確率で３ターンの気絶の状態異常を付与する"),
-	木化("攻撃時７％の確率で３ターンの木化の状態異常を付与する"),
-	黄金("攻撃時７％の確率で３ターンの黄金化の状態異常を付与する"),
-	封印("攻撃時７％の確率で３ターンの封印の状態異常を付与する"),
-	出血("攻撃時７％の確率で３ターンの出血の状態異常を付与する"),
-	微睡("攻撃時７％の確率で３ターンの眠りの状態異常を付与する"),
-	麻痺("攻撃時７％の確率で３ターンの麻痺の状態異常を付与する"),
-	炎上("攻撃時７％の確率で３ターンの炎上の状態異常を付与する"),
-	凍結("攻撃時７％の確率で３ターンの凍結の状態異常を付与する"),
-	混乱("攻撃時７％の確率で３ターンの混乱の状態異常を付与する"),
+	絶望("攻撃時７％の確率で敵を解脱させる") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.解脱;
+		}
+
+	},
+	粉砕("攻撃時７％の確率で敵を損壊させる") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.損壊;
+		}
+
+	},
+	気絶("攻撃時７％の確率で３ターンの気絶の状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.気絶;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
+	木化("攻撃時７％の確率で３ターンの木化の状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.木化;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
+	黄金("攻撃時７％の確率で３ターンの黄金化の状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.黄金化;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
+	封印("攻撃時７％の確率で３ターンの封印の状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.封印;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
+	出血("攻撃時７％の確率で３ターンの出血の状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.出血;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
+	微睡("攻撃時７％の確率で３ターンの眠りの状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.眠り;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
+	麻痺("攻撃時７％の確率で３ターンの麻痺の状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.麻痺;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
+	炎上("攻撃時７％の確率で３ターンの炎上の状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.炎上;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
+	凍結("攻撃時７％の確率で３ターンの凍結の状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.凍結;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
+	混乱("攻撃時７％の確率で３ターンの混乱の状態異常を付与する") {
+		@Override
+		public float getCndPercent() {
+			return 0.07f;
+		}
+
+		@Override
+		public ConditionKey getCndKey() {
+			return ConditionKey.混乱;
+		}
+
+		@Override
+		public int getCndTime() {
+			return 3;
+		}
+
+	},
 	毒々("攻撃時７％の確率で３ターンの毒の状態異常を付与する") {
 		@Override
 		public float getCndPercent() {
@@ -433,8 +660,8 @@ public enum ItemEnchant implements ItemEqipEffect {
 	暖炉("凍結の状態異常耐性が７％上がる"),
 	安堵("混乱の状態異常耐性が７％上がる"),
 	解毒("毒の状態異常耐性が７％上がる"),
-	修練("獲得経験値が７％増加する"){
-		
+	修練("獲得経験値が７％増加する") {
+
 	},
 	反撃("７％の確率で物理攻撃を反射する"),
 	回天("７％の確率で魔法攻撃を反射する"),

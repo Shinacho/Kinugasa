@@ -36,6 +36,12 @@ import static kinugasa.game.system.ActionEvent.CalcMode.TO_ZERO;
 import static kinugasa.game.system.ActionEventType.ATTR_IN;
 import static kinugasa.game.system.ActionEventType.ATTR_OUT;
 import static kinugasa.game.system.ActionEventType.CND_REGIST;
+import static kinugasa.game.system.ActionEventType.DC_USERの持っているアイテムの重さ;
+import static kinugasa.game.system.ActionEventType.DC_ランダム属性のランダムダメージ;
+import static kinugasa.game.system.ActionEventType.DC_倒した敵の数;
+import static kinugasa.game.system.ActionEventType.DC_減っている体力;
+import static kinugasa.game.system.ActionEventType.DC_減っている正気度;
+import static kinugasa.game.system.ActionEventType.DC_減っている魔力;
 import static kinugasa.game.system.ActionEventType.WEBサイト起動;
 import static kinugasa.game.system.ActionEventType.アイテムロスト;
 import static kinugasa.game.system.ActionEventType.アイテム追加;
@@ -218,17 +224,35 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 
 				break;
 			}
+			case DC_ランダム属性のランダムダメージ: {
+				if (e.getTgtStatusKey() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがステータスキーが入ってません) + " : " + this + " : " + e);
+				}
+				if (e.getCalcMode() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがCALC_MODEが入ってません) + " : " + this + " : " + e);
+				}
+			}
 			case DC_CPUのコア数:
 			case DC_ターン数が大きい:
 			case DC_ターン数が小さい:
-			case DC_ファイル選択からのハッシュ:
-			case DC_ファイル選択からのサイズ:
 			case DC_USERの持っているアイテムの重さ:
-			case DC_ランダム属性のランダムダメージ:
 			case DC_倒した敵の数:
 			case DC_減っている体力:
 			case DC_減っている正気度:
 			case DC_減っている魔力:
+			case DC_ファイル選択からのハッシュ:
+			case DC_ファイル選択からのサイズ: {
+				if (e.getTgtStatusKey() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがステータスキーが入ってません) + " : " + this + " : " + e);
+				}
+				if (e.getCalcMode() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがCALC_MODEが入ってません) + " : " + this + " : " + e);
+				}
+				if (e.getAtkAttr() == null) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがATK_ATTRが入ってません) + " : " + this + " : " + e);
+				}
+				break;
+			}
 			case ステータス回復:
 			case ステータス攻撃: {
 				if (e.getValue() == 0) {

@@ -266,7 +266,9 @@ public class BattleSystem implements Drawable {
 
 		//出現MSG設定用マップ
 		Map<String, Long> enemyNum
-				= enemies.stream().collect(Collectors.groupingBy(Enemy::getId, Collectors.counting()));
+				= enemies.stream().sorted().collect(Collectors.groupingBy(
+						Enemy::getVisibleNameNoNumber,
+						Collectors.counting()));
 		//出現MSG設定
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, Long> e : enemyNum.entrySet()) {
@@ -475,6 +477,8 @@ public class BattleSystem implements Drawable {
 			partySprite.get(i).to(partyInitialDir.get(i));
 			partySprite.get(i).setLocation(partyInitialLocation.get(i));
 		}
+		currentBGM.stop();
+		currentBGM.dispose();
 		winBGM.stop();//強制実行
 		winBGM.dispose();
 		if (prevBGM != null) {
@@ -485,7 +489,7 @@ public class BattleSystem implements Drawable {
 		setStage(Stage.未使用);
 	}
 
-	public void turnStart() {
+	private void turnStart() {
 		turn++;
 		if (GameSystem.isDebugMode()) {
 			GameLog.print(" -----------------TURN[" + turn + "] START-----------------");
@@ -1785,7 +1789,7 @@ public class BattleSystem implements Drawable {
 		switch (stage) {
 			case 未使用: {
 				//入らない。
-				throw new GameSystemException("BS illegal state : " + this);
+				return;
 			}
 			case 開始_to_初期移動開始: {
 				//入らない。
@@ -1827,6 +1831,7 @@ public class BattleSystem implements Drawable {
 					//EXECコール待機に入る
 					setStage(Stage.EXECコール待機);
 				}
+				break;
 			}
 			case 待機中＿時間あり＿手番戻り: {
 				if (currentBAWaitTime == null) {
@@ -1837,6 +1842,7 @@ public class BattleSystem implements Drawable {
 					//コマンド選択に戻る
 					setStage(Stage.コマンド選択中);
 				}
+				break;
 			}
 			case 待機中＿敵逃走中: {
 				currentCmd.getUser().getSprite().moveToTgt();
@@ -1844,8 +1850,8 @@ public class BattleSystem implements Drawable {
 						|| !battleFieldSystem.getBattleFieldAllArea().hit(currentCmd.getUser().getSprite())) {
 					currentCmd.getUser().getSprite().unsetTarget();
 					setStage(Stage.EXECコール待機);
-					break;
 				}
+				break;
 			}
 			case PC逃げアニメーション実行中: {
 				currentCmd.getUser().getSprite().moveToTgt();
@@ -1853,8 +1859,8 @@ public class BattleSystem implements Drawable {
 						|| !battleFieldSystem.getBattleFieldAllArea().hit(currentCmd.getUser().getSprite())) {
 					currentCmd.getUser().getSprite().unsetTarget();
 					setStage(Stage.EXECコール待機);
-					break;
 				}
+				break;
 			}
 			case プレイヤキャラ移動中_コミット待ち: {
 				//残り行動力の更新

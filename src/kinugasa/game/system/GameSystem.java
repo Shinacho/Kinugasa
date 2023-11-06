@@ -135,6 +135,7 @@ public class GameSystem {
 	public BattleResultValues battleEnd() {
 		setMode(GameMode.FIELD);
 		battleSystem.endBattle();
+		EnemyBlueprint.initEnemyNoMap();
 		return battleSystem.getBattleResultValue();
 	}
 	private PageBag pageBag = new PageBag();

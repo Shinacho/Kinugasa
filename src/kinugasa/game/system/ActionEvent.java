@@ -16,13 +16,19 @@
  */
 package kinugasa.game.system;
 
+import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -489,6 +495,25 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 				return getResult(true, tgt);
 			}
 			case TGTを逃げられる位置に転送: {
+				if (tgt instanceof Enemy) {
+					//敵の場合は左
+					float y = (BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().getY() + 1)
+							+ (Random.randomFloat(BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().getHeight()) - 2);
+					float x = Random.randomFloat(tgt.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue() - 12);
+					if (x < 0) {
+						x = 0;
+					}
+					tgt.getSprite().setLocationByCenter(new Point2D.Float(x, y));
+					return new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
+				} else {
+					//プレイヤーの場合は右
+					float y = (BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().getY() + 1)
+							+ (Random.randomFloat(BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().getHeight()) - 2);
+					float x = (BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().getWidth() - 1)
+							- Random.randomFloat(tgt.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue() - 12);
+					tgt.getSprite().setLocationByCenter(new Point2D.Float(x, y));
+					return new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
+				}
 			}
 			case TGTIDのマップIDのランダムな出口ノードに転送: {
 			}
@@ -541,14 +566,13 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			case ゲームクラッシュ: {
 				Object ぬるぽ = null;
 				ぬるぽ.toString();
-				throw new InternalError("なんででた？");
+				throw new InternalError("なんで？");
 			}
 			case DC_CPUのコア数: {
 				if (tgtStatusKey == null) {
 					throw new GameSystemException("status damage, but status key is null : " + this);
 				}
 				float value = -(Runtime.getRuntime().availableProcessors()) * this.value;
-				float prev = tgtStatus.get(tgtStatusKey).getValue();
 				switch (calcMode) {
 					case DC: {
 						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -609,7 +633,6 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 					throw new GameSystemException("status damage, but status key is null : " + this);
 				}
 				float value = -BattleSystem.getInstance().getTurn();
-				float prev = tgtStatus.get(tgtStatusKey).getValue();
 				switch (calcMode) {
 					case DC: {
 						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -668,7 +691,6 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 					throw new GameSystemException("status damage, but status key is null : " + this);
 				}
 				float value = -(128 - BattleSystem.getInstance().getTurn());
-				float prev = tgtStatus.get(tgtStatusKey).getValue();
 				switch (calcMode) {
 					case DC: {
 						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -723,12 +745,262 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 				}//switch
 			}
 			case DC_ファイル選択からのハッシュ: {
+				if (tgtStatusKey == null) {
+					throw new GameSystemException("status damage, but status key is null : " + this);
+				}
+				JFileChooser c = new JFileChooser(new File(PlayerConstants.getInstance().DESKTOP_PATH));
+				c.setMultiSelectionEnabled(false);
+				int res = c.showOpenDialog(null);
+				if (res != JFileChooser.APPROVE_OPTION) {
+					return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
+				}
+				File file = c.getSelectedFile();
+
+				float value = file.getName().hashCode() % 128;
+				value = file.getName().hashCode() % 2 == 0 ? -value : +value;
+				switch (calcMode) {
+					case DC: {
+						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+							throw new GameSystemException("damage calc is cant exec in field : " + this);
+						}
+						//攻撃タイプ調整
+						DamageCalcSystem.ActionType actionType
+								= switch (a.getType()) {
+							case 攻撃 ->
+								DamageCalcSystem.ActionType.物理攻撃;
+							case 魔法 ->
+								DamageCalcSystem.ActionType.魔法攻撃;
+							default ->
+								throw new AssertionError("damage calc cant exec : " + this);
+						};
+
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.左手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (dcs == null) {
+							dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						}
+						//ダメージ計算実行
+						DamageCalcSystem.Result r
+								= DamageCalcSystem.calcDamage(
+										new DamageCalcSystem.Param(
+												user,
+												tgt,
+												atkAttr,
+												actionType,
+												value,
+												tgtStatusKey,
+												dcs)
+								);
+
+						//r評価
+						return convert(r);
+					}
+					default:
+						throw new AssertionError("cant use no DC mode : " + this);
+				}//switch
 			}
 			case DC_ファイル選択からのサイズ: {
+				if (tgtStatusKey == null) {
+					throw new GameSystemException("status damage, but status key is null : " + this);
+				}
+				JFileChooser c = new JFileChooser(new File(PlayerConstants.getInstance().DESKTOP_PATH));
+				c.setMultiSelectionEnabled(false);
+				int res = c.showOpenDialog(null);
+				if (res != JFileChooser.APPROVE_OPTION) {
+					return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
+				}
+				File file = c.getSelectedFile();
+
+				float value = 0;
+				try {
+					value = Files.size(file.toPath()) / 1024f / 1024f;
+				} catch (IOException ex) {
+					Logger.getLogger(ActionEvent.class.getName()).log(Level.SEVERE, null, ex);
+				}
+				switch (calcMode) {
+					case DC: {
+						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+							throw new GameSystemException("damage calc is cant exec in field : " + this);
+						}
+						//攻撃タイプ調整
+						DamageCalcSystem.ActionType actionType
+								= switch (a.getType()) {
+							case 攻撃 ->
+								DamageCalcSystem.ActionType.物理攻撃;
+							case 魔法 ->
+								DamageCalcSystem.ActionType.魔法攻撃;
+							default ->
+								throw new AssertionError("damage calc cant exec : " + this);
+						};
+
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.左手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (dcs == null) {
+							dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						}
+						//ダメージ計算実行
+						DamageCalcSystem.Result r
+								= DamageCalcSystem.calcDamage(
+										new DamageCalcSystem.Param(
+												user,
+												tgt,
+												atkAttr,
+												actionType,
+												value,
+												tgtStatusKey,
+												dcs)
+								);
+
+						//r評価
+						return convert(r);
+					}
+					default:
+						throw new AssertionError("cant use no DC mode : " + this);
+				}//switch
 			}
 			case DC_倒した敵の数: {
+				if (tgtStatusKey == null) {
+					throw new GameSystemException("status damage, but status key is null : " + this);
+				}
+				Counts.Value v = Counts.getInstance().select(GameSystemI18NKeys.CountKey.倒した敵の数);
+				if (v == null) {
+					return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
+				}
+				float value = v.num / 100f;
+				switch (calcMode) {
+					case DC: {
+						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+							throw new GameSystemException("damage calc is cant exec in field : " + this);
+						}
+						//攻撃タイプ調整
+						DamageCalcSystem.ActionType actionType
+								= switch (a.getType()) {
+							case 攻撃 ->
+								DamageCalcSystem.ActionType.物理攻撃;
+							case 魔法 ->
+								DamageCalcSystem.ActionType.魔法攻撃;
+							default ->
+								throw new AssertionError("damage calc cant exec : " + this);
+						};
+
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.左手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (dcs == null) {
+							dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						}
+						//ダメージ計算実行
+						DamageCalcSystem.Result r
+								= DamageCalcSystem.calcDamage(
+										new DamageCalcSystem.Param(
+												user,
+												tgt,
+												atkAttr,
+												actionType,
+												value,
+												tgtStatusKey,
+												dcs)
+								);
+
+						//r評価
+						return convert(r);
+					}
+					default:
+						throw new AssertionError("cant use no DC mode : " + this);
+				}//switch
 			}
 			case DC_ランダム属性のランダムダメージ: {
+				if (tgtStatusKey == null) {
+					throw new GameSystemException("status damage, but status key is null : " + this);
+				}
+				float value = Random.d100(1) + 1;
+				switch (calcMode) {
+					case DC: {
+						if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+							throw new GameSystemException("damage calc is cant exec in field : " + this);
+						}
+						//攻撃タイプ調整
+						DamageCalcSystem.ActionType actionType
+								= switch (a.getType()) {
+							case 攻撃 ->
+								DamageCalcSystem.ActionType.物理攻撃;
+							case 魔法 ->
+								DamageCalcSystem.ActionType.魔法攻撃;
+							default ->
+								throw new AssertionError("damage calc cant exec : " + this);
+						};
+
+						//アイテムからDCS取得
+						StatusKey dcs = null;
+						if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.右手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
+							Item i = user.getStatus().getEqip().get(EqipSlot.左手);
+							if (i != null && i.getDcs() != null) {
+								dcs = i.getDcs();
+							}
+						}
+						if (dcs == null) {
+							dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						}
+						//ダメージ計算実行
+						DamageCalcSystem.Result r
+								= DamageCalcSystem.calcDamage(
+										new DamageCalcSystem.Param(
+												user,
+												tgt,
+												Random.randomChoice(AttributeKey.class),
+												actionType,
+												value,
+												tgtStatusKey,
+												dcs)
+								);
+
+						//r評価
+						return convert(r);
+					}
+					default:
+						throw new AssertionError("cant use no DC mode : " + this);
+				}//switch
 			}
 			case DC_減っている体力: {
 			}
@@ -785,7 +1057,6 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 				FieldMap.getCurrentInstance().changeMap(Node.ofOutNode("AUTO_NODE_FROM_AE", tgtMap.id,
 						(Integer) x.getValue(), (Integer) y.getValue(), FourDirection.NORTH));
 				return new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
-
 			}
 			case TGTIDのCSVにあるアイテムのいずれかをUSERに追加: {
 				List<Item> items = new ArrayList<>(Arrays.asList(StringUtil.safeSplit(tgtId, ","))

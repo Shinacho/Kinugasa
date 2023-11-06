@@ -55,6 +55,7 @@ public class EnemySprite extends PCSprite {
 
 	public EnemySprite(XMLElement e) {
 		super(e);
+		setImage(getAnimation().getCurrentBImage());
 	}
 
 	public void setMe(Enemy me) {
@@ -73,7 +74,7 @@ public class EnemySprite extends PCSprite {
 			int max = (int) me.getStatus().getEffectedStatus().get(StatusKey.正気度).getMax();
 			progressBarSprite2 = new ProgressBarSprite(0, 0, me.getSprite().getWidth(), 4, val, val, max);
 			progressBarSprite2.setLocation(me.getSprite().getLocation());
-			progressBarSprite2.setY(progressBarSprite2.getY() + 4);
+			progressBarSprite2.setY(progressBarSprite2.getY());
 			progressBarSprite2.setVal((int) me.getStatus().getEffectedStatus().get(StatusKey.正気度).getValue());
 		}
 	}
@@ -165,15 +166,25 @@ public class EnemySprite extends PCSprite {
 		}
 	}
 
+	@Override
 	public void update() {
+		if (getAnimation() == null) {
+			return;
+		}
+		getAnimation().update();
+		if (!getAnimation().isRepeat() && getAnimation().isEnded()) {
+			setVisible(false);
+		}
+		setImage(getAnimation().getCurrentImage());
 		progressBarSprite1.setLocation(getLocation());
 		progressBarSprite1.setY(progressBarSprite1.getY() - 4);
 		progressBarSprite1.setVal((int) me.getStatus().getEffectedStatus().get(StatusKey.体力).getValue());
 		progressBarSprite2.setLocation(getLocation());
-		progressBarSprite2.setY(progressBarSprite2.getY() + 4);
+		progressBarSprite2.setY(progressBarSprite2.getY());
 		progressBarSprite2.setVal((int) me.getStatus().getEffectedStatus().get(StatusKey.正気度).getValue());
 	}
 
+	@Override
 	public void move() {
 		moveToTgt();
 	}
@@ -185,6 +196,7 @@ public class EnemySprite extends PCSprite {
 		setVector(v);
 	}
 
+	@Override
 	public void dirTo(Actor c, float speed) {
 		KVector v = new KVector();
 		v.setAngle(getCenter(), c.getSprite().getCenter());
@@ -192,6 +204,7 @@ public class EnemySprite extends PCSprite {
 		setVector(v);
 	}
 
+	@Override
 	public void dirTo(Actor c, String vehicleName) {
 		KVector v = new KVector();
 		v.setAngle(getCenter(), c.getSprite().getCenter());
@@ -206,7 +219,7 @@ public class EnemySprite extends PCSprite {
 		if (!isVisible() || !isExist()) {
 			return;
 		}
-		draw(g);
+		super.draw(g);
 		progressBarSprite1.draw(g);
 		progressBarSprite2.draw(g);
 		Graphics2D g2 = g.create();
@@ -214,12 +227,14 @@ public class EnemySprite extends PCSprite {
 		g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.PLAIN).setFontSize(12).getFont());
 		g2.drawString(me.getStatus().getVisibleName(), getX() - me.getStatus().getVisibleName().length() * 3, getY() - 4);
 
+		/*
 		g2.setColor(SHADOW);
 		g2.fillOval(
 				(int) (getX() + getWidth() / 8),
 				(int) (getY() + getHeight() - getHeight() / 16),
 				(int) (getWidth() - getWidth() / 4),
 				(int) (getHeight() / 8));
+		*/
 		if (GameSystem.isDebugMode()) {
 			g2.setColor(Color.ORANGE);
 			GraphicsUtil.drawRect(g2, getBounds());
@@ -234,6 +249,7 @@ public class EnemySprite extends PCSprite {
 		setVector(v);
 	}
 
+	@Override
 	public void setTargetLocation(Point2D.Float p, int area) {
 		prev = getCenter();
 		tgt = (Point2D.Float) p.clone();
@@ -243,6 +259,7 @@ public class EnemySprite extends PCSprite {
 		moving = true;
 	}
 
+	@Override
 	public void unsetTarget() {
 		prev = getCenter();
 		tgt = null;
@@ -250,6 +267,7 @@ public class EnemySprite extends PCSprite {
 		moving = false;
 	}
 
+	@Override
 	public boolean isMoving() {
 		return moving;
 	}

@@ -232,6 +232,10 @@ public final class Random implements Serializable {
 		return t[randomAbsInt(t.length)];
 	}
 
+	public static <T extends Enum<T>> T randomChoice(Class<T> t) {
+		return randomChoice(List.of(t.getEnumConstants()));
+	}
+
 	public static Point2D.Float randomLocation(Rectangle2D r) {
 		return randomLocation(r, 1, 1);
 	}

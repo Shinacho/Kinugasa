@@ -437,6 +437,8 @@ public class GameSystemI18NKeys {
 		public static final String フグを食べて死んだ回数 = "フグを食べて死んだ回数";
 		public static final String フグを食べて平気だった回数 = "フグを食べて平気だった回数";
 		public static final String エンディングに至った回数 = "エンディングに至った回数";
+		public static final String 飲んだアルケミコーラの数 = "飲んだアルケミコーラの数";
+		public static final String 入手した最強のアルケミコーラの番号 = "入手した最強のアルケミコーラの番号";
 		public static final String Aエンド回数 = "Aエンド回数";
 		public static final String Bエンド回数 = "Bエンド回数";
 

@@ -124,6 +124,10 @@ public final class Enemy extends Actor {
 		return dropItem;
 	}
 
+	public String getVisibleNameNoNumber() {
+		return getVisibleName().substring(0, getVisibleName().length() - 1);
+	}
+
 	@Override
 	public boolean isPlayer() {
 		return false;
