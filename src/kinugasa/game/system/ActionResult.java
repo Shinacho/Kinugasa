@@ -18,14 +18,11 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import kinugasa.game.NewInstance;
 import kinugasa.game.NotNull;
-import kinugasa.game.system.GameSystemException;
 import kinugasa.object.AnimationSprite;
-import kinugasa.object.BasicSprite;
 
 /**
  *
@@ -52,6 +49,7 @@ public class ActionResult {
 		public boolean tgtIsDead;
 		public AnimationSprite tgtAnimation, otherAnimation;
 		public String msgI18Nd;
+		List<EventResult> list = new ArrayList<>();
 
 		public EventResult(Actor tgt, ActionResultSummary summary, ActionEvent event) {
 			this.tgt = tgt;
@@ -62,6 +60,11 @@ public class ActionResult {
 		@Override
 		public String toString() {
 			return "EventResult{" + "tgt=" + tgt + ", summary=" + summary + ", event=" + event + ", tgtDamageHp=" + tgtDamageHp + ", tgtDamageMp=" + tgtDamageMp + ", tgtDamageSAN=" + tgtDamageSAN + ", tgtIsDead=" + tgtIsDead + ", msgI18Nd=" + msgI18Nd + '}';
+		}
+
+		public EventResult setMsg(String v) {
+			msgI18Nd = v;
+			return this;
 		}
 
 	}
@@ -90,14 +93,12 @@ public class ActionResult {
 		return userEventResult;
 	}
 
-	public void add(Actor a, ActionResult.EventResult e) {
+	public void add(Actor a, List<ActionResult.EventResult> e) {
 		if (result.containsKey(a)) {
-			result.get(a).add(e);
-			return;
+			result.get(a).addAll(e);
+		} else {
+			result.put(a, new ArrayList<>(e));
 		}
-		List<EventResult> l = new ArrayList<>();
-		l.add(e);
-		result.put(a, l);
 	}
 
 	public Action getAction() {

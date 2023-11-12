@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import kinugasa.game.system.ScriptFormatException;
 import kinugasa.resource.FileNotFoundException;
@@ -49,7 +50,7 @@ public class FieldEventParser {
 		return new FieldEventParser(id, null, new XMLFile(fileName)).parse();
 	}
 
-	public List<FieldEvent> parse() {
+	public List<FieldEvent> parse() throws ScriptFormatException, FileNotFoundException {
 		if (!scriptData.exists()) {
 			throw new FileNotFoundException(scriptData.getFile());
 		}
@@ -60,6 +61,9 @@ public class FieldEventParser {
 		Storage<EventTerm> term = new Storage<>();
 		for (XMLElement e : root.getElement("term")) {
 			String name = e.getAttributes().get("name").getValue();
+			if (!Set.of(EventTermType.values()).stream().map(p->p.toString()).toList().contains(e.getAttributes().get("ett").getValue())) {
+				throw new ScriptFormatException("illegal ett : " + scriptData + " . " + e);
+			}
 			EventTermType ett = e.getAttributes().get("ett").of(EventTermType.class);
 			String storageName = e.getAttributes().get("stName").getValue();
 			String tgtName = e.getAttributes().get("tgtName").getValue();
@@ -73,8 +77,8 @@ public class FieldEventParser {
 		boolean undead = root.hasAttribute("undead");
 		for (XMLElement e : root.getElement("event")) {
 			int pri = e.getAttributes().get("order").getIntValue();
-			if (!Arrays.asList(FieldEventType.values()).stream().map(p -> p.toString()).collect(Collectors.toList()).contains(e.getAttributes().get("fet").getValue())) {
-				throw new ScriptFormatException("fet is not found　" + this + " / " + e.getAttributes().get("fet"));
+			if (!Set.of(FieldEventType.values()).stream().map(p->p.toString()).toList().contains(e.getAttributes().get("fet").getValue())) {
+				throw new ScriptFormatException("illegal fet : " + scriptData + " . " + e);
 			}
 			FieldEventType fet = e.getAttributes().get("fet").of(FieldEventType.class);
 			String storageName = null;

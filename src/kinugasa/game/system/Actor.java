@@ -32,6 +32,7 @@ import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
 import kinugasa.game.NotNull;
+import kinugasa.object.Model;
 
 /**
  * アクターはステータスとスプライトを持つ、登場人物のクラスです。<br>
@@ -71,6 +72,14 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 	private String iniStatusFile;
 	private BufferedImage faceImage;
 	private boolean isSummoned = false;//召喚された人フラグ
+	private StatusValueSet vs;
+	private String visibleName退避;
+
+	public Actor(String id, Actor a) {
+		this(id, a.visibleName, a.status.getRace(), a.sprite);
+		this.status = a.status.clone();
+		this.sprite = a.sprite.clone();
+	}
 
 	public Actor(String id, String visibleName, Race r, PCSprite sprite) {
 		if (id == null || visibleName == null || r == null || sprite == null) {
@@ -135,9 +144,6 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 		}
 		readFromXML(iniStatusFile);
 	}
-
-	private StatusValueSet vs;
-	private String visibleName退避;
 
 	public void 退避＿ステータスの初期化されない項目() {
 		vs = this.status.getBaseStatus().clone();

@@ -92,7 +92,11 @@ public class IniFile implements Input<IniFile>, Output {
 				if (map.containsKey(val[0])) {
 					throw new FileFormatException("this ini files key is duplicated:" + file.getName() + " / " + val[0]);
 				}
-				map.put(val[0], new Value(val[1]));
+				if (val.length == 1) {
+					map.put(val[0], new Value(""));
+				} else {
+					map.put(val[0], new Value(val[1]));
+				}
 			}
 		} catch (IOException ex) {
 			throw new FileIOException(ex);

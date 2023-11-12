@@ -117,6 +117,13 @@ public class StatusDescWindow extends PCStatusWindow {
 		sb.append("<---");
 		sb.append(GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName());
 		sb.append("--->").append(Text.getLineSep());
+		if (s.get(pcIdx).getAbility() != null) {
+			sb.append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.特性)).append(":");
+			sb.append(s.get(pcIdx).getAbility().getVisibleName())
+					.append("(").append(s.get(pcIdx).getAbility().getDescI18Nd()).append(")");
+			sb.append(Text.getLineSep());
+		}
 		for (StatusValue v : s.get(pcIdx).getEffectedStatus().stream().sorted().toList()) {
 			if (!v.getKey().isVisible()) {
 				continue;
@@ -146,12 +153,6 @@ public class StatusDescWindow extends PCStatusWindow {
 					sb.append(v.getKey().getVisibleName()).append(":").append(val).append(Text.getLineSep());
 				}
 			}
-		}
-		if (s.get(pcIdx).getAbility() != null) {
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.特性)).append(":");
-			sb.append(s.get(pcIdx).getAbility().getVisibleName())
-					.append("(").append(s.get(pcIdx).getAbility().getDescI18Nd()).append(")");
 		}
 
 		main.setText(Text.split(new Text(sb.toString())));

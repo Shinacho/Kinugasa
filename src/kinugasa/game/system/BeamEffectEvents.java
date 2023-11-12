@@ -128,7 +128,7 @@ public class BeamEffectEvents {
 			super(key.toString());
 			this.key = key;
 			setP(1f);
-			setEventType(ActionEventType.ビームエフェクト);
+			setEventType(ActionEventType.前イベ成功時_ビームエフェクト);
 		}
 
 		public Key getKey() {
@@ -136,7 +136,12 @@ public class BeamEffectEvents {
 		}
 
 		@Override
-		public ActionResult.EventResult exec(Actor user, Action a, Actor tgt) {
+		public ActionResult.EventResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventResult> eres) {
+			if (!eres.isEmpty()) {
+				if (eres.stream().map(p -> p.summary).anyMatch(p -> p.is失敗())) {
+					return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
+				}
+			}
 			List<Sprite> sp = new ArrayList<>();
 			final int max = 64;
 			for (int i = 0; i < max; i++) {

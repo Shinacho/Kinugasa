@@ -19,6 +19,7 @@ package kinugasa.game.system;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kinugasa.game.NotNewInstance;
 import kinugasa.game.Nullable;
 import kinugasa.game.field4.*;
 import kinugasa.resource.NameNotFoundException;
@@ -82,6 +83,7 @@ public class GameSystem {
 		FieldMap.setPlayerCharacter(chara.stream().map(v -> v.getSprite()).collect(Collectors.toList()));
 	}
 
+	@NotNewInstance
 	public List<Actor> getParty() {
 		return party;
 	}

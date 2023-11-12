@@ -39,11 +39,7 @@ public class GameSystemI18NKeys {
 	private static List<String> of(Class<?> c) {
 		List<String> r = new ArrayList<>();
 		try {
-			List<Field> f = Stream.of(
-					List.of(c.getDeclaredFields())
-			).flatMap(p -> p.stream())
-					.collect(Collectors.toList());
-			for (Field ff : f) {
+			for (Field ff : List.of(c.getDeclaredFields())) {
 				r.add(ff.get(null).toString());
 			}
 		} catch (Exception ex) {
@@ -76,7 +72,7 @@ public class GameSystemI18NKeys {
 		r.addAll(List.of(Action.ターゲットモード.values()).stream().map(p -> p.toString()).toList());
 		r.add("[Action.死亡者ターゲティング]");
 		r.addAll(List.of(Action.死亡者ターゲティング.values()).stream().map(p -> p.toString()).toList());
-		r.add("[ActionEvent.EventType]");
+		r.add("[ActionEventType]");
 		r.addAll(List.of(ActionEventType.values()).stream().map(p -> p.toString()).toList());
 		r.add("[WeaponType]");
 		r.addAll(List.of(WeaponType.values()).stream().map(p -> p.toString()).toList());
@@ -305,7 +301,8 @@ public class GameSystemI18NKeys {
 	public static final String 逃走 = "逃走";
 	public static final String Xの確率で自身の武器装備を解除して敵のドロップアイテムに追加する = "Xの確率で自身の武器装備を解除して敵のドロップアイテムに追加する";
 	public static final String Xの確率でXを召喚する = "Xの確率でXを召喚する";
-	public static final String 召喚の術式 = "召喚の術式";
+	public static final String 友好的存在召喚の術式 = "友好的存在召喚の術式";
+	public static final String 敵対的存在召喚の術式 = "敵対的存在召喚の術式";
 	public static final String 戦闘に勝利したときXをXの確率で入手する = "戦闘に勝利したときXを入手する";
 	public static final String ドロップアイテム追加の術式 = "ドロップアイテム追加の術式";
 	public static final String Xの確率で対象者は直ちにX回行動できる = "Xの確率で対象者は直ちにX回行動できる";
@@ -375,7 +372,7 @@ public class GameSystemI18NKeys {
 	public static final String ヘビーボンバーの術式 = "ヘビーボンバーの術式";
 	public static final String Xの確率でXターン内の詠唱完了を反転させる = "Xの確率でXターン内の詠唱完了を反転させる";
 	public static final String 詠唱時間逆転の術式 = "詠唱時間逆転の術式";
-	public static final String 上位者の情報Xを閲覧する = "上位者の情報Xを閲覧する";
+	public static final String 上位者の情報を閲覧する = "上位者の情報を閲覧する";
 	public static final String 上位者の情報閲覧の術式 = "上位者の情報閲覧の術式";
 	public static final String このダメージは倒した敵の数が多いほど大きくなる = "このダメージは倒した敵の数が多いほど大きくなる";
 	public static final String このダメージはターン数が小さいほど大きくなる = "このダメージはターン数が小さいほど大きくなる";
@@ -402,6 +399,40 @@ public class GameSystemI18NKeys {
 	public static final String スローの術式 = "スローの術式";
 	public static final String Xの確率で対象者は術者からXの範囲内に転送される = "Xの確率で対象者は術者からXの範囲内に転送される";
 	public static final String 引き寄せの術式 = "引き寄せの術式";
+	public static final String Xの確率で術者のX装備を解除する = "Xの確率で術者のX装備を解除する";
+	public static final String パージの術式 = "パージの術式";
+	public static final String 即時追加行動の術式 = "即時追加行動の術式";
+	public static final String 遅延追加行動の術式 = "遅延追加行動の術式";
+	public static final String Xの確率でこのアクションはターゲットからXの距離内の同じチームの全員にも作用する = "Xの確率でこのアクションはターゲットからXの距離内の同じチームの全員にも作用する";
+	public static final String 放射の術式 = "放射の術式";
+	public static final String Xの確率でこのアクションはターゲットからXの距離内の全員にも作用する = "Xの確率でこのアクションはターゲットからXの距離内の全員にも作用する";
+	public static final String 全体放射の術式 = "全体放射の術式";
+	public static final String Xの確率でこのアクションはターゲットからXの距離内の同じチームの一人にも作用する = "Xの確率でこのアクションはターゲットからXの距離内の同じチームの一人にも作用する";
+	public static final String 派生の術式 = "派生の術式";
+	public static final String Xの確率でこのアクションはターゲットからXの距離内の一人にも作用する = "Xの確率でこのアクションはターゲットからXの距離内の一人にも作用する";
+	public static final String 伝搬の術式 = "伝搬の術式";
+	public static final String このターン対象者が未行動ならXの確率で対象者はこの行動のすぐあとに行動できる = "このターン対象者が未行動ならXの確率で対象者はこの行動のすぐあとに行動できる";
+	public static final String このターン対象者が未行動ならXの確率で対象者はこのターンの最後に行動できる = "このターン対象者が未行動ならXの確率で対象者はこのターンの最後に行動できる";
+	public static final String Xの確率で全員にXの正気度ダメージを与える = "Xの確率で全員にXの正気度ダメージを与える";
+	public static final String 正気度ダメージの術式 = "正気度ダメージの術式";
+	public static final String Xの確率で対象を即死させる = "Xの確率で対象を即死させる";
+	public static final String 即死の術式 = "即死の術式";
+	public static final String このイベントは処理の都合で入っているようだ = "このイベントは処理の都合で入っているようだ";
+	public static final String ダミーの術式＿成功 = "ダミーの術式＿成功";
+	public static final String ダミーの術式＿失敗 = "ダミーの術式＿失敗";
+	public static final String ドロップマテリアル追加の術式 = "ドロップマテリアル追加の術式";
+	public static final String ダミーの術式＿メッセージ表示 = "ダミーの術式＿メッセージ表示";
+	public static final String 軽い = "軽い";
+	public static final String とてつもなく重い = "とてつもなく重い";
+	public static final String 非常に重い = "非常に重い";
+	public static final String かなり重い = "かなり重い";
+	public static final String 重い = "重い";
+	public static final String このダメージは自身の体力が最大値に近いほど高くなる = "このダメージは自身の体力が最大値に近いほど高くなる";
+	public static final String 体力の余裕の術式 = "体力の余裕の術式";
+	public static final String このダメージは自身の魔力が最大値に近いほど高くなる = "このダメージは自身の魔力が最大値に近いほど高くなる";
+	public static final String 魔力の余裕の術式 = "魔力の余裕の術式";
+	public static final String このダメージは自身の正気度が最大値に近いほど高くなる = "このダメージは自身の正気度が最大値に近いほど高くなる";
+	public static final String 精神的余裕の術式 = "精神的余裕の術式";
 
 	public static class CountKey {
 
@@ -439,6 +470,11 @@ public class GameSystemI18NKeys {
 		public static final String エンディングに至った回数 = "エンディングに至った回数";
 		public static final String 飲んだアルケミコーラの数 = "飲んだアルケミコーラの数";
 		public static final String 入手した最強のアルケミコーラの番号 = "入手した最強のアルケミコーラの番号";
+		public static final String ラロヘスキーが動物と友達になった回数 = "ラロヘスキーが動物と友達になった回数";
+		public static final String ニーナが死んだ回数 = "ニーナが死んだ回数";
+		public static final String コペレードに酒を飲ませた回数 = "コペレードに酒を飲ませた回数";
+		public static final String リングロードに回復された回数 = "リングロードに回復された回数";
+		public static final String リングロードが失った髪の合計 = "リングロードが失った髪の合計";
 		public static final String Aエンド回数 = "Aエンド回数";
 		public static final String Bエンド回数 = "Bエンド回数";
 
@@ -458,33 +494,30 @@ public class GameSystemI18NKeys {
 		public static final String イベントのタイプが空です = "イベントのタイプが空です";
 		public static final String イベントの発生確率が０です = "イベントの発生確率が０です";
 		public static final String イベントTermが重複しています = "イベントTermが重複しています";
-		public static final String ATTRINイベントですがATTRINが設定されていません = "ATTRINイベントですがATTRINが設定されていません";
-		public static final String ATTROUTイベントですがATTROUTが設定されていません = "ATTROUTイベントですがATTROUTが設定されていません";
-		public static final String ATTRイベントですがVALUEが０です = "ATTRイベントですがVALUEが０です";
-		public static final String アイテムイベントですがアイテムIDが設定されていません = "アイテムイベントですがアイテムIDが設定されていません";
-		public static final String アイテムイベントですがアイテムIDのアイテムが存在しません = "アイテムイベントですがアイテムIDのアイテムが存在しません";
-		public static final String アイテムイベントですが対象IDがアイテムではありません = "アイテムイベントですが対象IDがアイテムではありません";
-		public static final String ステータスイベントですがVALUEが０です = "ステータスイベントですがVALUEが０です";
-		public static final String ステータスイベントですがステータスキーが入ってません = "ステータスイベントですがステータスキーが入ってません";
-		public static final String ステータスイベントですがCALC_MODEが入ってません = "ステータスイベントですがCALC_MODEが入ってません";
-		public static final String ステータスイベントですがATK_ATTRが入ってません = "ステータスイベントですがATK_ATTRが入ってません";
-		public static final String 状態異常イベントですが状態異常キーが入ってません = "状態異常イベントですが状態異常キーが入ってません";
-		public static final String 状態異常付与イベントですが持続時間が入ってません = "状態異常付与イベントですが持続時間が入ってません";
-		public static final String CND_REGISTイベントですがCND_KEYが入ってません = "CND_REGISTイベントですがCND_KEYが入ってません";
-		public static final String CND_REGISTイベントですがVALUEが０です = "CND_REGISTイベントですがVALUEが０です";
-		public static final String CND_REGISTイベントですがキーが耐性付き状態異常ではありません = "CND_REGISTイベントですがキーが耐性付き状態異常ではありません";
-		public static final String 武装解除イベントですがアクションが武器のアクションではありません = "武装解除イベントですがアクションが武器のアクションではありません";
-		public static final String 召喚イベントですがステータスファイルパスが入っていません = "召喚イベントですがステータスファイルパスが入っていません";
-		public static final String マップ転送イベントですがマップIDが入っていません = "マップ転送イベントですがマップIDが入っていません";
-		public static final String ドロップアイテム追加イベントですがアイテムがTGTIDに入ってません = "ドロップアイテム追加イベントですがアイテムがTGTIDに入ってません";
-		public static final String 召喚イベントのステータスファイルが誤っています = "召喚イベントのステータスファイルが誤っています";
-		public static final String ドロップアイテム追加イベントですがTGTIDがアイテムではありません = "ドロップアイテム追加イベントですがTGTIDがアイテムではありません";
-		public static final String マップ転送イベントですがマップIDが誤ってます = "マップ転送イベントですがマップIDが誤ってます";
-		public static final String WEBサイト起動イベントですがTGTIDが入っていません = "WEBサイト起動イベントですがTGTIDが入っていません";
-		public static final String 行動をVALUE回数追加イベントですがVALUEが０です = "行動をVALUE回数追加イベントですがVALUEが０です";
-		public static final String VALUEターン移動追加イベントですがVALUEが０です = "VALUEターン移動追加イベントですがVALUEが０です";
-
-		public static final String スロットと武器タイプの整合性がとれていません = "スロットと武器タイプの整合性がとれていません";
+		public static final String このイベントにはEQIPSLOTが必要です = "このイベントにはEQIPSLOTが必要です";
+		public static final String このイベントにはVALUEが必要です = "このイベントにはVALUEが必要です";
+		public static final String このイベントにはTgtStatusKeyが必要です = "このイベントにはTgtStatusKeyが必要です";
+		public static final String このイベントにはCALC_MODEが必要です = "このイベントにはCALC_MODEが必要です";
+		public static final String このイベントにはATK_ATTRが必要です = "このイベントにはATK_ATTRが必要です";
+		public static final String このイベントにはATTRINが必要です = "このイベントにはATTRINが必要です";
+		public static final String このイベントにはATTROUTが必要です = "このイベントにはATTROUTが必要です";
+		public static final String このイベントにはCNDREGISTが必要です = "このイベントにはCNDREGISTが必要です";
+		public static final String このイベントにはTGTCNDKEYが必要です = "このイベントにはTGTCNDKEYが必要です";
+		public static final String このイベントにはCNDTIMEが必要です = "このイベントにはCNDTIMEが必要です";
+		public static final String このイベントにはTGTIDが必要です = "このイベントにはTGTIDが必要です";
+		public static final String TGTIDがアイテムIDではありません = "TGTIDがアイテムIDではありません";
+		public static final String TGTIDがマテリアルIDではありません = "TGTIDがマテリアルIDではありません";
+		public static final String このイベントが武器に紐づいていないため装備解除できません = "このイベントが武器に紐づいていないため装備解除できません";
+		public static final String 装備解除しようとしましたがユーザはすでに装備していません = "装備解除しようとしましたがユーザはすでに装備していません";
+		public static final String BSの魔法詠唱中リストとACの詠唱中状態の整合性が取れていない = "BSの魔法詠唱中リストとACの詠唱中状態の整合性が取れていない";
+		public static final String TGTIDがI18NにありませんおそらくマップIDではありません = "TGTIDがI18NにありませんおそらくマップIDではありません";
+		public static final String TGTIDが誤っています = "TGTIDが誤っています";
+		public static final String 独自効果イベントがオーバーライドされていません = "独自効果イベントがオーバーライドされていません";
+		public static final String TGTIDがSLOTではありません = "TGTIDがSLOTではありません";
+		public static final String このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります = "このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります";
+		
+		
+		public static final String 装備解除しようとしましたがユーザはすでに装備していませんTERMとの整合性を要確認 = "装備解除しようとしましたがユーザはすでに装備していませんTERMとの整合性を要確認";
 		public static final String 武器ですが攻撃回数が０です = "武器ですが攻撃回数が０です";
 		public static final String 装備品ですがスタイルが入っていません = "装備品ですがスタイルが入っていません";
 		public static final String 武器ですがDCSが入っていません = "武器ですがDCSが入っていません";
@@ -493,6 +526,6 @@ public class GameSystemI18NKeys {
 		public static final String 装備品ですが装備効果が入っていません = "装備品ですが装備効果が入っていません";
 		public static final String 装備効果のステータスが大きすぎます = "装備効果のステータスが大きすぎます";
 		public static final String 装備効果のステータス最大値が大きすぎます = "装備効果のステータス最大値が大きすぎます";
-
+		public static final String スロットと武器タイプの整合性がとれていません = "スロットと武器タイプの整合性がとれていません";
 	}
 }

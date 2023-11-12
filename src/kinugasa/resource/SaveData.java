@@ -35,6 +35,8 @@ import java.util.List;
  * @author Shinacho<br>
  */
 public abstract class SaveData implements Nameable, Serializable {
+	
+	public static SaveData current = null;
 
 	private static final long serialVersionUID = 5051478173983169607L;
 	/** セーブデータの名前です. */

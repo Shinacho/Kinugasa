@@ -34,6 +34,7 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
 import kinugasa.game.NewInstance;
+import kinugasa.game.NotNewInstance;
 import kinugasa.game.OneceTime;
 import kinugasa.game.ui.Text;
 import kinugasa.object.Drawable;
@@ -357,7 +358,7 @@ public class BattleSystem implements Drawable {
 		Collections.sort(enemies, (Enemy o1, Enemy o2) -> (int) (o1.getSprite().getY() - o2.getSprite().getY()));
 	}
 
-	private void setEndStatus(BattleResult v) {
+	void setEndStatus(BattleResult v) {
 
 		//敵番号の初期化
 		EnemyBlueprint.initEnemyNoMap();
@@ -509,6 +510,11 @@ public class BattleSystem implements Drawable {
 		//このターンのバトルコマンドを作成
 		commandsOfThisTurn = SpeedCalcSystem.doExec(allActors(),
 				magics.containsKey(turn) ? magics.get(turn) : Collections.emptyList());
+
+		//このターンの魔法詠唱完了をバトルコマンドに置いたので、マップからは破棄
+		if (magics.containsKey(turn)) {
+			magics.remove(turn);
+		}
 
 		//コマンドがパーティーだけの場合、戦闘終了
 		if (commandsOfThisTurn.stream().allMatch(p -> p.getUser().isPlayer())) {
@@ -1411,6 +1417,27 @@ public class BattleSystem implements Drawable {
 		return sb.toString();
 	}
 
+	boolean 魔法詠唱を破棄(Actor a) {
+		boolean res = false;
+		for (int i : magics.keySet()) {
+			MagicSpell remove = null;
+			for (MagicSpell m : magics.get(i)) {
+				if (m.getUser().equals(a)) {
+					remove = m;
+					break;
+				}
+			}
+			if (remove != null) {
+				magics.get(i).remove(remove);
+				res = true;
+				break;
+			}
+		}
+		castingSprites.remove(a);
+		a.getStatus().removeCondition(ConditionKey.詠唱中);
+		return res;
+	}
+
 	// I18NKから参照するためpp
 	enum NoTgtDesc {
 		しかし対象者はすでに意識がない,
@@ -1486,8 +1513,8 @@ public class BattleSystem implements Drawable {
 		for (ActionResult.EventResult e : res.getUserEventResult()) {
 			if (e.tgtDamageHp != 0) {
 				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.tgt.getSprite().getX() - 8,
-						e.tgt.getSprite().getY() - 8,
+						e.tgt.getSprite().getX() - Random.randomAbsInt(9),
+						e.tgt.getSprite().getY() - Random.randomAbsInt(9),
 						Math.abs(e.tgtDamageHp),
 						Color.WHITE);
 				animation.add(ds);
@@ -1502,8 +1529,8 @@ public class BattleSystem implements Drawable {
 			}
 			if (e.tgtDamageSAN != 0) {
 				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.tgt.getSprite().getX() + 8,
-						e.tgt.getSprite().getY() + 8,
+						e.tgt.getSprite().getX() + Random.randomAbsInt(9),
+						e.tgt.getSprite().getY() + Random.randomAbsInt(9),
 						Math.abs(e.tgtDamageSAN),
 						Color.RED);
 				animation.add(ds);
@@ -1513,8 +1540,8 @@ public class BattleSystem implements Drawable {
 			for (ActionResult.EventResult e : res.getResult().get(a)) {
 				if (e.tgtDamageHp != 0) {
 					DamageAnimationSprite ds = new DamageAnimationSprite(
-							e.tgt.getSprite().getX() - 8,
-							e.tgt.getSprite().getY() - 8,
+							e.tgt.getSprite().getX() - Random.randomAbsInt(9),
+							e.tgt.getSprite().getY() - Random.randomAbsInt(9),
 							Math.abs(e.tgtDamageHp),
 							Color.WHITE);
 					animation.add(ds);
@@ -1529,8 +1556,8 @@ public class BattleSystem implements Drawable {
 				}
 				if (e.tgtDamageSAN != 0) {
 					DamageAnimationSprite ds = new DamageAnimationSprite(
-							e.tgt.getSprite().getX() + 8,
-							e.tgt.getSprite().getY() + 8,
+							e.tgt.getSprite().getX() + Random.randomAbsInt(9),
+							e.tgt.getSprite().getY() + Random.randomAbsInt(9),
 							Math.abs(e.tgtDamageSAN),
 							Color.RED);
 					animation.add(ds);
@@ -1849,6 +1876,12 @@ public class BattleSystem implements Drawable {
 				if (!currentCmd.getUser().getSprite().isMoving()
 						|| !battleFieldSystem.getBattleFieldAllArea().hit(currentCmd.getUser().getSprite())) {
 					currentCmd.getUser().getSprite().unsetTarget();
+					//全員逃げた場合終了
+					if (enemies.stream()
+							.allMatch(p -> p.getStatus().hasAnyCondition(ConditionKey.逃走した, ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊))) {
+						setEndStatus(BattleResult.勝利_敵が全員逃げた);
+						return;
+					}
 					setStage(Stage.EXECコール待機);
 				}
 				break;
@@ -1858,6 +1891,14 @@ public class BattleSystem implements Drawable {
 				if (!currentCmd.getUser().getSprite().isMoving()
 						|| !battleFieldSystem.getBattleFieldAllArea().hit(currentCmd.getUser().getSprite())) {
 					currentCmd.getUser().getSprite().unsetTarget();
+
+					//全員逃げた場合終了
+					if (GameSystem.getInstance().getParty().stream()
+							.allMatch(p -> p.getStatus().hasAnyCondition(ConditionKey.逃走した, ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊))) {
+						setEndStatus(BattleResult.敗北_こちらが全員逃げた);
+						return;
+					}
+
 					setStage(Stage.EXECコール待機);
 				}
 				break;
@@ -1974,15 +2015,34 @@ public class BattleSystem implements Drawable {
 		//2行目
 		{
 			for (ActionResult.EventResult e : res.getUserEventResult()) {
-				ActionResultEventMSG msg = eventResultのMSG(e);
-				sb.append(msg.msg1Line).append(" ");
+				if (e.event.getEventType() == ActionEventType.メッセージ表示
+						|| e.event.getEventType() == ActionEventType.前イベ成功時_メッセージ表示
+						|| e.event.getEventType() == ActionEventType.フラグ参照メッセージ表示
+						|| e.event.getEventType() == ActionEventType.前イベ成功時_フラグ参照メッセージ表示) {
+					if (e.summary.is成功()) {
+						sb.append(e.msgI18Nd).append(Text.getLineSep());
+					}
+				} else {
+					ActionResultEventMSG msg = eventResultのMSG(e);
+					sb.append(msg.msg1Line).append(" ");
+				}
 			}
 		}
 		//3行目
 		List<ActionResultEventMSG> msg = new ArrayList<>();
 		for (Actor a : res.getResult().keySet()) {
 			for (ActionResult.EventResult e : res.getResult().get(a)) {
-				msg.add(eventResultのMSG(e));
+				if (e.event.getEventType() == ActionEventType.メッセージ表示
+						|| e.event.getEventType() == ActionEventType.前イベ成功時_メッセージ表示
+						|| e.event.getEventType() == ActionEventType.フラグ参照メッセージ表示
+						|| e.event.getEventType() == ActionEventType.前イベ成功時_フラグ参照メッセージ表示) {
+					if (e.summary.is成功()) {
+						sb.append(e.msgI18Nd).append(Text.getLineSep());
+					}
+				} else {
+					ActionResultEventMSG m = eventResultのMSG(e);
+					sb.append(m.msg1Line).append(" ");
+				}
 			}
 		}
 		//８行以内ならそのまま表示
@@ -2190,6 +2250,48 @@ public class BattleSystem implements Drawable {
 		}
 	}
 
+	void addCmdFirst(BattleCommand cmd) {
+		commandsOfThisTurn.add(0, cmd);
+	}
+
+	void addCmdLast(BattleCommand cmd) {
+		commandsOfThisTurn.add(cmd);
+	}
+
+	void addCmdFirst(MagicSpell ms) {
+		BattleCommand c = new BattleCommand(
+				ms.isPlayer() ? BattleCommand.Mode.PC : BattleCommand.Mode.CPU,
+				ms.getUser());
+		c.setMagicSpell(true);
+		c.setAction(List.of(ms.getAction()));
+		c.setUserOperation(false);
+		addCmdFirst(c);
+	}
+
+	void addCmdLast(MagicSpell ms) {
+		BattleCommand c = new BattleCommand(
+				ms.isPlayer() ? BattleCommand.Mode.PC : BattleCommand.Mode.CPU,
+				ms.getUser());
+		c.setMagicSpell(true);
+		c.setAction(List.of(ms.getAction()));
+		c.setUserOperation(false);
+		addCmdLast(c);
+	}
+
+	void moveToFirst(BattleCommand cmd) {
+		LinkedList<BattleCommand> res = new LinkedList<>();
+		res.add(cmd);
+		res.addAll(commandsOfThisTurn.stream().filter(p -> !p.equals(cmd)).toList());
+		commandsOfThisTurn = res;
+	}
+
+	void moveToLast(BattleCommand cmd) {
+		LinkedList<BattleCommand> res = new LinkedList<>();
+		res.addAll(commandsOfThisTurn.stream().filter(p -> !p.equals(cmd)).toList());
+		res.add(cmd);
+		commandsOfThisTurn = res;
+	}
+
 	//--------------------------------------------------------------------------get/set
 	public int getTurn() {
 		return turn;
@@ -2272,6 +2374,7 @@ public class BattleSystem implements Drawable {
 		this.loseLogicName = loseLogicName;
 	}
 
+	@NotNewInstance
 	public List<Enemy> getEnemies() {
 		return enemies;
 	}
@@ -2343,6 +2446,7 @@ public class BattleSystem implements Drawable {
 	@Deprecated
 	public void setBattleResultValue(BattleResultValues battleResultValue) {
 		this.battleResultValue = battleResultValue;
+		setEndStatus(battleResultValue.getBattleResult());
 	}
 
 	public void initBattleResult() {

@@ -18,13 +18,14 @@ package kinugasa.game.field4;
 
 import kinugasa.graphics.Animation;
 import kinugasa.object.FourDirection;
+import kinugasa.object.Model;
 
 /**
  *
  * @vesion 1.0.0 - 2022/11/10_21:24:35<br>
  * @author Shinacho<br>
  */
-public class FourDirAnimation {
+public class FourDirAnimation extends Model {
 
 	private Animation south, west, east, north;
 
@@ -63,6 +64,16 @@ public class FourDirAnimation {
 				return south;
 		}
 		throw new InternalError(d + " is not found");
+	}
+
+	@Override
+	public FourDirAnimation clone() {
+		FourDirAnimation r = (FourDirAnimation) super.clone();
+		r.east = this.east.clone();
+		r.north = this.north.clone();
+		r.south = this.south.clone();
+		r.west = this.west.clone();
+		return r;
 	}
 
 }

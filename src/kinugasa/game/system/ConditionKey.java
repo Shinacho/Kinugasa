@@ -1509,88 +1509,424 @@ public enum ConditionKey implements ConditionEffect {
 		}
 	},//
 	行動力_上昇_弱(false, "行動力が１２％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.行動力;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.12f);
+			return r;
+		}
 	},//
 	行動力_上昇_中(false, "行動力が２４％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.行動力;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.24f);
+			return r;
+		}
 	},//
 	行動力_上昇_強(false, "行動力が３６％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.行動力;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.36f);
+			return r;
+		}
 	},//
 	行動力_低下_弱(false, "行動力が１２％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.行動力;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.88f);
+			return r;
+		}
 	},//
 	行動力_低下_中(false, "行動力が２４％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.行動力;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.76f);
+			return r;
+		}
 	},//
 	行動力_低下_強(false, "行動力が３６％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.行動力;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.64f);
+			return r;
+		}
 	},//
 	回避率_上昇_弱(false, "回避率が１２％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.12f);
+			return r;
+		}
 	},//
 	回避率_上昇_中(false, "回避率が２４％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.24f);
+			return r;
+		}
 	},//
 	回避率_上昇_強(false, "回避率が３６％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.36f);
+			return r;
+		}
 	},//
 	回避率_低下_弱(false, "回避率が１２％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.88f);
+			return r;
+		}
 	},//
 	回避率_低下_中(false, "回避率が２４％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.76f);
+			return r;
+		}
 	},//
 	回避率_低下_強(false, "回避率が３６％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.64f);
+			return r;
+		}
 	},//
 	ブロック率_上昇_弱(false, "ブロック率が１２％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.12f);
+			return r;
+		}
 	},//
 	ブロック率_上昇_中(false, "ブロック率が２４％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.24f);
+			return r;
+		}
 	},//
 	ブロック率_上昇_強(false, "ブロック率が３６％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.36f);
+			return r;
+		}
 	},//
 	ブロック率_低下_弱(false, "ブロック率が１２％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.88f);
+			return r;
+		}
 	},//
 	ブロック率_低下_中(false, "ブロック率が２４％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.76f);
+			return r;
+		}
 	},//
 	ブロック率_低下_強(false, "ブロック率が３６％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.64f);
+			return r;
+		}
 	},//
 	ブロックダメージ倍率_上昇_弱(false, "ブロックダメージ倍率が１２％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.12f);
+			return r;
+		}
 	},//
 	ブロックダメージ倍率_上昇_中(false, "ブロックダメージ倍率が２４％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.24f);
+			return r;
+		}
 	},//
 	ブロックダメージ倍率_上昇_強(false, "ブロックダメージ倍率が３６％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.36f);
+			return r;
+		}
 	},//
 	ブロックダメージ倍率_低下_弱(false, "ブロックダメージ倍率が１２％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.88f);
+			return r;
+		}
 	},//
 	ブロックダメージ倍率_低下_中(false, "ブロックダメージ倍率が２４％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.76f);
+			return r;
+		}
 	},//
 	ブロックダメージ倍率_低下_強(false, "ブロックダメージ倍率が３６％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.64f);
+			return r;
+		}
 	},//
 	魔法回避率_上昇_弱(false, "魔法回避率が１２％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.12f);
+			return r;
+		}
 	},//
 	魔法回避率_上昇_中(false, "魔法回避率が２４％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.24f);
+			return r;
+		}
 	},//
 	魔法回避率_上昇_強(false, "魔法回避率が３６％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.36f);
+			return r;
+		}
 	},//
 	魔法回避率_低下_弱(false, "魔法回避率が１２％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.88f);
+			return r;
+		}
 	},//
 	魔法回避率_低下_中(false, "魔法回避率が２４％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.76f);
+			return r;
+		}
 	},//
 	魔法回避率_低下_強(false, "魔法回避率が３６％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法回避率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.64f);
+			return r;
+		}
 	},//
 	魔法ブロック率_上昇_弱(false, "魔法ブロック率が１２％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.12f);
+			return r;
+		}
 	},//
 	魔法ブロック率_上昇_中(false, "魔法ブロック率が２４％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.24f);
+			return r;
+		}
 	},//
 	魔法ブロック率_上昇_強(false, "魔法ブロック率が３６％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.36f);
+			return r;
+		}
 	},//
 	魔法ブロック率_低下_弱(false, "魔法ブロック率が１２％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.88f);
+			return r;
+		}
 	},//
 	魔法ブロック率_低下_中(false, "魔法ブロック率が２４％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.76f);
+			return r;
+		}
 	},//
 	魔法ブロック率_低下_強(false, "魔法ブロック率が３６％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロック率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.64f);
+			return r;
+		}
 	},//
 	魔法ブロックダメージ倍率_上昇_弱(false, "魔法ブロックダメージ倍率が１２％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.12f);
+			return r;
+		}
 	},//
 	魔法ブロックダメージ倍率_上昇_中(false, "魔法ブロックダメージ倍率が２４％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.24f);
+			return r;
+		}
 	},//
 	魔法ブロックダメージ倍率_上昇_強(false, "魔法ブロックダメージ倍率が３６％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.36f);
+			return r;
+		}
 	},//
 	魔法ブロックダメージ倍率_低下_弱(false, "魔法ブロックダメージ倍率が１２％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.88f);
+			return r;
+		}
 	},//
 	魔法ブロックダメージ倍率_低下_中(false, "魔法ブロックダメージ倍率が２４％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.76f);
+			return r;
+		}
 	},//
 	魔法ブロックダメージ倍率_低下_強(false, "魔法ブロックダメージ倍率が３６％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法ブロックダメージ倍率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.64f);
+			return r;
+		}
 	},//
 	リジェネ_弱(false, "ターン開始時に体力を最大値の７％回復する", "", "", "") {
 	},//
@@ -1605,40 +1941,185 @@ public enum ConditionKey implements ConditionEffect {
 	スリップ_強(false, "ターン開始時に体力の最大値の２１％ダメージを受ける", "", "", "") {
 	},//
 	命中率_上昇_弱(false, "命中率が１２％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.12f);
+			return r;
+		}
 	},//
 	命中率_上昇_中(false, "命中率が２４％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.24f);
+			return r;
+		}
 	},//
 	命中率_上昇_強(false, "命中率が３６％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.36f);
+			return r;
+		}
 	},//
 	命中率_低下_弱(false, "命中率が１２％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.88f);
+			return r;
+		}
 	},//
 	命中率_低下_中(false, "命中率が２４％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.76f);
+			return r;
+		}
 	},//
 	命中率_低下_強(false, "命中率が３６％下がる", "", "", "") {
-	},//	
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.64f);
+			return r;
+		}
+	},//
 	魔法命中率_上昇_弱(false, "魔法命中率が１２％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.12f);
+			return r;
+		}
 	},//
 	魔法命中率_上昇_中(false, "魔法命中率が２４％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.24f);
+			return r;
+		}
 	},//
 	魔法命中率_上昇_強(false, "魔法命中率が３６％上がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(1.36f);
+			return r;
+		}
 	},//
 	魔法命中率_低下_弱(false, "魔法命中率が１２％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.88f);
+			return r;
+		}
 	},//
 	魔法命中率_低下_中(false, "魔法命中率が２４％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.76f);
+			return r;
+		}
 	},//
 	魔法命中率_低下_強(false, "魔法命中率が３６％下がる", "", "", "") {
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = new StatusValueSet();
+			StatusKey sk = StatusKey.魔法命中率;
+			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
+			sv.mul(0.64f);
+			return r;
+		}
 	},//
 	与属性_斬撃_上昇_弱(false, "与属性_斬撃が７％上がる", "", "", "") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.斬撃;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
 	},//
 	与属性_斬撃_上昇_中(false, "与属性_斬撃が１４％上がる", "", "", "") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.斬撃;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.14f);
+			return r;
+		}
 	},//
 	与属性_斬撃_上昇_強(false, "与属性_斬撃が２１％上がる", "", "", "") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.斬撃;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.21f);
+			return r;
+		}
 	},//
 	与属性_斬撃_低下_弱(false, "与属性_斬撃が７％下がる", "", "", "") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.斬撃;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
 	},//
 	与属性_斬撃_低下_中(false, "与属性_斬撃が１４％下がる", "", "", "") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.斬撃;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.14f);
+			return r;
+		}
 	},//
 	与属性_斬撃_低下_強(false, "与属性_斬撃が２１％下がる", "", "", "") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.斬撃;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.21f);
+			return r;
+		}
 	},//
 	与属性_刺突_上昇_弱(false, "与属性_刺突が７％上がる", "", "", "") {
 	},//
@@ -1815,7 +2296,7 @@ public enum ConditionKey implements ConditionEffect {
 	被属性_斬撃_上昇_強(false, "被属性_斬撃が２１％上がる", "", "", "") {
 	},//
 	被属性_斬撃_低下_弱(false, "被属性_斬撃が７％下がる", "", "", "") {
-	},//
+	},//ｘ
 	被属性_斬撃_低下_中(false, "被属性_斬撃が１４％下がる", "", "", "") {
 	},//
 	被属性_斬撃_低下_強(false, "被属性_斬撃が２１％下がる", "", "", "") {

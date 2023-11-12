@@ -27,32 +27,13 @@ import kinugasa.game.GameLog;
 import kinugasa.game.I18N;
 import kinugasa.game.NoLoopCall;
 import kinugasa.game.Nullable;
-import kinugasa.game.field4.FieldMapStorage;
 import static kinugasa.game.system.ActionEvent.CalcMode.ADD;
 import static kinugasa.game.system.ActionEvent.CalcMode.MUL;
 import static kinugasa.game.system.ActionEvent.CalcMode.TO;
 import static kinugasa.game.system.ActionEvent.CalcMode.TO_MAX;
 import static kinugasa.game.system.ActionEvent.CalcMode.TO_ZERO;
-import static kinugasa.game.system.ActionEventType.ATTR_IN;
-import static kinugasa.game.system.ActionEventType.ATTR_OUT;
-import static kinugasa.game.system.ActionEventType.CND_REGIST;
-import static kinugasa.game.system.ActionEventType.DC_USERの持っているアイテムの重さ;
-import static kinugasa.game.system.ActionEventType.DC_ランダム属性のランダムダメージ;
-import static kinugasa.game.system.ActionEventType.DC_倒した敵の数;
-import static kinugasa.game.system.ActionEventType.DC_減っている体力;
-import static kinugasa.game.system.ActionEventType.DC_減っている正気度;
-import static kinugasa.game.system.ActionEventType.DC_減っている魔力;
-import static kinugasa.game.system.ActionEventType.WEBサイト起動;
-import static kinugasa.game.system.ActionEventType.アイテムロスト;
-import static kinugasa.game.system.ActionEventType.アイテム追加;
-import static kinugasa.game.system.ActionEventType.ステータス回復;
-import static kinugasa.game.system.ActionEventType.ステータス攻撃;
-import static kinugasa.game.system.ActionEventType.状態異常付与;
-import static kinugasa.game.system.ActionEventType.状態異常解除;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
-import static kinugasa.game.system.ActionEventType.ユーザの武器をドロップしてドロップアイテムに追加;
-import kinugasa.util.StringUtil;
 
 /**
  * イベントの数が攻撃回数です。
@@ -191,275 +172,8 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントTermが重複しています) + " : " + this + " : " + e);
 			}
 		}
-		switch (e.getEventType()) {
-			case ATTR_IN: {
-				if (e.getTgtAttrIn() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ATTRINイベントですがATTRINが設定されていません) + " : " + this + " : " + e);
-				}
-				if (e.getValue() == 0) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ATTRイベントですがVALUEが０です) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case ATTR_OUT: {
-				if (e.getTgtAttrOut() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ATTROUTイベントですがATTROUTが設定されていません) + " : " + this + " : " + e);
-				}
-				if (e.getValue() == 0) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ATTRイベントですがVALUEが０です) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case アイテムロスト:
-			case アイテム追加: {
-				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDが設定されていません) + " : " + this + " : " + e);
-				}
-				if (!ActionStorage.getInstance().contains(e.getTgtID())) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDのアイテムが存在しません) + " : " + this + " : " + e);
-				}
-				if (ActionStorage.getInstance().get(e.getTgtID()).getType() != ActionType.アイテム) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですが対象IDがアイテムではありません) + " : " + this + " : " + e);
-				}
-
-				break;
-			}
-			case DC_ランダム属性のランダムダメージ: {
-				if (e.getTgtStatusKey() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがステータスキーが入ってません) + " : " + this + " : " + e);
-				}
-				if (e.getCalcMode() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがCALC_MODEが入ってません) + " : " + this + " : " + e);
-				}
-			}
-			case DC_CPUのコア数:
-			case DC_ターン数が大きい:
-			case DC_ターン数が小さい:
-			case DC_USERの持っているアイテムの重さ:
-			case DC_倒した敵の数:
-			case DC_減っている体力:
-			case DC_減っている正気度:
-			case DC_減っている魔力:
-			case DC_ファイル選択からのハッシュ:
-			case DC_ファイル選択からのサイズ: {
-				if (e.getTgtStatusKey() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがステータスキーが入ってません) + " : " + this + " : " + e);
-				}
-				if (e.getCalcMode() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがCALC_MODEが入ってません) + " : " + this + " : " + e);
-				}
-				if (e.getAtkAttr() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがATK_ATTRが入ってません) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case ステータス回復:
-			case ステータス攻撃: {
-				if (e.getValue() == 0) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがVALUEが０です) + " : " + this + " : " + e);
-				}
-				if (e.getTgtStatusKey() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがステータスキーが入ってません) + " : " + this + " : " + e);
-				}
-				if (e.getCalcMode() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがCALC_MODEが入ってません) + " : " + this + " : " + e);
-				}
-				if (e.getAtkAttr() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ステータスイベントですがATK_ATTRが入ってません) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case 状態異常付与:
-			case 状態異常解除: {
-				if (e.getTgtConditionKey() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.状態異常イベントですが状態異常キーが入ってません) + " : " + this + " : " + e);
-				}
-				if (e.getCndTime() == 0 && e.getEventType() == 状態異常付与) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.状態異常付与イベントですが持続時間が入ってません) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case CND_REGIST: {
-				if (e.getTgtCndRegist() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.CND_REGISTイベントですがCND_KEYが入ってません) + " : " + this + " : " + e);
-				}
-				if (e.getValue() == 0) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.CND_REGISTイベントですがVALUEが０です) + " : " + this + " : " + e);
-				}
-				if (!e.getTgtCndRegist().isRegistOn()) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.CND_REGISTイベントですがキーが耐性付き状態異常ではありません) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case ユーザの武器をドロップしてドロップアイテムに追加: {
-				if (getWeaponType() == null) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.武装解除イベントですがアクションが武器のアクションではありません) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case ドロップアイテム追加: {
-				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ドロップアイテム追加イベントですがアイテムがTGTIDに入ってません) + " : " + this + " : " + e);
-				}
-				try {
-					ActionStorage.getInstance().itemOf(e.getTgtID());
-
-				} catch (Exception ex) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.ドロップアイテム追加イベントですがTGTIDがアイテムではありません) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case 召喚: {
-				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.召喚イベントですがステータスファイルパスが入っていません) + " : " + this + " : " + e);
-				}
-				try {
-					new Actor(e.getTgtID()).getVisibleName();
-				} catch (Exception ex) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.召喚イベントのステータスファイルが誤っています) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case TGTIDのマップIDのランダムな出口ノードに転送: {
-				if (e.getTgtID() == null || e.getTgtID().isEmpty() || e.getTgtID().split(",").length != 2) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.マップ転送イベントですがマップIDが入っていません) + " : " + this + " : " + e);
-				}
-				//マップチェック
-				String mapID = e.getTgtID().split(",")[0];
-				try {
-					FieldMapStorage.getInstance().get(mapID);
-				} catch (Exception ex) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.マップ転送イベントですがマップIDが誤ってます) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case TGTIDのCSVにあるアイテムのいずれかをUSERに追加: {
-				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDが設定されていません) + " : " + this + " : " + e);
-				}
-				for (var v : StringUtil.safeSplit(e.getTgtID(), ",")) {
-					try {
-						Item i_ = ActionStorage.getInstance().itemOf(v);
-					} catch (Exception ex) {
-						throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.アイテムイベントですがアイテムIDのアイテムが存在しません) + " : " + this + " : " + e);
-					}
-				}
-				break;
-			}
-			case TGTの行動をVALUE回数この直後に追加: {
-				if (e.getValue() == 0) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.行動をVALUE回数追加イベントですがVALUEが０です) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case TGTの行動をVALUE回数ターン最後に追加: {
-				if (e.getValue() == 0) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.行動をVALUE回数追加イベントですがVALUEが０です) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case TGTの魔法詠唱を中断: {
-				break;
-			}
-			case TGTの魔法詠唱完了をVALUEターン分ずらす: {
-				if (e.getValue() == 0) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.VALUEターン移動追加イベントですがVALUEが０です) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case TGTを一番近い敵対者の至近距離に転送: {
-				break;
-			}
-			case TGTを術者の近くに転送: {
-				break;
-			}
-			case TGTを逃げられる位置に転送: {
-				break;
-			}
-			case USERとTGTの位置を交換: {
-				break;
-			}
-			case USERによる指定IDの魔法の詠唱完了をこのターンの最後にVALUE回数追加: {
-				break;
-			}
-			case USERのクローンをパーティーまたはENEMYに追加: {
-				break;
-			}
-			case USERの指定スロットの装備品の価値をVALUE倍にする: {
-				break;
-			}
-			case USERの指定スロットの装備品の攻撃回数をVALUE上げる: {
-				break;
-			}
-			case USERをTGTの至近距離に転送: {
-				break;
-			}
-			case このターンのTGTの行動をこの次にする: {
-				break;
-			}
-			case このターンのTGTの行動を最後にする: {
-				break;
-			}
-			case このターンのTGTの行動を破棄: {
-				break;
-			}
-			case このターンの行動順を反転させる: {
-				break;
-			}
-			case カレントセーブデータロスト: {
-				break;
-			}
-			case カレントマップのランダムな出口ノードに転送: {
-				break;
-			}
-			case カレント以外のセーブデータを１つロスト: {
-				break;
-			}
-			case ゲームクラッシュ: {
-				break;
-			}
-			case セーブデータ全ロスト: {
-				break;
-			}
-			case ノックバック＿中: {
-				break;
-			}
-			case ノックバック＿弱: {
-				break;
-			}
-			case ノックバック＿強: {
-				break;
-			}
-			case ビームエフェクト: {
-				break;
-			}
-			case マップIDと座標を入力させて移動する: {
-				break;
-			}
-			case 中心位置からVALUEの場所に転送: {
-				break;
-			}
-			case 詠唱完了イベントをVALUEターン内で反転: {
-				break;
-			}
-			case 逃走で戦闘終了: {
-				break;
-			}
-			case WEBサイト起動: {
-				if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.WEBサイト起動イベントですがTGTIDが入っていません) + " : " + this + " : " + e);
-				}
-				break;
-			}
-			case 独自効果: {
-				break;
-			}
-			default:
-				throw new AssertionError("undefined type : " + this + " : " + e);
-		}
+		e.getEventType().pack(e, this);
 	}
-
-	;
 
 	@Nullable
 	@NoLoopCall("its heavy")
@@ -749,7 +463,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		}
 		List<ActionResult.EventResult> userEventResult = new ArrayList<>();
 		for (ActionEvent e : userEvents) {
-			userEventResult.add(e.exec(tgt.getUser(), this, tgt.getUser()));
+			userEventResult.add(e.exec(tgt.getUser(), this, tgt.getUser(), userEventResult));
 		}
 		ActionResult r = new ActionResult(this, tgt, userEventResult);
 		if (r.getUserDamage().isDead) {
@@ -759,11 +473,18 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		}
 
 		for (Actor a : tgt.getTgt()) {
+			List<ActionResult.EventResult> eRes = new ArrayList<>();
 			for (ActionEvent e : mainEvents) {
-				for (int i = 0; i < a.getStatus().getEffectedAtkCount(); i++) {
-					r.add(a, e.exec(tgt.getUser(), this, a));
+				//eが攻撃の場合はATKカウント回実施、そうでなければ1回実施
+				if (e.getEventType().isATKCOUNT回数実行するイベント()) {
+					for (int i = 0; i < tgt.getUser().getStatus().getEffectedAtkCount(); i++) {
+						eRes.add(e.exec(tgt.getUser(), this, a, eRes));
+					}
+				} else {
+					eRes.add(e.exec(tgt.getUser(), this, a, eRes));
 				}
 			}
+			r.add(a, eRes);
 		}
 		if (userAnimation != null) {
 			AnimationSprite s = userAnimation.clone();

@@ -34,13 +34,14 @@ import kinugasa.util.ManualTimeCounter;
 import kinugasa.util.Random;
 import kinugasa.game.NewInstance;
 import kinugasa.game.NotNewInstance;
+import kinugasa.object.Model;
 
 /**
  *
  * @vesion 1.0.0 - 2023/10/14_11:23:10<br>
  * @author Shinacho<br>
  */
-public final class Status implements Nameable, Cloneable {
+public final class Status extends Model implements Nameable {
 
 	//ID
 	private String id;
@@ -70,6 +71,19 @@ public final class Status implements Nameable, Cloneable {
 	private ConditionFlags conditionFlags = new ConditionFlags();
 	//キャラの特性
 	private CharaAbility ability;
+
+	@Override
+	public Status clone() {
+		Status r = (Status) super.clone();
+		r.status = this.status.clone();
+		r.attrIn = this.attrIn.clone();
+		r.attrOut = this.attrOut.clone();
+		r.conditionFlags = this.conditionFlags.clone();
+		r.conditionRegist = this.conditionRegist.clone();
+		r.currentCondition = this.currentCondition.clone();
+		return r;
+	}
+	
 
 	public Status(String id, Race r) {
 		this.id = id;
@@ -313,6 +327,14 @@ public final class Status implements Nameable, Cloneable {
 				actions.add(a);
 			}
 		}
+		//実施できないアクションを除外
+		List<Action> remove = new ArrayList<>();
+		for (Action a : actions) {
+			if (!a.canDo(this)) {
+				remove.add(a);
+			}
+		}
+		actions.removeAll(remove);
 	}
 
 	//アイテムの効果も載せる。その時に左手が漁手持ちだったら右手の効果を2倍にする

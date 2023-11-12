@@ -42,7 +42,7 @@ import kinugasa.util.TimeCounter;
  * @vesion 1.0.0 - 2022/11/10_20:35:58<br>
  * @author Shinacho<br>
  */
-public class PCSprite extends AnimationSprite implements XMLFileSupport {
+public class PCSprite extends AnimationSprite implements XMLFileSupport, Cloneable {
 
 	private D2Idx initialIdx;
 	private FourDirection currentDir;
@@ -347,6 +347,17 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport {
 		XMLElement root = f.load().getFirst();
 		parse(root.getElement("sprite").get(0));
 		f.dispose();
+	}
+
+	@Override
+	public PCSprite clone() {
+		PCSprite r = (PCSprite) super.clone();
+		r.initialIdx = this.initialIdx.clone();
+		r.fAnimation = this.fAnimation.clone();
+		r.tgt = (Point2D.Float) this.tgt.clone();
+		r.currentIdx = this.currentIdx.clone();
+		r.targetIdx = this.targetIdx.clone();
+		return r;
 	}
 
 }

@@ -89,7 +89,7 @@ public class TextFile implements Input<TextFile>, Output , Nameable, Iterable<St
 	
 	
 	//--------------------------------------------------------------------------
-	private List<String> data;
+	private List<String> data = new ArrayList<>();
 
 	@Override
 	public TextFile load() throws FileIOException {

@@ -49,6 +49,10 @@ public class BattleCommand {
 
 	private boolean userIsEnemy = false;
 
+	public BattleCommand(Actor user) {
+		this(user.isPlayer() ? Mode.PC : Mode.CPU, user);
+	}
+
 	public BattleCommand(Mode mode, Actor user) {
 		this.mode = mode;
 		this.user = user;

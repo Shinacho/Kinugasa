@@ -344,12 +344,43 @@ public class ActionStorage extends DBStorage<Action> {
 
 	{
 		//行動アクションのデータをメモリに搭載してしまう
-		super.add(new Action(BattleConfig.ActionID.移動, I18N.get(GameSystemI18NKeys.移動), ActionType.行動));
-		super.add(new Action(BattleConfig.ActionID.確定, I18N.get(GameSystemI18NKeys.確定), ActionType.行動));
-		super.add(new Action(BattleConfig.ActionID.防御, I18N.get(GameSystemI18NKeys.防御), ActionType.行動));
-		super.add(new Action(BattleConfig.ActionID.回避, I18N.get(GameSystemI18NKeys.回避), ActionType.行動));
-		super.add(new Action(BattleConfig.ActionID.状態, I18N.get(GameSystemI18NKeys.状態), ActionType.行動));
-		super.add(new Action(BattleConfig.ActionID.逃走, I18N.get(GameSystemI18NKeys.逃走), ActionType.行動));
+		super.add(new Action(BattleConfig.ActionID.移動, I18N.get(GameSystemI18NKeys.移動), ActionType.行動) {
+			@Override
+			public boolean canDo(Status a) {
+				return true;
+			}
+		});
+		super.add(new Action(BattleConfig.ActionID.確定, I18N.get(GameSystemI18NKeys.確定), ActionType.行動) {
+			@Override
+			public boolean canDo(Status a) {
+				return true;
+			}
+		});
+		super.add(new Action(BattleConfig.ActionID.防御, I18N.get(GameSystemI18NKeys.防御), ActionType.行動) {
+			@Override
+			public boolean canDo(Status a) {
+				return true;
+			}
+		});
+		super.add(new Action(BattleConfig.ActionID.回避, I18N.get(GameSystemI18NKeys.回避), ActionType.行動) {
+			@Override
+			public boolean canDo(Status a) {
+				return true;
+			}
+		});
+		super.add(new Action(BattleConfig.ActionID.状態, I18N.get(GameSystemI18NKeys.状態), ActionType.行動) {
+			@Override
+			public boolean canDo(Status a) {
+				return true;
+			}
+		});
+		super.add(new Action(BattleConfig.ActionID.逃走, I18N.get(GameSystemI18NKeys.逃走), ActionType.行動) {
+			@Override
+			public boolean canDo(Status a) {
+				return true;
+			}
+		});
+		//item
 		super.add(両手持ち);
 		super.add(両手持ち_弓);
 	}
@@ -1161,7 +1192,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private List<ActionEvent> getMainEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,"
-				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,ITEMADDNOLIMIT,VAL,CALCMODE,SOUNDID"
+				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID"
 				+ " from action_mainEvent me left join actionEvent e on me.eventId = e.id"
 				+ " where me.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -1222,7 +1253,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private List<ActionEvent> getUserEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,P,"
-				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,ITEMADDNOLIMIT,VAL,CALCMODE,SOUNDID"
+				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID"
 				+ " from action_userEvent ue left join actionEvent e on ue.eventId = e.id"
 				+ " where ue.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);

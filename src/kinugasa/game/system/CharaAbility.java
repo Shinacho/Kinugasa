@@ -182,7 +182,7 @@ public enum CharaAbility implements AbilityEffect {
 			return r;
 		}
 	},
-	奇天烈なお助け外人("弓か弩を装備中命中率が２１％上がる") {
+	動物大好き外人("弓か弩を装備中命中率が２１％上がる") {
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			boolean is弓装備 = false;

@@ -16,6 +16,8 @@
  */
 package kinugasa.game.field4;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import kinugasa.game.system.NPCSprite;
 import kinugasa.game.system.PCSprite;
 import kinugasa.object.FourDirection;
@@ -40,13 +42,16 @@ import kinugasa.game.system.GameSystemException;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
+import kinugasa.game.ui.TextLabelSprite;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.game.ui.TextStorageStorage;
 import kinugasa.graphics.ARGBColor;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.ImageUtil;
+import kinugasa.graphics.RenderingQuality;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.Drawable;
+import kinugasa.object.ImageSprite;
 import kinugasa.object.KVector;
 import kinugasa.resource.Disposable;
 import kinugasa.resource.KImage;
@@ -119,6 +124,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private FieldEventStorage fieldEventStorage;//nullable
 	private NodeStorage nodeStorage = new NodeStorage();
 	private TextStorage textStorage;//nullable
+	private List<MiniMapLabel> miniMapLabels;
 	//------------------------------------------------
 	private FieldMapCamera camera;
 	//------------------------------------------------
@@ -285,6 +291,16 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		mg = 1;
 		if (root.hasAttribute("mg")) {
 			mg = root.getAttributes().get("mg").getFloatValue();
+		}
+		//miniMapLabels
+		{
+			miniMapLabels = new ArrayList<>();
+			for (XMLElement e : root.getElement("miniMapLabel")) {
+				int x = e.getAttributes().get("x").getIntValue();
+				int y = e.getAttributes().get("y").getIntValue();
+				String val = e.getAttributes().get("value").getValue();
+				miniMapLabels.add(new MiniMapLabel(new D2Idx(x, y), val));
+			}
 		}
 
 		// バックグラウンドレイヤー
@@ -555,14 +571,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		return bgm;
 	}
 
-	private static final Comparator<PCSprite> Y_COMPARATOR = new Comparator<>() {
-		@Override
-		public int compare(PCSprite o1, PCSprite o2) {
-			return (int) o1.getY() - (int) o2.getY();
-		}
-
-	};
-
 	@Override
 	public void draw(GraphicsContext g) {
 		if (!visible) {
@@ -574,9 +582,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		backlLayeres.forEach(e -> e.draw(g));
 
 		if (playerCharacter != null) {
-			List<PCSprite> list = npcStorage.asList().stream().map(c -> c).collect(Collectors.toList());
-			list.addAll(playerCharacter);
-			Collections.sort(list, Y_COMPARATOR);
+			List<PCSprite> list = new ArrayList<>(playerCharacter);
+			Collections.reverse(list);
 			list.forEach(v -> v.draw(g));
 		} else {
 			npcStorage.forEach(e -> e.draw(g));
@@ -812,6 +819,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 		}
 		this.currentIdx = idx.clone();
+		for (PCSprite s : playerCharacter) {
+			s.setCurrentIdx(currentIdx);
+		}
 
 	}
 
@@ -822,9 +832,10 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 * @param w 幅ピクセル
 	 * @param h 高さピクセル
 	 * @param pcLocation PCの位置に点を打つか。
+	 * @param label ミニマップラベルの描画。
 	 * @return 指定の拡大率で描画された画像。
 	 */
-	public KImage createMiniMap(int w, int h, boolean pcLocation) {
+	public KImage createMiniMap(int w, int h, boolean pcLocation, boolean label) {
 		//ベースレイヤーが全部同じタイルの場合は背景と判断して1を取る
 		FieldMapLayerSprite tgt
 				= getBaseLayer().allIs(getBaseLayer().getChip(0, 0)) && backlLayeres.size() >= 2
@@ -873,8 +884,26 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		//スケール計算
 		float ws = w / image.getWidth();
 		float hs = h / image.getHeight();
+		KImage result = new KImage(ImageUtil.resize(image, ws, hs));
 
-		return new KImage(ImageUtil.resize(image, ws, hs));
+		//ミニマップラベルの処理
+		if (label) {
+			Graphics2D g2 = ImageUtil.createGraphics2D(result.get(), RenderingQuality.SPEED);
+			for (MiniMapLabel l : miniMapLabels) {
+				TextLabelSprite s = l.getSprite();
+				g2.setFont(s.getLabelModel().getFontConfig().getFont());
+				g2.setColor(Color.BLACK);
+				float x = l.getX() * ws;
+				float y = l.getY() * hs + 8;
+				s.setLocationByCenter(new Point2D.Float(x, y));
+				g2.drawString(s.getText(), (int) s.getX() + 2, (int) s.getY() + 2);
+				g2.setColor(Color.WHITE);
+				g2.drawString(s.getText(), (int) s.getX(), (int) s.getY());
+			}
+			g2.dispose();
+		}
+
+		return result;
 
 	}
 

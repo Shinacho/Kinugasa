@@ -413,28 +413,248 @@ public enum ItemEnchant implements ItemEqipEffect {
 			return r;
 		}
 	},
-	鳴神("雷属性攻撃の与ダメージが７％上がる"),
-	炎帝("火属性攻撃の与ダメージが７％上がる"),
-	雪霙("氷属性攻撃の与ダメージが７％上がる"),
-	清水("水属性攻撃の与ダメージが７％上がる"),
-	地動("土属性攻撃の与ダメージが７％上がる"),
-	風車("風属性攻撃の与ダメージが７％上がる"),
-	常闇("闇属性攻撃の与ダメージが７％上がる"),
-	光司("光属性攻撃の与ダメージが７％上がる"),
-	未知("神秘属性攻撃の与ダメージが７％上がる"),
-	侵害("精神属性攻撃の与ダメージが７％上がる"),
-	想起("錬金属性攻撃の与ダメージが７％上がる"),
-	遠雷("雷属性攻撃の被ダメージが７％下がる"),
-	耐熱("火属性攻撃の被ダメージが７％下がる"),
-	解氷("氷属性攻撃の被ダメージが７％下がる"),
-	撥水("水属性攻撃の被ダメージが７％下がる"),
-	安定("土属性攻撃の被ダメージが７％下がる"),
-	向風("風属性攻撃の被ダメージが７％下がる"),
-	天照("闇属性攻撃の被ダメージが７％下がる"),
-	暗黒("光属性攻撃の被ダメージが７％下がる"),
-	鈍感("神秘属性攻撃の被ダメージが７％下がる"),
-	夢想("精神属性攻撃の被ダメージが７％下がる"),
-	耐性("錬金属性攻撃の被ダメージが７％下がる"),
+	鳴神("雷属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.雷;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	炎帝("火属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.炎;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	雪霙("氷属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.氷;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	清水("水属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.水;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	地動("土属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.土;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	風車("風属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.風;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	常闇("闇属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.闇;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	光司("光属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.光;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	未知("神秘属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.神秘;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	侵害("精神属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.精神;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	想起("錬金属性攻撃の与ダメージが７％上がる") {
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.錬金;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(0.07f);
+			return r;
+		}
+
+	},
+	遠雷("雷属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.雷;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	耐熱("火属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.炎;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	炎熱("氷属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.氷;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	撥水("水属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.水;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	安定("土属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.土;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	防風("風属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.風;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	天照("闇属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.闇;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	暗闇("光属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.光;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	捕縛("神秘属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.神秘;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	鈍感("精神属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.精神;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
+	耐性("錬金属性攻撃の与ダメージが７％下がる") {
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			AttributeKey k = AttributeKey.錬金;
+			AttributeValue av = r.getOrCreate(k, () -> new AttributeValue(k, 0));
+			av.add(-0.07f);
+			return r;
+		}
+
+	},
 	延伸("攻撃範囲が１８上がる"),
 	絶望("攻撃時７％の確率で敵を解脱させる") {
 		@Override
@@ -661,7 +881,6 @@ public enum ItemEnchant implements ItemEqipEffect {
 	安堵("混乱の状態異常耐性が７％上がる"),
 	解毒("毒の状態異常耐性が７％上がる"),
 	修練("獲得経験値が７％増加する") {
-
 	},
 	反撃("７％の確率で物理攻撃を反射する"),
 	回天("７％の確率で魔法攻撃を反射する"),

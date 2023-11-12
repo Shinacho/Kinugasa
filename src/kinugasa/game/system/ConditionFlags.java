@@ -18,6 +18,7 @@ package kinugasa.game.system;
 
 import kinugasa.util.Random;
 import kinugasa.game.NewInstance;
+import kinugasa.object.Model;
 
 /**
  * 状態異常フラグは状態異常によって発生する混乱や行動停止といったフラグを管理するクラスです。
@@ -25,9 +26,9 @@ import kinugasa.game.NewInstance;
  * @vesion 1.0.0 - 2023/10/16_19:25:24<br>
  * @author Shinacho<br>
  */
-public class ConditionFlags {
+public class ConditionFlags extends Model {
 
-	public static class ConditionPercent {
+	public static class ConditionPercent extends Model {
 
 		public float 停止;
 		public float 混乱;
@@ -45,7 +46,20 @@ public class ConditionFlags {
 			return Random.percent(混乱);
 		}
 
+		@Override
+		public ConditionPercent clone() {
+			return (ConditionPercent) super.clone();
+		}
+
 	}
+
+	@Override
+	public ConditionFlags clone() {
+		ConditionFlags r = (ConditionFlags) super.clone();
+		r.p = this.p.clone();
+		return r;
+	}
+
 	private ConditionPercent p = new ConditionPercent(0f, 0f);
 	private float 物理反射確率 = 0f;
 	private float 物理吸収確率 = 0f;

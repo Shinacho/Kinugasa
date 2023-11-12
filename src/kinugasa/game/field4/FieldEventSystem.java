@@ -19,7 +19,9 @@ package kinugasa.game.field4;
 import kinugasa.game.system.NPCSprite;
 import kinugasa.game.system.GameSystemI18NKeys;
 import java.awt.Color;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,6 +48,8 @@ import kinugasa.game.ui.TextStorage;
 import kinugasa.object.Drawable;
 import kinugasa.object.FadeEffect;
 import kinugasa.resource.Storage;
+import kinugasa.resource.text.TextFile;
+import kinugasa.resource.text.XMLFile;
 import kinugasa.util.FrameTimeCounter;
 
 /**
@@ -168,7 +172,7 @@ public class FieldEventSystem implements Drawable {
 		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
 		List<Text> options = new ArrayList<>();
 		for (Actor pc : GameSystem.getInstance().getParty()) {
-			options.add(new Text(pc.getVisibleName()+ " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().remainingSize() + "")));
+			options.add(new Text(pc.getVisibleName() + " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().remainingSize() + "")));
 		}
 		options.add(new Text(I18N.get(GameSystemI18NKeys.諦める)));
 
@@ -421,6 +425,25 @@ public class FieldEventSystem implements Drawable {
 			int h = GameOption.getInstance().getWindowSize().height;
 			g.fillRect(0, 0, w, h);
 		}
+	}
+
+	public static void checkAllScripts(File dir) throws ScriptFormatException {
+		GameLog.print("----------FIELD_EVENT_CHECK start --------------------");
+		check(dir);
+		GameLog.print("----------FIELD_EVENT_CHECK end --------------------");
+	}
+
+	private static void check(File f) {
+		if (f.isDirectory()) {
+			Arrays.stream(f.listFiles()).forEach(p -> check(p));
+		}
+		if (!f.getName().toLowerCase().endsWith(".xml")) {
+			GameLog.print("> " + f.getName() + " is not event file, skiped");
+			return;
+		}
+		//FILE
+		new FieldEventParser("CHECK_EVENT", new D2Idx(0, 0), new XMLFile(f)).parse();
+		GameLog.print("> " + f.getName() + " OK");
 	}
 
 }

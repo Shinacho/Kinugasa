@@ -40,6 +40,10 @@ public class PersonalBag<T extends Nameable> implements Cloneable, Iterable<T> {
 		this.max = max;
 	}
 
+	public void clear() {
+		items.clear();
+	}
+
 	public boolean has(T i) {
 		return contains(i);
 	}

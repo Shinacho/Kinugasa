@@ -308,28 +308,28 @@ public class Item extends Action implements Cloneable {
 		//装備効果上昇
 		float 上昇効果 = switch (currentUpgradeNum) {
 			case 0 ->
-				10;
+				1.07f;
 			case 98 ->
 				2;
 			default ->
-				10 + currentUpgradeNum;
+				1.025f;
 		};
 		for (StatusValue sk : this.status) {
 			if (sk.getKey().isPercent()) {
-				float v = sk.getValue() * (上昇効果 / 100);
+				float v = sk.getValue() * 上昇効果;
 				sk.add(v);
 			} else {
 				switch (sk.getKey()) {
 					case 体力:
 					case 正気度:
 					case 魔力: {
-						float v = sk.getValue() / 上昇効果;
+						float v = sk.getMax() * 上昇効果;
 						sk.add(v);
 						sk.addMax(v);
 						break;
 					}
 					default: {
-						float v = sk.getValue() / 上昇効果;
+						float v = sk.getValue() * 上昇効果;
 						sk.add(v);
 						break;
 					}

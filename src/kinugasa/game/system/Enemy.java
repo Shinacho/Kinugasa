@@ -37,6 +37,16 @@ public final class Enemy extends Actor {
 	private EnemyAI ai;
 	private Sound deadSound;
 
+	public static Enemy cloneOf(Actor a) {
+		Enemy e = new Enemy(a);
+		e.dropItem = new ArrayList<>();
+		return e;
+	}
+
+	private Enemy(Actor a) {
+		super(a.getId() + "_CLONE", a);
+	}
+
 	Enemy(String filePath) {
 		super(filePath);
 		getSprite().setMe(this);
