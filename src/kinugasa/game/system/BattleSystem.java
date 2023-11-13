@@ -1596,14 +1596,18 @@ public class BattleSystem implements Drawable {
 		}
 
 		if (result) {
-			//何度もかかるが1個だけなので影響はないと思われる
-			this.effect = new FlashEffect(
-					GraphicsUtil.transparent(Color.RED, 128),
-					new FrameTimeCounter(20),
-					new FrameTimeCounter(4),
-					0, 0,
-					(int) GameOption.getInstance().getWindowSize().getWidth(),
-					(int) GameOption.getInstance().getWindowSize().getHeight());
+			if (effect == null || effect.isEnded()) {
+				this.effect = new FlashEffect(
+						GraphicsUtil.transparent(Color.RED, 128),
+						new FrameTimeCounter(20),
+						new FrameTimeCounter(4),
+						0, 0,
+						(int) GameOption.getInstance().getWindowSize().getWidth(),
+						(int) GameOption.getInstance().getWindowSize().getHeight());
+				if (BattleConfig.Sounds.正気度減少演出 != null) {
+					BattleConfig.Sounds.正気度減少演出.load().stopAndPlay();
+				}
+			}
 			if (!res.tgt.isSummoned()) {
 				if (res.tgt.isPlayer()) {
 					//死んだのはPC
