@@ -38,7 +38,7 @@ public enum CharaAbility implements AbilityEffect {
 		public AttributeValueSet effectAttrOut(Status s, AttributeValueSet v) {
 			AttributeValueSet r = v.clone();
 			r.get(AttributeKey.風).mul(1.14f);
-			r.get(AttributeKey.時空).mul(10f);
+			r.get(AttributeKey.時空).mul(100f);
 			return r;
 		}
 	},
@@ -73,7 +73,7 @@ public enum CharaAbility implements AbilityEffect {
 		}
 
 	},
-	盾の乙女の渾身の一撃("盾を装備中すべての被属性を７％下げクリティカルダメージを１４％上げる") {
+	盾の乙女("盾を装備中すべての被属性を７％下げクリティカルダメージを１４％上げる") {
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			StatusValueSet r = v.clone();
@@ -182,7 +182,7 @@ public enum CharaAbility implements AbilityEffect {
 			return r;
 		}
 	},
-	動物大好き外人("弓か弩を装備中命中率が２１％上がる") {
+	動物大好き変態外人("弓か弩を装備中命中率が２１％上がる") {
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			boolean is弓装備 = false;
@@ -204,6 +204,15 @@ public enum CharaAbility implements AbilityEffect {
 					|| (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.魔法剣)) {
 				r.get(StatusKey.ブロック率).mul(1.21f);
 			}
+			return r;
+		}
+	},
+	不思議ちゃん司祭("精神と神秘の与属性が１４％上がる") {
+		@Override
+		public AttributeValueSet effectAttrOut(Status s, AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			r.get(AttributeKey.精神).mul(1.14f);
+			r.get(AttributeKey.神秘).mul(1.14f);
 			return r;
 		}
 	};

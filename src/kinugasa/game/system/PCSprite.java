@@ -268,6 +268,10 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport, Cloneab
 
 	protected boolean animationUpdate = true;
 
+	public void setAnimationUpdate(boolean animationUpdate) {
+		this.animationUpdate = animationUpdate;
+	}
+
 	@Override
 	public void move() {
 		super.move();

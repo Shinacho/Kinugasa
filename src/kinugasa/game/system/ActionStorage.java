@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import kinugasa.game.GameLog;
 import kinugasa.game.I18N;
 import kinugasa.game.NewInstance;
 import kinugasa.game.NotNull;
@@ -92,6 +93,14 @@ public class ActionStorage extends DBStorage<Action> {
 
 	public static int getBookBagAddSize(String id) {
 		return BOOK_BAG_ITEM.get(id);
+	}
+
+	public void checkAll() throws GameSystemException {
+		GameLog.print("----------ACTION_CHECK start --------------------");
+		for (Action a : selectAll()) {
+			GameLog.print(a.getId() + "[" + a.getVisibleName() + "] OK");
+		}
+		GameLog.print("----------ACTION_CHECK end --------------------");
 	}
 
 	@Override

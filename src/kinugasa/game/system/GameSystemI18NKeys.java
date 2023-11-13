@@ -433,7 +433,9 @@ public class GameSystemI18NKeys {
 	public static final String 魔力の余裕の術式 = "魔力の余裕の術式";
 	public static final String このダメージは自身の正気度が最大値に近いほど高くなる = "このダメージは自身の正気度が最大値に近いほど高くなる";
 	public static final String 精神的余裕の術式 = "精神的余裕の術式";
-
+	public static final String Xの確率で最大Xの正気度ダメージを与える = "Xの確率で最大Xの正気度ダメージを与える";
+	
+	
 	public static class CountKey {
 
 		public static final String BGM再生回数 = "BGM再生回数";

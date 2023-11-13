@@ -438,7 +438,6 @@ public class FieldEventSystem implements Drawable {
 			Arrays.stream(f.listFiles()).forEach(p -> check(p));
 		}
 		if (!f.getName().toLowerCase().endsWith(".xml")) {
-			GameLog.print("> " + f.getName() + " is not event file, skiped");
 			return;
 		}
 		//FILE

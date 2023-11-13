@@ -46,6 +46,7 @@ public class BattleConfig {
 		public static Sound 魔法詠唱開始;
 		public static Sound 死亡演出;
 		public static Sound 手番開始;
+		public static Sound 解脱;
 	}
 	//攻撃防御有効度
 	public static float ATK_DEF_PERCENT = 0.85f;

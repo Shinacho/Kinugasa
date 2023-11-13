@@ -5780,10 +5780,6 @@ public enum ActionEventType {
 
 		@Override
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
-
-			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
-			}
 			if (e.getTgtConditionKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTCNDKEYが必要です) + " : " + this + " : " + e);
 			}
@@ -5839,10 +5835,6 @@ public enum ActionEventType {
 
 		@Override
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
-
-			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
-			}
 			if (e.getTgtConditionKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTCNDKEYが必要です) + " : " + this + " : " + e);
 			}
@@ -6292,6 +6284,202 @@ public enum ActionEventType {
 			ActionResult.EventResult r = new ActionResult.EventResult(tgt, ActionResultSummary.成功, e);
 			r.msgI18Nd = val[2];
 			return r;
+		}
+	},
+	指定IDのPCがいれば即死させる(false, false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死させる, (int) (event.getP() * 100) + "%"));
+			sb.append(Text.getLineSep());
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.即死の術式));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
+			}
+			if (e.getTgtConditionKey() == null) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTCNDKEYが必要です) + " : " + this + " : " + e);
+			}
+			if (e.getTgtConditionKey() != ConditionKey.解脱 && e.getTgtConditionKey() != ConditionKey.気絶 && e.getTgtConditionKey() != ConditionKey.損壊) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります) + " : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public ActionResult.EventResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventResult> resOfThisTgt, ActionEvent e) {
+			Actor ac = GameSystem.getInstance().getPCbyID(e.getTgtID());
+			switch (e.getTgtConditionKey()) {
+				case 解脱: {
+					ac.getStatus().getBaseStatus().get(StatusKey.正気度).setValue(0);
+					ac.getStatus().addWhen0Condition();
+					break;
+				}
+				case 損壊: {
+					ac.getStatus().getBaseStatus().get(StatusKey.体力).setValue(0);
+					ac.getStatus().addWhen0Condition();
+					break;
+				}
+				case 気絶: {
+					ac.getStatus().getBaseStatus().get(StatusKey.魔力).setValue(0);
+					ac.getStatus().addWhen0Condition();
+					break;
+				}
+				default:
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります) + " : " + this + " : " + e);
+			}
+			return getResult(true, ac, e);
+		}
+
+	},
+	前イベ成功時_指定IDのPCがいれば即死させる(true, false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死させる, (int) (event.getP() * 100) + "%"));
+			sb.append(Text.getLineSep());
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.即死の術式));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
+			}
+			if (e.getTgtConditionKey() == null) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTCNDKEYが必要です) + " : " + this + " : " + e);
+			}
+			if (e.getTgtConditionKey() != ConditionKey.解脱 && e.getTgtConditionKey() != ConditionKey.気絶 && e.getTgtConditionKey() != ConditionKey.損壊) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります) + " : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public ActionResult.EventResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventResult> resOfThisTgt, ActionEvent e) {
+			Actor ac = GameSystem.getInstance().getPCbyID(e.getTgtID());
+			switch (e.getTgtConditionKey()) {
+				case 解脱: {
+					ac.getStatus().getBaseStatus().get(StatusKey.正気度).setValue(0);
+					ac.getStatus().addWhen0Condition();
+					break;
+				}
+				case 損壊: {
+					ac.getStatus().getBaseStatus().get(StatusKey.体力).setValue(0);
+					ac.getStatus().addWhen0Condition();
+					break;
+				}
+				case 気絶: {
+					ac.getStatus().getBaseStatus().get(StatusKey.魔力).setValue(0);
+					ac.getStatus().addWhen0Condition();
+					break;
+				}
+				default:
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります) + " : " + this + " : " + e);
+			}
+			return getResult(true, ac, e);
+		}
+
+	},
+	指定IDのPCがいれば正気度ダメージ(false, false) {
+
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で最大Xの正気度ダメージを与える, (int) (event.getP() * 100) + "%", ((int) event.getValue()) + ""));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.正気度ダメージの術式));
+			sb.append(":").append((int) event.getValue());
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
+			}
+			if ((int) e.getValue() == 0) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(max damage) : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public ActionResult.EventResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventResult> resOfThisTgt, ActionEvent e) {
+			Actor ac = GameSystem.getInstance().getPCbyID(e.getTgtID());
+			int val = Random.randomAbsInt((int) e.getValue()) + 1;
+			ac.getStatus().getBaseStatus().get(StatusKey.正気度).add(val);
+			return new ActionResult.EventResult(tgt, ActionResultSummary.成功, e);
+		}
+	},
+	前イベ成功時_指定IDのPCがいれば正気度ダメージ(true, false) {
+
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で最大Xの正気度ダメージを与える, (int) (event.getP() * 100) + "%", ((int) event.getValue()) + ""));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.正気度ダメージの術式));
+			sb.append(":").append((int) event.getValue());
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
+			}
+			if ((int) e.getValue() == 0) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(max damage) : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public ActionResult.EventResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventResult> resOfThisTgt, ActionEvent e) {
+			Actor ac = GameSystem.getInstance().getPCbyID(e.getTgtID());
+			int val = Random.randomAbsInt((int) e.getValue()) + 1;
+			ac.getStatus().getBaseStatus().get(StatusKey.正気度).add(val);
+			return new ActionResult.EventResult(tgt, ActionResultSummary.成功, e);
 		}
 	};
 

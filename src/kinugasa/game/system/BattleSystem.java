@@ -1569,6 +1569,9 @@ public class BattleSystem implements Drawable {
 		for (ActionResult.EventResult r : res.allResults()) {
 			party += (GameSystem.getInstance().getParty().contains(r.tgt) && !r.tgt.isSummoned() && r.tgtIsDead) ? 1 : 0;
 			enemy += (!GameSystem.getInstance().getParty().contains(r.tgt) && !r.tgt.isSummoned() && r.tgtIsDead) ? 1 : 0;
+			if(r.tgt.getStatus().hasCondition(ConditionKey.解脱)){
+				BattleConfig.Sounds.解脱.load().stopAndPlay();
+			}
 			if (r.tgtIsDead) {
 				if (BattleConfig.deadCharaImage != null) {
 					r.tgt.getSprite().setImage(BattleConfig.deadCharaImage);
@@ -1666,6 +1669,7 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		if (party != 0 || enemy != 0) {
+			BattleConfig.Sounds.死亡演出.load().stopAndPlay();
 			return Stage.エフェクト再生中_終了待ち;
 		}
 
@@ -1781,6 +1785,7 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		if (party != 0 || enemy != 0) {
+			BattleConfig.Sounds.死亡演出.load().stopAndPlay();
 			return Stage.エフェクト再生中_終了待ち;
 		}
 

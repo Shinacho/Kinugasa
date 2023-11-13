@@ -585,9 +585,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			List<PCSprite> list = new ArrayList<>(playerCharacter);
 			Collections.reverse(list);
 			list.forEach(v -> v.draw(g));
-		} else {
-			npcStorage.forEach(e -> e.draw(g));
 		}
+		npcStorage.forEach(e -> e.draw(g));
 
 		frontlLayeres.forEach(e -> e.draw(g));
 		if (debugMode) {
@@ -603,21 +602,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (tooltipModel != null) {
 			tooltipModel.drawTooltip(this, g);
 		}
-//		if (debugMode) {
-//			float centerX = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 2;
-//			float centerY = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 2;
-//			Point2D.Float p1 = new Point2D.Float(centerX - chipW, centerY - chipH);
-//			Point2D.Float p2 = new Point2D.Float(centerX + chipW, centerY + chipH);
-//			Point2D.Float p3 = new Point2D.Float(centerX - chipW, centerY + chipH);
-//			Point2D.Float p4 = new Point2D.Float(centerX + chipW, centerY - chipH);
-//			Graphics2D g2 = g.create();
-//			g2.setColor(Color.RED);
-//			g2.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
-//			g2.drawLine((int) p3.x, (int) p3.y, (int) p4.x, (int) p4.y);
-//			g2.dispose();
-////			System.out.print("IDX : " + currentIdx);
-////			kinugasa.game.GameLog.print("  FM_LOCATION : " + getBaseLayer().getLocation());
-//		}
+
 	}
 
 	@Override
@@ -819,9 +804,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 		}
 		this.currentIdx = idx.clone();
-		for (PCSprite s : playerCharacter) {
-			s.setCurrentIdx(currentIdx);
-		}
+
 
 	}
 

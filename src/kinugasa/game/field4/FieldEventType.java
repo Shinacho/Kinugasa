@@ -516,6 +516,7 @@ public enum FieldEventType {
 			}
 			pc.getSprite().setCurrentIdx(GameSystem.getInstance().getParty().get(0).getSprite().getCurrentIdx().clone());
 			pc.getSprite().setLocation((Point2D.Float) GameSystem.getInstance().getParty().get(0).getSprite().getLocation().clone());
+			pc.getSprite().setAnimationUpdate(false);
 			Text.getReplaceMap().put("!" + pc.getId(), pc.getVisibleName());
 			return UserOperationRequire.CONTINUE;
 		}

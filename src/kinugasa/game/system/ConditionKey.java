@@ -2595,7 +2595,120 @@ public enum ConditionKey implements ConditionEffect {
 	},//
 	経験値増大_強(false, "取得経験値が３０％上がる", "", "", "") {
 	},//
-	;
+	ほろ酔い(false, "ちょっと酔っているのであらゆるステータスが５％下がる", "", "", "") {
+
+		private static final float MUL = 0.95f;
+
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = v.clone();
+			for (StatusValue sv : r) {
+				sv.mulMax(MUL);
+				sv.mul(MUL);
+			}
+			return r;
+		}
+
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			for (AttributeValue sv : r) {
+				float val = sv.getValue();
+				val *= MUL;
+				sv.add(-(val - sv.getValue()));
+			}
+
+			return r;
+		}
+
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			for (AttributeValue sv : r) {
+				float val = sv.getValue();
+				val *= MUL;
+				sv.add(val - sv.getValue());
+			}
+
+			return r;
+		}
+	},
+	泥酔(false, "ひどく酔っているのであらゆるステータスが４０％下がる", "", "", "") {
+
+		private static final float MUL = 0.6f;
+
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = v.clone();
+			for (StatusValue sv : r) {
+				sv.mulMax(MUL);
+				sv.mul(MUL);
+			}
+			return r;
+		}
+
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			for (AttributeValue sv : r) {
+				float val = sv.getValue();
+				val *= MUL;
+				sv.add(-(val - sv.getValue()));
+			}
+
+			return r;
+		}
+
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			for (AttributeValue sv : r) {
+				float val = sv.getValue();
+				val *= MUL;
+				sv.add(val - sv.getValue());
+			}
+
+			return r;
+		}
+	},
+	二日酔い(false, "ひどい二日酔いであらゆるステータスが２０％下がる", "", "", "") {
+
+		private static final float MUL = 0.8f;
+
+		@Override
+		public StatusValueSet getStatusValue(StatusValueSet v) {
+			StatusValueSet r = v.clone();
+			for (StatusValue sv : r) {
+				sv.mulMax(MUL);
+				sv.mul(MUL);
+			}
+			return r;
+		}
+
+		@Override
+		public AttributeValueSet getAttrIn(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			for (AttributeValue sv : r) {
+				float val = sv.getValue();
+				val *= MUL;
+				sv.add(-(val - sv.getValue()));
+			}
+
+			return r;
+		}
+
+		@Override
+		public AttributeValueSet getAttrOut(AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			for (AttributeValue sv : r) {
+				float val = sv.getValue();
+				val *= MUL;
+				sv.add(val - sv.getValue());
+			}
+
+			return r;
+		}
+	};
 	private boolean registOn;
 	private String descI18NKey;
 	private String startMsg, execMsg, endMsg;
