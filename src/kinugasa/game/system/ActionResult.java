@@ -25,7 +25,7 @@ import kinugasa.game.NotNull;
 import kinugasa.object.AnimationSprite;
 
 /**
- *
+ * アクションに対する結果を定義するクラスです
  * @vesion 1.0.0 - 2023/10/14_22:12:36<br>
  * @author Shinacho<br>
  */
