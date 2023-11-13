@@ -28,7 +28,6 @@ import kinugasa.game.GameLog;
 import kinugasa.game.I18N;
 import kinugasa.game.NewInstance;
 import kinugasa.game.NotNull;
-import kinugasa.game.Nullable;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.AnimationSprite;
@@ -749,6 +748,7 @@ public class ActionStorage extends DBStorage<Action> {
 			v.add(val(e.getValue()));
 			v.add(val(e.getCalcMode()));
 			v.add(val(e.getSuccessSound().getName()));
+			v.add(val(e.get起動条件()));
 			if (res.containsKey("ACTIONEVENT")) {
 				res.get("ACTIONEVENT").add(String.join(",", v));
 			} else {
@@ -1201,7 +1201,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private List<ActionEvent> getMainEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,"
-				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID"
+				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION"
 				+ " from action_mainEvent me left join actionEvent e on me.eventId = e.id"
 				+ " where me.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -1213,6 +1213,7 @@ public class ActionStorage extends DBStorage<Action> {
 			//光線イベントの判定
 			if (BeamEffectEvents.getInstance().has(l.get(1).get())) {
 				ActionEvent e = BeamEffectEvents.getInstance().of(l.get(1).of(BeamEffectEvents.Key.class));
+				e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
 				res.add(e);
 				continue;
 			}
@@ -1236,6 +1237,7 @@ public class ActionStorage extends DBStorage<Action> {
 			if (soundID != null) {
 				e.setSuccessSound(SoundStorage.getInstance().get(soundID));
 			}
+			e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
 			//TERM
 			sql = "select "
 					+ "id,typ,tgtName,Val"
@@ -1262,7 +1264,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private List<ActionEvent> getUserEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,P,"
-				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID"
+				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION"
 				+ " from action_userEvent ue left join actionEvent e on ue.eventId = e.id"
 				+ " where ue.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -1287,6 +1289,7 @@ public class ActionStorage extends DBStorage<Action> {
 			e.setValue(l.get(14).asFloat());
 			e.setCalcMode(l.get(15).orNull(ActionEvent.CalcMode.class));
 			String soundID = l.get(16).get();
+			e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
 			if (soundID != null) {
 				e.setSuccessSound(SoundStorage.getInstance().get(soundID));
 			}

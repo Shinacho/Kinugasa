@@ -441,6 +441,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	}
 
 	public ActionResult exec(ActionTarget tgt) {
+		//使えないアイテムの場合例外とするので、使う側で制御のこと
 		if (!hasMainEvent() && !hasUserEvent()) {
 			ActionResult r = new ActionResult(this, tgt, ActionResultSummary.失敗＿このアクションにはイベントがない);
 			GameLog.print(r);
@@ -461,30 +462,29 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 			GameLog.print(r);
 			return r;
 		}
-		List<ActionResult.EventResult> userEventResult = new ArrayList<>();
+
+		ActionResult r = new ActionResult(this, tgt);
 		for (ActionEvent e : userEvents) {
-			userEventResult.add(e.exec(tgt.getUser(), this, tgt.getUser(), userEventResult));
+			e.exec(tgt.getUser(), this, tgt.getUser(), r, true);
 		}
-		ActionResult r = new ActionResult(this, tgt, userEventResult);
-		if (r.getUserDamage().isDead) {
+		ActionResult.DamageDesc userDamage = r.getUserDamage();
+		if (userDamage.is損壊 || userDamage.is気絶 || userDamage.is解脱) {
 			r = new ActionResult(this, tgt, ActionResultSummary.失敗＿術者死亡);
 			GameLog.print(r);
 			return r;
 		}
 
-		for (Actor a : tgt.getTgt()) {
-			List<ActionResult.EventResult> eRes = new ArrayList<>();
-			for (ActionEvent e : mainEvents) {
+		for (ActionEvent e : mainEvents) {
+			for (Actor a : tgt.getTgt()) {
 				//eが攻撃の場合はATKカウント回実施、そうでなければ1回実施
 				if (e.getEventType().isATKCOUNT回数実行するイベント()) {
 					for (int i = 0; i < tgt.getUser().getStatus().getEffectedAtkCount(); i++) {
-						eRes.add(e.exec(tgt.getUser(), this, a, eRes));
+						e.exec(tgt.getUser(), this, a, r, false);
 					}
 				} else {
-					eRes.add(e.exec(tgt.getUser(), this, a, eRes));
+					e.exec(tgt.getUser(), this, a, r, false);
 				}
 			}
-			r.add(a, eRes);
 		}
 		if (userAnimation != null) {
 			AnimationSprite s = userAnimation.clone();

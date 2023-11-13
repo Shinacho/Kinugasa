@@ -44,9 +44,11 @@ public class BattleConfig {
 		public static Sound 魔法反射;
 		public static Sound 魔法吸収;
 		public static Sound 魔法詠唱開始;
-		public static Sound 死亡演出;
+		public static Sound 正気度減少演出;
 		public static Sound 手番開始;
 		public static Sound 解脱;
+		public static Sound 気絶;
+		public static Sound 損壊;
 	}
 	//攻撃防御有効度
 	public static float ATK_DEF_PERCENT = 0.85f;
@@ -60,8 +62,8 @@ public class BattleConfig {
 	//素早さ乱数
 	public static float SPEED_SPREAD = 0.1f;
 
-	public static IntSupplier 死亡演出＿敵の場合 = () -> Random.d3(1);
-	public static IntSupplier 死亡演出＿味方の場合 = () -> Random.d6(2);
+	public static IntSupplier 正気度減少イベントの数値＿味方の場合 = () -> Random.d3(1);
+	public static IntSupplier 正気度減少イベントの数値＿敵の場合 = () -> Random.d12(2);
 	public static ImageSprite castingAnimationMaster;
 	public static KImage deadCharaImage;
 	

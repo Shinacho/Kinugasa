@@ -16,39 +16,15 @@
  */
 package kinugasa.game.system;
 
-import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import java.util.Objects;
 import kinugasa.game.I18N;
-import kinugasa.game.PlayerConstants;
-import kinugasa.game.field4.FieldMap;
-import kinugasa.game.field4.FieldMapStorage;
-import kinugasa.game.field4.Node;
-import static kinugasa.game.system.ActionType.攻撃;
-import static kinugasa.game.system.ActionType.魔法;
-import kinugasa.game.ui.Dialog;
-import kinugasa.game.ui.DialogIcon;
-import kinugasa.game.ui.DialogOption;
 import kinugasa.object.AnimationSprite;
-import kinugasa.object.FourDirection;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
 import kinugasa.util.Random;
-import kinugasa.util.StringUtil;
 
 /**
  *
@@ -56,6 +32,16 @@ import kinugasa.util.StringUtil;
  * @author Shinacho<br>
  */
 public class ActionEvent implements Nameable, Comparable<ActionEvent> {
+
+	public enum 起動条件 {
+		条件なしで必ず起動,
+		前段がないか前段イベント全成功時のみ起動,
+		前段がないか前段イベント全失敗時のみ起動,
+		前段がないか直前のイベント成功時のみ起動,
+		前段がないか直前のイベント失敗時のみ起動,
+		前段がないか最初のイベントが成功時のみ起動,
+		前段がないか最初のイベントが失敗時のみ起動,
+	}
 
 	public static class Term implements Nameable {
 
@@ -171,30 +157,197 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	private CalcMode calcMode;
 	private Sound successSound;
 	private AnimationSprite tgtAnimation, otherAnimation;
+	private 起動条件 j;
 
 	public ActionEvent(String id) {
 		this.id = id;
 	}
 
-	//Actorごとに呼び出される。このアクションイベントを実行してイベントリザルトを戻す
-	public ActionResult.EventResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventResult> resOfThisTgt) {
-		if (!Random.percent(p)) {
-			return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
-		}
-		tgt.getStatus().saveBeforeDamageCalc();
-
-		//タイプが前のイベントの成功を参照かつ前のイベントが失敗している場合はこのイベントを失敗させる
-		//このイベントが初回の場合は動く。
-		if (!resOfThisTgt.isEmpty()) {
-			if (type.is前のイベントが成功したときだけ実施するイベント() && resOfThisTgt.stream().map(p -> p.summary).anyMatch(p -> p.is失敗())) {
-				return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
+	protected final boolean 起動条件判定＿起動OK(Actor tgt, ActionResult ar, boolean isUserEvent) {
+		//起動条件判定
+		switch (j) {
+			case 条件なしで必ず起動: {
+				return true;
 			}
+			case 前段がないか前段イベント全成功時のみ起動: {
+				if (isUserEvent) {
+					if (ar.getUserEventResultAsList().isEmpty()
+							|| ar.getUserEventResultAsList().stream().allMatch(p -> p.summary.is成功())) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
+						return false;
+					}
+				} else {
+					if (ar.getMainEventResult().isEmpty()
+							|| ar.getMainEventResultAsList().stream().allMatch(p -> p.summary.is成功())) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						return false;
+					}
+				}
+			}
+			case 前段がないか前段イベント全失敗時のみ起動: {
+				if (isUserEvent) {
+					if (ar.getUserEventResultAsList().isEmpty()
+							|| ar.getUserEventResultAsList().stream().allMatch(p -> p.summary.is失敗())) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
+						return false;
+
+					}
+				} else {
+					if (ar.getMainEventResult().isEmpty()
+							|| ar.getMainEventResultAsList().stream().allMatch(p -> p.summary.is失敗())) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						return false;
+
+					}
+				}
+			}
+			case 前段がないか直前のイベント成功時のみ起動: {
+				if (isUserEvent) {
+					if (ar.getUserEventResultAsList().isEmpty()
+							|| ar.getLastUserEventResult().summary.is成功()) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
+						return false;
+
+					}
+				} else {
+					if (ar.getMainEventResult().isEmpty()
+							|| ar.getLastMainEventResult().summary.is成功()) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						return false;
+
+					}
+				}
+			}
+			case 前段がないか直前のイベント失敗時のみ起動: {
+				if (isUserEvent) {
+					if (ar.getUserEventResultAsList().isEmpty()
+							|| ar.getLastUserEventResult().summary.is失敗()) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
+						return false;
+
+					}
+				} else {
+					if (ar.getMainEventResult().isEmpty()
+							|| ar.getLastMainEventResult().summary.is失敗()) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						return false;
+
+					}
+				}
+			}
+			case 前段がないか最初のイベントが成功時のみ起動: {
+				if (isUserEvent) {
+					if (ar.getUserEventResultAsList().isEmpty()
+							|| ar.getFirstUserEventResult().summary.is成功()) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
+						return false;
+
+					}
+				} else {
+					if (ar.getMainEventResult().isEmpty()
+							|| ar.getFirstMainEventResult().summary.is成功()) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						return false;
+
+					}
+				}
+			}
+			case 前段がないか最初のイベントが失敗時のみ起動: {
+				if (isUserEvent) {
+					if (ar.getUserEventResultAsList().isEmpty()
+							|| ar.getFirstUserEventResult().summary.is失敗()) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
+						return false;
+
+					}
+				} else {
+					if (ar.getMainEventResult().isEmpty()
+							|| ar.getFirstMainEventResult().summary.is失敗()) {
+						//起動可能
+						return true;
+					} else {
+						//起動不可
+						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						return false;
+
+					}
+				}
+			}
+			default:
+				throw new AssertionError("undefined trigger option");
 		}
-		
-		return type.exec(user, a, tgt, resOfThisTgt, this);
+	}
+
+	//Actorごとに呼び出される。このアクションイベントを実行してイベントリザルトを戻す
+	public void exec(Actor user, Action a, Actor tgt, final ActionResult ar, boolean isUserEvent) {
+		if (!起動条件判定＿起動OK(tgt, ar, isUserEvent)) {
+			return;
+		}
+		if (!Random.percent(p)) {
+			if (isUserEvent) {
+				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿不発, tgt));
+			} else {
+				ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+			}
+			return;
+		}
+		tgt.getStatus().saveBeforeDamageCalc();//2回実行しても別に問題はない
+
+		type.exec(user, a, tgt, this, ar);
 
 	}
 
+	public void set起動条件(起動条件 j) {
+		this.j = j;
+	}
+
+	public 起動条件 get起動条件() {
+		return j;
+	}
 
 	//このイベントの情報を返す
 	public String getDescI18Nd() {
@@ -385,6 +538,28 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	@Override
 	public int compareTo(ActionEvent o) {
 		return sort - o.sort;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 83 * hash + Objects.hashCode(this.id);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ActionEvent other = (ActionEvent) obj;
+		return Objects.equals(this.id, other.id);
 	}
 
 }
