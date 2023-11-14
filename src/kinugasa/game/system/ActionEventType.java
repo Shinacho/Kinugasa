@@ -26,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.JComboBox;
@@ -173,37 +172,35 @@ public enum ActionEventType {
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult ar, boolean isUserEvent) {
 			StatusKey tgtStatusKey = e.getTgtStatusKey();
-			StatusValueSet tgtStatus = tgt.getStatus().getEffectedStatus();
 			tgt.getStatus().saveBeforeDamageCalc();
 
 			float value = e.getValue();
-			float prev = tgtStatus.get(tgtStatusKey).getValue();
 			switch (e.getCalcMode()) {
 				case ADD: {
 					if (e.isNoLimit()) {
 						tgt.getStatus().getBaseStatus().get(tgtStatusKey).addMax(value);
 					}
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).add(value);
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case MUL: {
 					if (e.isNoLimit()) {
 						tgt.getStatus().getBaseStatus().get(tgtStatusKey).mulMax(value);
 					}
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).mul(value);
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case TO: {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).setValue(value);
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case TO_MAX: {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).toMax();
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case TO_ZERO: {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).toZero();
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case DC: {
 					if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -251,11 +248,35 @@ public enum ActionEventType {
 							);
 
 					//r評価
-					return convert(r, e);
+					StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
+					String msg = "";
+					if (v.getValue() < 0) {
+						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+								+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
+								+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+					} else {
+						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+								+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
+								+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+					}
+					addResult(ar, r.summary, user, tgt, e, msg, isUserEvent);
+					return;
 				}
 				default:
 					throw new AssertionError("undefined calc mode");
 			}//switch
+			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
+			String msg = "";
+			if (v.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+			}
+			addResult(ar, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -263,11 +284,37 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを回復する, (int) (event.getP() * 100) + "%", event.getTgtStatusKey().getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを回復する,
+					(int) (event.getP() * 100) + "%",
+					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
+			if (event.getValue() != 0) {
+				sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append((int) event.getValue());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.計算方法));
 			switch (event.getCalcMode()) {
 				case DC: {
-					sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
+					break;
+				}
+				case ADD: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
+					break;
+				}
+				case MUL: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
+					break;
+				}
+				case TO: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
+					break;
+				}
+				case TO_MAX: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
+					break;
+				}
+				case TO_ZERO: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
 					break;
 				}
 				default: {
@@ -289,10 +336,35 @@ public enum ActionEventType {
 			sb.append(GameSystemI18NKeys.確率);
 			sb.append((int) (event.getP() * 100)).append("%");
 			sb.append(")");
-			if (event.getCalcMode() == ActionEvent.CalcMode.DC) {
-				sb.append("[");
-				sb.append(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる);
-				sb.append("]");
+			sb.append(I18N.get(GameSystemI18NKeys.計算方法));
+			switch (event.getCalcMode()) {
+				case DC: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
+					break;
+				}
+				case ADD: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
+					break;
+				}
+				case MUL: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
+					break;
+				}
+				case TO: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
+					break;
+				}
+				case TO_MAX: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
+					break;
+				}
+				case TO_ZERO: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
+					break;
+				}
+				default: {
+					break;
+				}
 			}
 			return sb.toString();
 		}
@@ -314,39 +386,37 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult ar, boolean isUserEvent) {
 			StatusKey tgtStatusKey = e.getTgtStatusKey();
-			StatusValueSet tgtStatus = tgt.getStatus().getEffectedStatus();
 			tgt.getStatus().saveBeforeDamageCalc();
 
 			float value = e.getValue();
-			float prev = tgtStatus.get(tgtStatusKey).getValue();
 			switch (e.getCalcMode()) {
 				case ADD: {
 					if (e.isNoLimit()) {
 						tgt.getStatus().getBaseStatus().get(tgtStatusKey).addMax(value);
 					}
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).add(value);
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case MUL: {
 					if (e.isNoLimit()) {
 						tgt.getStatus().getBaseStatus().get(tgtStatusKey).mulMax(value);
 					}
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).mul(value);
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case TO: {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).setValue(value);
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case TO_MAX: {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).toMax();
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case TO_ZERO: {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).toZero();
-					return getResult(prev != tgt.getStatus().getBaseStatus().get(tgtStatusKey).getValue(), tgt, e);
+					break;
 				}
 				case DC: {
 					if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -378,7 +448,7 @@ public enum ActionEventType {
 						}
 					}
 					if (dcs == null) {
-						dcs = actionType == DamageCalcSystem.ActionType.物理回復 ? StatusKey.器用さ : StatusKey.信仰;
+						dcs = actionType == DamageCalcSystem.ActionType.物理回復 ? StatusKey.筋力 : StatusKey.精神力;
 					}
 					//ダメージ計算実行
 					DamageCalcSystem.Result r
@@ -394,12 +464,37 @@ public enum ActionEventType {
 							);
 
 					//r評価
-					return convert(r, e);
+					StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
+					String msg = "";
+					if (v.getValue() < 0) {
+						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+								+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
+								+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+					} else {
+						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+								+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
+								+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+					}
+					addResult(ar, r.summary, user, tgt, e, msg, isUserEvent);
+					return;
 				}
 				default:
 					throw new AssertionError("undefined calc mode");
 			}//switch
+			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
+			String msg = "";
+			if (v.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+			}
+			addResult(ar, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	ATTR_IN(false) {
 		@Override
@@ -435,9 +530,12 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).add(e.getValue());
-			return getResult(true, tgt, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+					+ I18N.get(GameSystemI18NKeys.被属性Xが, e.getTgtAttrIn().getVisibleName())
+					+ I18N.get(GameSystemI18NKeys.Xになった, (tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).getValue() * 100) + "%");
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -475,9 +573,12 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			tgt.getStatus().getAttrOut().get(e.getTgtAttrOut()).add(e.getValue());
-			return getResult(true, tgt, e);
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			tgt.getStatus().getAttrIn().get(e.getTgtAttrOut()).add(e.getValue());
+			String msg = I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+					+ I18N.get(GameSystemI18NKeys.与属性Xが, e.getTgtAttrIn().getVisibleName())
+					+ I18N.get(GameSystemI18NKeys.Xになった, (tgt.getStatus().getAttrOut().get(e.getTgtAttrOut()).getValue() * 100) + "%");
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	CND_REGIST(false) {
@@ -514,11 +615,15 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float v = tgt.getStatus().getConditionRegist().get(e.getTgtCndRegist());
 			tgt.getStatus().getConditionRegist().put(e.getTgtCndRegist(), v + e.getValue());
-			return getResult(true, tgt, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+					+ I18N.get(GameSystemI18NKeys.状態異常耐性Xが, e.getTgtCndRegist().getVisibleName())
+					+ I18N.get(GameSystemI18NKeys.Xになった, (tgt.getStatus().getConditionRegist().get(e.getTgtCndRegist()) * 100) + "%");
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	状態異常付与(false) {
 		@Override
@@ -557,11 +662,9 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			String msg = tgt.getStatus().addCondition(e.getTgtConditionKey(), e.getCndTime());
-			ActionResult.EventActorResult r = getResult(msg != null, tgt, e);
-			r.msgI18Nd = msg;
-			return r;
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -602,12 +705,11 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			String msg = tgt.getStatus().removeCondition(e.getTgtConditionKey());
-			ActionResult.EventActorResult r = getResult(msg != null, tgt, e);
-			r.msgI18Nd = msg;
-			return r;
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	アイテム追加(false) {
 		@Override
@@ -4125,86 +4227,96 @@ public enum ActionEventType {
 
 	public abstract void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent);
 
-	//戻り値をarに入れる。
-	private static ActionResult.UserEventResult getUserEventResult(ActionResultSummary s, Actor user, ActionEvent e){
-		
+	private static void addResult(ActionResult res, ActionResultSummary s, Actor user, Actor tgt, ActionEvent e, String msg, boolean isUserEvent) {
+		if (isUserEvent) {
+			res.addUserEventResult(getUserEventResult(s, user, e, msg));
+		} else {
+			res.setPerEvent(getPerEvent(s, user, tgt, e, msg));
+		}
 	}
-	
-	//戻り値をarに入れる。
-	private static ActionResult.PerEvent getPerEvent(ActionResultSummary s, Actor tgt, ActionEvent e){
-		
-	}
-	
-	
-	private static ActionResult.EventActorResult getResult(boolean is成功, Actor tgt, ActionEvent e) {
-		if (is成功) {
-			tgt.getStatus().addWhen0Condition();
-			ActionResult.EventActorResult er = new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+
+	//これの戻り値をarに入れる。派生イベント結果は独自にいれよ。
+	private static ActionResult.UserEventResult getUserEventResult(ActionResultSummary s, Actor user, ActionEvent e, String msg) {
+		ActionResult.UserEventResult r = new ActionResult.UserEventResult(e, s, user);
+		user.getStatus().addWhen0Condition();
+		if (s.is成功()) {
 			//ERへのアニメーションなどのセット
 			if (e.getTgtAnimation() != null) {
-				er.tgtAnimation = e.getTgtAnimation().clone();
-				er.tgtAnimation.setLocationByCenter(tgt.getSprite().getCenter());
-				er.tgtAnimation.getAnimation().setRepeat(false);
+				r.tgtAnimation = e.getTgtAnimation().clone();
+				r.tgtAnimation.setLocationByCenter(user.getSprite().getCenter());
+				r.tgtAnimation.getAnimation().setRepeat(false);
 			}
 			if (e.getOtherAnimation() != null) {
-				er.otherAnimation = e.getOtherAnimation().clone();
-				er.otherAnimation.setLocation(0, 0);
-				er.otherAnimation.getAnimation().setRepeat(false);
+				r.otherAnimation = e.getOtherAnimation().clone();
+				r.otherAnimation.setLocation(0, 0);
+				r.otherAnimation.getAnimation().setRepeat(false);
+			}
+			if (e.getUserAnimation() != null) {
+				r.userAnimation = e.getUserAnimation().clone();
+				r.userAnimation.setLocation(user.getSprite().getCenter());
+				r.userAnimation.getAnimation().setRepeat(false);
+			}
+			StatusValueSet tgtVs = user.getStatus().getDamageFromSavePoint();
+			if (tgtVs.contains(StatusKey.体力)) {
+				r.tgtDamageHp = (int) tgtVs.get(StatusKey.体力).getValue();
+			}
+			if (tgtVs.contains(StatusKey.魔力)) {
+				r.tgtDamageMp = (int) tgtVs.get(StatusKey.魔力).getValue();
+			}
+			if (tgtVs.contains(StatusKey.正気度)) {
+				r.tgtDamageSAN = (int) tgtVs.get(StatusKey.正気度).getValue();
+			}
+			r.is損壊 = user.getStatus().hasCondition(損壊);
+			r.is気絶 = user.getStatus().hasCondition(気絶);
+			r.is解脱 = user.getStatus().hasCondition(解脱);
+			r.msgI18Nd = msg;
+			if (e.getSuccessSound() != null) {
+				e.getSuccessSound().load().stopAndPlay();
+			}
+		}
+		return r;
+	}
+
+	//これの戻り値をarに入れる。派生イベント結果は独自にいれよ。
+	private static ActionResult.PerEvent getPerEvent(ActionResultSummary s, Actor user, Actor tgt, ActionEvent e, String msg) {
+		ActionResult.EventActorResult r = new ActionResult.EventActorResult(tgt, e);
+		tgt.getStatus().addWhen0Condition();
+		if (s.is成功()) {
+			//ERへのアニメーションなどのセット
+			if (e.getTgtAnimation() != null) {
+				r.tgtAnimation = e.getTgtAnimation().clone();
+				r.tgtAnimation.setLocationByCenter(tgt.getSprite().getCenter());
+				r.tgtAnimation.getAnimation().setRepeat(false);
+			}
+			if (e.getOtherAnimation() != null) {
+				r.otherAnimation = e.getOtherAnimation().clone();
+				r.otherAnimation.setLocation(0, 0);
+				r.otherAnimation.getAnimation().setRepeat(false);
+			}
+			if (e.getUserAnimation() != null) {
+				r.userAnimation = e.getUserAnimation().clone();
+				r.userAnimation.setLocation(user.getSprite().getCenter());
+				r.userAnimation.getAnimation().setRepeat(false);
 			}
 			StatusValueSet tgtVs = tgt.getStatus().getDamageFromSavePoint();
 			if (tgtVs.contains(StatusKey.体力)) {
-				er.tgtDamageHp = (int) tgtVs.get(StatusKey.体力).getValue();
+				r.tgtDamageHp = (int) tgtVs.get(StatusKey.体力).getValue();
 			}
 			if (tgtVs.contains(StatusKey.魔力)) {
-				er.tgtDamageMp = (int) tgtVs.get(StatusKey.魔力).getValue();
+				r.tgtDamageMp = (int) tgtVs.get(StatusKey.魔力).getValue();
 			}
 			if (tgtVs.contains(StatusKey.正気度)) {
-				er.tgtDamageSAN = (int) tgtVs.get(StatusKey.正気度).getValue();
+				r.tgtDamageSAN = (int) tgtVs.get(StatusKey.正気度).getValue();
 			}
-			er.tgtIsDead = tgt.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊);
+			r.is損壊 = tgt.getStatus().hasCondition(損壊);
+			r.is気絶 = tgt.getStatus().hasCondition(気絶);
+			r.is解脱 = tgt.getStatus().hasCondition(解脱);
+			r.msgI18Nd = msg;
 			if (e.getSuccessSound() != null) {
 				e.getSuccessSound().load().stopAndPlay();
 			}
-			return er;
 		}
-		return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿計算結果０, e);
+		return new ActionResult.PerEvent(e, s, Map.of(tgt, r));
 	}
 
-	private static ActionResult.EventActorResult convert(DamageCalcSystem.Result r, ActionEvent e) {
-		r.param.tgt.getStatus().addWhen0Condition();
-		ActionResult.EventActorResult er = new ActionResult.EventActorResult(
-				r.param.tgt,
-				r.summary,
-				e);
-		//ERへのアニメーションなどのセット
-		if (r.summary == ActionResultSummary.成功
-				|| r.summary == ActionResultSummary.成功＿クリティカル
-				|| r.summary == ActionResultSummary.成功＿ブロックされたが１以上) {
-			if (e.getTgtAnimation() != null) {
-				er.tgtAnimation = e.getTgtAnimation().clone();
-				er.tgtAnimation.setLocationByCenter(r.param.tgt.getSprite().getCenter());
-				er.tgtAnimation.getAnimation().setRepeat(false);
-			}
-			if (e.getOtherAnimation() != null) {
-				er.otherAnimation = e.getOtherAnimation().clone();
-				er.otherAnimation.setLocation(0, 0);
-				er.otherAnimation.getAnimation().setRepeat(false);
-			}
-			StatusValueSet tgtVs = r.param.tgt.getStatus().getDamageFromSavePoint();
-			if (tgtVs.contains(StatusKey.体力)) {
-				er.tgtDamageHp = (int) tgtVs.get(StatusKey.体力).getValue();
-			}
-			if (tgtVs.contains(StatusKey.魔力)) {
-				er.tgtDamageMp = (int) tgtVs.get(StatusKey.魔力).getValue();
-			}
-			if (tgtVs.contains(StatusKey.正気度)) {
-				er.tgtDamageSAN = (int) tgtVs.get(StatusKey.正気度).getValue();
-			}
-			er.tgtIsDead = r.param.tgt.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊);
-			if (e.getSuccessSound() != null) {
-				e.getSuccessSound().load().stopAndPlay();
-			}
-		}
-		return er;
-	}
 }

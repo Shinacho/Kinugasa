@@ -156,8 +156,9 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	private float value;
 	private CalcMode calcMode;
 	private Sound successSound;
-	private AnimationSprite tgtAnimation, otherAnimation;
+	private AnimationSprite tgtAnimation, otherAnimation, userAnimation;
 	private 起動条件 j;
+	private int waitTime = 1;
 
 	public ActionEvent(String id) {
 		this.id = id;
@@ -187,7 +188,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
 						return false;
 					}
 				}
@@ -211,7 +212,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
 						return false;
 
 					}
@@ -236,7 +237,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
 						return false;
 
 					}
@@ -261,7 +262,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
 						return false;
 
 					}
@@ -286,7 +287,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
 						return false;
 
 					}
@@ -311,7 +312,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
 						return false;
 
 					}
@@ -322,22 +323,37 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		}
 	}
 
+	public void exec(ActionTarget tgt, final ActionResult ar, boolean isUserEvent) {
+		if (isUserEvent) {
+			this.exec(tgt.getUser(), tgt.getAction(), tgt.getUser(), ar, true);
+		} else {
+			for (var v : tgt.getTgt()) {
+				this.exec(tgt.getUser(), tgt.getAction(), v, ar, false);
+			}
+		}
+	}
+
 	//Actorごとに呼び出される。このアクションイベントを実行してイベントリザルトを戻す
 	public void exec(Actor user, Action a, Actor tgt, final ActionResult ar, boolean isUserEvent) {
 		if (!起動条件判定＿起動OK(tgt, ar, isUserEvent)) {
+			if (isUserEvent) {
+				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
+			} else {
+				ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿起動条件未達, Map.of()));
+			}
 			return;
 		}
 		if (!Random.percent(p)) {
 			if (isUserEvent) {
 				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿不発, tgt));
 			} else {
-				ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+				ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
 			}
 			return;
 		}
-		tgt.getStatus().saveBeforeDamageCalc();//2回実行しても別に問題はない
+		tgt.getStatus().saveBeforeDamageCalc();//2回実行しても別に問題はないのでここでかけておく
 
-		type.exec(user, a, tgt, this, ar, isUserEvent);
+		type.exec(user, a, isUserEvent ? user : tgt, this, ar, isUserEvent);
 
 	}
 
@@ -356,6 +372,24 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		sb.append(type.getEventDescI18Nd(this));
 
 		return sb.toString();
+	}
+
+	ActionEvent setWaitTime(int waitTime) {
+		this.waitTime = waitTime;
+		return this;
+	}
+
+	public int getWaitTime() {
+		return waitTime;
+	}
+
+	ActionEvent setUserAnimation(AnimationSprite userAnimation) {
+		this.userAnimation = userAnimation;
+		return this;
+	}
+
+	public AnimationSprite getUserAnimation() {
+		return userAnimation;
 	}
 
 	ActionEvent setEventType(ActionEventType type) {

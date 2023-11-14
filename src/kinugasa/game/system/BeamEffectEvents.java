@@ -171,9 +171,10 @@ public class BeamEffectEvents {
 
 			ActionResult.EventActorResult r = new ActionResult.EventActorResult(tgt, this);
 			r.otherAnimation = new AnimationSprite(ani);
+			r.msgI18Nd = null;//重要
 			Map<Actor, ActionResult.EventActorResult> map = new HashMap<>();
 			map.put(tgt, r);
-			ar.addPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.成功, map));
+			ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.成功, map));
 		}
 	}
 

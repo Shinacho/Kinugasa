@@ -141,8 +141,6 @@ public class ActionStorage extends DBStorage<Action> {
 					//event
 					i.setMainEvents(getMainEvents(id));
 					i.setUserEvents(getUserEvents(id));
-					//animation
-					i.setUserAnimation(getAnimation(id, "Action_UserAnimation"));
 					//eqipTErm
 					i.setTerms(getTerms(i.getId()));
 					//mateirla
@@ -173,8 +171,6 @@ public class ActionStorage extends DBStorage<Action> {
 				//event
 				a.setMainEvents(getMainEvents(id));
 				a.setUserEvents(getUserEvents(id));
-				//animation
-				a.setUserAnimation(getAnimation(id, "Action_UserAnimation"));
 				//pack
 				return a.pack();
 			}
@@ -203,8 +199,6 @@ public class ActionStorage extends DBStorage<Action> {
 				//event
 				a.setMainEvents(getMainEvents(l.get(0).get()));
 				a.setUserEvents(getUserEvents(l.get(0).get()));
-				//animation
-				a.setUserAnimation(getAnimation(l.get(0).get(), "Action_UserAnimation"));
 				//pack
 				res.add(a.pack());
 			}
@@ -235,8 +229,6 @@ public class ActionStorage extends DBStorage<Action> {
 				//event
 				i.setMainEvents(getMainEvents(l.get(0).get()));
 				i.setUserEvents(getUserEvents(l.get(0).get()));
-				//animation
-				i.setUserAnimation(getAnimation(l.get(0).get(), "Action_UserAnimation"));
 				//eqipTErm
 				i.setTerms(getTerms(i.getId()));
 				//mateirla
@@ -290,8 +282,6 @@ public class ActionStorage extends DBStorage<Action> {
 				//event
 				a.setMainEvents(getMainEvents(l.get(0).get()));
 				a.setUserEvents(getUserEvents(l.get(0).get()));
-				//animation
-				a.setUserAnimation(getAnimation(l.get(0).get(), "Action_UserAnimation"));
 				//pack
 				res.add(a.pack());
 			}
@@ -329,8 +319,6 @@ public class ActionStorage extends DBStorage<Action> {
 				//event
 				i.setMainEvents(getMainEvents(l.get(0).get()));
 				i.setUserEvents(getUserEvents(l.get(0).get()));
-				//animation
-				i.setUserAnimation(getAnimation(l.get(0).get(), "Action_UserAnimation"));
 				//eqipTErm
 				i.setTerms(getTerms(i.getId()));
 				//mateirla
@@ -481,580 +469,6 @@ public class ActionStorage extends DBStorage<Action> {
 
 	}
 
-	public Map<String, List<String>> createInsertCSV(Action a, Storage<AnimationData> animations) {
-		if (a instanceof Item) {
-			return createInsertCSV((Item) a, animations);
-		}
-		Map<String, List<String>> res = new HashMap<>();
-		//ACTION
-		List<String> v = new ArrayList<>();
-		v.add(val(a.getId()));
-		v.add(val(a.getVisibleName()));
-		v.add(val(a.getDesc()));
-		v.add(val(a.getType()));
-		v.add(val(a.isField()));
-		v.add(val(a.isBattle()));
-		v.add(val(a.getArea()));
-		v.add(val(a.getCastTime()));
-		v.add(val(a.getTgtType()));
-		v.add(val(a.getDeadTgt()));
-		v.add(val(a.getSummary()));
-		res.put("ACTION", List.of(String.join(",", v)));
-
-		//Action_MainEvent
-		for (ActionEvent e : a.getMainEvents()) {
-			v = new ArrayList<>();
-			v.add(val(a.getId()));
-			v.add(val(e.getId()));
-			if (res.containsKey("ACTION_MAINEVENT")) {
-				res.get("ACTION_MAINEVENT").add(String.join(",", v));
-			} else {
-				res.put("ACTION_MAINEVENT", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//Action_UserEvent
-		for (ActionEvent e : a.getMainEvents()) {
-			v = new ArrayList<>();
-			v.add(val(a.getId()));
-			v.add(val(e.getId()));
-			if (res.containsKey("ACTION_USEREVENT")) {
-				res.get("ACTION_USEREVENT").add(String.join(",", v));
-			} else {
-				res.put("ACTION_USEREVENT", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//ActionEvent
-		for (ActionEvent e : a.getAllEvents()) {
-			v = new ArrayList<>();
-			v.add(val(e.getId()));
-			v.add(val(e.getSort()));
-			v.add(val(e.getEventType()));
-			v.add(val(e.getTgtStatusKey()));
-			v.add(val(e.getP()));
-			v.add(val(e.getTgtConditionKey()));
-			v.add(val(e.getCndTime()));
-			v.add(val(e.getAtkAttr()));
-			v.add(val(e.getTgtAttrIn()));
-			v.add(val(e.getTgtAttrOut()));
-			v.add(val(e.getTgtCndRegist()));
-			v.add(val(e.getTgtID()));
-			v.add(val(e.isNoLimit()));
-			v.add(val(e.getValue()));
-			v.add(val(e.getCalcMode()));
-			v.add(val(e.getSuccessSound().getName()));
-			if (res.containsKey("ACTIONEVENT")) {
-				res.get("ACTIONEVENT").add(String.join(",", v));
-			} else {
-				res.put("ACTIONEVENT", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//Event_term
-		for (ActionEvent e : a.getAllEvents()) {
-			for (ActionEvent.Term t : e.getTerms()) {
-				v = new ArrayList<>();
-				v.add(val(e.getId()));
-				v.add(val(t.id));
-				if (res.containsKey("EVENT_TERM")) {
-					res.get("EVENT_TERM").add(String.join(",", v));
-				} else {
-					res.put("EVENT_TERM", new ArrayList<>(List.of(String.join(",", v))));
-				}
-			}
-		}
-		//EventTerm
-		for (ActionEvent e : a.getAllEvents()) {
-			for (ActionEvent.Term t : e.getTerms()) {
-				v = new ArrayList<>();
-				v.add(val(t.id));
-				v.add(val(t.type));
-				v.add(val(t.tgtName));
-				v.add(val(t.value));
-				if (res.containsKey("EVENTTERM")) {
-					res.get("EVENTTERM").add(String.join(",", v));
-				} else {
-					res.put("EVENTTERM", new ArrayList<>(List.of(String.join(",", v))));
-				}
-			}
-		}
-		//アニメーション整合性チェック
-		if (a.getUserAnimation() != null) {
-			if (!animations.contains(a.getUserAnimation().getId())) {
-				throw new IllegalArgumentException("user animation not found : " + a.getUserAnimation().getId());
-			}
-		}
-		for (ActionEvent e : a.getAllEvents()) {
-			if (e.getTgtAnimation() != null) {
-				if (!animations.contains(e.getTgtAnimation().getId())) {
-					throw new IllegalArgumentException("tgt animation not found : " + e.getTgtAnimation().getId());
-				}
-			}
-			if (e.getOtherAnimation() != null) {
-				if (!animations.contains(e.getOtherAnimation().getId())) {
-					throw new IllegalArgumentException("other animation not found : " + e.getOtherAnimation().getId());
-				}
-			}
-		}
-
-		//Action_UserAnimation
-		if (a.getUserAnimation() != null) {
-			v = new ArrayList<>();
-			v.add(val(a.getId()));
-			v.add(val(a.getUserAnimation().getId()));
-			res.put("ACTION_USERANIMATION", List.of(String.join(",", v)));
-		}
-		//Event_TgtAnimation
-		for (ActionEvent e : a.getAllEvents()) {
-			if (e.getTgtAnimation() == null) {
-				continue;
-			}
-			v = new ArrayList<>();
-			v.add(val(e.getId()));
-			v.add(val(e.getTgtAnimation().getId()));
-			if (res.containsKey("EVENT_TGTANIMATION")) {
-				res.get("EVENT_TGTANIMATION").add(String.join(",", v));
-			} else {
-				res.put("EVENT_TGTANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//Event_OtherAnimation
-		for (ActionEvent e : a.getAllEvents()) {
-			if (e.getOtherAnimation() == null) {
-				continue;
-			}
-			v = new ArrayList<>();
-			v.add(val(e.getId()));
-			v.add(val(e.getOtherAnimation().getId()));
-			if (res.containsKey("EVENT_OTHERANIMATION")) {
-				res.get("EVENT_OTHERANIMATION").add(String.join(",", v));
-			} else {
-				res.put("EVENT_OTHERANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-
-		//ANIMATION
-		if (a.getUserAnimation() != null) {
-			AnimationData d = animations.get(a.getUserAnimation().getId());
-			v = new ArrayList<>();
-			v.add(val(d.id));
-			v.add(val(d.fileName));
-			v.add(val(d.w));
-			v.add(val(d.h));
-			v.add(val(String.join(",", IntStream.of(d.tc).mapToObj(p -> Integer.toString(p)).collect(Collectors.toList()))));
-			if (res.containsKey("ANIMATION")) {
-				res.get("ANIMATION").add(String.join(",", v));
-			} else {
-				res.put("ANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		for (ActionEvent e : a.getAllEvents()) {
-			if (e.getTgtAnimation() == null) {
-				continue;
-			}
-			AnimationData d = animations.get(e.getTgtAnimation().getId());
-			v = new ArrayList<>();
-			v.add(val(d.id));
-			v.add(val(d.fileName));
-			v.add(val(d.w));
-			v.add(val(d.h));
-			v.add(val(String.join(",", IntStream.of(d.tc).mapToObj(p -> Integer.toString(p)).collect(Collectors.toList()))));
-			if (res.containsKey("ANIMATION")) {
-				res.get("ANIMATION").add(String.join(",", v));
-			} else {
-				res.put("ANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		for (ActionEvent e : a.getAllEvents()) {
-			if (e.getOtherAnimation() == null) {
-				continue;
-			}
-			AnimationData d = animations.get(e.getOtherAnimation().getId());
-			v = new ArrayList<>();
-			v.add(val(d.id));
-			v.add(val(d.fileName));
-			v.add(val(d.w));
-			v.add(val(d.h));
-			v.add(val(String.join(",", IntStream.of(d.tc).mapToObj(p -> Integer.toString(p)).collect(Collectors.toList()))));
-			if (res.containsKey("ANIMATION")) {
-				res.get("ANIMATION").add(String.join(",", v));
-			} else {
-				res.put("ANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		return res;
-	}
-
-	//マテリアルの重複に注意せよ！
-	public Map<String, List<String>> createInsertCSV(Item i, Storage<AnimationData> animations) {
-		Map<String, List<String>> res = new HashMap<>();
-		//ACTION
-		List<String> v = new ArrayList<>();
-		v.add(val(i.getId()));
-		v.add(val(i.getVisibleName()));
-		v.add(val(i.getDesc()));
-		v.add(val(i.isField()));
-		v.add(val(i.isBattle()));
-		v.add(val(i.getArea()));
-		v.add(val(i.getTgtType()));
-		v.add(val(i.getDeadTgt()));
-		v.add(val(i.getPrice()));
-		v.add(val(i.getSlot()));
-		v.add(val(i.getAtkCount()));
-		v.add(val(i.getWeaponType()));
-		v.add(val(i.getStyle()));
-		v.add(val(i.getEnchant()));
-		v.add(val(i.getDcs()));
-		v.add(val(i.getCurrentUpgradeNum()));
-		v.add(val(i.getSummary()));
-		res.put("ITEM", List.of(String.join(",", v)));
-
-		//Action_MainEvent
-		for (ActionEvent e : i.getMainEvents()) {
-			v = new ArrayList<>();
-			v.add(val(i.getId()));
-			v.add(val(e.getId()));
-			if (res.containsKey("ACTION_MAINEVENT")) {
-				res.get("ACTION_MAINEVENT").add(String.join(",", v));
-			} else {
-				res.put("ACTION_MAINEVENT", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//Action_UserEvent
-		for (ActionEvent e : i.getMainEvents()) {
-			v = new ArrayList<>();
-			v.add(val(i.getId()));
-			v.add(val(e.getId()));
-			if (res.containsKey("ACTION_USEREVENT")) {
-				res.get("ACTION_USEREVENT").add(String.join(",", v));
-			} else {
-				res.put("ACTION_USEREVENT", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//ActionEvent
-		for (ActionEvent e : i.getAllEvents()) {
-			v = new ArrayList<>();
-			v.add(val(e.getId()));
-			v.add(val(e.getSort()));
-			v.add(val(e.getEventType()));
-			v.add(val(e.getTgtStatusKey()));
-			v.add(val(e.getP()));
-			v.add(val(e.getTgtConditionKey()));
-			v.add(val(e.getCndTime()));
-			v.add(val(e.getAtkAttr()));
-			v.add(val(e.getTgtAttrIn()));
-			v.add(val(e.getTgtAttrOut()));
-			v.add(val(e.getTgtCndRegist()));
-			v.add(val(e.getTgtID()));
-			v.add(val(e.isNoLimit()));
-			v.add(val(e.getValue()));
-			v.add(val(e.getCalcMode()));
-			v.add(val(e.getSuccessSound().getName()));
-			v.add(val(e.get起動条件()));
-			if (res.containsKey("ACTIONEVENT")) {
-				res.get("ACTIONEVENT").add(String.join(",", v));
-			} else {
-				res.put("ACTIONEVENT", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//Event_term
-		for (ActionEvent e : i.getAllEvents()) {
-			for (ActionEvent.Term t : e.getTerms()) {
-				v = new ArrayList<>();
-				v.add(val(e.getId()));
-				v.add(val(t.id));
-				if (res.containsKey("EVENT_TERM")) {
-					res.get("EVENT_TERM").add(String.join(",", v));
-				} else {
-					res.put("EVENT_TERM", new ArrayList<>(List.of(String.join(",", v))));
-				}
-			}
-		}
-		//EventTerm
-		for (ActionEvent e : i.getAllEvents()) {
-			for (ActionEvent.Term t : e.getTerms()) {
-				v = new ArrayList<>();
-				v.add(val(t.id));
-				v.add(val(t.type));
-				v.add(val(t.tgtName));
-				v.add(val(t.value));
-				if (res.containsKey("EVENTTERM")) {
-					res.get("EVENTTERM").add(String.join(",", v));
-				} else {
-					res.put("EVENTTERM", new ArrayList<>(List.of(String.join(",", v))));
-				}
-			}
-		}
-		//アニメーション整合性チェック
-		if (i.getUserAnimation() != null) {
-			if (!animations.contains(i.getUserAnimation().getId())) {
-				throw new IllegalArgumentException("user animation not found : " + i.getUserAnimation().getId());
-			}
-		}
-		for (ActionEvent e : i.getAllEvents()) {
-			if (e.getTgtAnimation() != null) {
-				if (!animations.contains(e.getTgtAnimation().getId())) {
-					throw new IllegalArgumentException("tgt animation not found : " + e.getTgtAnimation().getId());
-				}
-			}
-			if (e.getOtherAnimation() != null) {
-				if (!animations.contains(e.getOtherAnimation().getId())) {
-					throw new IllegalArgumentException("other animation not found : " + e.getOtherAnimation().getId());
-				}
-			}
-		}
-
-		//Action_UserAnimation
-		if (i.getUserAnimation() != null) {
-			v = new ArrayList<>();
-			v.add(val(i.getId()));
-			v.add(val(i.getUserAnimation().getId()));
-			res.put("ACTION_USERANIMATION", List.of(String.join(",", v)));
-		}
-		//Event_TgtAnimation
-		for (ActionEvent e : i.getAllEvents()) {
-			if (e.getTgtAnimation() == null) {
-				continue;
-			}
-			v = new ArrayList<>();
-			v.add(val(e.getId()));
-			v.add(val(e.getTgtAnimation().getId()));
-			if (res.containsKey("EVENT_TGTANIMATION")) {
-				res.get("EVENT_TGTANIMATION").add(String.join(",", v));
-			} else {
-				res.put("EVENT_TGTANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//Event_OtherAnimation
-		for (ActionEvent e : i.getAllEvents()) {
-			if (e.getOtherAnimation() == null) {
-				continue;
-			}
-			v = new ArrayList<>();
-			v.add(val(e.getId()));
-			v.add(val(e.getOtherAnimation().getId()));
-			if (res.containsKey("EVENT_OTHERANIMATION")) {
-				res.get("EVENT_OTHERANIMATION").add(String.join(",", v));
-			} else {
-				res.put("EVENT_OTHERANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-
-		//ANIMATION
-		if (i.getUserAnimation() != null) {
-			AnimationData d = animations.get(i.getUserAnimation().getId());
-			v = new ArrayList<>();
-			v.add(val(d.id));
-			v.add(val(d.fileName));
-			v.add(val(d.w));
-			v.add(val(d.h));
-			v.add(val(String.join(",", IntStream.of(d.tc).mapToObj(p -> Integer.toString(p)).collect(Collectors.toList()))));
-			if (res.containsKey("ANIMATION")) {
-				res.get("ANIMATION").add(String.join(",", v));
-			} else {
-				res.put("ANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		for (ActionEvent e : i.getAllEvents()) {
-			if (e.getTgtAnimation() == null) {
-				continue;
-			}
-			AnimationData d = animations.get(e.getTgtAnimation().getId());
-			v = new ArrayList<>();
-			v.add(val(d.id));
-			v.add(val(d.fileName));
-			v.add(val(d.w));
-			v.add(val(d.h));
-			v.add(val(String.join(",", IntStream.of(d.tc).mapToObj(p -> Integer.toString(p)).collect(Collectors.toList()))));
-			if (res.containsKey("ANIMATION")) {
-				res.get("ANIMATION").add(String.join(",", v));
-			} else {
-				res.put("ANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		for (ActionEvent e : i.getAllEvents()) {
-			if (e.getOtherAnimation() == null) {
-				continue;
-			}
-			AnimationData d = animations.get(e.getOtherAnimation().getId());
-			v = new ArrayList<>();
-			v.add(val(d.id));
-			v.add(val(d.fileName));
-			v.add(val(d.w));
-			v.add(val(d.h));
-			v.add(val(String.join(",", IntStream.of(d.tc).mapToObj(p -> Integer.toString(p)).collect(Collectors.toList()))));
-			if (res.containsKey("ANIMATION")) {
-				res.get("ANIMATION").add(String.join(",", v));
-			} else {
-				res.put("ANIMATION", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//アイテム
-		//Item_eqipTerm
-		for (ItemEqipTerm t : i.getEqipTerms()) {
-			v = new ArrayList<>();
-			v.add(val(i.getId()));
-			v.add(val(t.toString()));
-			if (res.containsKey("ITEM_EQIPTERM")) {
-				res.get("ITEM_EQIPTERM").add(String.join(",", v));
-			} else {
-				res.put("ITEM_EQIPTERM", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//item_material
-		for (Map.Entry<Material, Integer> m : i.getMaterial().entrySet()) {
-			if (m.getValue() == 0) {
-				continue;
-			}
-			v = new ArrayList<>();
-			v.add(val(i.getId()));
-			v.add(val(m.getKey().getId()));
-			v.add(val(m.getValue()));
-			if (res.containsKey("ITEM_MATERIAL")) {
-				res.get("ITEM_MATERIAL").add(String.join(",", v));
-			} else {
-				res.put("ITEM_MATERIAL", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-
-		//material
-		for (Map.Entry<Material, Integer> m : i.getMaterial().entrySet()) {
-			if (m.getValue() == 0) {
-				continue;
-			}
-			v = new ArrayList<>();
-			v.add(val(m.getKey().getId()));
-			v.add(val(m.getValue()));
-			v.add(val(m.getKey().getPrice()));
-			if (res.containsKey("MATERIAL")) {
-				res.get("MATERIAL").add(String.join(",", v));
-			} else {
-				res.put("MATERIAL", new ArrayList<>(List.of(String.join(",", v))));
-			}
-		}
-		//item_cndregist
-		if (i.getConditionRegist() != null && !i.getConditionRegist().isEmpty()) {
-			ConditionRegist c = i.getConditionRegist();
-			int cndRegistNo = 0;
-			for (ConditionKey k : c.keySet()) {
-				if (c.get(k) == 0) {
-					continue;
-				}
-				String cndRegistID = i.getId() + StringUtil.zeroUme(cndRegistNo++ + "", 2);
-				v = new ArrayList<>();
-				v.add(val(i.getId()));
-				v.add(val(cndRegistID));
-				if (res.containsKey("ITEM_CNDREGIST")) {
-					res.get("ITEM_CNDREGIST").add(String.join(",", v));
-				} else {
-					res.put("ITEM_CNDREGIST", new ArrayList<>(List.of(String.join(",", v))));
-				}
-				//cndEffect
-				v = new ArrayList<>();
-				v.add(val(cndRegistID));
-				v.add(val(k.toString()));
-				v.add(val(c.get(k)));
-				if (res.containsKey("CNDEFFECT")) {
-					res.get("CNDEFFECT").add(String.join(",", v));
-				} else {
-					res.put("CNDEFFECT", new ArrayList<>(List.of(String.join(",", v))));
-				}
-			}
-		}
-		//item_attrin
-		int attrNo = 0;
-		if (i.getAttrIn() != null && !i.getAttrIn().isEmpty()) {
-			AttributeValueSet vs = i.getAttrIn();
-			for (AttributeValue av : vs) {
-				if (av.getValue() == 0) {
-					continue;
-				}
-				String attrID = i.getId() + StringUtil.zeroUme(attrNo++ + "", 2);
-				v = new ArrayList<>();
-				v.add(val(i.getId()));
-				v.add(val(attrID));
-				if (res.containsKey("ITEM_ATTRIN")) {
-					res.get("ITEM_ATTRIN").add(String.join(",", v));
-				} else {
-					res.put("ITEM_ATTRIN", new ArrayList<>(List.of(String.join(",", v))));
-				}
-				//attrEffect
-				v = new ArrayList<>();
-				v.add(val(attrID));
-				v.add(val(av.getKey().toString()));
-				v.add(val(av.getValue()));
-				if (res.containsKey("ATTREFFECT")) {
-					res.get("ATTREFFECT").add(String.join(",", v));
-				} else {
-					res.put("ATTREFFECT", new ArrayList<>(List.of(String.join(",", v))));
-				}
-			}
-		}
-		//item_attrin
-		if (i.getAttrOut() != null && !i.getAttrOut().isEmpty()) {
-			AttributeValueSet vs = i.getAttrOut();
-			for (AttributeValue av : vs) {
-				if (av.getValue() == 0) {
-					continue;
-				}
-				String attrID = i.getId() + StringUtil.zeroUme(attrNo++ + "", 2);
-				v = new ArrayList<>();
-				v.add(val(i.getId()));
-				v.add(val(attrID));
-				if (res.containsKey("ITEM_ATTROUT")) {
-					res.get("ITEM_ATTROUT").add(String.join(",", v));
-				} else {
-					res.put("ITEM_ATTROUT", new ArrayList<>(List.of(String.join(",", v))));
-				}
-				//attrEffect
-				v = new ArrayList<>();
-				v.add(val(attrID));
-				v.add(val(av.getKey().toString()));
-				v.add(val(av.getValue()));
-				if (res.containsKey("ATTREFFECT")) {
-					res.get("ATTREFFECT").add(String.join(",", v));
-				} else {
-					res.put("ATTREFFECT", new ArrayList<>(List.of(String.join(",", v))));
-				}
-			}
-		}
-		//item_status
-		if (i.getStatus() != null && !i.getStatus().isEmpty()) {
-			StatusValueSet vs = i.getStatus();
-			int statusNo = 0;
-			for (StatusValue sv : vs) {
-				if (sv.getValue() == 0) {
-					continue;
-				}
-				String statusID = i.getId() + StringUtil.zeroUme(statusNo++ + "", 2);
-				v = new ArrayList<>();
-				v.add(val(i.getId()));
-				v.add(val(statusID));
-				if (res.containsKey("ITEM_STATUS")) {
-					res.get("ITEM_STATUS").add(String.join(",", v));
-				} else {
-					res.put("ITEM_STATUS", new ArrayList<>(List.of(String.join(",", v))));
-				}
-				//statusEffect
-				v = new ArrayList<>();
-				v.add(val(statusID));
-				v.add(val(sv.getKey().toString()));
-				v.add(val(sv.getValue()));
-				if (res.containsKey("STATUSEFFECT")) {
-					res.get("STATUSEFFECT").add(String.join(",", v));
-				} else {
-					res.put("STATUSEFFECT", new ArrayList<>(List.of(String.join(",", v))));
-				}
-			}
-		}
-		return res;
-	}
-
-	private static String val(Object v) {
-		if (v == null) {
-			return "\"\"";
-		}
-		return "\"" + v + "\"";
-	}
-
 	private ConditionRegist getCndRegist(String itemID) {
 		String sql = "select id, cndKey, val"
 				+ " from item_cndregist ic left join cndEffect c on ic.cndid = c.id"
@@ -1201,7 +615,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private List<ActionEvent> getMainEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,"
-				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION"
+				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION,WAITTIME"
 				+ " from action_mainEvent me left join actionEvent e on me.eventId = e.id"
 				+ " where me.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -1238,6 +652,7 @@ public class ActionStorage extends DBStorage<Action> {
 				e.setSuccessSound(SoundStorage.getInstance().get(soundID));
 			}
 			e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
+			e.setWaitTime(l.get(18).asInt());
 			//TERM
 			sql = "select "
 					+ "id,typ,tgtName,Val"
@@ -1256,6 +671,7 @@ public class ActionStorage extends DBStorage<Action> {
 			//ANIMATION
 			e.setTgtAnimation(getAnimation(e.getId(), "Event_TgtAnimation"));
 			e.setOtherAnimation(getAnimation(e.getId(), "Event_OtherAnimation"));
+			e.setUserAnimation(getAnimation(e.getId(), "Event_UserAnimation"));
 			//
 			res.add(e);
 		}
@@ -1264,7 +680,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private List<ActionEvent> getUserEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,P,"
-				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION"
+				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION,WAITTIME"
 				+ " from action_userEvent ue left join actionEvent e on ue.eventId = e.id"
 				+ " where ue.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -1289,10 +705,11 @@ public class ActionStorage extends DBStorage<Action> {
 			e.setValue(l.get(14).asFloat());
 			e.setCalcMode(l.get(15).orNull(ActionEvent.CalcMode.class));
 			String soundID = l.get(16).get();
-			e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
 			if (soundID != null) {
 				e.setSuccessSound(SoundStorage.getInstance().get(soundID));
 			}
+			e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
+			e.setWaitTime(l.get(18).asInt());
 			//TERM
 			sql = "select "
 					+ "id,typ,tgtName,Val"
@@ -1311,6 +728,7 @@ public class ActionStorage extends DBStorage<Action> {
 			//ANIMATION
 			e.setTgtAnimation(getAnimation(e.getId(), "Event_TgtAnimation"));
 			e.setOtherAnimation(getAnimation(e.getId(), "Event_OtherAnimation"));
+			e.setUserAnimation(getAnimation(e.getId(), "Event_UserAnimation"));
 			//
 			res.add(e);
 		}

@@ -35,7 +35,6 @@ public final class Enemy extends Actor {
 
 	private ArrayList<DropItem> dropItem = new ArrayList<>();
 	private EnemyAI ai;
-	private Sound deadSound;
 
 	public static Enemy cloneOf(Actor a) {
 		Enemy e = new Enemy(a);
@@ -83,12 +82,6 @@ public final class Enemy extends Actor {
 			ai = EnemyAIImpl.valueOf(
 					root.getElement("ai").get(0).getAttributes().get("name").getValue()
 			);
-			//DEADSOUND
-			if (root.hasElement("deadSound")) {
-				deadSound = SoundStorage.getInstance().get(
-						root.getElement("deadSound").get(0).getAttributes().get("id").getValue()
-				);
-			}
 			f.dispose();
 		} catch (Exception ex) {
 			throw new IllegalXMLFormatException(ex);
@@ -124,10 +117,6 @@ public final class Enemy extends Actor {
 
 	public void setAI(EnemyAI ai) {
 		this.ai = ai;
-	}
-
-	public Sound getDeadSound() {
-		return deadSound;
 	}
 
 	public ArrayList<DropItem> getDropItem() {

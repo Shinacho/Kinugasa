@@ -93,7 +93,6 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	private List<ActionEvent> userEvents = new ArrayList<>();
 	private boolean field, battle;
 	private int area, castTime;
-	private AnimationSprite userAnimation;
 	private ターゲットモード tgtType;
 	private 死亡者ターゲティング deadTgt;
 
@@ -222,11 +221,6 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		return this;
 	}
 
-	Action setUserAnimation(AnimationSprite userAnimation) {
-		this.userAnimation = userAnimation;
-		return this;
-	}
-
 	Action set死亡者ターゲティング(死亡者ターゲティング a) {
 		this.deadTgt = a;
 		return this;
@@ -312,10 +306,6 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 			}
 		}
 		return false;
-	}
-
-	public AnimationSprite getUserAnimation() {
-		return userAnimation;
 	}
 
 	public StatusValueSet simuleteSelfStatusDamage(Actor user) {
@@ -485,12 +475,6 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 					e.exec(tgt.getUser(), this, a, r, false);
 				}
 			}
-		}
-		if (userAnimation != null) {
-			AnimationSprite s = userAnimation.clone();
-			s.setLocationByCenter(tgt.getUser().getSprite().getCenter());
-			s.getAnimation().setRepeat(false);
-			r.setUserAnimation(userAnimation);
 		}
 		GameLog.print(r);
 		return r;

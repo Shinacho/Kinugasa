@@ -150,11 +150,6 @@ public class Item extends Action implements Cloneable {
 	}
 
 	@Override
-	Item setUserAnimation(AnimationSprite userAnimation) {
-		return (Item) super.setUserAnimation(userAnimation);
-	}
-
-	@Override
 	Item setUserEvents(List<ActionEvent> userEvents) {
 		return (Item) super.setUserEvents(userEvents);
 	}

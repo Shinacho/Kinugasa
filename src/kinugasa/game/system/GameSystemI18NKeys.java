@@ -440,6 +440,13 @@ public class GameSystemI18NKeys {
 	public static final String このダメージは自身の正気度が最大値に近いほど高くなる = "このダメージは自身の正気度が最大値に近いほど高くなる";
 	public static final String 精神的余裕の術式 = "精神的余裕の術式";
 	public static final String Xの確率で最大Xの正気度ダメージを与える = "Xの確率で最大Xの正気度ダメージを与える";
+	public static final String XはXしたので行動は中断された = "XはXしたので行動は中断された";
+	public static final String Xになった = "Xになった";
+	public static final String 与属性Xが = "与属性Xが";
+	public static final String 被属性Xが = "被属性Xが";
+	public static final String 状態異常耐性Xが = "状態異常耐性Xが";
+	
+	
 	
 	
 	public static class CountKey {

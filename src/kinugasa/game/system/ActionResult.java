@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import kinugasa.game.NewInstance;
 import kinugasa.game.NotNewInstance;
+import kinugasa.game.Nullable;
 import kinugasa.object.AnimationSprite;
 
 /**
@@ -39,7 +40,6 @@ public class ActionResult {
 	private final ActionResultSummary イベント未起動時の失敗理由;
 	private final LinkedHashMap<ActionEvent, UserEventResult> userEventResult;
 	private final LinkedHashMap<ActionEvent, PerEvent> mainEventResult;
-	private AnimationSprite userAnimation;
 
 	public static class EventActorResult {
 
@@ -49,7 +49,7 @@ public class ActionResult {
 		public boolean is解脱 = false;
 		public boolean is気絶 = false;
 		public boolean is損壊 = false;
-		public AnimationSprite tgtAnimation, otherAnimation;
+		public AnimationSprite tgtAnimation, otherAnimation, userAnimation;
 		public String msgI18Nd;
 		public final List<EventActorResult> 派生イベントの結果リスト = new ArrayList<>();
 
@@ -151,7 +151,7 @@ public class ActionResult {
 		return mainEventResult.get(new ArrayList<>(mainEventResult.keySet()).get(i));
 	}
 
-	public void addPerEvent(PerEvent e) {
+	public void setPerEvent(PerEvent e) {
 		if (hasMainEventResult(e.event)) {
 			mainEventResult.get(e.event).summary = mainEventResult.get(e.event).summary.or(e.summary);
 			mainEventResult.get(e.event).perActor.putAll(e.perActor);//1人しか入っていないと思う
@@ -180,14 +180,6 @@ public class ActionResult {
 		return user;
 	}
 
-	public AnimationSprite getUserAnimation() {
-		return userAnimation;
-	}
-
-	public void setUserAnimation(AnimationSprite userAnimation) {
-		this.userAnimation = userAnimation;
-	}
-
 	public List<UserEventResult> getUserEventResultAsList() {
 		return new ArrayList<>(userEventResult.values());
 	}
@@ -196,23 +188,39 @@ public class ActionResult {
 		return new ArrayList<>(mainEventResult.values());
 	}
 
+	@Nullable
 	public UserEventResult getLastUserEventResult() {
 		List<UserEventResult> l = getUserEventResultAsList();
+		if (l.isEmpty()) {
+			return null;
+		}
 		return l.get(l.size() - 1);
 	}
 
+	@Nullable
 	public PerEvent getLastMainEventResult() {
 		List<PerEvent> l = getMainEventResultAsList();
+		if (l.isEmpty()) {
+			return null;
+		}
 		return l.get(l.size() - 1);
 	}
 
+	@Nullable
 	public UserEventResult getFirstUserEventResult() {
 		List<UserEventResult> l = getUserEventResultAsList();
+		if (l.isEmpty()) {
+			return null;
+		}
 		return l.get(0);
 	}
 
+	@Nullable
 	public PerEvent getFirstMainEventResult() {
 		List<PerEvent> l = getMainEventResultAsList();
+		if (l.isEmpty()) {
+			return null;
+		}
 		return l.get(0);
 	}
 
@@ -300,7 +308,6 @@ public class ActionResult {
 
 	@Override
 	public String toString() {
-		return "ActionResult{" + "action=" + action + ", tgt=" + tgt + ", user=" + user + ", userEventResult=" + userEventResult + ", mainEventResult=" + mainEventResult + ", userAnimation=" + userAnimation + '}';
+		return "ActionResult{" + "action=" + action + ", tgt=" + tgt + ", user=" + user + ", \u30a4\u30d9\u30f3\u30c8\u672a\u8d77\u52d5\u6642\u306e\u5931\u6557\u7406\u7531=" + イベント未起動時の失敗理由 + ", userEventResult=" + userEventResult + ", mainEventResult=" + mainEventResult + '}';
 	}
-
 }
