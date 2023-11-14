@@ -247,7 +247,13 @@ public class GameSystemI18NKeys {
 	public static final String XをXの確率で入手する = "アイテムXをXの確率で入手る";
 	public static final String Xの確率でXを回復する = "Xの確率でXを回復する";
 	public static final String Xの確率でX属性のダメージをXに与える = "Xの確率でX属性のダメージをXに与える";
-	public static final String この値は基礎値でありダメージ計算が行われる = "この値は基礎値でありダメージ計算が行われる";
+	public static final String 計算方法 = "計算方法";
+	public static final String ダメージ計算 = "ダメージ計算";
+	public static final String 直接作用 = "直接作用";
+	public static final String 乗算 = "乗算";
+	public static final String 値になる = "値になる";
+	public static final String 最大値になる = "最大値になる";
+	public static final String ゼロになる = "ゼロになる";
 	public static final String フィールド効果 = "フィールド効果";
 	public static final String この魔法はフィールドでは使えない = "この魔法はフィールドでは使えない";
 	public static final String 戦闘時ターゲット情報 = "戦闘時ターゲット情報";

@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.JComboBox;
@@ -67,11 +68,38 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					(int) (event.getP() * 100) + "%",
+					event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
+			if (event.getValue() != 0) {
+				sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append((int) event.getValue());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.計算方法));
 			switch (event.getCalcMode()) {
 				case DC: {
-					sb.append("  ").append(I18N.get(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる));
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
+					break;
+				}
+				case ADD: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
+					break;
+				}
+				case MUL: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
+					break;
+				}
+				case TO: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
+					break;
+				}
+				case TO_MAX: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
+					break;
+				}
+				case TO_ZERO: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
 					break;
 				}
 				default: {
@@ -93,10 +121,35 @@ public enum ActionEventType {
 			sb.append(GameSystemI18NKeys.確率);
 			sb.append((int) (event.getP() * 100)).append("%");
 			sb.append(")");
-			if (event.getCalcMode() == ActionEvent.CalcMode.DC) {
-				sb.append("[");
-				sb.append(GameSystemI18NKeys.この値は基礎値でありダメージ計算が行われる);
-				sb.append("]");
+			sb.append(I18N.get(GameSystemI18NKeys.計算方法));
+			switch (event.getCalcMode()) {
+				case DC: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
+					break;
+				}
+				case ADD: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
+					break;
+				}
+				case MUL: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
+					break;
+				}
+				case TO: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
+					break;
+				}
+				case TO_MAX: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
+					break;
+				}
+				case TO_ZERO: {
+					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
+					break;
+				}
+				default: {
+					break;
+				}
 			}
 			return sb.toString();
 		}
@@ -118,7 +171,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult ar, boolean isUserEvent) {
 			StatusKey tgtStatusKey = e.getTgtStatusKey();
 			StatusValueSet tgtStatus = tgt.getStatus().getEffectedStatus();
 			tgt.getStatus().saveBeforeDamageCalc();
@@ -4070,8 +4123,19 @@ public enum ActionEventType {
 
 	public abstract void pack(ActionEvent e, Action a) throws GameSystemException;
 
-	public abstract ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res);
+	public abstract void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent);
 
+	//戻り値をarに入れる。
+	private static ActionResult.UserEventResult getUserEventResult(ActionResultSummary s, Actor user, ActionEvent e){
+		
+	}
+	
+	//戻り値をarに入れる。
+	private static ActionResult.PerEvent getPerEvent(ActionResultSummary s, Actor tgt, ActionEvent e){
+		
+	}
+	
+	
 	private static ActionResult.EventActorResult getResult(boolean is成功, Actor tgt, ActionEvent e) {
 		if (is成功) {
 			tgt.getStatus().addWhen0Condition();

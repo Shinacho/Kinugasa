@@ -84,7 +84,7 @@ public class I18N {
 		return ini.get(key).get().value();
 	}
 
-	public static String get(String key, String... param) {
+	public static String get(String key, Object... param) {
 		if(notFoundKeyMap.contains(key)){
 			return key;
 		}
@@ -96,7 +96,7 @@ public class I18N {
 
 		String res = ini.get(key).get().value();
 		for (int i = 0; i < param.length; i++) {
-			res = res.replaceAll("!" + i, param[i]);
+			res = res.replaceAll("!" + i, param[i].toString());
 		}
 		return res;
 	}

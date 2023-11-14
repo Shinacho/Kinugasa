@@ -337,7 +337,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		}
 		tgt.getStatus().saveBeforeDamageCalc();//2回実行しても別に問題はない
 
-		type.exec(user, a, tgt, this, ar);
+		type.exec(user, a, tgt, this, ar, isUserEvent);
 
 	}
 

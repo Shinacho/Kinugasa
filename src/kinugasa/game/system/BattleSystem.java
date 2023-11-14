@@ -1512,10 +1512,14 @@ public class BattleSystem implements Drawable {
 		//resを分解してmessageQueueに詰める。詰めたらキューの最初から実行する。
 		messageQueue.clear();
 		for (var v : res.getUserEventResultAsList()) {
-			messageQueue.add(v);
+			if (v.summary != ActionResultSummary.失敗＿起動条件未達) {
+				messageQueue.add(v);
+			}
 		}
 		for (var v : res.getMainEventResultAsList()) {
-			messageQueue.addAll(v.perActor.values());
+			if (v.summary != ActionResultSummary.失敗＿起動条件未達) {
+				messageQueue.addAll(v.perActor.values());
+			}
 		}
 
 		return messageQueue消化();
