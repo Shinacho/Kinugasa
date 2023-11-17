@@ -21,8 +21,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Map;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.Nullable;
@@ -31,7 +32,6 @@ import kinugasa.graphics.GraphicsUtil;
 import kinugasa.object.AnimationSprite;
 import kinugasa.object.BasicSprite;
 import kinugasa.object.Sprite;
-import kinugasa.resource.Storage;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.Random;
 import kinugasa.game.NotNull;
@@ -128,7 +128,8 @@ public class BeamEffectEvents {
 			super(key.toString());
 			this.key = key;
 			setP(1f);
-			setEventType(ActionEventType.前イベ成功時_ビームエフェクト);
+			setEventType(ActionEventType.ビームエフェクト);
+			set起動条件(起動条件.前段がないか直前のイベント成功時のみ起動);
 		}
 
 		public Key getKey() {
@@ -136,11 +137,12 @@ public class BeamEffectEvents {
 		}
 
 		@Override
-		public ActionResult.EventResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventResult> eres) {
-			if (!eres.isEmpty()) {
-				if (eres.stream().map(p -> p.summary).anyMatch(p -> p.is失敗())) {
-					return new ActionResult.EventResult(tgt, ActionResultSummary.失敗＿不発, this);
-				}
+		public void exec(Actor user, Action a, Actor tgt, final ActionResult ar, boolean isUserEvent) {
+			if (isUserEvent) {
+				throw new GameSystemException("cannot use for user ivents : " + this);
+			}
+			if (!起動条件判定＿起動OK(tgt, ar, isUserEvent)) {
+				return;
 			}
 			List<Sprite> sp = new ArrayList<>();
 			final int max = 64;
@@ -166,9 +168,13 @@ public class BeamEffectEvents {
 			}
 			Animation ani = Animation.of(new FrameTimeCounter(3), sp);
 			ani.setRepeat(false);
-			ActionResult.EventResult r = new ActionResult.EventResult(tgt, ActionResultSummary.成功, this);
+
+			ActionResult.EventActorResult r = new ActionResult.EventActorResult(tgt, this);
 			r.otherAnimation = new AnimationSprite(ani);
-			return r;
+			r.msgI18Nd = null;//重要
+			Map<Actor, ActionResult.EventActorResult> map = new HashMap<>();
+			map.put(tgt, r);
+			ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.成功, map));
 		}
 	}
 

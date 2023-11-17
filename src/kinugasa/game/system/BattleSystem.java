@@ -45,12 +45,13 @@ import kinugasa.resource.sound.Sound;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.Random;
 import kinugasa.game.NotNull;
+import kinugasa.game.Nullable;
 import static kinugasa.game.system.Action.死亡者ターゲティング.気絶損壊解脱者を選択可能;
-import static kinugasa.game.system.ActionType.行動;
 import kinugasa.graphics.GraphicsUtil;
 import kinugasa.object.Effect;
 import kinugasa.object.FlashEffect;
 import kinugasa.object.ImageSprite;
+import kinugasa.util.TimeCounter;
 
 /**
  *
@@ -94,6 +95,7 @@ public class BattleSystem implements Drawable {
 		 * 自動処理のイベントを処理していて、アニメーションを再生している等で待機しているが、時間経過で進む。
 		 */
 		待機中＿時間あり＿手番戻り,
+		イベントキュー消化中,
 		/**
 		 * コマンド選択中
 		 */
@@ -175,6 +177,19 @@ public class BattleSystem implements Drawable {
 	private LinkedHashMap<Integer, List<MagicSpell>> magics = new LinkedHashMap<>();
 	//表示中バトルアクション・アニメーション
 	private List<Sprite> animation = new ArrayList<>();
+
+	//遅延起動アニメーション
+	private static class 遅延起動Animation {
+
+		final Sprite s;
+		final TimeCounter tc;
+
+		public 遅延起動Animation(Sprite s, TimeCounter tc) {
+			this.s = s;
+			this.tc = tc;
+		}
+	}
+	private List<遅延起動Animation> 遅延起動Animations = new ArrayList<>();
 	//実行中バトルアクションから生成されたアクション待機時間
 	private FrameTimeCounter currentBAWaitTime;
 	//行動中コマンド
@@ -208,6 +223,15 @@ public class BattleSystem implements Drawable {
 	private Map<Actor, Sprite> castingSprites = new HashMap<>();
 	//スクリーンエフェクト
 	private Effect effect;
+	//エフェクト実行前に生きていた人、エフェクトによって死んだか判定する
+	private List<Actor> エフェクト前生存者リスト;
+	//イベントキュー
+	private final LinkedList<ActionEvent> eventQueue = new LinkedList<>();
+	private final LinkedList<Boolean> eventIsUserEvent = new LinkedList<>();
+	//現在の結果
+	private ActionResult actionResult;
+	//イベントキューのターゲット
+	private ActionTarget currentActionTgt;
 	//-----------------------------------------------------------アイテム
 	//アイテムChoiceUseインデックス：-1：ターゲット選択未使用
 	private int itemChoiceMode = -1;
@@ -1204,7 +1228,7 @@ public class BattleSystem implements Drawable {
 				}
 				//ターゲット選択へ
 				targetSystem.setCurrent(user);
-				targetSystem.setCurrent(i);
+				targetSystem.setCurrent(i);//カレントアクションセット
 				targetSystem.setIconVisible(true);
 				targetSystem.setAreaVisible(false, true);
 				afterMove = false;
@@ -1342,7 +1366,7 @@ public class BattleSystem implements Drawable {
 		コマンド選択に戻れ,
 	}
 
-	public TargetSelectCalcelResult calcelTargetSelect() {
+	public TargetSelectCalcelResult cancelTargetSelect() {
 		if (afterMove) {
 			//移動後攻撃からだったら移動後攻撃アクション選択に戻る
 			List<Action> a = new ArrayList<>();
@@ -1418,7 +1442,6 @@ public class BattleSystem implements Drawable {
 	}
 
 	boolean 魔法詠唱を破棄(Actor a) {
-		boolean res = false;
 		for (int i : magics.keySet()) {
 			MagicSpell remove = null;
 			for (MagicSpell m : magics.get(i)) {
@@ -1429,13 +1452,12 @@ public class BattleSystem implements Drawable {
 			}
 			if (remove != null) {
 				magics.get(i).remove(remove);
-				res = true;
-				break;
+				castingSprites.remove(a);
+				a.getStatus().removeCondition(ConditionKey.詠唱中);
+				return true;
 			}
 		}
-		castingSprites.remove(a);
-		a.getStatus().removeCondition(ConditionKey.詠唱中);
-		return res;
+		return false;
 	}
 
 	// I18NKから参照するためpp
@@ -1468,10 +1490,7 @@ public class BattleSystem implements Drawable {
 
 		//魔法詠唱完了の場合発動
 		if (currentCmd.isMagicSpell()) {
-			ActionResult res = a.exec(selectedTgt);
-			setMsg(攻撃結果のMSG(res));
-			currentBAWaitTime = new FrameTimeCounter(200);
-			setStage(攻撃結果処理(res));
+			攻撃処理(a, selectedTgt);
 			return;
 		}
 
@@ -1494,302 +1513,463 @@ public class BattleSystem implements Drawable {
 			return;
 		}
 		//その他行動の場合は実行
-		ActionResult res = a.exec(selectedTgt);
-		setMsg(攻撃結果のMSG(res));
-		currentBAWaitTime = new FrameTimeCounter(200);
-		setStage(攻撃結果処理(res));
-		return;
+		攻撃処理(a, selectedTgt);
 	}
 
-	private Stage 攻撃結果処理(ActionResult res) {
-		//アニメーション
-		animation.add(res.getUserAnimation());
-		animation.addAll(res.getUserEventResult().stream().map(p -> p.tgtAnimation).toList());
-		animation.addAll(res.getUserEventResult().stream().map(p -> p.otherAnimation).toList());
-		animation.addAll(res.getResult().values().stream().flatMap(p -> p.stream()).map(p -> p.tgtAnimation).toList());
-		animation.addAll(res.getResult().values().stream().flatMap(p -> p.stream()).map(p -> p.otherAnimation).toList());
-		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-		//ダメージ表示スプライト追加
-		for (ActionResult.EventResult e : res.getUserEventResult()) {
-			if (e.tgtDamageHp != 0) {
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.tgt.getSprite().getX() - Random.randomAbsInt(9),
-						e.tgt.getSprite().getY() - Random.randomAbsInt(9),
-						Math.abs(e.tgtDamageHp),
-						Color.WHITE);
-				animation.add(ds);
+	private void 攻撃処理(Action a, ActionTarget tgt) {
+		actionResult = new ActionResult(a, tgt);
+		eventQueue.clear();
+		eventIsUserEvent.clear();
+		//カレントのターゲットを保存
+		currentActionTgt = tgt;
+
+		//aを分解してキューに入れる。
+		for (var v : a.getUserEvents()) {
+			eventQueue.add(v);
+			eventIsUserEvent.add(true);
+		}
+		for (var v : a.getMainEvents()) {
+			eventQueue.add(v);
+			eventIsUserEvent.add(false);
+		}
+		//消化へ
+		イベントキュー消化();
+	}
+
+	private void イベントキュー消化() {
+		if (eventQueue.isEmpty()) {
+			//終わり
+			setStage(Stage.EXECコール待機);
+			actionResult = null;
+			eventQueue.clear();
+			eventIsUserEvent.clear();
+			currentActionTgt = null;
+			currentBAWaitTime = null;
+			return;
+		}
+		//ユーザが実行できない状態になっていたら中断
+		if (currentActionTgt.getUser().getStatus().getConditionFlags().getP().停止 >= 1f) {
+			setMsg(I18N.get(GameSystemI18NKeys.XはXしたので行動は中断された,
+					currentActionTgt.getUser().getVisibleName(),
+					currentActionTgt.getUser().getStatus().getConditionFlags().get停止理由().getVisibleName()
+			));
+			//終わり
+			currentBAWaitTime = new FrameTimeCounter(45);
+			setStage(Stage.待機中＿時間あり＿手番送り);
+			actionResult = null;
+			eventQueue.clear();
+			eventIsUserEvent.clear();
+			currentActionTgt = null;
+			currentBAWaitTime = null;
+			return;
+		}
+		//エフェクト実行済みかどうか
+		if (effect == null) {
+			//ユーザイベントかどうか
+			boolean isUserEvent = eventIsUserEvent.getFirst();
+			//直前の結果で誰かが死んだ場合エフェクト再生モードに入る
+			List<ActionResult.EventActorResult> 死亡者リスト = null;
+			for (Actor a : allActors()) {
+				//エフェクトはSANダメージだけ
+				if (a.getStatus().hasCondition(ConditionKey.解脱)) {
+					エフェクト前生存者リスト.add(a);
+				}
 			}
-			if (e.tgtDamageMp != 0) {
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.tgt.getSprite().getX(),
-						e.tgt.getSprite().getY(),
-						Math.abs(e.tgtDamageMp),
-						Color.YELLOW);
-				animation.add(ds);
+			if (isUserEvent) {
+				ActionResult.UserEventResult r = actionResult.getLastUserEventResult();
+				if (r != null) {
+					死亡者リスト = is死亡者あり(r);
+				}
+			} else {
+				ActionResult.PerEvent r = actionResult.getLastMainEventResult();
+				if (r != null) {
+					死亡者リスト = is死亡者あり(r);
+				}
 			}
-			if (e.tgtDamageSAN != 0) {
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.tgt.getSprite().getX() + Random.randomAbsInt(9),
-						e.tgt.getSprite().getY() + Random.randomAbsInt(9),
-						Math.abs(e.tgtDamageSAN),
-						Color.RED);
-				animation.add(ds);
+			if (死亡者リスト != null && !死亡者リスト.isEmpty()) {
+				エフェクト起動(死亡者リスト);//ここでエフェクトが入る
+				setStage(Stage.エフェクト再生中_終了待ち);
+				return;
+			}
+		} else if (effect.isEnded()) {
+			//エフェクトが終了している場合、その効果で死亡者がいるか再チェックする
+			List<Actor> 新たなる死亡者 = エフェクト前生存者リスト.stream().filter(p -> p.getStatus().hasCondition(ConditionKey.解脱)).toList();
+			if (!新たなる死亡者.isEmpty()) {
+				エフェクト起動ByActor(新たなる死亡者);//ここでエフェクトが入る
+				setStage(Stage.エフェクト再生中_終了待ち);
+				return;
 			}
 		}
-		for (Actor a : res.getResult().keySet()) {
-			for (ActionResult.EventResult e : res.getResult().get(a)) {
-				if (e.tgtDamageHp != 0) {
-					DamageAnimationSprite ds = new DamageAnimationSprite(
-							e.tgt.getSprite().getX() - Random.randomAbsInt(9),
-							e.tgt.getSprite().getY() - Random.randomAbsInt(9),
-							Math.abs(e.tgtDamageHp),
-							Color.WHITE);
-					animation.add(ds);
-				}
-				if (e.tgtDamageMp != 0) {
-					DamageAnimationSprite ds = new DamageAnimationSprite(
-							e.tgt.getSprite().getX(),
-							e.tgt.getSprite().getY(),
-							Math.abs(e.tgtDamageMp),
-							Color.YELLOW);
-					animation.add(ds);
-				}
-				if (e.tgtDamageSAN != 0) {
-					DamageAnimationSprite ds = new DamageAnimationSprite(
-							e.tgt.getSprite().getX() + Random.randomAbsInt(9),
-							e.tgt.getSprite().getY() + Random.randomAbsInt(9),
-							Math.abs(e.tgtDamageSAN),
-							Color.RED);
-					animation.add(ds);
+		//エフェクト実行済みか死亡者がない場合はエフェクトなしにする
+		effect = null;
+		//イベントの1件目を実行
+		ActionEvent e = eventQueue.getFirst();
+		eventQueue.removeFirst();
+		//ユーザイベントかどうか
+		boolean isUserEvent = eventIsUserEvent.getFirst();
+		eventIsUserEvent.removeFirst();
+		//実行
+		e.exec(currentActionTgt, actionResult, isUserEvent);
+		//actionResultに結果が入ったので、メッセージやアニメーション処理
+		if (isUserEvent) {
+			ActionResult.UserEventResult r = actionResult.getLastUserEventResult();
+			//イベントが発動しなかったら何もせずスキップ
+			if (r.summary == ActionResultSummary.失敗＿起動条件未達) {
+				イベントキュー消化();
+			}
+			//アニメーション追加
+			addAnimation(r);
+			//ダメージ表示
+			addDamageAnimation(r);
+			//MSG
+			//MSGは派生を出さない（量が多いので）
+			//MSGがない（ビームエフェクトイベント等）は何も出さない
+			if (r.msgI18Nd != null && !r.msgI18Nd.isEmpty()) {
+				setMsg(r.msgI18Nd);
+			}
+		} else {
+			ActionResult.PerEvent r = actionResult.getLastMainEventResult();
+			//イベントが発動しなかったら何もせずスキップ
+			if (r.summary == ActionResultSummary.失敗＿起動条件未達) {
+				イベントキュー消化();
+			}
+			List<String> msg = new ArrayList<>();
+			for (var v : r.perActor.values()) {
+				//アニメーション追加
+				addAnimation(v);
+				//ダメージ表示
+				addDamageAnimation(v);
+				//MSG
+				msg.add(v.msgI18Nd);
+			}
+			//MSG
+			//MSGは派生を出さない（量が多いので）
+			//MSGがない（ビームエフェクトイベント等）は何も出さない
+			if (!msg.isEmpty()) {
+				setMsg(msg);
+			}
+		}
+		//アニメーションウェイトタイム
+		currentBAWaitTime = new FrameTimeCounter(e.getWaitTime());
+		//イベントキュー消化中へ
+		setStage(Stage.イベントキュー消化中);
+
+	}
+
+	@Nullable
+	private List<ActionResult.EventActorResult> is死亡者あり(ActionResult.EventActorResult r) {
+		if (r.is解脱 || r.is気絶 || r.is解脱) {
+			if (!r.tgt.isSummoned()) {
+				return new ArrayList<>(Arrays.asList(r));
+			}
+		}
+		return null;
+	}
+
+	@Nullable
+	private List<ActionResult.EventActorResult> is死亡者あり(ActionResult.PerEvent r) {
+		List<ActionResult.EventActorResult> result = new ArrayList<>();
+		for (var v : r.perActor.values()) {
+			if (v.is解脱 || v.is気絶 || v.is解脱) {
+				if (!v.tgt.isSummoned()) {
+					result.add(v);
 				}
 			}
 		}
-		//エフェクト
-		int party = 0, enemy = 0;
-		for (ActionResult.EventResult r : res.allResults()) {
-			party += (GameSystem.getInstance().getParty().contains(r.tgt) && !r.tgt.isSummoned() && r.tgtIsDead) ? 1 : 0;
-			enemy += (!GameSystem.getInstance().getParty().contains(r.tgt) && !r.tgt.isSummoned() && r.tgtIsDead) ? 1 : 0;
-			if(r.tgt.getStatus().hasCondition(ConditionKey.解脱)){
+		if (result.isEmpty()) {
+			return null;
+		}
+		return result;
+	}
+
+	private void エフェクト起動ByActor(List<Actor> 死亡者リスト) {
+		assert 死亡者リスト != null && !死亡者リスト.isEmpty() : "BS deadman list is missmatch";
+		if (死亡者リスト.stream().anyMatch(p -> p.getStatus().hasCondition(ConditionKey.解脱))) {
+			if (BattleConfig.Sounds.解脱 != null) {
 				BattleConfig.Sounds.解脱.load().stopAndPlay();
 			}
-			if (r.tgtIsDead) {
-				if (BattleConfig.deadCharaImage != null) {
-					r.tgt.getSprite().setImage(BattleConfig.deadCharaImage);
-				}
-			}
 		}
-		//エフェクト追加
-		if (party != 0 || enemy != 0) {
-			this.effect = new FlashEffect(
-					GraphicsUtil.transparent(Color.RED, 128),
-					new FrameTimeCounter(20),
-					new FrameTimeCounter(4),
-					0, 0,
-					(int) GameOption.getInstance().getWindowSize().getWidth(),
-					(int) GameOption.getInstance().getWindowSize().getHeight());
+		//エフェクトの実体化
+		this.effect = new FlashEffect(
+				GraphicsUtil.transparent(Color.RED, 128),
+				new FrameTimeCounter(20),
+				new FrameTimeCounter(4),
+				0, 0,
+				(int) GameOption.getInstance().getWindowSize().getWidth(),
+				(int) GameOption.getInstance().getWindowSize().getHeight());
+		//エフェクトサウンドの再生
+		if (BattleConfig.Sounds.正気度減少演出 != null) {
+			BattleConfig.Sounds.正気度減少演出.load().stopAndPlay();
 		}
-		if (party != 0) {
-			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
-				int damage = 0;
-				for (int i = 0; i < party; i++) {
-					damage += BattleConfig.死亡演出＿味方の場合.getAsInt();
-				}
-				if (damage > 0) {
-					damage = -damage;
-				}
-				if (damage == 0) {
-					continue;
-				}
-				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						a.getSprite().getX() + 12,
-						a.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
-			for (Enemy e : this.enemies) {
-				int damage = 0;
-				for (int i = 0; i < party; i++) {
-					damage += BattleConfig.死亡演出＿敵の場合.getAsInt();
-				}
-				if (damage > 0) {
-					damage = -damage;
-				}
-				if (damage == 0) {
-					continue;
-				}
-				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.getSprite().getX() + 12,
-						e.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
-		}
-		if (enemy != 0) {
-			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
-				int damage = 0;
-				for (int i = 0; i < party; i++) {
-					damage += BattleConfig.死亡演出＿敵の場合.getAsInt();
-				}
-				if (damage > 0) {
-					damage = -damage;
-				}
-				if (damage == 0) {
-					continue;
-				}
-				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						a.getSprite().getX() + 12,
-						a.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
-			for (Enemy e : this.enemies) {
-				int damage = 0;
-				for (int i = 0; i < party; i++) {
-					damage += BattleConfig.死亡演出＿味方の場合.getAsInt();
-				}
-				if (damage > 0) {
-					damage = -damage;
-				}
-				if (damage == 0) {
-					continue;
-				}
-				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.getSprite().getX() + 12,
-						e.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
-		}
-		if (party != 0 || enemy != 0) {
-			BattleConfig.Sounds.死亡演出.load().stopAndPlay();
-			return Stage.エフェクト再生中_終了待ち;
-		}
+		//正気度減少イベントの計算
+		int 死亡者PCの数 = (int) 死亡者リスト.stream().filter(p -> p.isPlayer()).count();
+		int 死亡者敵の数 = (int) 死亡者リスト.stream().filter(p -> !p.isPlayer()).count();
 
-		return Stage.待機中＿時間あり＿手番送り;
+		List<String> msg = new ArrayList<>();
+
+		if (死亡者PCの数 != 0) {
+			//死んだのはPC
+			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
+				int damage = BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				damage *= 死亡者PCの数;
+				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				String m = a.getStatus().addWhen0Condition();
+				if (m != null) {
+					msg.add(m);
+				}
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						a.getSprite().getX() + 12,
+						a.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+			for (Enemy e : this.enemies) {
+				int damage = BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				damage *= 死亡者敵の数;
+				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				String m = e.getStatus().addWhen0Condition();
+				if (m != null) {
+					msg.add(m);
+				}
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						e.getSprite().getX() + 12,
+						e.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+		}
+		if (死亡者敵の数 != 0) {
+			//死んだのは敵
+			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
+				int damage = BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				damage *= 死亡者PCの数;
+				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				String m = a.getStatus().addWhen0Condition();
+				if (m != null) {
+					msg.add(m);
+				}
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						a.getSprite().getX() + 12,
+						a.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+			for (Enemy e : this.enemies) {
+				int damage = BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				damage *= 死亡者敵の数;
+				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				String m = e.getStatus().addWhen0Condition();
+				if (m != null) {
+					msg.add(m);
+				}
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						e.getSprite().getX() + 12,
+						e.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+		}
+		setMsg(msg);
 	}
 
-	private Stage deadEffect() {
-		//エフェクト
-		int party = 0, enemy = 0;
-		for (Actor a : allActors()) {
-			if (!a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶)) {
-				String v = a.getStatus().addWhen0Condition();
-				if (v != null) {
-					if (a.isPlayer() && !a.isSummoned()) {
-						a.getSprite().setImage(BattleConfig.deadCharaImage);
-						party++;
-					}
-					if (!a.isPlayer() && !a.isSummoned()) {
-						a.getSprite().setImage(BattleConfig.deadCharaImage);
-						enemy++;
-					}
-				}
+	private void エフェクト起動(List<ActionResult.EventActorResult> 死亡者リスト) {
+		assert 死亡者リスト != null && !死亡者リスト.isEmpty() : "BS deadman list is missmatch";
+		//死亡者リストには召喚者は含まれない
+		assert 死亡者リスト.stream().anyMatch(p -> !p.tgt.isSummoned()) : "BS deadman list is missmatch";
+		//サウンド再生
+		if (死亡者リスト.stream().anyMatch(p -> p.is解脱)) {
+			if (BattleConfig.Sounds.解脱 != null) {
+				BattleConfig.Sounds.解脱.load().stopAndPlay();
 			}
 		}
-		//エフェクト追加
-		if (party != 0 || enemy != 0) {
-			this.effect = new FlashEffect(
-					GraphicsUtil.transparent(Color.RED, 128),
-					new FrameTimeCounter(20),
-					new FrameTimeCounter(4),
-					0, 0,
-					(int) GameOption.getInstance().getWindowSize().getWidth(),
-					(int) GameOption.getInstance().getWindowSize().getHeight());
-		}
-		if (party != 0) {
-			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
-				int damage = 0;
-				for (int i = 0; i < party; i++) {
-					damage += BattleConfig.死亡演出＿味方の場合.getAsInt();
-				}
-				if (damage > 0) {
-					damage = -damage;
-				}
-				if (damage == 0) {
-					continue;
-				}
-				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						a.getSprite().getX() + 12,
-						a.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
-			for (Enemy e : this.enemies) {
-				int damage = 0;
-				for (int i = 0; i < party; i++) {
-					damage += BattleConfig.死亡演出＿敵の場合.getAsInt();
-				}
-				if (damage > 0) {
-					damage = -damage;
-				}
-				if (damage == 0) {
-					continue;
-				}
-				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.getSprite().getX() + 12,
-						e.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
+		if (死亡者リスト.stream().anyMatch(p -> p.is損壊)) {
+			if (BattleConfig.Sounds.損壊 != null) {
+				BattleConfig.Sounds.損壊.load().stopAndPlay();
 			}
 		}
-		if (enemy != 0) {
-			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
-				int damage = 0;
-				for (int i = 0; i < party; i++) {
-					damage += BattleConfig.死亡演出＿敵の場合.getAsInt();
-				}
-				if (damage > 0) {
-					damage = -damage;
-				}
-				if (damage == 0) {
-					continue;
-				}
-				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						a.getSprite().getX() + 12,
-						a.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
-			for (Enemy e : this.enemies) {
-				int damage = 0;
-				for (int i = 0; i < party; i++) {
-					damage += BattleConfig.死亡演出＿味方の場合.getAsInt();
-				}
-				if (damage > 0) {
-					damage = -damage;
-				}
-				if (damage == 0) {
-					continue;
-				}
-				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.getSprite().getX() + 12,
-						e.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
+		if (死亡者リスト.stream().anyMatch(p -> p.is気絶)) {
+			if (BattleConfig.Sounds.気絶 != null) {
+				BattleConfig.Sounds.気絶.load().stopAndPlay();
 			}
 		}
-		if (party != 0 || enemy != 0) {
-			BattleConfig.Sounds.死亡演出.load().stopAndPlay();
-			return Stage.エフェクト再生中_終了待ち;
+		//エフェクトの実体化
+		this.effect = new FlashEffect(
+				GraphicsUtil.transparent(Color.RED, 128),
+				new FrameTimeCounter(20),
+				new FrameTimeCounter(4),
+				0, 0,
+				(int) GameOption.getInstance().getWindowSize().getWidth(),
+				(int) GameOption.getInstance().getWindowSize().getHeight());
+		//エフェクトサウンドの再生
+		if (BattleConfig.Sounds.正気度減少演出 != null) {
+			BattleConfig.Sounds.正気度減少演出.load().stopAndPlay();
 		}
+		//正気度減少イベントの計算
+		int 死亡者PCの数 = (int) 死亡者リスト.stream().filter(p -> p.tgt.isPlayer()).count();
+		int 死亡者敵の数 = (int) 死亡者リスト.stream().filter(p -> !p.tgt.isPlayer()).count();
 
-		return Stage.待機中＿時間あり＿手番送り;
+		List<String> msg = new ArrayList<>();
+
+		if (死亡者PCの数 != 0) {
+			//死んだのはPC
+			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
+				int damage = BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				damage *= 死亡者PCの数;
+				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				String m = a.getStatus().addWhen0Condition();
+				if (m != null) {
+					msg.add(m);
+				}
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						a.getSprite().getX() + 12,
+						a.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+			for (Enemy e : this.enemies) {
+				int damage = BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				damage *= 死亡者敵の数;
+				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				String m = e.getStatus().addWhen0Condition();
+				if (m != null) {
+					msg.add(m);
+				}
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						e.getSprite().getX() + 12,
+						e.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+		}
+		if (死亡者敵の数 != 0) {
+			//死んだのは敵
+			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
+				int damage = BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				damage *= 死亡者PCの数;
+				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				String m = a.getStatus().addWhen0Condition();
+				if (m != null) {
+					msg.add(m);
+				}
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						a.getSprite().getX() + 12,
+						a.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+			for (Enemy e : this.enemies) {
+				int damage = BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
+				if (damage > 0) {
+					damage = -damage;
+				}
+				if (damage == 0) {
+					continue;
+				}
+				damage *= 死亡者敵の数;
+				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+				String m = e.getStatus().addWhen0Condition();
+				if (m != null) {
+					msg.add(m);
+				}
+				DamageAnimationSprite ds = new DamageAnimationSprite(
+						e.getSprite().getX() + 12,
+						e.getSprite().getY() + 12,
+						Math.abs(damage),
+						Color.RED);
+				animation.add(ds);
+			}
+		}
+		setMsg(msg);
+	}
+	private static final int ダメージ表示遅延起動時間 = 20;
+
+	private void addDamageAnimation(ActionResult.EventActorResult res) {
+		if (res.tgtDamageHp != 0) {
+			DamageAnimationSprite ds = new DamageAnimationSprite(
+					res.tgt.getSprite().getX() - Random.randomAbsInt(9),
+					res.tgt.getSprite().getY() - Random.randomAbsInt(9),
+					Math.abs(res.tgtDamageHp),
+					Color.WHITE);
+			遅延起動Animations.add(new 遅延起動Animation(ds, new FrameTimeCounter(ダメージ表示遅延起動時間)));
+		}
+		if (res.tgtDamageMp != 0) {
+			DamageAnimationSprite ds = new DamageAnimationSprite(
+					res.tgt.getSprite().getX(),
+					res.tgt.getSprite().getY(),
+					Math.abs(res.tgtDamageMp),
+					Color.YELLOW);
+			遅延起動Animations.add(new 遅延起動Animation(ds, new FrameTimeCounter(ダメージ表示遅延起動時間)));
+		}
+		if (res.tgtDamageSAN != 0) {
+			DamageAnimationSprite ds = new DamageAnimationSprite(
+					res.tgt.getSprite().getX() + Random.randomAbsInt(9),
+					res.tgt.getSprite().getY() + Random.randomAbsInt(9),
+					Math.abs(res.tgtDamageSAN),
+					Color.RED);
+			遅延起動Animations.add(new 遅延起動Animation(ds, new FrameTimeCounter(ダメージ表示遅延起動時間)));
+		}
+	}
+
+	private void addAnimation(ActionResult.EventActorResult res) {
+		//アニメーション
+		if (res.otherAnimation != null) {
+			this.animation.add(res.otherAnimation);
+		}
+		if (res.tgtAnimation != null) {
+			this.animation.add(res.tgtAnimation);
+		}
+		if (res.userAnimation != null) {
+			this.animation.add(res.userAnimation);
+		}
 	}
 
 	@LoopCall
@@ -1816,6 +1996,16 @@ public class BattleSystem implements Drawable {
 				.filter(p -> !p.getStatus().hasCondition(ConditionKey.詠唱中))
 				.collect(Collectors.toSet());
 		removeCastAnimation.forEach(p -> castingSprites.remove(p));
+
+		//遅延起動アニメーションの処理
+		List<遅延起動Animation> 遅延起動AniRemove = new ArrayList<>();
+		for (var v : 遅延起動Animations) {
+			if (v.tc.isReaching()) {
+				遅延起動AniRemove.add(v);
+				animation.add(v.s);
+			}
+		}
+		遅延起動Animations.removeAll(遅延起動AniRemove);
 
 		//ステージ別処理
 		switch (stage) {
@@ -1852,6 +2042,25 @@ public class BattleSystem implements Drawable {
 			}
 			case EXECコール待機: {
 				//処理なし
+				break;
+			}
+			case イベントキュー消化中: {
+				if (currentBAWaitTime == null) {
+					throw new GameSystemException("waiting, but wait time is null : " + this);
+				}
+				if (currentBAWaitTime.isReaching()) {
+					//次のイベントor終了へ
+					イベントキュー消化();
+					return;
+				}
+				break;
+			}
+			case エフェクト再生中_終了待ち: {
+				assert effect != null : "effect is null : " + this;
+				if (effect.isEnded()) {
+					イベントキュー消化();
+					return;
+				}
 				break;
 			}
 			case 待機中＿時間あり＿手番送り: {
@@ -1922,7 +2131,7 @@ public class BattleSystem implements Drawable {
 				//NPCの移動実行、！！！！！！！！移動かんりょぅしたらメッセージウインドウ閉じる
 				currentCmd.getUser().getSprite().moveToTgt();
 				currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残り行動力).add(-1);
-				int remMovePoint = (int) currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残り行動力).getValue();
+				remMovePoint = (int) currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残り行動力).getValue();
 				//移動ポイントが切れた場合、移動終了してユーザコマンド待ちに移行
 				if (remMovePoint <= 0 || !currentCmd.getUser().getSprite().isMoving()) {
 					currentCmd.getUser().getSprite().unsetTarget();
@@ -1963,23 +2172,11 @@ public class BattleSystem implements Drawable {
 					break;
 				}
 				//移動後攻撃実行
-				ActionResult res = selected.exec(new ActionTarget(user, selected, tgt, false));
-				setMsg(攻撃結果のMSG(res));
-				currentBAWaitTime = new FrameTimeCounter(200);
-				//アクション実行中に入る
-				setStage(攻撃結果処理(res));
-				break;
+				攻撃処理(selected, new ActionTarget(user, selected, tgt, false));
+				return;
 			}
 			case バトル終了済み: {
 				//処理なし
-				break;
-			}
-			case エフェクト再生中_終了待ち: {
-				assert effect != null : "effect is null : " + this;
-				if (effect.isEnded()) {
-					//再度死亡者がいるかチェックする。
-					setStage(deadEffect());
-				}
 				break;
 			}
 			case アイテム用途選択画面表示中:
@@ -1995,193 +2192,6 @@ public class BattleSystem implements Drawable {
 				throw new GameSystemException("BS illegal state : " + this);
 			}
 		}
-	}
-
-	private String 攻撃結果のMSG(ActionResult res) {
-		StringBuilder sb = new StringBuilder();
-		//1行目作成
-		switch (res.getAction().getType()) {
-			case 行動: {
-				throw new GameSystemException("atk result msg, but action is not atk : " + res);
-			}
-			case アイテム: {
-				sb.append(I18N.get(GameSystemI18NKeys.XはXを使った, res.getUser().getVisibleName())).append(Text.getLineSep());
-				break;
-			}
-			case 攻撃: {
-				sb.append(I18N.get(GameSystemI18NKeys.XのX, res.getUser().getVisibleName())).append(Text.getLineSep());
-				break;
-			}
-			case 魔法: {
-				sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, res.getUser().getVisibleName())).append(Text.getLineSep());
-				break;
-			}
-		}
-		//2行目
-		{
-			for (ActionResult.EventResult e : res.getUserEventResult()) {
-				if (e.event.getEventType() == ActionEventType.メッセージ表示
-						|| e.event.getEventType() == ActionEventType.前イベ成功時_メッセージ表示
-						|| e.event.getEventType() == ActionEventType.フラグ参照メッセージ表示
-						|| e.event.getEventType() == ActionEventType.前イベ成功時_フラグ参照メッセージ表示) {
-					if (e.summary.is成功()) {
-						sb.append(e.msgI18Nd).append(Text.getLineSep());
-					}
-				} else {
-					ActionResultEventMSG msg = eventResultのMSG(e);
-					sb.append(msg.msg1Line).append(" ");
-				}
-			}
-		}
-		//3行目
-		List<ActionResultEventMSG> msg = new ArrayList<>();
-		for (Actor a : res.getResult().keySet()) {
-			for (ActionResult.EventResult e : res.getResult().get(a)) {
-				if (e.event.getEventType() == ActionEventType.メッセージ表示
-						|| e.event.getEventType() == ActionEventType.前イベ成功時_メッセージ表示
-						|| e.event.getEventType() == ActionEventType.フラグ参照メッセージ表示
-						|| e.event.getEventType() == ActionEventType.前イベ成功時_フラグ参照メッセージ表示) {
-					if (e.summary.is成功()) {
-						sb.append(e.msgI18Nd).append(Text.getLineSep());
-					}
-				} else {
-					ActionResultEventMSG m = eventResultのMSG(e);
-					sb.append(m.msg1Line).append(" ");
-				}
-			}
-		}
-		//８行以内ならそのまま表示
-		if (msg.size() + 2 < 8) {
-			sb.append(String.join(Text.getLineSep(), msg.stream().map(p -> p.msg1Line).toList()));
-			return sb.toString();
-		}
-
-		//合計８行を超える場合は平均モードにする
-		{
-			int sumHP, hpNum;
-			sumHP = msg.stream().filter(p -> p.sk != null).filter(p -> p.sk == StatusKey.体力).mapToInt(p -> p.valueAbs).sum();
-			hpNum = (int) msg.stream().filter(p -> p.sk != null).filter(p -> p.sk == StatusKey.体力).count();
-			if (hpNum != 0) {
-				sb.append(I18N.get(GameSystemI18NKeys.Xに平均Xのダメージ, StatusKey.体力.getVisibleName(), (sumHP / hpNum) + ""));
-				sb.append(Text.getLineSep());
-			}
-		}
-		{
-
-			int sumMP, mpNum;
-			sumMP = msg.stream().filter(p -> p.sk != null).filter(p -> p.sk == StatusKey.魔力).mapToInt(p -> p.valueAbs).sum();
-			mpNum = (int) msg.stream().filter(p -> p.sk != null).filter(p -> p.sk == StatusKey.魔力).count();
-			if (mpNum != 0) {
-				sb.append(I18N.get(GameSystemI18NKeys.Xに平均Xのダメージ, StatusKey.魔力.getVisibleName(), (sumMP / mpNum) + ""));
-				sb.append(Text.getLineSep());
-			}
-		}
-		{
-			int sumSAN, sanNum;
-			sumSAN = msg.stream().filter(p -> p.sk != null).filter(p -> p.sk == StatusKey.正気度).mapToInt(p -> p.valueAbs).sum();
-			sanNum = (int) msg.stream().filter(p -> p.sk != null).filter(p -> p.sk == StatusKey.正気度).count();
-			if (sanNum != 0) {
-				sb.append(I18N.get(GameSystemI18NKeys.Xに平均Xのダメージ, StatusKey.正気度.getVisibleName(), (sumSAN / sanNum) + ""));
-				sb.append(Text.getLineSep());
-			}
-		}
-		return sb.toString();
-	}
-
-	private static class ActionResultEventMSG {
-
-		final String msg1Line;
-		final StatusKey sk;
-		final int valueAbs;
-
-		public ActionResultEventMSG(String msg1Line, StatusKey sk, int valueAbs) {
-			this.msg1Line = msg1Line;
-			this.sk = sk;
-			this.valueAbs = valueAbs;
-		}
-
-	}
-
-	private ActionResultEventMSG eventResultのMSG(ActionResult.EventResult e) {
-		StringBuilder sb = new StringBuilder();
-		StatusKey sk = null;
-		int val = 0;
-		if (e.summary.is成功()) {
-			//MSGが入っていればそれを使う
-			if (e.msgI18Nd != null) {
-				sb.append(e.msgI18Nd);
-			} else {
-				if (e.tgtDamageHp != 0) {
-					val = e.tgtDamageHp;
-					sk = StatusKey.体力;
-					sb.append(I18N.get(GameSystemI18NKeys.Xの, e.tgt.getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xに, StatusKey.体力.getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.tgtDamageHp) + ""));
-				} else if (e.tgtDamageMp != 0) {
-					val = e.tgtDamageMp;
-					sk = StatusKey.魔力;
-					sb.append(I18N.get(GameSystemI18NKeys.Xの, e.tgt.getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xに, StatusKey.体力.getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.tgtDamageMp) + ""));
-				} else if (e.tgtDamageSAN != 0) {
-					val = e.tgtDamageSAN;
-					sk = StatusKey.正気度;
-					sb.append(I18N.get(GameSystemI18NKeys.Xの, e.tgt.getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xに, StatusKey.正気度.getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.tgtDamageSAN) + ""));
-				}
-			}
-		} else {
-			if (e.msgI18Nd != null) {
-				sb.append(e.msgI18Nd);
-			} else {
-				switch (e.summary) {
-					case 失敗＿このアクションにはイベントがない: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
-						break;
-					}
-					case 失敗＿リソースが足りない: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった));
-						break;
-					}
-					case 失敗＿不発: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった));
-						break;
-					}
-					case 失敗＿反射された: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかしXは反射した, e.tgt.getVisibleName()));
-						break;
-					}
-					case 失敗＿吸収された: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかしXは吸収した, e.tgt.getVisibleName()));
-						break;
-					}
-					case 失敗＿回避された: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった));
-						break;
-					}
-					case 失敗＿基礎威力０: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
-						break;
-					}
-					case 失敗＿実行したがミス: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった));
-						break;
-					}
-					case 失敗＿術者死亡: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった));
-						break;
-					}
-					case 失敗＿計算結果０: {
-						sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
-						break;
-					}
-					default:
-						throw new AssertionError("undefined e.summary : " + e);
-				}
-			}
-		}
-		return new ActionResultEventMSG(sb.toString(), sk, val);
 	}
 
 	//アクションリザルトウインドウに出す。主に1行用。
@@ -2204,7 +2214,7 @@ public class BattleSystem implements Drawable {
 
 		//リスト要素の展開
 		StringBuilder sb = new StringBuilder();
-		int i = 0;
+		int i = 0, line = 0;
 		while (true) {
 			if (isOver8Line) {
 				sb.append(s.get(i));
@@ -2212,11 +2222,16 @@ public class BattleSystem implements Drawable {
 				if (i >= s.size()) {
 					break;
 				}
+				sb.append("  ");
 				sb.append(s.get(i));
 				i++;
 			} else {
 				sb.append(s.get(i));
 				i++;
+			}
+			line++;
+			if (line >= 7) {
+				break;
 			}
 			if (i >= s.size()) {
 				break;

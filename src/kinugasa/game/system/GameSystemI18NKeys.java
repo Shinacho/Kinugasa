@@ -247,7 +247,13 @@ public class GameSystemI18NKeys {
 	public static final String XをXの確率で入手する = "アイテムXをXの確率で入手る";
 	public static final String Xの確率でXを回復する = "Xの確率でXを回復する";
 	public static final String Xの確率でX属性のダメージをXに与える = "Xの確率でX属性のダメージをXに与える";
-	public static final String この値は基礎値でありダメージ計算が行われる = "この値は基礎値でありダメージ計算が行われる";
+	public static final String 計算方法 = "計算方法";
+	public static final String ダメージ計算 = "ダメージ計算";
+	public static final String 直接作用 = "直接作用";
+	public static final String 乗算 = "乗算";
+	public static final String 値になる = "値になる";
+	public static final String 最大値になる = "最大値になる";
+	public static final String ゼロになる = "ゼロになる";
 	public static final String フィールド効果 = "フィールド効果";
 	public static final String この魔法はフィールドでは使えない = "この魔法はフィールドでは使えない";
 	public static final String 戦闘時ターゲット情報 = "戦闘時ターゲット情報";
@@ -434,6 +440,30 @@ public class GameSystemI18NKeys {
 	public static final String このダメージは自身の正気度が最大値に近いほど高くなる = "このダメージは自身の正気度が最大値に近いほど高くなる";
 	public static final String 精神的余裕の術式 = "精神的余裕の術式";
 	public static final String Xの確率で最大Xの正気度ダメージを与える = "Xの確率で最大Xの正気度ダメージを与える";
+	public static final String XはXしたので行動は中断された = "XはXしたので行動は中断された";
+	public static final String Xになった = "Xになった";
+	public static final String 与属性Xが = "与属性Xが";
+	public static final String 被属性Xが = "被属性Xが";
+	public static final String 状態異常耐性Xが = "状態異常耐性Xが";
+	public static final String Xの持ち物にXが追加された = "Xの持ち物にXが追加された";
+	public static final String XはXを失った = "XはXを失った";
+	public static final String XはXを入手した = "XはXを入手した";
+	public static final String Xは追加で行動できるようになった = "Xは追加で行動できるようになった";
+	public static final String Xは次に行動できるようになった = "Xは次に行動できるようになった";
+	public static final String Xは最後に行動できるようになった = "Xは最後に行動できるようになった";
+	public static final String Xは詠唱が中断された = "Xは詠唱が中断された";
+	public static final String Xの魔法詠唱はXターン移動した = "Xの魔法詠唱はXターン移動した";
+	public static final String 分身Xが現れた = "分身Xが現れた";
+	public static final String Xの行動は中断された = "Xの行動は中断された";
+	public static final String このターン行動順は反転した = "このターン行動順は反転した";
+	public static final String Xは転送された = "Xは転送された";
+	public static final String Xが召喚された = "Xが召喚された";
+	public static final String Xターン内の魔法詠唱は反転された = "Xターン内の魔法詠唱は反転された";
+	public static final String XはXの正気度ダメージを受けた = "XはXの正気度ダメージを受けた";
+	public static final String XはXをX回発動する準備をした = "XはXをX回発動する準備をした";
+	public static final String XのXは攻撃回数が変動した ="XのXは攻撃回数が変動した";
+	public static final String XのXは価値が変動した = "XのXは価値が変動した";
+	public static final String XはX装備を外した = "XはX装備を外した";
 	
 	
 	public static class CountKey {
@@ -474,11 +504,19 @@ public class GameSystemI18NKeys {
 		public static final String 入手した最強のアルケミコーラの番号 = "入手した最強のアルケミコーラの番号";
 		public static final String ラロヘスキーが動物と友達になった回数 = "ラロヘスキーが動物と友達になった回数";
 		public static final String ニーナが死んだ回数 = "ニーナが死んだ回数";
-		public static final String コペレードに酒を飲ませた回数 = "コペレードに酒を飲ませた回数";
+		public static final String コペレードが泥酔した回数 = "コペレードが泥酔した回数";
 		public static final String リングロードに回復された回数 = "リングロードに回復された回数";
 		public static final String リングロードが失った髪の合計 = "リングロードが失った髪の合計";
-		public static final String Aエンド回数 = "Aエンド回数";
-		public static final String Bエンド回数 = "Bエンド回数";
+		public static final String エンド1回数 = "エンド1回数";
+		public static final String エンド2回数 = "エンド2回数";
+		public static final String エンド3回数 = "エンド3回数";
+		public static final String エンド4回数 = "エンド4回数";
+		public static final String エンド5回数 = "エンド5回数";
+		public static final String エンド6回数 = "エンド6回数";
+		public static final String エンド7回数 = "エンド7回数";
+		public static final String エンド8回数 = "エンド8回数";
+		public static final String エンド9回数 = "エンド9回数";
+		public static final String TRUEエンド回数 = "TRUEエンド回数";
 
 	}
 
@@ -517,8 +555,7 @@ public class GameSystemI18NKeys {
 		public static final String 独自効果イベントがオーバーライドされていません = "独自効果イベントがオーバーライドされていません";
 		public static final String TGTIDがSLOTではありません = "TGTIDがSLOTではありません";
 		public static final String このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります = "このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります";
-		
-		
+
 		public static final String 装備解除しようとしましたがユーザはすでに装備していませんTERMとの整合性を要確認 = "装備解除しようとしましたがユーザはすでに装備していませんTERMとの整合性を要確認";
 		public static final String 武器ですが攻撃回数が０です = "武器ですが攻撃回数が０です";
 		public static final String 装備品ですがスタイルが入っていません = "装備品ですがスタイルが入っていません";

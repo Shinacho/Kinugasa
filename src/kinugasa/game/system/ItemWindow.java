@@ -320,23 +320,25 @@ public class ItemWindow extends BasicSprite {
 									GameSystem.getInstance().getParty(),
 									true);
 							ActionResult r = i.exec(t);
-							for (Map.Entry<Actor, List<ActionResult.EventResult>> e : r.getResult().entrySet()) {
-								StatusValueSet vs = e.getKey().getStatus().getDamageFromSavePoint();
-								if (vs.isEmpty() || vs.stream().allMatch(p -> p.getValue() == 0)) {
-									sb.append(I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, e.getKey().getVisibleName()));
-									sb.append(Text.getLineSep());
-								} else {
-									for (StatusValue v : vs) {
-										if (v.getValue() > 0) {
-											sb.append(I18N.get(GameSystemI18NKeys.Xの, e.getKey().getVisibleName()))
-													.append(I18N.get(GameSystemI18NKeys.Xは, v.getKey().getVisibleName()))
-													.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()) + ""));
-										} else {
-											sb.append(I18N.get(GameSystemI18NKeys.Xの, e.getKey().getVisibleName()))
-													.append(I18N.get(GameSystemI18NKeys.Xに, v.getKey().getVisibleName()))
-													.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()) + ""));
-										}
+							for (ActionResult.PerEvent p : r.getMainEventResultAsList()) {
+								for (Map.Entry<Actor, ActionResult.EventActorResult> e : p.perActor.entrySet()) {
+									StatusValueSet vs = e.getKey().getStatus().getDamageFromSavePoint();
+									if (vs.isEmpty() || vs.stream().allMatch(q -> q.getValue() == 0)) {
+										sb.append(I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, e.getKey().getVisibleName()));
 										sb.append(Text.getLineSep());
+									} else {
+										for (StatusValue v : vs) {
+											if (v.getValue() > 0) {
+												sb.append(I18N.get(GameSystemI18NKeys.Xの, e.getKey().getVisibleName()))
+														.append(I18N.get(GameSystemI18NKeys.Xは, v.getKey().getVisibleName()))
+														.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()) + ""));
+											} else {
+												sb.append(I18N.get(GameSystemI18NKeys.Xの, e.getKey().getVisibleName()))
+														.append(I18N.get(GameSystemI18NKeys.Xに, v.getKey().getVisibleName()))
+														.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()) + ""));
+											}
+											sb.append(Text.getLineSep());
+										}
 									}
 								}
 							}

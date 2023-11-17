@@ -25,7 +25,8 @@ public enum ActionResultSummary {
 	成功,
 	成功＿ブロックされたが１以上,
 	成功＿クリティカル,
-	失敗＿不発, 
+	失敗＿起動条件未達,
+	失敗＿不発,
 	失敗＿基礎威力０,
 	失敗＿このアクションにはイベントがない,
 	失敗＿実行したがミス,
@@ -42,6 +43,16 @@ public enum ActionResultSummary {
 
 	public boolean is失敗() {
 		return toString().startsWith("失敗");
+	}
+
+	public ActionResultSummary or(ActionResultSummary s) {
+		if (this.is成功()) {
+			return this;
+		}
+		if (s.is成功()) {
+			return s;
+		}
+		return this;
 	}
 
 }

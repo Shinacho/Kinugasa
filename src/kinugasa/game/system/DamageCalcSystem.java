@@ -17,6 +17,7 @@
 package kinugasa.game.system;
 
 import kinugasa.game.GameLog;
+import kinugasa.game.I18N;
 import kinugasa.util.Random;
 
 /**

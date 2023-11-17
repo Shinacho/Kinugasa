@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GameLog;
+import kinugasa.game.I18N;
 import kinugasa.game.NotNewInstance;
 import kinugasa.game.Nullable;
 import kinugasa.graphics.ImageUtil;
@@ -32,7 +33,6 @@ import kinugasa.resource.text.XMLElement;
 import kinugasa.resource.text.XMLFile;
 import kinugasa.resource.text.XMLFileSupport;
 import kinugasa.game.NotNull;
-import kinugasa.object.Model;
 
 /**
  * アクターはステータスとスプライトを持つ、登場人物のクラスです。<br>
@@ -287,7 +287,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 	}
 
 	public final String getVisibleName() {
-		return visibleName;
+		return I18N.get(visibleName);
 	}
 
 	public final String getId() {

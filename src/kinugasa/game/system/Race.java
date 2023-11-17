@@ -30,7 +30,10 @@ public enum Race {
 	ベルマ人(8, 14, Arrays.asList(EqipSlot.values())),
 	やどかり(3, 0, List.of(EqipSlot.頭)),
 	魔法生物(3, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.装飾品)),
-	野生生物(3, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.足, EqipSlot.装飾品)),;
+	野生生物(5, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.足, EqipSlot.足, EqipSlot.装飾品)),
+	仲間の犬(5, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.足, EqipSlot.足, EqipSlot.装飾品)),
+	
+	;
 	private int itemBagSize;
 	private int bookBagSize;
 	private List<EqipSlot> slots;
