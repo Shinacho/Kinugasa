@@ -1442,7 +1442,6 @@ public class BattleSystem implements Drawable {
 	}
 
 	boolean 魔法詠唱を破棄(Actor a) {
-		boolean res = false;
 		for (int i : magics.keySet()) {
 			MagicSpell remove = null;
 			for (MagicSpell m : magics.get(i)) {
@@ -1453,13 +1452,12 @@ public class BattleSystem implements Drawable {
 			}
 			if (remove != null) {
 				magics.get(i).remove(remove);
-				res = true;
-				break;
+				castingSprites.remove(a);
+				a.getStatus().removeCondition(ConditionKey.詠唱中);
+				return true;
 			}
 		}
-		castingSprites.remove(a);
-		a.getStatus().removeCondition(ConditionKey.詠唱中);
-		return res;
+		return false;
 	}
 
 	// I18NKから参照するためpp
@@ -1660,14 +1658,6 @@ public class BattleSystem implements Drawable {
 
 	@Nullable
 	private List<ActionResult.EventActorResult> is死亡者あり(ActionResult.EventActorResult r) {
-		if (!r.派生イベントの結果リスト.isEmpty()) {
-			for (var v : r.派生イベントの結果リスト) {
-				List<ActionResult.EventActorResult> t = is死亡者あり(v);
-				if (t != null && !t.isEmpty()) {
-					return t;
-				}
-			}
-		}
 		if (r.is解脱 || r.is気絶 || r.is解脱) {
 			if (!r.tgt.isSummoned()) {
 				return new ArrayList<>(Arrays.asList(r));
@@ -1680,14 +1670,6 @@ public class BattleSystem implements Drawable {
 	private List<ActionResult.EventActorResult> is死亡者あり(ActionResult.PerEvent r) {
 		List<ActionResult.EventActorResult> result = new ArrayList<>();
 		for (var v : r.perActor.values()) {
-			if (!v.派生イベントの結果リスト.isEmpty()) {
-				for (var vv : v.派生イベントの結果リスト) {
-					List<ActionResult.EventActorResult> t = is死亡者あり(vv);
-					if (t != null && !t.isEmpty()) {
-						return t;
-					}
-				}
-			}
 			if (v.is解脱 || v.is気絶 || v.is解脱) {
 				if (!v.tgt.isSummoned()) {
 					result.add(v);
@@ -1949,6 +1931,7 @@ public class BattleSystem implements Drawable {
 		setMsg(msg);
 	}
 	private static final int ダメージ表示遅延起動時間 = 20;
+
 	private void addDamageAnimation(ActionResult.EventActorResult res) {
 		if (res.tgtDamageHp != 0) {
 			DamageAnimationSprite ds = new DamageAnimationSprite(
@@ -1974,11 +1957,6 @@ public class BattleSystem implements Drawable {
 					Color.RED);
 			遅延起動Animations.add(new 遅延起動Animation(ds, new FrameTimeCounter(ダメージ表示遅延起動時間)));
 		}
-		if (!res.派生イベントの結果リスト.isEmpty()) {
-			for (var v : res.派生イベントの結果リスト) {
-				addDamageAnimation(v);
-			}
-		}
 	}
 
 	private void addAnimation(ActionResult.EventActorResult res) {
@@ -1991,11 +1969,6 @@ public class BattleSystem implements Drawable {
 		}
 		if (res.userAnimation != null) {
 			this.animation.add(res.userAnimation);
-		}
-		if (!res.派生イベントの結果リスト.isEmpty()) {
-			for (var v : res.派生イベントの結果リスト) {
-				addAnimation(v);
-			}
 		}
 	}
 

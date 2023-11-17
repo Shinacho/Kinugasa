@@ -707,7 +707,7 @@ public enum ActionEventType {
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			String msg = tgt.getStatus().removeCondition(e.getTgtConditionKey());
-			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+			addResult(res, msg == null ? ActionResultSummary.失敗＿不発 : ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -746,23 +746,20 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Item i = ActionStorage.getInstance().itemOf(e.getTgtID());
+			boolean suc = false;
+			String msg = "";
 			if (e.isNoLimit() || tgt.getStatus().getItemBag().canAdd()) {
 				tgt.getStatus().getItemBag().add(i);
+				suc = true;
+				msg = I18N.get(GameSystemI18NKeys.Xの持ち物にXが追加された, tgt.getVisibleName(), i.getVisibleName());
+			} else {
+				msg = I18N.get(GameSystemI18NKeys.Xはこれ以上物を持てない);
 			}
-			ActionResult.EventActorResult ae = new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
-			if (e.getOtherAnimation() != null) {
-				ae.otherAnimation = e.getOtherAnimation().clone();
-			}
-			if (e.getTgtAnimation() != null) {
-				ae.tgtAnimation = e.getTgtAnimation().clone();
-			}
-			if (e.getSuccessSound() != null) {
-				e.getSuccessSound().load().stopAndPlay();
-			}
-			return ae;
+			addResult(res, suc ? ActionResultSummary.成功 : ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	アイテムロスト(false) {
 		@Override
@@ -799,21 +796,17 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Item i = ActionStorage.getInstance().itemOf(e.getTgtID());
-			tgt.getStatus().getItemBag().drop(i);
-			ActionResult.EventActorResult ae = new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
-			if (e.getOtherAnimation() != null) {
-				ae.otherAnimation = e.getOtherAnimation().clone();
-			}
-			if (e.getTgtAnimation() != null) {
-				ae.tgtAnimation = e.getTgtAnimation().clone();
-			}
-			if (e.getSuccessSound() != null) {
-				e.getSuccessSound().load().stopAndPlay();
-			}
-			return ae;
+			int prevSIze = tgt.getStatus().getItemBag().size();
+			tgt.getStatus().getItemBag().add(i);
+			String msg = I18N.get(GameSystemI18NKeys.XはXを失った, tgt.getVisibleName(), i.getVisibleName());
+			addResult(res, prevSIze != tgt.getStatus().getItemBag().size()
+					? ActionResultSummary.成功
+					: ActionResultSummary.失敗＿不発,
+					user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	ドロップアイテム追加(false) {
 		@Override
@@ -850,15 +843,19 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Item i = ActionStorage.getInstance().itemOf(e.getTgtID());
 			//ドロップアイテムに追加
 			if (tgt instanceof Enemy) {
 				((Enemy) tgt).getDropItem().add(DropItem.itemOf(i, 1, 1f));
-				return getResult(true, tgt, e);
+				String msg = I18N.get(GameSystemI18NKeys.XはXを入手した, tgt.getVisibleName(), i.getVisibleName());
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+				return;
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	ドロップマテリアル追加(false) {
 		@Override
@@ -895,15 +892,19 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Material m = MaterialStorage.getInstance().get(e.getTgtID());
-			//ドロップアイテムに追加
+			//ドロップマテリアルに追加
 			if (tgt instanceof Enemy) {
 				((Enemy) tgt).getDropItem().add(DropItem.materialOf(m, 1, 1f));
-				return getResult(true, tgt, e);
+				String msg = I18N.get(GameSystemI18NKeys.XはXを入手した, tgt.getVisibleName(), m.getVisibleName());
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+				return;
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	ユーザの武器をドロップしてドロップアイテムに追加(false) {
 		@Override
@@ -942,7 +943,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			//このアクションが紐づく武器タイプを逆引き検索
 			WeaponType t = a.getWeaponType();
 			//武器タイプが紐づくスロットを取得
@@ -962,7 +963,9 @@ public enum ActionEventType {
 			}
 			//対象者がスロットを持っていない場合は不発
 			if (slot == null) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
 			}
 			//対象者のスロットのアイテムがnullの場合は呼び出しエラー
 			Item tgtItem = eqip.get(slot);
@@ -988,18 +991,22 @@ public enum ActionEventType {
 
 			//アイテムドロップ
 			user.getStatus().getItemBag().drop(tgtItem);
-
+			String msg = I18N.get(GameSystemI18NKeys.XはXを失った, user.getVisibleName(), tgtItem.getVisibleName());
+			msg += Text.getLineSep();
 			//ドロップアイテムに追加
 			if (tgt instanceof Enemy) {
 				((Enemy) tgt).getDropItem().add(DropItem.itemOf(tgtItem, 1, 1f));
+				msg += I18N.get(GameSystemI18NKeys.XはXを入手した, tgt.getVisibleName(), tgtItem.getVisibleName());
 			} else {
 				//PCの場合アイテムバッグに追加、追加できなかったらロストする
 				if (tgt.getStatus().getItemBag().canAdd()) {
 					tgt.getStatus().getItemBag().add(tgtItem);
+					msg += I18N.get(GameSystemI18NKeys.XはXを入手した, tgt.getVisibleName(), tgtItem.getVisibleName());
 				}
 			}
-			return getResult(true, tgt, e);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	TGTの行動をVALUE回数この直後に追加(false) {
 		@Override
@@ -1029,16 +1036,17 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			for (int i = 0; i < (int) e.getValue(); i++) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			int i = 0;
+			for (; i < (int) e.getValue(); i++) {
 				BattleCommand cmd = new BattleCommand(user);
 				if (user.isPlayer()) {
 					cmd.setUserOperation(true);
 				}
 				BattleSystem.getInstance().addCmdFirst(cmd);
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
-
+			String msg = I18N.get(GameSystemI18NKeys.Xは追加で行動できるようになった, tgt.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -1070,15 +1078,17 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			for (int i = 0; i < (int) e.getValue(); i++) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			int i = 0;
+			for (; i < (int) e.getValue(); i++) {
 				BattleCommand cmd = new BattleCommand(user);
 				if (user.isPlayer()) {
 					cmd.setUserOperation(true);
 				}
 				BattleSystem.getInstance().addCmdLast(cmd);
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xは追加で行動できるようになった, tgt.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの全員にも適用(false) {
@@ -1108,7 +1118,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			List<Actor> newTgts = new ArrayList<>();
 			if (tgt.isPlayer()) {
 				newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allPartyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
@@ -1117,18 +1127,23 @@ public enum ActionEventType {
 			}
 			Collections.shuffle(newTgts);
 			if (newTgts.isEmpty()) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
-			ActionResult.EventActorResult res = new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
 			for (Actor newTgt : newTgts) {
-				for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !this.equals(p)).toList()) {
-					for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
-						res.list.add(ae.exec(user, a, newTgt, resOfThisTgt));
+				for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !e.equals(p)).toList()) {
+					if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
+						for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
+							ae.exec(user, a, newTgt, res, isUserEvent);
+						}
+					} else {
+						ae.exec(user, a, newTgt, res, isUserEvent);
 					}
 				}
 			}
-			return res;
+			//このイベントの結果は入れなくていい。
 		}
+
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内の全員にも適用(false) {
 		@Override
@@ -1157,23 +1172,27 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			List<Actor> newTgts = new ArrayList<>();
 			newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allPartyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
 			newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allEnemyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
 			Collections.shuffle(newTgts);
 			if (newTgts.isEmpty()) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
-			ActionResult.EventActorResult res = new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
 			for (Actor newTgt : newTgts) {
-				for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !this.equals(p)).toList()) {
-					for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
-						res.list.add(ae.exec(user, a, newTgt, resOfThisTgt));
+				for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !e.equals(p)).toList()) {
+					if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
+						for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
+							ae.exec(user, a, newTgt, res, isUserEvent);
+						}
+					} else {
+						ae.exec(user, a, newTgt, res, isUserEvent);
 					}
 				}
 			}
-			return res;
+			//このイベントの結果は入れなくていい。
 		}
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの一人にも適用(false) {
@@ -1203,7 +1222,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			List<Actor> newTgts = new ArrayList<>();
 			if (tgt.isPlayer()) {
 				newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allPartyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
@@ -1212,18 +1231,20 @@ public enum ActionEventType {
 			}
 			Collections.shuffle(newTgts);
 			if (newTgts.isEmpty()) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
-			newTgts = new ArrayList<>(List.of(newTgts.get(0)));
-			ActionResult.EventActorResult res = new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
-			for (Actor newTgt : newTgts) {
-				for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !this.equals(p)).toList()) {
+			Actor newTgt = newTgts.get(0);
+			for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !e.equals(p)).toList()) {
+				if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
 					for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
-						res.list.add(ae.exec(user, a, newTgt, resOfThisTgt));
+						ae.exec(user, a, newTgt, res, isUserEvent);
 					}
+				} else {
+					ae.exec(user, a, newTgt, res, isUserEvent);
 				}
 			}
-			return res;
+			//このイベントの結果は入れなくていい。
 		}
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内の一人にも適用(false) {
@@ -1253,27 +1274,29 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			List<Actor> newTgts = new ArrayList<>();
 			newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allPartyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
 			newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allEnemyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
 			Collections.shuffle(newTgts);
 			if (newTgts.isEmpty()) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
-			newTgts = new ArrayList<>(List.of(newTgts.get(0)));
-			ActionResult.EventActorResult res = new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
-			for (Actor newTgt : newTgts) {
-				for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !this.equals(p)).toList()) {
+			Actor newTgt = newTgts.get(0);
+			for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !e.equals(p)).toList()) {
+				if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
 					for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
-						res.list.add(ae.exec(user, a, newTgt, resOfThisTgt));
+						ae.exec(user, a, newTgt, res, isUserEvent);
 					}
+				} else {
+					ae.exec(user, a, newTgt, res, isUserEvent);
 				}
 			}
-			return res;
+			//このイベントの結果は入れなくていい。
 		}
 	},
-	TGTの行動を未行動ならこの直後に移動(false) {
+	このターンのTGTの行動を未行動ならこの直後に移動(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
@@ -1297,7 +1320,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			BattleCommand cmd = null;
 			for (BattleCommand c : BattleSystem.getInstance().getCommandsOfThisTurn()) {
 				if (tgt.equals(c.getUser())) {
@@ -1307,13 +1330,16 @@ public enum ActionEventType {
 			}
 			if (cmd != null) {
 				BattleSystem.getInstance().moveToFirst(cmd);
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+				String msg = I18N.get(GameSystemI18NKeys.Xは次に行動できるようになった, tgt.getVisibleName());
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+				return;
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
-	TGTの行動を未行動ならターン最後に移動(false) {
+	このターンのTGTの行動を未行動ならターン最後に移動(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
@@ -1337,7 +1363,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			BattleCommand cmd = null;
 			for (BattleCommand c : BattleSystem.getInstance().getCommandsOfThisTurn()) {
 				if (tgt.equals(c.getUser())) {
@@ -1347,9 +1373,12 @@ public enum ActionEventType {
 			}
 			if (cmd != null) {
 				BattleSystem.getInstance().moveToLast(cmd);
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+				String msg = I18N.get(GameSystemI18NKeys.Xは最後に行動できるようになった, tgt.getVisibleName());
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+				return;
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	TGTの魔法詠唱を中断(false) {
@@ -1376,12 +1405,17 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			boolean f = BattleSystem.getInstance().魔法詠唱を破棄(tgt);
-			return f
-					? new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e)
-					: new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+			if (f) {
+				String msg = I18N.get(GameSystemI18NKeys.Xは詠唱が中断された, tgt.getVisibleName());
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+				return;
+			}
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	TGTの魔法詠唱完了をVALUEターン分ずらす(false) {
 		@Override
@@ -1412,9 +1446,11 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			if (tgt.getStatus().hasCondition(ConditionKey.詠唱中)) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
 			}
 			//魔法詠唱完了イベントを取得
 			int t = 0, i = 0;
@@ -1442,7 +1478,9 @@ public enum ActionEventType {
 			}
 			ms.get(tgtTurn).add(s);
 			BattleSystem.getInstance().setMagics(ms);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String tr = ((int) e.getValue() > 0 ? "+" : "-") + (int) e.getValue();
+			String msg = I18N.get(GameSystemI18NKeys.Xの魔法詠唱はXターン移動した, tgt.getVisibleName(), tr);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	USERのクローンをパーティーまたはENEMYに追加(false) {
@@ -1469,51 +1507,20 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			String visibleName = "";
 			if (tgt instanceof Enemy) {
 				Enemy ee = Enemy.cloneOf(tgt);
 				BattleSystem.getInstance().getEnemies().add(ee);
+				visibleName = ee.getVisibleName();
 			} else {
 				Actor newA = new Actor(tgt.getId() + "_CLONE", tgt);
 				newA.setSummoned(true);
 				GameSystem.getInstance().getParty().add(newA);
+				visibleName = newA.getVisibleName();
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
-		}
-
-	},
-	このターンのTGTの行動をこの次にする(false) {
-		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者の行動順を早める, (int) (event.getP() * 100) + "%"));
-			return sb.toString();
-		}
-
-		@Override
-		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.ヘイストの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
-			sb.append(")");
-			return sb.toString();
-		}
-
-		@Override
-		public void pack(ActionEvent e, Action a) throws GameSystemException {
-		}
-
-		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			BattleCommand cmd = BattleSystem.getInstance().getCommandsOfThisTurn().stream().filter(p -> p.getUser().equals(tgt)).findFirst().orElse(null);
-			if (cmd == null) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
-			}
-			BattleSystem.getInstance().getCommandsOfThisTurn().remove(cmd);
-			BattleSystem.getInstance().addCmdFirst(cmd);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.分身Xが現れた, visibleName);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -1541,47 +1548,16 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			BattleCommand cmd = BattleSystem.getInstance().getCommandsOfThisTurn().stream().filter(p -> p.getUser().equals(tgt)).findFirst().orElse(null);
 			if (cmd == null) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
 			}
 			BattleSystem.getInstance().getCommandsOfThisTurn().remove(cmd);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
-		}
-	},
-	このターンのTGTの行動を最後にする(false) {
-		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は行動がそのターンの最後になる, (int) (event.getP() * 100) + "%"));
-			return sb.toString();
-		}
-
-		@Override
-		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.スローの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
-			sb.append(")");
-			return sb.toString();
-		}
-
-		@Override
-		public void pack(ActionEvent e, Action a) throws GameSystemException {
-		}
-
-		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			BattleCommand cmd = BattleSystem.getInstance().getCommandsOfThisTurn().stream().filter(p -> p.getUser().equals(tgt)).findFirst().orElse(null);
-			if (cmd == null) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
-			}
-			BattleSystem.getInstance().getCommandsOfThisTurn().remove(cmd);
-			BattleSystem.getInstance().addCmdLast(cmd);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xの行動は中断された, tgt.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	このターンの行動順を反転させる(false) {
@@ -1608,11 +1584,12 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			LinkedList<BattleCommand> cmd = BattleSystem.getInstance().getCommandsOfThisTurn();
 			Collections.reverse(cmd);
 			BattleSystem.getInstance().setCommandsOfThisTurn(cmd);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.このターン行動順は反転した);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	TGTを中心位置からVALUEの場所に転送(false) {
@@ -1643,12 +1620,13 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			//中心位置の取得
 			Point2D.Float center = BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().getCenter();
 			Point2D.Float p = Random.randomLocation(center, e.getValue());
 			tgt.getSprite().setLocationByCenter(p);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	TGTを術者の近くに転送(false) {
@@ -1676,12 +1654,12 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			//位置の取得
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Point2D.Float center = user.getSprite().getCenter();
 			Point2D.Float p = Random.randomLocation(center, 64f);
 			tgt.getSprite().setLocationByCenter(p);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	TGTを逃げられる位置に転送(false) {
@@ -1708,8 +1686,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			//現在位置の取得
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Point2D.Float p = (Point2D.Float) tgt.getSprite().getCenter().clone();
 			if (tgt instanceof Enemy) {
 				//X = 行動力
@@ -1720,7 +1697,8 @@ public enum ActionEventType {
 						- Random.randomFloat(tgt.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
 			}
 			tgt.getSprite().setLocationByCenter(p);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -1748,7 +1726,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			List<Actor> list = (tgt instanceof Enemy)
 					? GameSystem.getInstance().getParty()
 					: BattleSystem.getInstance().getEnemies().stream().collect(Collectors.toList());
@@ -1765,7 +1743,8 @@ public enum ActionEventType {
 			assert newTgt != null : "tgt is null : " + this;
 			Point2D.Float p = Random.randomLocation(newTgt.getSprite().getCenter(), 64);
 			tgt.getSprite().setLocationByCenter(p);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	USERをTGTの至近距離に転送(false) {
@@ -1792,11 +1771,13 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Point2D.Float p = Random.randomLocation(tgt.getSprite().getCenter(), 64);
 			user.getSprite().setLocationByCenter(p);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, user.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	USERとTGTの位置を交換(false) {
 		@Override
@@ -1822,11 +1803,14 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Point2D.Float p = (Point2D.Float) tgt.getSprite().getCenter().clone();
 			tgt.getSprite().setLocationByCenter(user.getSprite().getCenter());
 			user.getSprite().setLocationByCenter(p);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, user.getVisibleName());
+			msg += Text.getLineSep();
+			msg = I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	TGTIDのCSVにあるアイテムのいずれかをUSERに追加(false) {
@@ -1864,7 +1848,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			String id = Random.randomChoice(StringUtil.safeSplit(e.getTgtID(), ","));
 			if (user.getStatus().getItemBag().canAdd()) {
 				//追加
@@ -1873,9 +1857,12 @@ public enum ActionEventType {
 				//追加
 				user.getStatus().getItemBag().add(ActionStorage.getInstance().itemOf(id));
 			} else {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.Xはこれ以上物を持てない);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.XはXを入手した);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	逃走で戦闘終了(false) {
@@ -1902,9 +1889,9 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			BattleSystem.getInstance().setEndStatus(BattleResult.敗北_こちらが全員逃げた);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, "", isUserEvent);
 		}
 
 	},
@@ -1952,13 +1939,14 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			String[] val = StringUtil.safeSplit(e.getTgtID(), ",");
 			String tgtMapId = val[0];
 			int x = Integer.parseInt(val[1]);
 			int y = Integer.parseInt(val[2]);
 			FieldMap.getCurrentInstance().changeMap(Node.ofOutNode("AUTO_AE_NODE", tgtMapId, x, y, FourDirection.SOUTH));
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, user.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -1986,11 +1974,12 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Node n = FieldMap.getCurrentInstance().getNodeStorage().random();
 			FieldMap.getCurrentInstance().setCurrentIdx(n.getIdx());
 			FieldMap.getCurrentInstance().getCamera().updateToCenter();
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, user.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	友好的な存在の召喚(false) {
@@ -2025,17 +2014,21 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			String visibleName = "";
 			if (user.isPlayer()) {
 				Actor ac = new Actor(e.getTgtID());
+				visibleName = ac.getVisibleName();
 				ac.setSummoned(true);
 				GameSystem.getInstance().getParty().add(ac);
 			} else {
 				Enemy ac = new Enemy(e.getTgtID());
+				visibleName = ac.getVisibleName();
 				ac.setSummoned(true);
 				BattleSystem.getInstance().getEnemies().add(ac);
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xが召喚された, visibleName);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -2071,17 +2064,21 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			String visibleName = "";
 			if (user.isPlayer()) {
 				Enemy ac = new Enemy(e.getTgtID());
+				visibleName = ac.getVisibleName();
 				ac.setSummoned(true);
 				BattleSystem.getInstance().getEnemies().add(ac);
 			} else {
 				Actor ac = new Actor(e.getTgtID());
+				visibleName = ac.getVisibleName();
 				ac.setSummoned(true);
 				GameSystem.getInstance().getParty().add(ac);
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xが召喚された, visibleName);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -2109,7 +2106,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			throw new UnsupportedOperationException("TODO:未実装");
 		}
 
@@ -2139,12 +2136,10 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Object ぬるぽ = null;
 			ぬるぽ.toString();
-			throw new InternalError();
 		}
-
 	},
 	カレント以外のセーブデータを１つロスト(false) {
 		@Override
@@ -2171,7 +2166,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			throw new UnsupportedOperationException("TODO:未実装");
 		}
 	},
@@ -2200,7 +2195,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			throw new UnsupportedOperationException("TODO:未実装");
 		}
 	},
@@ -2220,9 +2215,10 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.独自効果イベントがオーバーライドされていません) + " : " + this + " : " + e);
 		}
+
 	},
 	ビームエフェクト(false) {
 		@Override
@@ -2240,7 +2236,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.独自効果イベントがオーバーライドされていません) + " : " + this + " : " + e);
 		}
 	},
@@ -2266,12 +2262,14 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			JFileChooser c = new JFileChooser(new File(PlayerConstants.getInstance().DESKTOP_PATH));
 			c.setMultiSelectionEnabled(false);
-			int res = c.showOpenDialog(null);
-			if (res != JFileChooser.APPROVE_OPTION) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+			int r = c.showOpenDialog(null);
+			if (r != JFileChooser.APPROVE_OPTION) {
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
 			}
 			File file = c.getSelectedFile();
 
@@ -2309,7 +2307,7 @@ public enum ActionEventType {
 				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
 			}
 			//ダメージ計算実行
-			DamageCalcSystem.Result r
+			DamageCalcSystem.Result dr
 					= DamageCalcSystem.calcDamage(
 							new DamageCalcSystem.Param(
 									user,
@@ -2322,7 +2320,18 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (v.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
 
@@ -2349,12 +2358,14 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			JFileChooser c = new JFileChooser(new File(PlayerConstants.getInstance().DESKTOP_PATH));
 			c.setMultiSelectionEnabled(false);
-			int res = c.showOpenDialog(null);
-			if (res != JFileChooser.APPROVE_OPTION) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+			int r = c.showOpenDialog(null);
+			if (r != JFileChooser.APPROVE_OPTION) {
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
 			}
 			File file = c.getSelectedFile();
 
@@ -2396,7 +2407,7 @@ public enum ActionEventType {
 				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
 			}
 			//ダメージ計算実行
-			DamageCalcSystem.Result r
+			DamageCalcSystem.Result dr
 					= DamageCalcSystem.calcDamage(
 							new DamageCalcSystem.Param(
 									user,
@@ -2409,7 +2420,18 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (v.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
 	},
@@ -2450,10 +2472,12 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Counts.Value v = Counts.getInstance().select(GameSystemI18NKeys.CountKey.倒した敵の数);
 			if (v == null) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
 			}
 			float value = v.num / 100f;
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -2501,7 +2525,18 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
 
@@ -2543,7 +2578,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float value = -(128 - BattleSystem.getInstance().getTurn());
 
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -2591,7 +2626,18 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
 	},
@@ -2632,7 +2678,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float value = -BattleSystem.getInstance().getTurn();
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
 				throw new GameSystemException("damage calc is cant exec in field : " + this);
@@ -2679,7 +2725,18 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
 	},
@@ -2723,7 +2780,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float value = Runtime.getRuntime().availableProcessors() * e.getValue();
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
 				throw new GameSystemException("damage calc is cant exec in field : " + this);
@@ -2770,7 +2827,18 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
 
@@ -2812,14 +2880,14 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			List<Item> items = user.getStatus().getItemBag().getItems();
 			float val = 0;
 			for (Item i : items) {
 				if (i.getDesc().contains(I18N.get(GameSystemI18NKeys.軽い))) {
-					val -= 0.5;
+					val -= 0.25;
 				} else if (i.getDesc().contains(I18N.get(GameSystemI18NKeys.とてつもなく重い))) {
-					val -= 32;
+					val -= 64;
 				} else if (i.getDesc().contains(I18N.get(GameSystemI18NKeys.非常に重い))) {
 					val -= 16;
 				} else if (i.getDesc().contains(I18N.get(GameSystemI18NKeys.かなり重い))) {
@@ -2875,7 +2943,19 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+
 		}
 
 	},
@@ -2913,7 +2993,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			LinkedHashMap<Integer, List<MagicSpell>> ms = BattleSystem.getInstance().getMagics();
 			List<Integer> turnList = ms.keySet().stream().sorted().limit((int) e.getValue()).toList();
 			for (int i = 0, j = turnList.size() - 1; i < turnList.size(); i++, j--) {
@@ -2926,7 +3006,8 @@ public enum ActionEventType {
 			}
 
 			BattleSystem.getInstance().setMagics(ms);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.Xターン内の魔法詠唱は反転された, (int) e.getValue());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	自身以外の全員の正気度にダメージ(false) {
@@ -2957,14 +3038,17 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			String msg = "";
 			for (Actor ac : Stream.of(GameSystem.getInstance().getParty(), BattleSystem.getInstance().getEnemies()).flatMap(p -> p.stream()).toList()) {
-				if (!ac.equals(user)) {
-					int val = Random.randomAbsInt((int) e.getValue()) + 1;
-					ac.getStatus().getBaseStatus().get(StatusKey.正気度).add(val);
+				if (ac.equals(user)) {
+					continue;
 				}
+				int val = Random.randomAbsInt((int) e.getValue()) + 1;
+				ac.getStatus().getBaseStatus().get(StatusKey.正気度).add(val);
+				msg += I18N.get(GameSystemI18NKeys.XはXの正気度ダメージを受けた, ac.getVisibleName(), val) + Text.getLineSep();
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -2987,7 +3071,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			String tgtId = e.getTgtID();
 			try {
 				if (PlayerConstants.getInstance().OS_NAME.toLowerCase().contains("windows")) {
@@ -2995,11 +3079,10 @@ public enum ActionEventType {
 				} else {
 					Runtime.getRuntime().exec("open " + tgtId);
 				}
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+				addResult(res, ActionResultSummary.成功, user, tgt, e, "", isUserEvent);
 			} catch (IOException ex) {
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
-
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, "", isUserEvent);
 		}
 
 	},
@@ -3043,7 +3126,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float val = e.getValue() * (1 - user.getStatus().getEffectedStatus().get(StatusKey.体力).get割合());
 
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -3091,8 +3174,21 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+
 		}
+
 	},
 	DC_減っている魔力(false) {
 		@Override
@@ -3134,7 +3230,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float val = e.getValue() * (1 - user.getStatus().getEffectedStatus().get(StatusKey.魔力).get割合());
 
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -3182,8 +3278,21 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+
 		}
+
 	},
 	DC_減っている正気度(false) {
 		@Override
@@ -3225,7 +3334,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float val = e.getValue() * (1 - user.getStatus().getEffectedStatus().get(StatusKey.正気度).get割合());
 
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -3273,8 +3382,21 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+
 		}
+
 	},
 	DC_残っている体力(false) {
 		@Override
@@ -3316,7 +3438,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float val = e.getValue() * (user.getStatus().getEffectedStatus().get(StatusKey.体力).get割合());
 
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -3364,8 +3486,21 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+
 		}
+
 	},
 	DC_残っている魔力(false) {
 		@Override
@@ -3407,7 +3542,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float val = e.getValue() * (user.getStatus().getEffectedStatus().get(StatusKey.魔力).get割合());
 
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -3455,7 +3590,19 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+
 		}
 	},
 	DC_残っている正気度(false) {
@@ -3498,7 +3645,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float val = e.getValue() * (user.getStatus().getEffectedStatus().get(StatusKey.正気度).get割合());
 
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
@@ -3546,7 +3693,19 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+
 		}
 	},
 	USERによる指定IDの魔法の詠唱完了をこのターンの最後にVALUE回数追加(false) {
@@ -3591,13 +3750,17 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Action tgtA = ActionStorage.getInstance().actionOf(e.getTgtID());
 			for (int i = 0; i < (int) e.getValue(); i++) {
 				MagicSpell ms = new MagicSpell(user, tgtA, user.isPlayer());
 				BattleSystem.getInstance().addCmdLast(ms);
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.XはXをX回発動する準備をした,
+					user.getVisibleName(),
+					tgtA.getVisibleName(),
+					(int) e.getValue());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -3629,7 +3792,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float val = Random.d100(1);
 			AttributeKey attr = Random.randomChoice(AttributeKey.values());
 
@@ -3678,7 +3841,19 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			return convert(r, e);
+			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
+			String msg = "";
+			if (vv.getValue() < 0) {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
+			} else {
+				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.X回復した, (int) vv.getValue());
+			}
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+
 		}
 	},
 	USERの指定スロットの装備品の攻撃回数をVALUE上げる(false) {
@@ -3721,17 +3896,21 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			EqipSlot slot = EqipSlot.valueOf(e.getTgtID());
 			if (user.getStatus().getEqip().keySet().contains(slot)) {
 				Item i = user.getStatus().getEqip().get(slot);
 				if (i == null) {
-					return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+					String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+					addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+					return;
 				}
 				i.setAtkCount(i.getAtkCount() + (int) e.getValue());
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+				String msg = I18N.get(GameSystemI18NKeys.XのXは攻撃回数が変動した, user.getVisibleName(), i.getVisibleName());
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	USERの指定スロットの装備品の価値をVALUE倍にする(false) {
@@ -3774,23 +3953,26 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			EqipSlot slot = EqipSlot.valueOf(e.getTgtID());
 			if (user.getStatus().getEqip().keySet().contains(slot)) {
 				Item i = user.getStatus().getEqip().get(slot);
 				if (i == null) {
-					return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+					String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+					addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+					return;
 				}
 				int v = (int) (i.getPrice() * e.getValue());
 				if (v < 0) {
 					v = 0;
 				}
-				i.setPrice(v);
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+				String msg = I18N.get(GameSystemI18NKeys.XのXは価値が変動した, user.getVisibleName(), i.getVisibleName());
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
-
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 		}
+
 	},
 	TGTを即死させる(false) {
 		@Override
@@ -3823,7 +4005,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			switch (e.getTgtConditionKey()) {
 				case 解脱: {
 					tgt.getStatus().getBaseStatus().get(StatusKey.正気度).setValue(0);
@@ -3843,7 +4025,8 @@ public enum ActionEventType {
 				default:
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります) + " : " + this + " : " + e);
 			}
-			return getResult(true, tgt, e);
+			String msg = tgt.getVisibleName() + e.getTgtConditionKey().getStartMsgI18Nd();
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -3883,13 +4066,15 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			EqipSlot slot = EqipSlot.valueOf(e.getTgtID());
 			if (tgt.getStatus().getEqip().keySet().contains(slot)) {
 				tgt.getStatus().getEqip().put(slot, null);
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+				String msg = I18N.get(GameSystemI18NKeys.XはX装備を外した, user.getVisibleName(), slot.getVisibleName());
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -3918,7 +4103,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			class Map {
 
 				final String id;
@@ -3943,7 +4128,8 @@ public enum ActionEventType {
 				comboBox.addItem(map);
 			}
 			if (DialogOption.OK != Dialog.okOrCancel("teleport mapName", DialogIcon.QUESTION, comboBox)) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
 			Map tgtMap = mapList.get(comboBox.getSelectedIndex());
 			JSpinner x = new JSpinner();
@@ -3954,11 +4140,12 @@ public enum ActionEventType {
 			p.add(x);
 			p.add(y);
 			if (DialogOption.OK != Dialog.okOrCancel("teleport x,y", DialogIcon.QUESTION, p)) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
 			FieldMap.getCurrentInstance().changeMap(Node.ofOutNode("AUTO_NODE_FROM_AE", tgtMap.id,
 					(Integer) x.getValue(), (Integer) y.getValue(), FourDirection.NORTH));
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, "", isUserEvent);
 		}
 
 	},
@@ -3987,9 +4174,10 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			addResult(res, ActionResultSummary.成功, user, tgt, e, "", isUserEvent);
 		}
+
 	},
 	ダミー＿失敗(false) {
 		@Override
@@ -4016,8 +4204,8 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, "", isUserEvent);
 		}
 	},
 	メッセージ表示(false) {
@@ -4048,10 +4236,8 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
-			ActionResult.EventActorResult r = new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
-			r.msgI18Nd = e.getTgtID();
-			return r;
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			addResult(res, ActionResultSummary.成功, user, tgt, e, e.getTgtID(), isUserEvent);
 		}
 
 	},
@@ -4093,16 +4279,14 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			String[] val = StringUtil.safeSplit(e.getTgtID(), ",");
 			String name = val[0];
 			FlagStatus fs = FlagStatus.valueOf(val[1]);
 			if (!FlagStorage.getInstance().get(name).get().is(fs)) {
-				return new ActionResult.EventActorResult(tgt, ActionResultSummary.失敗＿不発, e);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, "", isUserEvent);
 			}
-			ActionResult.EventActorResult r = new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
-			r.msgI18Nd = val[2];
-			return r;
+			addResult(res, ActionResultSummary.成功, user, tgt, e, val[2], isUserEvent);
 		}
 
 	},
@@ -4140,7 +4324,7 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Actor ac = GameSystem.getInstance().getPCbyID(e.getTgtID());
 			switch (e.getTgtConditionKey()) {
 				case 解脱: {
@@ -4161,7 +4345,8 @@ public enum ActionEventType {
 				default:
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります) + " : " + this + " : " + e);
 			}
-			return getResult(true, ac, e);
+			String msg = ac.getVisibleName() + e.getTgtConditionKey().getStartMsgI18Nd();
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -4197,12 +4382,14 @@ public enum ActionEventType {
 		}
 
 		@Override
-		public ActionResult.EventActorResult exec(Actor user, Action a, Actor tgt, List<ActionResult.EventActorResult> resOfThisTgt, ActionEvent e) {
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Actor ac = GameSystem.getInstance().getPCbyID(e.getTgtID());
 			int val = Random.randomAbsInt((int) e.getValue()) + 1;
 			ac.getStatus().getBaseStatus().get(StatusKey.正気度).add(val);
-			return new ActionResult.EventActorResult(tgt, ActionResultSummary.成功, e);
+			String msg = I18N.get(GameSystemI18NKeys.XはXの正気度ダメージを受けた, ac.getVisibleName(), (int) e.getValue());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
+
 	},;
 
 	public String getVisibleName() {

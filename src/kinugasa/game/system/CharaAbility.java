@@ -215,6 +215,9 @@ public enum CharaAbility implements AbilityEffect {
 			r.get(AttributeKey.神秘).mul(1.14f);
 			return r;
 		}
+	},
+	忠犬("近くにいる仲間の正気度を回復できる"){
+		
 	};
 	private String desc;
 

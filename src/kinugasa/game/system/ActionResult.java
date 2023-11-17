@@ -51,7 +51,6 @@ public class ActionResult {
 		public boolean is損壊 = false;
 		public AnimationSprite tgtAnimation, otherAnimation, userAnimation;
 		public String msgI18Nd;
-		public final List<EventActorResult> 派生イベントの結果リスト = new ArrayList<>();
 
 		public EventActorResult(Actor tgt, ActionEvent event) {
 			this.tgt = tgt;
@@ -60,7 +59,7 @@ public class ActionResult {
 
 		@Override
 		public String toString() {
-			return "SingleResult{" + "tgt=" + tgt + ", event=" + event + ", tgtDamageHp=" + tgtDamageHp + ", tgtDamageMp=" + tgtDamageMp + ", tgtDamageSAN=" + tgtDamageSAN + ", is\u89e3\u8131=" + is解脱 + ", is\u6c17\u7d76=" + is気絶 + ", is\u640d\u58ca=" + is損壊 + ", tgtAnimation=" + tgtAnimation + ", otherAnimation=" + otherAnimation + ", msgI18Nd=" + msgI18Nd + ", \u6d3e\u751f\u30a4\u30d9\u30f3\u30c8\u306e\u7d50\u679c\u30ea\u30b9\u30c8=" + 派生イベントの結果リスト + '}';
+			return "EventActorResult{" + "tgt=" + tgt + ", event=" + event + ", tgtDamageHp=" + tgtDamageHp + ", tgtDamageMp=" + tgtDamageMp + ", tgtDamageSAN=" + tgtDamageSAN + ", is\u89e3\u8131=" + is解脱 + ", is\u6c17\u7d76=" + is気絶 + ", is\u640d\u58ca=" + is損壊 + ", tgtAnimation=" + tgtAnimation + ", otherAnimation=" + otherAnimation + ", userAnimation=" + userAnimation + ", msgI18Nd=" + msgI18Nd + '}';
 		}
 
 		public EventActorResult setMsg(String v) {

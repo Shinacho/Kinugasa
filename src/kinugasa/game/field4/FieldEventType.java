@@ -23,6 +23,7 @@ import java.util.List;
 import kinugasa.game.GameOption;
 import kinugasa.game.system.ActionStorage;
 import kinugasa.game.system.Actor;
+import kinugasa.game.system.Counts;
 import kinugasa.game.system.CurrentQuest;
 import kinugasa.game.system.EncountInfo;
 import kinugasa.game.system.EnemySetStorage;
@@ -609,7 +610,24 @@ public enum FieldEventType {
 			GameSystem.getInstance().getPCbyID(e.getTargetName()).setIniStatusFile(e.getValue());
 			return UserOperationRequire.CONTINUE;
 		}
-	},;
+	},
+	COUNTS_ADD_1 {
+		@Override
+		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
+			Counts.getInstance().add1count(e.getName());
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	COUNTS_ADD_N {
+		@Override
+		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
+			int n = Integer.parseInt(e.getValue());
+			for (int i = 0; i < n; i++) {
+				Counts.getInstance().add1count(e.getName());
+			}
+			return UserOperationRequire.CONTINUE;
+		}
+	};
 
 	abstract UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException;
 
