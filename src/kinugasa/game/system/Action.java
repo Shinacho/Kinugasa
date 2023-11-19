@@ -102,7 +102,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		this.type = typ;
 	}
 
-	public List<ActionEvent.Term> getAllTerms() {
+	public List<ActionEvent.Actor保有条件> getAllTerms() {
 		return Stream.of(mainEvents, userEvents)
 				.flatMap(p -> p.stream())
 				.map(p -> p.getTerms())
@@ -178,8 +178,8 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	@NoLoopCall("its heavy")
 	public WeaponType getWeaponType() {
 		for (ActionEvent e : getAllEvents()) {
-			for (ActionEvent.Term t : e.getTerms()) {
-				if (t.type == ActionEvent.Term.Type.指定の武器タイプの武器を装備している) {
+			for (ActionEvent.Actor保有条件 t : e.getTerms()) {
+				if (t.type == ActionEvent.Actor保有条件.Type.指定の武器タイプの武器を装備している) {
 					return WeaponType.valueOf(t.tgtName);
 				}
 			}
@@ -420,8 +420,10 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	}
 
 	public boolean canDo(Status a) {
-		if (!checkResource(a).keys.isEmpty()) {
-			return false;
+		if (!userEvents.isEmpty()) {
+			if (!checkResource(a).keys.isEmpty()) {
+				return false;
+			}
 		}
 		return Stream.of(mainEvents, userEvents)
 				.flatMap(p -> p.stream())

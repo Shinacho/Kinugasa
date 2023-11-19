@@ -67,7 +67,7 @@ public class BattleFieldSystem implements XMLFileSupport {
 		int minX = 4;
 		int screenCenterX = (int) (GameOption.getInstance().getWindowSize().getWidth() / 2 / GameOption.getInstance().getDrawSize());
 		int partyAreaX = (int) (GameOption.getInstance().getWindowSize().getWidth() * 0.75 / GameOption.getInstance().getDrawSize());
-		int areaH = (int) (screenH * 0.60);
+		int areaH = (int) (screenH * 0.55);
 		battleArea = new Rectangle(minX, statusPaneH + 4, screenW - minX * 2, areaH);
 		enemytArea = new Rectangle(minX, statusPaneH + 4, screenCenterX, areaH);
 		partyArea = new Rectangle(partyAreaX, statusPaneH + 4, screenW - partyAreaX - 4, areaH);

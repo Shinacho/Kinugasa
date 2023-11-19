@@ -204,9 +204,9 @@ public class BattleTargetSystem implements Drawable {
 	}
 
 	void setCurrentLocation() {
-		pcCenterArea.setLocationByCenter(currentUser.getSprite().getLocation());
+		pcCenterArea.setLocationByCenter(currentUser.getSprite().getCenter());
 		pcCenterArea.setArea(
-				(int) currentUser.getStatus().getEffectedStatus().get(StatusKey.残り行動力).getValue());
+				(int) currentUser.getStatus().getEffectedStatus().get(StatusKey.残行動力).getValue());
 		pcCenterArea.setVisible(true);
 	}
 
@@ -222,7 +222,9 @@ public class BattleTargetSystem implements Drawable {
 
 	void setCurrent(Action a) {
 		if (a == null) {
-			throw new GameSystemException("current action is null : " + this);
+			//アイテムを持っていない等で何も実施することがない
+			pcCenterArea.setVisible(false);
+			return;
 		}
 		this.currentBA = a;
 		if (currentUser.isPlayer()) {
@@ -300,6 +302,19 @@ public class BattleTargetSystem implements Drawable {
 
 	//init
 	private void initTeamSelect() {
+		if (currentBA == null) {
+			return;
+		}
+		//ターゲットタイプのないアクション（移動等）の場合は何もしない
+		if (currentBA.getType() == ActionType.行動) {
+			return;
+		}
+		if (currentBA.getType() == ActionType.アイテム) {
+			if (!currentBA.hasEvent()) {
+				return;
+			}
+		}
+
 		//カレントに基づいてTEAM＿SELECTの初期値設定
 		this.teamSelect = switch (currentBA.getTgtType()) {
 			case グループ_切替可能_初期選択味方 ->

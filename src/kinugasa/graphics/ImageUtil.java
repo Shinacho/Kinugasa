@@ -28,7 +28,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.awt.image.RasterFormatException;
-import java.awt.image.VolatileImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -37,7 +36,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import kinugasa.game.GameLog;
 import kinugasa.resource.ContentsIOException;
@@ -145,27 +143,26 @@ public final class ImageUtil {
 		SoftReference<BufferedImage> cacheRef = IMAGE_CACHE.get(filePath);
 		//キャッシュあり&GC未実行
 		if (cacheRef != null && cacheRef.get() != null) {
-			watch.stop();
-			GameLog.print("ImageUtil cached filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+			GameLog.print("ImageUtil cached filePath=[" + filePath + "]");
 			return cacheRef.get();
 		}
 		//GCが実行されているかキャッシュがなければ新しくロードしてキャッシュに追加する
 		File file = new File(filePath);
 		if (!file.exists()) {
 			watch.stop();
-			throw new FileNotFoundException("notfound : filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+			throw new FileNotFoundException("notfound : filePath=[" + filePath + "]");
 		}
 		BufferedImage dst = null;
 		try {
 			dst = ImageIO.read(file);
 		} catch (IOException ex) {
 			watch.stop();
-			GameLog.print("cant load filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+			GameLog.print("cant load filePath=[" + filePath + "]");
 			throw new ContentsIOException(ex);
 		}
 		if (dst == null) {
 			watch.stop();
-			GameLog.print("image is null filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+			GameLog.print("image is null filePath=[" + filePath + "]");
 			throw new ContentsIOException("image is null");
 		}
 		//互換画像に置換
@@ -829,7 +826,7 @@ public final class ImageUtil {
 			return dst = copy(src);
 		}
 		if (dst == null || dst == src) {
-			dst = copy(src);
+			dst = newImage(src.getWidth(), src.getHeight());
 		}
 		Graphics2D g = createGraphics2D(dst, RenderingQuality.QUALITY);
 		g.setClip(0, 0, dst.getWidth(), dst.getHeight());

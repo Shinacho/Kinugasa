@@ -40,6 +40,7 @@ public final class SoundStorage extends DBStorage<Sound> {
 	public static float volumeSe = 1.0f;
 
 	private SoundStorage() {
+		super(true);
 	}
 
 	/**

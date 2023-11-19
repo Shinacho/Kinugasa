@@ -272,8 +272,8 @@ public class BookWindow extends BasicSprite {
 						options4.add(new Text(I18N.get(GameSystemI18NKeys.はい)));
 						dissassemblyComfirm.reset();
 						dissassemblyComfirm.setText(new Choice(options4, "DISSASSE_CONFIRM",
-								I18N.get(GameSystemI18NKeys.Xの, GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName()))
-								+ I18N.get(GameSystemI18NKeys.Xを本当に解体する, b.getVisibleName()));
+								I18N.get(GameSystemI18NKeys.Xの, GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName())
+								+ I18N.get(GameSystemI18NKeys.Xを本当に解体する, b.getVisibleName())));
 						dissassemblyComfirm.allText();
 						group.show(dissassemblyComfirm);
 						mode = Mode.DISASSEMBLY_CONFIRM;

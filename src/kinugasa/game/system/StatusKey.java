@@ -58,7 +58,7 @@ public enum StatusKey implements Nameable {
 	魔法ブロックダメージ倍率(true, 0, 3, null, true),
 	//
 	行動力(true, 0, 512, null),
-	残り行動力(false, 0, 512, null),
+	残行動力(false, 0, 512, null),
 	//
 	魔術使用可否(true, 0, 7, null),
 	装備属性(false, 0, 7, null),

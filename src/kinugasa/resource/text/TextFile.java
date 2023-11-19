@@ -35,7 +35,7 @@ import kinugasa.resource.OutputResult;
  * @vesion 1.0.0 - 2021/11/23_6:35:59<br>
  * @author Shinacho<br>
  */
-public class TextFile implements Input<TextFile>, Output , Nameable, Iterable<String>{
+public class TextFile implements Input<TextFile>, Output, Nameable, Iterable<String> {
 
 	private File file;
 	private Charset charset;
@@ -85,9 +85,7 @@ public class TextFile implements Input<TextFile>, Output , Nameable, Iterable<St
 	public Iterator<String> iterator() {
 		return data.iterator();
 	}
-	
-	
-	
+
 	//--------------------------------------------------------------------------
 	private List<String> data = new ArrayList<>();
 
@@ -123,7 +121,7 @@ public class TextFile implements Input<TextFile>, Output , Nameable, Iterable<St
 	@Override
 	public OutputResult saveTo(File f) throws FileIOException {
 		try {
-			Files.write(f.toPath(), data, charset, StandardOpenOption.CREATE_NEW, StandardOpenOption.TRUNCATE_EXISTING);
+			Files.write(f.toPath(), data, charset, StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (IOException ex) {
 			throw new FileIOException(ex);
 		}

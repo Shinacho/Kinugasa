@@ -81,7 +81,7 @@ public class FieldStatusWindows extends BasicSprite {
 		return mw;
 	}
 
-	public static final float h = 96;
+	public static final float h = 86;
 
 	@Override
 	public void update() {

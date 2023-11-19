@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import kinugasa.game.GameLog;
 import kinugasa.game.I18N;
 import kinugasa.game.NewInstance;
@@ -33,7 +32,6 @@ import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.NameNotFoundException;
 import kinugasa.resource.Nameable;
-import kinugasa.resource.Storage;
 import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.db.DBValue;
@@ -97,7 +95,7 @@ public class ActionStorage extends DBStorage<Action> {
 	public void checkAll() throws GameSystemException {
 		GameLog.print("----------ACTION_CHECK start --------------------");
 		for (Action a : selectAll()) {
-			GameLog.print(a.getId() + "[" + a.getVisibleName() + "] OK");
+			GameLog.print(">" + a.getId() + "[" + a.getVisibleName() + "] OK");
 		}
 		GameLog.print("----------ACTION_CHECK end --------------------");
 	}
@@ -113,7 +111,7 @@ public class ActionStorage extends DBStorage<Action> {
 				sql = "select ID,VISIBLENAME,"
 						+ "DESCRIPTION,FIELD,BATTLE,AREA,"
 						+ "TGTTYPE,TGTDEAD,PRICE,EQIPSLOT,"
-						+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY"
+						+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY,eqipTermCSV,cndRegistCSV,cndEffectCSV,attrInCSV,attrOutCSV,statusCSV,materialCSV,"
 						+ " from item"
 						+ " where id = '" + id + "';";
 				r = DBConnection.getInstance().execDirect(sql);
@@ -142,17 +140,17 @@ public class ActionStorage extends DBStorage<Action> {
 					i.setMainEvents(getMainEvents(id));
 					i.setUserEvents(getUserEvents(id));
 					//eqipTErm
-					i.setTerms(getTerms(i.getId()));
-					//mateirla
-					i.setMaterial(getMaterial(i.getId()));
-					//Status
-					i.setStatus(getStatus(i.getId()));
-					//attrIn
-					i.setAttrIn(getAttrIn(i.getId()));
-					//attrOut
-					i.setAttrOut(getAttrOut(i.getId()));
+					i.setTerms(getEqipTerms(l.get(17).get()));
 					//cndRegist
-					i.setConditionRegist(getCndRegist(i.getId()));
+					i.setConditionRegist(getCndRegist(l.get(18).get()));
+					//attrIn
+					i.setAttrIn(getAttrIn(l.get(19).get()));
+					//attrOut
+					i.setAttrOut(getAttrOut(l.get(20).get()));
+					//mateirla
+					i.setMaterial(getMaterial(l.get(21).get()));
+					//Status
+					i.setStatus(getStatus(l.get(22).get()));
 					//pack
 					return i.pack();
 				}
@@ -205,7 +203,7 @@ public class ActionStorage extends DBStorage<Action> {
 			sql = "select ID,VISIBLENAME,"
 					+ "DESCRIPTION,FIELD,BATTLE,AREA,"
 					+ "TGTTYPE,TGTDEAD,PRICE,EQIPSLOT,"
-					+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY"
+					+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY,eqipTermCSV,cndRegistCSV,cndEffectCSV,attrInCSV,attrOutCSV,statusCSV,materialCSV,"
 					+ " from item;";
 			r = DBConnection.getInstance().execDirect(sql);
 			//item
@@ -230,17 +228,17 @@ public class ActionStorage extends DBStorage<Action> {
 				i.setMainEvents(getMainEvents(l.get(0).get()));
 				i.setUserEvents(getUserEvents(l.get(0).get()));
 				//eqipTErm
-				i.setTerms(getTerms(i.getId()));
-				//mateirla
-				i.setMaterial(getMaterial(i.getId()));
-				//Status
-				i.setStatus(getStatus(i.getId()));
-				//attrIn
-				i.setAttrIn(getAttrIn(i.getId()));
-				//attrOut
-				i.setAttrOut(getAttrOut(i.getId()));
+				i.setTerms(getEqipTerms(l.get(17).get()));
 				//cndRegist
-				i.setConditionRegist(getCndRegist(i.getId()));
+				i.setConditionRegist(getCndRegist(l.get(18).get()));
+				//attrIn
+				i.setAttrIn(getAttrIn(l.get(19).get()));
+				//attrOut
+				i.setAttrOut(getAttrOut(l.get(20).get()));
+				//mateirla
+				i.setMaterial(getMaterial(l.get(21).get()));
+				//Status
+				i.setStatus(getStatus(l.get(22).get()));
 				//pack
 				res.add(i.pack());
 			}
@@ -320,17 +318,17 @@ public class ActionStorage extends DBStorage<Action> {
 				i.setMainEvents(getMainEvents(l.get(0).get()));
 				i.setUserEvents(getUserEvents(l.get(0).get()));
 				//eqipTErm
-				i.setTerms(getTerms(i.getId()));
-				//mateirla
-				i.setMaterial(getMaterial(i.getId()));
-				//Status
-				i.setStatus(getStatus(i.getId()));
-				//attrIn
-				i.setAttrIn(getAttrIn(i.getId()));
-				//attrOut
-				i.setAttrOut(getAttrOut(i.getId()));
+				i.setTerms(getEqipTerms(l.get(17).get()));
 				//cndRegist
-				i.setConditionRegist(getCndRegist(i.getId()));
+				i.setConditionRegist(getCndRegist(l.get(18).get()));
+				//attrIn
+				i.setAttrIn(getAttrIn(l.get(19).get()));
+				//attrOut
+				i.setAttrOut(getAttrOut(l.get(20).get()));
+				//mateirla
+				i.setMaterial(getMaterial(l.get(21).get()));
+				//Status
+				i.setStatus(getStatus(l.get(22).get()));
 				//pack
 				res.add(i.pack());
 			}
@@ -341,36 +339,60 @@ public class ActionStorage extends DBStorage<Action> {
 	{
 		//行動アクションのデータをメモリに搭載してしまう
 		super.add(new Action(BattleConfig.ActionID.移動, I18N.get(GameSystemI18NKeys.移動), ActionType.行動) {
+			{
+				setBattle(true);
+			}
+
 			@Override
 			public boolean canDo(Status a) {
 				return true;
 			}
 		});
 		super.add(new Action(BattleConfig.ActionID.確定, I18N.get(GameSystemI18NKeys.確定), ActionType.行動) {
+			{
+				setBattle(true);
+			}
+
 			@Override
 			public boolean canDo(Status a) {
 				return true;
 			}
 		});
 		super.add(new Action(BattleConfig.ActionID.防御, I18N.get(GameSystemI18NKeys.防御), ActionType.行動) {
+			{
+				setBattle(true);
+			}
+
 			@Override
 			public boolean canDo(Status a) {
 				return true;
 			}
 		});
 		super.add(new Action(BattleConfig.ActionID.回避, I18N.get(GameSystemI18NKeys.回避), ActionType.行動) {
+			{
+				setBattle(true);
+			}
+
 			@Override
 			public boolean canDo(Status a) {
 				return true;
 			}
 		});
 		super.add(new Action(BattleConfig.ActionID.状態, I18N.get(GameSystemI18NKeys.状態), ActionType.行動) {
+			{
+				setBattle(true);
+			}
+
 			@Override
 			public boolean canDo(Status a) {
 				return true;
 			}
 		});
 		super.add(new Action(BattleConfig.ActionID.逃走, I18N.get(GameSystemI18NKeys.逃走), ActionType.行動) {
+			{
+				setBattle(true);
+			}
+
 			@Override
 			public boolean canDo(Status a) {
 				return true;
@@ -443,155 +465,89 @@ public class ActionStorage extends DBStorage<Action> {
 		return l;
 	}
 
-	public static class AnimationData implements Nameable {
-
-		public final String id;
-		public final String fileName;
-		public final int w, h;
-		public final int[] tc;
-
-		public AnimationData(String id, String fileName, int w, int h, int[] tc) {
-			this.id = id;
-			this.fileName = fileName;
-			this.w = w;
-			this.h = h;
-			this.tc = tc;
-		}
-
-		@Override
-		public String getName() {
-			return id;
-		}
-
-		public String getId() {
-			return id;
-		}
-
-	}
-
-	private ConditionRegist getCndRegist(String itemID) {
-		String sql = "select id, cndKey, val"
-				+ " from item_cndregist ic left join cndEffect c on ic.cndid = c.id"
-				+ " where ic.itemID = '" + itemID + "';";
-		KResultSet r = DBConnection.getInstance().execDirect(sql);
-		if (r.isEmpty()) {
-			return new ConditionRegist();
-		}
+	private ConditionRegist getCndRegist(String val) {
 		ConditionRegist res = new ConditionRegist();
-		for (List<DBValue> l : r) {
-			ConditionKey k = l.get(1).of(ConditionKey.class);
-			float val = l.get(2).asFloat();
-			res.put(k, val);
+		if (val == null || val.isEmpty()) {
+			return res;
+		}
+		for (var s : StringUtil.safeSplit(val, ",")) {
+			ConditionKey k = ConditionKey.valueOf(s.split("=")[0]);
+			float v = Float.parseFloat(s.split("=")[1]);
+			res.put(k, v);
 		}
 		return res;
 	}
 
-	private AttributeValueSet getAttrOut(String itemID) {
-		String sql = "select id,attrkey,val"
-				+ " from item_attrOut ia left join attrEffect e on ia.attrID = e.id"
-				+ " where ia.itemID= '" + itemID + "';";
-		KResultSet r = DBConnection.getInstance().execDirect(sql);
-		if (r.isEmpty()) {
-			return new AttributeValueSet();
+	private AttributeValueSet getAttrOut(String val) {
+		AttributeValueSet res = new AttributeValueSet();
+		if (val == null || val.isEmpty()) {
+			return res;
 		}
-		AttributeValueSet vs = new AttributeValueSet();
-		for (List<DBValue> l : r) {
-			AttributeKey k = l.get(1).of(AttributeKey.class);
-			float val = l.get(2).asFloat();
-			vs.add(new AttributeValue(k, val));
+		for (var s : StringUtil.safeSplit(val, ",")) {
+			AttributeKey k = AttributeKey.valueOf(s.split("=")[0]);
+			float v = Float.parseFloat(s.split("=")[1]);
+			res.add(new AttributeValue(k, v));
 		}
-		return vs;
+		return res;
 	}
 
-	private AttributeValueSet getAttrIn(String itemID) {
-		String sql = "select id,attrkey,val"
-				+ " from item_attrIn ia left join attrEffect e on ia.attrID = e.id"
-				+ " where ia.itemID= '" + itemID + "';";
-		KResultSet r = DBConnection.getInstance().execDirect(sql);
-		if (r.isEmpty()) {
-			return new AttributeValueSet();
+	private AttributeValueSet getAttrIn(String val) {
+		AttributeValueSet res = new AttributeValueSet();
+		if (val == null || val.isEmpty()) {
+			return res;
 		}
-		AttributeValueSet vs = new AttributeValueSet();
-		for (List<DBValue> l : r) {
-			AttributeKey k = l.get(1).of(AttributeKey.class);
-			float val = l.get(2).asFloat();
-			vs.add(new AttributeValue(k, val));
+		for (var s : StringUtil.safeSplit(val, ",")) {
+			AttributeKey k = AttributeKey.valueOf(s.split("=")[0]);
+			float v = Float.parseFloat(s.split("=")[1]);
+			res.add(new AttributeValue(k, v));
 		}
-		return vs;
+		return res;
 	}
 
-	private StatusValueSet getStatus(String itemID) {
-		String sql = "select id,statusKEy,val"
-				+ " from item_status ss left join statusEffect e on ss.statusID = e.id"
-				+ " where ss.itemID= '" + itemID + "';";
-		KResultSet r = DBConnection.getInstance().execDirect(sql);
-		if (r.isEmpty()) {
-			return new StatusValueSet();//no keys
+	private StatusValueSet getStatus(String val) {
+		StatusValueSet res = new StatusValueSet();
+		if (val == null || val.isEmpty()) {
+			return res;
 		}
-		StatusValueSet vs = new StatusValueSet();
-		for (List<DBValue> l : r) {
-			StatusKey sk = l.get(1).of(StatusKey.class);
-			float val = l.get(2).asFloat();
-			vs.add(new StatusValue(sk, val));
+		for (var s : StringUtil.safeSplit(val, ",")) {
+			StatusKey k = StatusKey.valueOf(s.split("=")[0]);
+			float v = Float.parseFloat(s.split("=")[1]);
+			res.add(new StatusValue(k, v));
 		}
-		return vs;
+		return res;
 	}
 
-	private Map<Material, Integer> getMaterial(String itemID) {
-		String sql = "select materialID, num "
-				+ " from item_material im left join material m on im.materialid = m.id"
-				+ " where im.itemid = '" + itemID + "';";
-		KResultSet r = DBConnection.getInstance().execDirect(sql);
+	private Map<Material, Integer> getMaterial(String val) {
 		Map<Material, Integer> res = new HashMap<>();
-		for (List<DBValue> l : r) {
-			String materialID = l.get(0).get();
-			int num = l.get(1).asInt();
-			Material m = MaterialStorage.getInstance().get(materialID);
-			res.put(m, num);
+		if (val == null || val.isEmpty()) {
+			return res;
+		}
+		for (var s : StringUtil.safeSplit(val, ",")) {
+			Material k = MaterialStorage.getInstance().get(s.split("=")[0]);
+			int v = Integer.parseInt(s.split("=")[1]);
+			res.put(k, v);
 		}
 		return res;
 	}
 
-	private EnumSet<ItemEqipTerm> getTerms(String itemID) {
-		String sql = "select eqipTermID,Name"
-				+ " from item_eqipterm it"
-				+ " where it.itemid = '" + itemID + "';";
-		KResultSet r = DBConnection.getInstance().execDirect(sql);
+	private EnumSet<ItemEqipTerm> getEqipTerms(String val) {
 		EnumSet<ItemEqipTerm> res = EnumSet.noneOf(ItemEqipTerm.class);
-		for (List<DBValue> l : r) {
-			ItemEqipTerm t = l.get(1).orNull(ItemEqipTerm.class);
-			if (t != null) {
-				res.add(t);
-			}
+		for (var s : StringUtil.safeSplit(val, ",")) {
+			res.add(ItemEqipTerm.valueOf(s));
 		}
 		return res;
 	}
 
-	private AnimationSprite getAnimation(String actionID, String tableName) {
-		String sql = "select ANIMATIONID,FILENAME,WSIZE,HSIZE,SPEED"
-				+ " from " + tableName + " ea left join animation a on ea.animationid = a.id"
-				+ " where ea.actionid = '" + actionID + "';";
-		KResultSet r = DBConnection.getInstance().execDirect(sql);
-		if (r.isEmpty()) {
-			return null;
-		}
-		//1件しか入っていない
-		List<DBValue> l = r.row(0);
-		//0,0
-		String id = l.get(0).get();
-		String fileName = l.get(1).get();
-		int w = l.get(2).asInt();
-		int h = l.get(3).asInt();
-		int[] speed = l.get(4).asSafeIntArray(",");
-		Animation a = new Animation(new FrameTimeCounter(speed), new SpriteSheet(fileName).rows(0, w, h).images());
-		a.setRepeat(false);
-		AnimationSprite s = new AnimationSprite(a);
-		s.setId(id);
-		return s;
-	}
+	private HashMap<String, AnimationSprite> animationCache = new HashMap<>();
 
 	public AnimationSprite getAnimation(String animationId) {
-		String sql = "select ANIMATIONID,FILENAME,WSIZE,HSIZE,SPEED"
+		if (animationId == null) {
+			return null;
+		}
+		if (animationCache.containsKey(animationId)) {
+			return animationCache.get(animationId).clone();
+		}
+		String sql = "select ID,FILENAME,WSIZE,HSIZE,SPEED"
 				+ " from animation a "
 				+ " where a.id = '" + animationId + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -610,12 +566,13 @@ public class ActionStorage extends DBStorage<Action> {
 		a.setRepeat(false);
 		AnimationSprite s = new AnimationSprite(a);
 		s.setId(id);
+		animationCache.put(id, s);
 		return s;
 	}
 
 	private List<ActionEvent> getMainEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,"
-				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION,WAITTIME"
+				+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION,WAITTIME,userAnimationId,tgtAnimationId,otherAnimationId"
 				+ " from action_mainEvent me left join actionEvent e on me.eventId = e.id"
 				+ " where me.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -625,8 +582,8 @@ public class ActionStorage extends DBStorage<Action> {
 		List<ActionEvent> res = new ArrayList<>();
 		for (List<DBValue> l : r) {
 			//光線イベントの判定
-			if (BeamEffectEvents.getInstance().has(l.get(1).get())) {
-				ActionEvent e = BeamEffectEvents.getInstance().of(l.get(1).of(BeamEffectEvents.Key.class));
+			if (BeamEffectEvents.getInstance().has(l.get(3).get())) {
+				ActionEvent e = BeamEffectEvents.getInstance().of(l.get(3).of(BeamEffectEvents.Key.class));
 				e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
 				res.add(e);
 				continue;
@@ -656,22 +613,22 @@ public class ActionStorage extends DBStorage<Action> {
 			//TERM
 			sql = "select "
 					+ "id,typ,tgtName,Val"
-					+ " from event_term et left join eventterm t on et.termid = t.id"
-					+ " where et.eventid = '" + e.getId() + "';";
+					+ " from eventterm"
+					+ " where eventid = '" + e.getId() + "';";
 			KResultSet tr = DBConnection.getInstance().execDirect(sql);
-			List<ActionEvent.Term> terms = new ArrayList<>();
+			List<ActionEvent.Actor保有条件> terms = new ArrayList<>();
 			for (List<DBValue> tl : tr) {
 				String id = tl.get(0).get();
-				ActionEvent.Term.Type type = tl.get(1).of(ActionEvent.Term.Type.class);
+				ActionEvent.Actor保有条件.Type type = tl.get(1).of(ActionEvent.Actor保有条件.Type.class);
 				String tgtName = tl.get(2).get();
 				float val = tl.get(3).asFloat();
-				terms.add(new ActionEvent.Term(id, type, val, tgtName));
+				terms.add(new ActionEvent.Actor保有条件(id, type, val, tgtName));
 			}
 			e.setTerms(terms);
 			//ANIMATION
-			e.setTgtAnimation(getAnimation(e.getId(), "Event_TgtAnimation"));
-			e.setOtherAnimation(getAnimation(e.getId(), "Event_OtherAnimation"));
-			e.setUserAnimation(getAnimation(e.getId(), "Event_UserAnimation"));
+			e.setUserAnimation(getAnimation(l.get(19).get()));
+			e.setTgtAnimation(getAnimation(l.get(20).get()));
+			e.setOtherAnimation(getAnimation(l.get(21).get()));
 			//
 			res.add(e);
 		}
@@ -680,7 +637,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private List<ActionEvent> getUserEvents(String actionID) {
 		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,P,"
-				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION,WAITTIME"
+				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION,WAITTIME,userAnimationId,tgtAnimationId,otherAnimationId"
 				+ " from action_userEvent ue left join actionEvent e on ue.eventId = e.id"
 				+ " where ue.actionId = '" + actionID + "';";
 		KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -713,22 +670,22 @@ public class ActionStorage extends DBStorage<Action> {
 			//TERM
 			sql = "select "
 					+ "id,typ,tgtName,Val"
-					+ " from event_term et left join eventterm t on et.termid = t.id"
-					+ " where et.eventid = '" + e.getId() + "';";
+					+ " from eventterm"
+					+ " where eventid = '" + e.getId() + "';";
 			KResultSet tr = DBConnection.getInstance().execDirect(sql);
-			List<ActionEvent.Term> terms = new ArrayList<>();
+			List<ActionEvent.Actor保有条件> terms = new ArrayList<>();
 			for (List<DBValue> tl : tr) {
 				String id = tl.get(0).get();
-				ActionEvent.Term.Type type = tl.get(1).of(ActionEvent.Term.Type.class);
+				ActionEvent.Actor保有条件.Type type = tl.get(1).of(ActionEvent.Actor保有条件.Type.class);
 				String tgtName = tl.get(2).get();
 				float val = tl.get(3).asFloat();
-				terms.add(new ActionEvent.Term(id, type, val, tgtName));
+				terms.add(new ActionEvent.Actor保有条件(id, type, val, tgtName));
 			}
 			e.setTerms(terms);
 			//ANIMATION
-			e.setTgtAnimation(getAnimation(e.getId(), "Event_TgtAnimation"));
-			e.setOtherAnimation(getAnimation(e.getId(), "Event_OtherAnimation"));
-			e.setUserAnimation(getAnimation(e.getId(), "Event_UserAnimation"));
+			e.setUserAnimation(getAnimation(l.get(19).get()));
+			e.setTgtAnimation(getAnimation(l.get(20).get()));
+			e.setOtherAnimation(getAnimation(l.get(21).get()));
 			//
 			res.add(e);
 		}

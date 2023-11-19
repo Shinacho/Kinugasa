@@ -356,11 +356,19 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport, Cloneab
 	@Override
 	public PCSprite clone() {
 		PCSprite r = (PCSprite) super.clone();
-		r.initialIdx = this.initialIdx.clone();
+		if (this.initialIdx != null) {
+			r.initialIdx = this.initialIdx.clone();
+		}
 		r.fAnimation = this.fAnimation.clone();
-		r.tgt = (Point2D.Float) this.tgt.clone();
-		r.currentIdx = this.currentIdx.clone();
-		r.targetIdx = this.targetIdx.clone();
+		if (this.tgt != null) {
+			r.tgt = (Point2D.Float) this.tgt.clone();
+		}
+		if (this.currentIdx != null) {
+			r.currentIdx = this.currentIdx.clone();
+		}
+		if (this.targetIdx != null) {
+			r.targetIdx = this.targetIdx.clone();
+		}
 		return r;
 	}
 

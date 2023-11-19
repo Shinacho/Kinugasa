@@ -105,6 +105,10 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		updateText();
 	}
 
+	public ActionType getCurrentType() {
+		return type;
+	}
+
 	@LoopCall
 	@Override
 	public void update() {
@@ -125,8 +129,8 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		text += Text.getLineSep();
 		int i = 0;
 		List<Action> actionList = cmd.getActionOf(type);
-		//アイテム以外の場合はバトル利用可能なアクションにフィルター
-		if (type != ActionType.アイテム) {
+		//バトル利用可能なアクションにフィルター
+		if (type != ActionType.アイテム && type != ActionType.行動) {
 			actionList = actionList.stream().filter(p -> p.isBattle()).collect(Collectors.toList());
 		}
 
@@ -149,8 +153,8 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 			List<Text> t = Text.split(new Text(text));
 			setText(t);
 			super.getWindow().allText();
+			BattleSystem.getInstance().getTargetSystem().setCurrent((Action) null);
 			selected = null;
-			setCurrent();
 			return;
 		}
 
@@ -158,7 +162,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		for (Action b : actionList) {
 			switch (type) {
 				case 攻撃:
-					text += b.getVisibleName() + ":" + b.getDesc();
+					text += b.getVisibleName() + ":" + b.getSummary();
 					text += ("、")
 							+ (I18N.get(GameSystemI18NKeys.属性))
 							+ (":");
@@ -177,7 +181,6 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 							.mapToInt(p -> (int) (p.getValue()))
 							.map(p -> Math.abs(p))
 							.sum()));
-					text += "、" + b.getSummary();
 					text += Text.getLineSep();
 					break;
 				case アイテム:
@@ -189,16 +192,18 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 					text += e + b.getVisibleName() + Text.getLineSep();
 					break;
 				case 魔法:
-					text += b.getVisibleName() + ":" + b.getDesc();
-					text += ("、")
-							+ (I18N.get(GameSystemI18NKeys.属性))
-							+ (":");
-					text += (b.getMainEvents()
-							.stream()
-							.filter(p -> p.getAtkAttr() != null)
-							.map(p -> p.getAtkAttr().getVisibleName())
-							.distinct()
-							.collect(Collectors.toList()));
+					text += b.getVisibleName() + ":" + b.getSummary();
+					if (b.getMainEvents().stream().anyMatch(p -> p.getAtkAttr() != null)) {
+						text += ("、")
+								+ (I18N.get(GameSystemI18NKeys.属性))
+								+ (":");
+						text += (b.getMainEvents()
+								.stream()
+								.filter(p -> p.getAtkAttr() != null)
+								.map(p -> p.getAtkAttr().getVisibleName())
+								.distinct()
+								.collect(Collectors.toList()));
+					}
 					text += ("、")
 							+ (I18N.get(GameSystemI18NKeys.基礎威力))
 							+ (":");
@@ -212,7 +217,6 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 							+ (I18N.get(GameSystemI18NKeys.詠唱時間))
 							+ (":")
 							+ b.getCastTime() + (I18N.get(GameSystemI18NKeys.ターン));
-					text += "、" + b.getSummary();
 					text += Text.getLineSep();
 					break;
 				case 行動:
@@ -259,6 +263,11 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 			kinugasa.game.GameLog.print("MCMW :" + selected);
 		}
 		setCurrent();
+	}
+
+	@Override
+	public String toString() {
+		return "BattleCommandMessageWindow{" + "cmd=" + cmd + ", typeIdx=" + typeIdx + ", type=" + type + ", selected=" + selected + '}';
 	}
 
 }

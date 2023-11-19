@@ -151,6 +151,9 @@ public class GameSystemI18NKeys {
 	public static final String 諦める = "諦める";
 	public static final String Xを手に入れた誰が持つ = "Xを手に入れた誰が持つ";
 
+	public static final String 対象効果 = "対象効果";
+	public static final String 自身への効果 = "自身への効果";
+	
 	public static final String Xの行動 = "Xの行動";
 	public static final String 範囲 = "範囲";
 	public static final String 属性 = "属性";
@@ -335,6 +338,7 @@ public class GameSystemI18NKeys {
 	public static final String 中ノックバックの術式 = "中ノックバックの術式";
 	public static final String Xの確率で対象者は最大255ノックバックする = "Xの確率で対象者は最大255ノックバックする";
 	public static final String 強ノックバックの術式 = "強ノックバックの術式";
+	public static final String Xはノックバックした = "Xはノックバックした";
 	public static final String Xの確率で対象者は中心からXの範囲内に転送される = "Xの確率で対象者は中心からXの範囲内に転送される";
 	public static final String 集結の術式 = "集結の術式";
 	public static final String Xの確率で対象者はすぐ逃げられる位置に転送される = "Xの確率で対象者はすぐ逃げられる位置に転送される";
@@ -361,7 +365,7 @@ public class GameSystemI18NKeys {
 	public static final String 別次元破壊の術式 = "別次元破壊の術式";
 	public static final String Xの確率ですべてのセーブデータを破壊する = "Xの確率ですべてのセーブデータを破壊する";
 	public static final String 全空間破壊の術式 = "全空間破壊の術式";
-	public static final String このイベントがあると術者から対象者へビームを発射するアニメーションが追加される = "このイベントがあると術者から対象者へビームを発射するアニメーションが追加される";
+	public static final String 術者から対象者へビームを発射する = "術者から対象者へビームを発射する";
 	public static final String 起動するとファイル選択が開き選んだファイルに応じて属性とダメージが決まる = "起動するとファイル選択が開き選んだファイルに応じて属性とダメージが決まる";
 	public static final String 上位者の情報の術式 = "上位者の情報の術式";
 	public static final String 起動するとファイル選択が開き選んだファイルのサイズに応じて属性とダメージが決まる = "起動するとファイル選択が開き選んだファイルのサイズに応じて属性とダメージが決まる";
@@ -409,13 +413,13 @@ public class GameSystemI18NKeys {
 	public static final String パージの術式 = "パージの術式";
 	public static final String 即時追加行動の術式 = "即時追加行動の術式";
 	public static final String 遅延追加行動の術式 = "遅延追加行動の術式";
-	public static final String Xの確率でこのアクションはターゲットからXの距離内の同じチームの全員にも作用する = "Xの確率でこのアクションはターゲットからXの距離内の同じチームの全員にも作用する";
+	public static final String Xの確率でターゲットからXの距離内の同じチームの全員にも作用する = "Xの確率でターゲットからXの距離内の同じチームの全員にも作用する";
 	public static final String 放射の術式 = "放射の術式";
-	public static final String Xの確率でこのアクションはターゲットからXの距離内の全員にも作用する = "Xの確率でこのアクションはターゲットからXの距離内の全員にも作用する";
+	public static final String Xの確率でターゲットからXの距離内の全員にも作用する = "Xの確率でターゲットからXの距離内の全員にも作用する";
 	public static final String 全体放射の術式 = "全体放射の術式";
-	public static final String Xの確率でこのアクションはターゲットからXの距離内の同じチームの一人にも作用する = "Xの確率でこのアクションはターゲットからXの距離内の同じチームの一人にも作用する";
+	public static final String Xの確率でターゲットからXの距離内の同じチームの一人にも作用する = "Xの確率でターゲットからXの距離内の同じチームの一人にも作用する";
 	public static final String 派生の術式 = "派生の術式";
-	public static final String Xの確率でこのアクションはターゲットからXの距離内の一人にも作用する = "Xの確率でこのアクションはターゲットからXの距離内の一人にも作用する";
+	public static final String Xの確率でターゲットからXの距離内の一人にも作用する = "Xの確率でターゲットからXの距離内の一人にも作用する";
 	public static final String 伝搬の術式 = "伝搬の術式";
 	public static final String このターン対象者が未行動ならXの確率で対象者はこの行動のすぐあとに行動できる = "このターン対象者が未行動ならXの確率で対象者はこの行動のすぐあとに行動できる";
 	public static final String このターン対象者が未行動ならXの確率で対象者はこのターンの最後に行動できる = "このターン対象者が未行動ならXの確率で対象者はこのターンの最後に行動できる";
@@ -464,7 +468,9 @@ public class GameSystemI18NKeys {
 	public static final String XのXは攻撃回数が変動した ="XのXは攻撃回数が変動した";
 	public static final String XのXは価値が変動した = "XのXは価値が変動した";
 	public static final String XはX装備を外した = "XはX装備を外した";
-	
+	public static final String 基礎値 = "基礎値";
+	public static final String Xの確率でX属性の回復ダメージをXに与える = "Xの確率でX属性の回復ダメージをXに与える";
+	public static final String XはすでにXがかかっている = "XはすでにXがかかっている";
 	
 	public static class CountKey {
 

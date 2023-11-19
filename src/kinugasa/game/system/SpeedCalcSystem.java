@@ -106,10 +106,9 @@ public class SpeedCalcSystem {
 				.filter(p -> !p.get().getUser().getStatus().hasCondition(ConditionKey.気絶))
 				.toList();
 
+		result = new ArrayList<>(result);
 		Collections.sort(result);
-
 		return new LinkedList<>(result.stream().map(p -> p.get()).toList());
-
 	}
 
 }

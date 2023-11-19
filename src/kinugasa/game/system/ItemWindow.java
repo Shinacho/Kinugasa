@@ -332,7 +332,7 @@ public class ItemWindow extends BasicSprite {
 												sb.append(I18N.get(GameSystemI18NKeys.Xの, e.getKey().getVisibleName()))
 														.append(I18N.get(GameSystemI18NKeys.Xは, v.getKey().getVisibleName()))
 														.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()) + ""));
-											} else {
+											} else if (v.getValue() < 0) {
 												sb.append(I18N.get(GameSystemI18NKeys.Xの, e.getKey().getVisibleName()))
 														.append(I18N.get(GameSystemI18NKeys.Xに, v.getKey().getVisibleName()))
 														.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()) + ""));

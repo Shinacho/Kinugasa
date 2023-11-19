@@ -72,7 +72,7 @@ public class BattleMessageWindowSystem implements Drawable {
 	void init() {
 		List<Actor> statusList = GameSystem.getInstance().getParty();
 		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - 6;
-		float h = (float) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3.66f);
+		float h = (float) (GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3.62f);
 		cmdW = new BattleCommandMessageWindow(3, (int) messageWindowY, (int) w, (int) h);
 		afterMoveW = new AfterMoveActionMessageWindow(3, (int) messageWindowY, (int) w, (int) h);
 		tgtW = new ScrollSelectableMessageWindow(3, (int) messageWindowY, (int) w, (int) h, 7, false) {
@@ -85,7 +85,7 @@ public class BattleMessageWindowSystem implements Drawable {
 			}
 
 		};
-		infoW = new MessageWindow(480, messageWindowY, w - 480, h, new SimpleMessageWindowModel().setNextIcon(""));
+		infoW = new MessageWindow(480, messageWindowY, w - 480, 38, new SimpleMessageWindowModel().setNextIcon(""));
 		statusW = new BattleStatusWindows(statusList.stream().filter(p -> !p.isSummoned()).toList());
 		itemChoiceUseW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		itemCommitResultW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
@@ -629,6 +629,11 @@ public class BattleMessageWindowSystem implements Drawable {
 		itemDescW.draw(g);
 		//
 		battleResultW.draw(g);
+	}
+
+	@Override
+	public String toString() {
+		return "BattleMessageWindowSystem{" + "statusW=" + statusW + ", cmdW=" + cmdW + ", tgtW=" + tgtW + ", itemChoiceUseW=" + itemChoiceUseW + ", itemCommitResultW=" + itemCommitResultW + ", afterMoveW=" + afterMoveW + ", actionResultW=" + actionResultW + ", infoW=" + infoW + ", statusDescW=" + statusDescW + ", statusDescWPage=" + statusDescWPage + ", itemDescW=" + itemDescW + ", battleResultW=" + battleResultW + ", mode=" + mode + ", prevMode=" + prevMode + ", sv=" + sv + ", prevSv=" + prevSv + ", iv=" + iv + ", prevIv=" + prevIv + ", itemChoiceUseSelected=" + itemChoiceUseSelected + '}';
 	}
 
 }

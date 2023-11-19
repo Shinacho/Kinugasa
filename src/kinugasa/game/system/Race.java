@@ -16,7 +16,6 @@
  */
 package kinugasa.game.system;
 
-import java.util.Arrays;
 import java.util.List;
 import kinugasa.game.I18N;
 
@@ -26,12 +25,12 @@ import kinugasa.game.I18N;
  * @author Shinacho<br>
  */
 public enum Race {
-	人間(12, 8, Arrays.asList(EqipSlot.values())),
-	ベルマ人(8, 14, Arrays.asList(EqipSlot.values())),
+	人間(12, 8, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.右手, EqipSlot.左手, EqipSlot.足, EqipSlot.装飾品)),
+	ベルマ人(8, 14, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.右手, EqipSlot.左手, EqipSlot.足, EqipSlot.装飾品)),
 	やどかり(3, 0, List.of(EqipSlot.頭)),
 	魔法生物(3, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.装飾品)),
-	野生生物(5, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.足, EqipSlot.足, EqipSlot.装飾品)),
-	仲間の犬(5, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.足, EqipSlot.足, EqipSlot.装飾品)),
+	野生生物(5, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.前足, EqipSlot.後足, EqipSlot.装飾品)),
+	仲間の犬(5, 0, List.of(EqipSlot.頭, EqipSlot.胴体, EqipSlot.前足, EqipSlot.後足, EqipSlot.装飾品)),
 	
 	;
 	private int itemBagSize;

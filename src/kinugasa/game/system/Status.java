@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kinugasa.game.GameLog;
+import kinugasa.game.I18N;
 import kinugasa.game.NoLoopCall;
 import kinugasa.game.Nullable;
 import kinugasa.resource.Nameable;
@@ -83,7 +85,6 @@ public final class Status extends Model implements Nameable {
 		r.currentCondition = this.currentCondition.clone();
 		return r;
 	}
-	
 
 	public Status(String id, Race r) {
 		this.id = id;
@@ -180,14 +181,18 @@ public final class Status extends Model implements Nameable {
 				return getVisibleName() + key.getStartMsgI18Nd();
 			} else {
 				//再付与しなかった=状態異常は追加されていない
-				return null;
+				return I18N.get(GameSystemI18NKeys.XはすでにXがかかっている, getVisibleName(), key.getVisibleName());
 			}
 		}
 		currentCondition.put(key, t);
 		lastAddedConditin = key;
 		key.startEffect(conditionFlags);
 		addWhen0Condition();
-		return getName() + key.getStartMsgI18Nd();
+		String v = key.getStartMsgI18Nd();
+		if (v == null || v.isEmpty()) {
+			return I18N.get(GameSystemI18NKeys.Xは, getVisibleName()) + I18N.get(GameSystemI18NKeys.Xになった, key.getVisibleName());
+		}
+		return getVisibleName() + key.getStartMsgI18Nd();
 	}
 
 	@Nullable
@@ -232,65 +237,123 @@ public final class Status extends Model implements Nameable {
 		return null;
 	}
 
+	public static class UpdadeConditionResult {
+
+		public static class Value {
+
+			public final ConditionKey cndKey;
+			public final String msg;
+			public final boolean is回復した;
+			public final boolean is発生した;
+			public final boolean is継続中;
+			public final StatusKey statusKey;
+			public final float damage;
+
+			public Value(ConditionKey cndKey, String msg, boolean is回復した, boolean is発生した, boolean is継続中, StatusKey statusKey, float damage) {
+				this.cndKey = cndKey;
+				this.msg = msg;
+				this.is回復した = is回復した;
+				this.is発生した = is発生した;
+				this.is継続中 = is継続中;
+				this.statusKey = statusKey;
+				this.damage = damage;
+			}
+
+		}
+		public final LinkedHashMap<ConditionKey, Value> result = new LinkedHashMap<>();
+
+	}
+
 	/**
 	 * 状態異常の効果時間を経過させ、それにともなうフラグの設定を行います。<br>
 	 * またステータス起因による状態異常の追加も行います。 行動が停止していたり、混乱している場合はメッセージを返します。
 	 */
 	@Nullable
 	@NoLoopCall("1-call/1-turn")
-	public String updateCondition() {
-		StatusValueSet vs = getEffectedStatus();
-		if (currentCondition.containsKey(ConditionKey.解脱)) {
-			if (!vs.get(StatusKey.正気度).isZero()) {
-				ConditionKey.解脱.endEffect(conditionFlags);
-				return removeCondition(ConditionKey.解脱);
-			}
-			return getVisibleName() + ConditionKey.解脱.getExecMsgI18Nd();
-		}
-		if (currentCondition.containsKey(ConditionKey.損壊)) {
-			if (!vs.get(StatusKey.体力).isZero()) {
-				ConditionKey.損壊.endEffect(conditionFlags);
-				return removeCondition(ConditionKey.損壊);
-			}
-			return getVisibleName() + ConditionKey.損壊.getEndMsgI18Nd();
-		}
-		if (currentCondition.containsKey(ConditionKey.気絶)) {
-			currentCondition.get(ConditionKey.気絶).add(-1);
-			if (currentCondition.get(ConditionKey.気絶).isReaching()
-					|| !vs.get(StatusKey.魔力).isZero()) {
-				removeCondition(ConditionKey.気絶);
-				ConditionKey.気絶.endEffect(conditionFlags);
-				return removeCondition(ConditionKey.損壊);
-			}
-			return getVisibleName() + ConditionKey.気絶.getExecMsgI18Nd();
-		}
+	public UpdadeConditionResult updateCondition() {
+		UpdadeConditionResult res = new UpdadeConditionResult();
 		addWhen0Condition();
-		//発生中効果の処理
+		if (currentCondition.containsKey(ConditionKey.逃走した)) {
+			return res;
+		}
+
+		boolean is解脱 = currentCondition.containsKey(ConditionKey.解脱);
+		if (is解脱) {
+			res.result.put(ConditionKey.解脱, new UpdadeConditionResult.Value(ConditionKey.解脱,
+					getVisibleName() + ConditionKey.解脱.getExecMsgI18Nd(),
+					false, false, true,
+					null, 0));
+			return res;
+		}
+		boolean is損壊 = currentCondition.containsKey(ConditionKey.損壊);
+		if (is損壊) {
+			res.result.put(ConditionKey.損壊, new UpdadeConditionResult.Value(ConditionKey.損壊,
+					getVisibleName() + ConditionKey.損壊.getExecMsgI18Nd(),
+					false, false, true,
+					null, 0));
+			return res;
+		}
+		boolean is気絶 = currentCondition.containsKey(ConditionKey.気絶);
+		if (is気絶) {
+			res.result.put(ConditionKey.気絶, new UpdadeConditionResult.Value(ConditionKey.気絶,
+					getVisibleName() + ConditionKey.気絶.getExecMsgI18Nd(),
+					false, false, true,
+					null, 0));
+			return res;
+		}
+
+		//継続ダメージ処理
 		for (ConditionKey k : currentCondition.keySet()) {
-			ConditionFlags.ConditionPercent p = k.getPercent();
-			if (p.is停止()) {
-				ManualTimeCounter tc = currentCondition.get(k);
-				tc.add(-1);
-				if (tc.isReaching()) {
-					removeCondition(k);
+			saveBeforeDamageCalc();
+			k.turnStart(this);
+			//継続ダメージ判定
+			StatusValueSet svs = getDamageFromSavePoint();
+			if (!svs.isEmpty()) {
+				for (StatusValue s : svs) {//通常1つ
+					res.result.put(k, new UpdadeConditionResult.Value(k, getVisibleName() + k.getExecMsgI18Nd(), false, false, true, s.getKey(), s.getValue()));
 				}
-				return getVisibleName() + k.getExecMsgI18Nd();
-			}
-			if (p.is混乱()) {
-				ManualTimeCounter tc = currentCondition.get(k);
-				tc.add(-1);
-				if (tc.isReaching()) {
-					removeCondition(k);
+				addWhen0Condition();
+				boolean is解脱2 = currentCondition.containsKey(ConditionKey.解脱);
+				if (is解脱2) {
+					res.result.put(ConditionKey.解脱, new UpdadeConditionResult.Value(ConditionKey.解脱,
+							getVisibleName() + ConditionKey.解脱.getExecMsgI18Nd(),
+							false, true, false,
+							null, 0));
+					return res;
 				}
-				return getVisibleName() + GameSystemI18NKeys.混乱している;
-			}
-			ManualTimeCounter tc = currentCondition.get(k);
-			tc.add(-1);
-			if (tc.isReaching()) {
-				removeCondition(k);//解除時はMSG表示なし（暫定）
+				boolean is損壊2 = currentCondition.containsKey(ConditionKey.損壊);
+				if (is損壊2) {
+					res.result.put(ConditionKey.損壊, new UpdadeConditionResult.Value(ConditionKey.損壊,
+							getVisibleName() + ConditionKey.損壊.getExecMsgI18Nd(),
+							false, true, false,
+							null, 0));
+					return res;
+				}
+				boolean is気絶2 = currentCondition.containsKey(ConditionKey.気絶);
+				if (is気絶2) {
+					res.result.put(ConditionKey.気絶, new UpdadeConditionResult.Value(ConditionKey.気絶,
+							getVisibleName() + ConditionKey.気絶.getExecMsgI18Nd(),
+							false, true, false,
+							null, 0));
+					return res;
+				}
 			}
 		}
-		return null;//特別な表示はない
+
+		//効果時間経過処理
+		List<ConditionKey> remove = new ArrayList<>();
+		for (ConditionKey k : currentCondition.keySet()) {
+			currentCondition.get(k).add(-1);
+			if (currentCondition.get(k).isReaching()) {
+				remove.add(k);
+			}
+		}
+		remove.forEach(p -> {
+			String msg = removeCondition(p);
+			res.result.put(p, new UpdadeConditionResult.Value(p, msg, true, false, false, null, 0));
+		});
+
+		return res;
 	}
 
 	public boolean hasCondition(ConditionKey key) {
@@ -319,7 +382,11 @@ public final class Status extends Model implements Nameable {
 		actions.addAll(getItemBag().getItems().stream().filter(p -> p.hasEvent()).collect(Collectors.toList()));
 		//魔法（本から移入
 		if (getEffectedStatus().get(StatusKey.魔術使用可否).getValue() == StatusKey.魔術使用可否＿使用可能) {
-			actions.addAll(getBookBag().getItems().stream().map(p -> p.getAction()).collect(Collectors.toList()));
+			for (Book b : getBookBag()) {
+				if (!actions.contains(b.getAction())) {
+					actions.add(b.getAction());
+				}
+			}
 		}
 		//攻撃
 		for (Action a : ActionStorage.getInstance().allOf(ActionType.攻撃)) {
@@ -462,6 +529,9 @@ public final class Status extends Model implements Nameable {
 	}
 
 	public int getEffectedArea(Action a) {
+		if (a == null) {
+			throw new GameSystemException("Status: action is null " + a);
+		}
 		if (!actions.contains(a)) {
 			throw new GameSystemException("this action is not have me : " + a);
 		}
@@ -495,11 +565,6 @@ public final class Status extends Model implements Nameable {
 		return r;
 	}
 
-	public void saveBeforeDamageCalc() {
-		prevStatus = getEffectedStatus().clone();
-		GameLog.print(getName() + " saved");
-	}
-
 	public boolean has武器() {
 		if (this.eqip.containsKey(EqipSlot.右手)) {
 			if (eqip.get(EqipSlot.右手) != null) {
@@ -514,13 +579,18 @@ public final class Status extends Model implements Nameable {
 		return false;
 	}
 
+	public void saveBeforeDamageCalc() {
+		prevStatus = getBaseStatus().clone();
+		GameLog.print(getName() + " saved");
+	}
+
 	@NewInstance
 	public StatusValueSet getDamageFromSavePoint() {
 		if (prevStatus == null) {
 			return new StatusValueSet();
 		}
 		StatusValueSet r = new StatusValueSet();
-		StatusValueSet now = getEffectedStatus();
+		StatusValueSet now = getBaseStatus();
 		//this - prev
 		for (StatusKey k : StatusKey.values()) {
 			float v = now.get(k).getValue() - prevStatus.get(k).getValue();

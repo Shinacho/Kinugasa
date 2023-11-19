@@ -69,9 +69,9 @@ public enum EnemyAIImpl implements EnemyAI {
 			for (Action ac : get最大威力攻撃順(user)) {
 				//ターゲットが射程内にいればそれを実施
 				Actor tgt = getTgt(user);
-				if (is射程内(user, a, tgt)) {
+				if (is射程内(user, ac, tgt)) {
 					if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
-						return new ActionTarget(user, buf, List.of(tgt), false);
+						return new ActionTarget(user, ac, List.of(tgt), false);
 					}
 				}
 			}
@@ -203,12 +203,12 @@ public enum EnemyAIImpl implements EnemyAI {
 			for (Action aa : get最大威力攻撃順(user)) {
 				Actor tgt = getTgt(user);
 				//ターゲットが射程内にいるか確認
-				if (is射程内(user, a, tgt)) {
-					if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+				if (is射程内(user, aa, tgt)) {
+					if (!aa.checkResource(user.getStatus()).is足りないステータスあり()) {
 						if (Random.percent(0.5f)) {
 							return new ActionTarget(user, EnemyAIImpl.防御アクション, List.of(user), false);
 						} else {
-							return new ActionTarget(user, a, List.of(tgt), false);
+							return new ActionTarget(user, aa, List.of(tgt), false);
 						}
 					}
 				}

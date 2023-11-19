@@ -68,16 +68,18 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 			String text = "";
 			switch (type) {
 				case 攻撃:
-					text += b.getVisibleName() + ":" + b.getDesc();
-					text += ("、")
-							+ (I18N.get(GameSystemI18NKeys.属性))
-							+ (":");
-					text += (b.getMainEvents()
-							.stream()
-							.filter(p -> p.getAtkAttr() != null)
-							.map(p -> p.getAtkAttr().getVisibleName())
-							.distinct()
-							.collect(Collectors.toList()));
+					text += b.getVisibleName() + ":" + b.getSummary();
+					if (b.getMainEvents().stream().anyMatch(p -> p.getAtkAttr() != null)) {
+						text += ("、")
+								+ (I18N.get(GameSystemI18NKeys.属性))
+								+ (":");
+						text += (b.getMainEvents()
+								.stream()
+								.filter(p -> p.getAtkAttr() != null)
+								.map(p -> p.getAtkAttr().getVisibleName())
+								.distinct()
+								.collect(Collectors.toList()));
+					}
 					text += ("、")
 							+ (I18N.get(GameSystemI18NKeys.基礎威力))
 							+ (":");

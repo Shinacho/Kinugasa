@@ -43,16 +43,18 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		前段がないか最初のイベントが失敗時のみ起動,
 	}
 
-	public static class Term implements Nameable {
+	public static class Actor保有条件 implements Nameable {
 
 		public static enum Type {
 			指定の状態異常を持っている,
 			指定の状態異常を持っていない,
 			指定の武器タイプの武器を装備している,
+			武器を装備していない,
 			指定のアイテムを持っている,
 			指定のアイテムのいずれかを持っている,
 			指定の名前のアイテムを持っている,
 			指定のステータスの現在値が指定の割合以上,
+			指定のステータスの現在値が指定の値以上,
 			ACTORのIDが一致,
 		}
 		public final String id;
@@ -60,7 +62,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		public final float value;
 		public final String tgtName;
 
-		public Term(String id, Type type, float value, String tgtName) {
+		public Actor保有条件(String id, Type type, float value, String tgtName) {
 			this.id = id;
 			this.type = type;
 			this.value = value;
@@ -74,6 +76,16 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 				}
 				case 指定の状態異常を持っていない: {
 					return !a.getCurrentConditions().containsKey(ConditionKey.valueOf(tgtName));
+				}
+				case 武器を装備していない: {
+					boolean res = true;
+					if (a.getEqip().get(EqipSlot.右手) != null) {
+						res &= a.getEqip().get(EqipSlot.右手) == null;
+					}
+					if (a.getEqip().get(EqipSlot.左手) != null) {
+						res &= a.getEqip().get(EqipSlot.左手) == null;
+					}
+					return res;
 				}
 				case 指定の武器タイプの武器を装備している: {
 					if (a.getEqip().get(EqipSlot.右手) != null) {
@@ -105,6 +117,9 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 				}
 				case 指定のステータスの現在値が指定の割合以上: {
 					return a.getEffectedStatus().get(StatusKey.valueOf(tgtName)).get割合() >= value;
+				}
+				case 指定のステータスの現在値が指定の値以上: {
+					return a.getEffectedStatus().get(StatusKey.valueOf(tgtName)).getValue() >= value;
 				}
 				case ACTORのIDが一致: {
 					return tgtName.equals(a.getId());
@@ -142,7 +157,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	private String id;
 	private int sort;
 	private ActionEventType type;
-	private List<Term> terms = new ArrayList<>();
+	private List<Actor保有条件> terms = new ArrayList<>();
 	private StatusKey tgtStatusKey;
 	private float p;
 	private ConditionKey tgtConditionKey;
@@ -368,8 +383,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	//このイベントの情報を返す
 	public String getDescI18Nd() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(getEventType().getVisibleName()).append(":").append(type.getVisibleName());
-		sb.append(type.getEventDescI18Nd(this));
+		sb.append(type.getPageDescI18Nd(this));
 
 		return sb.toString();
 	}
@@ -397,7 +411,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		return this;
 	}
 
-	ActionEvent setTerms(List<Term> terms) {
+	ActionEvent setTerms(List<Actor保有条件> terms) {
 		this.terms = terms;
 		return this;
 	}
@@ -510,7 +524,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		return tgtId;
 	}
 
-	public List<Term> getTerms() {
+	public List<Actor保有条件> getTerms() {
 		return terms;
 	}
 

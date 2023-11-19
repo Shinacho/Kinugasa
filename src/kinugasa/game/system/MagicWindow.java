@@ -49,9 +49,9 @@ public class MagicWindow extends BasicSprite {
 		choiceUse.setVisible(false);
 		tgtSelect = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(""));
 		tgtSelect.setVisible(false);
-		msg = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(""));
+		msg = new ScrollSelectableMessageWindow(x, y, w, h, 23);
 		msg.setVisible(false);
-		group = new MessageWindowGroup(choiceUse, tgtSelect, msg);
+		group = new MessageWindowGroup(choiceUse, tgtSelect, msg.getWindow());
 		updateText();
 	}
 
@@ -73,7 +73,8 @@ public class MagicWindow extends BasicSprite {
 	private Mode mode = Mode.MAGIC_AND_USER_SELECT;
 	private int pcIdx = 0;
 	private ScrollSelectableMessageWindow main;
-	private MessageWindow choiceUse, tgtSelect, msg;
+	private MessageWindow choiceUse, tgtSelect;
+	private ScrollSelectableMessageWindow msg;
 	private MessageWindowGroup group;
 
 	private static final int USE = 0;
@@ -81,6 +82,13 @@ public class MagicWindow extends BasicSprite {
 
 	public void nextSelect() {
 		switch (mode) {
+			case WAIT_MSG_CLOSE_TO_CU:
+			case WAIT_MSG_CLOSE_TO_MUS: {
+				if (msg.isVisible()) {
+					msg.nextSelect();
+				}
+				break;
+			}
 			case MAGIC_AND_USER_SELECT:
 				main.nextSelect();
 				break;
@@ -95,6 +103,13 @@ public class MagicWindow extends BasicSprite {
 
 	public void prevSelect() {
 		switch (mode) {
+			case WAIT_MSG_CLOSE_TO_CU:
+			case WAIT_MSG_CLOSE_TO_MUS: {
+				if (msg.isVisible()) {
+					msg.prevSelect();
+				}
+				break;
+			}
 			case MAGIC_AND_USER_SELECT:
 				main.prevSelect();
 				break;
@@ -161,7 +176,9 @@ public class MagicWindow extends BasicSprite {
 				List<Text> options = new ArrayList<>();
 				options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
 				options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
-				Choice c = new Choice(options, "IMAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, a.getVisibleName()));
+				Choice c = new Choice(options, "IMAGIC_WINDOW_SUB",
+						I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getVisibleName())
+						+ I18N.get(GameSystemI18NKeys.Xを, a.getVisibleName()));
 				choiceUse.setText(c);
 				choiceUse.allText();
 				choiceUse.setSelect(0);
@@ -177,9 +194,8 @@ public class MagicWindow extends BasicSprite {
 							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
 							sb.append(I18N.get(GameSystemI18NKeys.しかしこの魔法はフィールドでは使えない));
-							msg.setText(sb.toString());
-							msg.allText();
-							group.show(msg);
+							msg.setText(Text.split(new Text(sb.toString())));
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
@@ -192,9 +208,8 @@ public class MagicWindow extends BasicSprite {
 								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
 								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toString()));
-								msg.setText(sb.toString());
-								msg.allText();
-								group.show(msg);
+								msg.setText(Text.split(new Text(sb.toString())));
+								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
 							}
@@ -230,9 +245,8 @@ public class MagicWindow extends BasicSprite {
 								//失敗
 								sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 							}
-							msg.setText(sb.toString());
-							msg.allText();
-							group.show(msg);
+							msg.setText(Text.split(new Text(sb.toString())));
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
 						}
@@ -251,10 +265,9 @@ public class MagicWindow extends BasicSprite {
 								StringBuilder sb = new StringBuilder();
 								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
-								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toString()));
-								msg.setText(sb.toString());
-								msg.allText();
-								group.show(msg);
+								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toList().toString()));
+								msg.setText(Text.split(new Text(sb.toString())));
+								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
 							}
@@ -264,32 +277,16 @@ public class MagicWindow extends BasicSprite {
 							StringBuilder sb = new StringBuilder();
 							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
-							for (Status st : GameSystem.getInstance().getPartyStatus()) {
-								if (r.is成功あり()) {
-									//成功
-									//効果測定
-									StatusValueSet map = st.getDamageFromSavePoint();
-									for (StatusValue e : map) {
-										if (e.getValue() < 0f) {
-											sb.append(I18N.get(GameSystemI18NKeys.Xの, I18N.get(GameSystemI18NKeys.全員)));
-											sb.append(I18N.get(GameSystemI18NKeys.Xが, e.getKey().getVisibleName()));
-											sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
-											sb.append(Text.getLineSep());
-										} else if (e.getValue() > 0f) {
-											sb.append(I18N.get(GameSystemI18NKeys.Xの, I18N.get(GameSystemI18NKeys.全員)));
-											sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getVisibleName()));
-											sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
-											sb.append(Text.getLineSep());
-										}
-									}
-								} else {
-									//失敗
-									sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
+							for (var v : r.getUserEventResultAsList()) {
+								sb.append(v.msgI18Nd).append(Text.getLineSep());
+							}
+							for (var v : r.getMainEventResultAsList()) {
+								for (var vv : v.perActor.values()) {
+									sb.append(vv.msgI18Nd).append(Text.getLineSep());
 								}
 							}
-							msg.setText(sb.toString());
-							msg.allText();
-							group.show(msg);
+							msg.setText(Text.split(new Text(sb.toString())));
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
 						}
@@ -299,10 +296,9 @@ public class MagicWindow extends BasicSprite {
 							StringBuilder sb = new StringBuilder();
 							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
-							sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toString()));
-							msg.setText(sb.toString());
-							msg.allText();
-							group.show(msg);
+							sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toList().toString()));
+							msg.setText(Text.split(new Text(sb.toString())));
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
@@ -332,6 +328,7 @@ public class MagicWindow extends BasicSprite {
 							sb.append(Text.getLineSep());
 						}
 						//イベント詳細
+						sb.append(Text.getLineSep());
 						sb.append("--").append(I18N.get(GameSystemI18NKeys.戦闘効果)).append(Text.getLineSep());
 						if (a.isBattle()) {
 							//SPELL_TIME
@@ -344,35 +341,51 @@ public class MagicWindow extends BasicSprite {
 							sb.append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(a.getArea());
 							sb.append(Text.getLineSep());
 
-							for (ActionEvent e : Stream.of(a.getMainEvents(), a.getUserEvents()).flatMap(p -> p.stream()).toList()) {
-								sb.append("  ").append(e.getEventType().getEventDescI18Nd(e));
-							}//event  for
+							sb.append("---");
+							sb.append(I18N.get(GameSystemI18NKeys.対象効果));
+							sb.append(Text.getLineSep());
+							for (ActionEvent e : a.getMainEvents()) {
+								sb.append("  ・").append(e.getEventType().getEventDescI18Nd(e)).append(Text.getLineSep());
+							}
+							sb.append("---");
+							sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
+							sb.append(Text.getLineSep());
+							for (ActionEvent e : a.getUserEvents()) {
+								sb.append("  ・").append(e.getEventType().getEventDescI18Nd(e)).append(Text.getLineSep());
+							}
+							//ターゲティング情報
+							sb.append("---").append(GameSystemI18NKeys.戦闘時ターゲット情報).append(Text.getLineSep());
+							sb.append("  ").append(a.getTgtType().getVisibleName()).append(Text.getLineSep());
+							sb.append("  ").append(a.getDeadTgt().getVisibleName()).append(Text.getLineSep());
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法は戦闘中使えない)).append(Text.getLineSep());
 						}
+						sb.append(Text.getLineSep());
 						sb.append("--").append(I18N.get(GameSystemI18NKeys.フィールド効果)).append(Text.getLineSep());
 						if (a.isField()) {
-							for (ActionEvent e : Stream.of(a.getMainEvents(), a.getUserEvents()).flatMap(p -> p.stream()).toList()) {
-								sb.append("  ");
-								sb.append(e.getEventType().getEventDescI18Nd(e));
-							}//event  for
+							sb.append("---");
+							sb.append(I18N.get(GameSystemI18NKeys.対象効果));
+							sb.append(Text.getLineSep());
+							for (ActionEvent e : a.getMainEvents()) {
+								sb.append("  ・").append(e.getEventType().getEventDescI18Nd(e)).append(Text.getLineSep());
+							}
+							sb.append("---");
+							sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
+							sb.append(Text.getLineSep());
+							for (ActionEvent e : a.getUserEvents()) {
+								sb.append("  ・").append(e.getEventType().getEventDescI18Nd(e)).append(Text.getLineSep());
+							}
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法はフィールドでは使えない)).append(Text.getLineSep());
 						}
-						//ターゲティング情報
-						if (a.isBattle()) {
-							sb.append("--").append(GameSystemI18NKeys.戦闘時ターゲット情報).append(Text.getLineSep());
-							sb.append("  ").append(I18N.get(GameSystemI18NKeys.ターゲット)).append(a.getTgtType().getVisibleName()).append(Text.getLineSep());
-							sb.append("  ").append(I18N.get(GameSystemI18NKeys.死亡者ターゲット)).append(a.getDeadTgt().getVisibleName()).append(Text.getLineSep());
-						}
-						msg.setText(sb.toString());
-						msg.allText();
-						group.show(msg);
+						msg.setText(Text.split(new Text(sb.toString())));
+						group.show(msg.getWindow());
+						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 				}
 				break;
 			case TARGET_SELECT:
 				commitUse();
-				group.show(msg);
+				group.show(msg.getWindow());
 				mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 				break;
 			case WAIT_MSG_CLOSE_TO_CU:
@@ -402,38 +415,15 @@ public class MagicWindow extends BasicSprite {
 		StringBuilder sb = new StringBuilder();
 		sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 		sb.append(Text.getLineSep());
-		if (r.is成功あり()) {
-			//成功
-			//ターゲットへの効果測定
-			StatusValueSet vs = tgt.getDamageFromSavePoint();
-			for (StatusValue e : vs) {
-				if (e.getValue() < 0f) {
-					sb.append(I18N.get(GameSystemI18NKeys.Xの, getPC(tgt.getId()).getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xは, e.getKey().getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.X回復した, Math.abs(e.getValue()) + ""));
-					sb.append(Text.getLineSep());
-				} else if (e.getValue() > 0f) {
-					sb.append(I18N.get(GameSystemI18NKeys.Xの, getPC(tgt.getId()).getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xに, e.getKey().getVisibleName()));
-					sb.append(I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs(e.getValue()) + ""));
-					sb.append(Text.getLineSep());
-				}
-			}
-			//SELFへのダメージは表示しない
-			if (vs.isEmpty()) {
-				sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
-				sb.append(Text.getLineSep());
-			}
-		} else {
-			//失敗
-			sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
-			sb.append(Text.getLineSep());
+		for (var v : r.getUserEventResultAsList()) {
+			sb.append(v.msgI18Nd).append(Text.getLineSep());
 		}
-
-		msg.setText(sb.toString());
-		msg.allText();
-		group.show(msg);
-		updateText();
+		for (var v : r.getMainEventResultAsList()) {
+			for (var vv : v.perActor.values()) {
+				sb.append(vv.msgI18Nd).append(Text.getLineSep());
+			}
+		}
+		msg.setText(Text.split(new Text(sb.toString())));
 	}
 
 	public Action getSelectedAction() {
@@ -462,24 +452,26 @@ public class MagicWindow extends BasicSprite {
 		}
 		List<Text> l = new ArrayList<>();
 		l.add(line1);
-		l.addAll(list.stream().map(p -> new Text(p.getVisibleName())).collect(Collectors.toList()));
+		l.addAll(list.stream().map(p -> new Text(p.getVisibleName() + "／" + p.getSummary())).collect(Collectors.toList()));
 		main.setText(l);
 	}
 
 	@Override
 	public void update() {
 		main.update();
+		msg.update();
 	}
 
 	//1つ前の画面に戻る
 	public boolean close() {
+		msg.setText(List.of());
 		//IUS表示中の場合は戻るは全消し
 		if (group.getWindows().stream().allMatch(p -> !p.isVisible())) {
 			mode = Mode.MAGIC_AND_USER_SELECT;
 			return true;
 		}
 		if (msg.isVisible()) {
-			mode = Mode.CHOICE_USE;
+			mode = Mode.MAGIC_AND_USER_SELECT;
 			group.show(choiceUse);
 			return false;
 		}

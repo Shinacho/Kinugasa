@@ -104,19 +104,19 @@ public class BattleCommand {
 	}
 
 	public List<Action> getActionEx(ActionType at) {
-		return getActions().stream().filter(p -> p.getType() != at).collect(Collectors.toList());
+		return getActions().stream().filter(p -> p.getType() != at).sorted().collect(Collectors.toList());
 	}
 
 	public List<Action> getActionEx(ActionType... at) {
-		return getActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
+		return getActions().stream().filter(p -> !Arrays.asList(at).contains(p.getType())).sorted().collect(Collectors.toList());
 	}
 
 	public List<Action> getActionOf(ActionType at) {
-		return getActions().stream().filter(p -> p.getType() == at).collect(Collectors.toList());
+		return getActions().stream().filter(p -> p.getType() == at).sorted().collect(Collectors.toList());
 	}
 
 	public List<Action> getActionOf(ActionType... at) {
-		return getActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).collect(Collectors.toList());
+		return getActions().stream().filter(p -> Arrays.asList(at).contains(p.getType())).sorted().collect(Collectors.toList());
 	}
 
 	public boolean hasAction(String id) {

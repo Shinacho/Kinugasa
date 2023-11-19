@@ -30,7 +30,9 @@ public enum EqipSlot {
 	胴体,
 	頭,
 	足,
-	装飾品;
+	装飾品,
+	前足,
+	後足;
 
 	public String getVisibleName() {
 		return I18N.get(toString());
