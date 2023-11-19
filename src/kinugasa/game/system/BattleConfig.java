@@ -51,9 +51,9 @@ public class BattleConfig {
 		public static Sound 損壊;
 	}
 	//攻撃防御有効度
-	public static float ATK_DEF_PERCENT = 0.85f;
+	public static float ATK_DEF_PERCENT = 0.75f;
 	//最終ダメージ調整倍率
-	public static float DAMAGE_MUL = 0.25f;
+	public static float DAMAGE_MUL = 3f;
 
 	//バトル時のキャラの移動速度
 	public static float BATTLE_WALK_SPEED = 2.5f;

@@ -374,7 +374,8 @@ public final class Status extends Model implements Nameable {
 	public void updateAction() {
 		actions.clear();
 		//行動アクションの導入
-		actions.addAll(ActionStorage.getInstance().allOf(ActionType.行動));
+		List<Action> allAction = ActionStorage.getInstance().allActions();
+		actions.addAll(allAction.stream().filter(p -> p.getType() == ActionType.行動).toList());
 		if (GameSystem.getInstance().getPCbyID(id) == null) {
 			actions.remove(BattleConfig.ActionID.状態);
 		}
@@ -389,7 +390,7 @@ public final class Status extends Model implements Nameable {
 			}
 		}
 		//攻撃
-		for (Action a : ActionStorage.getInstance().allOf(ActionType.攻撃)) {
+		for (Action a : allAction.stream().filter(p -> p.getType() == ActionType.攻撃).toList()) {
 			if (a.canDo(this)) {//装備判定はここで行われる
 				actions.add(a);
 			}
@@ -453,7 +454,7 @@ public final class Status extends Model implements Nameable {
 		List<ConditionKey> list = new ArrayList<>(getCurrentConditions().keySet());
 		Collections.sort(list);
 		for (ConditionKey k : list) {
-			s = s.composite(k.getStatusValue(vs));
+			s = s.orHigh(k.getStatusValue(vs));
 		}
 		//アビリティ
 		if (this.ability != null) {

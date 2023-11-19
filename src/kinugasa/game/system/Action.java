@@ -377,10 +377,10 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 
 	@Nullable
 	public ResourceShortage checkResource(Status user) {
-		StatusValueSet res = user.getEffectedStatus().clone();
 		if (userEvents == null || userEvents.isEmpty()) {
-			throw new GameSystemException("this action is not have event : " + this);
+			return new ResourceShortage(Set.of());
 		}
+		StatusValueSet res = user.getEffectedStatus().clone();
 		Set<StatusKey> keys = new HashSet<>();
 		for (ActionEvent e : userEvents) {
 			if (e.getTgtStatusKey() == null) {

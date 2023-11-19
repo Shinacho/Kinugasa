@@ -46,6 +46,7 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 	}
 
 	public void setActions(List<Action> actions) {
+		getWindow().clearText();
 		this.actions = actions;
 		updateText();
 		reset();
@@ -54,8 +55,6 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 	public void clear() {
 		actions.clear();
 	}
-
-	private static final int ACTION_LINE = 7;
 
 	private void updateText() {
 		if (actions.isEmpty()) {
@@ -89,7 +88,6 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 							.mapToInt(p -> (int) (p.getValue()))
 							.map(p -> Math.abs(p))
 							.sum()));
-					text += Text.getLineSep();
 					break;
 				case アイテム:
 				case 魔法:

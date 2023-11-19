@@ -627,7 +627,16 @@ public enum FieldEventType {
 			}
 			return UserOperationRequire.CONTINUE;
 		}
-	};
+	},
+	SET_PC_SHADOW{
+		@Override
+		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
+			boolean val = e.getValue().equals("true");
+			GameSystem.getInstance().getPCbyID(e.getTargetName()).getSprite().setShadow(val);
+			return UserOperationRequire.CONTINUE;
+		}
+	}
+	;
 
 	abstract UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException;
 

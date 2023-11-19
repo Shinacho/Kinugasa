@@ -93,20 +93,31 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport, Cloneab
 		getAnimation().update();
 		setImage(getAnimation().getCurrentImage());
 	}
+	private boolean shadow = true;
+
+	public void setShadow(boolean shadow) {
+		this.shadow = shadow;
+	}
+
+	public boolean isShadow() {
+		return shadow;
+	}
 
 	@Override
 	public void draw(GraphicsContext g) {
 		if (!isVisible() || !isExist()) {
 			return;
 		}
-		Graphics2D g2 = g.create();
-		g2.setColor(SHADOW);
-		g2.fillOval(
-				(int) (getX() + getWidth() / 4),
-				(int) (getY() + getHeight() - 10),
-				(int) (getWidth() / 2),
-				(int) 12f);
-		g2.dispose();
+		if (shadow) {
+			Graphics2D g2 = g.create();
+			g2.setColor(SHADOW);
+			g2.fillOval(
+					(int) (getX() + getWidth() / 4),
+					(int) (getY() + getHeight() - 10),
+					(int) (getWidth() / 2),
+					(int) 12f);
+			g2.dispose();
+		}
 		super.draw(g);
 	}
 

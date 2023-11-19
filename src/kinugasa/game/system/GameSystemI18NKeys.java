@@ -471,6 +471,7 @@ public class GameSystemI18NKeys {
 	public static final String 基礎値 = "基礎値";
 	public static final String Xの確率でX属性の回復ダメージをXに与える = "Xの確率でX属性の回復ダメージをXに与える";
 	public static final String XはすでにXがかかっている = "XはすでにXがかかっている";
+	public static final String 効果範囲内にターゲットがいない= "効果範囲内にターゲットがいない";
 	
 	public static class CountKey {
 

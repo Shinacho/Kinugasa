@@ -184,11 +184,6 @@ public class EnemySprite extends PCSprite {
 		progressBarSprite2.setVal((int) me.getStatus().getEffectedStatus().get(StatusKey.正気度).getValue());
 	}
 
-	@Override
-	public void move() {
-		moveToTgt();
-	}
-
 	public void dirTo(Actor c) {
 		KVector v = new KVector();
 		v.setAngle(getCenter(), c.getSprite().getCenter());
@@ -225,7 +220,7 @@ public class EnemySprite extends PCSprite {
 		Graphics2D g2 = g.create();
 		g2.setColor(Color.RED);
 		g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.PLAIN).setFontSize(12).getFont());
-		g2.drawString(me.getStatus().getVisibleName(), getX() - me.getStatus().getVisibleName().length() * 3, getY() - 4);
+		g2.drawString(me.getVisibleName(), getX() - me.getStatus().getVisibleName().length() * 3, getY() - 4);
 
 		/*
 		g2.setColor(SHADOW);
@@ -234,7 +229,7 @@ public class EnemySprite extends PCSprite {
 				(int) (getY() + getHeight() - getHeight() / 16),
 				(int) (getWidth() - getWidth() / 4),
 				(int) (getHeight() / 8));
-		*/
+		 */
 		if (GameSystem.isDebugMode()) {
 			g2.setColor(Color.ORANGE);
 			GraphicsUtil.drawRect(g2, getBounds());

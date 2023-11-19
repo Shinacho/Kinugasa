@@ -257,7 +257,9 @@ public enum ActionEventType {
 					//r評価
 					StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
 					String msg = "";
-					if (v.getValue() < 0) {
+					if (v == null) {
+						I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+					} else if (v.getValue() < 0) {
 						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
@@ -480,7 +482,9 @@ public enum ActionEventType {
 					//r評価
 					StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
 					String msg = "";
-					if (v.getValue() < 0) {
+					if (v == null) {
+						I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+					} else if (v.getValue() < 0) {
 						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()));
@@ -1112,7 +1116,7 @@ public enum ActionEventType {
 			StringBuilder sb = new StringBuilder();
 			sb.append(I18N.get(GameSystemI18NKeys.放射の術式));
 			sb.append(":");
-			sb.append((int)event.getValue());
+			sb.append((int) event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
 			sb.append((int) (event.getP() * 100)).append("%");
@@ -1168,7 +1172,7 @@ public enum ActionEventType {
 			StringBuilder sb = new StringBuilder();
 			sb.append(I18N.get(GameSystemI18NKeys.全体放射の術式));
 			sb.append(":");
-			sb.append((int)event.getValue());
+			sb.append((int) event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
 			sb.append((int) (event.getP() * 100)).append("%");
@@ -1220,7 +1224,7 @@ public enum ActionEventType {
 			StringBuilder sb = new StringBuilder();
 			sb.append(I18N.get(GameSystemI18NKeys.派生の術式));
 			sb.append(":");
-			sb.append((int)event.getValue());
+			sb.append((int) event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
 			sb.append((int) (event.getP() * 100)).append("%");
@@ -1274,7 +1278,7 @@ public enum ActionEventType {
 			StringBuilder sb = new StringBuilder();
 			sb.append(I18N.get(GameSystemI18NKeys.伝搬の術式));
 			sb.append(":");
-			sb.append((int)event.getValue());
+			sb.append((int) event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
 			sb.append((int) (event.getP() * 100)).append("%");
@@ -2338,7 +2342,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (v.getValue() < 0) {
+			if (v == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (v.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
@@ -2438,7 +2444,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (v.getValue() < 0) {
+			if (v == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (v.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
@@ -2543,7 +2551,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -2644,7 +2654,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -2743,7 +2755,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -2845,7 +2859,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -2961,7 +2977,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -3196,7 +3214,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -3300,7 +3320,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -3404,7 +3426,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -3508,7 +3532,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -3612,7 +3638,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -3715,7 +3743,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());
@@ -3863,7 +3893,9 @@ public enum ActionEventType {
 			//r評価
 			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
 			String msg = "";
-			if (vv.getValue() < 0) {
+			if (vv == null) {
+				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+			} else if (vv.getValue() < 0) {
 				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) vv.getValue());

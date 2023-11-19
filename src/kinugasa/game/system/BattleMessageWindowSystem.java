@@ -16,6 +16,7 @@
  */
 package kinugasa.game.system;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,13 @@ import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import static kinugasa.game.system.BattleConfig.messageWindowY;
 import kinugasa.game.ui.Choice;
+import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
+import kinugasa.game.ui.SimpleTextLabelModel;
 import kinugasa.game.ui.Text;
+import kinugasa.game.ui.TextLabelSprite;
 import kinugasa.object.Drawable;
 
 /**
@@ -61,6 +65,7 @@ public class BattleMessageWindowSystem implements Drawable {
 	private MessageWindow actionResultW;
 	//汎用INFOは別のウインドウと共存できる
 	private MessageWindow infoW;
+	private MessageWindow afterMoveActionListW;
 	//ステータス詳細ウインドウ
 	private PCStatusWindow statusDescW;
 	private int statusDescWPage = 0;
@@ -68,6 +73,7 @@ public class BattleMessageWindowSystem implements Drawable {
 	private MessageWindow itemDescW;
 	//バトルリザルト
 	private MessageWindow battleResultW;
+	private TextLabelSprite turnOrder;
 
 	void init() {
 		List<Actor> statusList = GameSystem.getInstance().getParty();
@@ -85,7 +91,10 @@ public class BattleMessageWindowSystem implements Drawable {
 			}
 
 		};
-		infoW = new MessageWindow(480, messageWindowY, w - 480, 38, new SimpleMessageWindowModel().setNextIcon(""));
+		turnOrder = new TextLabelSprite("", new SimpleTextLabelModel(FontModel.DEFAULT.clone().setColor(Color.BLACK).setFontSize(12)),
+				3, messageWindowY - 14, w, 24);
+		infoW = new MessageWindow(560, messageWindowY, w - 560, 38, new SimpleMessageWindowModel().setNextIcon(""));
+		afterMoveActionListW = new MessageWindow(3, messageWindowY, 557, h, new SimpleMessageWindowModel().setNextIcon(""));
 		statusW = new BattleStatusWindows(statusList.stream().filter(p -> !p.isSummoned()).toList());
 		itemChoiceUseW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		itemCommitResultW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
@@ -387,6 +396,7 @@ public class BattleMessageWindowSystem implements Drawable {
 		SHOW_STATUS_DESC,
 		SHOW_ITEM_DESC,
 		BATTLE_RESULT,
+		AFTERMOVE_ACTIONLIST,
 	}
 
 	enum StatusVisible {
@@ -432,6 +442,7 @@ public class BattleMessageWindowSystem implements Drawable {
 		statusDescW.setVisible(false);
 		itemDescW.setVisible(false);
 		battleResultW.setVisible(false);
+		afterMoveActionListW.setVisible(false);
 		switch (m) {
 			case NOTHING:
 				break;
@@ -470,7 +481,11 @@ public class BattleMessageWindowSystem implements Drawable {
 				itemDescW.setVisible(true);
 				break;
 			case BATTLE_RESULT:
+				turnOrder.setVisible(false);
 				battleResultW.setVisible(true);
+				break;
+			case AFTERMOVE_ACTIONLIST:
+				afterMoveActionListW.setVisible(true);
 				break;
 			default:
 				throw new AssertionError("undefined BMWS case : " + m);
@@ -495,6 +510,10 @@ public class BattleMessageWindowSystem implements Drawable {
 
 	MessageWindow getItemCommitResultW() {
 		return itemCommitResultW;
+	}
+
+	MessageWindow getAfterMoveActionListW() {
+		return afterMoveActionListW;
 	}
 
 	BattleStatusWindows getStatusW() {
@@ -609,6 +628,9 @@ public class BattleMessageWindowSystem implements Drawable {
 		if (battleResultW.isVisible()) {
 			battleResultW.update();
 		}
+		if (afterMoveActionListW.isVisible()) {
+			afterMoveActionListW.update();
+		}
 	}
 
 	@Override
@@ -618,17 +640,23 @@ public class BattleMessageWindowSystem implements Drawable {
 		cmdW.draw(g);
 		//
 		afterMoveW.draw(g);
-		actionResultW.draw(g);
 		tgtW.draw(g);
 		//
 		itemChoiceUseW.draw(g);
 		itemCommitResultW.draw(g);
 		//
+		afterMoveActionListW.draw(g);
 		infoW.draw(g);
 		statusDescW.draw(g);
 		itemDescW.draw(g);
 		//
 		battleResultW.draw(g);
+		turnOrder.draw(g);
+		actionResultW.draw(g);
+	}
+
+	public TextLabelSprite getTurnOrder() {
+		return turnOrder;
 	}
 
 	@Override

@@ -17,6 +17,9 @@
 package kinugasa.game.system;
 
 import kinugasa.game.NewInstance;
+import static kinugasa.game.system.StatusKey.体力;
+import static kinugasa.game.system.StatusKey.正気度;
+import static kinugasa.game.system.StatusKey.魔力;
 import kinugasa.resource.Storage;
 
 /**
@@ -35,6 +38,7 @@ public class StatusValueSet extends Storage<StatusValue> implements Cloneable {
 				case 体力:
 				case 正気度:
 				case 魔力:
+				case 残行動力:
 					add(new StatusValue(k, 0, k.getMin(), k.getMax()));
 					break;
 				default:
@@ -49,7 +53,10 @@ public class StatusValueSet extends Storage<StatusValue> implements Cloneable {
 	}
 
 	public StatusValue get(StatusKey key) {
-		return get(key.getName());
+		if (contains(key.getName())) {
+			return get(key.getName());
+		}
+		return null;
 	}
 
 	@Override
@@ -86,6 +93,36 @@ public class StatusValueSet extends Storage<StatusValue> implements Cloneable {
 				}
 			}
 		}
+		return r;
+	}
+
+	@NewInstance
+	public StatusValueSet orHigh(StatusValueSet v) {
+		StatusValueSet r = new StatusValueSet();
+
+		//thisには全キーが入っている
+		for (StatusKey k : StatusKey.values()) {
+			StatusValue thisValue = get(k);
+			StatusValue vValue = v.get(k);
+			if (thisValue == null) {
+				if (vValue == null) {
+					continue;
+				} else {
+					r.add(vValue.clone());
+				}
+			} else {
+				if (vValue == null) {
+					r.add(thisValue.clone());
+				} else {
+					if (thisValue.getValue() > vValue.getValue()) {
+						r.add(thisValue.clone());
+					} else {
+						r.add(vValue.clone());
+					}
+				}
+			}
+		}
+
 		return r;
 	}
 

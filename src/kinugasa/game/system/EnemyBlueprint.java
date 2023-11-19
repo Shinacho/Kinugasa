@@ -16,14 +16,8 @@
  */
 package kinugasa.game.system;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import kinugasa.game.field4.Vehicle;
-import kinugasa.object.ImageSprite;
-import kinugasa.resource.Nameable;
-import kinugasa.resource.sound.Sound;
 
 /**
  *

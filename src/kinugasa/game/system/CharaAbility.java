@@ -97,6 +97,19 @@ public enum CharaAbility implements AbilityEffect {
 	},
 	アバター("魔力が１４％上がる") {
 		@Override
+		public AttributeValueSet effectAttrIn(Status s, AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			r.get(AttributeKey.時空).mul(0.01f);
+			return r;
+		}
+
+		@Override
+		public AttributeValueSet effectAttrOut(Status s, AttributeValueSet v) {
+			AttributeValueSet r = v.clone();
+			r.get(AttributeKey.時空).mul(100f);
+			return r;
+		}
+		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			StatusValueSet r = v.clone();
 			float 割合 = r.get(StatusKey.魔力).get割合();

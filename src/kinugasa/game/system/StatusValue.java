@@ -230,6 +230,5 @@ public class StatusValue implements Nameable, Cloneable, Comparable<StatusValue>
 	public int compareTo(StatusValue o) {
 		return key.compareTo(o.key);
 	}
-	
 
 }

@@ -66,17 +66,22 @@ public enum EnemyAIImpl implements EnemyAI {
 			}
 
 			//攻撃力が高いアクションを取得
+			int maxRange = 0;
 			for (Action ac : get最大威力攻撃順(user)) {
+				if (maxRange < user.getStatus().getEffectedArea(ac)) {
+					maxRange = user.getStatus().getEffectedArea(ac);
+				}
 				//ターゲットが射程内にいればそれを実施
 				Actor tgt = getTgt(user);
 				if (is射程内(user, ac, tgt)) {
-					if (!a.checkResource(user.getStatus()).is足りないステータスあり()) {
+					if (!ac.checkResource(user.getStatus()).is足りないステータスあり()) {
 						return new ActionTarget(user, ac, List.of(tgt), false);
 					}
 				}
 			}
 
 			//最大威力アクションを適用できる場所まで移動するよう指示
+			user.getSprite().setTargetLocation(getTgt(user).getSprite().getCenter(), maxRange);
 			return new ActionTarget(user, EnemyAIImpl.移動アクション, null, false);
 		}
 
@@ -138,13 +143,19 @@ public enum EnemyAIImpl implements EnemyAI {
 					return new ActionTarget(user, 回復, List.of(tgt), false);
 				}
 			}
+			int maxRange = 0;
 			for (Action aa : get最大威力回復順(user)) {
+				if (maxRange < user.getStatus().getEffectedArea(aa)) {
+					maxRange = user.getStatus().getEffectedArea(aa);
+				}
 				if (is射程内(user, aa, tgt)) {
 					if (!aa.checkResource(user.getStatus()).is足りないステータスあり()) {
 						return new ActionTarget(user, aa, List.of(tgt), false);
 					}
 				}
 			}
+
+			user.getSprite().setTargetLocation(getTgt(user).getSprite().getCenter(), maxRange);
 			return new ActionTarget(user, EnemyAIImpl.移動アクション, null, false);
 		}
 
@@ -200,7 +211,11 @@ public enum EnemyAIImpl implements EnemyAI {
 			}
 
 			//攻撃力が高いアクションを取得
+			int maxRange = 0;
 			for (Action aa : get最大威力攻撃順(user)) {
+				if (maxRange < user.getStatus().getEffectedArea(aa)) {
+					maxRange = user.getStatus().getEffectedArea(aa);
+				}
 				Actor tgt = getTgt(user);
 				//ターゲットが射程内にいるか確認
 				if (is射程内(user, aa, tgt)) {
@@ -214,6 +229,7 @@ public enum EnemyAIImpl implements EnemyAI {
 				}
 			}
 			//最大威力アクションを適用できる場所まで移動するよう指示
+			user.getSprite().setTargetLocation(getTgt(user).getSprite().getCenter(), maxRange);
 			return new ActionTarget(user, EnemyAIImpl.移動アクション, null, false);
 		}
 
@@ -268,7 +284,11 @@ public enum EnemyAIImpl implements EnemyAI {
 				return new ActionTarget(user, buf, List.of(user), false);
 			}
 			Actor tgt = getTgt(user);
+			int maxRange = 0;
 			for (Action aa : get対象者が多い順(user)) {
+				if (maxRange < user.getStatus().getEffectedArea(aa)) {
+					maxRange = user.getStatus().getEffectedArea(aa);
+				}
 				if (is射程内(user, aa, tgt)) {
 					if (!aa.checkResource(user.getStatus()).is足りないステータスあり()) {
 						return new ActionTarget(user, aa, List.of(tgt), false);
@@ -276,6 +296,7 @@ public enum EnemyAIImpl implements EnemyAI {
 				}
 			}
 			//最大威力アクションを適用できる場所まで移動するよう指示
+			user.getSprite().setTargetLocation(getTgt(user).getSprite().getCenter(), maxRange);
 			return new ActionTarget(user, EnemyAIImpl.移動アクション, null, false);
 		}
 
@@ -596,7 +617,7 @@ public enum EnemyAIImpl implements EnemyAI {
 	}
 
 	static boolean is射程内(Enemy e, Action a, Actor tgt) {
-		return e.getStatus().getEffectedArea(a) < (e.getSprite().getCenter().distance(tgt.getSprite().getCenter()));
+		return e.getStatus().getEffectedArea(a) > (e.getSprite().getCenter().distance(tgt.getSprite().getCenter()));
 	}
 
 	abstract Actor getTgt(Enemy user);
@@ -642,7 +663,8 @@ public enum EnemyAIImpl implements EnemyAI {
 			}
 		}
 
-		return e.getStatus().getActions().stream().map(p -> new SortAction(p)).sorted().map(p -> p.a).toList();
+		return e.getStatus().getActions().stream().filter(p -> p.getType() != ActionType.行動)
+				.map(p -> new SortAction(p)).sorted().map(p -> p.a).toList();
 
 	}
 
@@ -681,6 +703,7 @@ public enum EnemyAIImpl implements EnemyAI {
 		return e.getStatus()
 				.getActions()
 				.stream()
+				.filter(p -> p.getType() != ActionType.行動)
 				.map(p -> new SortAction(p))
 				.sorted()
 				.map(p -> p.a)
@@ -713,6 +736,7 @@ public enum EnemyAIImpl implements EnemyAI {
 		return e.getStatus()
 				.getActions()
 				.stream()
+				.filter(p -> p.getType() != ActionType.行動)
 				.map(p -> new SortAction(p))
 				.sorted()
 				.map(p -> p.a)

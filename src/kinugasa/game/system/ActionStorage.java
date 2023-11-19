@@ -262,6 +262,7 @@ public class ActionStorage extends DBStorage<Action> {
 
 	public List<Action> allActions() {
 		List<Action> res = new ArrayList<>();
+		res.addAll(getDirect().values());
 		if (DBConnection.getInstance().isUsing()) {
 			String sql = "select ID,VISIBLENAME,DESCRIPTION,ACTIONTYPE,FIELD,BATTLE,AREA,CASTTIME,TGTTYPE,TGTDEAD,SUMMARY"
 					+ " from action;";
@@ -284,7 +285,7 @@ public class ActionStorage extends DBStorage<Action> {
 				res.add(a.pack());
 			}
 		}
-		return res;
+		return res.stream().distinct().toList();
 	}
 
 	public List<Item> allItems() {

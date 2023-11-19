@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import kinugasa.game.input.InputState;
+import kinugasa.game.system.GameSystem;
 
 /**
  * ゲームの進行を行うスレッドの実装です.
@@ -93,7 +94,7 @@ public final class GameLoop implements Runnable {
 				}
 			} else {
 				while (exec) {
-					if (game.getWindow().isActive()) {
+					if (game.getWindow().isActive() || GameSystem.isDebugMode()) {
 						startTime = System.nanoTime();
 						game.update(gtm, InputState.getInstance());
 						game.repaint();

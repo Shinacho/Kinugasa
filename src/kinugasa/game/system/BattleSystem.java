@@ -158,11 +158,11 @@ public class BattleSystem implements Drawable {
 				case プレイヤキャラターゲット選択中_コミット待ち:
 				case プレイヤキャラ移動中_コミット待ち:
 				case 移動後行動選択中_コミット待ち:
+				case バトル終了済み:
 					return true;
 				case イベントキュー消化中:
 				case エフェクト再生中_終了待ち:
 				case PC逃げアニメーション実行中:
-				case バトル終了済み:
 				case 初期移動中:
 				case 待機中＿処理中:
 				case 待機中＿敵移動中:
@@ -322,8 +322,13 @@ public class BattleSystem implements Drawable {
 						Collectors.counting()));
 		//出現MSG設定
 		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String, Long> e : enemyNum.entrySet()) {
-			sb.append(I18N.get(GameSystemI18NKeys.XがX体現れた, e.getKey(), e.getValue() + "")).append(Text.getLineSep());
+		{
+			List<String> msgList = new ArrayList<>();
+			for (Map.Entry<String, Long> e : enemyNum.entrySet()) {
+				msgList.add(I18N.get(GameSystemI18NKeys.XがX体現れた, e.getKey(), e.getValue() + "") + Text.getLineSep());
+			}
+			Collections.sort(msgList);
+			msgList.forEach(p -> sb.append(p));
 		}
 		//敵出現情報をセット
 		setMsg(sb.toString());
@@ -527,6 +532,8 @@ public class BattleSystem implements Drawable {
 			//位置の復元
 			partySprite.get(i).to(partyInitialDir.get(i));
 			partySprite.get(i).setLocation(partyInitialLocation.get(i));
+			//表示状態の復元
+			partySprite.get(i).setVisible(true);
 		}
 		currentBGM.stop();
 		currentBGM.dispose();
@@ -666,8 +673,28 @@ public class BattleSystem implements Drawable {
 		for (var v : commandsOfThisTurn) {
 			v.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力)
 					.setValue(v.getUser().getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
+			v.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力)
+					.setMax(v.getUser().getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
 		}
+		//バトルコマンドの順を表示
+		updateOrder();
 		setStage(Stage.EXECコール待機);
+	}
+
+	private void updateOrder() {
+		List<String> order = new ArrayList<>();
+		for (var v : commandsOfThisTurn) {
+			if (v.isMagicSpell()) {
+				order.add(I18N.get(GameSystemI18NKeys.Xの, v.getUser().getVisibleName()) + v.getFirstBattleAction().getVisibleName());
+			} else {
+				order.add(v.getUser().getVisibleName());
+			}
+		}
+		String s = String.join("->", order);
+		if (!order.isEmpty()) {
+			s = "->" + s;
+		}
+		messageWindowSystem.getTurnOrder().setText(s);
 	}
 
 	public enum BSExecResult {
@@ -680,10 +707,12 @@ public class BattleSystem implements Drawable {
 		if (commandsOfThisTurn.isEmpty()) {
 			turnStart();
 		}
+		targetSystem.unset();
 		afterMove = false;
 		currentCmd = commandsOfThisTurn.getFirst();
 		assert currentCmd != null : "currentCMD is null";
 		commandsOfThisTurn.removeFirst();
+		updateOrder();
 		Actor user = currentCmd.getUser();
 		if (GameSystem.isDebugMode()) {
 			kinugasa.game.GameLog.print(" currentCMD:" + currentCmd);
@@ -912,12 +941,15 @@ public class BattleSystem implements Drawable {
 						return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 					}
 					case BattleConfig.ActionID.移動: {
+						if (GameSystem.isDebugMode()) {
+							GameLog.print(" enemy move");
+						}
 						//移動・・・行動力が0の場合選出されない。もし0の場合はエラーとする
 						assert user.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue() > 0 : "NPC move point is <= 0 : " + this;
-						((Enemy) user).setMoveTgtLocation();
+//						((Enemy) user).setMoveTgtLocation();
 						//行動力残数をセット
-						user.getStatus().getBaseStatus().get(StatusKey.残行動力)
-								.setValue(user.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
+						user.getStatus().getBaseStatus().get(StatusKey.残行動力).setValue(
+								user.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
 						setMsg(Xは移動したのMSG(user));
 						setStage(Stage.待機中＿敵移動中);
 						return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
@@ -1101,7 +1133,7 @@ public class BattleSystem implements Drawable {
 					}
 					//逃げられない（基本入らない）
 					setMsg(Xは逃げ出したが逃げられなかったのMSG(user));
-					setStage(Stage.待機中＿時間あり＿手番送り);
+					setStage(Stage.待機中＿時間あり＿手番戻り);
 					currentBAWaitTime = new FrameTimeCounter(100);
 					return BSCommitCmdResult.STAGEが待機中の間待機しその後次のEXECをコールせよ;
 				}
@@ -1127,7 +1159,7 @@ public class BattleSystem implements Drawable {
 						setMsg(Xは様子をうかがっているのMSG(user));
 					}
 					setStage(Stage.待機中＿時間あり＿手番送り);
-					currentBAWaitTime = new FrameTimeCounter(100);
+					currentBAWaitTime = new FrameTimeCounter(4);
 					return BSCommitCmdResult.STAGEが待機中の間待機しその後次のEXECをコールせよ;
 				}
 				case BattleConfig.ActionID.状態: {
@@ -1149,13 +1181,27 @@ public class BattleSystem implements Drawable {
 					user.getStatus().getBaseStatus().get(StatusKey.残行動力)
 							.setValue(user.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
 					//移動前位置の保存
-					this.moveIinitialLocation = user.getSprite().getLocation();
+					this.moveIinitialLocation = user.getSprite().getCenter();
 					targetSystem.setCurrent(user);
 					targetSystem.setCurrent(a);
 					targetSystem.setInitialAreaLocation(moveIinitialLocation);
+					targetSystem.setCurrentLocation();
 					targetSystem.setAreaVisible(true, true);
+					String list = ActionStorage.getInstance().get(BattleConfig.ActionID.確定).getVisibleName() + Text.getLineSep();
+					int i = 1;
+					for (var v : user.getStatus().get現状実行可能なアクション()) {
+						if (v.getType() == ActionType.攻撃) {
+							list += v.getVisibleName() + Text.getLineSep();
+							i++;
+							if (i > 7) {
+								break;
+							}
+						}
+					}
+					messageWindowSystem.getAfterMoveActionListW().setText(list);
+					messageWindowSystem.getAfterMoveActionListW().allText();
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
-							BattleMessageWindowSystem.Mode.NOTHING,
+							BattleMessageWindowSystem.Mode.AFTERMOVE_ACTIONLIST,
 							BattleMessageWindowSystem.InfoVisible.ON);
 					setStage(Stage.プレイヤキャラ移動中_コミット待ち);
 					return BSCommitCmdResult.移動モードに入った;
@@ -1199,7 +1245,12 @@ public class BattleSystem implements Drawable {
 			if (GameSystem.isDebugMode()) {
 				GameLog.print("targetSystem is empty");
 			}
-			return BSCommitCmdResult.選択されたアクションがないため再度実行せよ;
+			messageWindowSystem.getActionResultW().setText(I18N.get(GameSystemI18NKeys.効果範囲内にターゲットがいない));
+			messageWindowSystem.getActionResultW().allText();
+			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
+			currentBAWaitTime = new FrameTimeCounter(100);
+			setStage(Stage.待機中＿時間あり＿手番戻り);
+			return BSCommitCmdResult.STAGEが待機中の間待機しその後次のEXECをコールせよ;
 		}
 		afterMove = false;
 		return BSCommitCmdResult.ターゲット選択に入った;
@@ -1451,9 +1502,11 @@ public class BattleSystem implements Drawable {
 
 	public void calcelMove() {
 		//元の位置に戻してコマンド選択に戻す
-		currentCmd.getUser().getSprite().setLocation(moveIinitialLocation);
-		targetSystem.unset();
+		currentCmd.getUser().getSprite().setLocationByCenter(moveIinitialLocation);
 		targetSystem.setCurrent(currentCmd.getUser());
+		targetSystem.setCurrent(currentCmd.getActionOf(messageWindowSystem.getCmdW().getCurrentType()).get(0));
+		targetSystem.setAreaVisible(true, true);
+		targetSystem.setCurrentLocation();
 		messageWindowSystem.getCmdW().setCmd(currentCmd);
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.CMD_SELECT);
 		setStage(Stage.コマンド選択中);
@@ -1502,6 +1555,7 @@ public class BattleSystem implements Drawable {
 		if (a.getId().equals(BattleConfig.ActionID.確定)) {
 			//確定
 			targetSystem.unset();
+			setStage(Stage.EXECコール待機);
 			return AfterMoveCmdResult.移動を確定したので次のEXECをコールせよ;
 		}
 		targetSystem.setCurrent(currentCmd.getUser());
@@ -1688,6 +1742,9 @@ public class BattleSystem implements Drawable {
 	}
 
 	private void 攻撃処理(Action a, ActionTarget tgt) {
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("BS ATK : " + a + " / " + tgt);
+		}
 		actionResult = new ActionResult(a, tgt);
 		eventQueue.clear();
 		eventIsUserEvent.clear();
@@ -1708,6 +1765,9 @@ public class BattleSystem implements Drawable {
 	}
 
 	private void イベントキュー消化() {
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("BS currentQ : " + eventQueue);
+		}
 		if (eventQueue.isEmpty()) {
 			//終わり
 			setStage(Stage.EXECコール待機);
@@ -1782,6 +1842,8 @@ public class BattleSystem implements Drawable {
 		//実行
 		e.exec(currentActionTgt, actionResult, isUserEvent);
 		//actionResultに結果が入ったので、メッセージやアニメーション処理
+		List<String> msg = new ArrayList<>();
+		msg.add(I18N.get(GameSystemI18NKeys.XのX, currentActionTgt.getUser().getVisibleName(), currentActionTgt.getAction().getVisibleName()));
 		if (isUserEvent) {
 			ActionResult.UserEventResult r = actionResult.getLastUserEventResult();
 			//イベントが発動しなかったら何もせずスキップ
@@ -1796,7 +1858,12 @@ public class BattleSystem implements Drawable {
 			//MSGは派生を出さない（量が多いので）
 			//MSGがない（ビームエフェクトイベント等）は何も出さない
 			if (r.msgI18Nd != null && !r.msgI18Nd.isEmpty()) {
-				setMsg(r.msgI18Nd);
+				String v = I18N.get(GameSystemI18NKeys.XのX,
+						currentActionTgt.getUser().getVisibleName(),
+						currentActionTgt.getAction().getVisibleName());
+				v += Text.getLineSep();
+				v += r.msgI18Nd;
+				msg.add(v);
 			}
 		} else {
 			ActionResult.PerEvent r = actionResult.getLastMainEventResult();
@@ -1804,7 +1871,6 @@ public class BattleSystem implements Drawable {
 			if (r.summary == ActionResultSummary.失敗＿起動条件未達) {
 				イベントキュー消化();
 			}
-			List<String> msg = new ArrayList<>();
 			for (var v : r.perActor.values()) {
 				//アニメーション追加
 				addAnimation(v);
@@ -1813,12 +1879,12 @@ public class BattleSystem implements Drawable {
 				//MSG
 				msg.add(v.msgI18Nd);
 			}
-			//MSG
-			//MSGは派生を出さない（量が多いので）
-			//MSGがない（ビームエフェクトイベント等）は何も出さない
-			if (!msg.isEmpty()) {
-				setMsg(msg);
-			}
+		}
+		//MSG
+		//MSGは派生を出さない（量が多いので）
+		//MSGがない（ビームエフェクトイベント等）は何も出さない
+		if (!msg.isEmpty()) {
+			setMsg(msg);
 		}
 		//アニメーションウェイトタイム
 		currentBAWaitTime = new FrameTimeCounter(e.getWaitTime());
@@ -2238,6 +2304,7 @@ public class BattleSystem implements Drawable {
 				}
 				if (currentBAWaitTime.isReaching()) {
 					currentBAWaitTime = null;
+					messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.NOTHING);
 					//EXECコール待機に入る
 					if (GameSystem.isDebugMode()) {
 						GameLog.print("case 待機中＿時間あり＿手番送り");
@@ -2252,6 +2319,7 @@ public class BattleSystem implements Drawable {
 				}
 				if (currentBAWaitTime.isReaching()) {
 					currentBAWaitTime = null;
+					messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.NOTHING);
 					//コマンド選択に戻る
 					if (GameSystem.isDebugMode()) {
 						GameLog.print("case 待機中＿時間あり＿手番戻り");
@@ -2280,7 +2348,7 @@ public class BattleSystem implements Drawable {
 				if (!currentCmd.getUser().getSprite().isMoving()
 						|| !battleFieldSystem.getBattleFieldAllArea().hit(currentCmd.getUser().getSprite())) {
 					currentCmd.getUser().getSprite().unsetTarget();
-
+					currentCmd.getUser().getSprite().setVisible(false);
 					//全員逃げた場合終了
 					if (GameSystem.getInstance().getParty().stream()
 							.allMatch(p -> p.getStatus().hasAnyCondition(ConditionKey.逃走した, ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊))) {
@@ -2294,33 +2362,41 @@ public class BattleSystem implements Drawable {
 			}
 			case プレイヤキャラ移動中_コミット待ち: {
 				//残り行動力の更新
-				float distance = (float) currentCmd.getUser().getSprite().getLocation().distance(moveIinitialLocation);
+				float distance = (float) currentCmd.getUser().getSprite().getCenter().distance(moveIinitialLocation);
 				currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力)
 						.setValue(currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.行動力).getValue() - distance);
 				if (currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力).getValue() < 0) {
 					currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力).setValue(0);
 				}
 				String v = (int) ((currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.残行動力).getValue()
-						/ currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.行動力).getValue())) + "%";
-				messageWindowSystem.getInfoW().setText(v);
+						/ currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.行動力).getValue()) * 100) + "%";
+				messageWindowSystem.getInfoW().setText(StatusKey.残行動力.getVisibleName() + ":" + v);
 				messageWindowSystem.getInfoW().allText();
+				String list = ActionStorage.getInstance().get(BattleConfig.ActionID.確定).getVisibleName() + Text.getLineSep();
+				int i = 1;
+				for (var vv : currentCmd.getUser().getStatus().get現状実行可能なアクション()) {
+					if (vv.getType() == ActionType.攻撃) {
+						list += vv.getVisibleName() + Text.getLineSep();
+						i++;
+						if (i > 7) {
+							break;
+						}
+					}
+				}
+				messageWindowSystem.getAfterMoveActionListW().setText(list);
+				messageWindowSystem.getAfterMoveActionListW().allText();
 				targetSystem.setCurrentLocation();
 				break;
 			}
 			case 待機中＿敵移動中: {
-				//NPCの移動実行、！！！！！！！！移動かんりょぅしたらメッセージウインドウ閉じる
+				//NPCの移動実行、！！！！！！！！
 				currentCmd.getUser().getSprite().moveToTgt();
 				currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力).add(-1);
-				remMovePoint = (int) currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力).getValue();
+				remMovePoint = (int) currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.残行動力).getValue();
 				//移動ポイントが切れた場合、移動終了してユーザコマンド待ちに移行
 				if (remMovePoint <= 0 || !currentCmd.getUser().getSprite().isMoving()) {
 					currentCmd.getUser().getSprite().unsetTarget();
 					setStage(Stage.EXECコール待機);
-					break;
-				}
-				//移動ポイントが切れていない場合で、移動ポイントが半分以上残っている場合は攻撃可能
-				//半分以下の場合は行動終了
-				if (remMovePoint <= 0) {
 					break;
 				}
 				//アクションを抽選・・・このステージに入るときは必ずENEMYなのでキャスト失敗しない
@@ -2334,6 +2410,7 @@ public class BattleSystem implements Drawable {
 					break;
 				}
 				//エリア計算
+				eba = new ArrayList<>(eba);
 				Collections.shuffle(eba);
 				Action selected = null;
 				Point2D.Float center = user.getSprite().getCenter();
