@@ -185,6 +185,10 @@ public class BattleTargetSystem implements Drawable {
 		initialCenterArea.setVisible(ini);
 		pcCenterArea.setVisible(cur);
 	}
+	
+	public void resetArea(){
+		
+	}
 
 	@LoopCall
 	void update() {

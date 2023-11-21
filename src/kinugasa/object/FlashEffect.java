@@ -46,6 +46,7 @@ public class FlashEffect extends Effect {
 		this.blinkRate = blinkRate;
 		this.flashTime = flashTime;
 	}
+	private int stage = 0;
 
 	@Override
 	public void draw(GraphicsContext g) {
@@ -56,13 +57,28 @@ public class FlashEffect extends Effect {
 			return;
 		}
 		running = true;
-		if (blinkRate.isReaching()) {
-			g.setColor(color);
-			GraphicsUtil.fillRect(g, getBounds());
-		}
-		if (flashTime.isReaching()) {
-			ended = true;
-			setVisible(false);
+		switch (stage) {
+			case 0:
+				if (blinkRate.isReaching()) {
+					stage = 1;
+				}
+				break;
+			case 1:
+				g.setColor(color);
+				GraphicsUtil.fillRect(g, getBounds());
+				if (flashTime.isReaching()) {
+					stage = 2;
+				}
+				break;
+			case 2:
+				ended = true;
+				setVisible(false);
+				stage = 3;
+				break;
+			case 3:
+				break;
+			default:
+				throw new AssertionError();
 		}
 	}
 

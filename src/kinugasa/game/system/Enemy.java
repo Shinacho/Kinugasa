@@ -18,6 +18,7 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import kinugasa.game.GameLog;
 import kinugasa.resource.FileNotFoundException;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundStorage;
@@ -98,14 +99,14 @@ public final class Enemy extends Actor {
 		return (EnemySprite) super.getSprite();
 	}
 
-	public EnemyAI getAI() {
-		return ai;
-	}
-
 	//移動が返される可能性がある
 	//逃走や防御、回避の可能性もある。状態はない。
 	public ActionTarget getActionTgt() {
-		return ai.getNextAction(this);
+		ActionTarget res = ai.getNextAction(this);
+		if (GameSystem.isDebugMode()) {
+			GameLog.print(" selected action : " + getVisibleName() + " -> " + res);
+		}
+		return res;
 	}
 
 	public void setMoveTgtLocation() {

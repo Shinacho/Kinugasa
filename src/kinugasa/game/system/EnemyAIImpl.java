@@ -67,14 +67,17 @@ public enum EnemyAIImpl implements EnemyAI {
 
 			//攻撃力が高いアクションを取得
 			int maxRange = 0;
+			Actor tgt = getTgt(user);
 			for (Action ac : get最大威力攻撃順(user)) {
 				if (maxRange < user.getStatus().getEffectedArea(ac)) {
 					maxRange = user.getStatus().getEffectedArea(ac);
 				}
+				System.out.println("アクション選択：" + tgt + " / " + ac);
 				//ターゲットが射程内にいればそれを実施
-				Actor tgt = getTgt(user);
 				if (is射程内(user, ac, tgt)) {
 					if (!ac.checkResource(user.getStatus()).is足りないステータスあり()) {
+						System.out.println("選ばれた");
+
 						return new ActionTarget(user, ac, List.of(tgt), false);
 					}
 				}
@@ -617,6 +620,9 @@ public enum EnemyAIImpl implements EnemyAI {
 	}
 
 	static boolean is射程内(Enemy e, Action a, Actor tgt) {
+		if (tgt.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶)) {
+			return false;
+		}
 		return e.getStatus().getEffectedArea(a) > (e.getSprite().getCenter().distance(tgt.getSprite().getCenter()));
 	}
 
@@ -652,7 +658,7 @@ public enum EnemyAIImpl implements EnemyAI {
 			int getEffect() {
 				int r = 0;
 				for (ActionEvent e : a.getMainEvents()) {
-					r += Math.abs(e.getValue() * 100);
+					r += (int) (e.getValue());
 				}
 				return r;
 			}
@@ -804,6 +810,9 @@ public enum EnemyAIImpl implements EnemyAI {
 		float distance = Float.MAX_VALUE;
 		Actor res = null;
 		for (Actor ee : GameSystem.getInstance().getParty()) {
+			if (ee.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶)) {
+				continue;
+			}
 			for (Action a : ee.getStatus().getActions()) {
 				float d = ee.getStatus().getEffectedArea(a);
 				if (d < distance) {
@@ -818,17 +827,23 @@ public enum EnemyAIImpl implements EnemyAI {
 	static Actor get一番体力が低いPC() {
 		return GameSystem.getInstance().getParty()
 				.stream()
+				.filter(p -> !p.getStatus().hasCondition(ConditionKey.解脱))
+				.filter(p -> !p.getStatus().hasCondition(ConditionKey.気絶))
+				.filter(p -> !p.getStatus().hasCondition(ConditionKey.損壊))
 				.max((p1, p2)
-						-> (int) (p2.getStatus().getEffectedStatus().get(StatusKey.体力).getValue()
-				- p1.getStatus().getEffectedStatus().get(StatusKey.体力).getValue())).get();
+						-> Float.compare(p2.getStatus().getEffectedStatus().get(StatusKey.体力).get割合(),
+						p1.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())).get();
 	}
 
 	static Actor get一番体力が高いPC() {
 		return GameSystem.getInstance().getParty()
 				.stream()
+				.filter(p -> !p.getStatus().hasCondition(ConditionKey.解脱))
+				.filter(p -> !p.getStatus().hasCondition(ConditionKey.気絶))
+				.filter(p -> !p.getStatus().hasCondition(ConditionKey.損壊))
 				.max((p1, p2)
-						-> (int) (p1.getStatus().getEffectedStatus().get(StatusKey.体力).getValue()
-				- p2.getStatus().getEffectedStatus().get(StatusKey.体力).getValue())).get();
+						-> Float.compare(p1.getStatus().getEffectedStatus().get(StatusKey.体力).get割合(),
+						p2.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())).get();
 
 	}
 
@@ -837,6 +852,9 @@ public enum EnemyAIImpl implements EnemyAI {
 		float distance = Float.MAX_VALUE;
 		Enemy res = null;
 		for (Enemy ee : BattleSystem.getInstance().getEnemies()) {
+			if (ee.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶)) {
+				continue;
+			}
 			if (!ee.equals(e)) {
 				float d = (float) ee.getSprite().getCenter().distance(e.getSprite().getCenter());
 				if (d < distance) {
@@ -853,6 +871,9 @@ public enum EnemyAIImpl implements EnemyAI {
 	static Actor get自分以外で一番体力が低いEnemy(Enemy e) {
 		Enemy res = null;
 		for (Enemy ee : BattleSystem.getInstance().getEnemies()) {
+			if (ee.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶)) {
+				continue;
+			}
 			if (!ee.equals(e)) {
 				if (res == null) {
 					res = ee;

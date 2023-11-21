@@ -343,6 +343,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			this.exec(tgt.getUser(), tgt.getAction(), tgt.getUser(), ar, true);
 		} else {
 			for (var v : tgt.getTgt()) {
+
 				this.exec(tgt.getUser(), tgt.getAction(), v, ar, false);
 			}
 		}
@@ -358,6 +359,28 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			}
 			return;
 		}
+
+		if (tgt.getStatus().hasCondition(ConditionKey.解脱)) {
+			if (a.getDeadTgt() != Action.死亡者ターゲティング.気絶損壊解脱者を選択可能
+					&& a.getDeadTgt() != Action.死亡者ターゲティング.解脱者を選択可能) {
+				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿不発, tgt));
+				return;
+			}
+		}
+		if (tgt.getStatus().hasCondition(ConditionKey.損壊)) {
+			if (a.getDeadTgt() != Action.死亡者ターゲティング.気絶損壊解脱者を選択可能
+					&& a.getDeadTgt() != Action.死亡者ターゲティング.損壊者を選択可能) {
+				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿不発, tgt));
+				return;
+			}
+		}
+		if (tgt.getStatus().hasCondition(ConditionKey.気絶)) {
+			if (a.getDeadTgt() != Action.死亡者ターゲティング.気絶損壊解脱者を選択可能
+					&& a.getDeadTgt() != Action.死亡者ターゲティング.気絶者を選択可能) {
+				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿不発, tgt));
+				return;
+			}
+		}
 		if (!Random.percent(p)) {
 			if (isUserEvent) {
 				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿不発, tgt));
@@ -366,7 +389,6 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			}
 			return;
 		}
-		tgt.getStatus().saveBeforeDamageCalc();//2回実行しても別に問題はないのでここでかけておく
 
 		type.exec(user, a, isUserEvent ? user : tgt, this, ar, isUserEvent);
 

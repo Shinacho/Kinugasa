@@ -65,15 +65,19 @@ public class DamageAnimationSprite extends AnimationSprite {
 		setPainter(ImagePainterStorage.IMAGE_BOUNDS_CENTER);
 
 		setVector(new KVector(FourDirection.NORTH.getAngle(), 0.25f));
+		last = images.length - 1;
 	}
+	private int last = 0;
 
-	private FrameTimeCounter visibleTime = new FrameTimeCounter(55);
+	private FrameTimeCounter visibleTime = new FrameTimeCounter(60);
 
 	@Override
 	public void update() {
 		super.update();
-		move();
+		super.move();
 		if (getAnimation().isEnded()) {
+			setVisible(true);
+			setImage(getAnimation().getImage(last));
 			if (visibleTime.isReaching()) {
 				setVisible(false);
 			}
