@@ -27,7 +27,7 @@ public enum BattleResult {
 	勝利_敵全滅,
 	勝利_敵が全員逃げた,
 	敗北_味方全滅,
-	敗北_こちらが全員逃げた,;
+	勝利_こちらが全員逃げた,;
 
 	public String getVisibleName() {
 		return I18N.get(toString());

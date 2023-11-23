@@ -35,6 +35,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import kinugasa.game.I18N;
 import kinugasa.game.PlayerConstants;
+import kinugasa.game.field4.FieldEventParser;
+import kinugasa.game.field4.FieldEventSystem;
 import kinugasa.game.field4.FieldMap;
 import kinugasa.game.field4.FieldMapStorage;
 import kinugasa.game.field4.Node;
@@ -1931,7 +1933,7 @@ public enum ActionEventType {
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			BattleSystem.getInstance().setEndStatus(BattleResult.敗北_こちらが全員逃げた);
+			BattleSystem.getInstance().setEndStatus(BattleResult.勝利_こちらが全員逃げた);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, "", isUserEvent);
 		}
 
@@ -4824,7 +4826,53 @@ public enum ActionEventType {
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
-	},;
+	},
+	脚本の実行(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.脚本Xを実行する, e.getTgtID()));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.脚本実行の術式));
+			sb.append("(");
+			sb.append(e.getTgtID());
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です));
+			}
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			File file = new File(e.getTgtID());
+			if (!file.exists()) {
+				String msg = I18N.get(GameSystemI18NKeys.脚本Xが存在しない, e.getTgtID());
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
+			}
+			try {
+				FieldEventSystem.checkAllScripts(file);
+			} catch (Exception ex) {
+				String msg = I18N.get(GameSystemI18NKeys.脚本Xは誤っている, e.getTgtID());
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
+			}
+			FieldEventSystem.getInstance().setEvent(new LinkedList<>(FieldEventParser.parse(a.getId(), e.getTgtID())));
+			String msg = I18N.get(GameSystemI18NKeys.脚本が実行された);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+
+	};
 
 	public String getVisibleName() {
 		return I18N.get(toString());
@@ -4860,6 +4908,10 @@ public enum ActionEventType {
 	private static ActionResult.UserEventResult getUserEventResult(ActionResultSummary s, Actor user, ActionEvent e, String msg) {
 		ActionResult.UserEventResult r = new ActionResult.UserEventResult(e, s, user);
 		user.getStatus().addWhen0Condition();
+		r.is損壊 = user.getStatus().hasCondition(損壊);
+		r.is気絶 = user.getStatus().hasCondition(気絶);
+		r.is解脱 = user.getStatus().hasCondition(解脱);
+		r.msgI18Nd = msg;
 		if (s.is成功()) {
 			//ERへのアニメーションなどのセット
 			if (e.getTgtAnimation() != null) {
@@ -4887,13 +4939,11 @@ public enum ActionEventType {
 			if (tgtVs.contains(StatusKey.正気度)) {
 				r.tgtDamageSAN = (int) tgtVs.get(StatusKey.正気度).getValue();
 			}
-			r.is損壊 = user.getStatus().hasCondition(損壊);
-			r.is気絶 = user.getStatus().hasCondition(気絶);
-			r.is解脱 = user.getStatus().hasCondition(解脱);
-			r.msgI18Nd = msg;
 			if (e.getSuccessSound() != null) {
 				e.getSuccessSound().load().stopAndPlay();
 			}
+		} else {
+			r.msgI18Nd = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 		}
 		return r;
 	}
@@ -4902,6 +4952,10 @@ public enum ActionEventType {
 	private static ActionResult.PerEvent getPerEvent(ActionResultSummary s, Actor user, Actor tgt, ActionEvent e, String msg) {
 		ActionResult.EventActorResult r = new ActionResult.EventActorResult(tgt, e);
 		tgt.getStatus().addWhen0Condition();
+		r.is損壊 = tgt.getStatus().hasCondition(損壊);
+		r.is気絶 = tgt.getStatus().hasCondition(気絶);
+		r.is解脱 = tgt.getStatus().hasCondition(解脱);
+		r.msgI18Nd = msg;
 		if (s.is成功()) {
 			//ERへのアニメーションなどのセット
 			if (e.getTgtAnimation() != null) {
@@ -4929,13 +4983,11 @@ public enum ActionEventType {
 			if (tgtVs.contains(StatusKey.正気度)) {
 				r.tgtDamageSAN = (int) tgtVs.get(StatusKey.正気度).getValue();
 			}
-			r.is損壊 = tgt.getStatus().hasCondition(損壊);
-			r.is気絶 = tgt.getStatus().hasCondition(気絶);
-			r.is解脱 = tgt.getStatus().hasCondition(解脱);
-			r.msgI18Nd = msg;
 			if (e.getSuccessSound() != null) {
 				e.getSuccessSound().load().stopAndPlay();
 			}
+		} else {
+			r.msgI18Nd = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 		}
 		return new ActionResult.PerEvent(e, s, Map.of(tgt, r));
 	}

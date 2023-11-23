@@ -96,7 +96,7 @@ public class ActionResult {
 		public PerEvent(ActionEvent event, ActionResultSummary summary, Map<Actor, EventActorResult> perActor) {
 			this.event = event;
 			this.summary = summary;
-			this.perActor = perActor;
+			this.perActor = new HashMap<>(perActor);
 		}
 
 		@Override

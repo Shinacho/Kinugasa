@@ -441,9 +441,19 @@ public class BattleSystem implements Drawable {
 		int exp = 0;
 		String nextLogicName = winLogicName;
 
+		currentBGM.stop();
+		currentBGM.dispose();
 		//味方が逃げた場合と負けた場合はドロップアイテムを獲得できない
 		switch (v) {
-			case 敗北_こちらが全員逃げた:
+			case 勝利_こちらが全員逃げた: {
+				for (Enemy e : enemies) {
+					if (e.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊)) {
+						exp += (int) e.getStatus().getEffectedStatus().get(StatusKey.保有経験値).getValue();
+					}
+				}
+				nextLogicName = winLogicName;//注意
+				break;
+			}
 			case 敗北_味方全滅: {
 				for (Enemy e : enemies) {
 					if (e.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊)) {
@@ -456,6 +466,7 @@ public class BattleSystem implements Drawable {
 			case 勝利_敵が全員逃げた:
 			case 勝利_敵全滅: {
 				//倒した敵のドロップアイテム回収
+				winBGM.load().stopAndPlay();
 				for (Enemy e : enemies) {
 					if (e.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊)) {
 						exp += (int) e.getStatus().getEffectedStatus().get(StatusKey.保有経験値).getValue();
@@ -509,9 +520,6 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.getBattleResultW().setText(text);
 		messageWindowSystem.getBattleResultW().allText();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
-		currentBGM.stop();
-		currentBGM.dispose();
-		winBGM.load().stopAndPlay();
 
 		setStage(Stage.バトル終了済み);
 	}
@@ -992,8 +1000,11 @@ public class BattleSystem implements Drawable {
 			return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 		}
 		//----------------------------------PCの場合-------------------------------------
-
-		if (BattleConfig.Sounds.手番開始 != null) {
+		if (currentCmd.getUser().getStatus().getRace() == Race.仲間の犬) {
+			if (BattleConfig.Sounds.手番開始＿犬 != null) {
+				BattleConfig.Sounds.手番開始＿犬.load().stopAndPlay();
+			}
+		} else if (BattleConfig.Sounds.手番開始 != null) {
 			BattleConfig.Sounds.手番開始.load().stopAndPlay();
 		}
 		//コマンドウインドウを出す
@@ -1759,7 +1770,6 @@ public class BattleSystem implements Drawable {
 	}
 
 	private List<ActionResult.EventActorResult> prevEventResult;
-	private boolean prevEventIsUserEvent;
 
 	private void イベントキュー消化() {
 		if (GameSystem.isDebugMode()) {
@@ -1781,21 +1791,17 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		if (prevEventResult != null && !prevEventResult.isEmpty()) {
-			boolean isUserEvent = prevEventIsUserEvent;
 			//前の結果があるか検査
 			//直前の結果で誰かが死んだ場合エフェクト再生モードに入る
-			List<ActionResult.EventActorResult> 死亡者リスト = null;
-			//ユーザイベントかどうか
-			if (isUserEvent) {
-				ActionResult.UserEventResult r = actionResult.getLastUserEventResult();
-				if (r != null) {
-					死亡者リスト = is死亡者あり(r);
+			List<ActionResult.EventActorResult> 死亡者リスト = new ArrayList<>();
+			for (var v : prevEventResult) {
+				var l = is死亡者あり(v);
+				if (l != null) {
+					死亡者リスト.add(l);
 				}
-			} else {
-				ActionResult.PerEvent r = actionResult.getLastMainEventResult();
-				if (r != null) {
-					死亡者リスト = is死亡者あり(r);
-				}
+			}
+			if (GameSystem.isDebugMode()) {
+				GameLog.print(" effect tgt=" + 死亡者リスト);
 			}
 			if (死亡者リスト != null && !死亡者リスト.isEmpty()) {
 				前エフェクト生存者リスト = new ArrayList<>();
@@ -1817,7 +1823,9 @@ public class BattleSystem implements Drawable {
 			//終わり
 			setStage(Stage.EXECコール待機);
 			actionResult = null;
-			prevEventResult.clear();
+			if (prevEventResult != null) {
+				prevEventResult.clear();
+			}
 			eventQueue.clear();
 			eventIsUserEvent.clear();
 			前エフェクト生存者リスト.clear();
@@ -1837,7 +1845,9 @@ public class BattleSystem implements Drawable {
 			setStage(Stage.待機中＿時間あり＿手番送り);
 			actionResult = null;
 			eventQueue.clear();
-			prevEventResult.clear();
+			if (prevEventResult != null) {
+				prevEventResult.clear();
+			}
 			eventIsUserEvent.clear();
 			前エフェクト生存者リスト.clear();
 			currentActionTgt = null;
@@ -1853,90 +1863,59 @@ public class BattleSystem implements Drawable {
 		//実行
 		e.exec(currentActionTgt, actionResult, isUserEvent);
 
-		//actionResultに結果が入ったので、メッセージやアニメーション処理
-//		{
-//			//前の結果があるか検査
-//			//直前の結果で誰かが死んだ場合エフェクト再生モードに入る
-//			List<ActionResult.EventActorResult> 死亡者リスト = null;
-//			//ユーザイベントかどうか
-//			if (isUserEvent) {
-//				ActionResult.UserEventResult r = actionResult.getLastUserEventResult();
-//				if (r != null) {
-//					死亡者リスト = is死亡者あり(r);
-//				}
-//			} else {
-//				ActionResult.PerEvent r = actionResult.getLastMainEventResult();
-//				if (r != null) {
-//					死亡者リスト = is死亡者あり(r);
-//				}
-//			}
-//			if (死亡者リスト != null && !死亡者リスト.isEmpty()) {
-//				前エフェクト生存者リスト = new ArrayList<>();
-//				for (Actor a : allActors()) {
-//					if (!a.getStatus().hasCondition(ConditionKey.解脱)
-//							&& !a.getStatus().hasCondition(ConditionKey.気絶)
-//							&& !a.getStatus().hasCondition(ConditionKey.損壊)) {
-//						前エフェクト生存者リスト.add(a);
-//					}
-//				}
-//				エフェクト起動(死亡者リスト);//ここでエフェクトが入る
-//				setStage(Stage.エフェクト再生中_終了待ち);
-//				return;
-//			}
-//		}
 		List<String> msg = new ArrayList<>();
-		msg.add(I18N.get(GameSystemI18NKeys.XのX, currentActionTgt.getUser().getVisibleName(), currentActionTgt.getAction().getVisibleName()));
 		if (isUserEvent) {
 			ActionResult.UserEventResult r = actionResult.getLastUserEventResult();
-			prevEventResult = List.of(r);
-			prevEventIsUserEvent = true;
 			//イベントが発動しなかったら何もせずスキップ
+			//アニメーション追加
+			addAnimation(r);
 			if (r.summary == ActionResultSummary.失敗＿起動条件未達) {
 				イベントキュー消化();
 				return;
+			} else if (r.summary.is失敗()) {
+				msg.add(I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった));
 			} else {
-				msg.add(I18N.get(GameSystemI18NKeys.しかしXには当たらなかった, r.tgt.getVisibleName()));
-			}
-			//アニメーション追加
-			addAnimation(r);
-			//ダメージ表示
-			addDamageAnimation(r);
-			//MSG
-			//MSGは派生を出さない（量が多いので）
-			//MSGがない（ビームエフェクトイベント等）は何も出さない
-			if (r.msgI18Nd != null && !r.msgI18Nd.isEmpty()) {
-				msg.add(r.msgI18Nd);
-			} else {
-				msg.add(I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, r.tgt.getVisibleName()));
-			}
-			if (r.is損壊) {
-				msg.add(r.tgt.getVisibleName() + ConditionKey.損壊.getStartMsgI18Nd());
-				r.tgt.getSprite().setImage(ImageUtil.load("resource/image/haka.png"));
-				r.tgt.getSprite().setAnimationUpdate(false);
-			}
-			if (r.is気絶) {
-				msg.add(r.tgt.getVisibleName() + ConditionKey.気絶.getStartMsgI18Nd());
-				r.tgt.getSprite().setAnimationUpdate(false);
-				r.tgt.getSprite().setShadow(false);
-			}
-			if (r.is解脱) {
-				msg.add(r.tgt.getVisibleName() + ConditionKey.解脱.getStartMsgI18Nd());
-				r.tgt.getSprite().setImage(ImageUtil.load("resource/image/haka.png"));
-				r.tgt.getSprite().setAnimationUpdate(false);
+				prevEventResult = List.of(r);
+				//ダメージ表示
+				addDamageAnimation(r);
+				//MSG
+				//MSGは派生を出さない（量が多いので）
+				//MSGがない（ビームエフェクトイベント等）は何も出さない
+				if (r.msgI18Nd != null && !r.msgI18Nd.isEmpty()) {
+					msg.add(r.msgI18Nd);
+				} else {
+					msg.add(I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, r.tgt.getVisibleName()));
+				}
+				if (r.is損壊) {
+					msg.add(r.tgt.getVisibleName() + ConditionKey.損壊.getStartMsgI18Nd());
+					r.tgt.getSprite().setImage(ImageUtil.load("resource/image/haka.png"));
+					r.tgt.getSprite().setAnimationUpdate(false);
+				}
+				if (r.is気絶) {
+					msg.add(r.tgt.getVisibleName() + ConditionKey.気絶.getStartMsgI18Nd());
+					r.tgt.getSprite().setAnimationUpdate(false);
+					r.tgt.getSprite().setShadow(false);
+				}
+				if (r.is解脱) {
+					msg.add(r.tgt.getVisibleName() + ConditionKey.解脱.getStartMsgI18Nd());
+					r.tgt.getSprite().setImage(ImageUtil.load("resource/image/haka.png"));
+					r.tgt.getSprite().setAnimationUpdate(false);
+				}
 			}
 		} else {
 			ActionResult.PerEvent r = actionResult.getLastMainEventResult();
-			prevEventIsUserEvent = false;
 			//イベントが発動しなかったら何もせずスキップ
 			if (r.summary == ActionResultSummary.失敗＿起動条件未達) {
 				イベントキュー消化();
 				return;
 			} else if (r.summary.is失敗()) {
-				for (var v : r.perActor.values()) {
-					msg.add(I18N.get(GameSystemI18NKeys.しかしXには当たらなかった, v.tgt.getVisibleName()));
+				if (prevEventResult != null) {
+					prevEventResult.clear();
 				}
-			}
-			if (r.summary.is成功()) {
+				for (var v : r.perActor.keySet()) {
+					msg.add(I18N.get(GameSystemI18NKeys.しかしXには当たらなかった, v.getVisibleName()));
+				}
+			} else {
 				prevEventResult = new ArrayList<>(r.perActor.values());
 				for (var v : r.perActor.values()) {
 					//アニメーション追加
@@ -1946,8 +1925,8 @@ public class BattleSystem implements Drawable {
 					//MSG
 					if (v.msgI18Nd != null && !v.msgI18Nd.isEmpty()) {
 						msg.add(v.msgI18Nd);
-					} else {
-						msg.add(I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, v.tgt.getVisibleName()));
+					} else if (v.event.getEventType() == ActionEventType.ステータス攻撃) {
+						msg.add(I18N.get(GameSystemI18NKeys.しかしXには当たらなかった, v.tgt.getVisibleName()));
 					}
 					if (v.is損壊) {
 						msg.add(v.tgt.getVisibleName() + ConditionKey.損壊.getStartMsgI18Nd());
@@ -1965,17 +1944,14 @@ public class BattleSystem implements Drawable {
 						v.tgt.getSprite().setAnimationUpdate(false);
 					}
 				}
-			} else {
-				for (var v : r.perActor.keySet()) {
-					msg.add(I18N.get(GameSystemI18NKeys.しかしXには当たらなかった, v.getVisibleName()));
-				}
 			}
 		}
 		//MSG
-		//MSGは派生を出さない（量が多いので）
 		//MSGがない（ビームエフェクトイベント等）は何も出さない
-
-		if (!msg.isEmpty()) {
+		if (msg != null && !msg.isEmpty()) {
+			msg.add(0, I18N.get(GameSystemI18NKeys.XのX,
+					currentActionTgt.getUser().getVisibleName(),
+					currentActionTgt.getAction().getVisibleName()));
 			setMsg(msg);
 		}
 		//アニメーションウェイトタイム
@@ -1987,41 +1963,19 @@ public class BattleSystem implements Drawable {
 	}
 
 	@Nullable
-	private List<ActionResult.EventActorResult> is死亡者あり(ActionResult.EventActorResult r) {
-		//rかユーザのどちらかに入っていたら死亡とみなす。同期は取れている・・・と思う。
+	private ActionResult.EventActorResult is死亡者あり(ActionResult.EventActorResult r) {
+		//rかユーザのどちらかに入っていたら死亡とみなす。同期は取れていないかもしれない（作り漏れで
 		if (r.is解脱 || r.is気絶 || r.is解脱) {
 			if (!r.tgt.isSummoned()) {
-				return new ArrayList<>(Arrays.asList(r));
+				return r;
 			}
 		}
 		if (r.tgt.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶)) {
 			if (!r.tgt.isSummoned()) {
-				return new ArrayList<>(Arrays.asList(r));
+				return r;
 			}
 		}
 		return null;
-	}
-
-	@Nullable
-	private List<ActionResult.EventActorResult> is死亡者あり(ActionResult.PerEvent r) {
-		//rかユーザのどちらかに入っていたら死亡とみなす。同期は取れている・・・と思う。
-		List<ActionResult.EventActorResult> result = new ArrayList<>();
-		for (var v : r.perActor.values()) {
-			if (v.is解脱 || v.is気絶 || v.is解脱) {
-				if (!v.tgt.isSummoned()) {
-					result.add(v);
-				}
-			}
-			if (v.tgt.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶)) {
-				if (!v.tgt.isSummoned()) {
-					result.add(v);
-				}
-			}
-		}
-		if (result.isEmpty()) {
-			return null;
-		}
-		return result;
 	}
 
 	private void エフェクト起動ByActor(List<Actor> 死亡者リスト) {
@@ -2042,7 +1996,7 @@ public class BattleSystem implements Drawable {
 				0, 0,
 				(int) GameOption.getInstance().getWindowSize().getWidth(),
 				(int) GameOption.getInstance().getWindowSize().getHeight());
-		effectTime = new FrameTimeCounter(150);
+		effectTime = new FrameTimeCounter(120);
 		//エフェクトサウンドの再生
 		if (BattleConfig.Sounds.正気度減少演出 != null) {
 			BattleConfig.Sounds.正気度減少演出.load().stopAndPlay();
@@ -2144,6 +2098,7 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		setMsg(msg);
+		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 	}
 
 	private void エフェクト起動(List<ActionResult.EventActorResult> 死亡者リスト) {
@@ -2178,7 +2133,7 @@ public class BattleSystem implements Drawable {
 				0, 0,
 				(int) GameOption.getInstance().getWindowSize().getWidth(),
 				(int) GameOption.getInstance().getWindowSize().getHeight());
-		effectTime = new FrameTimeCounter(150);
+		effectTime = new FrameTimeCounter(120);
 		//エフェクトサウンドの再生
 		if (BattleConfig.Sounds.正気度減少演出 != null) {
 			BattleConfig.Sounds.正気度減少演出.load().stopAndPlay();
@@ -2348,9 +2303,6 @@ public class BattleSystem implements Drawable {
 				.collect(Collectors.toSet());
 		removeCastAnimation.forEach(p -> castingSprites.remove(p));
 
-		//全滅判定
-		
-		
 		//ステージ別処理
 		switch (stage) {
 			case 未使用: {
@@ -2460,7 +2412,7 @@ public class BattleSystem implements Drawable {
 					//全員逃げた場合終了
 					if (GameSystem.getInstance().getParty().stream()
 							.allMatch(p -> p.getStatus().hasAnyCondition(ConditionKey.逃走した, ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊))) {
-						setEndStatus(BattleResult.敗北_こちらが全員逃げた);
+						setEndStatus(BattleResult.勝利_こちらが全員逃げた);
 						return;
 					}
 
@@ -2586,6 +2538,9 @@ public class BattleSystem implements Drawable {
 	//アクションリザルトウインドウに出す。主に複数行用。
 	//"/" ng
 	private void setMsg(List<String> s) {
+		if (GameSystem.isDebugMode()) {
+			GameLog.print(" setMsg:" + s.toString());
+		}
 		//8行以上ある場合は2列づつ出す。
 		boolean isOver8Line = s.size() >= 8;
 
@@ -2621,6 +2576,28 @@ public class BattleSystem implements Drawable {
 	}
 
 	private void setStage(Stage s) {
+		//ステージが切り替わった際に全滅判定
+		//逃げた人がいるかで分岐
+		//逃げた人がいて全滅した場合敗北＿逃げ、そうでない全滅は敗北＿全滅
+		if (s != Stage.バトル終了済み) {
+			boolean 全滅 = true;
+			boolean 逃げた人がいる = false;
+			for (Actor a : GameSystem.getInstance().getParty()) {
+				全滅 &= (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶));
+				逃げた人がいる |= a.getStatus().hasCondition(ConditionKey.逃走した);
+			}
+			if (全滅) {
+				if (逃げた人がいる) {
+					setEndStatus(BattleResult.勝利_こちらが全員逃げた);
+				} else {
+					setEndStatus(BattleResult.敗北_味方全滅);
+				}
+				return;
+			}
+		}
+		if (s == Stage.バトル終了済み) {
+			return;
+		}
 		GameLog.print("BS " + prevStage + " -> " + stage + " -> " + s);
 		this.prevStage = stage;
 		this.stage = s;

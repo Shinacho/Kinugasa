@@ -46,6 +46,7 @@ public class BattleConfig {
 		public static Sound 魔法詠唱開始;
 		public static Sound 正気度減少演出;
 		public static Sound 手番開始;
+		public static Sound 手番開始＿犬;
 		public static Sound 解脱;
 		public static Sound 気絶;
 		public static Sound 損壊;

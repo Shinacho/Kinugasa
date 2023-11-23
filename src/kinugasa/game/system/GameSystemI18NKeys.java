@@ -478,6 +478,11 @@ public class GameSystemI18NKeys {
 	public static final String Xは反射した = "Xは反射した";
 	public static final String Xは吸収した = "Xは吸収した";
 	public static final String クリティカルヒットした = "クリティカルヒットした";
+	public static final String 脚本Xを実行する= "脚本Xを実行する";
+	public static final String 脚本実行の術式 = "脚本実行の術式";
+	public static final String 脚本Xが存在しない = "脚本Xが存在しない";
+	public static final String 脚本Xは誤っている = "脚本Xは誤っている";
+	public static final String 脚本が実行された = "脚本が実行された";
 	
 	
 	public static class CountKey {

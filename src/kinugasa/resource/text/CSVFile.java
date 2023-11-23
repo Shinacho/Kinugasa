@@ -30,6 +30,7 @@ import kinugasa.resource.InputStatus;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Output;
 import kinugasa.resource.OutputResult;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -100,7 +101,10 @@ public class CSVFile implements Input<CSVFile>, Output, Nameable, Iterable<Strin
 		data = new ArrayList<>();
 		try {
 			for (String line : Files.readAllLines(file.toPath(), charset)) {
-				data.add(line.split(","));
+				if (line.isEmpty() || line.equals("\r") || line.equals("\r\n")) {
+					continue;
+				}
+				data.add(StringUtil.safeSplit(line, ","));
 			}
 		} catch (IOException ex) {
 			throw new FileIOException(ex);
@@ -127,13 +131,8 @@ public class CSVFile implements Input<CSVFile>, Output, Nameable, Iterable<Strin
 	@Override
 	public OutputResult saveTo(File f) throws FileIOException {
 		List<String> lines = new ArrayList<>();
-		String line = "";
 		for (String[] l : data) {
-			for (String v : l) {
-				line += v + ",";
-			}
-			lines.add(line.substring(0, line.length() - 1));
-			line = "";
+			lines.add(String.join(",", l));
 		}
 		try {
 			Files.write(f.toPath(), lines, charset, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
