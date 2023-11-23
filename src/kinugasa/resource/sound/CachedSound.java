@@ -34,6 +34,7 @@ import kinugasa.game.system.GameSystemI18NKeys;
 import kinugasa.resource.ContentsIOException;
 import kinugasa.resource.InputStatus;
 import kinugasa.resource.NotYetLoadedException;
+import kinugasa.resource.db.DBConnection;
 import kinugasa.util.StopWatch;
 
 /**
@@ -145,7 +146,9 @@ public class CachedSound implements Sound {
 				framePos = 0;
 			}
 			if (getType() == SoundType.BGM) {
-				Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+				if (DBConnection.getInstance().isUsing()) {
+					Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+				}
 			}
 			clip.loop(Clip.LOOP_CONTINUOUSLY);
 		} else {
@@ -154,12 +157,16 @@ public class CachedSound implements Sound {
 				framePos = 0;
 				clip.start();
 				if (getType() == SoundType.BGM) {
-					Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+					if (DBConnection.getInstance().isUsing()) {
+						Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+					}
 				}
 			} else {
 				clip.start();
 				if (getType() == SoundType.BGM) {
-					Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+					if (DBConnection.getInstance().isUsing()) {
+						Counts.getInstance().add1count(GameSystemI18NKeys.CountKey.BGM再生回数);
+					}
 				}
 			}
 		}
@@ -263,7 +270,7 @@ public class CachedSound implements Sound {
 		return this;
 	}
 
-	Clip getClip() {
+	public Clip getClip() {
 		return clip;
 	}
 

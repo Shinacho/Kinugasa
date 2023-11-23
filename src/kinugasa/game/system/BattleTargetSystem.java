@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import kinugasa.game.GameLog;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LoopCall;
 import kinugasa.game.NewInstance;
@@ -185,9 +186,9 @@ public class BattleTargetSystem implements Drawable {
 		initialCenterArea.setVisible(ini);
 		pcCenterArea.setVisible(cur);
 	}
-	
-	public void resetArea(){
-		
+
+	public void resetArea() {
+
 	}
 
 	@LoopCall
@@ -283,6 +284,10 @@ public class BattleTargetSystem implements Drawable {
 		if (selectedIdx > inArea候補者.size()) {
 			selectedIdx = 0;
 		}
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("TS : " + getSelected());
+		}
+		updateIcons();
 	}
 
 	void prevTgt() {
@@ -293,6 +298,10 @@ public class BattleTargetSystem implements Drawable {
 		if (selectedIdx < 0) {
 			selectedIdx = inArea候補者.size() - 1;
 		}
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("TS : " + getSelected());
+		}
+		updateIcons();
 	}
 
 	//グループで切替可能な時だけ発動する。グループを切り替える。これはgetSElectedのリストに影響する
@@ -301,6 +310,9 @@ public class BattleTargetSystem implements Drawable {
 			teamSelect = teamSelect.switchTeam();
 			updateInArea();
 			updateIcons();
+		}
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("TS : " + getSelected());
 		}
 	}
 
@@ -433,8 +445,8 @@ public class BattleTargetSystem implements Drawable {
 
 	//getSElectedにアイコンを設置する
 	private void updateIcons() {
+		icons.clear();
 		if (!currentUser.isPlayer()) {
-			icons.clear();
 			return;
 		}
 		List<Actor> selected = getSelected();
@@ -702,6 +714,7 @@ public class BattleTargetSystem implements Drawable {
 				break;
 			case 気絶損壊解脱者を選択可能:
 		}
+		inArea候補者 = new ArrayList<>(inArea候補者);
 		inArea候補者.removeAll(remove);
 
 	}

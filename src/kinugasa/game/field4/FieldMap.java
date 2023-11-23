@@ -115,7 +115,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private List<FieldMapLayerSprite> backlLayeres = new ArrayList<>();
 	private static List<PCSprite> playerCharacter = new ArrayList<>();
 	private List<FieldMapLayerSprite> frontlLayeres = new ArrayList<>();
-	private List<FieldAnimationSprite> frontAnimation = new ArrayList<>();
+	private List<FieldAnimationSprite> animationLayer = new ArrayList<>();
 	private List<BeforeLayerSprite> beforeLayerSprites = new ArrayList<>();
 	//------------------------------------------------
 	private NPCStorage npcStorage = new NPCStorage();
@@ -179,7 +179,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	}
 
 	public List<FieldAnimationSprite> getFrontAnimation() {
-		return frontAnimation;
+		return animationLayer;
 	}
 
 	public List<BeforeLayerSprite> getBeforeLayerSprites() {
@@ -443,7 +443,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				BufferedImage[] images = new SpriteSheet(image).split(w, h).images();
 				int locationX = (int) (x * (chipW));
 				int locationY = (int) (y * (chipH));
-				frontAnimation.add(new FieldAnimationSprite(new D2Idx(x, y), locationX, locationY, w, h, new Animation(tc, images)));
+				animationLayer.add(new FieldAnimationSprite(new D2Idx(x, y), locationX, locationY, w, h, new Animation(tc, images)));
 			}
 
 		}
@@ -581,6 +581,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		backlLayeres.forEach(e -> e.draw(g));
 
+		animationLayer.forEach(e -> e.draw(g));
 		if (playerCharacter != null) {
 			List<PCSprite> list = new ArrayList<>(playerCharacter);
 			Collections.reverse(list);
@@ -594,7 +595,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			DebugLayerSprite.debugDrawNPC(g, npcStorage.asList(), getBaseLayer().getLocation(), chipW, chipH);
 			DebugLayerSprite.debugDrawCamera(g, getBaseLayer().getLocation(), chipW, chipH);
 		}
-		frontAnimation.forEach(e -> e.draw(g));
 		beforeLayerSprites.forEach(e -> e.draw(g));
 		if (mapNameModel != null) {
 			mapNameModel.drawMapName(this, g);
@@ -615,7 +615,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		backlLayeres.clear();
 		frontlLayeres.forEach(e -> e.dispose());
 		frontlLayeres.clear();
-		frontAnimation.clear();
+		animationLayer.clear();
 		beforeLayerSprites.clear();
 		npcStorage.clear();
 		if (fieldEventStorage != null) {
@@ -804,7 +804,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 		}
 		this.currentIdx = idx.clone();
-
 
 	}
 
@@ -1013,7 +1012,11 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (n.getSe() != null) {
 			n.getSe().load().stopAndPlay();
 		}
+		Sound currentBGM = this.bgm;
 		FieldMap fm = FieldMapStorage.getInstance().get(n.getExitFieldMapName()).build();
+		if (fm.bgm == null) {
+			fm.bgm = currentBGM;
+		}
 		if (n.getExitNodeName() == null) {
 			fm.setCurrentIdx(n.getIdx());
 		} else {

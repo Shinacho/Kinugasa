@@ -87,6 +87,22 @@ public class FieldEventSystem implements Drawable {
 	private Item item;
 	private Storage<Flag> flags = new Storage<Flag>();
 
+	public D2Idx getPrevEventLocation() {
+		return prevEvent == null ? null : prevEvent.get(0).getLocation();
+	}
+
+	public LinkedList<FieldEvent> getCurrentEvents() {
+		return event;
+	}
+
+	public FieldEvent getCurrentEvent() {
+		return currentEvent;
+	}
+
+	public LinkedList<FieldEvent> getPrevEvent() {
+		return prevEvent;
+	}
+
 	public void setEvent(LinkedList<FieldEvent> event) {
 		Collections.sort(event);
 		prevEvent = (LinkedList<FieldEvent>) event.clone();
@@ -147,7 +163,7 @@ public class FieldEventSystem implements Drawable {
 
 	public void reset() {
 		reset = true;
-		setEvent(prevEvent);
+		setEvent((LinkedList<FieldEvent>) prevEvent.clone());
 	}
 
 	void setItem(String itemID) {
@@ -226,6 +242,10 @@ public class FieldEventSystem implements Drawable {
 
 	public boolean isManual() {
 		return manual;
+	}
+
+	public boolean prevEventIsDead() {
+		return prevEvent.stream().allMatch(p -> p.isDisposeWhenExec());
 	}
 
 	public void endEvent() {

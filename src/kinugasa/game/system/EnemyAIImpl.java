@@ -76,8 +76,6 @@ public enum EnemyAIImpl implements EnemyAI {
 				//ターゲットが射程内にいればそれを実施
 				if (is射程内(user, ac, tgt)) {
 					if (!ac.checkResource(user.getStatus()).is足りないステータスあり()) {
-						System.out.println("選ばれた");
-
 						return new ActionTarget(user, ac, List.of(tgt), false);
 					}
 				}

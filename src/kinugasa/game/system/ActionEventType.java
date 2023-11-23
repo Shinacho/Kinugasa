@@ -4942,8 +4942,6 @@ public enum ActionEventType {
 			if (e.getSuccessSound() != null) {
 				e.getSuccessSound().load().stopAndPlay();
 			}
-		} else {
-			r.msgI18Nd = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 		}
 		return r;
 	}
@@ -4986,8 +4984,6 @@ public enum ActionEventType {
 			if (e.getSuccessSound() != null) {
 				e.getSuccessSound().load().stopAndPlay();
 			}
-		} else {
-			r.msgI18Nd = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 		}
 		return new ActionResult.PerEvent(e, s, Map.of(tgt, r));
 	}
