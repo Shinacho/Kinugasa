@@ -64,7 +64,6 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	private Color inner2 = new Color(33, 33, 128);
 	private FontModel font;
 	public final static int BORDER_SIZE = 2;
-	private Color cColor = Color.WHITE;
 	private static final float CHARA_IMAGE_W = 235;
 	private static final float CHARA_IMAGE_H = 235;
 	private BufferedImage charaImage;
@@ -74,6 +73,7 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	}
 
 	public SimpleMessageWindowModel(String nextIcon) {
+		this();
 		setNextIcon(nextIcon);
 	}
 
@@ -143,7 +143,7 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 		//ペイントをもとに戻す
 		g2.setPaint(p);
 
-		g2.setColor(cColor);
+		g2.setColor(font.getColor());
 		x += BORDER_SIZE * 5;
 		float size = font == null || font.getFont() == null ? g2.getFont().getSize() : font.getFont().getSize();
 		y += BORDER_SIZE * 5 + size;

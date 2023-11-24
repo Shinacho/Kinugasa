@@ -139,6 +139,9 @@ public class ProgressBarSprite extends BasicSprite {
 
 	@Override
 	public void draw(GraphicsContext g) {
+		if(!isVisible() || !isExist()){
+			return;
+		}
 		int x = (int) getX();
 		int y = (int) getY();
 		int h = (int) getHeight();

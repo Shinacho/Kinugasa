@@ -484,6 +484,7 @@ public class GameSystemI18NKeys {
 	public static final String 脚本Xは誤っている = "脚本Xは誤っている";
 	public static final String 脚本が実行された = "脚本が実行された";
 	public static final String Xの正気度ダメージを受けた = "Xの正気度ダメージを受けた";
+	public static final String しかし誰も正気度ダメージを受けなかった = "しかし誰も正気度ダメージを受けなかった";
 	
 	
 	public static class CountKey {

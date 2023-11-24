@@ -16,10 +16,12 @@
  */
 package kinugasa.game.system;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
@@ -55,7 +57,7 @@ public class BattleStatusWindows extends BasicSprite {
 			String text = s + s.getVisibleName() + " | ";
 			StatusValueSet es = s.getStatus().getEffectedStatus();
 			int j = 0;
-			for (StatusKey k : List.of(StatusKey.体力,StatusKey.魔力,StatusKey.正気度)) {
+			for (StatusKey k : List.of(StatusKey.体力, StatusKey.魔力, StatusKey.正気度)) {
 				StatusValue vs = es.get(k);
 				if (j != 0) {
 					if (s.getVisibleName().substring(0, 1).getBytes().length == 1) {
@@ -89,7 +91,7 @@ public class BattleStatusWindows extends BasicSprite {
 			String text = s.getVisibleName() + " | ";
 			StatusValueSet es = s.getStatus().getEffectedStatus();
 			int j = 0;
-			for (StatusKey k : List.of(StatusKey.体力,StatusKey.魔力,StatusKey.正気度)) {
+			for (StatusKey k : List.of(StatusKey.体力, StatusKey.魔力, StatusKey.正気度)) {
 				StatusValue vs = es.get(k);
 				if (j != 0) {
 					if (s.getVisibleName().substring(0, 1).getBytes().length == 1) {
@@ -107,6 +109,15 @@ public class BattleStatusWindows extends BasicSprite {
 			Text t = new Text(text);
 			t.allText();
 			mw.get(i).setText(t);
+			if (s.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊, ConditionKey.逃走した)) {
+				SimpleMessageWindowModel model = new SimpleMessageWindowModel("");
+				model.setFont(FontModel.DEFAULT.clone().setColor(Color.GRAY));
+				mw.get(i).setModel(model);
+			} else {
+				SimpleMessageWindowModel model = new SimpleMessageWindowModel("");
+				model.setFont(FontModel.DEFAULT.clone().setColor(Color.WHITE));
+				mw.get(i).setModel(model);
+			}
 			i++;
 		}
 	}

@@ -64,10 +64,11 @@ public class BattleConfig {
 	//素早さ乱数
 	public static float SPEED_SPREAD = 0.1f;
 
-	public static IntSupplier 正気度減少イベントの数値＿味方の場合 = () -> Random.d6(3);
-	public static IntSupplier 正気度減少イベントの数値＿敵の場合 = () -> Random.d6(1);
+	public static IntSupplier 正気度減少イベントの数値＿味方の場合 = () -> Random.d4(3);
+	public static IntSupplier 正気度減少イベントの数値＿敵の場合 = () -> Random.d3(1);
 	public static ImageSprite castingAnimationMaster;
-	public static KImage deadCharaImage;
+	public static KImage deadCharaImage1;
+	public static KImage deadCharaImage2;
 
 	public static class ActionID {
 

@@ -54,6 +54,9 @@ public class StatusDescWindow extends PCStatusWindow {
 		this.pcIdx = pcIdx;
 		updateText();
 		faceImage = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getFaceImage();
+		if (s.get(pcIdx).hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊)) {
+			faceImage = ImageUtil.grayScale(faceImage, null);
+		}
 		resizeFaceImage();
 	}
 
@@ -79,6 +82,9 @@ public class StatusDescWindow extends PCStatusWindow {
 			pcIdx = 0;
 		}
 		faceImage = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getFaceImage();
+		if (s.get(pcIdx).hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊)) {
+			faceImage = ImageUtil.grayScale(faceImage, null);
+		}
 		resizeFaceImage();
 		main.reset();
 		updateText();
@@ -91,6 +97,9 @@ public class StatusDescWindow extends PCStatusWindow {
 			pcIdx = s.size() - 1;
 		}
 		faceImage = GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getFaceImage();
+		if (s.get(pcIdx).hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊)) {
+			faceImage = ImageUtil.grayScale(faceImage, null);
+		}
 		resizeFaceImage();
 		main.reset();
 		updateText();

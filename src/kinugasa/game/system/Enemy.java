@@ -92,6 +92,11 @@ public final class Enemy extends Actor {
 
 	void update() {
 		getSprite().update();
+		if (getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した)) {
+			getSprite().getProgressBarSprite1().setVisible(false);
+			getSprite().getProgressBarSprite2().setVisible(false);
+			getSprite().setNameVisible(false);
+		}
 	}
 
 	@Override

@@ -280,7 +280,7 @@ public final class Status extends Model implements Nameable {
 		boolean is解脱 = currentCondition.containsKey(ConditionKey.解脱);
 		if (is解脱) {
 			res.result.put(ConditionKey.解脱, new UpdadeConditionResult.Value(ConditionKey.解脱,
-					getVisibleName() + ConditionKey.解脱.getExecMsgI18Nd(),
+					getVisibleName() + ConditionKey.解脱.getStartMsgI18Nd(),
 					false, false, true,
 					null, 0));
 			return res;
@@ -288,7 +288,7 @@ public final class Status extends Model implements Nameable {
 		boolean is損壊 = currentCondition.containsKey(ConditionKey.損壊);
 		if (is損壊) {
 			res.result.put(ConditionKey.損壊, new UpdadeConditionResult.Value(ConditionKey.損壊,
-					getVisibleName() + ConditionKey.損壊.getExecMsgI18Nd(),
+					getVisibleName() + ConditionKey.損壊.getStartMsgI18Nd(),
 					false, false, true,
 					null, 0));
 			return res;
@@ -296,7 +296,7 @@ public final class Status extends Model implements Nameable {
 		boolean is気絶 = currentCondition.containsKey(ConditionKey.気絶);
 		if (is気絶) {
 			res.result.put(ConditionKey.気絶, new UpdadeConditionResult.Value(ConditionKey.気絶,
-					getVisibleName() + ConditionKey.気絶.getExecMsgI18Nd(),
+					getVisibleName() + ConditionKey.気絶.getStartMsgI18Nd(),
 					false, false, true,
 					null, 0));
 			return res;
@@ -316,7 +316,7 @@ public final class Status extends Model implements Nameable {
 				boolean is解脱2 = currentCondition.containsKey(ConditionKey.解脱);
 				if (is解脱2) {
 					res.result.put(ConditionKey.解脱, new UpdadeConditionResult.Value(ConditionKey.解脱,
-							getVisibleName() + ConditionKey.解脱.getExecMsgI18Nd(),
+							getVisibleName() + ConditionKey.解脱.getStartMsgI18Nd(),
 							false, true, false,
 							null, 0));
 					return res;
@@ -324,7 +324,7 @@ public final class Status extends Model implements Nameable {
 				boolean is損壊2 = currentCondition.containsKey(ConditionKey.損壊);
 				if (is損壊2) {
 					res.result.put(ConditionKey.損壊, new UpdadeConditionResult.Value(ConditionKey.損壊,
-							getVisibleName() + ConditionKey.損壊.getExecMsgI18Nd(),
+							getVisibleName() + ConditionKey.損壊.getStartMsgI18Nd(),
 							false, true, false,
 							null, 0));
 					return res;
@@ -332,7 +332,7 @@ public final class Status extends Model implements Nameable {
 				boolean is気絶2 = currentCondition.containsKey(ConditionKey.気絶);
 				if (is気絶2) {
 					res.result.put(ConditionKey.気絶, new UpdadeConditionResult.Value(ConditionKey.気絶,
-							getVisibleName() + ConditionKey.気絶.getExecMsgI18Nd(),
+							getVisibleName() + ConditionKey.気絶.getStartMsgI18Nd(),
 							false, true, false,
 							null, 0));
 					return res;

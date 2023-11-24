@@ -124,7 +124,7 @@ public class DamageCalcSystem {
 		boolean ゼロダメ＿１にした = false;
 
 		StatusValueSet userVS = p.user.getStatus().getEffectedStatus();
-		StatusValueSet tgtVS = p.user.getStatus().getEffectedStatus();
+		StatusValueSet tgtVS = p.tgt.getStatus().getEffectedStatus();
 
 		switch (p.actionType) {
 			case 物理攻撃: {

@@ -53,6 +53,14 @@ public class EnemySprite extends PCSprite {
 	private ProgressBarSprite progressBarSprite1;
 	private ProgressBarSprite progressBarSprite2;
 
+	public ProgressBarSprite getProgressBarSprite2() {
+		return progressBarSprite2;
+	}
+
+	public ProgressBarSprite getProgressBarSprite1() {
+		return progressBarSprite1;
+	}
+
 	public EnemySprite(XMLElement e) {
 		super(e);
 		setImage(getAnimation().getCurrentBImage());
@@ -176,12 +184,16 @@ public class EnemySprite extends PCSprite {
 			setVisible(false);
 		}
 		setImage(getAnimation().getCurrentImage());
-		progressBarSprite1.setLocation(getLocation());
-		progressBarSprite1.setY(progressBarSprite1.getY() - 4);
-		progressBarSprite1.setVal((int) me.getStatus().getEffectedStatus().get(StatusKey.体力).getValue());
-		progressBarSprite2.setLocation(getLocation());
-		progressBarSprite2.setY(progressBarSprite2.getY());
-		progressBarSprite2.setVal((int) me.getStatus().getEffectedStatus().get(StatusKey.正気度).getValue());
+		if (progressBarSprite1.isVisible()) {
+			progressBarSprite1.setLocation(getLocation());
+			progressBarSprite1.setY(progressBarSprite1.getY() - 4);
+			progressBarSprite1.setVal((int) me.getStatus().getEffectedStatus().get(StatusKey.体力).getValue());
+		}
+		if (progressBarSprite2.isVisible()) {
+			progressBarSprite2.setLocation(getLocation());
+			progressBarSprite2.setY(progressBarSprite2.getY());
+			progressBarSprite2.setVal((int) me.getStatus().getEffectedStatus().get(StatusKey.正気度).getValue());
+		}
 	}
 
 	public void dirTo(Actor c) {
@@ -208,6 +220,11 @@ public class EnemySprite extends PCSprite {
 	}
 
 	private static final Color SHADOW = new Color(0, 0, 0, 128);
+	private boolean nameVisible = true;
+
+	public void setNameVisible(boolean nameVisible) {
+		this.nameVisible = nameVisible;
+	}
 
 	@Override
 	public void draw(GraphicsContext g) {
@@ -218,10 +235,11 @@ public class EnemySprite extends PCSprite {
 		progressBarSprite1.draw(g);
 		progressBarSprite2.draw(g);
 		Graphics2D g2 = g.create();
-		g2.setColor(Color.RED);
-		g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.PLAIN).setFontSize(12).getFont());
-		g2.drawString(me.getVisibleName(), getX() - me.getStatus().getVisibleName().length() * 3, getY() - 4);
-
+		if (nameVisible) {
+			g2.setColor(Color.RED);
+			g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.PLAIN).setFontSize(12).getFont());
+			g2.drawString(me.getVisibleName(), getX() - me.getStatus().getVisibleName().length() * 3, getY() - 4);
+		}
 		/*
 		g2.setColor(SHADOW);
 		g2.fillOval(

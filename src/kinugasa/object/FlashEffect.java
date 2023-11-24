@@ -98,4 +98,9 @@ public class FlashEffect extends Effect {
 	public boolean isRunning() {
 		return running;
 	}
+
+	@Override
+	public String toString() {
+		return "FlashEffect{" + "color=" + color + ", blinkRate=" + blinkRate + ", flashTime=" + flashTime + ", ended=" + ended + ", running=" + running + ", stage=" + stage + '}';
+	}
 }

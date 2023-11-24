@@ -93,7 +93,20 @@ public class BattleMessageWindowSystem implements Drawable {
 		};
 		turnOrder = new TextLabelSprite("", new SimpleTextLabelModel(FontModel.DEFAULT.clone().setColor(Color.BLACK).setFontSize(12)),
 				3, messageWindowY - 14, w, 24);
-		infoW = new MessageWindow(560, messageWindowY, w - 560, 38, new SimpleMessageWindowModel().setNextIcon(""));
+		infoW = new MessageWindow(560, messageWindowY, w - 560, 38, new SimpleMessageWindowModel().setNextIcon("")) {
+			@Override
+			public void setText(String text) {
+				super.setText(text); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+				allText();
+			}
+
+			@Override
+			public void setText(Text text) {
+				super.setText(text); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+				allText();
+			}
+
+		};
 		afterMoveActionListW = new MessageWindow(3, messageWindowY, 557, h, new SimpleMessageWindowModel().setNextIcon(""));
 		statusW = new BattleStatusWindows(statusList.stream().filter(p -> !p.isSummoned()).toList());
 		itemChoiceUseW = new MessageWindow(3, messageWindowY, w, h, new SimpleMessageWindowModel().setNextIcon(""));
@@ -645,13 +658,13 @@ public class BattleMessageWindowSystem implements Drawable {
 		itemChoiceUseW.draw(g);
 		itemCommitResultW.draw(g);
 		//
+		turnOrder.draw(g);
 		afterMoveActionListW.draw(g);
 		infoW.draw(g);
 		statusDescW.draw(g);
 		itemDescW.draw(g);
 		//
 		battleResultW.draw(g);
-		turnOrder.draw(g);
 		actionResultW.draw(g);
 	}
 

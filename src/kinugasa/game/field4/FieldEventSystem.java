@@ -88,7 +88,7 @@ public class FieldEventSystem implements Drawable {
 	private Storage<Flag> flags = new Storage<Flag>();
 
 	public D2Idx getPrevEventLocation() {
-		return prevEvent == null ? null : prevEvent.get(0).getLocation();
+		return prevEvent == null || prevEvent.isEmpty() ? null : prevEvent.get(0).getLocation();
 	}
 
 	public LinkedList<FieldEvent> getCurrentEvents() {

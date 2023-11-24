@@ -319,14 +319,23 @@ public class BattleTargetSystem implements Drawable {
 	//init
 	private void initTeamSelect() {
 		if (currentBA == null) {
+			if (GameSystem.isDebugMode()) {
+				GameLog.print(" TS init team select : currentBA is null");
+			}
 			return;
 		}
 		//ターゲットタイプのないアクション（移動等）の場合は何もしない
 		if (currentBA.getType() == ActionType.行動) {
+			if (GameSystem.isDebugMode()) {
+				GameLog.print(" TS init team select : currentBA is 行動");
+			}
 			return;
 		}
 		if (currentBA.getType() == ActionType.アイテム) {
 			if (!currentBA.hasEvent()) {
+				if (GameSystem.isDebugMode()) {
+					GameLog.print(" TS init team select : currentBA is no event アイテム");
+				}
 				return;
 			}
 		}
@@ -370,6 +379,9 @@ public class BattleTargetSystem implements Drawable {
 			case 全員_自身除く ->
 				TeamSelect.未使用;
 		};
+		if (GameSystem.isDebugMode()) {
+			GameLog.print(" TS init team select : " + teamSelect);
+		}
 	}
 
 	List<Actor> allPartyOf(Point2D.Float center, int area) {
@@ -716,7 +728,10 @@ public class BattleTargetSystem implements Drawable {
 		}
 		inArea候補者 = new ArrayList<>(inArea候補者);
 		inArea候補者.removeAll(remove);
-
+		
+		if(GameSystem.isDebugMode()){
+			GameLog.print("TS inArea : " + inArea候補者);
+		}
 	}
 
 	@LoopCall

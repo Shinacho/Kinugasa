@@ -44,6 +44,9 @@ public class LevelSystem {
 	public static List<Actor> addExp(int expSum) {
 		List<Actor> res = new ArrayList<>();
 		for (Actor a : GameSystem.getInstance().getParty()) {
+			if(a.getStatus().hasAnyCondition(ConditionKey.解脱,ConditionKey.気絶,ConditionKey.損壊)){
+				continue;
+			}
 			float add = a.getStatus().mulExp(expSum);
 			a.getStatus().getBaseStatus().get(StatusKey.保有経験値).add(add);
 			float 現在経験値 = a.getStatus().getEffectedStatus().get(StatusKey.保有経験値).getValue();

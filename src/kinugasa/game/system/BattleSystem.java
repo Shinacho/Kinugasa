@@ -334,6 +334,18 @@ public class BattleSystem implements Drawable {
 		animation.clear();
 		targetSystem.unset();
 		afterMove = false;
+		this.battleResultValue = null;
+		this.castingSprites.clear();
+		this.animation.clear();
+		this.eventQueue.clear();
+		this.actionResult = null;
+		this.end = false;
+		this.effect = null;
+		this.eventIsUserEvent.clear();
+		this.magics.clear();
+		this.前エフェクト生存者リスト.clear();
+		this.prevEventResult = null;
+		
 
 		//敵の配置
 		putEnemy();
@@ -453,11 +465,7 @@ public class BattleSystem implements Drawable {
 				break;
 			}
 			case 敗北_味方全滅: {
-				for (Enemy e : enemies) {
-					if (e.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊)) {
-						exp += (int) e.getStatus().getEffectedStatus().get(StatusKey.保有経験値).getValue();
-					}
-				}
+				exp = 0;
 				nextLogicName = loseLogicName;
 				break;
 			}
@@ -496,6 +504,7 @@ public class BattleSystem implements Drawable {
 		text += I18N.get(GameSystemI18NKeys.獲得アイテム) + ":" + Text.getLineSep();
 		if (dropItems.isEmpty()) {
 			text += " " + I18N.get(GameSystemI18NKeys.なし);
+			text += Text.getLineSep();
 		} else {
 			for (Item ii : dropItems) {
 				text += " " + ii.getVisibleName() + Text.getLineSep();
@@ -504,17 +513,19 @@ public class BattleSystem implements Drawable {
 		text += I18N.get(GameSystemI18NKeys.獲得物資) + ":" + Text.getLineSep();;
 		if (dropMaterials.isEmpty()) {
 			text += " " + I18N.get(GameSystemI18NKeys.なし);
+			text += Text.getLineSep();
 		} else {
 			Map<String, Long> map = dropMaterials.stream().collect(Collectors.groupingBy(Material::getVisibleName, Collectors.counting()));
 			for (String m : map.keySet()) {
 				text += " " + m + "×" + map.get(m) + Text.getLineSep();
 			}
 		}
-		text += Text.getLineSep();
 		//レベルアップシステムの起動
 		//レベルアップ結果がある場合はメッセージに追加
-		for (Actor a : LevelSystem.addExp(exp)) {
-			text += I18N.get(GameSystemI18NKeys.Xはレベルアップできる, a.getVisibleName()) + Text.getLineSep();
+		if (v != BattleResult.敗北_味方全滅) {
+			for (Actor a : LevelSystem.addExp(exp)) {
+				text += I18N.get(GameSystemI18NKeys.Xはレベルアップできる, a.getVisibleName()) + Text.getLineSep();
+			}
 		}
 		messageWindowSystem.getBattleResultW().setText(text);
 		messageWindowSystem.getBattleResultW().allText();
@@ -668,7 +679,7 @@ public class BattleSystem implements Drawable {
 
 		//状態異常追加MSGがある場合、アクションで待つ。
 		if (!text.isEmpty()) {
-			currentBAWaitTime = new FrameTimeCounter(80);
+			currentBAWaitTime = new FrameTimeCounter(50);
 			setMsg(text);
 			setStage(Stage.待機中＿時間あり＿手番戻り);
 			return;
@@ -698,6 +709,9 @@ public class BattleSystem implements Drawable {
 		String s = String.join("->", order);
 		if (!order.isEmpty()) {
 			s = "->" + s;
+		}
+		if (currentCmd != null) {
+			s = currentCmd.getUser().getVisibleName() + s;
 		}
 		messageWindowSystem.getTurnOrder().setText(s);
 	}
@@ -747,7 +761,7 @@ public class BattleSystem implements Drawable {
 				assert user.getStatus().getConditionFlags().get停止理由() != null : "stop desc is null  : " + user + " / " + this;
 				setMsg(user.getVisibleName()
 						+ user.getStatus().getConditionFlags().get停止理由().getExecMsgI18Nd());
-				currentBAWaitTime = new FrameTimeCounter(80);
+				currentBAWaitTime = new FrameTimeCounter(50);
 				setStage(Stage.待機中＿時間あり＿手番送り);
 				return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 			}
@@ -763,7 +777,7 @@ public class BattleSystem implements Drawable {
 			}
 			assert 停止理由 != null : "unknown stop desc : " + user + "/ " + this;
 			setMsg(user.getVisibleName() + 停止理由.getExecMsgI18Nd());
-			currentBAWaitTime = new FrameTimeCounter(80);
+			currentBAWaitTime = new FrameTimeCounter(50);
 			setStage(Stage.待機中＿時間あり＿手番送り);
 			return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 
@@ -777,7 +791,7 @@ public class BattleSystem implements Drawable {
 			if (tgt == null) {
 				//ターゲット不在なので何もできなかった
 				setMsg(Xは混乱していてXを実行したが何も起こらなかったのMSG(user, a));
-				currentBAWaitTime = new FrameTimeCounter(80);
+				currentBAWaitTime = new FrameTimeCounter(50);
 				setStage(Stage.待機中＿時間あり＿手番送り);
 				return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 			} else {
@@ -854,7 +868,7 @@ public class BattleSystem implements Drawable {
 			//ターゲットがいない場合失敗
 			if (tgtList.isEmpty()) {
 				setMsg(ターゲットがいないのMSG(NoTgtDesc.しかし効果範囲内に対象者はいなかった));
-				currentBAWaitTime = new FrameTimeCounter(80);
+				currentBAWaitTime = new FrameTimeCounter(50);
 				setStage(Stage.待機中＿時間あり＿手番送り);
 				return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 			}
@@ -865,7 +879,7 @@ public class BattleSystem implements Drawable {
 			if (rs.is足りないステータスあり()) {
 				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 				setMsg(詠唱したがリソースが足りないのMSG(user, a, rs.keys));
-				currentBAWaitTime = new FrameTimeCounter(80);
+				currentBAWaitTime = new FrameTimeCounter(50);
 				setStage(Stage.待機中＿時間あり＿手番送り);
 				return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 			}
@@ -919,7 +933,7 @@ public class BattleSystem implements Drawable {
 						//逃げられない（基本入らない）
 						setMsg(Xは逃げ出したが逃げられなかったのMSG(user));
 						setStage(Stage.待機中＿時間あり＿手番送り);
-						currentBAWaitTime = new FrameTimeCounter(80);
+						currentBAWaitTime = new FrameTimeCounter(50);
 						return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 					}
 					case BattleConfig.ActionID.防御: {
@@ -927,7 +941,7 @@ public class BattleSystem implements Drawable {
 						user.getStatus().addCondition(ConditionKey.防御中, 1);
 						setMsg(Xは防御に専念したのMSG(user));
 						setStage(Stage.待機中＿時間あり＿手番送り);
-						currentBAWaitTime = new FrameTimeCounter(80);
+						currentBAWaitTime = new FrameTimeCounter(50);
 						return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 					}
 					case BattleConfig.ActionID.回避: {
@@ -935,14 +949,14 @@ public class BattleSystem implements Drawable {
 						user.getStatus().addCondition(ConditionKey.回避中, 1);
 						setMsg(Xは回避に専念したのMSG(user));
 						setStage(Stage.待機中＿時間あり＿手番送り);
-						currentBAWaitTime = new FrameTimeCounter(80);
+						currentBAWaitTime = new FrameTimeCounter(50);
 						return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 					}
 					case BattleConfig.ActionID.確定: {
 						//確定（動かない）・・・特に処理なし
 						setMsg(Xは様子をうかがっているのMSG(user));
 						setStage(Stage.待機中＿時間あり＿手番送り);
-						currentBAWaitTime = new FrameTimeCounter(80);
+						currentBAWaitTime = new FrameTimeCounter(50);
 						return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 					}
 					case BattleConfig.ActionID.移動: {
@@ -975,7 +989,7 @@ public class BattleSystem implements Drawable {
 				if (res.is足りないステータスあり()) {
 					setMsg(詠唱したがリソースが足りないのMSG(user, a.getAction(), res.keys));
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-					currentBAWaitTime = new FrameTimeCounter(80);
+					currentBAWaitTime = new FrameTimeCounter(50);
 					setStage(Stage.待機中＿時間あり＿手番送り);
 					return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 				}
@@ -992,7 +1006,7 @@ public class BattleSystem implements Drawable {
 					}
 				}
 				commandsOfThisTurn.removeAll(remove);
-				currentBAWaitTime = new FrameTimeCounter(80);
+				currentBAWaitTime = new FrameTimeCounter(50);
 				setStage(Stage.待機中＿時間あり＿手番送り);
 				return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 			}
@@ -1139,7 +1153,7 @@ public class BattleSystem implements Drawable {
 					//逃げられない（基本入らない）
 					setMsg(Xは逃げ出したが逃げられなかったのMSG(user));
 					setStage(Stage.待機中＿時間あり＿手番戻り);
-					currentBAWaitTime = new FrameTimeCounter(80);
+					currentBAWaitTime = new FrameTimeCounter(50);
 					return BSCommitCmdResult.STAGEが待機中の間待機しその後次のEXECをコールせよ;
 				}
 				case BattleConfig.ActionID.防御: {
@@ -1147,7 +1161,7 @@ public class BattleSystem implements Drawable {
 					user.getStatus().addCondition(ConditionKey.防御中, 1);
 					setMsg(Xは防御に専念したのMSG(user));
 					setStage(Stage.待機中＿時間あり＿手番送り);
-					currentBAWaitTime = new FrameTimeCounter(80);
+					currentBAWaitTime = new FrameTimeCounter(50);
 					return BSCommitCmdResult.STAGEが待機中の間待機しその後次のEXECをコールせよ;
 				}
 				case BattleConfig.ActionID.回避: {
@@ -1155,7 +1169,7 @@ public class BattleSystem implements Drawable {
 					user.getStatus().addCondition(ConditionKey.回避中, 1);
 					setMsg(Xは回避に専念したのMSG(user));
 					setStage(Stage.待機中＿時間あり＿手番送り);
-					currentBAWaitTime = new FrameTimeCounter(80);
+					currentBAWaitTime = new FrameTimeCounter(50);
 					return BSCommitCmdResult.STAGEが待機中の間待機しその後次のEXECをコールせよ;
 				}
 				case BattleConfig.ActionID.確定: {
@@ -1178,7 +1192,7 @@ public class BattleSystem implements Drawable {
 				case BattleConfig.ActionID.移動: {
 					if (user.getStatus().getEffectedStatus().get(StatusKey.行動力).isZero()) {
 						setMsg(Xは移動できないのMSG(user));
-						currentBAWaitTime = new FrameTimeCounter(80);
+						currentBAWaitTime = new FrameTimeCounter(50);
 						setStage(Stage.待機中＿時間あり＿手番送り);
 						return BSCommitCmdResult.STAGEが待機中の間待機しその後再度コマンド選択してCOMMIT_CMDをコールせよ;
 					}
@@ -1236,7 +1250,7 @@ public class BattleSystem implements Drawable {
 				//不発、次へ送る
 				setMsg(詠唱したがリソースが足りないのMSG(user, a, rs.keys));
 				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-				currentBAWaitTime = new FrameTimeCounter(80);
+				currentBAWaitTime = new FrameTimeCounter(50);
 				setStage(Stage.待機中＿時間あり＿手番送り);
 				return BSCommitCmdResult.STAGEが待機中の間待機しその後次のEXECをコールせよ;
 			}
@@ -1332,7 +1346,7 @@ public class BattleSystem implements Drawable {
 							//外せない
 							setMsg(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 							messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-							currentBAWaitTime = new FrameTimeCounter(80);
+							currentBAWaitTime = new FrameTimeCounter(50);
 							setStage(Stage.待機中＿時間あり＿手番戻り);
 							return ItemUseSelectResult.装備に失敗したので待機中の間待ってから再度コマンド選択せよ;
 						}
@@ -1347,7 +1361,7 @@ public class BattleSystem implements Drawable {
 							//外せない
 							setMsg(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 							messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-							currentBAWaitTime = new FrameTimeCounter(80);
+							currentBAWaitTime = new FrameTimeCounter(50);
 							setStage(Stage.待機中＿時間あり＿手番戻り);
 							return ItemUseSelectResult.装備に失敗したので待機中の間待ってから再度コマンド選択せよ;
 						}
@@ -1382,7 +1396,7 @@ public class BattleSystem implements Drawable {
 								+ Text.getLineSep() + cnd);
 					}
 					//外した
-					currentBAWaitTime = new FrameTimeCounter(80);
+					currentBAWaitTime = new FrameTimeCounter(50);
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 					setStage(Stage.待機中＿時間あり＿手番送り);
 					return ItemUseSelectResult.装備に成功したので待機中の間待ってから次のEXECをコールせよ;
@@ -1421,14 +1435,14 @@ public class BattleSystem implements Drawable {
 					}
 					//装備した
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-					currentBAWaitTime = new FrameTimeCounter(80);
+					currentBAWaitTime = new FrameTimeCounter(50);
 					setStage(Stage.待機中＿時間あり＿手番送り);
 					return ItemUseSelectResult.装備に成功したので待機中の間待ってから次のEXECをコールせよ;
 				} else {
 					//装備できない
 					setMsg(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-					currentBAWaitTime = new FrameTimeCounter(80);
+					currentBAWaitTime = new FrameTimeCounter(50);
 					setStage(Stage.待機中＿時間あり＿手番戻り);
 					return ItemUseSelectResult.装備に失敗したので待機中の間待ってから再度コマンド選択せよ;
 				}
@@ -1444,7 +1458,7 @@ public class BattleSystem implements Drawable {
 							+ Text.getLineSep()
 							+ I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-					currentBAWaitTime = new FrameTimeCounter(80);
+					currentBAWaitTime = new FrameTimeCounter(50);
 					setStage(Stage.待機中＿時間あり＿手番送り);
 					return ItemUseSelectResult.アイテムの使用に失敗したので待機中の間待ってから次のEXECをコールせよ;
 				}
@@ -1480,7 +1494,7 @@ public class BattleSystem implements Drawable {
 				tgt.getVisibleName(),
 				i.getVisibleName()));
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-		currentBAWaitTime = new FrameTimeCounter(80);
+		currentBAWaitTime = new FrameTimeCounter(50);
 		setStage(Stage.待機中＿時間あり＿手番送り);
 		return ItemUseSelectResult.アイテムを渡したので待機中の間待ってから次のEXECをコールせよ;
 	}
@@ -1563,6 +1577,7 @@ public class BattleSystem implements Drawable {
 	public enum AfterMoveCmdResult {
 		移動を確定したので次のEXECをコールせよ,
 		ターゲット選択に入った,
+		ターゲットがいない,
 	}
 
 	public AfterMoveCmdResult commitAfterMoveCmd() {
@@ -1576,9 +1591,21 @@ public class BattleSystem implements Drawable {
 		}
 		targetSystem.setCurrent(currentCmd.getUser());
 		targetSystem.setCurrent(a);
+		targetSystem.updateInArea();
 		targetSystem.setIconVisible(true);
 		targetSystem.setAreaVisible(false, true);
 		afterMove = true;
+		if (targetSystem.getSelected().isEmpty()) {
+			if (GameSystem.isDebugMode()) {
+				GameLog.print(" targetSystem is empty");
+			}
+			messageWindowSystem.getActionResultW().setText(I18N.get(GameSystemI18NKeys.効果範囲内にターゲットがいない));
+			messageWindowSystem.getActionResultW().allText();
+			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
+			currentBAWaitTime = new FrameTimeCounter(60);
+			setStage(Stage.待機中＿時間あり＿手番戻り);
+			return AfterMoveCmdResult.ターゲットがいない;
+		}
 		setStage(Stage.プレイヤキャラターゲット選択中_コミット待ち);
 		return AfterMoveCmdResult.ターゲット選択に入った;
 	}
@@ -1744,7 +1771,7 @@ public class BattleSystem implements Drawable {
 			if (rs.is足りないステータスあり()) {
 				setMsg(詠唱したがリソースが足りないのMSG(user, a, rs.keys));
 				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
-				currentBAWaitTime = new FrameTimeCounter(80);
+				currentBAWaitTime = new FrameTimeCounter(50);
 				setStage(Stage.待機中＿時間あり＿手番送り);
 			}
 			//キャスト予約
@@ -1759,7 +1786,7 @@ public class BattleSystem implements Drawable {
 				}
 			}
 			commandsOfThisTurn.removeAll(remove);
-			currentBAWaitTime = new FrameTimeCounter(80);
+			currentBAWaitTime = new FrameTimeCounter(50);
 			setStage(Stage.待機中＿時間あり＿手番送り);
 			return;
 		}
@@ -1795,6 +1822,8 @@ public class BattleSystem implements Drawable {
 	private void イベントキュー消化() {
 		if (GameSystem.isDebugMode()) {
 			GameLog.print("BS currentQ : " + eventQueue);
+			GameLog.print("BS effect : " + effect);
+			GameLog.print("BS 前エフェクト生存者リスト : " + 前エフェクト生存者リスト);
 		}
 		if (effect != null && effect.isEnded()) {
 			//エフェクトが終了している場合、その効果で死亡者がいるか再チェックする
@@ -1830,7 +1859,8 @@ public class BattleSystem implements Drawable {
 				for (Actor a : allActors()) {
 					if (!a.getStatus().hasCondition(ConditionKey.解脱)
 							&& !a.getStatus().hasCondition(ConditionKey.気絶)
-							&& !a.getStatus().hasCondition(ConditionKey.損壊)) {
+							&& !a.getStatus().hasCondition(ConditionKey.損壊)
+							&& !a.getStatus().hasCondition(ConditionKey.逃走した)) {
 						前エフェクト生存者リスト.add(a);
 					}
 				}
@@ -1910,7 +1940,11 @@ public class BattleSystem implements Drawable {
 				}
 				if (r.is損壊) {
 					msg.add(r.tgt.getVisibleName() + ConditionKey.損壊.getStartMsgI18Nd());
-					r.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
+					if (r.tgt.isPlayer()) {
+						r.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+					} else {
+						r.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
+					}
 					r.tgt.getSprite().setAnimationUpdate(false);
 				}
 				if (r.is気絶) {
@@ -1920,7 +1954,11 @@ public class BattleSystem implements Drawable {
 				}
 				if (r.is解脱) {
 					msg.add(r.tgt.getVisibleName() + ConditionKey.解脱.getStartMsgI18Nd());
-					r.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
+					if (r.tgt.isPlayer()) {
+						r.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+					} else {
+						r.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
+					}
 					r.tgt.getSprite().setAnimationUpdate(false);
 				}
 			}
@@ -1952,18 +1990,29 @@ public class BattleSystem implements Drawable {
 					}
 					if (v.is損壊 || v.tgt.getStatus().hasCondition(ConditionKey.損壊)) {
 						msg.add(v.tgt.getVisibleName() + ConditionKey.損壊.getStartMsgI18Nd());
-						v.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
+						if (v.tgt.isPlayer()) {
+							v.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+						} else {
+							v.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
+						}
 						v.tgt.getSprite().setAnimationUpdate(false);
+						eventQueue.clear();
 					}
 					if (v.is気絶 || v.tgt.getStatus().hasCondition(ConditionKey.気絶)) {
 						msg.add(v.tgt.getVisibleName() + ConditionKey.気絶.getStartMsgI18Nd());
 						v.tgt.getSprite().setAnimationUpdate(false);
 						v.tgt.getSprite().setShadow(false);
+						eventQueue.clear();
 					}
 					if (v.is解脱 || v.tgt.getStatus().hasCondition(ConditionKey.解脱)) {
 						msg.add(v.tgt.getVisibleName() + ConditionKey.解脱.getStartMsgI18Nd());
-						v.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
+						if (v.tgt.isPlayer()) {
+							v.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+						} else {
+							v.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
+						}
 						v.tgt.getSprite().setAnimationUpdate(false);
+						eventQueue.clear();
 					}
 				}
 			}
@@ -2014,7 +2063,7 @@ public class BattleSystem implements Drawable {
 		this.effect = new FlashEffect(
 				GraphicsUtil.transparent(Color.RED, 128),
 				new FrameTimeCounter(4),
-				new FrameTimeCounter(40),
+				new FrameTimeCounter(30),
 				0, 0,
 				(int) GameOption.getInstance().getWindowSize().getWidth(),
 				(int) GameOption.getInstance().getWindowSize().getHeight());
@@ -2025,12 +2074,23 @@ public class BattleSystem implements Drawable {
 		}
 		//スプライト変更
 		for (Actor a : 死亡者リスト) {
-			a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
+			if (a.isPlayer()) {
+				a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+			} else {
+				a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
+			}
 			a.getSprite().setAnimationUpdate(false);
+			List<BattleCommand> removeCmd = new ArrayList<>();
+			for (var c : commandsOfThisTurn) {
+				if (a.equals(c.getUser())) {
+					removeCmd.add(c);
+				}
+			}
+			commandsOfThisTurn.removeAll(removeCmd);
 		}
 		//正気度減少イベントの計算
-		int 死亡者PCの数 = (int) 死亡者リスト.stream().filter(p -> p.isPlayer()).count();
-		int 死亡者敵の数 = (int) 死亡者リスト.stream().filter(p -> !p.isPlayer()).count();
+		int 死亡者PCの数 = (int) 死亡者リスト.stream().filter(p -> p.isPlayer()).filter(p -> !p.isSummoned()).count();
+		int 死亡者敵の数 = (int) 死亡者リスト.stream().filter(p -> !p.isPlayer()).filter(p -> !p.isSummoned()).count();
 
 		List<String> msg = new ArrayList<>();
 
@@ -2049,7 +2109,6 @@ public class BattleSystem implements Drawable {
 				msg.add(m);
 			}
 		}
-		List<Actor> remove = new ArrayList<>();
 		if (死亡者PCの数 != 0) {
 			//死んだのはPC
 			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
@@ -2068,9 +2127,15 @@ public class BattleSystem implements Drawable {
 				String m = a.getStatus().addWhen0Condition();
 				if (m != null && !m.isEmpty()) {
 					msg.add(m);
-					remove.add(a);
-					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
+					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
 					a.getSprite().setAnimationUpdate(false);
+					List<BattleCommand> removeCmd = new ArrayList<>();
+					for (var c : commandsOfThisTurn) {
+						if (a.equals(c.getUser())) {
+							removeCmd.add(c);
+						}
+					}
+					commandsOfThisTurn.removeAll(removeCmd);
 				} else {
 					msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 				}
@@ -2097,9 +2162,15 @@ public class BattleSystem implements Drawable {
 				String m = e.getStatus().addWhen0Condition();
 				if (m != null && !m.isEmpty()) {
 					msg.add(m);
-					remove.add(e);
-					e.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
+					e.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
 					e.getSprite().setAnimationUpdate(false);
+					List<BattleCommand> removeCmd = new ArrayList<>();
+					for (var c : commandsOfThisTurn) {
+						if (e.equals(c.getUser())) {
+							removeCmd.add(c);
+						}
+					}
+					commandsOfThisTurn.removeAll(removeCmd);
 				} else {
 					msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 				}
@@ -2129,9 +2200,15 @@ public class BattleSystem implements Drawable {
 				String m = a.getStatus().addWhen0Condition();
 				if (m != null && !m.isEmpty()) {
 					msg.add(m);
-					remove.add(a);
-					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
+					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
 					a.getSprite().setAnimationUpdate(false);
+					List<BattleCommand> removeCmd = new ArrayList<>();
+					for (var c : commandsOfThisTurn) {
+						if (a.equals(c.getUser())) {
+							removeCmd.add(c);
+						}
+					}
+					commandsOfThisTurn.removeAll(removeCmd);
 				} else {
 					msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 				}
@@ -2158,9 +2235,15 @@ public class BattleSystem implements Drawable {
 				String m = e.getStatus().addWhen0Condition();
 				if (m != null && !m.isEmpty()) {
 					msg.add(m);
-					remove.add(e);
-					e.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
+					e.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
 					e.getSprite().setAnimationUpdate(false);
+					List<BattleCommand> removeCmd = new ArrayList<>();
+					for (var c : commandsOfThisTurn) {
+						if (e.equals(c.getUser())) {
+							removeCmd.add(c);
+						}
+					}
+					commandsOfThisTurn.removeAll(removeCmd);
 				} else {
 					msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 				}
@@ -2176,7 +2259,6 @@ public class BattleSystem implements Drawable {
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 		前エフェクト生存者リスト = new ArrayList<>(前エフェクト生存者リスト);
 		前エフェクト生存者リスト.removeAll(死亡者リスト);
-		前エフェクト生存者リスト.removeAll(remove);
 	}
 
 	private void エフェクト起動(List<ActionResult.EventActorResult> 死亡者リスト) {
@@ -2203,11 +2285,27 @@ public class BattleSystem implements Drawable {
 				BattleConfig.Sounds.気絶.load().stopAndPlay();
 			}
 		}
+		//スプライト変更
+		for (var v : 死亡者リスト) {
+			if (v.tgt.isPlayer()) {
+				v.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+			} else {
+				v.tgt.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
+			}
+			v.tgt.getSprite().setAnimationUpdate(false);
+			List<BattleCommand> remove = new ArrayList<>();
+			for (var c : commandsOfThisTurn) {
+				if (v.tgt.equals(c.getUser())) {
+					remove.add(c);
+				}
+			}
+			commandsOfThisTurn.removeAll(remove);
+		}
 		//エフェクトの実体化
 		this.effect = new FlashEffect(
 				GraphicsUtil.transparent(Color.RED, 128),
 				new FrameTimeCounter(4),
-				new FrameTimeCounter(40),
+				new FrameTimeCounter(30),
 				0, 0,
 				(int) GameOption.getInstance().getWindowSize().getWidth(),
 				(int) GameOption.getInstance().getWindowSize().getHeight());
@@ -2217,8 +2315,8 @@ public class BattleSystem implements Drawable {
 			BattleConfig.Sounds.正気度減少演出.load().stopAndPlay();
 		}
 		//正気度減少イベントの計算
-		int 死亡者PCの数 = (int) 死亡者リスト.stream().filter(p -> p.tgt.isPlayer()).count();
-		int 死亡者敵の数 = (int) 死亡者リスト.stream().filter(p -> !p.tgt.isPlayer()).count();
+		int 死亡者PCの数 = (int) 死亡者リスト.stream().filter(p -> p.tgt.isPlayer()).filter(p -> !p.tgt.isSummoned()).count();
+		int 死亡者敵の数 = (int) 死亡者リスト.stream().filter(p -> !p.tgt.isPlayer()).filter(p -> !p.tgt.isSummoned()).count();
 
 		List<String> msg = new ArrayList<>();
 
@@ -2237,14 +2335,8 @@ public class BattleSystem implements Drawable {
 					continue;
 				}
 				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				String m = a.getStatus().addWhen0Condition();
-				if (m != null && !m.isEmpty()) {
-					msg.add(m);
-//					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
-//					a.getSprite().setAnimationUpdate(false);
-				} else {
-					msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				}
+				a.getStatus().addWhen0Condition();
+				msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 				DamageAnimationSprite ds = new DamageAnimationSprite(
 						a.getSprite().getX() + 12,
 						a.getSprite().getY() + 12,
@@ -2265,14 +2357,8 @@ public class BattleSystem implements Drawable {
 					continue;
 				}
 				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				String m = e.getStatus().addWhen0Condition();
-				if (m != null && !m.isEmpty()) {
-					msg.add(m);
-//					e.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
-//					e.getSprite().setAnimationUpdate(false);
-				} else {
-					msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				}
+				e.getStatus().addWhen0Condition();
+				msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 				DamageAnimationSprite ds = new DamageAnimationSprite(
 						e.getSprite().getX() + 12,
 						e.getSprite().getY() + 12,
@@ -2296,14 +2382,8 @@ public class BattleSystem implements Drawable {
 					continue;
 				}
 				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				String m = a.getStatus().addWhen0Condition();
-				if (m != null && !m.isEmpty()) {
-					msg.add(m);
-//					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
-//					a.getSprite().setAnimationUpdate(false);
-				} else {
-					msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				}
+				a.getStatus().addWhen0Condition();
+				msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 				DamageAnimationSprite ds = new DamageAnimationSprite(
 						a.getSprite().getX() + 12,
 						a.getSprite().getY() + 12,
@@ -2324,14 +2404,8 @@ public class BattleSystem implements Drawable {
 					continue;
 				}
 				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				String m = e.getStatus().addWhen0Condition();
-				if (m != null && !m.isEmpty()) {
-					msg.add(m);
-//					e.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, List.of(ImageUtil.load("resource/image/haka.png"))));
-//					e.getSprite().setAnimationUpdate(false);
-				} else {
-					msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				}
+				e.getStatus().addWhen0Condition();
+				msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 				DamageAnimationSprite ds = new DamageAnimationSprite(
 						e.getSprite().getX() + 12,
 						e.getSprite().getY() + 12,
@@ -2339,6 +2413,9 @@ public class BattleSystem implements Drawable {
 						Color.RED);
 				animation.add(ds);
 			}
+		}
+		if (msg.isEmpty()) {
+			msg.add(I18N.get(GameSystemI18NKeys.しかし誰も正気度ダメージを受けなかった));
 		}
 		setMsg(msg);
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
@@ -2408,20 +2485,41 @@ public class BattleSystem implements Drawable {
 				.filter(p -> !p.getStatus().hasCondition(ConditionKey.詠唱中))
 				.collect(Collectors.toSet());
 		removeCastAnimation.forEach(p -> castingSprites.remove(p));
-
-		boolean 全滅 = true;
-		boolean 逃げた人がいる = false;
-		for (Actor a : GameSystem.getInstance().getParty()) {
-			全滅 &= (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶));
-			逃げた人がいる |= a.getStatus().hasCondition(ConditionKey.逃走した);
-		}
-		if (全滅) {
-			if (逃げた人がいる) {
-				setEndStatus(BattleResult.勝利_こちらが全員逃げた);
-			} else {
-				setEndStatus(BattleResult.敗北_味方全滅);
+		if (stage != Stage.バトル終了済み) {//お味方全滅判定
+			boolean 全滅 = true;
+			boolean 逃げた人がいる = false;
+			for (Actor a : GameSystem.getInstance().getParty()) {
+				全滅 &= (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶));
+				逃げた人がいる |= a.getStatus().hasCondition(ConditionKey.逃走した);
 			}
-			return;
+			if (全滅) {
+				if (stage == Stage.エフェクト再生中_終了待ち) {
+					if (!effectTime.isReaching()) {
+						return;
+					}
+				}
+				if (逃げた人がいる) {
+					setEndStatus(BattleResult.勝利_こちらが全員逃げた);
+				} else {
+					setEndStatus(BattleResult.敗北_味方全滅);
+				}
+				return;
+			}
+		}
+		if (stage != Stage.バトル終了済み) {//敵全滅判定
+			boolean 全滅 = true;
+			for (Actor a : this.enemies) {
+				全滅 &= (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した));
+			}
+			if (全滅) {
+				if (stage == Stage.エフェクト再生中_終了待ち) {
+					if (!effectTime.isReaching()) {
+						return;
+					}
+				}
+				setEndStatus(BattleResult.勝利_敵全滅);
+				return;
+			}
 		}
 		//ステージ別処理
 		switch (stage) {
