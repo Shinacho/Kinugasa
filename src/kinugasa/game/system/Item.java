@@ -34,7 +34,8 @@ import kinugasa.util.Random;
  */
 public class Item extends Action implements Cloneable {
 
-	private boolean canSale;
+	private boolean canSale = true;
+	private boolean canUnEqip = true;
 	private int price;
 	private EqipSlot slot;
 	private StatusValueSet status;
@@ -179,6 +180,11 @@ public class Item extends Action implements Cloneable {
 		return this;
 	}
 
+	Item setCanUnEqip(boolean canUnEqip) {
+		this.canUnEqip = canUnEqip;
+		return this;
+	}
+
 	Item setAttrIn(AttributeValueSet attr) {
 		this.attrIn = attr;
 		return this;
@@ -210,7 +216,8 @@ public class Item extends Action implements Cloneable {
 		return this;
 	}
 
-	Item setStyle(ItemStyle style) {
+	@Deprecated
+	public Item setStyle(ItemStyle style) {
 		this.style = style;
 		return this;
 	}
@@ -251,6 +258,10 @@ public class Item extends Action implements Cloneable {
 
 	public boolean canSale() {
 		return canSale;
+	}
+
+	public boolean canUnEqip() {
+		return canUnEqip;
 	}
 
 	public int getEffectedValue() {

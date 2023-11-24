@@ -37,7 +37,6 @@ import static kinugasa.game.system.Action.ターゲットモード.グループ_
 import static kinugasa.game.system.Action.ターゲットモード.グループ_味方全員;
 import static kinugasa.game.system.Action.ターゲットモード.グループ_味方全員_自身除く;
 import static kinugasa.game.system.Action.ターゲットモード.グループ_敵全員;
-import static kinugasa.game.system.Action.ターゲットモード.グループ_敵全員_自身除く;
 import static kinugasa.game.system.Action.ターゲットモード.全員;
 import static kinugasa.game.system.Action.ターゲットモード.全員_自身除く;
 import static kinugasa.game.system.Action.ターゲットモード.単体_切替可能_自身含まない_初期選択味方;
@@ -374,8 +373,6 @@ public class BattleTargetSystem implements Drawable {
 				TeamSelect.敵選択中;
 			case グループ_味方全員_自身除く ->
 				TeamSelect.味方選択中;
-			case グループ_敵全員_自身除く ->
-				TeamSelect.敵選択中;
 			case 全員_自身除く ->
 				TeamSelect.未使用;
 		};
@@ -433,7 +430,6 @@ public class BattleTargetSystem implements Drawable {
 			case グループ_切替可能_初期選択味方:
 			case グループ_切替可能_初期選択敵:
 			case グループ_味方全員_自身除く:
-			case グループ_敵全員_自身除く:
 			case 全員_自身除く:
 			case グループ_切替可能_初期選択味方_自身除く:
 			case グループ_切替可能_初期選択敵_自身除く:
@@ -564,16 +560,6 @@ public class BattleTargetSystem implements Drawable {
 					inArea候補者.remove(currentUser);
 				} else {
 					inArea候補者.addAll(allEnemyOf(center, area));
-					inArea候補者.remove(currentUser);
-				}
-				break;
-			}
-			case グループ_敵全員_自身除く: {
-				if (isPC) {
-					inArea候補者.addAll(allEnemyOf(center, area));
-					inArea候補者.remove(currentUser);
-				} else {
-					inArea候補者.addAll(allPartyOf(center, area));
 					inArea候補者.remove(currentUser);
 				}
 				break;

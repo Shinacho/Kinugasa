@@ -834,7 +834,7 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Item i = ActionStorage.getInstance().itemOf(e.getTgtID());
 			int prevSIze = tgt.getStatus().getItemBag().size();
-			tgt.getStatus().getItemBag().add(i);
+			tgt.getStatus().getItemBag().drop(i);
 			String msg = I18N.get(GameSystemI18NKeys.XはXを失った, tgt.getVisibleName(), i.getVisibleName());
 			addResult(res, prevSIze != tgt.getStatus().getItemBag().size()
 					? ActionResultSummary.成功

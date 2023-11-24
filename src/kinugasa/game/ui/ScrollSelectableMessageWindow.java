@@ -85,12 +85,24 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 		this.text.addAll(text.stream().map(p -> new Text(p)).collect(Collectors.toList()));
 	}
 
+	public void setText(Text t) {
+		setText(Text.split(t));
+	}
+
+	public void setText(String s) {
+		setText(Text.split(new Text(s)));
+	}
+
 	public void setText(List<? extends Text> text) {
 		this.text.clear();
 		this.text.addAll(text);
 		select = line1select ? 0 : 1;
 		pos = line1select ? 0 : 1;
 		visibleIdx = 0;
+	}
+
+	public void allText() {
+		window.allText();
 	}
 
 	private void updateText() {

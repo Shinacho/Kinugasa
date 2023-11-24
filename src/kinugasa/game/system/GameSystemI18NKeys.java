@@ -485,6 +485,8 @@ public class GameSystemI18NKeys {
 	public static final String 脚本が実行された = "脚本が実行された";
 	public static final String Xの正気度ダメージを受けた = "Xの正気度ダメージを受けた";
 	public static final String しかし誰も正気度ダメージを受けなかった = "しかし誰も正気度ダメージを受けなかった";
+	public static final String XはXを誰かに渡す気はないようだ = "XはXを誰かに渡す気はないようだ";
+	public static final String このアイテムは誰かに渡したり装備解除したりできない = "このアイテムは誰かに渡したり装備解除したりできない";
 	
 	
 	public static class CountKey {

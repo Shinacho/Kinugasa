@@ -58,7 +58,6 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		グループ_切替可能_初期選択味方,
 		全員,
 		グループ_味方全員_自身除く,
-		グループ_敵全員_自身除く,
 		グループ_切替可能_初期選択敵_自身除く,
 		グループ_切替可能_初期選択味方_自身除く,
 		全員_自身除く,;

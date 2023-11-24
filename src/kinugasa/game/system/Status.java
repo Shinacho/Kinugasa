@@ -210,7 +210,11 @@ public final class Status extends Model implements Nameable {
 		if (currentCondition.containsKey(key)) {
 			key.endEffect(conditionFlags);
 			currentCondition.remove(key);
-			return getVisibleName() + key.getEndMsgI18Nd();
+			if (key.getEndMsgI18Nd().isEmpty()) {
+				return null;
+			} else {
+				return getVisibleName() + key.getEndMsgI18Nd();
+			}
 		}
 		return null;
 	}
@@ -722,6 +726,14 @@ public final class Status extends Model implements Nameable {
 			}
 		}
 		return false;
+	}
+
+	public void setBookBag(PersonalBag<Book> bookBag) {
+		this.bookBag = bookBag;
+	}
+
+	public void setItemBag(PersonalBag<Item> itemBag) {
+		this.itemBag = itemBag;
 	}
 
 	@NotNewInstance

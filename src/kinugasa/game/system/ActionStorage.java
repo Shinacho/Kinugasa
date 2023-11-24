@@ -111,7 +111,8 @@ public class ActionStorage extends DBStorage<Action> {
 				sql = "select ID,VISIBLENAME,"
 						+ "DESCRIPTION,FIELD,BATTLE,AREA,"
 						+ "TGTTYPE,TGTDEAD,PRICE,EQIPSLOT,"
-						+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY,eqipTermCSV,cndRegistCSV,cndEffectCSV,attrInCSV,attrOutCSV,statusCSV,materialCSV,"
+						+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY,"
+						+ "eqipTermCSV,cndRegistCSV,cndEffectCSV,attrInCSV,attrOutCSV,statusCSV,materialCSV,"
 						+ " from item"
 						+ " where id = '" + id + "';";
 				r = DBConnection.getInstance().execDirect(sql);

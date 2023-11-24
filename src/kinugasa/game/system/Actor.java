@@ -145,6 +145,9 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 		readFromXML(iniStatusFile);
 	}
 
+	private PersonalBag<Book> bookBag;
+	private PersonalBag<Item> itemBag;
+
 	public void 退避＿ステータスの初期化されない項目() {
 		vs = this.status.getBaseStatus().clone();
 		List<StatusKey> list = new ArrayList<>();
@@ -161,6 +164,8 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			this.status.getBaseStatus().remove(k.getName());
 		}
 		visibleName退避 = visibleName;
+		bookBag = getStatus().getBookBag().clone();
+		itemBag = getStatus().getItemBag().clone();
 	}
 
 	public void 復元＿ステータスの初期化されない項目() {
@@ -180,6 +185,8 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			this.status.getBaseStatus().add(vs.get(k));
 		}
 		visibleName = visibleName退避;
+		getStatus().setItemBag(itemBag);
+		getStatus().setBookBag(bookBag);
 	}
 
 	public void setIniStatusFile(String iniStatusFile) {
@@ -264,7 +271,31 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			//EQIP
 			for (XMLElement e : root.getElement("eqip")) {
 				String itemID = e.getAttributes().get("id").getValue();
-				this.status.eqip(this.status.getItemBag().get(itemID));
+				if (e.hasAttribute("left")) {
+					Item i = this.status.getItemBag().get(itemID);
+					if (i.isWeapon()) {
+						if (i.getWeaponType() == WeaponType.弓) {
+							this.status.eqip(EqipSlot.左手, i);
+							this.status.eqipLeftHand(ActionStorage.getInstance().両手持ち_弓);
+						} else {
+							this.status.eqip(i);
+							this.status.eqipLeftHand(ActionStorage.getInstance().両手持ち);
+						}
+					} else {
+						this.status.eqip(this.status.getItemBag().get(itemID));
+					}
+				} else {
+					this.status.eqip(this.status.getItemBag().get(itemID));
+				}
+			}
+			//BOOK
+			for (XMLElement e : root.getElement("book")) {
+				String actionID = e.getAttributes().get("id").getValue();
+				Action a = ActionStorage.getInstance().actionOf(id);
+				if (a.getType() != ActionType.魔法) {
+					throw new GameSystemException("book id is not magic : " + this + " / " + e);
+				}
+				this.status.getBookBag().add(new Book(a));
 			}
 			f.dispose();
 

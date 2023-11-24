@@ -34,8 +34,11 @@ import kinugasa.game.system.FlagStorage;
 import kinugasa.game.system.GameSystem;
 import kinugasa.game.system.GameSystemException;
 import kinugasa.game.system.Item;
+import kinugasa.game.system.ItemEnchant;
+import kinugasa.game.system.ItemStyle;
 import kinugasa.game.system.Quest;
 import kinugasa.game.system.QuestSystem;
+import kinugasa.game.system.ScriptFormatException;
 import kinugasa.game.ui.Text;
 import kinugasa.game.ui.TextStorage;
 import kinugasa.game.ui.TextStorageStorage;
@@ -51,6 +54,7 @@ import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.sound.Sound;
 import kinugasa.resource.sound.SoundStorage;
 import kinugasa.util.FrameTimeCounter;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -92,8 +96,26 @@ public enum FieldEventType {
 	ADD_ITEM {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
-			Item item = ActionStorage.getInstance().itemOf(e.getValue());
-			GameSystem.getInstance().getPCbyID(e.getTargetName()).getStatus().getItemBag().add(item);
+			if (e.getValue().contains(",")) {
+				String[] val = StringUtil.safeSplit(e.getValue(), ",");
+				if (val.length != 3) {
+					throw new ScriptFormatException("item name is missmatch : " + e.toString());
+				}
+				String itemId = val[0];
+				String styleName = val[1];
+				String enchantName = val[2];
+				Item item = ActionStorage.getInstance().itemOf(itemId);
+				if (!styleName.isEmpty()) {
+					item.setStyle(ItemStyle.valueOf(styleName));
+				}
+				if (!enchantName.isEmpty()) {
+					item.setEnchant(ItemEnchant.valueOf(enchantName));
+				}
+				GameSystem.getInstance().getPCbyID(e.getTargetName()).getStatus().getItemBag().add(item);
+			} else {
+				Item item = ActionStorage.getInstance().itemOf(e.getValue());
+				GameSystem.getInstance().getPCbyID(e.getTargetName()).getStatus().getItemBag().add(item);
+			}
 			return UserOperationRequire.GET_ITEAM;
 		}
 	},
@@ -628,15 +650,14 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	SET_PC_SHADOW{
+	SET_PC_SHADOW {
 		@Override
 		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
 			boolean val = e.getValue().equals("true");
 			GameSystem.getInstance().getPCbyID(e.getTargetName()).getSprite().setShadow(val);
 			return UserOperationRequire.CONTINUE;
 		}
-	}
-	;
+	};
 
 	abstract UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException;
 

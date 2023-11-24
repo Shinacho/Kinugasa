@@ -27,6 +27,7 @@ import kinugasa.game.I18N;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.MessageWindowGroup;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
@@ -40,7 +41,8 @@ public class ItemWindow extends BasicSprite {
 
 	private List<Actor> list;
 	private MessageWindow main;
-	private MessageWindow choiceUse, dropConfirm, disasseConfirm, tgtSelect, msg;//msgはボタン操作で即閉じる
+	private MessageWindow choiceUse, dropConfirm, disasseConfirm, tgtSelect;
+	private ScrollSelectableMessageWindow msg;
 	private MessageWindowGroup group;
 
 	public ItemWindow(float x, float y, float w, float h) {
@@ -58,10 +60,10 @@ public class ItemWindow extends BasicSprite {
 		disasseConfirm.setVisible(false);
 		tgtSelect = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		tgtSelect.setVisible(false);
-		msg = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel());
+		msg = new ScrollSelectableMessageWindow((int) x, (int) y, (int) w, (int) h, 23);
 		msg.setVisible(false);
 
-		group = new MessageWindowGroup(choiceUse, dropConfirm, tgtSelect, msg, disasseConfirm);
+		group = new MessageWindowGroup(choiceUse, dropConfirm, tgtSelect, msg.getWindow(), disasseConfirm);
 		mainSelect = 0;
 		update();
 	}
@@ -117,7 +119,9 @@ public class ItemWindow extends BasicSprite {
 			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
-				//処理なし
+				if (msg.isVisible()) {
+					msg.nextSelect();
+				}
 				return;
 		}
 	}
@@ -142,7 +146,9 @@ public class ItemWindow extends BasicSprite {
 			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
-				//処理なし
+				if (msg.isVisible()) {
+					msg.prevSelect();
+				}
 				return;
 		}
 	}
@@ -249,7 +255,7 @@ public class ItemWindow extends BasicSprite {
 									+ Text.getLineSep()
 									+ I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
@@ -293,7 +299,7 @@ public class ItemWindow extends BasicSprite {
 								sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 							}
 							msg.setText(sb.toString());
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 							return;
 						}
@@ -343,7 +349,7 @@ public class ItemWindow extends BasicSprite {
 								}
 							}
 							msg.setText(sb.toString());
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 							return;
 						}
@@ -357,9 +363,18 @@ public class ItemWindow extends BasicSprite {
 						mode = Mode.TARGET_SELECT;
 						break;
 					case EQIP:
+						//装備解除不能属性がある場合は外せない
+						if (!i.canUnEqip()) {
+							//外せない
+							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.allText();
+							group.show(msg.getWindow());
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+							break;
+						}
 						//装備できるアイテムかどうかで分岐
 						if (getSelectedPC().getEqip().values().contains(i)) {
-							//すでに装備している時は外す
+							//すでに装備している時は外す]
 							//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
 							if (ActionStorage.isItemBagItem(i.getId())) {
 								//もともとのサイズ
@@ -371,7 +386,7 @@ public class ItemWindow extends BasicSprite {
 									//外せない
 									msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 									msg.allText();
-									group.show(msg);
+									group.show(msg.getWindow());
 									mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 									break;
 								}
@@ -386,7 +401,7 @@ public class ItemWindow extends BasicSprite {
 									//外せない
 									msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 									msg.allText();
-									group.show(msg);
+									group.show(msg.getWindow());
 									mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 									break;
 								}
@@ -421,7 +436,7 @@ public class ItemWindow extends BasicSprite {
 										+ Text.getLineSep() + cnd);
 							}
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else if (i.canEqip(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()))) {
 							//装備する
@@ -457,22 +472,31 @@ public class ItemWindow extends BasicSprite {
 								}
 							}
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							//装備できない
 							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						}
 						break;
 					case EQIP_LEFT: {
+						//装備解除不能属性がある場合は外せない
+						if (!i.canUnEqip()) {
+							//外せない
+							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.allText();
+							group.show(msg.getWindow());
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+							break;
+						}
 						//武器じゃなかったら装備できないを表示
 						if (!i.isWeapon()) {
 							msg.setText(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
@@ -481,7 +505,7 @@ public class ItemWindow extends BasicSprite {
 								.contains(i.getWeaponType())) {
 							msg.setText(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
@@ -503,23 +527,32 @@ public class ItemWindow extends BasicSprite {
 										+ Text.getLineSep() + cnd);
 							}
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							//装備できない
 							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						}
 						break;
 					}
 					case EQIP_TWO_HAND: {
+						//装備解除不能属性がある場合は外せない
+						if (!i.canUnEqip()) {
+							//外せない
+							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.allText();
+							group.show(msg.getWindow());
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+							break;
+						}
 						//武器じゃなかったら装備できないを表示
 						if (!i.isWeapon()) {
 							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
 						}
@@ -544,18 +577,27 @@ public class ItemWindow extends BasicSprite {
 										+ Text.getLineSep() + cnd);
 							}
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							//装備できない
 							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						}
 						break;
 					}
 					case PASS:
+						//装備解除不能属性がある場合は外せない
+						if (!i.canUnEqip()) {
+							//外せない
+							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.allText();
+							group.show(msg.getWindow());
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+							break;
+						}
 						//パスターゲットに移動
 						List<Text> options2 = new ArrayList<>();
 						options2.addAll(list.stream().map(p -> new Text(p.getVisibleName())).collect(Collectors.toList()));
@@ -607,7 +649,7 @@ public class ItemWindow extends BasicSprite {
 							}
 						}
 						//価値
-						if (i.canSale()) {
+						if (i.canSale() && i.canUnEqip()) {
 							sb.append(" ").append(I18N.get(GameSystemI18NKeys.価値))
 									.append(":").append(i.getPrice());
 							sb.append(Text.getLineSep());
@@ -637,6 +679,10 @@ public class ItemWindow extends BasicSprite {
 						//キーアイテム属性
 						if (!i.canSale()) {
 							sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムは売ったり捨てたり解体したりできない));
+							sb.append(Text.getLineSep());
+						}
+						if (!i.canUnEqip()) {
+							sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムは誰かに渡したり装備解除したりできない));
 							sb.append(Text.getLineSep());
 						}
 						//DCS
@@ -754,15 +800,24 @@ public class ItemWindow extends BasicSprite {
 						}
 						msg.setText(sb.toString());
 						msg.allText();
-						group.show(msg);
+						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						break;
 					case DROP:
+						//装備解除不能属性がある場合は外せない
+						if (!i.canUnEqip()) {
+							//外せない
+							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.allText();
+							group.show(msg.getWindow());
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+							break;
+						}
 						//drop確認ウインドウを有効化
 						if (!i.canSale()) {
 							msg.setText(I18N.get(GameSystemI18NKeys.このアイテムは捨てられない));
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							List<Text> options4 = new ArrayList<>();
@@ -776,11 +831,20 @@ public class ItemWindow extends BasicSprite {
 						}
 						break;
 					case DISASSEMBLY:
+						//装備解除不能属性がある場合は外せない
+						if (!i.canUnEqip()) {
+							//外せない
+							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.allText();
+							group.show(msg.getWindow());
+							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+							break;
+						}
 						//解体できるアイテムか判定
 						if (!i.canSale() || !i.canDisasse()) {
 							msg.setText(I18N.get(GameSystemI18NKeys.このアイテムは解体できない));
 							msg.allText();
-							group.show(msg);
+							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							List<Text> options5 = new ArrayList<>();
@@ -804,7 +868,7 @@ public class ItemWindow extends BasicSprite {
 				assert choiceUse.getSelect() == USE || choiceUse.getSelect() == PASS : "ITEMWINDOW : choice user select is missmatch";
 				if (choiceUse.getSelect() == USE) {
 					commitUse();
-					group.show(msg);
+					group.show(msg.getWindow());
 					mode = Mode.WAIT_MSG_CLOSE_TO_IUS;//useしたら消えている可能性があるためIUS
 					break;
 				}
@@ -817,14 +881,14 @@ public class ItemWindow extends BasicSprite {
 						);
 						this.msg.setText(m);
 						this.msg.allText();
-						group.show(msg);
+						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						break;
 					}
 					int itemBagSize = getSelectedPC().getItemBag().size();
 					commitPass();
 					boolean self = itemBagSize == getSelectedPC().getItemBag().size();
-					group.show(msg);
+					group.show(msg.getWindow());
 					//自分自身に渡した場合CUへ、そうでない場合はIUSに戻る
 					if (self) {
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -846,7 +910,7 @@ public class ItemWindow extends BasicSprite {
 						//はい
 						//dropしてアイテム選択に戻る
 						commitDrop();
-						group.show(msg);
+						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 						break;
 				}
@@ -863,7 +927,7 @@ public class ItemWindow extends BasicSprite {
 					case 1:
 						//はい
 						commitDisasse();
-						group.show(msg);
+						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 						break;
 				}
@@ -935,7 +999,7 @@ public class ItemWindow extends BasicSprite {
 
 		msg.setText(sb.toString());
 		msg.allText();
-		group.show(msg);
+		group.show(msg.getWindow());
 
 		PersonalBag<Item> ib = getSelectedPC().getItemBag();
 		sb = new StringBuilder();
@@ -982,7 +1046,7 @@ public class ItemWindow extends BasicSprite {
 			mainSelect = getSelectedPC().getItemBag().size() - 1;
 		}
 		msg.allText();
-		group.show(msg);
+		group.show(msg.getWindow());
 
 		StringBuilder sb = new StringBuilder();
 		PersonalBag<Item> ib = getSelectedPC().getItemBag();
@@ -1044,7 +1108,7 @@ public class ItemWindow extends BasicSprite {
 				i.getVisibleName()));
 		msg.allText();
 		getSelectedPC().updateAction();
-		group.show(msg);
+		group.show(msg.getWindow());
 		mainSelect = 0;
 	}
 
@@ -1088,7 +1152,7 @@ public class ItemWindow extends BasicSprite {
 				i.getVisibleName()) + sb.toString());
 		msg.allText();
 		getSelectedPC().updateAction();
-		group.show(msg);
+		group.show(msg.getWindow());
 		mainSelect = 0;
 	}
 

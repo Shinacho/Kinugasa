@@ -345,7 +345,6 @@ public class BattleSystem implements Drawable {
 		this.magics.clear();
 		this.前エフェクト生存者リスト.clear();
 		this.prevEventResult = null;
-		
 
 		//敵の配置
 		putEnemy();
@@ -577,7 +576,9 @@ public class BattleSystem implements Drawable {
 				Status.UpdadeConditionResult r = a.getStatus().updateCondition();
 				L2:
 				for (var v : r.result.entrySet()) {
-					text.add(v.getValue().msg);
+					if (v.getValue().msg != null && !v.getValue().msg.isEmpty()) {
+						text.add(v.getValue().msg);
+					}
 
 					//ダメージ表示スプライト
 					if (v.getValue().damage != 0) {
@@ -1972,9 +1973,7 @@ public class BattleSystem implements Drawable {
 				if (prevEventResult != null) {
 					prevEventResult.clear();
 				}
-				for (var v : r.perActor.keySet()) {
-					msg.add(I18N.get(GameSystemI18NKeys.しかしXには当たらなかった, v.getVisibleName()));
-				}
+				msg.add(I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった));
 			} else {
 				prevEventResult = new ArrayList<>(r.perActor.values());
 				for (var v : r.perActor.values()) {

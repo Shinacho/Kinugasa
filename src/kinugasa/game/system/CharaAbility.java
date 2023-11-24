@@ -47,9 +47,8 @@ public enum CharaAbility implements AbilityEffect {
 		@Override
 		public AttributeValueSet effectAttrOut(Status s, AttributeValueSet v) {
 			boolean is武器装備 = false;
-			is武器装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.棍);
 			is武器装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.フレイル);
-			is武器装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.棒);
+			is武器装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.棍棒);
 			is武器装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.槌);
 
 			AttributeValueSet r = v.clone();
