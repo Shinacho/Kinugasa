@@ -108,11 +108,16 @@ public class ActionStorage extends DBStorage<Action> {
 					+ " where id = '" + id + "';";
 			KResultSet r = DBConnection.getInstance().execDirect(sql);
 			if (r.isEmpty()) {
-				sql = "select ID,VISIBLENAME,"
-						+ "DESCRIPTION,FIELD,BATTLE,AREA,"
-						+ "TGTTYPE,TGTDEAD,PRICE,EQIPSLOT,"
-						+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY,"
-						+ "eqipTermCSV,cndRegistCSV,cndEffectCSV,attrInCSV,attrOutCSV,statusCSV,materialCSV,"
+				sql = "select "
+						+ "id,visibleName,description,"
+						+ "field,battle,area,"
+						+ "tgtType,tgtDead,price,"
+						+ "eqipSlot,atkCount,weaponType,"
+						+ "styleName,enchantName,DCS,"
+						+ "upgradeNum,summary,eqipTermCSV,"
+						+ "cndRegistCSV,attrInCSV,attrOutCSV,"
+						+ "statusCSV,materialCSV,canSale,"
+						+ "unEqip"
 						+ " from item"
 						+ " where id = '" + id + "';";
 				r = DBConnection.getInstance().execDirect(sql);
@@ -137,9 +142,6 @@ public class ActionStorage extends DBStorage<Action> {
 					i.setDcs(l.get(14).orNull(StatusKey.class));
 					i.setCurrentUpgradeNum(l.get(15).asInt());
 					i.setSummary(l.get(16).get());
-					//event
-					i.setMainEvents(getMainEvents(id));
-					i.setUserEvents(getUserEvents(id));
 					//eqipTErm
 					i.setTerms(getEqipTerms(l.get(17).get()));
 					//cndRegist
@@ -148,10 +150,16 @@ public class ActionStorage extends DBStorage<Action> {
 					i.setAttrIn(getAttrIn(l.get(19).get()));
 					//attrOut
 					i.setAttrOut(getAttrOut(l.get(20).get()));
-					//mateirla
-					i.setMaterial(getMaterial(l.get(21).get()));
 					//Status
-					i.setStatus(getStatus(l.get(22).get()));
+					i.setStatus(getStatus(l.get(21).get()));
+					//mateirla
+					i.setMaterial(getMaterial(l.get(22).get()));
+					//
+					i.setCanSale(l.get(23).asBoolean());
+					i.setCanUnEqip(l.get(24).asBoolean());
+					//event
+					i.setMainEvents(getMainEvents(id));
+					i.setUserEvents(getUserEvents(id));
 					//pack
 					return i.pack();
 				}
@@ -201,10 +209,16 @@ public class ActionStorage extends DBStorage<Action> {
 				//pack
 				res.add(a.pack());
 			}
-			sql = "select ID,VISIBLENAME,"
-					+ "DESCRIPTION,FIELD,BATTLE,AREA,"
-					+ "TGTTYPE,TGTDEAD,PRICE,EQIPSLOT,"
-					+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY,eqipTermCSV,cndRegistCSV,cndEffectCSV,attrInCSV,attrOutCSV,statusCSV,materialCSV,"
+			sql = "select "
+					+ "id,visibleName,description,"
+					+ "field,battle,area,"
+					+ "tgtType,tgtDead,price,"
+					+ "eqipSlot,atkCount,weaponType,"
+					+ "styleName,enchantName,DCS,"
+					+ "upgradeNum,summary,eqipTermCSV,"
+					+ "cndRegistCSV,attrInCSV,attrOutCSV,"
+					+ "statusCSV,materialCSV,canSale,"
+					+ "unEqip"
 					+ " from item;";
 			r = DBConnection.getInstance().execDirect(sql);
 			//item
@@ -225,9 +239,6 @@ public class ActionStorage extends DBStorage<Action> {
 				i.setDcs(l.get(14).orNull(StatusKey.class));
 				i.setCurrentUpgradeNum(l.get(15).asInt());
 				i.setSummary(l.get(16).get());
-				//event
-				i.setMainEvents(getMainEvents(l.get(0).get()));
-				i.setUserEvents(getUserEvents(l.get(0).get()));
 				//eqipTErm
 				i.setTerms(getEqipTerms(l.get(17).get()));
 				//cndRegist
@@ -236,11 +247,16 @@ public class ActionStorage extends DBStorage<Action> {
 				i.setAttrIn(getAttrIn(l.get(19).get()));
 				//attrOut
 				i.setAttrOut(getAttrOut(l.get(20).get()));
-				//mateirla
-				i.setMaterial(getMaterial(l.get(21).get()));
 				//Status
-				i.setStatus(getStatus(l.get(22).get()));
-				//pack
+				i.setStatus(getStatus(l.get(21).get()));
+				//mateirla
+				i.setMaterial(getMaterial(l.get(22).get()));
+				//
+				i.setCanSale(l.get(23).asBoolean());
+				i.setCanUnEqip(l.get(24).asBoolean());
+				//event
+				i.setMainEvents(getMainEvents(l.get(0).get()));
+				i.setUserEvents(getUserEvents(l.get(0).get()));
 				res.add(i.pack());
 			}
 		}
@@ -292,10 +308,16 @@ public class ActionStorage extends DBStorage<Action> {
 	public List<Item> allItems() {
 		List<Item> res = new ArrayList<>();
 		if (DBConnection.getInstance().isUsing()) {
-			String sql = "select ID,VISIBLENAME,"
-					+ "DESCRIPTION,FIELD,BATTLE,AREA,"
-					+ "TGTTYPE,TGTDEAD,PRICE,EQIPSLOT,"
-					+ "ATKCOUNT,WEAPONTYPE,STYLENAME,ENCHANTNAME,DCS,UPGRADENUM,SUMMARY"
+			String sql = "select "
+					+ "id,visibleName,description,"
+					+ "field,battle,area,"
+					+ "tgtType,tgtDead,price,"
+					+ "eqipSlot,atkCount,weaponType,"
+					+ "styleName,enchantName,DCS,"
+					+ "upgradeNum,summary,eqipTermCSV,"
+					+ "cndRegistCSV,attrInCSV,attrOutCSV,"
+					+ "statusCSV,materialCSV,canSale,"
+					+ "unEqip"
 					+ " from item;";
 			KResultSet r = DBConnection.getInstance().execDirect(sql);
 			//item
@@ -316,9 +338,6 @@ public class ActionStorage extends DBStorage<Action> {
 				i.setDcs(l.get(14).orNull(StatusKey.class));
 				i.setCurrentUpgradeNum(l.get(15).asInt());
 				i.setSummary(l.get(16).get());
-				//event
-				i.setMainEvents(getMainEvents(l.get(0).get()));
-				i.setUserEvents(getUserEvents(l.get(0).get()));
 				//eqipTErm
 				i.setTerms(getEqipTerms(l.get(17).get()));
 				//cndRegist
@@ -327,10 +346,16 @@ public class ActionStorage extends DBStorage<Action> {
 				i.setAttrIn(getAttrIn(l.get(19).get()));
 				//attrOut
 				i.setAttrOut(getAttrOut(l.get(20).get()));
-				//mateirla
-				i.setMaterial(getMaterial(l.get(21).get()));
 				//Status
-				i.setStatus(getStatus(l.get(22).get()));
+				i.setStatus(getStatus(l.get(21).get()));
+				//mateirla
+				i.setMaterial(getMaterial(l.get(22).get()));
+				//
+				i.setCanSale(l.get(23).asBoolean());
+				i.setCanUnEqip(l.get(24).asBoolean());
+				//event
+				i.setMainEvents(getMainEvents(l.get(0).get()));
+				i.setUserEvents(getUserEvents(l.get(0).get()));
 				//pack
 				res.add(i.pack());
 			}

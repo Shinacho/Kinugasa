@@ -448,7 +448,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 			throw new GameSystemException("field-battle mode missmatch :  " + this);
 		}
 
-		if (checkResource(tgt.getUser().getStatus()).is足りないステータスあり()) {
+		if (!canDo(tgt.getUser().getStatus())) {
 			ActionResult r = new ActionResult(this, tgt, ActionResultSummary.失敗＿リソースが足りない);
 			GameLog.print(r);
 			return r;

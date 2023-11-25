@@ -60,5 +60,6 @@ public enum UserOperationRequire {
 	 */
 	FADE_IN,
 	BLACKOUT,
+	END;
 
 }

@@ -2108,156 +2108,69 @@ public class BattleSystem implements Drawable {
 				msg.add(m);
 			}
 		}
-		if (死亡者PCの数 != 0) {
-			//死んだのはPC
-			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
-				if (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した)) {
-					continue;
-				}
-				int damage = BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
-				if (damage > 0) {
-					damage = -damage;
-				}
-				damage *= 死亡者PCの数;
-				if (damage == 0) {
-					continue;
-				}
-				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				String m = a.getStatus().addWhen0Condition();
-				if (m != null && !m.isEmpty()) {
-					msg.add(m);
-					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
-					a.getSprite().setAnimationUpdate(false);
-					List<BattleCommand> removeCmd = new ArrayList<>();
-					for (var c : commandsOfThisTurn) {
-						if (a.equals(c.getUser())) {
-							removeCmd.add(c);
-						}
-					}
-					commandsOfThisTurn.removeAll(removeCmd);
-				} else {
-					msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				}
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						a.getSprite().getX() + 12,
-						a.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
+		for (Actor a : allActors()) {
+			int damage = SANダメージ取得(a, 死亡者PCの数, 死亡者敵の数);
+			if (damage == 0) {
+				continue;
 			}
-			for (Enemy e : this.enemies) {
-				if (e.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した)) {
-					continue;
-				}
-				int damage = BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
-				if (damage > 0) {
-					damage = -damage;
-				}
-				damage *= 死亡者敵の数;
-				if (damage == 0) {
-					continue;
-				}
-				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				String m = e.getStatus().addWhen0Condition();
-				if (m != null && !m.isEmpty()) {
-					msg.add(m);
-					e.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
-					e.getSprite().setAnimationUpdate(false);
-					List<BattleCommand> removeCmd = new ArrayList<>();
-					for (var c : commandsOfThisTurn) {
-						if (e.equals(c.getUser())) {
-							removeCmd.add(c);
-						}
+			a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+			String m = a.getStatus().addWhen0Condition();
+			if (m != null && !m.isEmpty()) {
+				msg.add(m);
+				a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+				a.getSprite().setAnimationUpdate(false);
+				List<BattleCommand> removeCmd = new ArrayList<>();
+				for (var c : commandsOfThisTurn) {
+					if (a.equals(c.getUser())) {
+						removeCmd.add(c);
 					}
-					commandsOfThisTurn.removeAll(removeCmd);
-				} else {
-					msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 				}
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.getSprite().getX() + 12,
-						e.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
+				commandsOfThisTurn.removeAll(removeCmd);
+			} else {
+				msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
 			}
+			DamageAnimationSprite ds = new DamageAnimationSprite(
+					a.getSprite().getX() + 12,
+					a.getSprite().getY() + 12,
+					Math.abs(damage),
+					Color.RED);
+			animation.add(ds);
+
 		}
-		if (死亡者敵の数 != 0) {
-			//死んだのは敵
-			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
-				if (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した)) {
-					continue;
-				}
-				int damage = BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
-				if (damage > 0) {
-					damage = -damage;
-				}
-				damage *= 死亡者PCの数;
-				if (damage == 0) {
-					continue;
-				}
-				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				String m = a.getStatus().addWhen0Condition();
-				if (m != null && !m.isEmpty()) {
-					msg.add(m);
-					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
-					a.getSprite().setAnimationUpdate(false);
-					List<BattleCommand> removeCmd = new ArrayList<>();
-					for (var c : commandsOfThisTurn) {
-						if (a.equals(c.getUser())) {
-							removeCmd.add(c);
-						}
-					}
-					commandsOfThisTurn.removeAll(removeCmd);
-				} else {
-					msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				}
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						a.getSprite().getX() + 12,
-						a.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
-			for (Enemy e : this.enemies) {
-				if (e.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した)) {
-					continue;
-				}
-				int damage = BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
-				if (damage > 0) {
-					damage = -damage;
-				}
-				damage *= 死亡者敵の数;
-				if (damage == 0) {
-					continue;
-				}
-				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				String m = e.getStatus().addWhen0Condition();
-				if (m != null && !m.isEmpty()) {
-					msg.add(m);
-					e.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
-					e.getSprite().setAnimationUpdate(false);
-					List<BattleCommand> removeCmd = new ArrayList<>();
-					for (var c : commandsOfThisTurn) {
-						if (e.equals(c.getUser())) {
-							removeCmd.add(c);
-						}
-					}
-					commandsOfThisTurn.removeAll(removeCmd);
-				} else {
-					msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				}
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.getSprite().getX() + 12,
-						e.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
+
+		if (msg.isEmpty()) {
+			msg.add(I18N.get(GameSystemI18NKeys.しかし誰も正気度ダメージを受けなかった));
 		}
 		setMsg(msg);
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 		前エフェクト生存者リスト = new ArrayList<>(前エフェクト生存者リスト);
 		前エフェクト生存者リスト.removeAll(死亡者リスト);
+	}
+
+	private int SANダメージ取得(Actor a, int PC死亡者数, int EN死亡者数) {
+		int r = 0;
+		if (a.isSummoned()) {
+			return r;
+		}
+		if (a.getStatus().hasAnyCondition(解脱, 損壊, 気絶, ConditionKey.逃走した)) {
+			return r;
+		}
+		if (a.isPlayer()) {
+			for (int i = 0; i < PC死亡者数; i++) {
+				r += BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
+			}
+			for (int i = 0; i < EN死亡者数; i++) {
+				r += BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
+			}
+		} else {
+			for (int i = 0; i < PC死亡者数; i++) {
+				r += BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
+			}
+			for (int i = 0; i < EN死亡者数; i++) {
+				r += BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
+			}
+		}
+		return r;
 	}
 
 	private void エフェクト起動(List<ActionResult.EventActorResult> 死亡者リスト) {
@@ -2319,100 +2232,36 @@ public class BattleSystem implements Drawable {
 
 		List<String> msg = new ArrayList<>();
 
-		if (死亡者PCの数 != 0) {
-			//死んだのはPC
-			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
-				if (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した)) {
-					continue;
+		for (Actor a : allActors()) {
+			int damage = SANダメージ取得(a, 死亡者PCの数, 死亡者敵の数);
+			if (damage == 0) {
+				continue;
+			}
+			a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
+			String m = a.getStatus().addWhen0Condition();
+			if (m != null && !m.isEmpty()) {
+				msg.add(m);
+				a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+				a.getSprite().setAnimationUpdate(false);
+				List<BattleCommand> removeCmd = new ArrayList<>();
+				for (var c : commandsOfThisTurn) {
+					if (a.equals(c.getUser())) {
+						removeCmd.add(c);
+					}
 				}
-				int damage = BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
-				if (damage > 0) {
-					damage = -damage;
-				}
-				damage *= 死亡者PCの数;
-				if (damage == 0) {
-					continue;
-				}
-				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				a.getStatus().addWhen0Condition();
+				commandsOfThisTurn.removeAll(removeCmd);
+			} else {
 				msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						a.getSprite().getX() + 12,
-						a.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
 			}
-			for (Enemy e : this.enemies) {
-				if (e.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した)) {
-					continue;
-				}
-				int damage = BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
-				if (damage > 0) {
-					damage = -damage;
-				}
-				damage *= 死亡者敵の数;
-				if (damage == 0) {
-					continue;
-				}
-				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				e.getStatus().addWhen0Condition();
-				msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.getSprite().getX() + 12,
-						e.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
+			DamageAnimationSprite ds = new DamageAnimationSprite(
+					a.getSprite().getX() + 12,
+					a.getSprite().getY() + 12,
+					Math.abs(damage),
+					Color.RED);
+			animation.add(ds);
+
 		}
-		if (死亡者敵の数 != 0) {
-			//死んだのは敵
-			for (Actor a : GameSystem.getInstance().getParty().stream().filter(p -> !p.isSummoned()).toList()) {
-				if (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した)) {
-					continue;
-				}
-				int damage = BattleConfig.正気度減少イベントの数値＿敵の場合.getAsInt();
-				if (damage > 0) {
-					damage = -damage;
-				}
-				damage *= 死亡者PCの数;
-				if (damage == 0) {
-					continue;
-				}
-				a.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				a.getStatus().addWhen0Condition();
-				msg.add(I18N.get(GameSystemI18NKeys.Xは, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						a.getSprite().getX() + 12,
-						a.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
-			for (Enemy e : this.enemies) {
-				if (e.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した)) {
-					continue;
-				}
-				int damage = BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
-				if (damage > 0) {
-					damage = -damage;
-				}
-				damage *= 死亡者敵の数;
-				if (damage == 0) {
-					continue;
-				}
-				e.getStatus().getBaseStatus().get(StatusKey.正気度).add(damage);
-				e.getStatus().addWhen0Condition();
-				msg.add(I18N.get(GameSystemI18NKeys.Xは, e.getVisibleName()) + I18N.get(GameSystemI18NKeys.Xの正気度ダメージを受けた, Math.abs(damage)));
-				DamageAnimationSprite ds = new DamageAnimationSprite(
-						e.getSprite().getX() + 12,
-						e.getSprite().getY() + 12,
-						Math.abs(damage),
-						Color.RED);
-				animation.add(ds);
-			}
-		}
+
 		if (msg.isEmpty()) {
 			msg.add(I18N.get(GameSystemI18NKeys.しかし誰も正気度ダメージを受けなかった));
 		}

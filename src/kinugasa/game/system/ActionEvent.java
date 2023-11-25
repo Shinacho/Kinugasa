@@ -203,7 +203,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿起動条件未達, Map.of()));
 						return false;
 					}
 				}
@@ -227,7 +227,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿起動条件未達, Map.of()));
 						return false;
 
 					}
@@ -252,7 +252,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿起動条件未達, Map.of()));
 						return false;
 
 					}
@@ -277,7 +277,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿起動条件未達, Map.of()));
 						return false;
 
 					}
@@ -302,7 +302,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿起動条件未達, Map.of()));
 						return false;
 
 					}
@@ -327,7 +327,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 						return true;
 					} else {
 						//起動不可
-						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+						ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿起動条件未達, Map.of()));
 						return false;
 
 					}
@@ -352,6 +352,15 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	//Actorごとに呼び出される。このアクションイベントを実行してイベントリザルトを戻す
 	public void exec(Actor user, Action a, Actor tgt, final ActionResult ar, boolean isUserEvent) {
 		if (!起動条件判定＿起動OK(tgt, ar, isUserEvent)) {
+			if (isUserEvent) {
+				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
+			} else {
+				ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿起動条件未達, Map.of()));
+			}
+			return;
+		}
+
+		if (!getTerms().stream().allMatch(p -> p.canDo(user.getStatus()))) {
 			if (isUserEvent) {
 				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
 			} else {

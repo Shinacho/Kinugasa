@@ -459,8 +459,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			}
 		}
 
-		data.dispose();
-
 		// カメラ初期化
 		camera = new FieldMapCamera(this);
 
@@ -564,7 +562,21 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 		mapNameModel.reset();
 
-		return currentInstance = this;
+		currentInstance = this;
+
+		//自動適用スクリプト
+		if (root.getAttributes().contains("loadScript")) {
+			String fileName = root.getAttributes().get("loadScript").getValue();
+			FieldEventSystem.getInstance().setEvent(new LinkedList<>(FieldEventParser.parse(getName(), fileName)));
+			while (true) {
+				if (FieldEventSystem.getInstance().exec() == UserOperationRequire.END) {
+					break;
+				}
+			}
+		}
+		data.dispose();
+
+		return this;
 	}
 	private Sound bgm;
 

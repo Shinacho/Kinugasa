@@ -261,6 +261,9 @@ public class FieldEventSystem implements Drawable {
 
 	@NoLoopCall
 	public UserOperationRequire exec() {
+		if(event.isEmpty()){
+			return UserOperationRequire.END;
+		}
 		item = null;
 		currentEvent = event.getFirst();
 		event.removeFirst();

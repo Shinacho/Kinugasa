@@ -27,6 +27,7 @@ import kinugasa.game.NewInstance;
 import kinugasa.resource.text.TextFile;
 import kinugasa.util.StopWatch;
 import kinugasa.game.NotNull;
+import kinugasa.game.system.GameSystem;
 
 /**
  *
@@ -61,7 +62,9 @@ public class DBConnection {
 			StopWatch sw = new StopWatch().start();
 			connection = DriverManager.getConnection(URL + dataFileName, user, password);
 			sw.stop();
-			GameLog.print("DBC open " + URL + dataFileName + "(" + sw.getTime() + "ms)-----------------------------------------");
+			if (GameSystem.isDebugMode()) {
+				GameLog.print("DBC open " + URL + dataFileName + "(" + sw.getTime() + "ms)-----------------------------------------");
+			}
 		} catch (SQLException ex) {
 			GameLog.print(ex);
 			throw new KSQLException(ex);
@@ -72,7 +75,9 @@ public class DBConnection {
 	public List<KResultSet> execByFile(String fileName) throws KSQLException {
 		TextFile file = new TextFile(fileName);
 		file.load();
-		GameLog.print("DBC execFile : " + fileName + "---------------------------------------");
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("DBC execFile : " + fileName + "---------------------------------------");
+		}
 		List<String> data = file.getData();
 		StringBuilder sb = new StringBuilder();
 		for (String line : data) {
@@ -104,52 +109,70 @@ public class DBConnection {
 				StopWatch s = new StopWatch().start();
 				connection = DriverManager.getConnection(URL + dataFileName, user, password);
 				s.stop();
-				GameLog.print("DBC REopen " + URL + dataFileName + "(" + sw.getTime() + "ms)-----------------------------------------");
+				if (GameSystem.isDebugMode()) {
+					GameLog.print("DBC REopen " + URL + dataFileName + "(" + sw.getTime() + "ms)-----------------------------------------");
+				}
 			}
 			statement = connection.createStatement();
 			if (sql.trim().toLowerCase().startsWith("insert")) {
 				statement.execute(sql);
 				sw.stop();
-				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				if (GameSystem.isDebugMode()) {
+					GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				}
 				return new KResultSet(null);
 			}
 			if (sql.trim().toLowerCase().startsWith("call")) {
 				statement.execute(sql);
 				sw.stop();
-				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				if (GameSystem.isDebugMode()) {
+					GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				}
 				return new KResultSet(null);
 			}
 			if (sql.trim().toLowerCase().startsWith("create")) {
 				statement.execute(sql);
 				sw.stop();
-				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				if (GameSystem.isDebugMode()) {
+					GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				}
 				return new KResultSet(null);
 			}
 			if (sql.trim().toLowerCase().startsWith("drop")) {
 				statement.execute(sql);
 				sw.stop();
-				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				if (GameSystem.isDebugMode()) {
+					GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				}
 				return new KResultSet(null);
 			}
 			if (sql.trim().toLowerCase().startsWith("truncate")) {
 				statement.execute(sql);
 				sw.stop();
-				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				if (GameSystem.isDebugMode()) {
+					GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				}
 				return new KResultSet(null);
 			}
 			if (sql.trim().toLowerCase().startsWith("update")) {
 				statement.execute(sql);
 				sw.stop();
-				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				if (GameSystem.isDebugMode()) {
+					GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+				}
 				return new KResultSet(null);
 			}
 			sw.stop();
-			GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+			if (GameSystem.isDebugMode()) {
+				GameLog.print("DBC execDirect : " + sql + "(" + sw.getTime() + "ms)");
+			}
 			return new KResultSet(statement.executeQuery(sql));
 		} catch (SQLException ex) {
-			GameLog.print(ex);
 			sw.stop();
-			GameLog.print("DBC [ERROR] execDirect : " + sql + "(" + sw.getTime() + "ms)");
+			if (GameSystem.isDebugMode()) {
+				GameLog.print(ex);
+				GameLog.print("DBC [ERROR] execDirect : " + sql + "(" + sw.getTime() + "ms)");
+			}
 			throw new KSQLException(ex);
 		} finally {
 			try {
@@ -171,9 +194,13 @@ public class DBConnection {
 				connection = null;
 			}
 			sw.stop();
-			GameLog.print("DBC close (" + sw.getTime() + "ms)------------------------------------------------------");
+			if (GameSystem.isDebugMode()) {
+				GameLog.print("DBC close (" + sw.getTime() + "ms)------------------------------------------------------");
+			}
 		} catch (SQLException ex) {
-			GameLog.print(ex);
+			if (GameSystem.isDebugMode()) {
+				GameLog.print(ex);
+			}
 			throw new KSQLException(ex);
 		}
 	}
