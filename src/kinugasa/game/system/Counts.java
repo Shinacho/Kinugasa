@@ -53,6 +53,12 @@ public class Counts {
 		public String getVisibleName() {
 			return name;
 		}
+
+		@Override
+		public String toString() {
+			return "Value{" + "name=" + name + ", num=" + num + '}';
+		}
+
 	}
 	private static final Counts INSTANCE = new Counts();
 
@@ -64,6 +70,11 @@ public class Counts {
 	}
 
 	private Storage<Counts.Value> storage = new Storage<>();
+
+	@Deprecated
+	public Storage<Value> getStorage() {
+		return storage;
+	}
 
 	public void add1count(String name) {
 		Counts.Value v = null;

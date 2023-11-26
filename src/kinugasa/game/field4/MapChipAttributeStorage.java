@@ -18,6 +18,7 @@ package kinugasa.game.field4;
 
 import java.util.logging.Level;
 import kinugasa.game.GameLog;
+import kinugasa.game.system.GameSystem;
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
 import kinugasa.resource.FileNotFoundException;
@@ -60,7 +61,9 @@ public class MapChipAttributeStorage extends Storage<MapChipAttribute> implement
 			int encountBaseValue = e.getAttributes().contains("encountBaseValue") ? e.getAttributes().get("encountBaseValue").getIntValue() : 0;
 			getInstance().add(new MapChipAttribute(name, encountBaseValue));
 		}
-		GameLog.print(getAll());
+		if (GameSystem.isDebugMode()) {
+			GameLog.print(getAll());
+		}
 
 	}
 

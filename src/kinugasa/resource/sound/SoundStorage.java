@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import kinugasa.game.GameLog;
+import kinugasa.game.system.GameSystem;
 import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.InputStatus;
 import kinugasa.resource.db.*;
@@ -47,7 +48,9 @@ public final class SoundStorage extends DBStorage<Sound> {
 	 * サウンドの音量を更新するため、サウンドを作成しなおします。
 	 */
 	public void rebuild() {
-		GameLog.print("SoundStorage rebuild");
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("SoundStorage rebuild");
+		}
 		getDirect().clear();
 		addAll(selectAll());
 	}

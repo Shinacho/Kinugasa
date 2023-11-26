@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.logging.Level;
 import kinugasa.game.GameLog;
+import kinugasa.game.system.GameSystem;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Storage;
@@ -77,7 +78,9 @@ public class MapChipSetStorage extends Storage<MapChipSet> implements XMLFileSup
 			}
 			add(chipSet);
 		}
-		GameLog.print(getAll());
+		if (GameSystem.isDebugMode()) {
+			GameLog.print(getAll());
+		}
 
 	}
 

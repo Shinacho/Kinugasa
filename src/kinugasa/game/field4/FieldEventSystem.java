@@ -261,14 +261,19 @@ public class FieldEventSystem implements Drawable {
 
 	@NoLoopCall
 	public UserOperationRequire exec() {
-		if(event.isEmpty()){
+		if (event.isEmpty()) {
 			return UserOperationRequire.END;
 		}
 		item = null;
 		currentEvent = event.getFirst();
 		event.removeFirst();
-//		System.out.print("start event : " + currentEvent);
-		GameLog.print("start event : " + currentEvent);
+		if (currentEvent.getEventType() == FieldEventType.END) {
+			event.clear();
+			return UserOperationRequire.END;
+		}
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("start event : " + currentEvent);
+		}
 		if (currentEvent.getEventType() == FieldEventType.IF) {
 			return UserOperationRequire.CONTINUE;
 		}

@@ -112,6 +112,9 @@ public final class StringUtil {
 	}
 
 	public static String[] safeSplit(String val, String sep) {
+		if (val == null || val.isEmpty()) {
+			return new String[]{};
+		}
 		return val.contains(sep) ? val.split(sep) : new String[]{val};
 	}
 }

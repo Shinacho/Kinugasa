@@ -40,7 +40,7 @@ public class SimpleMapNameModel extends MapNameModel {
 	private FadeCounter back = FadeCounter.fadeOut(-1);
 
 	public SimpleMapNameModel() {
-		label = new TextLabelSprite("", new SimpleTextLabelModel(FontModel.DEFAULT), 0, 24, 1000, 20) {
+		label = new TextLabelSprite("", new SimpleTextLabelModel(FontModel.DEFAULT), 0, 24, 1000, 16) {
 			@Override
 			public void draw(GraphicsContext g) {
 				Graphics2D g2 = g.create();

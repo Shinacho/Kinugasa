@@ -284,7 +284,7 @@ public class BattleTargetSystem implements Drawable {
 			selectedIdx = 0;
 		}
 		if (GameSystem.isDebugMode()) {
-			GameLog.print("TS : " + getSelected());
+			GameLog.print("TS : " + selectedIdx + " of " + inArea候補者);
 		}
 		updateIcons();
 	}
@@ -298,7 +298,7 @@ public class BattleTargetSystem implements Drawable {
 			selectedIdx = inArea候補者.size() - 1;
 		}
 		if (GameSystem.isDebugMode()) {
-			GameLog.print("TS : " + getSelected());
+			GameLog.print("TS : " + selectedIdx + " of " + inArea候補者);
 		}
 		updateIcons();
 	}
@@ -311,7 +311,7 @@ public class BattleTargetSystem implements Drawable {
 			updateIcons();
 		}
 		if (GameSystem.isDebugMode()) {
-			GameLog.print("TS : " + getSelected());
+			GameLog.print("TS : " + selectedIdx + " of " + inArea候補者);
 		}
 	}
 
@@ -505,10 +505,9 @@ public class BattleTargetSystem implements Drawable {
 					switch (teamSelect) {
 						case 味方選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
-							inArea候補者.remove(currentUser);
+							inArea候補者.add(currentUser);
 						case 敵選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
-							inArea候補者.remove(currentUser);
 						case 未使用:
 							break;
 					}
@@ -516,10 +515,9 @@ public class BattleTargetSystem implements Drawable {
 					switch (teamSelect) {
 						case 味方選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
-							inArea候補者.remove(currentUser);
+							inArea候補者.add(currentUser);
 						case 敵選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
-							inArea候補者.remove(currentUser);
 						case 未使用:
 							break;
 					}
@@ -565,6 +563,7 @@ public class BattleTargetSystem implements Drawable {
 				break;
 			}
 			case グループ_味方全員: {
+				inArea候補者.add(currentUser);
 				if (isPC) {
 					inArea候補者.addAll(allPartyOf(center, area));
 				} else {
@@ -583,6 +582,7 @@ public class BattleTargetSystem implements Drawable {
 			case 全員: {
 				inArea候補者.addAll(allPartyOf(center, area));
 				inArea候補者.addAll(allEnemyOf(center, area));
+				inArea候補者.add(currentUser);
 				break;
 			}
 			case 全員_自身除く: {
@@ -625,10 +625,9 @@ public class BattleTargetSystem implements Drawable {
 					switch (teamSelect) {
 						case 味方選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
-							inArea候補者.remove(currentUser);
+							inArea候補者.add(currentUser);
 						case 敵選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
-							inArea候補者.remove(currentUser);
 						case 未使用:
 							break;
 					}
@@ -636,10 +635,9 @@ public class BattleTargetSystem implements Drawable {
 					switch (teamSelect) {
 						case 味方選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
-							inArea候補者.remove(currentUser);
+							inArea候補者.add(currentUser);
 						case 敵選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
-							inArea候補者.remove(currentUser);
 						case 未使用:
 							break;
 					}
@@ -661,6 +659,7 @@ public class BattleTargetSystem implements Drawable {
 				} else {
 					inArea候補者.addAll(allEnemyOf(center, area));
 				}
+				inArea候補者.add(currentUser);
 				break;
 			}
 			case 単体_敵のみ: {
@@ -714,8 +713,8 @@ public class BattleTargetSystem implements Drawable {
 		}
 		inArea候補者 = new ArrayList<>(inArea候補者);
 		inArea候補者.removeAll(remove);
-		
-		if(GameSystem.isDebugMode()){
+
+		if (GameSystem.isDebugMode()) {
 			GameLog.print("TS inArea : " + inArea候補者);
 		}
 	}

@@ -34,7 +34,7 @@ public enum StatusKey implements Nameable {
 	筋力(true, 0, 99, null),//DCS
 	器用さ(true, 0, 99, null),//DCS
 	素早さ(true, 0, 99, null),//ターン内の行動順
-	精神力(true, 0, 99, null),//DCS
+	精神(true, 0, 99, null),//DCS
 	信仰(true, 0, 99, null),//DCS
 	詠唱(true, 0, 99, null),//ターン内の行動順
 	//

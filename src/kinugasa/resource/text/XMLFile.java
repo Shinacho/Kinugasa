@@ -28,6 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import kinugasa.game.GameLog;
+import kinugasa.game.system.GameSystem;
 import kinugasa.resource.ContentsIOException;
 import kinugasa.resource.Input;
 import kinugasa.resource.InputStatus;
@@ -103,7 +104,9 @@ public final class XMLFile implements Input<XMLFile>, Output, Nameable, Iterable
 		assert document != null : "document is null";
 
 		data.add(XMLParserUtil.createElement(document.getLastChild()));
-		GameLog.print("XMLFile [" + file.getName() + "] is loaded");
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("XMLFile [" + file.getName() + "] is loaded");
+		}
 		return this;
 	}
 

@@ -45,4 +45,9 @@ public class MagicSpell {
 		return user;
 	}
 
+	@Override
+	public String toString() {
+		return "MagicSpell{" + "user=" + user + ", action=" + action + ", player=" + player + '}';
+	}
+
 }

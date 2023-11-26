@@ -157,7 +157,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 		list.add(StatusKey.筋力);
 		list.add(StatusKey.器用さ);
 		list.add(StatusKey.素早さ);
-		list.add(StatusKey.精神力);
+		list.add(StatusKey.精神);
 		list.add(StatusKey.信仰);
 		list.add(StatusKey.詠唱);
 		for (StatusKey k : list) {
@@ -177,7 +177,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 		list.add(StatusKey.筋力);
 		list.add(StatusKey.器用さ);
 		list.add(StatusKey.素早さ);
-		list.add(StatusKey.精神力);
+		list.add(StatusKey.精神);
 		list.add(StatusKey.信仰);
 		list.add(StatusKey.詠唱);
 		for (StatusKey k : list) {
@@ -265,7 +265,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			//ITEM
 			for (XMLElement e : root.getElement("item")) {
 				String itemID = e.getAttributes().get("id").getValue();
-				Item i = ActionStorage.getInstance().itemOf(id);
+				Item i = ActionStorage.getInstance().itemOf(itemID);
 				this.status.getItemBag().add(i);
 			}
 			//EQIP
@@ -291,7 +291,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			//BOOK
 			for (XMLElement e : root.getElement("book")) {
 				String actionID = e.getAttributes().get("id").getValue();
-				Action a = ActionStorage.getInstance().actionOf(id);
+				Action a = ActionStorage.getInstance().actionOf(actionID);
 				if (a.getType() != ActionType.魔法) {
 					throw new GameSystemException("book id is not magic : " + this + " / " + e);
 				}

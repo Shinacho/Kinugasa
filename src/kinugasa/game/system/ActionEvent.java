@@ -360,15 +360,6 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			return;
 		}
 
-		if (!getTerms().stream().allMatch(p -> p.canDo(user.getStatus()))) {
-			if (isUserEvent) {
-				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿起動条件未達, tgt));
-			} else {
-				ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿起動条件未達, Map.of()));
-			}
-			return;
-		}
-
 		if (tgt.getStatus().hasCondition(ConditionKey.解脱)) {
 			if (a.getDeadTgt() != Action.死亡者ターゲティング.気絶損壊解脱者を選択可能
 					&& a.getDeadTgt() != Action.死亡者ターゲティング.解脱者を選択可能) {

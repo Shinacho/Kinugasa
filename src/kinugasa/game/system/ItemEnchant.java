@@ -307,7 +307,7 @@ public enum ItemEnchant implements ItemEqipEffect {
 		@Override
 		public StatusValueSet getStatusValue(StatusValueSet v) {
 			StatusValueSet r = v.clone();
-			StatusKey k = StatusKey.精神力;
+			StatusKey k = StatusKey.精神;
 			StatusValue sv = r.getOrCreate(k, () -> new StatusValue(k, 0));
 			sv.add(7f);
 			return r;

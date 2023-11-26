@@ -49,7 +49,7 @@ public class MagicWindow extends BasicSprite {
 		choiceUse.setVisible(false);
 		tgtSelect = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel(""));
 		tgtSelect.setVisible(false);
-		msg = new ScrollSelectableMessageWindow(x, y, w, h, 23);
+		msg = new ScrollSelectableMessageWindow(x, y, w, h, 23, false);
 		msg.setVisible(false);
 		group = new MessageWindowGroup(choiceUse, tgtSelect, msg.getWindow());
 		updateText();

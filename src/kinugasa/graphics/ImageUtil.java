@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import kinugasa.game.GameLog;
+import kinugasa.game.system.GameSystem;
 import kinugasa.resource.ContentsIOException;
 import kinugasa.resource.FileNotFoundException;
 import kinugasa.util.StopWatch;
@@ -143,7 +144,9 @@ public final class ImageUtil {
 		SoftReference<BufferedImage> cacheRef = IMAGE_CACHE.get(filePath);
 		//キャッシュあり&GC未実行
 		if (cacheRef != null && cacheRef.get() != null) {
-			GameLog.print("ImageUtil cached filePath=[" + filePath + "]");
+			if (GameSystem.isDebugMode()) {
+				GameLog.print("ImageUtil cached filePath=[" + filePath + "]");
+			}
 			return cacheRef.get();
 		}
 		//GCが実行されているかキャッシュがなければ新しくロードしてキャッシュに追加する
@@ -157,20 +160,28 @@ public final class ImageUtil {
 			dst = ImageIO.read(file);
 		} catch (IOException ex) {
 			watch.stop();
-			GameLog.print("cant load filePath=[" + filePath + "]");
+			if (GameSystem.isDebugMode()) {
+				GameLog.print("cant load filePath=[" + filePath + "]");
+			}
 			throw new ContentsIOException(ex);
 		}
 		if (dst == null) {
 			watch.stop();
-			GameLog.print("image is null filePath=[" + filePath + "]");
+			if (GameSystem.isDebugMode()) {
+				GameLog.print("image is null filePath=[" + filePath + "]");
+			}
 			throw new ContentsIOException("image is null");
 		}
 		//互換画像に置換
-		dst = copy(dst, newImage(dst.getWidth(), dst.getHeight()));
-		IMAGE_CACHE.put(filePath, new SoftReference<BufferedImage>(dst));
+		int[] pix = getPixel(dst);
+		BufferedImage newImage = newImage(dst.getWidth(), dst.getHeight());
+		setPixel(newImage, pix);
+		IMAGE_CACHE.put(filePath, new SoftReference<BufferedImage>(newImage));
 		watch.stop();
-		GameLog.print("ImageUtil loaded filePath=[" + filePath + "](" + watch.getTime() + " ms)");
-		return dst;
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("ImageUtil loaded filePath=[" + filePath + "](" + watch.getTime() + " ms)");
+		}
+		return newImage;
 	}
 
 	/**
@@ -437,6 +448,23 @@ public final class ImageUtil {
 				}
 			}
 		}.start();
+	}
+
+	public static BufferedImage concatX(BufferedImage... images) {
+		int h = images[0].getHeight();
+		int w = 0;
+		for (var v : images) {
+			w += v.getWidth();
+		}
+		BufferedImage res = newImage(w, h);
+		Graphics2D g2 = createGraphics2D(res, RenderingQuality.QUALITY);
+		int x = 0;
+		for (var v : images) {
+			g2.drawImage(v, x, 0, null);
+			x += v.getWidth();
+		}
+		g2.dispose();
+		return res;
 	}
 
 	/**

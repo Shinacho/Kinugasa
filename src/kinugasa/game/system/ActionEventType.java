@@ -35,6 +35,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import kinugasa.game.I18N;
 import kinugasa.game.PlayerConstants;
+import kinugasa.game.field4.EventTerm;
+import kinugasa.game.field4.EventTermType;
 import kinugasa.game.field4.FieldEventParser;
 import kinugasa.game.field4.FieldEventSystem;
 import kinugasa.game.field4.FieldMap;
@@ -72,7 +74,8 @@ public enum ActionEventType {
 			StringBuilder sb = new StringBuilder();
 			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
 					(int) (event.getP() * 100) + "%",
-					event.getAtkAttr().getVisibleName(),
+					event.getAtkAttr() == null ? "無"
+					: event.getAtkAttr().getVisibleName(),
 					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
 			sb.append("    ");
@@ -82,32 +85,56 @@ public enum ActionEventType {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
 					sb.append("、");
 					sb.append(I18N.get(GameSystemI18NKeys.基礎値)).append(":").append(Math.abs((int) event.getValue()));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case ADD: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
 					sb.append("、");
 					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case MUL: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
 					sb.append("、");
 					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
 					sb.append("、");
 					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO_MAX: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO_ZERO: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				default: {
@@ -122,7 +149,9 @@ public enum ActionEventType {
 			StringBuilder sb = new StringBuilder();
 			sb.append(I18N.get(GameSystemI18NKeys.Xダメージの術式, event.getTgtStatusKey().getVisibleName()));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
 			sb.append(event.getValue() < 0 ? "-" : "+");
 			sb.append(Math.abs((int) (event.getValue())));
 			sb.append("(");
@@ -133,26 +162,50 @@ public enum ActionEventType {
 			switch (event.getCalcMode()) {
 				case DC: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case ADD: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case MUL: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO_MAX: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO_ZERO: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				default: {
@@ -212,9 +265,6 @@ public enum ActionEventType {
 					break;
 				}
 				case DC: {
-					if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
-						throw new GameSystemException("damage calc is cant exec in field : " + this);
-					}
 					//攻撃タイプ調整
 					DamageCalcSystem.ActionType actionType
 							= switch (a.getType()) {
@@ -241,7 +291,7 @@ public enum ActionEventType {
 						}
 					}
 					if (dcs == null) {
-						dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+						dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 					}
 					//ダメージ計算実行
 					DamageCalcSystem.Result r
@@ -316,7 +366,8 @@ public enum ActionEventType {
 			StringBuilder sb = new StringBuilder();
 			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性の回復ダメージをXに与える,
 					(int) (event.getP() * 100) + "%",
-					event.getAtkAttr().getVisibleName(),
+					event.getAtkAttr() == null ? "無"
+					: event.getAtkAttr().getVisibleName(),
 					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
 			sb.append("    ");
@@ -326,32 +377,56 @@ public enum ActionEventType {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
 					sb.append("、");
 					sb.append(I18N.get(GameSystemI18NKeys.基礎値)).append(":").append(Math.abs((int) event.getValue()));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case ADD: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
 					sb.append("、");
 					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case MUL: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
 					sb.append("、");
 					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
 					sb.append("、");
 					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO_MAX: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO_ZERO: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				default: {
@@ -366,7 +441,9 @@ public enum ActionEventType {
 			StringBuilder sb = new StringBuilder();
 			sb.append(I18N.get(GameSystemI18NKeys.X回復の術式, event.getTgtStatusKey().getVisibleName()));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
 			sb.append(event.getValue() < 0 ? "-" : "+");
 			sb.append(Math.abs((int) (event.getValue())));
 			sb.append("(");
@@ -377,26 +454,50 @@ public enum ActionEventType {
 			switch (event.getCalcMode()) {
 				case DC: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case ADD: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case MUL: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO_MAX: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				case TO_ZERO: {
 					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
+					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+					}
 					break;
 				}
 				default: {
@@ -456,9 +557,6 @@ public enum ActionEventType {
 					break;
 				}
 				case DC: {
-					if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
-						throw new GameSystemException("damage calc is cant exec in field : " + this);
-					}
 					//攻撃タイプ調整
 					DamageCalcSystem.ActionType actionType
 							= switch (a.getType()) {
@@ -485,7 +583,7 @@ public enum ActionEventType {
 						}
 					}
 					if (dcs == null) {
-						dcs = actionType == DamageCalcSystem.ActionType.物理回復 ? StatusKey.筋力 : StatusKey.精神力;
+						dcs = actionType == DamageCalcSystem.ActionType.物理回復 ? StatusKey.筋力 : StatusKey.精神;
 					}
 					//ダメージ計算実行
 					DamageCalcSystem.Result r
@@ -732,11 +830,6 @@ public enum ActionEventType {
 			if (e.getTgtConditionKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTCNDKEYが必要です) + " : " + this + " : " + e);
 			}
-			if (e.getCndTime() == 0) {
-				if (e.getTgtConditionKey() != ConditionKey.解脱 && e.getTgtConditionKey() != ConditionKey.損壊) {
-					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはCNDTIMEが必要です) + " : " + this + " : " + e);
-				}
-			}
 		}
 
 		@Override
@@ -823,15 +916,15 @@ public enum ActionEventType {
 			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
 			}
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			try {
 				ActionStorage.getInstance().itemOf(e.getTgtID());
 			} catch (Exception ex) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDがアイテムIDではありません) + " : " + this + " : " + e);
 			}
-		}
-
-		@Override
-		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Item i = ActionStorage.getInstance().itemOf(e.getTgtID());
 			int prevSIze = tgt.getStatus().getItemBag().size();
 			tgt.getStatus().getItemBag().drop(i);
@@ -2347,7 +2440,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result dr
@@ -2465,7 +2558,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result dr
@@ -2588,7 +2681,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -2706,7 +2799,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -2822,7 +2915,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -2941,7 +3034,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -3074,7 +3167,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -3326,7 +3419,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -3447,7 +3540,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -3568,7 +3661,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -3689,7 +3782,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -3810,7 +3903,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -3930,7 +4023,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -4095,7 +4188,7 @@ public enum ActionEventType {
 				}
 			}
 			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神力;
+				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
 			}
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
@@ -4266,6 +4359,10 @@ public enum ActionEventType {
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死させる, (int) (event.getP() * 100) + "%"));
+			if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+				String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+				sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+			}
 			sb.append(Text.getLineSep());
 			return sb.toString();
 		}
@@ -4278,6 +4375,10 @@ public enum ActionEventType {
 			sb.append(GameSystemI18NKeys.確率);
 			sb.append((int) (event.getP() * 100)).append("%");
 			sb.append(")");
+			if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+				String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+				sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+			}
 			return sb.toString();
 		}
 
@@ -4311,6 +4412,91 @@ public enum ActionEventType {
 					break;
 				}
 				case 気絶: {
+					tgt.getStatus().getBaseStatus().get(StatusKey.魔力).setValue(0);
+					tgt.getStatus().addWhen0Condition();
+					break;
+				}
+				default:
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります) + " : " + this + " : " + e);
+			}
+			String msg = tgt.getVisibleName() + e.getTgtConditionKey().getStartMsgI18Nd();
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+
+	},
+	TGTを即死させる_耐性参照(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死させる, (int) (event.getP() * 100) + "%"));
+			if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+				String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+				sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+			}
+			sb.append(Text.getLineSep());
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(I18N.get(GameSystemI18NKeys.即死の術式));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(")");
+			if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
+				String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
+				sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+			}
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtConditionKey() == null) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTCNDKEYが必要です) + " : " + this + " : " + e);
+			}
+			if (e.getTgtConditionKey() != ConditionKey.解脱 && e.getTgtConditionKey() != ConditionKey.気絶 && e.getTgtConditionKey() != ConditionKey.損壊) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントのTGTCNDKEYは解脱損壊気絶のいずれかである必要があります) + " : " + this + " : " + e);
+			}
+			if (e.getTgtConditionKey() == 気絶) {
+				if (e.getCndTime() == 0) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはCNDTIMEが必要です) + " : " + this + " : " + e);
+				}
+			}
+
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			switch (e.getTgtConditionKey()) {
+				case 解脱: {
+					if (!Random.percent(tgt.getStatus().getEffectedConditionRegist().get(ConditionKey.解脱))) {
+						String msg = I18N.get(GameSystemI18NKeys.XはXしなかった, tgt.getVisibleName(), ConditionKey.解脱.getVisibleName());
+						addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+						return;
+					}
+					tgt.getStatus().getBaseStatus().get(StatusKey.正気度).setValue(0);
+					tgt.getStatus().addWhen0Condition();
+					break;
+				}
+				case 損壊: {
+					if (!Random.percent(tgt.getStatus().getEffectedConditionRegist().get(ConditionKey.損壊))) {
+						String msg = I18N.get(GameSystemI18NKeys.XはXしなかった, tgt.getVisibleName(), ConditionKey.損壊.getVisibleName());
+						addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+						return;
+					}
+					tgt.getStatus().getBaseStatus().get(StatusKey.体力).setValue(0);
+					tgt.getStatus().addWhen0Condition();
+					break;
+				}
+				case 気絶: {
+					if (!Random.percent(tgt.getStatus().getEffectedConditionRegist().get(ConditionKey.気絶))) {
+						String msg = I18N.get(GameSystemI18NKeys.XはXしなかった, tgt.getVisibleName(), ConditionKey.気絶.getVisibleName());
+						addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+						return;
+					}
 					tgt.getStatus().getBaseStatus().get(StatusKey.魔力).setValue(0);
 					tgt.getStatus().addWhen0Condition();
 					break;

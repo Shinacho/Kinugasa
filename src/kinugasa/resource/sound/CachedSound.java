@@ -30,6 +30,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import kinugasa.game.GameLog;
 import kinugasa.game.system.Counts;
+import kinugasa.game.system.GameSystem;
 import kinugasa.game.system.GameSystemI18NKeys;
 import kinugasa.resource.ContentsIOException;
 import kinugasa.resource.InputStatus;
@@ -266,7 +267,9 @@ public class CachedSound implements Sound {
 			}
 		}
 		watch.stop();
-		GameLog.print("CachedSound is loaded name=[" + getName() + "](" + watch.getTime() + " ms)");
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("CachedSound is loaded name=[" + getName() + "](" + watch.getTime() + " ms)");
+		}
 		return this;
 	}
 

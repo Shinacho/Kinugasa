@@ -75,7 +75,9 @@ public class FieldEvent extends Model implements Nameable, Comparable<FieldEvent
 		if (disposeWhenExec) {
 			exists = false;
 		}
-		kinugasa.game.GameLog.print("->done");
+		if (GameSystem.isDebugMode()) {
+			kinugasa.game.GameLog.print("-> FET[" + name + "] done");
+		}
 //		GameLog.print("->done");
 		return u;
 	}

@@ -134,7 +134,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		if (desc == null || desc.isEmpty()) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.DESCが入っていません) + " : " + this);
 		}
-		if (area == 0 && (!mainEvents.isEmpty() || !userEvents.isEmpty())) {
+		if (area == 0 && (!mainEvents.isEmpty() || !userEvents.isEmpty()) && type != ActionType.アイテム) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントがありますがAREAが０です) + " : " + this);
 		}
 		if (deadTgt == null && (!mainEvents.isEmpty() || !userEvents.isEmpty())) {
@@ -424,8 +424,10 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 				return false;
 			}
 		}
-		return Stream.of(mainEvents, userEvents)
-				.flatMap(p -> p.stream())
+		if (userEvents.isEmpty()) {
+			return true;
+		}
+		return userEvents.stream()
 				.map(p -> p.getTerms())
 				.flatMap(p -> p.stream())
 				.allMatch(p -> p.canDo(a));

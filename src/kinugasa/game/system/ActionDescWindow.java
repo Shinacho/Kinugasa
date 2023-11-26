@@ -25,6 +25,7 @@ import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -82,27 +83,23 @@ public class ActionDescWindow extends PCStatusWindow {
 		List<Text> t = new ArrayList<>();
 		t.add(new Text("<---" + I18N.get(GameSystemI18NKeys.Xの行動,
 				GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName()) + "--->"));
-
+		t.add(new Text("----" + ActionType.攻撃.getVisibleName() + "----"));
 		for (Action a : s.get(pcIdx).getActions()
 				.stream()
 				.filter(p -> p.isBattle())
+				.filter(p -> p.getType() == ActionType.攻撃)
 				.sorted()
 				.collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
-			if (a.getType() == ActionType.アイテム) {
-				//表示しない
-				continue;
-			}
-			if (a.getType() == ActionType.行動) {
-				//表示しない
-				continue;
-			}
 			sb.append("  ").append(a.getVisibleName());
 			//魔法は魔法ウインドウで見れるので表示しない
-			if (a.getType() != ActionType.魔法) {
-				sb.append("／");
-				sb.append(a.getSummary());
+			sb.append(Text.getLineSep());
+			String[] desc = StringUtil.safeSplit(a.getDesc(), Text.getLineSep());
+			for (var v : desc) {
+				sb.append("    ");
+				sb.append(v).append(Text.getLineSep());
 			}
+			sb.append("    ");
 			sb.append("(")
 					.append(I18N.get(GameSystemI18NKeys.範囲))
 					.append(":")
@@ -139,7 +136,54 @@ public class ActionDescWindow extends PCStatusWindow {
 			}
 			sb.append(")");
 
-			t.add(new Text(sb.toString()));
+			t.addAll(Text.split(new Text(sb.toString())));
+		}
+		t.add(new Text("----" + ActionType.魔法.getVisibleName() + "----"));
+		for (Action a : s.get(pcIdx).getActions()
+				.stream()
+				.filter(p -> p.isBattle())
+				.filter(p -> p.getType() == ActionType.魔法)
+				.sorted()
+				.collect(Collectors.toList())) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("  ").append(a.getVisibleName());
+			sb.append("(")
+					.append(I18N.get(GameSystemI18NKeys.範囲))
+					.append(":")
+					.append(s.get(pcIdx).getAreaWithEqip(a));
+
+			if (a.getMainEvents().stream().map(p -> p.getAtkAttr())
+					.filter(p -> p != null)
+					.count() > 0) {
+				sb.append("、")
+						.append(I18N.get(GameSystemI18NKeys.属性))
+						.append(":");
+				sb.append(a.getMainEvents()
+						.stream()
+						.filter(p -> p.getAtkAttr() != null)
+						.map(p -> p.getAtkAttr().getVisibleName())
+						.distinct()
+						.collect(Collectors.toList()));
+			}
+
+			int i = 0;
+			if (!a.getMainEvents().isEmpty()) {
+				i = a.getMainEvents()
+						.stream()
+						.mapToInt(p -> (int) (p.getValue()))
+						.map(p -> Math.abs(p))
+						.sum();
+			}
+
+			if (i != 0) {
+				sb.append("、")
+						.append(I18N.get(GameSystemI18NKeys.基礎威力))
+						.append(":")
+						.append(i);
+			}
+			sb.append(")");
+
+			t.addAll(Text.split(new Text(sb.toString())));
 		}
 		mw.setText(t);
 	}

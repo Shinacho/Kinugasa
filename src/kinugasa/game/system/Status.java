@@ -384,7 +384,13 @@ public final class Status extends Model implements Nameable {
 			actions.remove(BattleConfig.ActionID.状態);
 		}
 		//アイテム
-		actions.addAll(getItemBag().getItems().stream().filter(p -> p.hasEvent()).collect(Collectors.toList()));
+		for (var i : getItemBag()) {
+			if (i.hasEvent()) {
+				if (!actions.contains(i.getId())) {
+					actions.add(i);
+				}
+			}
+		}
 		//魔法（本から移入
 		if (getEffectedStatus().get(StatusKey.魔術使用可否).getValue() == StatusKey.魔術使用可否＿使用可能) {
 			for (Book b : getBookBag()) {
@@ -657,8 +663,10 @@ public final class Status extends Model implements Nameable {
 
 	//アイテムが武器であることを確認すること！
 	public void eqipLeftHand(Item i) {
-		if (!getItemBag().has(i)) {
-			throw new GameSystemException("add eqip, but im not have :" + id + " / " + i);
+		if (!i.equals(ActionStorage.getInstance().両手持ち) && !i.equals(ActionStorage.getInstance().両手持ち_弓)) {
+			if (!getItemBag().has(i)) {
+				throw new GameSystemException("add eqip, but im not have :" + id + " / " + i);
+			}
 		}
 		EqipSlot slot = EqipSlot.左手;
 		if (!getRace().getEqipSlots().contains(slot)) {

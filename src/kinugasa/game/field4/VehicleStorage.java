@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import kinugasa.game.GameLog;
+import kinugasa.game.system.GameSystem;
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
 import kinugasa.resource.FileNotFoundException;
@@ -62,7 +63,9 @@ public class VehicleStorage extends Storage<Vehicle> implements XMLFileSupport {
 			}
 			add(new Vehicle(name, speed, list));
 		}
-		GameLog.print(getAll());
+		if (GameSystem.isDebugMode()) {
+			GameLog.print(getAll());
+		}
 	}
 
 	private Vehicle currentVehicle;

@@ -487,7 +487,9 @@ public class GameSystemI18NKeys {
 	public static final String しかし誰も正気度ダメージを受けなかった = "しかし誰も正気度ダメージを受けなかった";
 	public static final String XはXを誰かに渡す気はないようだ = "XはXを誰かに渡す気はないようだ";
 	public static final String このアイテムは誰かに渡したり装備解除したりできない = "このアイテムは誰かに渡したり装備解除したりできない";
-	
+	public static final String XはXしなかった = "XはXしなかった";
+	public static final String XはXを実行できない = "XはXを実行できない";
+	public static final String 時 = "時";
 	
 	public static class CountKey {
 

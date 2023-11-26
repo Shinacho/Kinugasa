@@ -75,14 +75,11 @@ public class Item extends Action implements Cloneable {
 		if (slot == null && weaponType != null) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.スロットと武器タイプの整合性がとれていません) + " : " + this);
 		}
-		if (weaponType == null && slot != null) {
+		if (weaponType == null && (slot == EqipSlot.右手 || slot == EqipSlot.左手)) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.スロットと武器タイプの整合性がとれていません) + " : " + this);
 		}
 		if (atkCount == 0 && (weaponType != null && slot != null)) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.武器ですが攻撃回数が０です) + " : " + this);
-		}
-		if (slot != null && style == null) {
-			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.装備品ですがスタイルが入っていません) + " : " + this);
 		}
 		if (weaponType != null && dcs == null) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.武器ですがDCSが入っていません) + " : " + this);
@@ -114,6 +111,10 @@ public class Item extends Action implements Cloneable {
 
 		super.pack();
 		return this;
+	}
+	
+	public boolean isEqip(){
+		return slot != null;
 	}
 
 	//getNameはスーパークラス。

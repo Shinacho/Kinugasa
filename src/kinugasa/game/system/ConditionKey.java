@@ -169,11 +169,11 @@ public enum ConditionKey implements ConditionEffect {
 		@Override
 		public StatusValueSet getStatusValue(StatusValueSet v) {
 			StatusValueSet r = v.clone();
-			StatusValue vs = r.get(StatusKey.精神力);
+			StatusValue vs = r.get(StatusKey.精神);
 			vs.setValue(vs.getValue() * 0.5f);
 			return r;
 		}
-	},//精神力が半分になる。継続ダメージ中を得る
+	},//精神が半分になる。継続ダメージ中を得る
 	凍結(true, "凍結している", "は凍結した", "", "") {
 		@Override
 		public void turnStart(Status s) {
@@ -196,7 +196,7 @@ public enum ConditionKey implements ConditionEffect {
 			s.addDamage(StatusKey.体力, value);
 		}
 	},//継続ダメージ強を得る
-	詠唱中(false, "魔法を詠唱している", "はXの詠唱を開始した", "はXを詠唱している", "") {
+	詠唱中(false, "魔法を詠唱している", "はXの詠唱を開始した", "は魔法を詠唱している", "") {
 		@Override
 		public void startEffect(ConditionFlags f) {
 			f.set停止理由(this);
@@ -848,61 +848,61 @@ public enum ConditionKey implements ConditionEffect {
 			return r;
 		}
 	},//
-	精神力_上昇_弱(false, "精神力が１２％上がる", "", "", "") {
+	精神_上昇_弱(false, "精神が１２％上がる", "", "", "") {
 		@Override
 		public StatusValueSet getStatusValue(StatusValueSet v) {
 			StatusValueSet r = new StatusValueSet();
-			StatusKey sk = StatusKey.精神力;
+			StatusKey sk = StatusKey.精神;
 			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
 			sv.mul(1.12f);
 			return r;
 		}
 	},//
-	精神力_上昇_中(false, "精神力が２４％上がる", "", "", "") {
+	精神_上昇_中(false, "精神が２４％上がる", "", "", "") {
 		@Override
 		public StatusValueSet getStatusValue(StatusValueSet v) {
 			StatusValueSet r = new StatusValueSet();
-			StatusKey sk = StatusKey.精神力;
+			StatusKey sk = StatusKey.精神;
 			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
 			sv.mul(1.24f);
 			return r;
 		}
 	},//
-	精神力_上昇_強(false, "精神力が３６％上がる", "", "", "") {
+	精神_上昇_強(false, "精神が３６％上がる", "", "", "") {
 		@Override
 		public StatusValueSet getStatusValue(StatusValueSet v) {
 			StatusValueSet r = new StatusValueSet();
-			StatusKey sk = StatusKey.精神力;
+			StatusKey sk = StatusKey.精神;
 			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
 			sv.mul(1.36f);
 			return r;
 		}
 	},//
-	精神力_低下_弱(false, "精神力が１２％下がる", "", "", "") {
+	精神_低下_弱(false, "精神が１２％下がる", "", "", "") {
 		@Override
 		public StatusValueSet getStatusValue(StatusValueSet v) {
 			StatusValueSet r = new StatusValueSet();
-			StatusKey sk = StatusKey.精神力;
+			StatusKey sk = StatusKey.精神;
 			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
 			sv.mul(0.88f);
 			return r;
 		}
 	},//
-	精神力_低下_中(false, "精神力が２４％下がる", "", "", "") {
+	精神_低下_中(false, "精神が２４％下がる", "", "", "") {
 		@Override
 		public StatusValueSet getStatusValue(StatusValueSet v) {
 			StatusValueSet r = new StatusValueSet();
-			StatusKey sk = StatusKey.精神力;
+			StatusKey sk = StatusKey.精神;
 			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
 			sv.mul(0.76f);
 			return r;
 		}
 	},//
-	精神力_低下_強(false, "精神力が３６％下がる", "", "", "") {
+	精神_低下_強(false, "精神が３６％下がる", "", "", "") {
 		@Override
 		public StatusValueSet getStatusValue(StatusValueSet v) {
 			StatusValueSet r = new StatusValueSet();
-			StatusKey sk = StatusKey.精神力;
+			StatusKey sk = StatusKey.精神;
 			StatusValue sv = r.getOrCreate(sk, () -> new StatusValue(sk, 0, 0, 0));
 			sv.mul(0.64f);
 			return r;

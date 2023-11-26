@@ -95,7 +95,13 @@ public class ActionStorage extends DBStorage<Action> {
 	public void checkAll() throws GameSystemException {
 		GameLog.print("----------ACTION_CHECK start --------------------");
 		for (Action a : selectAll()) {
-			GameLog.print(">" + a.getId() + "[" + a.getVisibleName() + "] OK");
+			String s
+					= a.getType() == ActionType.アイテム
+					? "this is"
+					+ (((Item) a).isEqip() ? " eqip item " : " item")
+					: "action";
+
+			GameLog.print(">" + a.getId() + "[" + a.getVisibleName() + "] OK " + s);
 		}
 		GameLog.print("----------ACTION_CHECK end --------------------");
 	}
@@ -233,7 +239,7 @@ public class ActionStorage extends DBStorage<Action> {
 				i.setPrice(l.get(8).asInt());
 				i.setSlot(l.get(9).orNull(EqipSlot.class));
 				i.setAtkCount(l.get(10).asInt());
-				i.setWeaponType(l.get(11).of(WeaponType.class));
+				i.setWeaponType(l.get(11).orNull(WeaponType.class));
 				i.setStyle(l.get(12).orNull(ItemStyle.class));
 				i.setEnchant(l.get(13).orNull(ItemEnchant.class));
 				i.setDcs(l.get(14).orNull(StatusKey.class));
@@ -332,7 +338,7 @@ public class ActionStorage extends DBStorage<Action> {
 				i.setPrice(l.get(8).asInt());
 				i.setSlot(l.get(9).orNull(EqipSlot.class));
 				i.setAtkCount(l.get(10).asInt());
-				i.setWeaponType(l.get(11).of(WeaponType.class));
+				i.setWeaponType(l.get(11).orNull(WeaponType.class));
 				i.setStyle(l.get(12).orNull(ItemStyle.class));
 				i.setEnchant(l.get(13).orNull(ItemEnchant.class));
 				i.setDcs(l.get(14).orNull(StatusKey.class));
@@ -559,6 +565,9 @@ public class ActionStorage extends DBStorage<Action> {
 
 	private EnumSet<ItemEqipTerm> getEqipTerms(String val) {
 		EnumSet<ItemEqipTerm> res = EnumSet.noneOf(ItemEqipTerm.class);
+		if (val == null || val.isEmpty()) {
+			return res;
+		}
 		for (var s : StringUtil.safeSplit(val, ",")) {
 			res.add(ItemEqipTerm.valueOf(s));
 		}

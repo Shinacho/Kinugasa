@@ -19,6 +19,7 @@ package kinugasa.resource;
 import java.io.File;
 import java.io.IOException;
 import kinugasa.game.GameLog;
+import kinugasa.game.system.GameSystem;
 
 /**
  * 一時ファイルです.
@@ -46,7 +47,9 @@ public final class TempFile implements Nameable {
 		} catch (IOException e) {
 			throw new ContentsIOException(e);
 		}
-		GameLog.print("temp file " + file.getPath() + " is created");
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("temp file " + file.getPath() + " is created");
+		}
 	}
 
 	public String getPath() {
