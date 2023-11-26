@@ -1012,6 +1012,7 @@ public class ItemWindow extends BasicSprite {
 		if (getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち)
 				|| getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち_弓)) {
 			sb.append(" (E)").append(ActionStorage.getInstance().両手持ち.getVisibleName());
+			sb.append(Text.getLineSep());
 		}
 		int j = 0;
 		for (Item item : ib) {
@@ -1064,6 +1065,7 @@ public class ItemWindow extends BasicSprite {
 		if (getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち)
 				|| getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち_弓)) {
 			sb.append(" (E)").append(ActionStorage.getInstance().両手持ち.getVisibleName());
+		sb.append(Text.getLineSep());
 		}
 		int j = 0;
 		for (Item item : ib) {
@@ -1179,6 +1181,7 @@ public class ItemWindow extends BasicSprite {
 			if (getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち)
 					|| getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち_弓)) {
 				sb.append(" (E)").append(ActionStorage.getInstance().両手持ち.getVisibleName());
+			sb.append(Text.getLineSep());
 			}
 			if (ib.isEmpty()) {
 				sb.append("  ").append(I18N.get(GameSystemI18NKeys.何も持っていない));

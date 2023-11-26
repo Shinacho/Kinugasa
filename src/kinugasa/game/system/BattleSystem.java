@@ -53,9 +53,11 @@ import static kinugasa.game.system.ConditionKey.解脱;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.GraphicsUtil;
 import kinugasa.graphics.ImageUtil;
+import kinugasa.object.AnimationSprite;
 import kinugasa.object.Effect;
 import kinugasa.object.FlashEffect;
 import kinugasa.object.ImageSprite;
+import kinugasa.util.TimeCounter;
 
 /**
  *
@@ -255,6 +257,19 @@ public class BattleSystem implements Drawable {
 	private int itemChoiceMode = -1;
 	//アイテム使用とパスのアイテム本体
 	private Item itemPassAndUse;
+
+	private static class 遅延起動Animation {
+
+		private AnimationSprite sprite;
+		private TimeCounter tc;
+
+		public 遅延起動Animation(AnimationSprite sprite, TimeCounter tc) {
+			this.sprite = sprite;
+			this.tc = tc;
+		}
+
+	}
+	private List<遅延起動Animation> delayAnimations = new ArrayList<>();
 
 	@OneceTime
 	public void encountInit(EncountInfo enc) {
@@ -1940,9 +1955,16 @@ public class BattleSystem implements Drawable {
 		//実行
 		e.exec(currentActionTgt, actionResult, isUserEvent);
 
+		if (e.getEventType() == ActionEventType.このアクションの他のイベントをこのイベントのTGTからVALUE内の一人にも適用
+				|| e.getEventType() == ActionEventType.このアクションの他のイベントをこのイベントのTGTからVALUE内の全員にも適用
+				|| e.getEventType() == ActionEventType.このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの一人にも適用
+				|| e.getEventType() == ActionEventType.このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの全員にも適用) {
+			イベントキュー消化();
+			return;
+		}
 		List<String> msg = new ArrayList<>();
-		if (isUserEvent)  {
-			if(e.getEventType() == ActionEventType.ダミー＿失敗 || e.getEventType() == ActionEventType.ダミー＿成功){
+		if (isUserEvent) {
+			if (e.getEventType() == ActionEventType.ダミー＿失敗 || e.getEventType() == ActionEventType.ダミー＿成功) {
 				イベントキュー消化();
 				return;
 			}
@@ -2012,7 +2034,11 @@ public class BattleSystem implements Drawable {
 					addDamageAnimation(v);
 					//MSG
 					if (v.msgI18Nd != null && !v.msgI18Nd.isEmpty()) {
-						msg.add(v.msgI18Nd);
+						if (r.perActor.size() > 8) {
+							msg.add(v.msgI18Nd.replaceAll(Text.getLineSep(), ", "));
+						} else {
+							msg.add(v.msgI18Nd);
+						}
 					} else if (v.event.getEventType() == ActionEventType.ステータス攻撃) {
 						msg.add(I18N.get(GameSystemI18NKeys.しかしXには当たらなかった, v.tgt.getVisibleName()));
 					}
@@ -2163,7 +2189,7 @@ public class BattleSystem implements Drawable {
 					a.getSprite().getY() + 12,
 					Math.abs(damage),
 					Color.RED);
-			animation.add(ds);
+			delayAnimations.add(new 遅延起動Animation(ds, new FrameTimeCounter(30)));
 
 		}
 
@@ -2290,7 +2316,7 @@ public class BattleSystem implements Drawable {
 					a.getSprite().getY() + 12,
 					Math.abs(damage),
 					Color.RED);
-			animation.add(ds);
+			delayAnimations.add(new 遅延起動Animation(ds, new FrameTimeCounter(30)));
 
 		}
 
@@ -2308,7 +2334,8 @@ public class BattleSystem implements Drawable {
 					res.tgt.getSprite().getY() - Random.randomAbsInt(9),
 					Math.abs(res.tgtDamageHp),
 					Color.WHITE);
-			animation.add(ds);
+			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(30));
+			delayAnimations.add(a);
 		}
 		if (res.tgtDamageMp != 0) {
 			DamageAnimationSprite ds = new DamageAnimationSprite(
@@ -2316,7 +2343,8 @@ public class BattleSystem implements Drawable {
 					res.tgt.getSprite().getY(),
 					Math.abs(res.tgtDamageMp),
 					Color.YELLOW);
-			animation.add(ds);
+			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(30));
+			delayAnimations.add(a);
 		}
 		if (res.tgtDamageSAN != 0) {
 			DamageAnimationSprite ds = new DamageAnimationSprite(
@@ -2324,20 +2352,24 @@ public class BattleSystem implements Drawable {
 					res.tgt.getSprite().getY() + Random.randomAbsInt(9),
 					Math.abs(res.tgtDamageSAN),
 					Color.RED);
-			animation.add(ds);
+			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(30));
+			delayAnimations.add(a);
 		}
 	}
 
 	private void addAnimation(ActionResult.EventActorResult res) {
 		//アニメーション
 		if (res.otherAnimation != null) {
-			this.animation.add(res.otherAnimation);
+			遅延起動Animation a = new 遅延起動Animation(res.otherAnimation, new FrameTimeCounter(30));
+			delayAnimations.add(a);
 		}
 		if (res.tgtAnimation != null) {
-			this.animation.add(res.tgtAnimation);
+			遅延起動Animation a = new 遅延起動Animation(res.tgtAnimation, new FrameTimeCounter(30));
+			delayAnimations.add(a);
 		}
 		if (res.userAnimation != null) {
-			this.animation.add(res.userAnimation);
+			遅延起動Animation a = new 遅延起動Animation(res.userAnimation, new FrameTimeCounter(30));
+			delayAnimations.add(a);
 		}
 	}
 
@@ -2351,7 +2383,15 @@ public class BattleSystem implements Drawable {
 		//敵のプログレスバー更新
 		enemies.forEach(v -> v.update());
 
-		//終了したアニメーションの除去
+		//アニメーションの整理
+		List<遅延起動Animation> removeDelayAni = new ArrayList<>();
+		for (var v : delayAnimations) {
+			if (v.tc.isReaching()) {
+				animation.add(v.sprite);
+				removeDelayAni.add(v);
+			}
+		}
+		delayAnimations.removeAll(removeDelayAni);
 		List<Sprite> remove = new ArrayList<>();
 		for (Sprite s : animation) {
 			if (!s.isVisible() || !s.isExist()) {
@@ -2365,6 +2405,8 @@ public class BattleSystem implements Drawable {
 				.filter(p -> !p.getStatus().hasCondition(ConditionKey.詠唱中))
 				.collect(Collectors.toSet());
 		removeCastAnimation.forEach(p -> castingSprites.remove(p));
+		//---------------------------
+		
 		if (stage != Stage.バトル終了済み) {//お味方全滅判定
 			boolean 全滅 = true;
 			boolean 逃げた人がいる = false;

@@ -62,7 +62,7 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 	private Color border2 = Color.BLACK;
 //	private Color inner1 = new Color(12, 16, 33);
 //	private Color inner2 = new Color(33, 33, 128);
-	private Color inner1 = new Color(0, 12, 32);
+	private Color inner1 = new Color(6, 18, 32);
 	private Color inner2 = new Color(24, 32, 66);
 	private FontModel font;
 	public final static int BORDER_SIZE = 2;

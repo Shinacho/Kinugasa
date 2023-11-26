@@ -288,7 +288,8 @@ public abstract class GameManager {
 			System.exit(1);
 		}
 		if (PlayerConstants.getInstance().isUsingGamePad()) {
-			// GamePadConnection.free(); //なんかエラー出る
+			//現状処理なし
+			GamePadConnection.free();
 		}
 		LockUtil.deleteLockFile();
 		GameLog.close();
