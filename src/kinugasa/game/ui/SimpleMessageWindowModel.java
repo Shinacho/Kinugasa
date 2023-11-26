@@ -60,8 +60,10 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 
 	private Color border1 = Color.WHITE;
 	private Color border2 = Color.BLACK;
-	private Color inner1 = new Color(12, 16, 33);
-	private Color inner2 = new Color(33, 33, 128);
+//	private Color inner1 = new Color(12, 16, 33);
+//	private Color inner2 = new Color(33, 33, 128);
+	private Color inner1 = new Color(0, 12, 32);
+	private Color inner2 = new Color(24, 32, 66);
 	private FontModel font;
 	public final static int BORDER_SIZE = 2;
 	private static final float CHARA_IMAGE_W = 235;
@@ -134,7 +136,13 @@ public class SimpleMessageWindowModel extends MessageWindowModel {
 		g2.setColor(border1);
 		g2.fillRect(x + BORDER_SIZE * 2, y + BORDER_SIZE * 2, w - BORDER_SIZE * 4, h - BORDER_SIZE * 4);
 
-		GradientPaint paint = new GradientPaint(x + BORDER_SIZE * 3, y + BORDER_SIZE * 3, inner1, w - BORDER_SIZE * 6, h - BORDER_SIZE * 6, inner2);
+		GradientPaint paint = new GradientPaint(
+				x + BORDER_SIZE * 3,
+				y + BORDER_SIZE * 3,
+				inner1,
+				x + w - BORDER_SIZE * 6,
+				y + h - BORDER_SIZE * 6,
+				inner2);
 		Paint p = g2.getPaint();
 		//グラデーションでインナー描画
 		g2.setPaint(paint);

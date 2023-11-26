@@ -329,7 +329,7 @@ public class MagicWindow extends BasicSprite {
 						}
 						//イベント詳細
 						sb.append(Text.getLineSep());
-						sb.append("--").append(I18N.get(GameSystemI18NKeys.戦闘効果)).append(Text.getLineSep());
+						sb.append("-").append(I18N.get(GameSystemI18NKeys.戦闘効果)).append(Text.getLineSep());
 						if (a.isBattle()) {
 							//SPELL_TIME
 							sb.append("  ");
@@ -361,7 +361,7 @@ public class MagicWindow extends BasicSprite {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法は戦闘中使えない)).append(Text.getLineSep());
 						}
 						sb.append(Text.getLineSep());
-						sb.append("--").append(I18N.get(GameSystemI18NKeys.フィールド効果)).append(Text.getLineSep());
+						sb.append("-").append(I18N.get(GameSystemI18NKeys.フィールド効果)).append(Text.getLineSep());
 						if (a.isField()) {
 							sb.append("---");
 							sb.append(I18N.get(GameSystemI18NKeys.対象効果));

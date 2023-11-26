@@ -1941,7 +1941,11 @@ public class BattleSystem implements Drawable {
 		e.exec(currentActionTgt, actionResult, isUserEvent);
 
 		List<String> msg = new ArrayList<>();
-		if (isUserEvent) {
+		if (isUserEvent)  {
+			if(e.getEventType() == ActionEventType.ダミー＿失敗 || e.getEventType() == ActionEventType.ダミー＿成功){
+				イベントキュー消化();
+				return;
+			}
 			ActionResult.UserEventResult r = actionResult.getLastUserEventResult();
 			//イベントが発動しなかったら何もせずスキップ
 			//アニメーション追加
