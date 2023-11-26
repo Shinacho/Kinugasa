@@ -18,6 +18,7 @@ package kinugasa.game.system;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -57,6 +58,33 @@ public class EnemyBlueprint {
 		Enemy e = new Enemy(fileName);//newするとloadされる
 		e.setVisibleName(e.getVisibleName() + getEnemyNo(e.getId()));
 		return e;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 29 * hash + Objects.hashCode(this.fileName);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final EnemyBlueprint other = (EnemyBlueprint) obj;
+		return Objects.equals(this.fileName, other.fileName);
+	}
+
+	@Override
+	public String toString() {
+		return "EnemyBlueprint{" + "fileName=" + fileName + '}';
 	}
 
 }

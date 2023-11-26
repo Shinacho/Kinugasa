@@ -344,19 +344,22 @@ public enum ActionEventType {
 					throw new AssertionError("undefined calc mode");
 			}//switch
 			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
-			String msg = "";
-			if (v.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()));
-				msg += Text.getLineSep();
+			if (v != null) {
+				String msg = "";
+				if (v.getValue() < 0) {
+					msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+							+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
+							+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+				} else {
+					msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+							+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
+							+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+				}
+				addResult(ar, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()));
-				msg += Text.getLineSep();
+				String msg = I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+				addResult(ar, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
-			addResult(ar, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -621,17 +624,22 @@ public enum ActionEventType {
 					throw new AssertionError("undefined calc mode");
 			}//switch
 			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
-			String msg = "";
-			if (v.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+			if (v != null) {
+				String msg = "";
+				if (v.getValue() < 0) {
+					msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+							+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
+							+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+				} else {
+					msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
+							+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
+							+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+				}
+				addResult(ar, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+				String msg = I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+				addResult(ar, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
-			addResult(ar, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},

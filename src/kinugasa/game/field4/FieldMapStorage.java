@@ -19,6 +19,7 @@ package kinugasa.game.field4;
 import java.util.logging.Level;
 import kinugasa.game.GameLog;
 import kinugasa.game.GameOption;
+import kinugasa.game.system.GameSystem;
 import kinugasa.resource.Storage;
 import kinugasa.resource.text.FileIOException;
 import kinugasa.resource.FileNotFoundException;
@@ -62,7 +63,9 @@ public class FieldMapStorage extends Storage<FieldMap> implements XMLFileSupport
 			}
 			add(new FieldMap(name, fieldMapDataFile));
 		}
-		GameLog.print(getAll());
+		if (GameSystem.isDebugMode()) {
+			GameLog.print(getAll());
+		}
 //		printAll(System.out);
 	}
 

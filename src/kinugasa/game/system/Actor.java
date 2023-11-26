@@ -304,7 +304,10 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 					!= LevelSystem.経験値からレベル算出(this.status.getEffectedStatus().get(StatusKey.保有経験値).getValue())) {
 				throw new GameSystemException("lv - exp missmatch : " + this);
 			}
-			GameLog.print("Actor : " + this + " is loaded");
+
+			if (GameSystem.isDebugMode()) {
+				GameLog.print("Actor : " + this + " is loaded");
+			}
 
 		} catch (FileIOException | NameNotFoundException e) {
 			throw new IllegalXMLFormatException(e.getMessage());

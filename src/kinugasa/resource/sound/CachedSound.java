@@ -288,7 +288,9 @@ public class CachedSound implements Sound {
 			clip.close();
 		}
 		clip = null;
-		GameLog.print("CachedSound : [" + getName() + "] : is disposed");
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("CachedSound : [" + getName() + "] : is disposed");
+		}
 	}
 
 	@Override

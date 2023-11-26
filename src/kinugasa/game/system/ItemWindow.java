@@ -31,6 +31,7 @@ import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -1003,39 +1004,22 @@ public class ItemWindow extends BasicSprite {
 		msg.allText();
 		group.show(msg.getWindow());
 
-		PersonalBag<Item> ib = getSelectedPC().getItemBag();
-		sb = new StringBuilder();
-		sb.append("<---");
-		sb.append(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName());
-		sb.append("--->");
-		sb.append(Text.getLineSep());
-		if (getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち)
-				|| getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち_弓)) {
-			sb.append(" (E)").append(ActionStorage.getInstance().両手持ち.getVisibleName());
-			sb.append(Text.getLineSep());
-		}
-		int j = 0;
-		for (Item item : ib) {
-			if (j == main.getSelect()) {
-				sb.append("  >");
-			} else {
-				sb.append("   ");
-			}
-			if (getSelectedPC().getEqip().values() != null
-					&& !getSelectedPC().getEqip().values().isEmpty()
-					&& getSelectedPC().getEqip().values().contains(i)) {
-				sb.append(" (E)");
-			} else {
-				sb.append("    ");
-			}
-			sb.append(item.getVisibleName()).append(Text.getLineSep());
-			j++;
-		}
-		main.setText(sb.toString());
+		main.setText(getItemListText(getSelectedPC()));
 		main.allText();
 		main.setVisible(true);
 		mainSelect = 0;
 
+	}
+
+	private EqipSlot getEqipedSlot(Status s, Item i) {
+		for (var v : s.getEqip().entrySet()) {
+			if (v.getValue() != null) {
+				if (v.getValue().equals(i)) {
+					return v.getKey();
+				}
+			}
+		}
+		return null;
 	}
 
 	private void commitPass() {
@@ -1055,38 +1039,66 @@ public class ItemWindow extends BasicSprite {
 		msg.allText();
 		group.show(msg.getWindow());
 
+		main.setText(getItemListText(getSelectedPC()));
+		main.allText();
+		main.setVisible(true);
+	}
+
+	private String getItemListText(Status s) {
 		StringBuilder sb = new StringBuilder();
-		PersonalBag<Item> ib = getSelectedPC().getItemBag();
-		sb = new StringBuilder();
 		sb.append("<---");
 		sb.append(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName());
 		sb.append("--->");
 		sb.append(Text.getLineSep());
-		if (getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち)
-				|| getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち_弓)) {
-			sb.append(" (E)").append(ActionStorage.getInstance().両手持ち.getVisibleName());
-		sb.append(Text.getLineSep());
-		}
 		int j = 0;
-		for (Item item : ib) {
-			if (j == main.getSelect()) {
-				sb.append("  >");
+		boolean ryote = true;
+		Set<Item> eqip = new HashSet<>();
+		for (Item item : s.getItemBag()) {
+			if (j == mainSelect) {
+				sb.append(">・");
 			} else {
-				sb.append("   ");
+				sb.append(" ・");
 			}
 			if (getSelectedPC().getEqip().values() != null
 					&& !getSelectedPC().getEqip().values().isEmpty()
-					&& getSelectedPC().getEqip().values().contains(i)) {
-				sb.append(" (E)");
+					&& getSelectedPC().getEqip().values().contains(item)
+					&& !eqip.contains(item)) {
+				if (item.isWeapon()) {
+					eqip.add(item);
+					sb.append("(").append(getEqipedSlot(getSelectedPC(), item).getVisibleName()).append(")");
+					sb.append(item.getVisibleName()).append(Text.getLineSep());
+					if (ryote) {
+						if (s.getEqip().values().contains(ActionStorage.getInstance().両手持ち)) {
+							sb.append(" ・(").append(EqipSlot.左手.getVisibleName()).append(")").append(ActionStorage.getInstance().両手持ち.getVisibleName());
+							sb.append(Text.getLineSep());
+						}
+						if (s.getEqip().values().contains(ActionStorage.getInstance().両手持ち_弓)) {
+							sb.append(" ・(").append(EqipSlot.右手.getVisibleName()).append(")").append(ActionStorage.getInstance().両手持ち_弓.getVisibleName());
+							sb.append(Text.getLineSep());
+						}
+						ryote = false;
+					}
+				} else {
+					eqip.add(item);
+					sb.append("(").append(getEqipedSlot(getSelectedPC(), item).getVisibleName()).append(")");
+					sb.append(item.getVisibleName()).append(Text.getLineSep());
+				}
 			} else {
-				sb.append("    ");
+				sb.append(item.getVisibleName()).append(Text.getLineSep());
 			}
-			sb.append(item.getVisibleName()).append(Text.getLineSep());
 			j++;
 		}
-		main.setText(sb.toString());
-		main.allText();
-		main.setVisible(true);
+		sb.append(Text.getLineSep());
+		sb.append(Text.getLineSep());
+		sb.append(I18N.get(GameSystemI18NKeys.あとX個持てる, getSelectedPC().getItemBag().remainingSize() + ""));
+		sb.append(Text.getLineSep());
+		for (var v : getSelectedPC().getEqip().entrySet()) {
+			if (v.getValue() == null) {
+				sb.append("・").append(I18N.get(GameSystemI18NKeys.Xには何も装備していない, v.getKey().getVisibleName()));
+				sb.append(Text.getLineSep());
+			}
+		}
+		return sb.toString();
 	}
 
 	private void commitDrop() {
@@ -1172,50 +1184,10 @@ public class ItemWindow extends BasicSprite {
 	public void update() {
 		//メインウインドウの内容更新
 		if (mode == Mode.ITEM_AND_USER_SELECT) {
-			PersonalBag<Item> ib = getSelectedPC().getItemBag();
-			StringBuilder sb = new StringBuilder();
-			sb.append("<---");
-			sb.append(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName());
-			sb.append("--->");
-			sb.append(Text.getLineSep());
-			if (getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち)
-					|| getSelectedPC().getEqip().values().contains(ActionStorage.getInstance().両手持ち_弓)) {
-				sb.append(" (E)").append(ActionStorage.getInstance().両手持ち.getVisibleName());
-			sb.append(Text.getLineSep());
-			}
-			if (ib.isEmpty()) {
-				sb.append("  ").append(I18N.get(GameSystemI18NKeys.何も持っていない));
-				main.setText(sb.toString());
-				main.allText();
-				main.setVisible(true);
-			} else {
-				int j = 0;
-				Set<Item> eqip = new HashSet<>();
-				for (Item i : ib) {
-					if (j == mainSelect) {
-						sb.append("  >");
-					} else {
-						sb.append("   ");
-					}
-					if (getSelectedPC().getEqip().values() != null
-							&& !getSelectedPC().getEqip().values().isEmpty()
-							&& getSelectedPC().getEqip().values().contains(i)
-							&& !eqip.contains(i)) {
-						sb.append(" (E)");
-						eqip.add(i);
-					} else {
-						sb.append("    ");
-					}
-					sb.append(i.getVisibleName()).append(Text.getLineSep());
-					j++;
-				}
-			}
-			sb.append(Text.getLineSep());
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.あとX個持てる, getSelectedPC().getItemBag().remainingSize() + ""));
-			main.setText(sb.toString());
+			main.setText(getItemListText(getSelectedPC()));
 			main.allText();
 			main.setVisible(true);
+			main.update();
 		}
 		msg.update();
 	}

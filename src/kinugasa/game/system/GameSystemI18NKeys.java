@@ -490,6 +490,7 @@ public class GameSystemI18NKeys {
 	public static final String XはXしなかった = "XはXしなかった";
 	public static final String XはXを実行できない = "XはXを実行できない";
 	public static final String 時 = "時";
+	public static final String Xには何も装備していない = "Xには何も装備していない";
 	
 	public static class CountKey {
 

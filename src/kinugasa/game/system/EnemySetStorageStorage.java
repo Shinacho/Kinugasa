@@ -65,8 +65,8 @@ public class EnemySetStorageStorage extends Storage<EnemySetStorage> implements 
 			for (EnemySetStorage ess : this) {
 				ess.build();
 				for (EnemySet es : ess) {
-					for (Enemy e : es.create()) {
-						GameLog.print("E3S->" + es.getName() + "->" + e.getId() + " : OK");
+					for (var e : es.getEnemies().stream().distinct().toList()) {
+						GameLog.print("E3S->" + es.getName() + "->" + e.create() + " : OK");
 					}
 				}
 				ess.dispose();

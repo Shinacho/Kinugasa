@@ -2361,14 +2361,18 @@ public class BattleSystem implements Drawable {
 		//アニメーション
 		if (res.otherAnimation != null) {
 			遅延起動Animation a = new 遅延起動Animation(res.otherAnimation, new FrameTimeCounter(30));
+			a.sprite.setLocationByCenter(battleFieldSystem.getBattleFieldAllArea().getCenter());
+			a.sprite.setImage(ImageUtil.resize(a.sprite.getImage().get(), GameOption.getInstance().getDrawSize()));
 			delayAnimations.add(a);
 		}
 		if (res.tgtAnimation != null) {
 			遅延起動Animation a = new 遅延起動Animation(res.tgtAnimation, new FrameTimeCounter(30));
+			a.sprite.setImage(ImageUtil.resize(a.sprite.getImage().get(), GameOption.getInstance().getDrawSize()));
 			delayAnimations.add(a);
 		}
 		if (res.userAnimation != null) {
 			遅延起動Animation a = new 遅延起動Animation(res.userAnimation, new FrameTimeCounter(30));
+			a.sprite.setImage(ImageUtil.resize(a.sprite.getImage().get(), GameOption.getInstance().getDrawSize()));
 			delayAnimations.add(a);
 		}
 	}
@@ -2406,7 +2410,7 @@ public class BattleSystem implements Drawable {
 				.collect(Collectors.toSet());
 		removeCastAnimation.forEach(p -> castingSprites.remove(p));
 		//---------------------------
-		
+
 		if (stage != Stage.バトル終了済み) {//お味方全滅判定
 			boolean 全滅 = true;
 			boolean 逃げた人がいる = false;

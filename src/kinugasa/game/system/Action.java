@@ -151,7 +151,9 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		for (ActionEvent e : mainEvents) {
 			checkEvent(e);
 		}
-		GameLog.print("action : " + this + " is loaded");
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("action : " + this + " is loaded");
+		}
 
 		return this;
 	}
