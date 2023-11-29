@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import kinugasa.game.GameLog;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LoopCall;
@@ -640,7 +641,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			textStorage.clear();
 		}
 		if (GameSystem.isDebugMode()) {
-			System.err.println("FieldMap[" + getName() + "] is disposed");
+			GameLog.print("FieldMap[" + getName() + "] is disposed");
 		}
 	}
 

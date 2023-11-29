@@ -788,7 +788,7 @@ public class BattleSystem implements Drawable {
 		if (user.getStatus().hasCondition(ConditionKey.詠唱中)) {
 			//停止理由はConditionFlagに2つ置けないので、手動で探す
 			ConditionKey 停止理由 = null;
-			for (ConditionKey k : List.of(ConditionKey.眠り, ConditionKey.麻痺, ConditionKey.詠唱中)) {
+			for (ConditionKey k : List.of(ConditionKey.眠り, ConditionKey.麻痺)) {
 				if (user.getStatus().hasCondition(k)) {
 					停止理由 = k;
 				}
@@ -2757,6 +2757,10 @@ public class BattleSystem implements Drawable {
 	//アクションリザルトウインドウに出す。主に1行用。
 	//"/" ok
 	private void setMsg(String s) {
+		String st = s.trim();
+		while (st.contains(Text.getLineSep() + Text.getLineSep())) {
+			st = st.replaceAll(Text.getLineSep() + Text.getLineSep(), Text.getLineSep());
+		}
 		if (s.contains("/")) {
 			setMsg(Arrays.asList(s.split("/")));
 			return;

@@ -81,7 +81,11 @@ public class BattleStatusWindows extends BasicSprite {
 			mw.add(window);
 			x += w;
 		}
+		体力 = StatusKey.体力.getVisibleName();
+		魔力 = StatusKey.魔力.getVisibleName();
+		正気度 = StatusKey.正気度.getVisibleName();
 	}
+	private String 体力, 魔力, 正気度;
 
 	@Override
 	public void update() {
@@ -101,12 +105,12 @@ public class BattleStatusWindows extends BasicSprite {
 					}
 					text += " | ";
 				}
-				text += vs.getKey().getVisibleName()
+				text += (vs.getKey() == StatusKey.体力 ? 体力 : vs.getKey() == StatusKey.魔力 ? 魔力 : 正気度)
 						+ ":"
 						+ (int) (vs.getValue()) + Text.getLineSep();
 				j++;
 			}
-			Text t = new Text(text);
+			Text t = Text.noI18N(text);
 			t.allText();
 			mw.get(i).setText(t);
 			if (s.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊, ConditionKey.逃走した)) {

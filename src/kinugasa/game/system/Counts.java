@@ -18,8 +18,6 @@ package kinugasa.game.system;
 
 import java.util.ArrayList;
 import java.util.List;
-import static kinugasa.game.I18N.contains;
-import static kinugasa.game.I18N.get;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Storage;
 import kinugasa.resource.db.DBConnection;

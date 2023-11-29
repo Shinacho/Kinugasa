@@ -202,7 +202,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 		try {
 			XMLElement root = f.load().getFirst();
 			String id = root.getAttributes().get("id").getValue();
-			String visibleName = root.getAttributes().get("visibleName").getValue();
+			String visibleName = I18N.get(root.getAttributes().get("visibleName").getValue());
 			Race r = root.getAttributes().get("race").of(Race.class);
 			//ID
 			this.id = id;
@@ -304,7 +304,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 					!= LevelSystem.経験値からレベル算出(this.status.getEffectedStatus().get(StatusKey.保有経験値).getValue())) {
 				throw new GameSystemException("lv - exp missmatch : " + this);
 			}
-			
+
 			//アイテム所持数の再計算
 			getStatus().updateBagSize();
 
@@ -323,8 +323,8 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 		return id;
 	}
 
-	public final String getVisibleName() {
-		return I18N.get(visibleName);
+	public String getVisibleName() {
+		return visibleName;
 	}
 
 	public final String getId() {

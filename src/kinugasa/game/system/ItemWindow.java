@@ -229,14 +229,14 @@ public class ItemWindow extends BasicSprite {
 		switch (mode) {
 			case ITEM_AND_USER_SELECT:
 				List<Text> options = new ArrayList<>();
-				options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
-				options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
-				options.add(new Text(I18N.get(GameSystemI18NKeys.装備)));
-				options.add(new Text(I18N.get(GameSystemI18NKeys.左手に装備)));
-				options.add(new Text(I18N.get(GameSystemI18NKeys.両手持ちで装備)));
-				options.add(new Text(I18N.get(GameSystemI18NKeys.渡す)));
-				options.add(new Text(I18N.get(GameSystemI18NKeys.解体)));
-				options.add(new Text(I18N.get(GameSystemI18NKeys.捨てる)));
+				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.調べる)));
+				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.使う)));
+				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.装備)));
+				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.左手に装備)));
+				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.両手持ちで装備)));
+				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.渡す)));
+				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.解体)));
+				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.捨てる)));
 				Choice c = new Choice(options, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを,
 						getSelectedItem().getVisibleName()));
 				choiceUse.setText(c);
@@ -356,7 +356,7 @@ public class ItemWindow extends BasicSprite {
 						}
 						//その他の場合はターゲット選択へ
 						List<Text> options3 = new ArrayList<>();
-						options3.addAll(list.stream().map(p -> new Text(p.getVisibleName())).collect(Collectors.toList()));
+						options3.addAll(list.stream().map(p -> Text.noI18N(p.getVisibleName())).collect(Collectors.toList()));
 						tgtSelect.setText(new Choice(options3, "ITEM_WINDOW_SUB",
 								I18N.get(GameSystemI18NKeys.Xを誰に使う, i.getVisibleName())));
 						tgtSelect.allText();
@@ -607,7 +607,7 @@ public class ItemWindow extends BasicSprite {
 						}
 						//パスターゲットに移動
 						List<Text> options2 = new ArrayList<>();
-						options2.addAll(list.stream().map(p -> new Text(p.getVisibleName())).collect(Collectors.toList()));
+						options2.addAll(list.stream().map(p -> Text.noI18N(p.getVisibleName())).collect(Collectors.toList()));
 						tgtSelect.setText(new Choice(options2, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを誰に渡す,
 								i.getVisibleName())));
 						tgtSelect.allText();
@@ -841,8 +841,8 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							List<Text> options4 = new ArrayList<>();
-							options4.add(new Text(I18N.get(GameSystemI18NKeys.いいえ)));
-							options4.add(new Text(I18N.get(GameSystemI18NKeys.はい)));
+							options4.add(Text.noI18N(I18N.get(GameSystemI18NKeys.いいえ)));
+							options4.add(Text.noI18N(I18N.get(GameSystemI18NKeys.はい)));
 							dropConfirm.reset();
 							dropConfirm.setText(new Choice(options4, "DROP_CONFIRM", I18N.get(GameSystemI18NKeys.Xを本当にすてる, i.getVisibleName())));
 							dropConfirm.allText();
@@ -868,8 +868,8 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							List<Text> options5 = new ArrayList<>();
-							options5.add(new Text(I18N.get(GameSystemI18NKeys.いいえ)));
-							options5.add(new Text(I18N.get(GameSystemI18NKeys.はい)));
+							options5.add(Text.noI18N(I18N.get(GameSystemI18NKeys.いいえ)));
+							options5.add(Text.noI18N(I18N.get(GameSystemI18NKeys.はい)));
 							disasseConfirm.reset();
 							disasseConfirm.setText(new Choice(options5, "DISASSE_CONFIRM", I18N.get(GameSystemI18NKeys.Xを本当に解体する, i.getVisibleName())));
 							disasseConfirm.allText();
@@ -1061,10 +1061,19 @@ public class ItemWindow extends BasicSprite {
 		main.setVisible(true);
 	}
 
+	private String cache = null;
+	private Status prevStatus = null;
+	private int prevMainSelect = 0;
+
 	private String getItemListText(Status s) {
+		if (s.equals(prevStatus) && prevMainSelect == mainSelect && cache != null) {
+			return cache;
+		}
+		prevStatus = s;
+		prevMainSelect = mainSelect;
 		StringBuilder sb = new StringBuilder();
 		sb.append("<---");
-		sb.append(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName());
+		sb.append(s.getVisibleName());
 		sb.append("--->");
 		sb.append(Text.getLineSep());
 		int j = 0;
@@ -1115,7 +1124,7 @@ public class ItemWindow extends BasicSprite {
 				sb.append(Text.getLineSep());
 			}
 		}
-		return sb.toString();
+		return cache = sb.toString();
 	}
 
 	private void commitDrop() {
@@ -1201,7 +1210,7 @@ public class ItemWindow extends BasicSprite {
 	public void update() {
 		//メインウインドウの内容更新
 		if (mode == Mode.ITEM_AND_USER_SELECT) {
-			main.setText(getItemListText(getSelectedPC()));
+			main.setText(Text.noI18N(getItemListText(getSelectedPC())));
 			main.allText();
 			main.setVisible(true);
 			main.update();

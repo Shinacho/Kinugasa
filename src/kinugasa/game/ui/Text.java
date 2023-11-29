@@ -22,8 +22,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import kinugasa.game.I18N;
 import kinugasa.game.Nullable;
 import kinugasa.game.field4.FieldEvent;
+import kinugasa.game.system.GameSystemException;
 import kinugasa.resource.Nameable;
 import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.TimeCounter;
@@ -35,12 +37,16 @@ import kinugasa.util.TimeCounter;
  */
 public class Text implements Nameable {
 
+	public static Text empty() {
+		return noI18N("");
+	}
+
 	public static Text collect(List<Text> t) {
 		StringBuilder sb = new StringBuilder();
 		for (Text tt : t) {
 			sb.append(tt.getText()).append(Text.lineSep);
 		}
-		return new Text(sb.substring(0, sb.length() - 1));
+		return Text.noI18N(sb.substring(0, sb.length() - 1));
 	}
 
 	public static Text collect(Text... t) {
@@ -48,13 +54,13 @@ public class Text implements Nameable {
 		for (Text tt : t) {
 			sb.append(tt.getText()).append(Text.lineSep);
 		}
-		return new Text(sb.substring(0, sb.length() - 1));
+		return Text.noI18N(sb.substring(0, sb.length() - 1));
 	}
 
 	public static List<Text> split(Text t) {
 		List<Text> r = new ArrayList<>();
 		for (String v : t.getText().split(lineSep)) {
-			r.add(new Text(v));
+			r.add(Text.noI18N(v));
 		}
 		return r;
 	}
@@ -89,23 +95,48 @@ public class Text implements Nameable {
 	}
 
 	public Text() {
-		this("");
+		name = "TEXT_" + autoId++;
+		text = "";
+	}
+
+	public static Text noI18N(String text) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		Text t = new Text();
+		t.text = text;
+		return t;
 	}
 
 	public Text(String text) {
 		this.name = "TEXT_" + autoId++;
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
 		setText(text);
 	}
 
 	public Text(String text, TimeCounter tc) {
 		this.name = "TEXT_" + autoId++;
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
 		setText(text);
 		this.tc = tc;
 		visibleIdx = 0;
 	}
 
+	public Text(String name, TimeCounter tc, int visibleIdx) {
+		this.name = name;
+		this.tc = tc;
+		this.visibleIdx = visibleIdx;
+	}
+
 	public Text(String name, String text, TimeCounter tc, int visibleIdx) {
 		this.name = name;
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
 		setText(text);
 		this.tc = tc;
 		this.visibleIdx = visibleIdx;
@@ -123,9 +154,22 @@ public class Text implements Nameable {
 	public void setImage(BufferedImage image) {
 		this.image = image;
 	}
+	
+	public void setTextNoI18N(String t){
+		if (t == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		this.text = t;
+		for (Map.Entry<String, String> e : replaceMap.entrySet()) {
+			text = text.replaceAll(e.getKey(), e.getValue());
+		}
+	}
 
 	private void setText(String t) {
-		this.text = t;
+		if (t == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		this.text = I18N.get(t);
 		for (Map.Entry<String, String> e : replaceMap.entrySet()) {
 			text = text.replaceAll(e.getKey(), e.getValue());
 		}
@@ -141,6 +185,9 @@ public class Text implements Nameable {
 	}
 
 	public boolean isReaching() {
+		if(text == null || text.isEmpty()){
+			return true;
+		}
 		if (visibleIdx >= text.length()) {
 			return true;
 		}
@@ -157,10 +204,16 @@ public class Text implements Nameable {
 	}
 
 	public final String getText() {
+		if (text == null || text.isEmpty()) {
+			return "";
+		}
 		return text;
 	}
 
 	public String getVisibleText() {
+		if (text == null || text.isEmpty()) {
+			return "";
+		}
 		return visibleIdx >= text.length() ? text : text.substring(0, visibleIdx);
 	}
 
@@ -173,10 +226,15 @@ public class Text implements Nameable {
 	}
 
 	public void allText() {
-		visibleIdx = text.length();
+		if (text != null) {
+			visibleIdx = text.length();
+		}
 	}
 
 	public boolean isAllVisible() {
+		if (text == null || text.isEmpty()) {
+			return true;
+		}
 		return visibleIdx >= text.length();
 	}
 

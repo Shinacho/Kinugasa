@@ -96,13 +96,13 @@ public class BattleMessageWindowSystem implements Drawable {
 		infoW = new MessageWindow(560, messageWindowY, w - 560, 38, new SimpleMessageWindowModel().setNextIcon("")) {
 			@Override
 			public void setText(String text) {
-				super.setText(text); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+				super.setText(text);
 				allText();
 			}
 
 			@Override
 			public void setText(Text text) {
-				super.setText(text); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+				super.setText(text);
 				allText();
 			}
 

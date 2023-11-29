@@ -68,7 +68,7 @@ public class TextStorage extends Storage<Text> implements Nameable {
 		XMLElement root = data.load().getFirst();
 		for (XMLElement e : root.getElement("text")) {
 			String id = e.getAttributes().get("id").getValue();
-			String value = e.getValue();
+			String value = e.getValue().replaceAll("\r\n", "").replaceAll("\r", "").replaceAll("\n", "").replaceAll(Text.getLineSep(), "").trim();
 			String tcs = e.getAttributes().get("tc").getValue();
 
 			List<Integer> tcvalues;
@@ -86,7 +86,7 @@ public class TextStorage extends Storage<Text> implements Nameable {
 			if (e.hasAttribute("eventScript")) {
 				t.setEvents(FieldEventParser.parse(id, e.getAttributes().get("eventScript").getValue()));
 			}
-			if(e.hasAttribute("image")){
+			if (e.hasAttribute("image")) {
 				t.setImage(ImageUtil.load(e.getAttributes().get("image").getValue()));
 			}
 			if (!contains(t)) {
@@ -99,7 +99,7 @@ public class TextStorage extends Storage<Text> implements Nameable {
 				throw new IllegalXMLFormatException("Choice cannot have Next : " + e);
 			}
 			String id = e.getAttributes().get("id").getValue();
-			String value = e.getAttributes().get("text").getValue();
+			String value = e.getAttributes().get("text").getValue().replaceAll("\r\n", "").replaceAll("\r", "").replaceAll("\n", "").replaceAll(Text.getLineSep(), "").trim();
 			String tcs = e.getAttributes().get("tc").getValue();
 			List<Text> options = new ArrayList<>();
 			for (XMLElement option : e.getElement("option")) {
@@ -119,7 +119,7 @@ public class TextStorage extends Storage<Text> implements Nameable {
 			}
 			FrameTimeCounter ftc = new FrameTimeCounter(tcvalues);
 			Choice c = new Choice(options, id, value, ftc, 0);
-			if(e.hasAttribute("image")){
+			if (e.hasAttribute("image")) {
 				c.setImage(ImageUtil.load(e.getAttributes().get("image").getValue()));
 			}
 			if (!contains(c)) {

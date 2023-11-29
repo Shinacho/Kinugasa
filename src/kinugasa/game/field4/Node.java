@@ -16,6 +16,7 @@
  */
 package kinugasa.game.field4;
 
+import kinugasa.game.I18N;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
 import kinugasa.object.FourDirection;
@@ -106,6 +107,10 @@ public class Node implements Nameable {
 
 	public String getTooltip() {
 		return tooltip;
+	}
+
+	public String getTooltipI18Nd() {
+		return I18N.get(tooltip);
 	}
 
 	public NodeAccepter getAccepter() {

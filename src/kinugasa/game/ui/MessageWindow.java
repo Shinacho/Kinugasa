@@ -105,12 +105,11 @@ public class MessageWindow extends BasicSprite {
 	}
 
 	public void setText(String text) {
-		setText(new Text(text));
-		select = 0;
+		setText(Text.noI18N(text));
 	}
 
 	public void clearText() {
-		setText(new Text());
+		setText(Text.empty());
 	}
 
 	public void setTextFromId(String id) {

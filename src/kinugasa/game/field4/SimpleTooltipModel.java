@@ -46,70 +46,72 @@ public class SimpleTooltipModel extends TooltipModel {
 		}
 		String s = FieldMap.getEnterOperation();
 		FieldMapTile t = fm.getCurrentTile();
-		mode = Mode.NONE;
+		Mode newMode = Mode.NONE;
 		if (t.getEvent() != null
 				&& !t.getEvent().isEmpty()
 				&& t.getEvent().stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT)) {
-			mode = Mode.SEARCH;
+			newMode = Mode.SEARCH;
 		}
 		if (!FieldMap.getPlayerCharacter().isEmpty() && fm.canTalk()) {
-			mode = Mode.TALK;
+			newMode = Mode.TALK;
 		}
 		if (t.getNode() != null) {
 			if (t.getNode().getMode() == Node.Mode.INOUT) {
-				mode = Mode.NODE;
+				newMode = Mode.NODE;
 			}
 		}
 		if (fm.getMessageWindow() != null && fm.getMessageWindow().isVisible()) {
-			mode = Mode.NONE;
+			newMode = Mode.NONE;
 		}
 		if (FieldEventSystem.getInstance().isExecuting() || !FieldEventSystem.getInstance().isUserOperation()) {
-			mode = Mode.NONE;
+			newMode = Mode.NONE;
 		}
-
-		switch (mode) {
-			case NODE:
-				if (t.getNode() != null) {
-					if (t.getNode().getMode() != Node.Mode.OUT) {
-						s += t.getNode().getTooltip();
+		if (mode != newMode) {
+			mode = newMode;
+			switch (newMode) {
+				case NODE:
+					if (t.getNode() != null) {
+						if (t.getNode().getMode() != Node.Mode.OUT) {
+							s += t.getNode().getTooltipI18Nd();
+							label.setText(s);
+							label.setVisible(true);
+						} else {
+							label.setVisible(false);
+						}
+					} else {
+						label.setVisible(false);
+					}
+					break;
+				case NONE:
+					label.setVisible(false);
+					break;
+				case TALK:
+					if (fm.canTalk()) {
+						s += I18N.get(GameSystemI18NKeys.話す);
 						label.setText(s);
 						label.setVisible(true);
 					} else {
 						label.setVisible(false);
 					}
-				} else {
-					label.setVisible(false);
-				}
-				break;
-			case NONE:
-				label.setVisible(false);
-				break;
-			case TALK:
-				if (fm.canTalk()) {
-					s += I18N.get(GameSystemI18NKeys.話す);
-					label.setText(s);
-					label.setVisible(true);
-				} else {
-					label.setVisible(false);
-				}
-				break;
-			case SEARCH:
-				if (!t.getEvent().isEmpty()) {
-					if (t.getEvent().stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT)) {
-						if (fm.getMessageWindow() != null && fm.getMessageWindow().isVisible()) {
-							label.setVisible(false);
+					break;
+				case SEARCH:
+					if (!t.getEvent().isEmpty()) {
+						if (t.getEvent().stream().anyMatch(p -> p.getEventType() == FieldEventType.MANUAL_EVENT)) {
+							if (fm.getMessageWindow() != null && fm.getMessageWindow().isVisible()) {
+								label.setVisible(false);
+							} else {
+								s += I18N.get(GameSystemI18NKeys.調べる);
+								label.setText(s);
+								label.setVisible(true);
+							}
 						} else {
-							s += I18N.get(GameSystemI18NKeys.調べる);
-							label.setText(s);
-							label.setVisible(true);
+							label.setVisible(false);
 						}
 					} else {
 						label.setVisible(false);
 					}
-				} else {
-					label.setVisible(false);
-				}
-				break;
+					break;
+			}
 		}
 		if (label.isVisible()) {
 			FontModel f = label.getLabelModel().getFontConfig();

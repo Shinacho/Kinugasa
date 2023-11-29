@@ -441,12 +441,12 @@ public class MagicWindow extends BasicSprite {
 	}
 
 	private void updateText() {
-		Text line1 = new Text("<---" + I18N.get(GameSystemI18NKeys.Xの,
+		Text line1 = Text.noI18N("<---" + I18N.get(GameSystemI18NKeys.Xの,
 				getPC().getVisibleName()) + I18N.get(GameSystemI18NKeys.魔術) + "--->");
 
 		List<Action> list = getSelectedPC().getActions().stream().filter(p -> p.getType() == ActionType.魔法).toList();
 		if (list.isEmpty()) {
-			Text line2 = new Text(I18N.get(GameSystemI18NKeys.使える魔術はない));
+			Text line2 = new Text(GameSystemI18NKeys.使える魔術はない);
 			main.setText(List.of(line1, line2));
 			return;
 		}

@@ -66,7 +66,7 @@ public class FieldStatusWindows extends BasicSprite {
 				i++;
 			}
 			//座標の計算
-			Text t = new Text(text);
+			Text t = Text.noI18N(text);
 			t.allText();
 			MessageWindow window = new MessageWindow(x, y, w, h, t);
 			window.allText();

@@ -248,15 +248,15 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	}
 
 	public String getSummary() {
-		return summary;
+		return I18N.get(summary);
 	}
 
 	public String getVisibleName() {
-		return visibleName;
+		return I18N.get(visibleName);
 	}
 
 	public final String getDesc() {
-		return desc;
+		return I18N.get(desc);
 	}
 
 	public int getCastTime() {

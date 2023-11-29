@@ -19,6 +19,7 @@ package kinugasa.game;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.text.IniFile;
 
 /**
@@ -29,7 +30,10 @@ import kinugasa.resource.text.IniFile;
 public class I18N {
 
 	private static IniFile ini;
-	private static Set<String> notFoundKeyMap = new HashSet<>();
+	private static Set<String> notFoundKeySet = new HashSet<>();
+	private static Set<String> nullValueKeySet = new HashSet<>();
+	//
+	private static String tableName;
 
 	/**
 	 * I18Nマップを初期化します。gameStart時に自動で実行されるため、通常は呼び出す必要はありません。
@@ -38,63 +42,66 @@ public class I18N {
 	 */
 	public static void init(String lang) {
 		ini = new IniFile("translate/" + lang + ".ini").load();
-
+		tableName = ini.get("tableName").get().value();
 	}
 
-	public static Set<String> getNotFoundKeyMap() {
-		return notFoundKeyMap;
-	}
-
-	public I18N add(String lang, File dir) throws IllegalArgumentException {
-		if (!dir.isDirectory() || !dir.exists()) {
-			throw new IllegalArgumentException(dir + " is not directry");
-		}
-		String p = dir.getPath();
-		if (!p.endsWith("/")) {
-			p += "/";
-		}
-		p += lang;
-		File f = new File(p + ".ini");
-		ini.addAll(f.getPath());
-		return this;
+	public static Set<String> getNotFoundKeySet() {
+		return notFoundKeySet;
 	}
 
 	public static <T extends Enum<T>> String get(T t) {
 		return get(t.toString());
 	}
 
+	private static String getText(String key) {
+		if (notFoundKeySet.contains(key)) {
+			return key;
+		}
+		if (nullValueKeySet.contains(key)) {
+			return "";
+		}
+		if (key == null || key.isEmpty()) {
+			notFoundKeySet.add(key);
+			nullValueKeySet.add(key);
+			GameLog.print("!> WARNING : I18N key,value is empty : " + key);
+			return "";
+		}
+		if (DBConnection.getInstance().isUsing()) {
+			String sql = "select text from " + tableName + " where id = '" + key + "';";
+			var v = DBConnection.getInstance().execDirect(sql);
+			if (v.isEmpty()) {
+				notFoundKeySet.add(key);
+				GameLog.print("!> WARNING : I18N is not found : " + key);
+				return key;
+			}
+			var res = v.cell(0, 0).get();
+			if (res == null) {
+				nullValueKeySet.add(key);
+				GameLog.print("!> WARNING : I18N value is empty : " + key);
+				return "";
+			}
+			return res;
+		}
+		notFoundKeySet.add(key);
+		GameLog.print("!> WARNING : I18N DB using=false : " + key);
+		return key;
+	}
+
+	@NoLoopCall
 	public static boolean contains(String key) {
-		return ini.containsKey(key);
+		String sql = "select count(*) from " + tableName + " where id = '" + key + "';";
+		return DBConnection.getInstance().execDirect(sql).cell(0, 0).asInt() != 0;
 	}
 
+	@NoLoopCall
 	public static String get(String key) {
-		if(notFoundKeyMap.contains(key)){
-			return key;
-		}
-		if (ini == null) {
-			GameLog.print("WARNING : I18N is not loaded : " + key);
-			notFoundKeyMap.add(key);
-			return key;
-		}
-		if (!ini.containsKey(key)) {
-			GameLog.print("WARNING : I18N key is not found : " + key);
-			notFoundKeyMap.add(key);
-			return key;
-		}
-		return ini.get(key).get().value();
+		return getText(key);
 	}
 
+	@NoLoopCall
 	public static String get(String key, Object... param) {
-		if(notFoundKeyMap.contains(key)){
-			return key;
-		}
-		if (!ini.containsKey(key)) {
-			GameLog.print("WARNING : I18N key is not found : " + key);
-			notFoundKeyMap.add(key);
-			return key;
-		}
 
-		String res = ini.get(key).get().value();
+		String res = getText(key);
 		for (int i = 0; i < param.length; i++) {
 			res = res.replaceAll("!" + i, param[i].toString());
 		}
