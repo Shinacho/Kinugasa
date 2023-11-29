@@ -91,7 +91,7 @@ public class ActionDescWindow extends PCStatusWindow {
 				.sorted()
 				.collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("  ").append(a.getVisibleName());
+			sb.append("  ・").append(a.getVisibleName());
 			//魔法は魔法ウインドウで見れるので表示しない
 			sb.append(Text.getLineSep());
 			String[] desc = StringUtil.safeSplit(a.getDesc(), Text.getLineSep());
@@ -146,7 +146,7 @@ public class ActionDescWindow extends PCStatusWindow {
 				.sorted()
 				.collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("  ").append(a.getVisibleName());
+			sb.append("  ・").append(a.getVisibleName());
 			sb.append("(")
 					.append(I18N.get(GameSystemI18NKeys.範囲))
 					.append(":")

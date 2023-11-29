@@ -79,8 +79,6 @@ public class SpeedCalcSystem {
 		List<String> remove = new ArrayList<>();
 		for (MagicSpell sp : ms) {
 			remove.add(sp.getUser().getId());
-			//このターン詠唱完了する人の詠唱中フラグを外す
-			sp.getUser().getStatus().removeCondition(ConditionKey.詠唱中);
 		}
 		for (String s : remove) {
 			Spd removeCmd = null;

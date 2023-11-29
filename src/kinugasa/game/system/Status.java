@@ -592,7 +592,13 @@ public final class Status extends Model implements Nameable {
 
 	public void saveBeforeDamageCalc() {
 		prevStatus = getBaseStatus().clone();
-		GameLog.print(getName() + " saved");
+		if (GameSystem.isDebugMode()) {
+			GameLog.print(getName() + " saved");
+		}
+	}
+	
+	public void unsetDamageCalcPoint(){
+		prevStatus = null;
 	}
 
 	@NewInstance
@@ -610,7 +616,9 @@ public final class Status extends Model implements Nameable {
 			}
 			r.put(new StatusValue(k, v));
 		}
-		GameLog.print(getName() + " from save / " + r);
+		if (GameSystem.isDebugMode()) {
+			GameLog.print(getName() + " from save / " + r);
+		}
 		return r;
 	}
 

@@ -70,6 +70,7 @@ public class EnemySetStorageStorage extends Storage<EnemySetStorage> implements 
 					}
 				}
 				ess.dispose();
+				EnemyBlueprint.initEnemyNoMap();
 			}
 			EnemyBlueprint.initEnemyNoMap();
 		} catch (Exception ex) {

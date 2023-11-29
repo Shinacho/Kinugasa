@@ -159,6 +159,7 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport, Cloneab
 			case 0:
 				//初期化
 				if (!tgt.equals(currentIdx)) {
+					getAnimation().setStop(false);
 					targetIdx = tgt.clone();
 					nextStage();
 				}
@@ -189,6 +190,7 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport, Cloneab
 				setSpeed(0);
 				setAngle(0);
 				currentIdx = targetIdx.clone();
+				getAnimation().setStop(true);
 				nextStage();
 				break;
 			case 3:

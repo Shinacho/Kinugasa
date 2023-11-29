@@ -18,9 +18,8 @@ package kinugasa.game.system;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * GameSystemで使用されるI18Nキーです。これらがI18Nクラスにない場合、様々な処理が失敗します。
@@ -101,7 +100,8 @@ public class GameSystemI18NKeys {
 		r.addAll(List.of(ItemEnchant.values()).stream().map(p -> p.getDescI18NKey()).toList());
 		r.add("[CharaAbility.desc]");
 		r.addAll(List.of(CharaAbility.values()).stream().map(p -> p.getDescI18NK()).toList());
-
+		r.add("[InfoWindow.Mode]");
+		r.addAll(Arrays.asList(InfoWindow.Mode.values()).stream().map(p->p.toString()).toList());
 		r = r.stream().distinct().filter(p -> !p.isEmpty()).map(p -> {
 			if (!p.contains("[")) {
 				return p + "=" + p;
@@ -491,6 +491,8 @@ public class GameSystemI18NKeys {
 	public static final String XはXを実行できない = "XはXを実行できない";
 	public static final String 時 = "時";
 	public static final String Xには何も装備していない = "Xには何も装備していない";
+	public static final String Xは両手には装備できない = "Xは両手には装備できない";
+	public static final String 両手持ち可能 = "両手持ち可能";
 	
 	public static class CountKey {
 

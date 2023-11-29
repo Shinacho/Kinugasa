@@ -85,6 +85,43 @@ public class BattleTargetSystem implements Drawable {
 		return res;
 	}
 
+	@NewInstance
+	@NotNull
+	public static List<Actor> tgtOf(Action a, List<Actor> tgt) {
+		List<Actor> result = new ArrayList<>();
+		switch (a.getTgtType()) {
+			case グループ_敵全員:
+			case 全員:
+			case 全員_自身除く:
+			case グループ_切替可能_初期選択敵:
+			case グループ_切替可能_初期選択敵_自身除く: {
+				result.addAll(tgt);
+				break;
+			}
+			case 単体_切替可能_自身含まない_初期選択味方:
+			case グループ_味方全員:
+			case グループ_切替可能_初期選択味方:
+			case グループ_味方全員_自身除く:
+			case 単体_味方のみ_自身含まない:
+			case 単体_味方のみ_自身含む:
+			case 単体_切替可能_自身含む_初期選択味方:
+			case グループ_切替可能_初期選択味方_自身除く: {
+				//入らないと思うが念のため
+				break;
+			}
+			case 自身のみ: {
+				break;
+			}
+			case 単体_敵のみ:
+			case 単体_切替可能_自身含む_初期選択敵:
+			case 単体_切替可能_自身含まない_初期選択敵: {
+				result.add(Random.randomChoice(tgt));
+				break;
+			}
+		}
+		return result;
+	}
+
 	enum TeamSelect {
 		未使用,
 		味方選択中,
@@ -184,10 +221,6 @@ public class BattleTargetSystem implements Drawable {
 	public void setAreaVisible(boolean ini, boolean cur) {
 		initialCenterArea.setVisible(ini);
 		pcCenterArea.setVisible(cur);
-	}
-
-	public void resetArea() {
-
 	}
 
 	@LoopCall
@@ -423,6 +456,9 @@ public class BattleTargetSystem implements Drawable {
 		if (inArea候補者.isEmpty()) {
 			return Collections.emptyList();
 		}
+		if (currentBA.getTgtType() == null) {
+			return Collections.emptyList();
+		}
 		switch (currentBA.getTgtType()) {
 			case グループ_味方全員:
 			case グループ_敵全員:
@@ -506,8 +542,10 @@ public class BattleTargetSystem implements Drawable {
 						case 味方選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
 							inArea候補者.add(currentUser);
+							break;
 						case 敵選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
+							break;
 						case 未使用:
 							break;
 					}
@@ -516,8 +554,10 @@ public class BattleTargetSystem implements Drawable {
 						case 味方選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
 							inArea候補者.add(currentUser);
+							break;
 						case 敵選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
+							break;
 						case 未使用:
 							break;
 					}
@@ -531,9 +571,11 @@ public class BattleTargetSystem implements Drawable {
 						case 味方選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
 							inArea候補者.remove(currentUser);
+							break;
 						case 敵選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
 							inArea候補者.remove(currentUser);
+							break;
 						case 未使用:
 							break;
 					}
@@ -542,9 +584,11 @@ public class BattleTargetSystem implements Drawable {
 						case 味方選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
 							inArea候補者.remove(currentUser);
+							break;
 						case 敵選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
 							inArea候補者.remove(currentUser);
+							break;
 						case 未使用:
 							break;
 					}
@@ -598,9 +642,11 @@ public class BattleTargetSystem implements Drawable {
 						case 味方選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
 							inArea候補者.remove(currentUser);
+							break;
 						case 敵選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
 							inArea候補者.remove(currentUser);
+							break;
 						case 未使用:
 							break;
 					}
@@ -609,9 +655,11 @@ public class BattleTargetSystem implements Drawable {
 						case 味方選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
 							inArea候補者.remove(currentUser);
+							break;
 						case 敵選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
 							inArea候補者.remove(currentUser);
+							break;
 						case 未使用:
 							break;
 					}
@@ -626,8 +674,10 @@ public class BattleTargetSystem implements Drawable {
 						case 味方選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
 							inArea候補者.add(currentUser);
+							break;
 						case 敵選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
+							break;
 						case 未使用:
 							break;
 					}
@@ -636,8 +686,10 @@ public class BattleTargetSystem implements Drawable {
 						case 味方選択中:
 							inArea候補者.addAll(allEnemyOf(center, area));
 							inArea候補者.add(currentUser);
+							break;
 						case 敵選択中:
 							inArea候補者.addAll(allPartyOf(center, area));
+							break;
 						case 未使用:
 							break;
 					}

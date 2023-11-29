@@ -33,6 +33,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import kinugasa.game.GameOption;
 import kinugasa.game.I18N;
 import kinugasa.game.PlayerConstants;
 import kinugasa.game.field4.EventTerm;
@@ -57,6 +58,7 @@ import kinugasa.game.ui.Dialog;
 import kinugasa.game.ui.DialogIcon;
 import kinugasa.game.ui.DialogOption;
 import kinugasa.game.ui.Text;
+import kinugasa.graphics.ImageUtil;
 import kinugasa.object.FourDirection;
 import kinugasa.object.KVector;
 import kinugasa.util.Random;
@@ -1767,8 +1769,16 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			//中心位置の取得
 			Point2D.Float center = BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().getCenter();
-			Point2D.Float p = Random.randomLocation(center, e.getValue());
-			tgt.getSprite().setLocationByCenter(p);
+			do {
+				Point2D.Float p = Random.randomLocation(center, 64f);
+				tgt.getSprite().setLocationByCenter(p);
+				if (!BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(p)) {
+					if (BattleSystem.getInstance().getBattleFieldSystem().inArea(p)) {
+						tgt.getSprite().setLocationByCenter(p);
+						break;
+					}
+				}
+			} while (true);
 			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
@@ -1800,8 +1810,16 @@ public enum ActionEventType {
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Point2D.Float center = user.getSprite().getCenter();
-			Point2D.Float p = Random.randomLocation(center, 64f);
-			tgt.getSprite().setLocationByCenter(p);
+			do {
+				Point2D.Float p = Random.randomLocation(center, 64f);
+				tgt.getSprite().setLocationByCenter(p);
+				if (!BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(p)) {
+					if (BattleSystem.getInstance().getBattleFieldSystem().inArea(p)) {
+						tgt.getSprite().setLocationByCenter(p);
+						break;
+					}
+				}
+			} while (true);
 			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
@@ -1885,8 +1903,17 @@ public enum ActionEventType {
 				}
 			}
 			assert newTgt != null : "tgt is null : " + this;
-			Point2D.Float p = Random.randomLocation(newTgt.getSprite().getCenter(), 64);
-			tgt.getSprite().setLocationByCenter(p);
+			do {
+				Point2D.Float center = tgt.getSprite().getCenter();
+				Point2D.Float p = Random.randomLocation(center, 64f);
+				tgt.getSprite().setLocationByCenter(p);
+				if (!BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(p)) {
+					if (BattleSystem.getInstance().getBattleFieldSystem().inArea(p)) {
+						tgt.getSprite().setLocationByCenter(p);
+						break;
+					}
+				}
+			} while (true);
 			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
@@ -1916,8 +1943,17 @@ public enum ActionEventType {
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			Point2D.Float p = Random.randomLocation(tgt.getSprite().getCenter(), 64);
-			user.getSprite().setLocationByCenter(p);
+			do {
+				Point2D.Float center = tgt.getSprite().getCenter();
+				Point2D.Float p = Random.randomLocation(center, 64f);
+				tgt.getSprite().setLocationByCenter(p);
+				if (!BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(p)) {
+					if (BattleSystem.getInstance().getBattleFieldSystem().inArea(p)) {
+						user.getSprite().setLocationByCenter(center);
+						break;
+					}
+				}
+			} while (true);
 			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, user.getVisibleName());
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
@@ -3310,10 +3346,13 @@ public enum ActionEventType {
 					continue;
 				}
 				int v = (int) e.getValue();
+				if (v < 0) {
+					v = Math.abs(v);
+				}
+				int val = Random.randomAbsInt(v) + 1;
 				if (v > 0) {
 					v = -v;
 				}
-				int val = Random.randomAbsInt(v) + 1;
 				ac.getStatus().getBaseStatus().get(StatusKey.正気度).add(val);
 				msg += I18N.get(GameSystemI18NKeys.XはXの正気度ダメージを受けた, ac.getVisibleName(), val) + Text.getLineSep();
 			}
@@ -4908,17 +4947,16 @@ public enum ActionEventType {
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			KVector v = new KVector(user.getSprite().getCenter(), tgt.getSprite().getCenter());
+			v.setSpeed(1f);
 			KVector buf = tgt.getSprite().getVector();
-
-			tgt.getSprite().setVector(new KVector(user.getSprite().getCenter(), tgt.getSprite().getCenter()));
-			tgt.getSprite().getVector().speed = 1;
-
+			tgt.getSprite().setVector(v);
 			for (int i = 0; i < 48; i++) {
-				Point2D.Float newC = tgt.getSprite().simulateMove();
+				Point2D.Float newC = tgt.getSprite().simulateMoveCenterLocation(v);
 				if (BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(newC)) {
 					break;
 				}
-				if (!BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().contains(newC)) {
+				if (!BattleSystem.getInstance().getBattleFieldSystem().inArea(newC)) {
 					break;
 				}
 				tgt.getSprite().move();
@@ -4954,17 +4992,16 @@ public enum ActionEventType {
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			KVector v = new KVector(user.getSprite().getCenter(), tgt.getSprite().getCenter());
+			v.setSpeed(1f);
 			KVector buf = tgt.getSprite().getVector();
-
-			tgt.getSprite().setVector(new KVector(user.getSprite().getCenter(), tgt.getSprite().getCenter()));
-			tgt.getSprite().getVector().speed = 1;
-
+			tgt.getSprite().setVector(v);
 			for (int i = 0; i < 116; i++) {
-				Point2D.Float newC = tgt.getSprite().simulateMove();
+				Point2D.Float newC = tgt.getSprite().simulateMoveCenterLocation(v);
 				if (BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(newC)) {
 					break;
 				}
-				if (!BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().contains(newC)) {
+				if (!BattleSystem.getInstance().getBattleFieldSystem().inArea(newC)) {
 					break;
 				}
 				tgt.getSprite().move();
@@ -5000,17 +5037,16 @@ public enum ActionEventType {
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			KVector v = new KVector(user.getSprite().getCenter(), tgt.getSprite().getCenter());
+			v.setSpeed(1f);
 			KVector buf = tgt.getSprite().getVector();
-
-			tgt.getSprite().setVector(new KVector(user.getSprite().getCenter(), tgt.getSprite().getCenter()));
-			tgt.getSprite().getVector().speed = 1;
-
+			tgt.getSprite().setVector(v);
 			for (int i = 0; i < 255; i++) {
-				Point2D.Float newC = tgt.getSprite().simulateMove();
+				Point2D.Float newC = tgt.getSprite().simulateMoveCenterLocation(v);
 				if (BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(newC)) {
 					break;
 				}
-				if (!BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().contains(newC)) {
+				if (!BattleSystem.getInstance().getBattleFieldSystem().inArea(newC)) {
 					break;
 				}
 				tgt.getSprite().move();
@@ -5110,16 +5146,19 @@ public enum ActionEventType {
 			//ERへのアニメーションなどのセット
 			if (e.getTgtAnimation() != null) {
 				r.tgtAnimation = e.getTgtAnimation().clone();
+				r.tgtAnimation.getAnimation().setImages(ImageUtil.resizeAll(r.tgtAnimation.getAnimation().getImages(), GameOption.getInstance().getDrawSize()));
 				r.tgtAnimation.setLocationByCenter(user.getSprite().getCenter());
 				r.tgtAnimation.getAnimation().setRepeat(false);
 			}
 			if (e.getOtherAnimation() != null) {
 				r.otherAnimation = e.getOtherAnimation().clone();
+				r.otherAnimation.getAnimation().setImages(ImageUtil.resizeAll(r.otherAnimation.getAnimation().getImages(), GameOption.getInstance().getDrawSize()));
 				r.otherAnimation.setLocation(0, 0);
 				r.otherAnimation.getAnimation().setRepeat(false);
 			}
 			if (e.getUserAnimation() != null) {
 				r.userAnimation = e.getUserAnimation().clone();
+				r.userAnimation.getAnimation().setImages(ImageUtil.resizeAll(r.userAnimation.getAnimation().getImages(), GameOption.getInstance().getDrawSize()));
 				r.userAnimation.setLocation(user.getSprite().getCenter());
 				r.userAnimation.getAnimation().setRepeat(false);
 			}
@@ -5152,17 +5191,20 @@ public enum ActionEventType {
 			//ERへのアニメーションなどのセット
 			if (e.getTgtAnimation() != null) {
 				r.tgtAnimation = e.getTgtAnimation().clone();
+				r.tgtAnimation.getAnimation().setImages(ImageUtil.resizeAll(r.tgtAnimation.getAnimation().getImages(), GameOption.getInstance().getDrawSize()));
 				r.tgtAnimation.setLocationByCenter(tgt.getSprite().getCenter());
 				r.tgtAnimation.getAnimation().setRepeat(false);
 			}
 			if (e.getOtherAnimation() != null) {
 				r.otherAnimation = e.getOtherAnimation().clone();
+				r.otherAnimation.getAnimation().setImages(ImageUtil.resizeAll(r.otherAnimation.getAnimation().getImages(), GameOption.getInstance().getDrawSize()));
 				r.otherAnimation.setLocation(0, 0);
 				r.otherAnimation.getAnimation().setRepeat(false);
 			}
 			if (e.getUserAnimation() != null) {
 				r.userAnimation = e.getUserAnimation().clone();
-				r.userAnimation.setLocation(user.getSprite().getCenter());
+				r.userAnimation.getAnimation().setImages(ImageUtil.resizeAll(r.userAnimation.getAnimation().getImages(), GameOption.getInstance().getDrawSize()));
+				r.userAnimation.setLocationByCenter(user.getSprite().getCenter());
 				r.userAnimation.getAnimation().setRepeat(false);
 			}
 			StatusValueSet tgtVs = tgt.getStatus().getDamageFromSavePoint();

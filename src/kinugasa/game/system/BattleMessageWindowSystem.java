@@ -140,6 +140,11 @@ public class BattleMessageWindowSystem implements Drawable {
 
 	}
 
+	void resetStatusDescWindowPage() {
+		statusDescWPage = 0;
+
+	}
+
 	void statusDescWindowNextPage() {
 		statusDescWPage++;
 		if (statusDescWPage >= 5) {

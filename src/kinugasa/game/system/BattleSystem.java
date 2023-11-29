@@ -46,16 +46,18 @@ import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.Random;
 import kinugasa.game.NotNull;
 import kinugasa.game.Nullable;
+import kinugasa.game.field4.VehicleStorage;
 import static kinugasa.game.system.Action.死亡者ターゲティング.気絶損壊解脱者を選択可能;
 import static kinugasa.game.system.ConditionKey.損壊;
 import static kinugasa.game.system.ConditionKey.気絶;
 import static kinugasa.game.system.ConditionKey.解脱;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.GraphicsUtil;
-import kinugasa.graphics.ImageUtil;
 import kinugasa.object.AnimationSprite;
+import kinugasa.object.BasicSprite;
 import kinugasa.object.Effect;
 import kinugasa.object.FlashEffect;
+import kinugasa.object.ImagePainterStorage;
 import kinugasa.object.ImageSprite;
 import kinugasa.util.TimeCounter;
 
@@ -239,7 +241,7 @@ public class BattleSystem implements Drawable {
 	//移動後攻撃モードかどうか
 	private boolean afterMove = false;
 	//詠唱中アニメーション
-	private Map<Actor, Sprite> castingSprites = new HashMap<>();
+	private Map<Actor, BasicSprite> castingSprites = new HashMap<>();
 	//スクリーンエフェクト
 	private Effect effect;
 	private FrameTimeCounter effectTime;
@@ -1059,7 +1061,7 @@ public class BattleSystem implements Drawable {
 		if (BattleConfig.Sounds.魔法詠唱開始 != null) {
 			BattleConfig.Sounds.魔法詠唱開始.load().stopAndPlay();
 		}
-		s.getUser().getStatus().addCondition(ConditionKey.詠唱中, t - turn);
+		s.getUser().getStatus().addCondition(ConditionKey.詠唱中, t + 1);
 		if (magics.containsKey(t)) {
 			magics.get(t).add(s);
 		} else {
@@ -1069,6 +1071,8 @@ public class BattleSystem implements Drawable {
 		if (BattleConfig.castingAnimationMaster != null) {
 			ImageSprite sp = BattleConfig.castingAnimationMaster.clone();
 			sp.setLocationByCenter(s.getUser().getSprite().getCenter());
+			sp.setY(sp.getY() + 12);
+			sp.setPainter(ImagePainterStorage.IMAGE_BOUNDS_CENTER_ROTATE);
 			castingSprites.put(s.getUser(), sp);
 		}
 	}
@@ -1105,18 +1109,26 @@ public class BattleSystem implements Drawable {
 
 	public void nextCmd() {
 		messageWindowSystem.getCmdW().nextAction();
+		targetSystem.setCurrent(messageWindowSystem.getCmdW().getSelectedCmd());
+		targetSystem.setIconVisible(true);
 	}
 
 	public void prevCmd() {
 		messageWindowSystem.getCmdW().prevAction();
+		targetSystem.setCurrent(messageWindowSystem.getCmdW().getSelectedCmd());
+		targetSystem.setIconVisible(true);
 	}
 
 	public void nextCmdType() {
 		messageWindowSystem.getCmdW().nextType();
+		targetSystem.setCurrent(messageWindowSystem.getCmdW().getSelectedCmd());
+		targetSystem.setIconVisible(true);
 	}
 
 	public void prevCmdType() {
 		messageWindowSystem.getCmdW().prevType();
+		targetSystem.setCurrent(messageWindowSystem.getCmdW().getSelectedCmd());
+		targetSystem.setIconVisible(true);
 	}
 
 	public enum BSCommitCmdResult {
@@ -1232,7 +1244,7 @@ public class BattleSystem implements Drawable {
 						if (v.getType() == ActionType.攻撃) {
 							list += v.getVisibleName() + Text.getLineSep();
 							i++;
-							if (i > 7) {
+							if (i > 6) {
 								break;
 							}
 						}
@@ -1520,7 +1532,7 @@ public class BattleSystem implements Drawable {
 	}
 
 	public void showStatusNextPage() {
-		messageWindowSystem.getStatusDescW().next();
+		messageWindowSystem.statusDescWindowNextPage();
 	}
 
 	public void showStatusNextSelect() {
@@ -1540,6 +1552,8 @@ public class BattleSystem implements Drawable {
 	}
 
 	public void closeShowStatus() {
+		messageWindowSystem.resetStatusDescWindowPage();
+		messageWindowSystem.statusDescWindowNextPage();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.CMD_SELECT);
 		setStage(Stage.コマンド選択中);
 	}
@@ -1784,6 +1798,8 @@ public class BattleSystem implements Drawable {
 
 		//魔法詠唱完了の場合発動
 		if (currentCmd.isMagicSpell()) {
+			//詠唱中フラグを外す
+			user.getStatus().removeCondition(ConditionKey.詠唱中);
 			if (!a.canDo(selectedTgt.getUser().getStatus())) {
 				setMsg(XはXを実行できないのMSG(user, a));
 				messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
@@ -1953,6 +1969,7 @@ public class BattleSystem implements Drawable {
 		boolean isUserEvent = eventIsUserEvent.getFirst();
 		eventIsUserEvent.removeFirst();
 		//実行
+		allActors().forEach(p -> p.getStatus().unsetDamageCalcPoint());
 		e.exec(currentActionTgt, actionResult, isUserEvent);
 
 		if (e.getEventType() == ActionEventType.このアクションの他のイベントをこのイベントのTGTからVALUE内の一人にも適用
@@ -2108,9 +2125,11 @@ public class BattleSystem implements Drawable {
 			GameLog.print("BS effect start by actor : " + 死亡者リスト);
 		}
 		assert 死亡者リスト != null && !死亡者リスト.isEmpty() : "BS deadman list is missmatch";
+		boolean sound = false;
 		if (死亡者リスト.stream().anyMatch(p -> p.getStatus().hasCondition(ConditionKey.解脱))) {
 			if (BattleConfig.Sounds.解脱 != null) {
 				BattleConfig.Sounds.解脱.load().stopAndPlay();
+				sound = true;
 			}
 		}
 		//エフェクトの実体化
@@ -2172,7 +2191,16 @@ public class BattleSystem implements Drawable {
 			String m = a.getStatus().addWhen0Condition();
 			if (m != null && !m.isEmpty()) {
 				msg.add(m);
-				a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+				if (!sound) {
+					if (BattleConfig.Sounds.解脱 != null) {
+						BattleConfig.Sounds.解脱.load().stopAndPlay();
+					}
+				}
+				if (a.isPlayer()) {
+					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+				} else {
+					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
+				}
 				a.getSprite().setAnimationUpdate(false);
 				List<BattleCommand> removeCmd = new ArrayList<>();
 				for (var c : commandsOfThisTurn) {
@@ -2189,7 +2217,7 @@ public class BattleSystem implements Drawable {
 					a.getSprite().getY() + 12,
 					Math.abs(damage),
 					Color.RED);
-			delayAnimations.add(new 遅延起動Animation(ds, new FrameTimeCounter(30)));
+			delayAnimations.add(new 遅延起動Animation(ds, new FrameTimeCounter(40)));
 
 		}
 
@@ -2238,11 +2266,12 @@ public class BattleSystem implements Drawable {
 		if (GameSystem.isDebugMode()) {
 			GameLog.print("BS effect start tgt=[" + 死亡者リスト + "]");
 		}
-
+		boolean sound = false;
 		//サウンド再生
 		if (死亡者リスト.stream().anyMatch(p -> p.is解脱)) {
 			if (BattleConfig.Sounds.解脱 != null) {
 				BattleConfig.Sounds.解脱.load().stopAndPlay();
+				sound = true;
 			}
 		}
 		if (死亡者リスト.stream().anyMatch(p -> p.is損壊)) {
@@ -2299,7 +2328,16 @@ public class BattleSystem implements Drawable {
 			String m = a.getStatus().addWhen0Condition();
 			if (m != null && !m.isEmpty()) {
 				msg.add(m);
-				a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+				if (!sound) {
+					if (BattleConfig.Sounds.解脱 != null) {
+						BattleConfig.Sounds.解脱.load().stopAndPlay();
+					}
+				}
+				if (a.isPlayer()) {
+					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage1));
+				} else {
+					a.getSprite().setAnimation(new Animation(FrameTimeCounter.FALSE, BattleConfig.deadCharaImage2));
+				}
 				a.getSprite().setAnimationUpdate(false);
 				List<BattleCommand> removeCmd = new ArrayList<>();
 				for (var c : commandsOfThisTurn) {
@@ -2316,7 +2354,7 @@ public class BattleSystem implements Drawable {
 					a.getSprite().getY() + 12,
 					Math.abs(damage),
 					Color.RED);
-			delayAnimations.add(new 遅延起動Animation(ds, new FrameTimeCounter(30)));
+			delayAnimations.add(new 遅延起動Animation(ds, new FrameTimeCounter(40)));
 
 		}
 
@@ -2334,7 +2372,7 @@ public class BattleSystem implements Drawable {
 					res.tgt.getSprite().getY() - Random.randomAbsInt(9),
 					Math.abs(res.tgtDamageHp),
 					Color.WHITE);
-			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(30));
+			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(40));
 			delayAnimations.add(a);
 		}
 		if (res.tgtDamageMp != 0) {
@@ -2343,7 +2381,7 @@ public class BattleSystem implements Drawable {
 					res.tgt.getSprite().getY(),
 					Math.abs(res.tgtDamageMp),
 					Color.YELLOW);
-			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(30));
+			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(40));
 			delayAnimations.add(a);
 		}
 		if (res.tgtDamageSAN != 0) {
@@ -2352,7 +2390,7 @@ public class BattleSystem implements Drawable {
 					res.tgt.getSprite().getY() + Random.randomAbsInt(9),
 					Math.abs(res.tgtDamageSAN),
 					Color.RED);
-			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(30));
+			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(40));
 			delayAnimations.add(a);
 		}
 	}
@@ -2361,18 +2399,15 @@ public class BattleSystem implements Drawable {
 		//アニメーション
 		if (res.otherAnimation != null) {
 			遅延起動Animation a = new 遅延起動Animation(res.otherAnimation, new FrameTimeCounter(30));
-			a.sprite.setLocationByCenter(battleFieldSystem.getBattleFieldAllArea().getCenter());
-			a.sprite.setImage(ImageUtil.resize(a.sprite.getImage().get(), GameOption.getInstance().getDrawSize()));
+			a.sprite.setLocation(0, 0);
 			delayAnimations.add(a);
 		}
 		if (res.tgtAnimation != null) {
 			遅延起動Animation a = new 遅延起動Animation(res.tgtAnimation, new FrameTimeCounter(30));
-			a.sprite.setImage(ImageUtil.resize(a.sprite.getImage().get(), GameOption.getInstance().getDrawSize()));
 			delayAnimations.add(a);
 		}
 		if (res.userAnimation != null) {
 			遅延起動Animation a = new 遅延起動Animation(res.userAnimation, new FrameTimeCounter(30));
-			a.sprite.setImage(ImageUtil.resize(a.sprite.getImage().get(), GameOption.getInstance().getDrawSize()));
 			delayAnimations.add(a);
 		}
 	}
@@ -2409,6 +2444,35 @@ public class BattleSystem implements Drawable {
 				.filter(p -> !p.getStatus().hasCondition(ConditionKey.詠唱中))
 				.collect(Collectors.toSet());
 		removeCastAnimation.forEach(p -> castingSprites.remove(p));
+		castingSprites.values().forEach(p -> p.getVector().addAngle(2f));
+		//---------------------------
+		//万が一同期がとれていないやつがいた場合はエフェクトを起動する
+		{
+			List<Actor> deadlist = new ArrayList<>();
+			for (var a : allActors()) {
+				if (a.isSummoned()) {
+					continue;
+				}
+				if (a.getStatus().hasAnyCondition(解脱, 損壊, 気絶, ConditionKey.逃走した)) {
+					continue;
+				}
+				if (a.getStatus().getBaseStatus().get(StatusKey.正気度).isZero()) {
+					a.getStatus().addCondition(解脱, 1);
+					deadlist.add(a);
+				} else if (a.getStatus().getBaseStatus().get(StatusKey.体力).isZero()) {
+					a.getStatus().addCondition(損壊, 1);
+					deadlist.add(a);
+				} else if (a.getStatus().getBaseStatus().get(StatusKey.魔力).isZero()) {
+					a.getStatus().addCondition(気絶, 99);
+					deadlist.add(a);
+				}
+			}
+			if (!deadlist.isEmpty()) {
+				エフェクト起動ByActor(deadlist);
+				setStage(Stage.エフェクト再生中_終了待ち);
+				return;
+			}
+		}
 		//---------------------------
 
 		if (stage != Stage.バトル終了済み) {//お味方全滅判定
@@ -2423,6 +2487,9 @@ public class BattleSystem implements Drawable {
 					if (!effectTime.isReaching()) {
 						return;
 					}
+				}
+				if (!animation.isEmpty() || !delayAnimations.isEmpty()) {
+					return;
 				}
 				if (逃げた人がいる) {
 					setEndStatus(BattleResult.勝利_こちらが全員逃げた);
@@ -2442,6 +2509,9 @@ public class BattleSystem implements Drawable {
 					if (!effectTime.isReaching()) {
 						return;
 					}
+				}
+				if (!animation.isEmpty() || !delayAnimations.isEmpty()) {
+					return;
 				}
 				setEndStatus(BattleResult.勝利_敵全滅);
 				return;
@@ -2588,7 +2658,7 @@ public class BattleSystem implements Drawable {
 					if (vv.getType() == ActionType.攻撃) {
 						list += vv.getVisibleName() + Text.getLineSep();
 						i++;
-						if (i > 7) {
+						if (i > 6) {
 							break;
 						}
 					}
@@ -2600,8 +2670,9 @@ public class BattleSystem implements Drawable {
 			}
 			case 待機中＿敵移動中: {
 				//NPCの移動実行、！！！！！！！！
+				currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力)
+						.add(-VehicleStorage.getInstance().getCurrentVehicle().getSpeed());
 				currentCmd.getUser().getSprite().moveToTgt();
-				currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力).add(-1);
 				remMovePoint = (int) currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.残行動力).getValue();
 				//移動ポイントが切れた場合、移動終了してユーザコマンド待ちに移行
 				if (remMovePoint <= 0 || !currentCmd.getUser().getSprite().isMoving()) {
@@ -2615,7 +2686,7 @@ public class BattleSystem implements Drawable {
 						.stream()
 						.filter(p -> p.getType() == ActionType.攻撃)
 						.toList();
-				if (eba.isEmpty()) {
+				if (eba == null || eba.isEmpty()) {
 					//実行可能な攻撃はない
 					break;
 				}
@@ -2624,19 +2695,23 @@ public class BattleSystem implements Drawable {
 				Collections.shuffle(eba);
 				Action selected = null;
 				Point2D.Float center = user.getSprite().getCenter();
-				List<Actor> tgt = null;
+				List<Actor> tgt = new ArrayList<>();
 				L1:
 				for (Action a : eba) {
 					int area = user.getStatus().getEffectedArea(a);
-					tgt = BattleTargetSystem.recalcDistance(GameSystem.getInstance().getParty(), center, area);
-					tgt = tgt.stream().filter(p -> !p.getStatus().hasCondition(ConditionKey.損壊))
-							.filter(p -> !p.getStatus().hasCondition(ConditionKey.解脱))
-							.filter(p -> !p.getStatus().hasCondition(ConditionKey.気絶))
+					List<Actor> t = GameSystem.getInstance().getParty().stream()
+							.filter(p -> !p.getStatus().hasCondition(損壊))
+							.filter(p -> !p.getStatus().hasCondition(気絶))
+							.filter(p -> !p.getStatus().hasCondition(解脱))
+							.filter(p -> !p.getStatus().hasCondition(ConditionKey.逃走した))
 							.toList();
+					t = BattleTargetSystem.tgtOf(a, t);
+					tgt = BattleTargetSystem.recalcDistance(t, center, area);
 					if (!tgt.isEmpty() && a.canDo(user.getStatus())) {
 						selected = a;
 						break L1;
 					}
+					tgt.clear();
 				}
 				if (selected == null || tgt == null || tgt.isEmpty()) {
 					//実行可能な攻撃はない
@@ -2701,20 +2776,31 @@ public class BattleSystem implements Drawable {
 		boolean isOver8Line = s.size() >= 8;
 
 		//リスト要素の展開
-		StringBuilder sb = new StringBuilder();
+		List<String> list = new ArrayList<>();
 		int i = 0, line = 0;
 		while (true) {
+			String st = s.get(i).trim();
+			while (st.contains(Text.getLineSep() + Text.getLineSep())) {
+				st = st.replaceAll(Text.getLineSep() + Text.getLineSep(), Text.getLineSep());
+			}
+			if (st == null || st.isEmpty()) {
+				i++;
+				continue;
+			}
+			if (st.endsWith(Text.getLineSep())) {
+				st = st.substring(0, st.length() - 1);
+			}
 			if (isOver8Line) {
-				sb.append(s.get(i));
+				list.add(s.get(i));
 				i++;
 				if (i >= s.size()) {
 					break;
 				}
-				sb.append("  ");
-				sb.append(s.get(i));
+				list.add("  ");
+				list.add(s.get(i));
 				i++;
 			} else {
-				sb.append(s.get(i));
+				list.add(s.get(i));
 				i++;
 			}
 			line++;
@@ -2724,16 +2810,18 @@ public class BattleSystem implements Drawable {
 			if (i >= s.size()) {
 				break;
 			}
-			sb.append(Text.getLineSep());
 		}
-		messageWindowSystem.getActionResultW().setText(sb.toString());
+		list = new ArrayList<>(list.stream().distinct().toList());
+		messageWindowSystem.getActionResultW().setText(String.join(Text.getLineSep(), list));
 		messageWindowSystem.getActionResultW().allText();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 	}
 
 	private void setStage(Stage s) {
 		if (s != Stage.バトル終了済み) {
-			GameLog.print("BS " + prevStage + " -> " + stage + " -> " + s);
+			if (GameSystem.isDebugMode()) {
+				GameLog.print("BS " + prevStage + " -> " + stage + " -> " + s);
+			}
 		}
 		this.prevStage = stage;
 		this.stage = s;
@@ -2744,10 +2832,9 @@ public class BattleSystem implements Drawable {
 	public void draw(GraphicsContext g) {
 		battleFieldSystem.draw(g);
 
+		castingSprites.values().forEach(p -> p.draw(g));
 		enemies.forEach(p -> p.getSprite().draw(g));
 		GameSystem.getInstance().getPartySprite().forEach(p -> p.draw(g));
-
-		castingSprites.values().forEach(p -> p.draw(g));
 
 		targetSystem.draw(g);
 
@@ -3048,12 +3135,12 @@ public class BattleSystem implements Drawable {
 		this.afterMove = afterMove;
 	}
 
-	public Map<Actor, Sprite> getCastingSprite() {
+	public Map<Actor, BasicSprite> getCastingSprite() {
 		return castingSprites;
 	}
 
 	@Deprecated
-	public void setCastingSprite(Map<Actor, Sprite> castingSprite) {
+	public void setCastingSprite(Map<Actor, BasicSprite> castingSprite) {
 		this.castingSprites = castingSprite;
 	}
 

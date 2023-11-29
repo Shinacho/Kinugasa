@@ -28,10 +28,13 @@ import kinugasa.game.field4.VehicleStorage;
 import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.ProgressBarSprite;
 import kinugasa.graphics.GraphicsUtil;
+import kinugasa.object.EmptySprite;
 import kinugasa.object.FourDirection;
 import kinugasa.object.KVector;
 import kinugasa.object.Sprite;
 import kinugasa.resource.text.XMLElement;
+import kinugasa.util.FrameTimeCounter;
+import kinugasa.util.Random;
 
 /**
  *
@@ -43,13 +46,7 @@ public class EnemySprite extends PCSprite {
 	private Enemy me;
 	private Point2D.Float tgt;
 	private boolean moving = false;
-	private Point2D.Float prev;
-	private int distance;
-	private int area;
 	boolean move = false;
-	boolean leftOrRight;
-	private int reverseTime = 16;
-	private boolean reverse = false;
 	private ProgressBarSprite progressBarSprite1;
 	private ProgressBarSprite progressBarSprite2;
 
@@ -92,6 +89,11 @@ public class EnemySprite extends PCSprite {
 		super.readFromXML(fileName);
 
 	}
+	boolean right = Random.randomBool();
+	boolean changeDir = true;
+	float angle = 1f;
+	private Point2D.Float moveStartLocation = null;
+	private int lp = 0;
 
 	public void moveToTgt() {
 		if (!moving) {
@@ -100,78 +102,106 @@ public class EnemySprite extends PCSprite {
 			}
 			return;
 		}
-		Point2D.Float f = simulateMove();
-		Rectangle2D.Float r = new Rectangle2D.Float(f.x, f.y, getWidth(), getHeight());
-		if (!GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getBattleArea().contains(r)) {
-			setVector(getVector().reverse());
-			reverse = true;
+		if (moveStartLocation == null) {
+			moveStartLocation = getCenter();
 		}
-		for (Sprite s : GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getObstacle()) {
-			if (s.hit(r)) {
-				leftOrRight = (s.getCenter().y > GameOption.getInstance().getWindowSize().height / 2);
-				if (leftOrRight) {
-					getVector().addAngle(-95);
-					move = true;
-				} else {
-					getVector().addAngle(+95);
-					move = true;
-				}
+		if (getVector().getSpeed() == 0f) {
+			setVector(new KVector(getCenter(), tgt));
+			getVector().setSpeed(VehicleStorage.getInstance().getCurrentVehicle().getSpeed());
+		}
+		if (me.getStatus().getBaseStatus().get(StatusKey.残行動力).isZero()) {
+			setSpeed(0);
+			moving = false;
+			angle = 1f;
+			moveStartLocation = null;
+			changeDir = true;
+			return;
+		}
+		//現在の角度でターゲット位置まで移動できるか検査
+		boolean currentVectorIsNP = true;
+		boolean ikisugi = false;
+		EmptySprite sp = new EmptySprite(getLocation(), getSize());
+		sp.setVector(getVector().clone());
+		Point2D.Float prevCenter = null;
+		while (true) {
+			prevCenter = sp.getCenter();
+			sp.move();
+			Point2D.Float p = sp.getCenter();
+
+			if (!GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getBattleFieldAllArea().contains(p)) {
+				currentVectorIsNP = false;
+				ikisugi = false;
+				break;
 			}
+			if (GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().hitObstacle(p)) {
+				currentVectorIsNP = false;
+				ikisugi = false;
+				break;
+			}
+			if (tgt.distance(p) <= VehicleStorage.getInstance().getCurrentVehicle().getSpeed()) {
+				currentVectorIsNP = true;
+				ikisugi = false;
+				break;
+			}
+
+			//イキスギる場合かどうか・・・prevの方がtgtに近い場合
+			if (prevCenter.distance(tgt) < p.distance(tgt)) {
+				currentVectorIsNP = true;
+				ikisugi = true;
+				break;
+			}
+			lp++;
 		}
-		move();
-		distance++;
-		if (reverse && distance > reverseTime) {
-			dirTo(tgt);
-			reverse = false;
+		//直接移動モード
+		if (currentVectorIsNP) {
+			move();
+			if (tgt.distance(getCenter()) < VehicleStorage.getInstance().getCurrentVehicle().getSpeed()) {
+				setLocationByCenter(tgt);
+				setSpeed(0);
+				moving = false;
+				angle = 1f;
+				moveStartLocation = null;
+				changeDir = true;
+				return;
+			}
+			if (moveStartLocation.distance(getCenter()) > me.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue()) {
+				setSpeed(0);
+				moving = false;
+				angle = 1f;
+				moveStartLocation = null;
+				changeDir = true;
+				return;
+			}
+			moveStartLocation = null;
+			return;
 		}
-		if (move) {
-			KVector v = getVector().clone();
-			if (!leftOrRight) {
-				v.addAngle(-95);
+		//イキスギモード
+		if (ikisugi) {
+			if (lp == 0) {
+				//ターゲット再設定
+				setTargetLocation(tgt2, (int) VehicleStorage.getInstance().getCurrentVehicle().getSpeed());
 			} else {
-				v.addAngle(95);
+				//prevの位置まで移動する
+				setTargetLocation(prevCenter, (int) VehicleStorage.getInstance().getCurrentVehicle().getSpeed());
 			}
-			f = simulateMove(v);
-			r = new Rectangle2D.Float(f.x, f.y, getWidth(), getHeight());
-			boolean hit = false;
-			for (Sprite s : GameSystem.getInstance().getBattleSystem().getBattleFieldSystem().getObstacle()) {
-				hit |= s.hit(r);
-			}
-			if (!hit) {
-				if (!leftOrRight) {
-					getVector().addAngle(-95);
-					move = false;
-				} else {
-					getVector().addAngle(95);
-					move = false;
-				}
-			}
-		}
-		//ターゲットとの距離がエリア内になったら移動を終了
-		if (targetInArea()) {
-			setSpeed(0);
-			moving = false;
-			distance = 0;
+			moveToTgt();
 			return;
 		}
-		if (distance > me.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue()) {
-			setSpeed(0);
-			moving = false;
-			distance = 0;
-			return;
+
+		//移動角度変更モード
+		KVector v = sp.getVector();
+		if (right) {
+			v.addAngle(angle);
+		} else {
+			v.addAngle(-angle);
 		}
-		if (prev.distance(getCenter()) >= me.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue()) {
-			setSpeed(0);
-			moving = false;
-			distance = 0;
-			return;
+		changeDir = !changeDir;
+		if (changeDir) {
+			angle += 1f;
 		}
-		if (getCenter().distance(tgt) < VehicleStorage.getInstance().getCurrentVehicle().getSpeed()) {
-			setLocationByCenter(tgt);
-			setSpeed(0);
-			moving = false;
-			distance = 0;
-		}
+		setVector(v);
+		moveToTgt();
+
 	}
 
 	@Override
@@ -262,42 +292,25 @@ public class EnemySprite extends PCSprite {
 		setVector(v);
 	}
 
+	private Point2D.Float tgt2;
+
 	@Override
 	public void setTargetLocation(Point2D.Float p, int area) {
-		prev = getCenter();
 		tgt = (Point2D.Float) p.clone();
-		distance = 0;
-		this.area = area;
+		tgt2 = (Point2D.Float) p.clone();
 		dirTo(p);
 		moving = true;
 	}
 
 	@Override
 	public void unsetTarget() {
-		prev = getCenter();
 		tgt = null;
-		distance = 0;
 		moving = false;
 	}
 
 	@Override
 	public boolean isMoving() {
 		return moving;
-	}
-
-	public void setArea(int area) {
-		this.area = area;
-	}
-
-	public int getArea() {
-		return area;
-	}
-
-	public boolean targetInArea() {
-		if (tgt == null) {
-			return false;
-		}
-		return getCenter().distance(tgt) < area;
 	}
 
 	@Override

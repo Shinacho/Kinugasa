@@ -438,12 +438,12 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				String image = e.getAttributes().get("image").getValue();
 				String[] frame = e.getAttributes().get("frame").getValue().split(",");
 				FrameTimeCounter tc = new FrameTimeCounter(Arrays.stream(frame).mapToInt(v -> Integer.parseInt(v)).toArray());
-				int w = e.getAttributes().get("w").getIntValue();
-				int h = e.getAttributes().get("h").getIntValue();
+				int w = (int) (e.getAttributes().get("w").getIntValue());
+				int h = (int) (e.getAttributes().get("h").getIntValue());
 				BufferedImage[] images = ImageUtil.resizeAll(new SpriteSheet(image).split(w, h).images(), mg);
 				int locationX = (int) (x * (chipW));
 				int locationY = (int) (y * (chipH));
-				animationLayer.add(new FieldAnimationSprite(new D2Idx(x, y), locationX, locationY, w, h,
+				animationLayer.add(new FieldAnimationSprite(new D2Idx(x, y), locationX, locationY, (int)(w * mg), (int)(h * mg),
 						new Animation(tc, images)));
 			}
 

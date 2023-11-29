@@ -52,7 +52,9 @@ public class DamageCalcSystem {
 			this.baseValue = baseValue;
 			this.tgtStatusKey = tgtStatusKey;
 			this.dcs = dcs;
-			GameLog.print(this);
+			if (GameSystem.isDebugMode()) {
+				GameLog.print(this);
+			}
 		}
 
 		@Override
@@ -95,7 +97,9 @@ public class DamageCalcSystem {
 			this.atkSubDef = atkSubDef;
 			this.finalValue = finalValue;
 			this.reverse調整 = reverse調整;
-			GameLog.print(this);
+			if (GameSystem.isDebugMode()) {
+				GameLog.print(this);
+			}
 		}
 
 		@Override
@@ -108,7 +112,9 @@ public class DamageCalcSystem {
 	public static final float SPREAD = 0.05f;
 
 	public static Result calcDamage(Param p) {
-		GameLog.print("CALC DAMAGE ^-PARAM / v-RESULT");
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("CALC DAMAGE ^-PARAM / v-RESULT");
+		}
 		if (p.baseValue == 0) {
 			return new Result(p, ActionResultSummary.失敗＿基礎威力０,
 					false, false, false, false, false, false, false, false, 0, 0, false);

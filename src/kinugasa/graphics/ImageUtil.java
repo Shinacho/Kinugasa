@@ -41,6 +41,7 @@ import kinugasa.game.GameLog;
 import kinugasa.game.system.GameSystem;
 import kinugasa.resource.ContentsIOException;
 import kinugasa.resource.FileNotFoundException;
+import kinugasa.resource.KImage;
 import kinugasa.util.StopWatch;
 
 /**
@@ -1066,6 +1067,14 @@ public final class ImageUtil {
 		g2.drawImage(src, 0, 0, newWidth, newHeight, null);
 		g2.dispose();
 		return dst;
+	}
+
+	public static BufferedImage[] resizeAll(KImage[] images, float scale) {
+		BufferedImage[] i = new BufferedImage[images.length];
+		for (int j = 0; j < images.length; j++) {
+			i[j] = images[j].get();
+		}
+		return resizeAll(i, scale);
 	}
 
 	public static BufferedImage[] resizeAll(BufferedImage[] images, float scale) {

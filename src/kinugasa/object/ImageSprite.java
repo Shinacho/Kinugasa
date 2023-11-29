@@ -16,9 +16,13 @@
  */
 package kinugasa.object;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.system.GameSystem;
+import kinugasa.graphics.GraphicsUtil;
 import kinugasa.resource.KImage;
 
 /**

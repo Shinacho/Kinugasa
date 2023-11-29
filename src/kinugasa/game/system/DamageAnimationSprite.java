@@ -62,7 +62,7 @@ public class DamageAnimationSprite extends AnimationSprite {
 		a.setRepeat(false);
 		setAnimation(a);
 
-		setPainter(ImagePainterStorage.IMAGE_BOUNDS_CENTER);
+		setPainter(ImagePainterStorage.IMAGE_BOUNDS_XY);
 
 		setVector(new KVector(FourDirection.NORTH.getAngle(), 0.25f));
 		last = images.length - 1;

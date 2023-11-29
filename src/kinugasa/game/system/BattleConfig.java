@@ -58,13 +58,12 @@ public class BattleConfig {
 
 	//バトル時のキャラの移動速度
 	public static float BATTLE_WALK_SPEED = 2.5f;
-//	public static float messageWindowY = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() - 135;
 	public static float messageWindowY = BattleFieldSystem.getInstance().getBattleFieldAllArea().getY()
 			+ BattleFieldSystem.getInstance().getBattleFieldAllArea().getHeight() + 1;
 	//素早さ乱数
 	public static float SPEED_SPREAD = 0.1f;
 
-	public static IntSupplier 正気度減少イベントの数値＿味方の場合 = () -> Random.d4(3);
+	public static IntSupplier 正気度減少イベントの数値＿味方の場合 = () -> Random.d6(3);
 	public static IntSupplier 正気度減少イベントの数値＿敵の場合 = () -> Random.d3(1);
 	public static ImageSprite castingAnimationMaster;
 	public static KImage deadCharaImage1;

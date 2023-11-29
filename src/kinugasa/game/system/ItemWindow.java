@@ -538,7 +538,7 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							//装備できない
-							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
+							msg.setText(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -557,7 +557,7 @@ public class ItemWindow extends BasicSprite {
 						}
 						//武器じゃなかったら装備できないを表示
 						if (!i.isWeapon()) {
-							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
+							msg.setText(I18N.get(GameSystemI18NKeys.Xは両手には装備できない, i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -588,7 +588,7 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							//装備できない
-							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
+							msg.setText(I18N.get(GameSystemI18NKeys.Xは両手には装備できない, i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -658,19 +658,34 @@ public class ItemWindow extends BasicSprite {
 						}
 						//価値
 						if (i.canSale() && i.canUnEqip()) {
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.価値))
+							sb.append(I18N.get(GameSystemI18NKeys.価値))
 									.append(":").append(i.getPrice());
 							sb.append(Text.getLineSep());
 						}
 						//装備スロット
 						if (i.getSlot() != null) {
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.装備スロット))
-									.append(":").append(i.getSlot().getVisibleName());
+							if (i.getWeaponType() != null && i.getWeaponType() == WeaponType.弓) {
+								sb.append(I18N.get(GameSystemI18NKeys.装備スロット))
+										.append(":").append(EqipSlot.左手.getVisibleName());
+								sb.append("(").append(I18N.get(GameSystemI18NKeys.両手持ち)).append(")");
+							} else if (i.getWeaponType() != null && Set.of(WeaponType.大剣, WeaponType.大杖, WeaponType.銃, WeaponType.弩, WeaponType.薙刀)
+									.contains(i.getWeaponType())) {
+								sb.append(I18N.get(GameSystemI18NKeys.装備スロット))
+										.append(":").append(EqipSlot.右手.getVisibleName());
+								sb.append("(").append(I18N.get(GameSystemI18NKeys.両手持ち)).append(")");
+							} else if (i.getWeaponType() != null) {
+								sb.append(I18N.get(GameSystemI18NKeys.装備スロット))
+										.append(":").append(i.getSlot().getVisibleName());
+								sb.append("(").append(I18N.get(GameSystemI18NKeys.両手持ち可能)).append(")");
+							} else {
+								sb.append(I18N.get(GameSystemI18NKeys.装備スロット))
+										.append(":").append(i.getSlot().getVisibleName());
+							}
 							sb.append(Text.getLineSep());
 						}
 						//WMT
 						if (i.getWeaponType() != null) {
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.武器種別))
+							sb.append(I18N.get(GameSystemI18NKeys.武器種別))
 									.append(":").append(i.getWeaponType().getVisibleName());
 							sb.append(Text.getLineSep());
 						}
@@ -681,38 +696,38 @@ public class ItemWindow extends BasicSprite {
 							area = i.getArea();
 						}
 						if (area != 0) {
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(area);
+							sb.append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(area);
 							sb.append(Text.getLineSep());
 						}
 						//キーアイテム属性
 						if (!i.canSale()) {
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムは売ったり捨てたり解体したりできない));
+							sb.append(I18N.get(GameSystemI18NKeys.このアイテムは売ったり捨てたり解体したりできない));
 							sb.append(Text.getLineSep());
 						}
 						if (!i.canUnEqip()) {
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムは誰かに渡したり装備解除したりできない));
+							sb.append(I18N.get(GameSystemI18NKeys.このアイテムは誰かに渡したり装備解除したりできない));
 							sb.append(Text.getLineSep());
 						}
 						//DCS
 						if (i.getDcs() != null) {
 							String dcs = i.getDcs().getVisibleName();
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.ダメージ計算ステータス)).append(":").append(dcs);
+							sb.append(I18N.get(GameSystemI18NKeys.ダメージ計算ステータス)).append(":").append(dcs);
 							sb.append(Text.getLineSep());
 						}
 						//戦闘中アクション
 						if (i.isBattle()) {
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムは戦闘中使える));
+							sb.append(I18N.get(GameSystemI18NKeys.このアイテムは戦闘中使える));
 							sb.append(Text.getLineSep());
 						}
 						//フィールドアクション
 						if (i.isField()) {
-							sb.append(" ").append(I18N.get(GameSystemI18NKeys.このアイテムはフィールドで使える));
+							sb.append(I18N.get(GameSystemI18NKeys.このアイテムはフィールドで使える));
 							sb.append(Text.getLineSep());
 						}
 						if (i.getSlot() != null) {
 							//攻撃回数
 							if (i.isWeapon() && i.getEffectedATKCount() > 1) {
-								sb.append(" ").append(I18N.get(GameSystemI18NKeys.攻撃回数)).append(":")
+								sb.append(I18N.get(GameSystemI18NKeys.攻撃回数)).append(":")
 										.append(i.getEffectedATKCount() + "");
 								sb.append(Text.getLineSep());
 							}
@@ -762,7 +777,7 @@ public class ItemWindow extends BasicSprite {
 									}
 								}
 							}
-							if (i.getEffectedConditionRegist() != null && !i.getEffectedConditionRegist().isEmpty()) {
+							if (i.getEffectedConditionRegist() != null && i.getEffectedConditionRegist().values().stream().anyMatch(p -> p != 0f)) {
 								sb.append(I18N.get(GameSystemI18NKeys.状態異常耐性));
 								sb.append(Text.getLineSep());
 								for (Map.Entry<ConditionKey, Float> e : i.getEffectedConditionRegist().entrySet()) {
@@ -791,12 +806,14 @@ public class ItemWindow extends BasicSprite {
 								sb.append(I18N.get(GameSystemI18NKeys.このアイテムは解体できない));
 								sb.append(Text.getLineSep());
 							}
-							sb.append(I18N.get(GameSystemI18NKeys.解体＿強化時の素材));
-							sb.append(Text.getLineSep());
-							for (Map.Entry<Material, Integer> e : i.getEffectedMaterials().entrySet()) {
-								sb.append(" ");
-								sb.append(e.getKey().getVisibleName()).append(":").append(e.getValue());
+							if (i.canUpgrade() || i.canDisasse()) {
+								sb.append(I18N.get(GameSystemI18NKeys.解体＿強化時の素材));
 								sb.append(Text.getLineSep());
+								for (Map.Entry<Material, Integer> e : i.getEffectedMaterials().entrySet()) {
+									sb.append(" ");
+									sb.append(e.getKey().getVisibleName()).append(":").append(e.getValue());
+									sb.append(Text.getLineSep());
+								}
 							}
 							sb.append(Text.getLineSep());
 
@@ -1194,6 +1211,7 @@ public class ItemWindow extends BasicSprite {
 
 	//1つ前の画面に戻る
 	public boolean close() {
+		msg.setText(List.of());
 		//IUS表示中の場合は戻るは全消し
 		if (group.getWindows().stream().allMatch(p -> !p.isVisible())) {
 			mode = Mode.ITEM_AND_USER_SELECT;
