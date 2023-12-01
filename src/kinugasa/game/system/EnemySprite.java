@@ -20,20 +20,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.List;
-import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.field4.VehicleStorage;
 import kinugasa.game.ui.FontModel;
 import kinugasa.game.ui.ProgressBarSprite;
 import kinugasa.graphics.GraphicsUtil;
 import kinugasa.object.EmptySprite;
-import kinugasa.object.FourDirection;
 import kinugasa.object.KVector;
-import kinugasa.object.Sprite;
 import kinugasa.resource.text.XMLElement;
-import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.Random;
 
 /**
@@ -124,7 +118,7 @@ public class EnemySprite extends PCSprite {
 		sp.setVector(getVector().clone());
 		Point2D.Float prevCenter = null;
 		while (true) {
-			prevCenter = sp.getCenter();
+			prevCenter = (Point2D.Float) sp.getCenter().clone();
 			sp.move();
 			Point2D.Float p = sp.getCenter();
 
@@ -146,7 +140,7 @@ public class EnemySprite extends PCSprite {
 
 			//イキスギる場合かどうか・・・prevの方がtgtに近い場合
 			if (prevCenter.distance(tgt) < p.distance(tgt)) {
-				currentVectorIsNP = true;
+				currentVectorIsNP = false;
 				ikisugi = true;
 				break;
 			}

@@ -19,6 +19,7 @@ package kinugasa.game.system;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import kinugasa.game.GameLog;
 import kinugasa.game.I18N;
 import kinugasa.game.NotNewInstance;
@@ -338,6 +339,32 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 	@Override
 	public String toString() {
 		return "Actor{" + "id=" + id + ", visibleName=" + visibleName + ", iniStatusFile=" + iniStatusFile + '}';
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 37 * hash + Objects.hashCode(this.id);
+		hash = 37 * hash + Objects.hashCode(this.visibleName);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Actor other = (Actor) obj;
+		if (!Objects.equals(this.id, other.id)) {
+			return false;
+		}
+		return Objects.equals(this.visibleName, other.visibleName);
 	}
 
 	@Override

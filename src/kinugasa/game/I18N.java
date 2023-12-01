@@ -16,8 +16,10 @@
  */
 package kinugasa.game;
 
-import java.io.File;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.text.IniFile;
@@ -33,6 +35,7 @@ public class I18N {
 	private static Set<String> notFoundKeySet = new HashSet<>();
 	private static Set<String> nullValueKeySet = new HashSet<>();
 	//
+	private static Map<String, SoftReference<String>> cache = new HashMap<>();
 	private static String tableName;
 
 	/**
@@ -66,6 +69,12 @@ public class I18N {
 			GameLog.print("!> WARNING : I18N key,value is empty : " + key);
 			return "";
 		}
+		if (cache.containsKey(key)) {
+			var v = cache.get(key);
+			if (v != null && v.get() != null) {
+				return v.get();
+			}
+		}
 		if (DBConnection.getInstance().isUsing()) {
 			String sql = "select text from " + tableName + " where id = '" + key + "';";
 			var v = DBConnection.getInstance().execDirect(sql);
@@ -80,6 +89,7 @@ public class I18N {
 				GameLog.print("!> WARNING : I18N value is empty : " + key);
 				return "";
 			}
+			cache.put(key, new SoftReference<>(res));
 			return res;
 		}
 		notFoundKeySet.add(key);

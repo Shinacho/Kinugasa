@@ -784,21 +784,19 @@ public class BattleSystem implements Drawable {
 				return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 			}
 		}
-		//詠唱中でも行動できない状態異常を持っている場合は行動できない
-		if (user.getStatus().hasCondition(ConditionKey.詠唱中)) {
-			//停止理由はConditionFlagに2つ置けないので、手動で探す
-			ConditionKey 停止理由 = null;
-			for (ConditionKey k : List.of(ConditionKey.眠り, ConditionKey.麻痺)) {
-				if (user.getStatus().hasCondition(k)) {
-					停止理由 = k;
-				}
+		ConditionKey 停止理由 = null;
+		for (ConditionKey k : List.of(ConditionKey.眠り, ConditionKey.麻痺)) {
+			if (user.getStatus().hasCondition(k)) {
+				停止理由 = k;
 			}
-			assert 停止理由 != null : "unknown stop desc : " + user + "/ " + this;
+		}
+		if (停止理由 != null) {
+			user.getStatus().removeCondition(ConditionKey.詠唱中);
+			castingSprites.remove(user);
 			setMsg(user.getVisibleName() + 停止理由.getExecMsgI18Nd());
 			currentBAWaitTime = new FrameTimeCounter(50);
 			setStage(Stage.待機中＿時間あり＿手番送り);
 			return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
-
 		}
 		//混乱で動けないときは、アクションを適当に取得して自動実行する
 		if (Random.percent(user.getStatus().getConditionFlags().getP().混乱)) {
