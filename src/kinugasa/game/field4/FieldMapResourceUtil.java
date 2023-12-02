@@ -48,7 +48,7 @@ public class FieldMapResourceUtil {
 	 * @param h イメージのタイル数。
 	 * @throws ContentsIOException
 	 */
-	public static void platinumCsvType1ToKGCsv(File input, File output, int h, int w)
+	public static void platinumCsvType1ToKGCsv(File input, File output, int w, int h)
 			throws ContentsIOException {
 		if (!input.exists() | output.exists()) {
 			throw new ContentsIOException("File is Already Exists");
@@ -110,9 +110,11 @@ public class FieldMapResourceUtil {
 
 	//outer16
 	public static void main(String[] args) {
-		String f1 = "D:/Project/FuzzyWorld/resource/data/map/raw/map07.csv";
-		String f2 = "D:/Project/FuzzyWorld/resource/data/map/converted/map07.csv";
-		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 48, 16);
+
+		String f1 = "D:/Project/FuzzyWorld/resource/data/map/raw/map08.csv";
+		String f2 = "D:/Project/FuzzyWorld/resource/data/map/converted/map08.csv";
+//		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 48, 16);//outer
+		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 8, 16);//inner16_2
 
 	}
 }

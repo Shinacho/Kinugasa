@@ -259,6 +259,28 @@ public class FieldEventSystem implements Drawable {
 
 	private boolean reset = false;
 
+	public LinkedList<FieldEvent> getEvent() {
+		return event;
+	}
+
+	public void addEventToFirst(List<FieldEvent> e) {
+		LinkedList<FieldEvent> res = new LinkedList<>();
+
+		boolean currentEventAdd = false;
+		if (!this.event.isEmpty() && this.event.get(0).equals(currentEvent)) {
+			res.add(currentEvent);
+			currentEventAdd = true;
+		}
+		for (var v : e) {
+			res.add(v);
+		}
+		for (int i = currentEventAdd ? 1 : 0; i < event.size(); i++) {
+			res.add(event.get(i));
+		}
+
+		this.event = res;
+	}
+
 	@NoLoopCall
 	public UserOperationRequire exec() {
 		if (event.isEmpty()) {

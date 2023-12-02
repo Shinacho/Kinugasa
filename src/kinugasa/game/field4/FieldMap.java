@@ -52,6 +52,10 @@ import kinugasa.graphics.ImageUtil;
 import kinugasa.graphics.RenderingQuality;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.Drawable;
+import static kinugasa.object.FourDirection.EAST;
+import static kinugasa.object.FourDirection.NORTH;
+import static kinugasa.object.FourDirection.SOUTH;
+import static kinugasa.object.FourDirection.WEST;
 import kinugasa.object.ImageSprite;
 import kinugasa.object.KVector;
 import kinugasa.resource.Disposable;
@@ -444,7 +448,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				BufferedImage[] images = ImageUtil.resizeAll(new SpriteSheet(image).split(w, h).images(), mg);
 				int locationX = (int) (x * (chipW));
 				int locationY = (int) (y * (chipH));
-				animationLayer.add(new FieldAnimationSprite(new D2Idx(x, y), locationX, locationY, (int)(w * mg), (int)(h * mg),
+				animationLayer.add(new FieldAnimationSprite(new D2Idx(x, y), locationX, locationY, (int) (w * mg), (int) (h * mg),
 						new Animation(tc, images)));
 			}
 
@@ -912,9 +916,27 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		if (idx.x >= getBaseLayer().getDataWidth() || idx.y >= getBaseLayer().getDataHeight()) {
 			return false;
 		}
+		//idxが机の場合はその先のタイルも確認
+		FieldMapTile tile = getTile(idx);
+		if (tile.getChip().stream().map(p -> p.getAttr()).anyMatch(p -> p.equals(MapChipAttributeStorage.getInstance().get("机")))) {
 
+			D2Idx idx2 = idx.clone();
+			FourDirection currentDir = playerCharacter.get(0).getCurrentDir();
+
+			switch (currentDir) {
+				case EAST ->
+					idx2.x += 1;
+				case WEST ->
+					idx2.x -= 1;
+				case NORTH ->
+					idx2.y -= 1;
+				case SOUTH ->
+					idx2.y += 1;
+			}
+			return getTile(idx2).getNpc() != null;
+		}
 		//NPCがいるかどうかを返す
-		return getTile(idx).getNpc() != null;
+		return tile.getNpc() != null;
 	}
 
 	//プレイヤーの向いている方向のD2IDXを返します。
@@ -950,7 +972,25 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	 */
 	public MessageWindow talk() {
 		D2Idx idx = playerDirIdx();
-		NPCSprite n = getTile(idx).getNpc();
+		FieldMapTile tile = getTile(idx);
+		if (tile.getChip().stream().map(p -> p.getAttr()).anyMatch(p -> p.equals(MapChipAttributeStorage.getInstance().get("机")))) {
+
+			D2Idx idx2 = idx.clone();
+			FourDirection currentDir = playerCharacter.get(0).getCurrentDir();
+
+			switch (currentDir) {
+				case EAST ->
+					idx2.x += 1;
+				case WEST ->
+					idx2.x -= 1;
+				case NORTH ->
+					idx2.y -= 1;
+				case SOUTH ->
+					idx2.y += 1;
+			}
+			tile = getTile(idx2);
+		}
+		NPCSprite n = tile.getNpc();
 		if (n != null) {
 			n.notMove();
 		}

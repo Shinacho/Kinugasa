@@ -28,110 +28,110 @@ import java.util.List;
  * @author Shinacho<br>
  */
 public class GameSystemI18NKeys {
-
-	public static void main(String[] args) {
-		for (var v : GameSystemI18NKeys.allKeysJAData()) {
-			System.out.println(v);
-		}
-	}
-
-	private static List<String> of(Class<?> c) {
-		List<String> r = new ArrayList<>();
-		try {
-			for (Field ff : List.of(c.getDeclaredFields())) {
-				r.add(ff.get(null).toString());
-			}
-		} catch (Exception ex) {
-		}
-		return r;
-	}
-
-	public static List<String> allKeysJAData() {
-		List<String> r = new ArrayList<>();
-		r.add("[GAME_SYSTEM]");
-		r.addAll(of(GameSystemI18NKeys.class));
-		r.add("[ERROR_MSG]");
-		r.addAll(of(ErrorMsg.class));
-		r.add("[COUNT_KEY]");
-		r.addAll(of(CountKey.class));
-		//関連ENUMを追加
-		r.add("[StatusKey]");
-		r.addAll(List.of(StatusKey.values()).stream().map(p -> p.toString()).toList());
-		r.add("[AttributeKey]");
-		r.addAll(List.of(AttributeKey.values()).stream().map(p -> p.toString()).toList());
-		r.add("[ConditionKey]");
-		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.toString()).toList());
-		r.add("[ItemStyle]");
-		r.addAll(List.of(ItemStyle.values()).stream().map(p -> p.toString()).toList());
-		r.add("[ItemEnchant]");
-		r.addAll(List.of(ItemEnchant.values()).stream().map(p -> p.toString()).toList());
-		r.add("[CharaAbility]");
-		r.addAll(List.of(CharaAbility.values()).stream().map(p -> p.toString()).toList());
-		r.add("[Action.ターゲットモード]");
-		r.addAll(List.of(Action.ターゲットモード.values()).stream().map(p -> p.toString()).toList());
-		r.add("[Action.死亡者ターゲティング]");
-		r.addAll(List.of(Action.死亡者ターゲティング.values()).stream().map(p -> p.toString()).toList());
-		r.add("[ActionEventType]");
-		r.addAll(List.of(ActionEventType.values()).stream().map(p -> p.toString()).toList());
-		r.add("[WeaponType]");
-		r.addAll(List.of(WeaponType.values()).stream().map(p -> p.toString()).toList());
-		r.add("[EqipSlot]");
-		r.addAll(List.of(EqipSlot.values()).stream().map(p -> p.toString()).toList());
-		r.add("[ActionType]");
-		r.addAll(List.of(ActionType.values()).stream().map(p -> p.toString()).toList());
-		r.add("[Race]");
-		r.addAll(List.of(Race.values()).stream().map(p -> p.toString()).toList());
-		r.add("[BattleResult]");
-		r.addAll(List.of(BattleResult.values()).stream().map(p -> p.toString()).toList());
-		r.add("[BattleSystem.NoTgtDesc]");
-		r.addAll(List.of(BattleSystem.NoTgtDesc.values()).stream().map(p -> p.toString()).toList());
-		//関連ENUMのDESCを追加
-		r.add("[ConditionKey.startMsg]");
-		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getStartMsgI18NK()).toList());
-		r.add("[ConditionKey.execMsg]");
-		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getExecMsgI18NK()).toList());
-		r.add("[ConditionKey.endMsg]");
-		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getEndMsgI18NK()).toList());
-		r.add("[ConditionKey.desc]");
-		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getDescI18NK()).toList());
-		r.add("[ItemStyle.desc]");
-		r.addAll(List.of(ItemStyle.values()).stream().map(p -> p.getDescI18NKey()).toList());
-		r.add("[ItemEnchant.desc]");
-		r.addAll(List.of(ItemEnchant.values()).stream().map(p -> p.getDescI18NKey()).toList());
-		r.add("[CharaAbility.desc]");
-		r.addAll(List.of(CharaAbility.values()).stream().map(p -> p.getDescI18NK()).toList());
-		r.add("[InfoWindow.Mode]");
-		r.addAll(Arrays.asList(InfoWindow.Mode.values()).stream().map(p->p.toString()).toList());
-		r = r.stream().distinct().filter(p -> !p.isEmpty()).map(p -> {
-			if (!p.contains("[")) {
-				return p + "=" + p;
-			}
-			return p;
-		}).toList();
-
-		List<String> res = new ArrayList<>();
-		for (var v : r) {
-			if (!v.startsWith("[") && v.contains("X")) {
-				String key = v.split("=")[0];
-				String value = v.split("=")[1];
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0, p = 0; i < value.length(); i++) {
-					char a = value.charAt(i);
-					if (a != 'X') {
-						sb.append(a);
-					} else {
-						sb.append("!" + p);
-						p++;
-					}
-				}
-				res.add(key + "=" + sb.toString());
-			} else {
-				res.add(v);
-			}
-		}
-
-		return res;
-	}
+//
+//	public static void main(String[] args) {
+//		for (var v : GameSystemI18NKeys.allKeysJAData()) {
+//			System.out.println(v);
+//		}
+//	}
+//
+//	private static List<String> of(Class<?> c) {
+//		List<String> r = new ArrayList<>();
+//		try {
+//			for (Field ff : List.of(c.getDeclaredFields())) {
+//				r.add(ff.get(null).toString());
+//			}
+//		} catch (Exception ex) {
+//		}
+//		return r;
+//	}
+//
+//	public static List<String> allKeysJAData() {
+//		List<String> r = new ArrayList<>();
+//		r.add("[GAME_SYSTEM]");
+//		r.addAll(of(GameSystemI18NKeys.class));
+//		r.add("[ERROR_MSG]");
+//		r.addAll(of(ErrorMsg.class));
+//		r.add("[COUNT_KEY]");
+//		r.addAll(of(CountKey.class));
+//		//関連ENUMを追加
+//		r.add("[StatusKey]");
+//		r.addAll(List.of(StatusKey.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[AttributeKey]");
+//		r.addAll(List.of(AttributeKey.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[ConditionKey]");
+//		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[ItemStyle]");
+//		r.addAll(List.of(ItemStyle.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[ItemEnchant]");
+//		r.addAll(List.of(ItemEnchant.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[CharaAbility]");
+//		r.addAll(List.of(CharaAbility.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[Action.ターゲットモード]");
+//		r.addAll(List.of(Action.ターゲットモード.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[Action.死亡者ターゲティング]");
+//		r.addAll(List.of(Action.死亡者ターゲティング.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[ActionEventType]");
+//		r.addAll(List.of(ActionEventType.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[WeaponType]");
+//		r.addAll(List.of(WeaponType.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[EqipSlot]");
+//		r.addAll(List.of(EqipSlot.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[ActionType]");
+//		r.addAll(List.of(ActionType.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[Race]");
+//		r.addAll(List.of(Race.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[BattleResult]");
+//		r.addAll(List.of(BattleResult.values()).stream().map(p -> p.toString()).toList());
+//		r.add("[BattleSystem.NoTgtDesc]");
+//		r.addAll(List.of(BattleSystem.NoTgtDesc.values()).stream().map(p -> p.toString()).toList());
+//		//関連ENUMのDESCを追加
+//		r.add("[ConditionKey.startMsg]");
+//		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getStartMsgI18NK()).toList());
+//		r.add("[ConditionKey.execMsg]");
+//		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getExecMsgI18NK()).toList());
+//		r.add("[ConditionKey.endMsg]");
+//		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getEndMsgI18NK()).toList());
+//		r.add("[ConditionKey.desc]");
+//		r.addAll(List.of(ConditionKey.values()).stream().map(p -> p.getDescI18NK()).toList());
+//		r.add("[ItemStyle.desc]");
+//		r.addAll(List.of(ItemStyle.values()).stream().map(p -> p.getDescI18NKey()).toList());
+//		r.add("[ItemEnchant.desc]");
+//		r.addAll(List.of(ItemEnchant.values()).stream().map(p -> p.getDescI18NKey()).toList());
+//		r.add("[CharaAbility.desc]");
+//		r.addAll(List.of(CharaAbility.values()).stream().map(p -> p.getDescI18NK()).toList());
+//		r.add("[InfoWindow.Mode]");
+//		r.addAll(Arrays.asList(InfoWindow.Mode.values()).stream().map(p->p.toString()).toList());
+//		r = r.stream().distinct().filter(p -> !p.isEmpty()).map(p -> {
+//			if (!p.contains("[")) {
+//				return p + "=" + p;
+//			}
+//			return p;
+//		}).toList();
+//
+//		List<String> res = new ArrayList<>();
+//		for (var v : r) {
+//			if (!v.startsWith("[") && v.contains("X")) {
+//				String key = v.split("=")[0];
+//				String value = v.split("=")[1];
+//				StringBuilder sb = new StringBuilder();
+//				for (int i = 0, p = 0; i < value.length(); i++) {
+//					char a = value.charAt(i);
+//					if (a != 'X') {
+//						sb.append(a);
+//					} else {
+//						sb.append("!" + p);
+//						p++;
+//					}
+//				}
+//				res.add(key + "=" + sb.toString());
+//			} else {
+//				res.add(v);
+//			}
+//		}
+//
+//		return res;
+//	}
 	public static final String はい = "はい";
 	public static final String いいえ = "いいえ";
 	public static final String 話す = "話す";

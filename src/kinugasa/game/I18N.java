@@ -110,7 +110,6 @@ public class I18N {
 
 	@NoLoopCall
 	public static String get(String key, Object... param) {
-
 		String res = getText(key);
 		for (int i = 0; i < param.length; i++) {
 			res = res.replaceAll("!" + i, param[i].toString());

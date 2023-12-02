@@ -19,6 +19,7 @@ package kinugasa.game.field4;
 import java.awt.geom.Point2D;
 import kinugasa.game.system.NPCSprite;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import kinugasa.game.GameOption;
 import kinugasa.game.system.ActionStorage;
@@ -657,6 +658,24 @@ public enum FieldEventType {
 			GameSystem.getInstance().getPCbyID(e.getTargetName()).getSprite().setShadow(val);
 			return UserOperationRequire.CONTINUE;
 		}
+	},
+	ADD_EVENT_SCRIPT {
+		@Override
+		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
+			String name = e.getValue();
+			FieldEventSystem.getInstance().addEventToFirst(FieldEventParser.parse(e.getName() + "." + name, name));
+			return UserOperationRequire.CONTINUE;
+		}
+
+	},
+	SET_EVENT_SCRIPT {
+		@Override
+		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
+			String name = e.getValue();
+			FieldEventSystem.getInstance().setEvent(new LinkedList<>(FieldEventParser.parse(e.getName() + "." + name, name)));
+			return UserOperationRequire.CONTINUE;
+		}
+
 	};
 
 	abstract UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException;
