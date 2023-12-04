@@ -493,6 +493,29 @@ public class GameSystemI18NKeys {
 	public static final String Xには何も装備していない = "Xには何も装備していない";
 	public static final String Xは両手には装備できない = "Xは両手には装備できない";
 	public static final String 両手持ち可能 = "両手持ち可能";
+	//宿システム
+	public static final String 宿Xです = "宿Xです";
+	public static final String 記録ですか宿泊ですか = "記録ですか宿泊ですか";
+	public static final String 記録したい = "記録したい";
+	public static final String 宿泊したい = "宿泊したい";
+	public static final String 用はない = "用はない";
+	public static final String 記録しますね = "記録しますね";
+	public static final String  またのご利用お待ちしております = "またのご利用お待ちしております";
+	public static final String プランをお選びください = "プランをお選びください";
+	public static final String やめることにする = "やめることにする";
+	public static final String X泊 = "X泊";
+	public static final String 何泊されますか = "何泊されますか";
+	public static final String 一泊X金 = "一泊X金";
+	public static final String X金 = "X金";
+	public static final String Xプラン = "Xプラン";
+	public static final String お支払いはどうされますか = "お支払いはどうされますか";
+	public static final String お支払い方法XでX = "お支払い方法XでX";
+	public static final String でよろしいですか  = "でよろしいですか";
+	public static final String 確認となります = "確認となります";
+	public static final String ああ = "ああ";
+	public static final String やめておく = "やめておく";
+	public static final String お客様失礼ですがお金が足りないようです = "お客様失礼ですがお金が足りないようです";
+	
 	
 	public static class CountKey {
 

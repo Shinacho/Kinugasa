@@ -31,9 +31,8 @@ public enum InnClass {
 	豪華食事つき,
 	一般的,
 	朝食付き,
-	素泊まり,
-	相部屋,
-	雑魚寝,;
+	相部屋素泊まり,
+	雑魚寝素泊まり,;
 
 	public String getVisibleName() {
 		return I18N.get(toString());

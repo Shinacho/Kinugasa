@@ -34,6 +34,9 @@ import kinugasa.game.system.FlagStatus;
 import kinugasa.game.system.FlagStorage;
 import kinugasa.game.system.GameSystem;
 import kinugasa.game.system.GameSystemException;
+import kinugasa.game.system.Inn;
+import kinugasa.game.system.InnDialogSystem;
+import kinugasa.game.system.InnForm;
 import kinugasa.game.system.Item;
 import kinugasa.game.system.ItemEnchant;
 import kinugasa.game.system.ItemStyle;
@@ -676,6 +679,25 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 
+	},
+	START_INN_SYSTEM {
+		@Override
+		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
+			String fileName = e.getValue();
+			Inn inn = Inn.readFromXml(fileName);
+			InnDialogSystem.getInstance().setInn(inn).exec();
+			return UserOperationRequire.CONTINUE;
+		}
+	},
+	PC_SPRITE_SET_VISIBLE_BY_ID{
+		@Override
+		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
+			String id = e.getTargetName();
+			boolean f = e.getValue().equals("true");
+			GameSystem.getInstance().getPCbyID(id).getSprite().setVisible(f);
+			return UserOperationRequire.CONTINUE;
+		}
+		
 	};
 
 	abstract UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException;

@@ -47,7 +47,8 @@ public class TextStorage extends Storage<Text> implements Nameable {
 	private String name;
 	private XMLFile data;
 
-	public TextStorage() {
+	public TextStorage(String name) {
+		this.name = name;
 	}
 
 	public TextStorage(String name, XMLFile data) {

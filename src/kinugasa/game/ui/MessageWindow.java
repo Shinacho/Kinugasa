@@ -40,15 +40,15 @@ public class MessageWindow extends BasicSprite {
 	private Text text;
 
 	public MessageWindow(float x, float y, float w, float h, MessageWindowModel model) {
-		this(x, y, w, h, model, new TextStorage(), new Text(""));
+		this(x, y, w, h, model, new TextStorage("AUTO_FROM_MW"), Text.noI18N(""));
 	}
 
 	public MessageWindow(float x, float y, float w, float h) {
-		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage(), new Text(""));
+		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage("AUTO_FROM_MW"), new Text(""));
 	}
 
 	public MessageWindow(float x, float y, float w, float h, Text text) {
-		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage(), text);
+		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage("AUTO_FROM_MW"), text);
 	}
 
 	public MessageWindow(float x, float y, float w, float h, MessageWindowModel model, TextStorage ts, Text text) {
@@ -185,6 +185,9 @@ public class MessageWindow extends BasicSprite {
 	}
 
 	public void nextSelect() {
+		if (!isChoice()) {
+			return;
+		}
 		select++;
 		if (getChoice().getOptions().size() <= select) {
 			select = 0;
@@ -192,6 +195,9 @@ public class MessageWindow extends BasicSprite {
 	}
 
 	public void prevSelect() {
+		if (!isChoice()) {
+			return;
+		}
 		select--;
 		if (0 > select) {
 			select = getChoice().getOptions().size() - 1;

@@ -18,8 +18,10 @@ package kinugasa.game.system;
 
 import java.util.Map;
 import java.util.Set;
+import kinugasa.game.I18N;
 import kinugasa.game.field4.D2Idx;
 import kinugasa.game.field4.FieldMap;
+import kinugasa.object.FourDirection;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.Storage;
 
@@ -35,16 +37,22 @@ public class Inn implements Nameable {
 	private String visibleNameCache;
 	private FieldMap fieldMap;
 	private D2Idx startIdx;
+	private FourDirection startDir;
 	private Storage<InnPlan> plans;
-	private Map<InnPlan, Set<String>> eventScripts;
+	private Set<String> paymentName;
 
-	public Inn(String id, String visibleNameCache, FieldMap fieldMap, D2Idx startIdx, Storage<InnPlan> plans, Map<InnPlan, Set<String>> eventScripts) {
-		this.id = id;
-		this.visibleNameCache = visibleNameCache;
-		this.fieldMap = fieldMap;
-		this.startIdx = startIdx;
-		this.plans = plans;
-		this.eventScripts = eventScripts;
+	private Inn() {
+
+	}
+
+	public static Inn readFromXml(String filePath) {
+		Inn res = new Inn();
+
+		res.visibleNameCache = I18N.get(res.id);
+	}
+
+	public Set<String> getPaymentName() {
+		return paymentName;
 	}
 
 	public String getId() {
@@ -65,10 +73,6 @@ public class Inn implements Nameable {
 
 	public Storage<InnPlan> getPlans() {
 		return plans;
-	}
-
-	public Map<InnPlan, Set<String>> getEventScripts() {
-		return eventScripts;
 	}
 
 	@Override

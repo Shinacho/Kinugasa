@@ -16,6 +16,7 @@
  */
 package kinugasa.game.system;
 
+import kinugasa.game.I18N;
 import kinugasa.resource.Nameable;
 
 /**
@@ -25,11 +26,11 @@ import kinugasa.resource.Nameable;
  */
 public class Money implements Nameable {
 
-	private String name;
+	private String id;
 	private int value, min = 0, max = 99999999;
 
 	Money(String name) {
-		this.name = name;
+		this.id = name;
 	}
 
 	public int getMax() {
@@ -42,7 +43,7 @@ public class Money implements Nameable {
 
 	@Override
 	public String getName() {
-		return name;
+		return id;
 	}
 
 	public int getValue() {
@@ -58,12 +59,12 @@ public class Money implements Nameable {
 	}
 
 	public String getVisibleText() {
-		return value + " " + name;
+		return value + " " + I18N.get(id);
 	}
 
 	@Override
 	public String toString() {
-		return "Money{" + "name=" + name + ", value=" + value + '}';
+		return "Money{" + "name=" + id + ", value=" + value + '}';
 	}
 
 }

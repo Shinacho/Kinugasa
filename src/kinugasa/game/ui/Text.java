@@ -35,7 +35,7 @@ import kinugasa.util.TimeCounter;
  * @vesion 1.0.0 - 2021/11/25_13:55:40<br>
  * @author Shinacho<br>
  */
-public class Text implements Nameable {
+public sealed class Text implements Nameable permits Choice {
 
 	public static Text empty() {
 		return noI18N("");
@@ -76,8 +76,8 @@ public class Text implements Nameable {
 	}
 
 	//
-	private final String name;
-	private String text;
+	protected String name;
+	protected String text;
 	private TimeCounter tc = new FrameTimeCounter(0);
 	private int visibleIdx = 0;
 	private String nextId;
@@ -104,6 +104,16 @@ public class Text implements Nameable {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
 		Text t = new Text();
+		t.text = text;
+		return t;
+	}
+
+	public static Text noI18N(String id, String text) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		Text t = new Text();
+		t.name = id;
 		t.text = text;
 		return t;
 	}
@@ -154,8 +164,8 @@ public class Text implements Nameable {
 	public void setImage(BufferedImage image) {
 		this.image = image;
 	}
-	
-	public void setTextNoI18N(String t){
+
+	public void setTextNoI18N(String t) {
 		if (t == null) {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
@@ -179,13 +189,13 @@ public class Text implements Nameable {
 		return events;
 	}
 
-	void setEvents(List<FieldEvent> events) {
+	public void setEvents(List<FieldEvent> events) {
 		Collections.sort(events);
 		this.events = events;
 	}
 
 	public boolean isReaching() {
-		if(text == null || text.isEmpty()){
+		if (text == null || text.isEmpty()) {
 			return true;
 		}
 		if (visibleIdx >= text.length()) {

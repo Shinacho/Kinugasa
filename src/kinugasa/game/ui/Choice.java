@@ -26,7 +26,7 @@ import kinugasa.util.TimeCounter;
  * @vesion 1.0.0 - 2022/11/08_9:33:24<br>
  * @author Shinacho<br>
  */
-public class Choice extends Text {
+public final class Choice extends Text {
 
 	private List<Text> options;
 
@@ -38,6 +38,16 @@ public class Choice extends Text {
 	public Choice(List<Text> options, String name, String text, FrameTimeCounter tc, int visibleIdx) {
 		super(name, text, tc, visibleIdx);
 		this.options = options;
+	}
+	private Choice(){}
+	
+	public static Choice noI18N(String id, String textI18Nd, List<Text> options){
+		Choice c = new Choice();
+		c.name = id;
+		c.text = textI18Nd;
+		c.options = options;
+		c.allText();
+		return c;
 	}
 
 	public List<Text> getOptions() {

@@ -16,6 +16,7 @@
  */
 package kinugasa.game.system;
 
+import java.util.Set;
 import kinugasa.resource.Nameable;
 
 /**
@@ -24,16 +25,24 @@ import kinugasa.resource.Nameable;
  * @vesion 1.0.0 - 2023/12/01_20:18:28<br>
  * @author Shinacho<br>
  */
-public class InnPlan implements Nameable {
+public class InnPlan implements Nameable, Comparable<InnPlan> {
 
 	private String id;
+	private String visibleName;
 	private InnClass grade;
+	private Set<String> eventScripts;
 	private int baseValue;
 
-	public InnPlan(String id, InnClass grade, int baseValue) {
+	public InnPlan(String id, String visibleName, InnClass grade, Set<String> eventScripts, int baseValue) {
 		this.id = id;
+		this.visibleName = visibleName;
 		this.grade = grade;
+		this.eventScripts = eventScripts;
 		this.baseValue = baseValue;
+	}
+
+	public Set<String> getEventScripts() {
+		return eventScripts;
 	}
 
 	@Override
@@ -53,9 +62,20 @@ public class InnPlan implements Nameable {
 		return baseValue * partyNum;
 	}
 
+	public String getVisibleName() {
+		String v = grade.getVisibleName();
+		v += ", " + visibleName;
+		return v;
+	}
+
 	@Override
 	public String toString() {
 		return "InnPlan{" + "id=" + id + ", grade=" + grade + ", baseValue=" + baseValue + '}';
+	}
+
+	@Override
+	public int compareTo(InnPlan o) {
+		return id.compareTo(o.id);
 	}
 
 }
