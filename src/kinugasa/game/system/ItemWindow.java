@@ -444,8 +444,13 @@ public class ItemWindow extends BasicSprite {
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else if (i.canEqip(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()))) {
+							//左手に装備済みだった場合外す
+							if (getSelectedPC().getEqip().containsKey(EqipSlot.左手)
+									&& getSelectedPC().getEqip().get(EqipSlot.左手) != null
+									&& getSelectedPC().getEqip().get(EqipSlot.左手).equals(i)) {
+								getSelectedPC().getEqip().put(EqipSlot.左手, null);
+							}
 							//装備する
-							getSelectedPC().eqip(i);
 							boolean ryoute = false;
 							if (i.getWeaponType() != null) {
 								//両手持ち武器の場合は左手を強制的に両手持ちにする
@@ -457,7 +462,11 @@ public class ItemWindow extends BasicSprite {
 										.contains(i.getWeaponType())) {
 									getSelectedPC().eqipLeftHand(ActionStorage.getInstance().両手持ち);
 									ryoute = true;
+								} else {
+									getSelectedPC().eqip(i);
 								}
+							} else {
+								getSelectedPC().eqip(i);
 							}
 							getSelectedPC().updateAction();
 							String cnd = getSelectedPC().addWhen0Condition();
@@ -517,6 +526,12 @@ public class ItemWindow extends BasicSprite {
 							return;
 						}
 						if (i.canEqip(GameSystem.getInstance().getPCbyID(getSelectedPC().getId()))) {
+							//右手に装備済みだった場合外す
+							if (getSelectedPC().getEqip().containsKey(EqipSlot.右手)
+									&& getSelectedPC().getEqip().get(EqipSlot.右手) != null
+									&& getSelectedPC().getEqip().get(EqipSlot.右手).equals(i)) {
+								getSelectedPC().getEqip().put(EqipSlot.右手, null);
+							}
 							//装備する
 							getSelectedPC().eqip(EqipSlot.左手, i);
 							//弓の場合は右手を両手持ちにする
@@ -1066,9 +1081,9 @@ public class ItemWindow extends BasicSprite {
 	private int prevMainSelect = 0;
 
 	private String getItemListText(Status s) {
-		if (s.equals(prevStatus) && prevMainSelect == mainSelect && cache != null) {
-			return cache;
-		}
+//		if (s.equals(prevStatus) && prevMainSelect == mainSelect && cache != null) {
+//			return cache;
+//		}
 		prevStatus = s;
 		prevMainSelect = mainSelect;
 		StringBuilder sb = new StringBuilder();
@@ -1091,22 +1106,22 @@ public class ItemWindow extends BasicSprite {
 					&& !eqip.contains(item)) {
 				if (item.isWeapon()) {
 					eqip.add(item);
-					sb.append("(").append(getEqipedSlot(getSelectedPC(), item).getVisibleName()).append(")");
+					sb.append("(E:").append(getEqipedSlot(getSelectedPC(), item).getVisibleName()).append(")");
 					sb.append(item.getVisibleName()).append(Text.getLineSep());
 					if (ryote) {
 						if (s.getEqip().values().contains(ActionStorage.getInstance().両手持ち)) {
-							sb.append(" ・(").append(EqipSlot.左手.getVisibleName()).append(")").append(ActionStorage.getInstance().両手持ち.getVisibleName());
+							sb.append(" ・(E:").append(EqipSlot.左手.getVisibleName()).append(")").append(ActionStorage.getInstance().両手持ち.getVisibleName());
 							sb.append(Text.getLineSep());
 						}
 						if (s.getEqip().values().contains(ActionStorage.getInstance().両手持ち_弓)) {
-							sb.append(" ・(").append(EqipSlot.右手.getVisibleName()).append(")").append(ActionStorage.getInstance().両手持ち_弓.getVisibleName());
+							sb.append(" ・(E:").append(EqipSlot.右手.getVisibleName()).append(")").append(ActionStorage.getInstance().両手持ち_弓.getVisibleName());
 							sb.append(Text.getLineSep());
 						}
 						ryote = false;
 					}
 				} else {
 					eqip.add(item);
-					sb.append("(").append(getEqipedSlot(getSelectedPC(), item).getVisibleName()).append(")");
+					sb.append("(E:").append(getEqipedSlot(getSelectedPC(), item).getVisibleName()).append(")");
 					sb.append(item.getVisibleName()).append(Text.getLineSep());
 				}
 			} else {

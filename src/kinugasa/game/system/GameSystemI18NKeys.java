@@ -132,6 +132,7 @@ public class GameSystemI18NKeys {
 //
 //		return res;
 //	}
+
 	public static final String はい = "はい";
 	public static final String いいえ = "いいえ";
 	public static final String 話す = "話す";
@@ -142,7 +143,7 @@ public class GameSystemI18NKeys {
 	public static final String 確認 = "確認";
 	public static final String 本当に終了しますか = "本当に終了しますか";
 
-	public static final String の本 = "の本";
+	public static final String の魔術書 = "の魔術書";
 
 	public static final String 両手持ち = "両手持ち";
 	public static final String 両手持ちすると右手の効果が２倍になる = "両手持ちにすると右手の効果が２倍になる";
@@ -153,7 +154,7 @@ public class GameSystemI18NKeys {
 
 	public static final String 対象効果 = "対象効果";
 	public static final String 自身への効果 = "自身への効果";
-	
+
 	public static final String Xの行動 = "Xの行動";
 	public static final String 範囲 = "範囲";
 	public static final String 属性 = "属性";
@@ -241,8 +242,9 @@ public class GameSystemI18NKeys {
 	public static final String 詠唱時間 = "詠唱時間";
 	public static final String ターン = "ターン";
 	public static final String この魔法は戦闘中使えない = "この魔法は戦闘中使えない";
-	public static final String 状態異常XをXの確率で追加する = "状態異常XをXの確率で追加する";
-	public static final String 状態異常XをXの確率で解除する = "状態異常XをXの確率で解除する";
+	public static final String XをXの確率でXターン付与する = "XをXの確率でXターン付与する";
+	public static final String XをXの確率で付与する = "XをXの確率で付与する";
+	public static final String XをXの確率で解除する = "XをXの確率で解除する";
 	public static final String 被耐性XをXの確率でX変更する = "被耐性XをXの確率でX変更する";
 	public static final String 与耐性XをXの確率でX変更する = "与耐性XをXの確率でX変更する";
 	public static final String 状態異常Xの耐性をXの確率でX変更する = "状態異常Xの耐性をXの確率でX変更する";
@@ -465,20 +467,20 @@ public class GameSystemI18NKeys {
 	public static final String Xターン内の魔法詠唱は反転された = "Xターン内の魔法詠唱は反転された";
 	public static final String XはXの正気度ダメージを受けた = "XはXの正気度ダメージを受けた";
 	public static final String XはXをX回発動する準備をした = "XはXをX回発動する準備をした";
-	public static final String XのXは攻撃回数が変動した ="XのXは攻撃回数が変動した";
+	public static final String XのXは攻撃回数が変動した = "XのXは攻撃回数が変動した";
 	public static final String XのXは価値が変動した = "XのXは価値が変動した";
 	public static final String XはX装備を外した = "XはX装備を外した";
 	public static final String 基礎値 = "基礎値";
 	public static final String Xの確率でX属性の回復ダメージをXに与える = "Xの確率でX属性の回復ダメージをXに与える";
 	public static final String XはすでにXがかかっている = "XはすでにXがかかっている";
-	public static final String 効果範囲内にターゲットがいない= "効果範囲内にターゲットがいない";
+	public static final String 効果範囲内にターゲットがいない = "効果範囲内にターゲットがいない";
 	public static final String しかしXには当たらなかった = "しかしXには当たらなかった";
 	public static final String Xは回避した = "Xは回避した";
 	public static final String Xはブロックした = "Xはブロックした";
 	public static final String Xは反射した = "Xは反射した";
 	public static final String Xは吸収した = "Xは吸収した";
 	public static final String クリティカルヒットした = "クリティカルヒットした";
-	public static final String 脚本Xを実行する= "脚本Xを実行する";
+	public static final String 脚本Xを実行する = "脚本Xを実行する";
 	public static final String 脚本実行の術式 = "脚本実行の術式";
 	public static final String 脚本Xが存在しない = "脚本Xが存在しない";
 	public static final String 脚本Xは誤っている = "脚本Xは誤っている";
@@ -493,30 +495,11 @@ public class GameSystemI18NKeys {
 	public static final String Xには何も装備していない = "Xには何も装備していない";
 	public static final String Xは両手には装備できない = "Xは両手には装備できない";
 	public static final String 両手持ち可能 = "両手持ち可能";
-	//宿システム
-	public static final String 宿Xです = "宿Xです";
-	public static final String 記録ですか宿泊ですか = "記録ですか宿泊ですか";
-	public static final String 記録したい = "記録したい";
-	public static final String 宿泊したい = "宿泊したい";
-	public static final String 用はない = "用はない";
-	public static final String 記録しますね = "記録しますね";
-	public static final String  またのご利用お待ちしております = "またのご利用お待ちしております";
-	public static final String プランをお選びください = "プランをお選びください";
-	public static final String やめることにする = "やめることにする";
-	public static final String X泊 = "X泊";
-	public static final String 何泊されますか = "何泊されますか";
-	public static final String 一泊X金 = "一泊X金";
-	public static final String X金 = "X金";
-	public static final String Xプラン = "Xプラン";
-	public static final String お支払いはどうされますか = "お支払いはどうされますか";
-	public static final String お支払い方法XでX = "お支払い方法XでX";
-	public static final String でよろしいですか  = "でよろしいですか";
-	public static final String 確認となります = "確認となります";
-	public static final String ああ = "ああ";
-	public static final String やめておく = "やめておく";
-	public static final String お客様失礼ですがお金が足りないようです = "お客様失礼ですがお金が足りないようです";
-	
-	
+
+	//
+	public static final String 難易度 = "難易度";
+	public static final String 難易度を変更するには = "難易度を変更するには";
+
 	public static class CountKey {
 
 		public static final String BGM再生回数 = "BGM再生回数";

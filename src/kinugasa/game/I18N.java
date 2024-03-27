@@ -109,6 +109,14 @@ public class I18N {
 	}
 
 	@NoLoopCall
+	public static String getOrThat(String key) {
+		if (contains(key)) {
+			return get(key);
+		}
+		return key;
+	}
+
+	@NoLoopCall
 	public static String get(String key, Object... param) {
 		String res = getText(key);
 		for (int i = 0; i < param.length; i++) {

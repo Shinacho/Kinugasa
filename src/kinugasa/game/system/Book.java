@@ -42,7 +42,7 @@ public class Book implements Nameable, Cloneable {
 	}
 
 	public String getVisibleName() {
-		return action.getVisibleName() + I18N.get(GameSystemI18NKeys.の本);
+		return action.getVisibleName() + I18N.get(GameSystemI18NKeys.の魔術書);
 	}
 
 	@Deprecated
@@ -66,7 +66,13 @@ public class Book implements Nameable, Cloneable {
 
 	//自動計算された金額を返す
 	public int getPrice() {
-		return action.getAllEvents().stream().map(p -> new BookPage(p)).mapToInt(BookPage::getPrice).sum();
+		var v = action.getAllEvents().stream().map(p -> new BookPage(p)).mapToInt(BookPage::getPrice).sum();
+		if (action.getTgtType().is全員()) {
+			v *= 3;
+		} else if (action.getTgtType().isグループ()) {
+			v *= 1.5f;
+		}
+		return v;
 	}
 
 	@Override

@@ -94,7 +94,7 @@ public enum CharaAbility implements AbilityEffect {
 		}
 
 	},
-	アバター("魔力が１４％上がる") {
+	役者("魔力が１４％上がる") {
 		@Override
 		public AttributeValueSet effectAttrIn(Status s, AttributeValueSet v) {
 			AttributeValueSet r = v.clone();

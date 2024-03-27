@@ -70,6 +70,18 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 			return this.toString().contains("切替可能");
 		}
 
+		public boolean isグループ() {
+			return this.toString().startsWith("グループ");
+		}
+
+		public boolean is単体() {
+			return this.toString().startsWith("単体") || this == 自身のみ;
+		}
+
+		public boolean is全員() {
+			return this == 全員 || this == 全員_自身除く;
+		}
+
 	}
 
 	//死亡状態の対象を選択できるかどうか

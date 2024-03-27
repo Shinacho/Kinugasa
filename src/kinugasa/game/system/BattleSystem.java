@@ -2251,6 +2251,8 @@ public class BattleSystem implements Drawable {
 				r += BattleConfig.正気度減少イベントの数値＿味方の場合.getAsInt();
 			}
 		}
+		r *= GameSystem.getDifficulty().get正気度ダメージ倍率();
+
 		if (r > 0) {
 			r = -r;
 		}

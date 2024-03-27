@@ -161,10 +161,6 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 		return text.get(n) instanceof Choice;
 	}
 
-	public Choice getChoice() {
-		return (Choice) getText();
-	}
-
 	public int getSelectedIdx() {
 		return select;
 	}

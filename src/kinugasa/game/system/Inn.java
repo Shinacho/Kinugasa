@@ -45,11 +45,11 @@ public class Inn implements Nameable {
 
 	}
 
-	public static Inn readFromXml(String filePath) {
-		Inn res = new Inn();
-
-		res.visibleNameCache = I18N.get(res.id);
-	}
+//	public static Inn readFromXml(String filePath) {
+//		Inn res = new Inn();
+//
+//		res.visibleNameCache = I18N.get(res.id);
+//	}
 
 	public Set<String> getPaymentName() {
 		return paymentName;

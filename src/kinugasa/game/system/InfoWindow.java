@@ -115,6 +115,12 @@ public class InfoWindow extends BasicSprite {
 				}).toList()) {
 					t.add(new Text("  " + v.getVisibleName() + " : " + v.num));
 				}
+				t.add(Text.noI18N("--" + I18N.get(GameSystemI18NKeys.難易度) + ""));
+				t.add(Text.noI18N("  " + GameSystem.getDifficulty().getNameI18Nd()));
+				for (String v : GameSystem.getDifficulty().getDescI18Nd().split("/")) {
+					t.add(Text.noI18N("    " + v));
+				}
+				t.add(new Text(GameSystemI18NKeys.難易度を変更するには));
 				break;
 			}
 			default:

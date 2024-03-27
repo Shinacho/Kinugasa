@@ -19,6 +19,7 @@ package kinugasa.resource.text;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -42,12 +43,12 @@ public class TextFile implements Input<TextFile>, Output, Nameable, Iterable<Str
 
 	public TextFile(File file) {
 		this.file = file;
-		charset = Charset.forName("UTF-8");
+		charset = StandardCharsets.UTF_8;
 	}
 
 	public TextFile(String path) {
 		this.file = new File(path);
-		charset = Charset.forName("UTF-8");
+		charset = StandardCharsets.UTF_8;
 	}
 
 	public TextFile(File file, Charset c) {

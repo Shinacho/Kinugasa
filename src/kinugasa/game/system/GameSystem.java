@@ -61,6 +61,16 @@ public class GameSystem {
 		return battleSystem;
 	}
 
+	private static Difficulty difficulty = Difficulty.NOMAL;
+
+	public static Difficulty getDifficulty() {
+		return difficulty;
+	}
+
+	public static void setDifficulty(Difficulty difficulty) {
+		GameSystem.difficulty = difficulty;
+	}
+
 	//
 	//--------------------------------------------------------------------------
 	//

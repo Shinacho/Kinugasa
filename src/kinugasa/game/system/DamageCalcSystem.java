@@ -227,6 +227,22 @@ public class DamageCalcSystem {
 								0, 0, false);
 					}
 				}
+
+				//難易度補正
+				if (p.user.isPlayer()) {
+					if (p.tgt.isPlayer()) {
+						value *= GameSystem.getDifficulty().get被ダメ倍率();
+					} else {
+						value *= GameSystem.getDifficulty().get与ダメ倍率();
+					}
+				} else {
+					if (p.tgt.isPlayer()) {
+						value *= GameSystem.getDifficulty().get被ダメ倍率();
+					} else {
+						value *= GameSystem.getDifficulty().get与ダメ倍率();
+					}
+				}
+
 				//ブロック判定
 				//クリティカルの場合はブロックできない
 				if (!クリティカル) {
@@ -379,6 +395,21 @@ public class DamageCalcSystem {
 					}
 				}
 
+				//難易度補正
+				if (p.user.isPlayer()) {
+					if (p.tgt.isPlayer()) {
+						value *= GameSystem.getDifficulty().get被ダメ倍率();
+					} else {
+						value *= GameSystem.getDifficulty().get与ダメ倍率();
+					}
+				} else {
+					if (p.tgt.isPlayer()) {
+						value *= GameSystem.getDifficulty().get被ダメ倍率();
+					} else {
+						value *= GameSystem.getDifficulty().get与ダメ倍率();
+					}
+				}
+
 				//回避判定
 				//クリティカルの場合は回避できない
 				if (!クリティカル) {
@@ -528,6 +559,21 @@ public class DamageCalcSystem {
 					}
 				}
 
+				//難易度補正
+				if (p.user.isPlayer()) {
+					if (p.tgt.isPlayer()) {
+						value *= GameSystem.getDifficulty().get与ダメ倍率();
+					} else {
+						value *= GameSystem.getDifficulty().get被ダメ倍率();
+					}
+				} else {
+					if (p.tgt.isPlayer()) {
+						value *= GameSystem.getDifficulty().get与ダメ倍率();
+					} else {
+						value *= GameSystem.getDifficulty().get被ダメ倍率();
+					}
+				}
+
 				//ダメージコミット
 				p.tgt.getStatus().getBaseStatus().get(p.tgtStatusKey).add(value);
 				return new Result(p,
@@ -602,6 +648,21 @@ public class DamageCalcSystem {
 					}
 				}
 
+				//難易度補正
+				if (p.user.isPlayer()) {
+					if (p.tgt.isPlayer()) {
+						value *= GameSystem.getDifficulty().get与ダメ倍率();
+					} else {
+						value *= GameSystem.getDifficulty().get被ダメ倍率();
+					}
+				} else {
+					if (p.tgt.isPlayer()) {
+						value *= GameSystem.getDifficulty().get与ダメ倍率();
+					} else {
+						value *= GameSystem.getDifficulty().get被ダメ倍率();
+					}
+				}
+				
 				//ダメージコミット
 				p.tgt.getStatus().getBaseStatus().get(p.tgtStatusKey).add(value);
 				return new Result(p,

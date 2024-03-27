@@ -55,9 +55,13 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 	public EnemySet get() {
 		List<EnemySet> list = asList();
 		Collections.sort(list);
-		Collections.reverse(list);
 		for (EnemySet e : list) {
 			if (Random.percent(e.getP())) {
+				if (e.isHard()) {
+					if (!GameSystem.getDifficulty().is特別なenemySet抽選()) {
+						continue;
+					}
+				}
 				return e;
 			}
 		}
@@ -94,7 +98,8 @@ public class EnemySetStorage extends Storage<EnemySet> implements Nameable {
 			for (XMLElement ee : e.getElement("enemy")) {
 				list.add(new EnemyBlueprint(ee.getAttributes().get("fileName").getValue()));
 			}
-			EnemySet es = new EnemySet(id, list, p, bgmName, bgmMode, winBgmName, win, lose);
+			boolean hard = e.hasAttribute("hardDiff");
+			EnemySet es = new EnemySet(id, list, p, bgmName, bgmMode, winBgmName, win, lose, hard);
 			add(es);
 		}
 

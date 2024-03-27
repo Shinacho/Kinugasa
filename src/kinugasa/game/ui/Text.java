@@ -179,7 +179,7 @@ public sealed class Text implements Nameable permits Choice {
 		if (t == null) {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
-		this.text = I18N.get(t);
+		this.text = I18N.getOrThat(t);
 		for (Map.Entry<String, String> e : replaceMap.entrySet()) {
 			text = text.replaceAll(e.getKey(), e.getValue());
 		}

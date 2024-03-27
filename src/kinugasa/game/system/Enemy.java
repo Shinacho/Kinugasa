@@ -80,9 +80,15 @@ public final class Enemy extends Actor {
 			if (!root.hasElement("ai")) {
 				throw new IllegalXMLFormatException("enemy, but ai is undefined. " + this);
 			}
-			ai = EnemyAIImpl.valueOf(
-					root.getElement("ai").get(0).getAttributes().get("name").getValue()
-			);
+			if (root.hasElement("hardAi") && GameSystem.getDifficulty().is敵AI2を使用()) {
+				ai = EnemyAIImpl.valueOf(
+						root.getElement("hardAi").get(0).getAttributes().get("name").getValue()
+				);
+			} else {
+				ai = EnemyAIImpl.valueOf(
+						root.getElement("ai").get(0).getAttributes().get("name").getValue()
+				);
+			}
 			f.dispose();
 		} catch (Exception ex) {
 			throw new IllegalXMLFormatException(ex);

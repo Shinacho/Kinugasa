@@ -26,15 +26,14 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import kinugasa.game.GameLog;
 import kinugasa.game.GameOption;
 import kinugasa.game.GraphicsContext;
+import kinugasa.game.I18N;
 import kinugasa.game.LoopCall;
 import kinugasa.game.system.EncountInfo;
 import kinugasa.game.system.EnemySetStorageStorage;
@@ -56,7 +55,6 @@ import static kinugasa.object.FourDirection.EAST;
 import static kinugasa.object.FourDirection.NORTH;
 import static kinugasa.object.FourDirection.SOUTH;
 import static kinugasa.object.FourDirection.WEST;
-import kinugasa.object.ImageSprite;
 import kinugasa.object.KVector;
 import kinugasa.resource.Disposable;
 import kinugasa.resource.KImage;
@@ -146,6 +144,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	private LinkedList<D2Idx> prevLocationList = new LinkedList<>();
 	private String enemyStorageName;
 	//
+	private float mg;
+	private ManualTimeCounter encountCounter;
 
 	public static Map<String, List<NPCSprite>> getAddedNPC() {
 		return addedNPC;
@@ -249,7 +249,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	void setBeforeLayerSprites(List<BeforeLayerSprite> beforeLayerSprites) {
 		this.beforeLayerSprites = beforeLayerSprites;
 	}
-	private float mg;
 
 	float getMg() {
 		return mg;
@@ -287,6 +286,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 			if (r != 1) {
 				r = Random.randomAbsInt(r - r / 2, r + r / 2);
 			}
+			r *= GameSystem.getDifficulty().getエンカウント歩数倍率();
 			encountCounter.setCurrentTime(r);
 		} else {
 			this.encountCounter = ManualTimeCounter.FALSE;
@@ -679,7 +679,6 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		}
 	}
 
-	private ManualTimeCounter encountCounter;
 
 	public ManualTimeCounter getEncountCounter() {
 		return encountCounter;
@@ -742,6 +741,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 		int r = encountCounter.getInitialTime();
 		if (r != 1) {
 			r = Random.randomAbsInt(r - r / 2, r + r / 2);
+			r *= GameSystem.getDifficulty().getエンカウント歩数倍率();
 		}
 		encountCounter.setCurrentTime(r);
 	}
@@ -896,9 +896,9 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				float x = l.getX() * ws;
 				float y = l.getY() * hs + 8;
 				s.setLocationByCenter(new Point2D.Float(x, y));
-				g2.drawString(s.getText(), (int) s.getX() + 2, (int) s.getY() + 2);
+				g2.drawString(I18N.get(s.getText()), (int) s.getX() + 2, (int) s.getY() + 2);
 				g2.setColor(Color.WHITE);
-				g2.drawString(s.getText(), (int) s.getX(), (int) s.getY());
+				g2.drawString(I18N.get(s.getText()), (int) s.getX(), (int) s.getY());
 			}
 			g2.dispose();
 		}

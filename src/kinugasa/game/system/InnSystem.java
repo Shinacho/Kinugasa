@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Shinacho
+ * Copyright (C) 2024 Shinacho
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,29 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package kinugasa.game.system;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import kinugasa.game.I18N;
-
 /**
- * 宿の宿泊プランのグレードです。
  *
- * @vesion 1.0.0 - 2023/12/01_20:15:24<br>
+ * @vesion 1.0.0 - 2024/03/20_13:32:17<br>
  * @author Shinacho<br>
  */
-public enum InnClass {
-	貸切,
-	特別室,
-	スイート,
-	豪華食事つき,
-	一般的,
-	朝食付き,
-	相部屋素泊まり,
-	雑魚寝素泊まり,;
+public class InnSystem {
 
-	public String getVisibleName() {
-		return I18N.get(toString());
-	}
 }

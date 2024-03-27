@@ -43,11 +43,12 @@ public class EnemySet implements Nameable, Comparable<EnemySet> {
 	private String winLogicName, loseLogicName;
 	private BGMMode bgmMode;
 	private String winBgmName;
+	private boolean hard;
 
 	public EnemySet(String name, List<EnemyBlueprint> enemies, float p,
 			String bgmName, BGMMode mode,
 			String winBgmName,
-			String winLogicName, String loseLogicName) {
+			String winLogicName, String loseLogicName, boolean hard) {
 		this.name = name;
 		this.enemies = enemies;
 		this.p = p;
@@ -109,6 +110,9 @@ public class EnemySet implements Nameable, Comparable<EnemySet> {
 		return p;
 	}
 
+	public boolean isHard() {
+		return hard;
+	}
 
 	@Override
 	public int compareTo(EnemySet o) {

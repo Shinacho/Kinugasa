@@ -778,7 +778,11 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で追加する, event.getTgtConditionKey().getVisibleName(), (int) (event.getP() * 100) + "%"));
+			if (event.getCndTime() != 0) {
+				sb.append(I18N.get(GameSystemI18NKeys.XをXの確率でXターン付与する, event.getTgtConditionKey().getVisibleName(), (int) (event.getP() * 100) + "%", event.getCndTime()));
+			} else {
+				sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で付与する, event.getTgtConditionKey().getVisibleName(), (int) (event.getP() * 100) + "%"));
+			}
 			return sb.toString();
 		}
 
@@ -818,7 +822,7 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.状態異常XをXの確率で解除する, event.getTgtConditionKey().getVisibleName(), (int) (event.getP() * 100) + "%"));
+			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で解除する, event.getTgtConditionKey().getVisibleName(), (int) (event.getP() * 100) + "%"));
 			return sb.toString();
 		}
 
@@ -4410,7 +4414,6 @@ public enum ActionEventType {
 				String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
 				sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
 			}
-			sb.append(Text.getLineSep());
 			return sb.toString();
 		}
 

@@ -16,12 +16,10 @@
  */
 package kinugasa.game.ui;
 
-import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.LinkedList;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.LoopCall;
-import kinugasa.game.Nullable;
 import kinugasa.game.field4.FieldEventSystem;
 import kinugasa.object.BasicSprite;
 import kinugasa.resource.NameNotFoundException;
@@ -44,7 +42,7 @@ public class MessageWindow extends BasicSprite {
 	}
 
 	public MessageWindow(float x, float y, float w, float h) {
-		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage("AUTO_FROM_MW"), new Text(""));
+		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage("AUTO_FROM_MW"), Text.noI18N(""));
 	}
 
 	public MessageWindow(float x, float y, float w, float h, Text text) {
