@@ -72,7 +72,6 @@ public class FieldMapResourceUtil {
 			}
 		}
 		List<String[]> inputData = reader.load().getData();
-
 		for (String[] inputLine : inputData) {
 			if (inputLine.length <= 0) {
 				continue;
@@ -85,6 +84,8 @@ public class FieldMapResourceUtil {
 			for (int j = 0; j < inputLine.length; j++) {
 				outputLine[j] = convertTable[Integer.parseInt(inputLine[j])];
 			}
+			//末尾の/
+			outputLine[outputLine.length-1] += "/";
 			writer.add(outputLine);
 		}
 		reader.dispose();
@@ -111,10 +112,10 @@ public class FieldMapResourceUtil {
 	//outer16
 	public static void main(String[] args) {
 
-		String f1 = "D:/Project/FuzzyWorld/resource/data/map/raw/map08.csv";
-		String f2 = "D:/Project/FuzzyWorld/resource/data/map/converted/map08.csv";
-//		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 48, 16);//outer
-		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 8, 16);//inner16_2
+		String f1 = "D:/Project/FuzzyWorld/resource/data/map/raw/map05.csv";
+		String f2 = "D:/Project/FuzzyWorld/resource/data/map/converted/map05.csv";
+		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 48, 16);//outer
+//		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 8, 16);//inner16_2
 
 	}
 }

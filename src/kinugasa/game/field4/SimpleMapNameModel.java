@@ -40,7 +40,7 @@ public class SimpleMapNameModel extends MapNameModel {
 	private FadeCounter back = FadeCounter.fadeOut(-1);
 
 	public SimpleMapNameModel() {
-		label = new TextLabelSprite("", new SimpleTextLabelModel(FontModel.DEFAULT), 0, 24, 1000, 16) {
+		label = new TextLabelSprite("", new SimpleTextLabelModel(FontModel.DEFAULT), 180, 24, GameOption.getInstance().getWindowSize().width / 2 - 90, 16) {
 			@Override
 			public void draw(GraphicsContext g) {
 				Graphics2D g2 = g.create();
@@ -64,8 +64,11 @@ public class SimpleMapNameModel extends MapNameModel {
 			case 0:
 				String val = I18N.get(fm.getName());
 				label.setText(val);
-				float x = (float) (GameOption.getInstance().getWindowSize().getWidth() / GameOption.getInstance().getDrawSize() - 24 - label.getText().length() * label.getLabelModel().getFontSize());
+				float centerX = GameOption.getInstance().getWindowSize().width / 2;
+				float width = (label.getText().length() * label.getLabelModel().getFontSize());
+				float x = centerX - width / 2;
 				label.setX(x);
+				label.setWidth(width);
 				labelFont = FadeCounter.fadeOut(-1);
 				back = FadeCounter.fadeOut(-1);
 				FontModel f = label.getLabelModel().getFontConfig().clone();
