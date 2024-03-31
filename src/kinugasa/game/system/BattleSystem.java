@@ -678,11 +678,9 @@ public class BattleSystem implements Drawable {
 			magics.remove(turn);
 		}
 
-		//アクション更新
-		GameSystem.getInstance().getParty().forEach(p -> p.getStatus().updateAction());
-		enemies.forEach(p -> p.getStatus().updateAction());	
-
-
+//		//アクション更新
+//		GameSystem.getInstance().getParty().forEach(p -> p.getStatus().updateAction());
+//		enemies.forEach(p -> p.getStatus().updateAction());	
 		//コマンドがパーティーだけの場合、戦闘終了
 		if (commandsOfThisTurn.stream().allMatch(p -> p.getUser().isPlayer())) {
 			setEndStatus(BattleResult.勝利_敵全滅);
@@ -765,7 +763,7 @@ public class BattleSystem implements Drawable {
 		}
 		//アプア
 		user.getStatus().updateAction();
-		
+
 		if (GameSystem.isDebugMode()) {
 			kinugasa.game.GameLog.print(" currentCMD:" + currentCmd);
 		}
@@ -922,16 +920,17 @@ public class BattleSystem implements Drawable {
 		}
 
 		//----------------------------------NPCの場合-------------------------------------
+		ActionTarget ea;
 		if (!user.isPlayer()) {
 			//AIからアクションとターゲットを取得して実行
-			ActionTarget a = ((Enemy) user).getActionTgt();
+			ea = ((Enemy) user).getActionTgt();
 			if (GameSystem.isDebugMode()) {
-				kinugasa.game.GameLog.print(" enemy atgt:" + a);
+				kinugasa.game.GameLog.print(" enemy atgt:" + ea);
 			}
 
 			//移動、防御などのアクションの場合（逃げるも入る、確定も入る
-			if (a.getAction().getType() == ActionType.行動) {
-				switch (a.getAction().getId()) {
+			if (ea.getAction().getType() == ActionType.行動) {
+				switch (ea.getAction().getId()) {
 					case BattleConfig.ActionID.逃走: {
 						//逃げ
 						//行動力の範囲内で逃げられることを確認
@@ -1005,20 +1004,19 @@ public class BattleSystem implements Drawable {
 						return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 					}
 					default: {
-						throw new GameSystemException("illegal ai action select : " + a);
+						throw new GameSystemException("illegal ai action select : " + ea);
 					}
 				}
 			}
 			//攻撃or魔法
 			//移動は行動アクションを返すので、この時点で射程内にターゲットがいる
-			ActionTarget tgt = ((Enemy) user).getActionTgt();
 
 			//詠唱時間のある魔法だった場合、詠唱開始イベントを実行してＭＳＧ表示して次へ
-			if (a.getAction().getType() == ActionType.魔法 && a.getAction().getCastTime() != 0) {
+			if (ea.getAction().getType() == ActionType.魔法 && ea.getAction().getCastTime() != 0) {
 				//リソースが足りるかチェック（足りない場合はAIが返さないが念のため
-				Action.ResourceShortage res = a.getAction().checkResource(user.getStatus());
+				Action.ResourceShortage res = ea.getAction().checkResource(user.getStatus());
 				if (res.is足りないステータスあり()) {
-					setMsg(詠唱したがリソースが足りないのMSG(user, a.getAction(), res.keys));
+					setMsg(詠唱したがリソースが足りないのMSG(user, ea.getAction(), res.keys));
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 					currentBAWaitTime = new FrameTimeCounter(50);
 					setStage(Stage.待機中＿時間あり＿手番送り);
@@ -1026,9 +1024,9 @@ public class BattleSystem implements Drawable {
 				}
 				//詠唱開始イベント
 				//ターゲット状態保存
-				cast予約(turn + a.getAction().getCastTime(), new MagicSpell(user, a.getAction(), false));
-				targetSystem.saveTgt(user, tgt.getTgt());
-				setMsg(詠唱を開始したのMSG(user, a.getAction()));
+				cast予約(turn + ea.getAction().getCastTime(), new MagicSpell(user, ea.getAction(), false));
+				targetSystem.saveTgt(user, ea.getTgt());
+				setMsg(詠唱を開始したのMSG(user, ea.getAction()));
 				//このターンにこのキャラの行動がある場合破棄（行動追加魔法で入る可能性がある
 				List<BattleCommand> remove = new ArrayList<>();
 				for (var v : commandsOfThisTurn) {
@@ -1043,7 +1041,7 @@ public class BattleSystem implements Drawable {
 			}
 			//それ以外の攻撃or0ターン魔法は即時発動
 			//ターゲットは射程内にいる
-			execAction(tgt);
+			execAction(ea);
 			return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 		}
 		//----------------------------------PCの場合-------------------------------------
@@ -2703,7 +2701,7 @@ public class BattleSystem implements Drawable {
 			case 待機中＿敵移動中: {
 				//NPCの移動実行、！！！！！！！！
 				currentCmd.getUser().getStatus().getBaseStatus().get(StatusKey.残行動力)
-						.add(-VehicleStorage.getInstance().getCurrentVehicle().getSpeed());
+						.add(-2f);
 				currentCmd.getUser().getSprite().moveToTgt();
 				remMovePoint = (int) currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.残行動力).getValue();
 				//移動ポイントが切れた場合、移動終了してユーザコマンド待ちに移行
@@ -2728,7 +2726,6 @@ public class BattleSystem implements Drawable {
 				Action selected = null;
 				Point2D.Float center = user.getSprite().getCenter();
 				List<Actor> tgt = new ArrayList<>();
-				L1:
 				for (Action a : eba) {
 					int area = user.getStatus().getEffectedArea(a);
 					List<Actor> t = GameSystem.getInstance().getParty().stream()
@@ -2741,7 +2738,7 @@ public class BattleSystem implements Drawable {
 					tgt = BattleTargetSystem.recalcDistance(t, center, area);
 					if (!tgt.isEmpty() && a.canDo(user.getStatus())) {
 						selected = a;
-						break L1;
+						break;
 					}
 					tgt.clear();
 				}
@@ -2817,8 +2814,8 @@ public class BattleSystem implements Drawable {
 		int i = 0, line = 0;
 		while (true) {
 			String st = s.get(i).trim();
-			while (st.contains(Text.getLineSep() + Text.getLineSep())) {
-				st = st.replaceAll(Text.getLineSep() + Text.getLineSep(), Text.getLineSep());
+			while (st.contains(Text.getLineSep())) {
+				st = st.replaceAll(Text.getLineSep(), "");
 			}
 			if (Text.getLineSep().equals(st)) {
 				i++;

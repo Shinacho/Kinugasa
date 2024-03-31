@@ -465,15 +465,15 @@ public class MagicWindow extends BasicSprite {
 	//1つ前の画面に戻る
 	public boolean close() {
 		msg.setText(List.of());
-		msg.reset();
-		choiceUse.reset();
+		msg.setSelectedIdx(0);
+		choiceUse.setSelect(0);
 		//IUS表示中の場合は戻るは全消し
 		if (group.getWindows().stream().allMatch(p -> !p.isVisible())) {
 			mode = Mode.MAGIC_AND_USER_SELECT;
 			return true;
 		}
 		if (msg.isVisible()) {
-			mode = Mode.MAGIC_AND_USER_SELECT;
+			mode = Mode.CHOICE_USE;
 			group.show(choiceUse);
 			return false;
 		}

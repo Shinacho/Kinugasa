@@ -299,7 +299,7 @@ public class PCSprite extends AnimationSprite implements XMLFileSupport, Cloneab
 			return;
 		}
 		move();
-		if (getCenter().distance(tgt) < VehicleStorage.getInstance().getCurrentVehicle().getSpeed()) {
+		if (getCenter().distance(tgt) < 3f) {
 			setLocationByCenter(tgt);
 			setSpeed(0);
 			moving = false;

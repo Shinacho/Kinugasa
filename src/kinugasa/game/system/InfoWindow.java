@@ -128,12 +128,13 @@ public class InfoWindow extends BasicSprite {
 						t.add(Text.of("  " + v.getVisibleName() + " : " + v.num));
 					}
 				}
+				総プレイ時間i18nd = I18N.get("総プレイ時間");
+				起動からの経過時間i18nd = I18N.get("起動からの経過時間");
 				t.add(Text.empty());
 				Duration d = GameTimeManager.getInstance().get経過時間();
 				int h = (int) (d.getSeconds() / 3600);
 				int m = (int) ((d.getSeconds() % 3600) / 60);
 				int s = (int) (d.getSeconds() % 60);
-				t.add(Text.of("--" + I18N.get("総プレイ時間") + "：" + StringUtil.zeroUme(h + "", 3) + ":" + StringUtil.zeroUme(m + "", 2) + ":" + StringUtil.zeroUme(s + "", 2)));
 
 				{
 					if (Counts.getInstance().select("総プレイ時間") == null) {
@@ -144,13 +145,12 @@ public class InfoWindow extends BasicSprite {
 					int hh = (int) ((sumS + d.getSeconds()) / 3600);
 					int mm = (int) (((sumS + d.getSeconds()) % 3600) / 60);
 					int ss = (int) ((sumS + d.getSeconds()) % 60);
-					t.add(Text.of("--" + I18N.get("総プレイ時間") + "：" + StringUtil.zeroUme(hh + "", 3) + ":" + StringUtil.zeroUme(mm + "", 2) + ":" + StringUtil.zeroUme(ss + "", 2)));
+					t.add(Text.of("--" + 総プレイ時間i18nd + "：" + StringUtil.zeroUme(hh + "", 3) + ":" + StringUtil.zeroUme(mm + "", 2) + ":" + StringUtil.zeroUme(ss + "", 2)));
 				}
-				toukeiData.clear();;
+				t.add(Text.of("--" + 起動からの経過時間i18nd + "：" + StringUtil.zeroUme(h + "", 3) + ":" + StringUtil.zeroUme(m + "", 2) + ":" + StringUtil.zeroUme(s + "", 2)));
+				toukeiData.clear();
 				toukeiData.addAll(t);
 
-				総プレイ時間i18nd = I18N.get("総プレイ時間");
-				起動からの経過時間i18nd = I18N.get("起動からの経過時間");
 				//TODO：セーブデータの加算
 				break;
 			}
@@ -179,14 +179,14 @@ public class InfoWindow extends BasicSprite {
 			int h = (int) (d.getSeconds() / 3600);
 			int m = (int) ((d.getSeconds() % 3600) / 60);
 			int s = (int) (d.getSeconds() % 60);
-			toukeiData.add(Text.of("--" + 総プレイ時間i18nd + "：" + StringUtil.zeroUme(h + "", 3) + ":" + StringUtil.zeroUme(m + "", 2) + ":" + StringUtil.zeroUme(s + "", 2)));
 
 			{
 				int hh = (int) ((sumS + d.getSeconds()) / 3600);
 				int mm = (int) (((sumS + d.getSeconds()) % 3600) / 60);
 				int ss = (int) ((sumS + d.getSeconds()) % 60);
-				toukeiData.add(Text.of("--" + 起動からの経過時間i18nd + "：" + StringUtil.zeroUme(hh + "", 3) + ":" + StringUtil.zeroUme(mm + "", 2) + ":" + StringUtil.zeroUme(ss + "", 2)));
+				toukeiData.add(Text.of("--" + 総プレイ時間i18nd + "：" + StringUtil.zeroUme(hh + "", 3) + ":" + StringUtil.zeroUme(mm + "", 2) + ":" + StringUtil.zeroUme(ss + "", 2)));
 			}
+			toukeiData.add(Text.of("--" + 起動からの経過時間i18nd + "：" + StringUtil.zeroUme(h + "", 3) + ":" + StringUtil.zeroUme(m + "", 2) + ":" + StringUtil.zeroUme(s + "", 2)));
 			int selected = main.getSelectedIdx();
 			main.setText(toukeiData);
 			main.setSelectedIdx(selected);

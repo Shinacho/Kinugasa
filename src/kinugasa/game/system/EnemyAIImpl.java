@@ -75,7 +75,7 @@ public enum EnemyAIImpl implements EnemyAI {
 					maxRange = user.getStatus().getEffectedArea(ac);
 				}
 				if (GameSystem.isDebugMode()) {
-					GameLog.print("アクション選択:TGT=" + tgt + " / action=" + I18N.get(ac.getVisibleName()));
+					GameLog.print("アクション選択:TGT=" + tgt + " / action=" + ac.getVisibleName());
 				}
 				//ターゲットが射程内にいればそれを実施
 				if (is射程内(user, ac, tgt)) {
@@ -623,7 +623,13 @@ public enum EnemyAIImpl implements EnemyAI {
 
 	static boolean is射程内(Enemy e, Action a, Actor tgt) {
 		if (tgt.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶)) {
+			if (GameSystem.isDebugMode()) {
+				GameLog.print("is射程内 : tgt is dead : " + e + " / " + a + " / " + tgt);
+			}
 			return false;
+		}
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("is射程内 : tgt is dead : " + e + " / " + a + " / " + tgt + " = " + (e.getStatus().getEffectedArea(a) > (e.getSprite().getCenter().distance(tgt.getSprite().getCenter()))));
 		}
 		return e.getStatus().getEffectedArea(a) > (e.getSprite().getCenter().distance(tgt.getSprite().getCenter()));
 	}
@@ -833,8 +839,8 @@ public enum EnemyAIImpl implements EnemyAI {
 				.filter(p -> !p.getStatus().hasCondition(ConditionKey.気絶))
 				.filter(p -> !p.getStatus().hasCondition(ConditionKey.損壊))
 				.max((p1, p2)
-						-> Float.compare(p2.getStatus().getEffectedStatus().get(StatusKey.体力).get割合(),
-						p1.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())).get();
+						-> Float.compare(p1.getStatus().getEffectedStatus().get(StatusKey.体力).get割合(),
+						p2.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())).get();
 	}
 
 	static Actor get一番体力が高いPC() {
@@ -844,8 +850,8 @@ public enum EnemyAIImpl implements EnemyAI {
 				.filter(p -> !p.getStatus().hasCondition(ConditionKey.気絶))
 				.filter(p -> !p.getStatus().hasCondition(ConditionKey.損壊))
 				.max((p1, p2)
-						-> Float.compare(p1.getStatus().getEffectedStatus().get(StatusKey.体力).get割合(),
-						p2.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())).get();
+						-> Float.compare(p2.getStatus().getEffectedStatus().get(StatusKey.体力).get割合(),
+						p1.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())).get();
 
 	}
 

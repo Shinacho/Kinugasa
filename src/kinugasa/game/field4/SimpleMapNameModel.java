@@ -74,8 +74,8 @@ public class SimpleMapNameModel extends MapNameModel {
 				float x = centerX - (width / 2);
 				label.setX(x);
 				label.setWidth(width);
-				backSprite.setLocation(x - 64, 64);
-				backSprite.setSize(width + 128, 16);
+				backSprite.setLocation(0, 64);
+				backSprite.setSize(GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize(), 16);
 				labelFont = FadeCounter.fadeOut(-1);
 				back = FadeCounter.fadeOut(-1);
 				backColor = backColor();

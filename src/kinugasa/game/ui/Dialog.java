@@ -64,7 +64,7 @@ public class Dialog {
 				}
 			}
 		});
-		jt.grabFocus();
+		jt.requestFocus();
 		int r = JOptionPane.showConfirmDialog(null, jt, title, JOptionPane.DEFAULT_OPTION);
 		return new InputResult(jt.getText(), DialogOption.of(r));
 	}
