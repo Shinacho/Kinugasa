@@ -173,6 +173,10 @@ public class StatusValue implements Nameable, Cloneable, Comparable<StatusValue>
 	public boolean isZero() {
 		return value == 0;
 	}
+	
+	public boolean isZeroOrMinus(){
+		return value <= 0;
+	}
 
 	public boolean isMinus() {
 		return value < 0;

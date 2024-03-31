@@ -136,7 +136,7 @@ public class ActionDescWindow extends PCStatusWindow {
 			}
 			sb.append(")");
 
-			t.addAll(Text.split(new Text(sb.toString())));
+			t.addAll(Text.split(Text.noI18N(sb.toString())));
 		}
 		t.add(new Text("----" + ActionType.魔法.getVisibleName() + "----"));
 		for (Action a : s.get(pcIdx).getActions()
@@ -183,7 +183,7 @@ public class ActionDescWindow extends PCStatusWindow {
 			}
 			sb.append(")");
 
-			t.addAll(Text.split(new Text(sb.toString())));
+			t.addAll(Text.split(Text.noI18N(sb.toString())));
 		}
 		mw.setText(t);
 	}

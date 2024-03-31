@@ -375,7 +375,7 @@ public class ItemWindow extends BasicSprite {
 						}
 						//装備できるアイテムかどうかで分岐
 						if (getSelectedPC().getEqip().values().contains(i)) {
-							//すでに装備している時は外す]
+							//すでに装備している時は外す
 							//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
 							if (ActionStorage.isItemBagItem(i.getId())) {
 								//もともとのサイズ
@@ -460,6 +460,7 @@ public class ItemWindow extends BasicSprite {
 									ryoute = true;
 								} else if (Set.of(WeaponType.大剣, WeaponType.大杖, WeaponType.銃, WeaponType.弩, WeaponType.薙刀)
 										.contains(i.getWeaponType())) {
+									getSelectedPC().eqip(EqipSlot.右手, i);
 									getSelectedPC().eqipLeftHand(ActionStorage.getInstance().両手持ち);
 									ryoute = true;
 								} else {
@@ -619,6 +620,38 @@ public class ItemWindow extends BasicSprite {
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							break;
+						}
+						//すでに装備している時は外す
+						//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
+						if (ActionStorage.isItemBagItem(i.getId())) {
+							//もともとのサイズ
+							int itemBagDefaultMax = getSelectedPC().getRace().getItemBagSize();
+							//現在の持ってる数
+							int currentSize = getSelectedPC().getItemBag().size();
+							//現在のサイズがもともともサイズより大きい場合は外せない
+							if (currentSize > itemBagDefaultMax) {
+								//外せない
+								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.allText();
+								group.show(msg.getWindow());
+								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+								break;
+							}
+						}
+						if (ActionStorage.isBookBagItem(i.getId())) {
+							//もともとのサイズ
+							int itemBagDefaultMax = getSelectedPC().getRace().getBookBagSize();
+							//現在の持ってる数
+							int currentSize = getSelectedPC().getBookBag().size();
+							//現在のサイズがもともともサイズより大きい場合は外せない
+							if (currentSize > itemBagDefaultMax) {
+								//外せない
+								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.allText();
+								group.show(msg.getWindow());
+								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+								break;
+							}
 						}
 						//パスターゲットに移動
 						List<Text> options2 = new ArrayList<>();
@@ -839,6 +872,37 @@ public class ItemWindow extends BasicSprite {
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						break;
 					case DROP:
+						//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
+						if (ActionStorage.isItemBagItem(i.getId())) {
+							//もともとのサイズ
+							int itemBagDefaultMax = getSelectedPC().getRace().getItemBagSize();
+							//現在の持ってる数
+							int currentSize = getSelectedPC().getItemBag().size();
+							//現在のサイズがもともともサイズより大きい場合は外せない
+							if (currentSize > itemBagDefaultMax) {
+								//外せない
+								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.allText();
+								group.show(msg.getWindow());
+								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+								break;
+							}
+						}
+						if (ActionStorage.isBookBagItem(i.getId())) {
+							//もともとのサイズ
+							int itemBagDefaultMax = getSelectedPC().getRace().getBookBagSize();
+							//現在の持ってる数
+							int currentSize = getSelectedPC().getBookBag().size();
+							//現在のサイズがもともともサイズより大きい場合は外せない
+							if (currentSize > itemBagDefaultMax) {
+								//外せない
+								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.allText();
+								group.show(msg.getWindow());
+								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+								break;
+							}
+						}
 						//装備解除不能属性がある場合は外せない
 						if (!i.canUnEqip()) {
 							//外せない
@@ -866,6 +930,37 @@ public class ItemWindow extends BasicSprite {
 						}
 						break;
 					case DISASSEMBLY:
+						//バッグに分類されるアイテムかつアイテム数がもともと持てる数を上回る場合外せない
+						if (ActionStorage.isItemBagItem(i.getId())) {
+							//もともとのサイズ
+							int itemBagDefaultMax = getSelectedPC().getRace().getItemBagSize();
+							//現在の持ってる数
+							int currentSize = getSelectedPC().getItemBag().size();
+							//現在のサイズがもともともサイズより大きい場合は外せない
+							if (currentSize > itemBagDefaultMax) {
+								//外せない
+								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.allText();
+								group.show(msg.getWindow());
+								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+								break;
+							}
+						}
+						if (ActionStorage.isBookBagItem(i.getId())) {
+							//もともとのサイズ
+							int itemBagDefaultMax = getSelectedPC().getRace().getBookBagSize();
+							//現在の持ってる数
+							int currentSize = getSelectedPC().getBookBag().size();
+							//現在のサイズがもともともサイズより大きい場合は外せない
+							if (currentSize > itemBagDefaultMax) {
+								//外せない
+								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.allText();
+								group.show(msg.getWindow());
+								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
+								break;
+							}
+						}
 						//装備解除不能属性がある場合は外せない
 						if (!i.canUnEqip()) {
 							//外せない
@@ -1076,16 +1171,7 @@ public class ItemWindow extends BasicSprite {
 		main.setVisible(true);
 	}
 
-	private String cache = null;
-	private Status prevStatus = null;
-	private int prevMainSelect = 0;
-
 	private String getItemListText(Status s) {
-//		if (s.equals(prevStatus) && prevMainSelect == mainSelect && cache != null) {
-//			return cache;
-//		}
-		prevStatus = s;
-		prevMainSelect = mainSelect;
 		StringBuilder sb = new StringBuilder();
 		sb.append("<---");
 		sb.append(s.getVisibleName());
@@ -1139,7 +1225,7 @@ public class ItemWindow extends BasicSprite {
 				sb.append(Text.getLineSep());
 			}
 		}
-		return cache = sb.toString();
+		return sb.toString();
 	}
 
 	private void commitDrop() {
@@ -1159,9 +1245,13 @@ public class ItemWindow extends BasicSprite {
 				getSelectedPC().unEqip(EqipSlot.右手);
 			}
 			//iを左手に装備中
-			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
+			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
+				//両手持ちの場合
+				if (ActionStorage.getInstance().両手持ち_弓.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
+					getSelectedPC().unEqip(EqipSlot.右手);
+				}
 				//左手の装備iを外す
-				getSelectedPC().unEqip(EqipSlot.左手);
+				getSelectedPC().unEqip(EqipSlot.右手);
 			}
 		} else {
 			//防具類。そのまま外す
@@ -1185,7 +1275,7 @@ public class ItemWindow extends BasicSprite {
 		if (i.isWeapon()) {
 			//iを右手に装備中
 			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
-				//両手持ちの場合、左手を外す
+				//両手持ちの場合
 				if (ActionStorage.getInstance().両手持ち.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
 					getSelectedPC().unEqip(EqipSlot.左手);
 				}
@@ -1193,9 +1283,13 @@ public class ItemWindow extends BasicSprite {
 				getSelectedPC().unEqip(EqipSlot.右手);
 			}
 			//iを左手に装備中
-			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
+			if (i.equals(getSelectedPC().getEqip().get(EqipSlot.左手))) {
+				//両手持ちの場合
+				if (ActionStorage.getInstance().両手持ち_弓.equals(getSelectedPC().getEqip().get(EqipSlot.右手))) {
+					getSelectedPC().unEqip(EqipSlot.右手);
+				}
 				//左手の装備iを外す
-				getSelectedPC().unEqip(EqipSlot.左手);
+				getSelectedPC().unEqip(EqipSlot.右手);
 			}
 		} else {
 			//防具類。そのまま外す

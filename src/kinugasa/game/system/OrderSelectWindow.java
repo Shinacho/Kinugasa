@@ -42,7 +42,7 @@ public class OrderSelectWindow extends BasicSprite {
 	private void init() {
 		List<Text> options = new ArrayList<>();
 		for (Status s : GameSystem.getInstance().getPartyStatus()) {
-			options.add(new Text(
+			options.add(Text.noI18N(
 					GameSystem.getInstance().getPCbyID(s.getId()).getVisibleName()
 					+ " : "
 					+ I18N.get(s.getPartyLocation()
@@ -81,7 +81,7 @@ public class OrderSelectWindow extends BasicSprite {
 		int selectId = window.getSelect();
 		List<Text> options = new ArrayList<>();
 		for (Status s : GameSystem.getInstance().getPartyStatus()) {
-			options.add(new Text(
+			options.add(Text.noI18N(
 					GameSystem.getInstance().getPCbyID(s.getId()).getVisibleName()
 					+ " : "
 					+ I18N.get(s.getPartyLocation() == PartyLocation.BACK

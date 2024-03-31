@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kinugasa.game.GameLog;
 import kinugasa.game.I18N;
@@ -72,7 +71,7 @@ public final class Status extends Model implements Nameable {
 	//状態異常による各種確率
 	private ConditionFlags conditionFlags = new ConditionFlags();
 	//キャラの特性
-	private CharaAbility ability;
+	private PCAbility ability;
 
 	@Override
 	public Status clone() {
@@ -100,11 +99,11 @@ public final class Status extends Model implements Nameable {
 		this.conditionRegist.init();
 	}
 
-	public void setAbility(CharaAbility ability) {
+	public void setAbility(PCAbility ability) {
 		this.ability = ability;
 	}
 
-	public CharaAbility getAbility() {
+	public PCAbility getAbility() {
 		return ability;
 	}
 
@@ -544,7 +543,7 @@ public final class Status extends Model implements Nameable {
 			throw new GameSystemException("Status: action is null " + a);
 		}
 		if (!actions.contains(a)) {
-			throw new GameSystemException("this action is not have me : " + a);
+			throw new GameSystemException("im not have this action: " + a);
 		}
 		if (a.getType() == ActionType.行動) {
 			if (a.getId().equals(BattleConfig.ActionID.逃走)) {
@@ -818,7 +817,22 @@ public final class Status extends Model implements Nameable {
 		if (!tgt.getItemBag().canAdd()) {
 			throw new GameSystemException("tgt(" + id + ") cant have this item : " + i);
 		}
-		getItemBag().drop(i);
+		//thisがiを装備中の場合は外す
+		if(eqip.values().contains(i) && !this.equals(tgt)){
+			eqip.put(i.getSlot(), null);
+			
+			//iが武器かつ両手持ち中の場合は逆手も外す
+			if(i.isWeapon() && (eqip.containsValue(ActionStorage.getInstance().両手持ち) || eqip.containsValue(ActionStorage.getInstance().両手持ち_弓))){
+				if(eqip.containsKey(EqipSlot.右手)){
+					eqip.put(EqipSlot.右手, null);
+				}
+				if(eqip.containsKey(EqipSlot.左手)){
+					eqip.put(EqipSlot.左手, null);
+				}
+			}
+		}
+		
+		getItemBag().drop(i.getId());
 		tgt.getItemBag().add(i);
 	}
 

@@ -91,7 +91,7 @@ public class EqipItemWindow extends PCStatusWindow {
 			}
 		}
 
-		mw.setText(Text.split(new Text(sb.toString())));
+		mw.setText(Text.split(Text.noI18N(sb.toString())));
 	}
 
 	@Override

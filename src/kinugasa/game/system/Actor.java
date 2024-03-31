@@ -211,7 +211,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			this.status = new Status(id, r);
 			//アビリティ
 			if (root.hasAttribute("ability")) {
-				CharaAbility ca = root.getAttributes().get("ability").of(CharaAbility.class);
+				PCAbility ca = root.getAttributes().get("ability").of(PCAbility.class);
 				this.status.setAbility(ca);
 			}
 			//スプライトシート

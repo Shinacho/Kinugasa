@@ -23,37 +23,42 @@ import kinugasa.game.I18N;
  * @vesion 1.0.0 - 2023/10/29_18:57:02<br>
  * @author Shinacho<br>
  */
-public enum CharaAbility implements AbilityEffect {
+public enum PCAbility implements AbilityEffect {
 
-	毒舌なる風の魔術師("風の与属性が１４％上昇し被属性が１４％低下する") {
+	毒舌なる若き風魔導士("風の与属性が２２％上昇する") {
 		@Override
 		public AttributeValueSet effectAttrIn(Status s, AttributeValueSet v) {
 			AttributeValueSet r = v.clone();
-			r.get(AttributeKey.時空).mul(0.01f);
-			r.get(AttributeKey.風).mul(0.86f);
+			r.get(AttributeKey.時空).mul(0.0001f);
 			return r;
 		}
 
 		@Override
 		public AttributeValueSet effectAttrOut(Status s, AttributeValueSet v) {
 			AttributeValueSet r = v.clone();
-			r.get(AttributeKey.風).mul(1.14f);
+			r.get(AttributeKey.風).mul(1.22f);
 			r.get(AttributeKey.時空).mul(100f);
 			return r;
 		}
 	},
-	鋭き武術派タバコ探偵("打撃系武器を装備中物理の与属性が１４％上がる") {
+	敏腕探偵("打撃系武器か銃を装備しているときクリティカル率が５０％上昇する") {
 
 		@Override
-		public AttributeValueSet effectAttrOut(Status s, AttributeValueSet v) {
+		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
+			StatusValueSet r = v.clone();
 			boolean is武器装備 = false;
 			is武器装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.フレイル);
 			is武器装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.棍棒);
 			is武器装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.槌);
+			is武器装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.銃);
 
-			AttributeValueSet r = v.clone();
+			is武器装備 |= (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.フレイル);
+			is武器装備 |= (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.棍棒);
+			is武器装備 |= (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.槌);
+			is武器装備 |= (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.銃);
+
 			if (is武器装備) {
-				r.stream().filter(p -> p.getKey().is物理()).forEach(p -> p.mul(1.14f));
+				r.get(StatusKey.クリティカル率).mul(1.5f);
 			}
 			return r;
 		}
@@ -72,33 +77,24 @@ public enum CharaAbility implements AbilityEffect {
 		}
 
 	},
-	盾の乙女("盾を装備中すべての被属性を７％下げクリティカルダメージを１４％上げる") {
-		@Override
-		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
-			StatusValueSet r = v.clone();
-			if ((s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.盾)
-					|| (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.盾)) {
-				r.get(StatusKey.クリティカルダメージ倍数).mulMax(1.14f);
-			}
-			return r;
-		}
+	盾の乙女("盾を装備しているときすべての被属性が１４％下がる") {
 
 		@Override
 		public AttributeValueSet effectAttrIn(Status s, AttributeValueSet v) {
 			AttributeValueSet r = v.clone();
 			if ((s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.盾)
 					|| (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.盾)) {
-				r.stream().forEach(p -> p.mul(0.93f));
+				r.stream().forEach(p -> p.mul(0.86f));
 			}
 			return r;
 		}
 
 	},
-	役者("魔力が１４％上がる") {
+	役者("魔力と正気度が２５％上がる") {
 		@Override
 		public AttributeValueSet effectAttrIn(Status s, AttributeValueSet v) {
 			AttributeValueSet r = v.clone();
-			r.get(AttributeKey.時空).mul(0.01f);
+			r.get(AttributeKey.時空).mul(0.0001f);
 			return r;
 		}
 
@@ -108,12 +104,16 @@ public enum CharaAbility implements AbilityEffect {
 			r.get(AttributeKey.時空).mul(100f);
 			return r;
 		}
+
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			StatusValueSet r = v.clone();
 			float 割合 = r.get(StatusKey.魔力).get割合();
-			r.get(StatusKey.魔力).mulMax(1.14f);
+			r.get(StatusKey.魔力).mulMax(1.25f);
 			r.get(StatusKey.魔力).setBy割合(割合);
+			割合 = r.get(StatusKey.正気度).get割合();
+			r.get(StatusKey.正気度).mulMax(1.25f);
+			r.get(StatusKey.正気度).setBy割合(割合);
 			return r;
 		}
 
@@ -164,7 +164,7 @@ public enum CharaAbility implements AbilityEffect {
 		}
 
 	},
-	騎士の家のおしとやかな姉("剣か細剣を装備中クリティカル率が３５％上がる") {
+	剣の長女("剣か細剣を装備中クリティカル率が３５％上がる") {
 
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
@@ -172,8 +172,8 @@ public enum CharaAbility implements AbilityEffect {
 			boolean is剣装備 = false;
 			is剣装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.剣);
 			is剣装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.細剣);
-			is剣装備 |= (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.剣);
-			is剣装備 |= (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.細剣);
+			is剣装備 |= (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.剣);
+			is剣装備 |= (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.細剣);
 
 			if (is剣装備) {
 				r.get(StatusKey.クリティカル率).mul(1.35f);
@@ -181,12 +181,12 @@ public enum CharaAbility implements AbilityEffect {
 			return r;
 		}
 	},
-	血と飯に飢えた放浪騎士("刀か大剣を装備中クリティカル確率が半分になりクリティカルダメージが２倍になる") {
+	飢えた放浪騎士("刀か大剣を装備中クリティカル確率が半分になるがクリティカルダメージが２倍になる") {
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			StatusValueSet r = v.clone();
 			if ((s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.刀)
-					|| (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.刀)
+					|| (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.刀)
 					|| (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.大剣)) {
 				r.get(StatusKey.クリティカルダメージ倍数).mul(2f);
 				r.get(StatusKey.クリティカル率).mul(0.5f);
@@ -194,12 +194,12 @@ public enum CharaAbility implements AbilityEffect {
 			return r;
 		}
 	},
-	動物大好き変態外人("弓か弩を装備中命中率が２１％上がる") {
+	動物なかよし("弓を装備中命中率が２１％上がる") {
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			boolean is弓装備 = false;
 			is弓装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.弓);
-			is弓装備 |= (s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.弩);
+			is弓装備 |= (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.弓);
 
 			StatusValueSet r = v.clone();
 			if (is弓装備) {
@@ -213,13 +213,15 @@ public enum CharaAbility implements AbilityEffect {
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			StatusValueSet r = v.clone();
 			if ((s.getEqip().get(EqipSlot.右手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.魔法剣)
-					|| (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.魔法剣)) {
+					|| (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.魔法剣)
+					|| (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.魔法剣)
+					|| (s.getEqip().get(EqipSlot.左手) != null && s.getEqip().get(EqipSlot.左手).getWeaponType() == WeaponType.魔法剣)) {
 				r.get(StatusKey.ブロック率).mul(1.21f);
 			}
 			return r;
 		}
 	},
-	不思議ちゃん司祭("精神と神秘の与属性が１４％上がる") {
+	不思議ちゃん("精神と神秘の与属性が１４％上がる") {
 		@Override
 		public AttributeValueSet effectAttrOut(Status s, AttributeValueSet v) {
 			AttributeValueSet r = v.clone();
@@ -228,12 +230,12 @@ public enum CharaAbility implements AbilityEffect {
 			return r;
 		}
 	},
-	忠犬("近くにいる仲間の正気度を回復できる"){
-		
+	忠犬("近くにいる仲間の正気度を回復できる") {
+
 	};
 	private String desc;
 
-	private CharaAbility(String desc) {
+	private PCAbility(String desc) {
 		this.desc = desc;
 	}
 
@@ -247,6 +249,15 @@ public enum CharaAbility implements AbilityEffect {
 
 	public String getDescI18NK() {
 		return desc;
+	}
+
+	public static void main(String... args) {
+		for (var v : PCAbility.values()) {
+			System.out.println("\"" + v + '"' + "," + '"' + v + '"');
+		}
+		for (var v : PCAbility.values()) {
+			System.out.println("\"" + v.desc + '"' + "," + '"' + v.desc + '"');
+		}
 	}
 
 }

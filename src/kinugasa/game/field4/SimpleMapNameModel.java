@@ -26,6 +26,9 @@ import kinugasa.game.ui.SimpleTextLabelModel;
 import kinugasa.game.ui.TextLabelModel;
 import kinugasa.game.ui.TextLabelSprite;
 import kinugasa.graphics.FadeCounter;
+import kinugasa.graphics.GraphicsUtil;
+import kinugasa.object.BasicSprite;
+import kinugasa.object.Sprite;
 
 /**
  *
@@ -38,16 +41,18 @@ public class SimpleMapNameModel extends MapNameModel {
 	private TextLabelSprite label;
 	private FadeCounter labelFont = FadeCounter.fadeOut(-1);
 	private FadeCounter back = FadeCounter.fadeOut(-1);
+	private BasicSprite backSprite;
+	private Color backColor = Color.BLACK;
 
 	public SimpleMapNameModel() {
-		label = new TextLabelSprite("", new SimpleTextLabelModel(FontModel.DEFAULT), 180, 24, GameOption.getInstance().getWindowSize().width / 2 - 90, 16) {
+		label = new TextLabelSprite("", new SimpleTextLabelModel(FontModel.DEFAULT), 1, 64, 1, 16);
+		backSprite = new BasicSprite() {
 			@Override
 			public void draw(GraphicsContext g) {
 				Graphics2D g2 = g.create();
-				g2.setColor(backColor());
+				g2.setColor(backColor);
 				g2.fillRect((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
 				g2.dispose();
-				super.draw(g);
 			}
 		};
 	}
@@ -64,26 +69,32 @@ public class SimpleMapNameModel extends MapNameModel {
 			case 0:
 				String val = I18N.get(fm.getName());
 				label.setText(val);
-				float centerX = GameOption.getInstance().getWindowSize().width / 2;
+				float centerX = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() / 2;
 				float width = (label.getText().length() * label.getLabelModel().getFontSize());
-				float x = centerX - width / 2;
+				float x = centerX - (width / 2);
 				label.setX(x);
 				label.setWidth(width);
+				backSprite.setLocation(x - 64, 64);
+				backSprite.setSize(width + 128, 16);
 				labelFont = FadeCounter.fadeOut(-1);
 				back = FadeCounter.fadeOut(-1);
+				backColor = backColor();
 				FontModel f = label.getLabelModel().getFontConfig().clone();
 				f.setColor(fontColor());
 				TextLabelModel m = new SimpleTextLabelModel(f);
 				label.setLabelModel(m);
 				label.setVisible(true);
+				backSprite.setVisible(true);
 				stage = 1;
 				break;
 			case 1:
+				backSprite.draw(g2);
 				label.draw(g2);
 				labelFont.update();
 				back.update();
 				FontModel ff = label.getLabelModel().getFontConfig().clone();
 				ff.setColor(fontColor());
+				backColor = backColor();
 				TextLabelModel mm = new SimpleTextLabelModel(ff);
 				label.setLabelModel(mm);
 				if (labelFont.isEnded()) {
@@ -92,6 +103,7 @@ public class SimpleMapNameModel extends MapNameModel {
 				break;
 			case 2:
 				label.setVisible(false);
+				backSprite.setVisible(false);
 				break;
 			default:
 				throw new AssertionError();

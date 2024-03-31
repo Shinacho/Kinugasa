@@ -48,6 +48,10 @@ public class I18N {
 		tableName = ini.get("tableName").get().value();
 	}
 
+	public static String getTableName() {
+		return tableName;
+	}
+
 	public static Set<String> getNotFoundKeySet() {
 		return notFoundKeySet;
 	}

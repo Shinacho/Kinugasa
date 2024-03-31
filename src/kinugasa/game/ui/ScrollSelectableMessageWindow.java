@@ -90,7 +90,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 	}
 
 	public void setText(String s) {
-		setText(Text.split(new Text(s)));
+		setText(Text.split(Text.noI18N(s)));
 	}
 
 	public void setText(List<? extends Text> text) {

@@ -43,6 +43,7 @@ public class InfoWindow extends BasicSprite {
 		お金,
 		クエスト,
 		統計,
+		難易度
 	}
 	private Mode mode = Mode.お金;
 	private ScrollSelectableMessageWindow main;
@@ -54,6 +55,8 @@ public class InfoWindow extends BasicSprite {
 			case クエスト ->
 				Mode.統計;
 			case 統計 ->
+				Mode.難易度;
+			case 難易度 ->
 				Mode.お金;
 		};
 		main.reset();
@@ -63,11 +66,13 @@ public class InfoWindow extends BasicSprite {
 	public void prevMode() {
 		mode = switch (mode) {
 			case お金 ->
-				Mode.統計;
+				Mode.難易度;
 			case クエスト ->
 				Mode.お金;
 			case 統計 ->
 				Mode.クエスト;
+			case 難易度 ->
+				Mode.統計;
 		};
 		main.reset();
 		updateText();
@@ -85,27 +90,27 @@ public class InfoWindow extends BasicSprite {
 		List<Text> t = new ArrayList<>();
 
 		//line1
-		t.add(new Text("<---" + I18N.get(mode) + "--->"));
+		t.add(Text.noI18N("<---" + I18N.get(mode) + "--->"));
 
 		//data
 		switch (mode) {
 			case お金:
 				for (Money m : GameSystem.getInstance().getMoneySystem()) {
-					t.add(new Text(m.getVisibleText()));
+					t.add(Text.noI18N(m.getVisibleText()));
 				}
 				break;
 			case クエスト:
 				//MAIN
-				t.add(new Text("--" + I18N.get(GameSystemI18NKeys.メインクエスト)));
+				t.add(Text.noI18N("--" + I18N.get(GameSystemI18NKeys.メインクエスト)));
 				Set<Quest> q = CurrentQuest.getInstance().get();
 				for (Quest qs : q.stream().filter(p -> p.getType() == Quest.Type.メイン).toList()) {
-					t.add(new Text("  " + qs.getVisibleName() + Text.getLineSep() + "   　　　 " + qs.getDesc().replaceAll("/", "/   　　　 ")));
+					t.add(Text.noI18N("  " + qs.getVisibleName() + Text.getLineSep() + "   　　　 " + qs.getDesc().replaceAll("/", "/   　　　 ")));
 				}
 
 				//SUB
-				t.add(new Text("--" + I18N.get(GameSystemI18NKeys.サブクエスト)));
+				t.add(Text.noI18N("--" + I18N.get(GameSystemI18NKeys.サブクエスト)));
 				for (Quest qs : q.stream().filter(p -> p.getType() == Quest.Type.サブ).toList()) {
-					t.add(new Text("  " + qs.getVisibleName() + Text.getLineSep() + "  " + qs.getDesc().replaceAll("/", "/   　　　 ")));
+					t.add(Text.noI18N("  " + qs.getVisibleName() + Text.getLineSep() + "  " + qs.getDesc().replaceAll("/", "/   　　　 ")));
 				}
 
 				break;
@@ -113,13 +118,16 @@ public class InfoWindow extends BasicSprite {
 				for (Counts.Value v : Counts.getInstance().selectAll().stream().sorted((c1, c2) -> {
 					return c1.getVisibleName().compareTo(c2.getVisibleName());
 				}).toList()) {
-					t.add(new Text("  " + v.getVisibleName() + " : " + v.num));
+					t.add(Text.noI18N("  " + v.getVisibleName() + " : " + v.num));
 				}
-				t.add(Text.noI18N("--" + I18N.get(GameSystemI18NKeys.難易度) + ""));
+				break;
+			}
+			case 難易度: {
 				t.add(Text.noI18N("  " + GameSystem.getDifficulty().getNameI18Nd()));
 				for (String v : GameSystem.getDifficulty().getDescI18Nd().split("/")) {
 					t.add(Text.noI18N("    " + v));
 				}
+				t.add(Text.noI18N(""));
 				t.add(new Text(GameSystemI18NKeys.難易度を変更するには));
 				break;
 			}

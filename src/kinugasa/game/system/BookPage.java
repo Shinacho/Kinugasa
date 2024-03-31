@@ -56,15 +56,15 @@ public class BookPage implements Nameable {
 	}
 
 	public int getPrice() {
-		int val = 1000;
+		int val = 1250;
 		switch (event.getEventType()) {
 			case ATTR_IN:
 			case ATTR_OUT: {
-				val += Math.abs(event.getValue()) * 118 * 10 * event.getP();
+				val += Math.abs(event.getValue()) * 103 * 10 * event.getP();
 				break;
 			}
 			case CND_REGIST: {
-				val += Math.abs(event.getValue()) * 116 * 10 * event.getP();
+				val += Math.abs(event.getValue()) * 107 * 10 * event.getP();
 				break;
 			}
 			case アイテムロスト:
@@ -73,12 +73,12 @@ public class BookPage implements Nameable {
 			}
 			case ステータス回復:
 			case ステータス攻撃: {
-				val += Math.abs(event.getValue()) * 125 * event.getP();
+				val += Math.abs(event.getValue()) * 127 * event.getP();
 				break;
 			}
 			case 状態異常付与:
 			case 状態異常解除: {
-				val += Math.abs(event.getValue()) * 112 * event.getP();
+				val += Math.abs(event.getValue()) * 113 * event.getP();
 				break;
 			}
 			default: {

@@ -85,7 +85,7 @@ public class FieldMapResourceUtil {
 				outputLine[j] = convertTable[Integer.parseInt(inputLine[j])];
 			}
 			//末尾の/
-			outputLine[outputLine.length-1] += "/";
+			outputLine[outputLine.length - 1] += "/";
 			writer.add(outputLine);
 		}
 		reader.dispose();
@@ -114,7 +114,7 @@ public class FieldMapResourceUtil {
 
 		String f1 = "D:/Project/FuzzyWorld/resource/data/map/raw/map05.csv";
 		String f2 = "D:/Project/FuzzyWorld/resource/data/map/converted/map05.csv";
-		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 48, 16);//outer
+		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 16, 48);//outer
 //		platinumCsvType1ToKGCsv(new File(f1), new File(f2), 8, 16);//inner16_2
 
 	}

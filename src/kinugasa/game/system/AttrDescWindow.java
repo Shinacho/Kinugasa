@@ -78,7 +78,7 @@ public class AttrDescWindow extends PCStatusWindow {
 
 	private void updateText() {
 
-		Text midashi1 = new Text("<---" + I18N.get(GameSystemI18NKeys.Xの被属性,
+		Text midashi1 = Text.noI18N("<---" + I18N.get(GameSystemI18NKeys.Xの被属性,
 				GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName()
 		) + "--->");
 
@@ -86,19 +86,19 @@ public class AttrDescWindow extends PCStatusWindow {
 		//ATTR_IN
 		l.add(midashi1);
 		for (AttributeValue v : s.get(pcIdx).getEffectedAttrIn().stream().sorted().collect(Collectors.toList())) {
-			l.add(new Text("  " + v.getKey().getVisibleName() + ":" + (v.getValue() * 100) + '%'));
+			l.add(Text.noI18N("  " + v.getKey().getVisibleName() + ":" + (v.getValue() * 100) + '%'));
 		}
 		//ATTR_OUT
-		Text midashi2 = new Text("---" + I18N.get(GameSystemI18NKeys.Xの与属性, s.get(pcIdx).getVisibleName()) + "---");
+		Text midashi2 = Text.noI18N("---" + I18N.get(GameSystemI18NKeys.Xの与属性, s.get(pcIdx).getVisibleName()) + "---");
 		l.add(midashi2);
 		for (AttributeValue v : s.get(pcIdx).getEffectedAttrOut().stream().sorted().collect(Collectors.toList())) {
-			l.add(new Text("  " + v.getKey().getVisibleName() + ":" + (v.getValue() * 100) + '%'));
+			l.add(Text.noI18N("  " + v.getKey().getVisibleName() + ":" + (v.getValue() * 100) + '%'));
 		}
 		//CND_REGIST
-		Text midashi3 = new Text("---" + I18N.get(GameSystemI18NKeys.Xの状態異常耐性, s.get(pcIdx).getVisibleName()) + "---");
+		Text midashi3 = Text.noI18N("---" + I18N.get(GameSystemI18NKeys.Xの状態異常耐性, s.get(pcIdx).getVisibleName()) + "---");
 		l.add(midashi3);
 		for (ConditionKey k : s.get(pcIdx).getEffectedConditionRegist().keySet().stream().sorted().collect(Collectors.toList())) {
-			l.add(new Text("  " + k.getVisibleName() + ":" + (s.get(pcIdx).getEffectedConditionRegist().get(k) * 100) + '%'));
+			l.add(Text.noI18N("  " + k.getVisibleName() + ":" + (s.get(pcIdx).getEffectedConditionRegist().get(k) * 100) + '%'));
 		}
 
 		mw.setText(l);

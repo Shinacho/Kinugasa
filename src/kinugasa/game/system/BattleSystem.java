@@ -678,6 +678,11 @@ public class BattleSystem implements Drawable {
 			magics.remove(turn);
 		}
 
+		//アクション更新
+		GameSystem.getInstance().getParty().forEach(p -> p.getStatus().updateAction());
+		enemies.forEach(p -> p.getStatus().updateAction());	
+
+
 		//コマンドがパーティーだけの場合、戦闘終了
 		if (commandsOfThisTurn.stream().allMatch(p -> p.getUser().isPlayer())) {
 			setEndStatus(BattleResult.勝利_敵全滅);
@@ -751,6 +756,16 @@ public class BattleSystem implements Drawable {
 		commandsOfThisTurn.removeFirst();
 		updateOrder();
 		Actor user = currentCmd.getUser();
+		if (user.isPlayer()) {
+			//残行動力のリセット
+			user.getStatus().getBaseStatus().get(StatusKey.残行動力)
+					.setValue(user.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
+			user.getStatus().getBaseStatus().get(StatusKey.残行動力)
+					.setMax(user.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
+		}
+		//アプア
+		user.getStatus().updateAction();
+		
 		if (GameSystem.isDebugMode()) {
 			kinugasa.game.GameLog.print(" currentCMD:" + currentCmd);
 		}
@@ -2115,6 +2130,21 @@ public class BattleSystem implements Drawable {
 				return r;
 			}
 		}
+		if (r.tgt.getStatus().getEffectedStatus().get(StatusKey.体力).isZeroOrMinus()) {
+			if (!r.tgt.isSummoned()) {
+				return r;
+			}
+		}
+		if (r.tgt.getStatus().getEffectedStatus().get(StatusKey.魔力).isZeroOrMinus()) {
+			if (!r.tgt.isSummoned()) {
+				return r;
+			}
+		}
+		if (r.tgt.getStatus().getEffectedStatus().get(StatusKey.正気度).isZeroOrMinus()) {
+			if (!r.tgt.isSummoned()) {
+				return r;
+			}
+		}
 		return null;
 	}
 
@@ -2475,46 +2505,48 @@ public class BattleSystem implements Drawable {
 		}
 		//---------------------------
 
-		if (stage != Stage.バトル終了済み) {//お味方全滅判定
-			boolean 全滅 = true;
-			boolean 逃げた人がいる = false;
-			for (Actor a : GameSystem.getInstance().getParty()) {
-				全滅 &= (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶));
-				逃げた人がいる |= a.getStatus().hasCondition(ConditionKey.逃走した);
-			}
-			if (全滅) {
-				if (stage == Stage.エフェクト再生中_終了待ち) {
-					if (!effectTime.isReaching()) {
+		if (eventQueue.isEmpty()) {
+			if (stage != Stage.バトル終了済み) {//お味方全滅判定
+				boolean 全滅 = true;
+				boolean 逃げた人がいる = false;
+				for (Actor a : GameSystem.getInstance().getParty()) {
+					全滅 &= (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶));
+					逃げた人がいる |= a.getStatus().hasCondition(ConditionKey.逃走した);
+				}
+				if (全滅) {
+					if (stage == Stage.エフェクト再生中_終了待ち) {
+						if (!effectTime.isReaching()) {
+							return;
+						}
+					}
+					if (!animation.isEmpty() || !delayAnimations.isEmpty()) {
 						return;
 					}
-				}
-				if (!animation.isEmpty() || !delayAnimations.isEmpty()) {
+					if (逃げた人がいる) {
+						setEndStatus(BattleResult.勝利_こちらが全員逃げた);
+					} else {
+						setEndStatus(BattleResult.敗北_味方全滅);
+					}
 					return;
 				}
-				if (逃げた人がいる) {
-					setEndStatus(BattleResult.勝利_こちらが全員逃げた);
-				} else {
-					setEndStatus(BattleResult.敗北_味方全滅);
+			}
+			if (stage != Stage.バトル終了済み) {//敵全滅判定
+				boolean 全滅 = true;
+				for (Actor a : this.enemies) {
+					全滅 &= (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した));
 				}
-				return;
-			}
-		}
-		if (stage != Stage.バトル終了済み) {//敵全滅判定
-			boolean 全滅 = true;
-			for (Actor a : this.enemies) {
-				全滅 &= (a.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.損壊, ConditionKey.気絶, ConditionKey.逃走した));
-			}
-			if (全滅) {
-				if (stage == Stage.エフェクト再生中_終了待ち) {
-					if (!effectTime.isReaching()) {
+				if (全滅) {
+					if (stage == Stage.エフェクト再生中_終了待ち) {
+						if (!effectTime.isReaching()) {
+							return;
+						}
+					}
+					if (!animation.isEmpty() || !delayAnimations.isEmpty()) {
 						return;
 					}
-				}
-				if (!animation.isEmpty() || !delayAnimations.isEmpty()) {
+					setEndStatus(BattleResult.勝利_敵全滅);
 					return;
 				}
-				setEndStatus(BattleResult.勝利_敵全滅);
-				return;
 			}
 		}
 		//ステージ別処理
@@ -2786,6 +2818,10 @@ public class BattleSystem implements Drawable {
 			String st = s.get(i).trim();
 			while (st.contains(Text.getLineSep() + Text.getLineSep())) {
 				st = st.replaceAll(Text.getLineSep() + Text.getLineSep(), Text.getLineSep());
+			}
+			if (Text.getLineSep().equals(st)) {
+				i++;
+				continue;
 			}
 			if (st == null || st.isEmpty()) {
 				i++;

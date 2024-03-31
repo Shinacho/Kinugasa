@@ -612,12 +612,12 @@ public enum ActionEventType {
 						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()));
-						msg += Text.getLineSep();
+//						msg += Text.getLineSep();
 					} else {
 						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()));
-						msg += Text.getLineSep();
+//						msg += Text.getLineSep();
 					}
 					addResult(ar, r.summary, user, tgt, e, msg, isUserEvent);
 					return;

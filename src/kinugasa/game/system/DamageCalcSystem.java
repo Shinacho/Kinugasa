@@ -205,7 +205,16 @@ public class DamageCalcSystem {
 				}
 
 				//クリティカル
-				if (Random.percent(userVS.get(StatusKey.クリティカル率).getValue())) {
+				float cp = (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())
+						+ (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.正気度).get割合())
+						+ (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.魔力).get割合());
+				cp /= 3;
+				if (cp < 0) {
+					cp = 0;
+				} else {
+					cp *= 0.25;
+				}
+				if (Random.percent(userVS.get(StatusKey.クリティカル率).getValue() + cp)) {
 					クリティカル = true;
 					value *= (1f + userVS.get(StatusKey.クリティカルダメージ倍数).getValue());
 					if (BattleConfig.Sounds.物理クリティカル != null) {
@@ -387,7 +396,16 @@ public class DamageCalcSystem {
 				}
 
 				//クリティカル
-				if (Random.percent(userVS.get(StatusKey.魔法クリティカル率).getValue())) {
+				float cp = (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())
+						+ (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.正気度).get割合())
+						+ (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.魔力).get割合());
+				cp /= 3;
+				if (cp < 0) {
+					cp = 0;
+				} else {
+					cp *= 0.25;
+				}
+				if (Random.percent(userVS.get(StatusKey.魔法クリティカル率).getValue() + cp)) {
 					クリティカル = true;
 					value *= (1f + userVS.get(StatusKey.魔法クリティカルダメージ倍数).getValue());
 					if (BattleConfig.Sounds.魔法クリティカル != null) {
@@ -551,7 +569,16 @@ public class DamageCalcSystem {
 				}
 
 				//クリティカル
-				if (Random.percent(userVS.get(StatusKey.クリティカル率).getValue())) {
+				float cp = (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())
+						+ (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.正気度).get割合())
+						+ (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.魔力).get割合());
+				cp /= 3;
+				if (cp < 0) {
+					cp = 0;
+				} else {
+					cp *= 0.25;
+				}
+				if (Random.percent(userVS.get(StatusKey.クリティカル率).getValue() + cp)) {
 					クリティカル = true;
 					value *= (1f + userVS.get(StatusKey.クリティカルダメージ倍数).getValue());
 					if (BattleConfig.Sounds.物理クリティカル != null) {
@@ -640,7 +667,16 @@ public class DamageCalcSystem {
 				}
 
 				//クリティカル
-				if (Random.percent(userVS.get(StatusKey.魔法クリティカル率).getValue())) {
+				float cp = (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.体力).get割合())
+						+ (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.正気度).get割合())
+						+ (1 - p.user.getStatus().getEffectedStatus().get(StatusKey.魔力).get割合());
+				cp /= 3;
+				if (cp < 0) {
+					cp = 0;
+				} else {
+					cp *= 0.25;
+				}
+				if (Random.percent(userVS.get(StatusKey.魔法クリティカル率).getValue() + cp)) {
 					クリティカル = true;
 					value *= (1f + userVS.get(StatusKey.魔法クリティカルダメージ倍数).getValue());
 					if (BattleConfig.Sounds.魔法クリティカル != null) {
@@ -662,7 +698,7 @@ public class DamageCalcSystem {
 						value *= GameSystem.getDifficulty().get被ダメ倍率();
 					}
 				}
-				
+
 				//ダメージコミット
 				p.tgt.getStatus().getBaseStatus().get(p.tgtStatusKey).add(value);
 				return new Result(p,
