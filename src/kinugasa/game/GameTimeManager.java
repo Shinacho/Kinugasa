@@ -16,6 +16,9 @@
  */
 package kinugasa.game;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 /**
  * ゲームの進行時間を管理し、FPSを一定に保つための機能を提供します.
  * <br>
@@ -56,12 +59,16 @@ public final class GameTimeManager {
 	 */
 	private long endTime;
 	private long startTime;
+	//
+	private LocalDateTime startDateTime;
+	private static GameTimeManager instance;
 
 	/**
 	 * FPSの最大値が60の新しいTimeManagerを作成します.
 	 */
 	GameTimeManager() {
 		this(60);
+		startDateTime = LocalDateTime.now();
 	}
 
 	/**
@@ -73,14 +80,29 @@ public final class GameTimeManager {
 		waitTime = 1000 / idealFPS * 1000000;
 		updateNum = idealFPS;
 		prevTime = System.nanoTime() - 1000000000;
+		startDateTime = LocalDateTime.now();
+		instance = this;
+	}
+
+	public static GameTimeManager getInstance() {
+		return instance;
 	}
 
 	void setStartTime(long startTime) {
 		this.startTime = startTime;
 	}
 
+	public LocalDateTime getStartDateTime() {
+		return startDateTime;
+	}
+
+	public Duration get経過時間() {
+		return Duration.between(startDateTime, LocalDateTime.now());
+	}
+
 	/**
 	 * ゲーム開始時刻を取得します。このゲームが開始された時刻です。
+	 *
 	 * @return ゲーム開始時刻。System.currentTimeMillisです。
 	 */
 	public long getStartTime() {

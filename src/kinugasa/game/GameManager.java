@@ -46,6 +46,7 @@ import kinugasa.game.input.GamePadConnection;
 import kinugasa.game.input.InputState;
 import kinugasa.game.input.KeyConnection;
 import kinugasa.game.input.MouseConnection;
+import kinugasa.game.system.Counts;
 import kinugasa.game.system.GameSystem;
 import kinugasa.graphics.ImageUtil;
 import kinugasa.graphics.RenderingQuality;
@@ -279,6 +280,11 @@ public abstract class GameManager {
 		}
 		if (loop != null && loop.isStarted()) {
 			loop.end();
+		}
+		//総プレイ時間の保存
+		if (DBConnection.getInstance().isUsing()) {
+			int val = (int) gameTimeManager.get経過時間().toSeconds();
+			Counts.getInstance().updateOrInsert("総プレイ時間", val);
 		}
 		DBConnection.getInstance().close();
 		try {

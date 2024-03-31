@@ -95,8 +95,8 @@ public class BattleMessageWindowSystem implements Drawable {
 				3, messageWindowY - 14, w, 24);
 		infoW = new MessageWindow(560, messageWindowY, w - 560, 38, new SimpleMessageWindowModel().setNextIcon("")) {
 			@Override
-			public void setText(String text) {
-				super.setText(text);
+			public void setTextDirect(String text) {
+				super.setTextDirect(text);
 				allText();
 			}
 
@@ -363,7 +363,7 @@ public class BattleMessageWindowSystem implements Drawable {
 			}
 			sb.append(Text.getLineSep());
 		}
-		itemDescW.setText(sb.toString());
+		itemDescW.setTextDirect(sb.toString());
 		itemDescW.allText();
 	}
 
@@ -573,17 +573,17 @@ public class BattleMessageWindowSystem implements Drawable {
 		Item i = (Item) cmdW.getSelectedCmd();
 		List<Text> options = new ArrayList<>();
 		Actor user = BattleSystem.getInstance().getCurrentCmd().getUser();
-		options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
-		options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
+		options.add(Text.i18nd(GameSystemI18NKeys.調べる));
+		options.add(Text.i18nd(GameSystemI18NKeys.使う));
 		if (user.getStatus().getEqip().values().contains(i)) {
-			options.add(new Text(I18N.get(GameSystemI18NKeys.装備解除)));
+			options.add(Text.i18nd(GameSystemI18NKeys.装備解除));
 		} else {
-			options.add(new Text(I18N.get(GameSystemI18NKeys.装備)));
+			options.add(Text.i18nd(GameSystemI18NKeys.装備));
 		}
 		for (Actor a : BattleSystem.getInstance().getTargetSystem().itemPassTarget(user)) {
-			options.add(new Text(I18N.get(GameSystemI18NKeys.Xに, a.getVisibleName()) + I18N.get(GameSystemI18NKeys.渡す)));
+			options.add(Text.of(I18N.get(GameSystemI18NKeys.Xに, a.getVisibleName() + I18N.get(GameSystemI18NKeys.渡す))));
 		}
-		itemChoiceUseW.setText(new Choice(options, "BATTLE_MW_SYSTEM_IUC", I18N.get(GameSystemI18NKeys.Xを, i.getVisibleName())));
+		itemChoiceUseW.setText(Choice.of(options, "BATTLE_MW_SYSTEM_IUC", I18N.get(GameSystemI18NKeys.Xを, i.getVisibleName())));
 		setVisible(StatusVisible.ON, mode.ITEM_USE_SELECT, InfoVisible.OFF);
 	}
 

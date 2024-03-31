@@ -101,7 +101,7 @@ public class ActionStorage extends DBStorage<Action> {
 					+ (((Item) a).isEqip() ? " eqip item " : " item")
 					: "action";
 
-			GameLog.print(">" + a.getId() + "[" + a.getVisibleName() + "] OK " + s);
+			GameLog.print(">" + a.getId() + "[" + a.getVisibleName() + "] OK : " + s);
 		}
 		GameLog.print("----------ACTION_CHECK end --------------------");
 	}

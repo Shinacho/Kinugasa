@@ -322,7 +322,7 @@ public enum FieldEventType {
 	SHOW_MESSAGE_DIRECT {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
-			Text t = new Text(e.getValue());
+			Text t = Text.i18nd(e.getValue());
 			if (e.getTargetName() != null && !e.getTargetName().isEmpty()) {
 				t.setImage(ImageUtil.load(e.getTargetName()));
 			}

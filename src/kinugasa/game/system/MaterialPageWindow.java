@@ -72,7 +72,7 @@ public class MaterialPageWindow extends BasicSprite {
 
 		list.add(0, "<----" + I18N.get(mode) + "---->");
 
-		mw.setText(list.stream().map(p -> Text.noI18N(p)).collect(Collectors.toList()));
+		mw.setText(list.stream().map(p -> Text.of(p)).collect(Collectors.toList()));
 	}
 
 	@Override

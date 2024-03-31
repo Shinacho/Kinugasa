@@ -33,6 +33,8 @@ public class DamageCalcSystem {
 		魔法攻撃,
 		魔法回復,
 	}
+	//クリティカル発生率加算値
+	public static final float CRIT_ADD = 0.15f;
 
 	public static class Param {
 
@@ -212,7 +214,7 @@ public class DamageCalcSystem {
 				if (cp < 0) {
 					cp = 0;
 				} else {
-					cp *= 0.25;
+					cp *= CRIT_ADD;
 				}
 				if (Random.percent(userVS.get(StatusKey.クリティカル率).getValue() + cp)) {
 					クリティカル = true;
@@ -403,7 +405,7 @@ public class DamageCalcSystem {
 				if (cp < 0) {
 					cp = 0;
 				} else {
-					cp *= 0.25;
+					cp *= CRIT_ADD;
 				}
 				if (Random.percent(userVS.get(StatusKey.魔法クリティカル率).getValue() + cp)) {
 					クリティカル = true;
@@ -576,7 +578,7 @@ public class DamageCalcSystem {
 				if (cp < 0) {
 					cp = 0;
 				} else {
-					cp *= 0.25;
+					cp *= CRIT_ADD;
 				}
 				if (Random.percent(userVS.get(StatusKey.クリティカル率).getValue() + cp)) {
 					クリティカル = true;
@@ -674,7 +676,7 @@ public class DamageCalcSystem {
 				if (cp < 0) {
 					cp = 0;
 				} else {
-					cp *= 0.25;
+					cp *= CRIT_ADD;
 				}
 				if (Random.percent(userVS.get(StatusKey.魔法クリティカル率).getValue() + cp)) {
 					クリティカル = true;

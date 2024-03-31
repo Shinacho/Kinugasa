@@ -21,6 +21,8 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import kinugasa.game.GameLog;
+import kinugasa.game.I18N;
 import kinugasa.game.NotNull;
 import kinugasa.game.Nullable;
 import kinugasa.object.EmptySprite;
@@ -72,7 +74,9 @@ public enum EnemyAIImpl implements EnemyAI {
 				if (maxRange < user.getStatus().getEffectedArea(ac)) {
 					maxRange = user.getStatus().getEffectedArea(ac);
 				}
-				System.out.println("アクション選択：" + tgt + " / " + ac);
+				if (GameSystem.isDebugMode()) {
+					GameLog.print("アクション選択:TGT=" + tgt + " / action=" + I18N.get(ac.getVisibleName()));
+				}
 				//ターゲットが射程内にいればそれを実施
 				if (is射程内(user, ac, tgt)) {
 					if (!ac.checkResource(user.getStatus()).is足りないステータスあり()) {

@@ -44,9 +44,9 @@ public class MusicRoom extends ScrollSelectableMessageWindow {
 		List<Text> t = list
 				.stream()
 				.map(p -> ((CachedSound) p).getBuilder().getVisibleName().replaceAll(".wav", ""))
-				.map(p -> new Text(I18N.get(p)))
+				.map(p -> Text.i18nd(p))
 				.collect(Collectors.toList());
-		t.add(0, new Text("--" + "BGM"));
+		t.add(0, Text.of("--" + "BGM"));
 		setText(t);
 	}
 

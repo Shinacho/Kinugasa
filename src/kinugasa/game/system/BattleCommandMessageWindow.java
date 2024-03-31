@@ -150,7 +150,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 				default:
 					throw new AssertionError("BattleCommandMessageWindow : undefined type");
 			}
-			List<Text> t = Text.split(new Text(text));
+			List<Text> t = Text.split(Text.of(text));
 			setText(t);
 			super.getWindow().allText();
 			BattleSystem.getInstance().getTargetSystem().setCurrent((Action) null);
@@ -229,7 +229,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 			i++;
 		}
 
-		List<Text> t = Text.split(new Text(text));
+		List<Text> t = Text.split(Text.of(text));
 
 		setText(t);
 

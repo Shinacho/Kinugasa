@@ -89,8 +89,24 @@ public class Counts {
 		storage.add(v);
 		commit();
 	}
+	
+	public void updateOrInsert(String name, long val){
+		Counts.Value v = null;
+		if (storage.contains(name)) {
+			v = storage.get(name);
+			storage.remove(name);
+		} else if ((v = select(name)) != null) {
+		}
+		if (v == null) {
+			v = new Value(name, val);
+		} else {
+			v = new Value(v.name, v.num + val);
+		}
+		storage.add(v);
+		commit();
+	}
 
-	protected Value select(String id) throws KSQLException {
+	public Value select(String id) throws KSQLException {
 		if (DBConnection.getInstance().isUsing()) {
 			String sql = "select id, num from counts where id = '" + id + "';";
 			KResultSet r = DBConnection.getInstance().execDirect(sql);
@@ -106,7 +122,7 @@ public class Counts {
 		return null;
 	}
 
-	protected List<Value> selectAll() throws KSQLException {
+	public List<Value> selectAll() throws KSQLException {
 		List<Value> res = new ArrayList<>();
 		if (DBConnection.getInstance().isUsing()) {
 			String sql = "select id, num from counts;";

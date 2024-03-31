@@ -38,11 +38,11 @@ public class MessageWindow extends BasicSprite {
 	private Text text;
 
 	public MessageWindow(float x, float y, float w, float h, MessageWindowModel model) {
-		this(x, y, w, h, model, new TextStorage("AUTO_FROM_MW"), Text.noI18N(""));
+		this(x, y, w, h, model, new TextStorage("AUTO_FROM_MW"), Text.of(""));
 	}
 
 	public MessageWindow(float x, float y, float w, float h) {
-		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage("AUTO_FROM_MW"), Text.noI18N(""));
+		this(x, y, w, h, new SimpleMessageWindowModel(), new TextStorage("AUTO_FROM_MW"), Text.of(""));
 	}
 
 	public MessageWindow(float x, float y, float w, float h, Text text) {
@@ -102,8 +102,8 @@ public class MessageWindow extends BasicSprite {
 		select = 0;
 	}
 
-	public void setText(String text) {
-		setText(Text.noI18N(text));
+	public void setTextDirect(String text) {
+		setText(Text.of(text));
 	}
 
 	public void clearText() {

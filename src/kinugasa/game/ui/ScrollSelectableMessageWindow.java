@@ -70,27 +70,17 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 		this.visibleIdx = 0;
 	}
 
-	public ScrollSelectableMessageWindow(int x, int y, int w, int h, int line, String... text) {
-		this(x, y, w, h, line);
-		this.text.addAll(Arrays.asList(text).stream().map(p -> new Text(p)).collect(Collectors.toList()));
-	}
-
 	public ScrollSelectableMessageWindow(int x, int y, int w, int h, int line, Text... text) {
 		this(x, y, w, h, line);
 		this.text.addAll(Arrays.asList(text));
-	}
-
-	public ScrollSelectableMessageWindow(int x, int y, int w, int h, int line, List<String> text) {
-		this(x, y, w, h, line);
-		this.text.addAll(text.stream().map(p -> new Text(p)).collect(Collectors.toList()));
 	}
 
 	public void setText(Text t) {
 		setText(Text.split(t));
 	}
 
-	public void setText(String s) {
-		setText(Text.split(Text.noI18N(s)));
+	public void setTextDirect(String s) {
+		setText(Text.split(Text.of(s)));
 	}
 
 	public void setText(List<? extends Text> text) {
@@ -129,7 +119,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 			window.clearText();
 			return;
 		}
-		window.setText(Text.noI18N(sb.substring(0, sb.length() - 1)));
+		window.setText(Text.of(sb.substring(0, sb.length() - 1)));
 		window.allText();
 	}
 
@@ -163,6 +153,10 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 
 	public int getSelectedIdx() {
 		return select;
+	}
+
+	public void setSelectedIdx(int i) {
+		select = i;
 	}
 
 	@Override

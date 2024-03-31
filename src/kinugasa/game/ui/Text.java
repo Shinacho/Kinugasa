@@ -38,7 +38,7 @@ import kinugasa.util.TimeCounter;
 public sealed class Text implements Nameable permits Choice {
 
 	public static Text empty() {
-		return noI18N("");
+		return of("");
 	}
 
 	public static Text collect(List<Text> t) {
@@ -46,7 +46,7 @@ public sealed class Text implements Nameable permits Choice {
 		for (Text tt : t) {
 			sb.append(tt.getText()).append(Text.lineSep);
 		}
-		return Text.noI18N(sb.substring(0, sb.length() - 1));
+		return of(sb.substring(0, sb.length() - 1));
 	}
 
 	public static Text collect(Text... t) {
@@ -54,13 +54,13 @@ public sealed class Text implements Nameable permits Choice {
 		for (Text tt : t) {
 			sb.append(tt.getText()).append(Text.lineSep);
 		}
-		return Text.noI18N(sb.substring(0, sb.length() - 1));
+		return of(sb.substring(0, sb.length() - 1));
 	}
 
 	public static List<Text> split(Text t) {
 		List<Text> r = new ArrayList<>();
 		for (String v : t.getText().split(lineSep)) {
-			r.add(Text.noI18N(v));
+			r.add(Text.of(v));
 		}
 		return r;
 	}
@@ -76,7 +76,7 @@ public sealed class Text implements Nameable permits Choice {
 	}
 
 	//
-	protected String name;
+	protected String id;
 	protected String text;
 	private TimeCounter tc = new FrameTimeCounter(0);
 	private int visibleIdx = 0;
@@ -94,62 +94,169 @@ public sealed class Text implements Nameable permits Choice {
 		return lineSep;
 	}
 
-	public Text() {
-		name = "TEXT_" + autoId++;
-		text = "";
+	protected Text() {
+	}
+	
+	private void setReplace(){
+		for(var v : replaceMap.entrySet()){
+			text = text.replaceAll(v.getKey(), v.getValue());
+		}
 	}
 
-	public static Text noI18N(String text) {
+	//i18nd
+	protected Text(String textID, String text, TimeCounter tc, int visibleIdx) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		this.id = textID;
+		this.text = text;
+		this.tc = tc;
+		this.visibleIdx = visibleIdx;
+		setReplace();
+	}
+
+	public static Text i18nd(String text) {
 		if (text == null) {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
 		Text t = new Text();
-		t.text = text;
+		t.id = "TEXT_" + autoId++;
+		t.text = I18N.get(text);
+		t.setReplace();
 		return t;
 	}
 
-	public static Text noI18N(String id, String text) {
+	public static Text i18nd(String textID, String text) {
 		if (text == null) {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
 		Text t = new Text();
-		t.name = id;
-		t.text = text;
+		t.id = textID;
+		t.text = I18N.get(text);
+		t.setReplace();
 		return t;
 	}
 
-	public Text(String text) {
-		this.name = "TEXT_" + autoId++;
+	public static Text i18nd(String textID, String text, TimeCounter tc) {
 		if (text == null) {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
-		setText(text);
+		Text t = new Text();
+		t.id = textID;
+		t.text = I18N.get(text);
+		t.tc = tc;
+		t.setReplace();
+		return t;
 	}
 
-	public Text(String text, TimeCounter tc) {
-		this.name = "TEXT_" + autoId++;
+	public static Text i18nd(String text, TimeCounter tc) {
 		if (text == null) {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
-		setText(text);
-		this.tc = tc;
-		visibleIdx = 0;
+		Text t = new Text();
+		t.id = "TEXT_" + autoId++;
+		t.text = I18N.get(text);
+		t.tc = tc;
+		t.setReplace();
+		return t;
 	}
 
-	public Text(String name, TimeCounter tc, int visibleIdx) {
-		this.name = name;
-		this.tc = tc;
-		this.visibleIdx = visibleIdx;
-	}
-
-	public Text(String name, String text, TimeCounter tc, int visibleIdx) {
-		this.name = name;
+	public static Text i18nd(String textID, String text, TimeCounter tc, int visibleIdx) {
 		if (text == null) {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
-		setText(text);
-		this.tc = tc;
-		this.visibleIdx = visibleIdx;
+		Text t = new Text();
+		t.id = textID;
+		t.text = I18N.get(text);
+		t.tc = tc;
+		t.visibleIdx = visibleIdx;
+		t.setReplace();
+		return t;
+	}
+
+	public static Text i18nd(String text, TimeCounter tc, int visibleIdx) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		Text t = new Text();
+		t.id = "TEXT_" + autoId++;
+		t.text = I18N.get(text);
+		t.tc = tc;
+		t.visibleIdx = visibleIdx;
+		t.setReplace();
+		return t;
+	}
+
+	public static Text of(String text) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		Text t = new Text();
+		t.id = "TEXT_" + autoId++;
+		t.text = text;
+		t.setReplace();
+		return t;
+	}
+
+	public static Text of(String textID, String text) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		Text t = new Text();
+		t.id = textID;
+		t.text = text;
+		t.setReplace();
+		return t;
+	}
+
+	public static Text of(String textID, String text, TimeCounter tc) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		Text t = new Text();
+		t.id = textID;
+		t.text = text;
+		t.tc = tc;
+		t.setReplace();
+		return t;
+	}
+
+	public static Text of(String text, TimeCounter tc) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		Text t = new Text();
+		t.id = "TEXT_" + autoId++;
+		t.text = text;
+		t.tc = tc;
+		t.setReplace();
+		return t;
+	}
+
+	public static Text of(String textID, String text, TimeCounter tc, int visibleIdx) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		Text t = new Text();
+		t.id = textID;
+		t.text = text;
+		t.tc = tc;
+		t.visibleIdx = visibleIdx;
+		t.setReplace();
+		return t;
+	}
+
+	public static Text of(String text, TimeCounter tc, int visibleIdx) {
+		if (text == null) {
+			throw new GameSystemException("text is null, use Text.empty");
+		}
+		Text t = new Text();
+		t.id = "TEXT_" + autoId++;
+		t.text = text;
+		t.tc = tc;
+		t.visibleIdx = visibleIdx;
+		t.setReplace();
+		return t;
 	}
 
 	public boolean hasImage() {
@@ -165,23 +272,23 @@ public sealed class Text implements Nameable permits Choice {
 		this.image = image;
 	}
 
-	public void setTextNoI18N(String t) {
+	public void setTextDirect(String t) {
 		if (t == null) {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
 		this.text = t;
 		for (Map.Entry<String, String> e : replaceMap.entrySet()) {
-			text = text.replaceAll(e.getKey(), e.getValue());
+			this.text = this.text.replaceAll(e.getKey(), e.getValue());
 		}
 	}
 
-	private void setText(String t) {
+	public void setTextByI18NID(String t) {
 		if (t == null) {
 			throw new GameSystemException("text is null, use Text.empty");
 		}
-		this.text = I18N.getOrThat(t);
+		this.text = I18N.get(t);
 		for (Map.Entry<String, String> e : replaceMap.entrySet()) {
-			text = text.replaceAll(e.getKey(), e.getValue());
+			this.text = this.text.replaceAll(e.getKey(), e.getValue());
 		}
 	}
 
@@ -210,7 +317,7 @@ public sealed class Text implements Nameable permits Choice {
 
 	@Override
 	public String getName() {
-		return name;
+		return id;
 	}
 
 	public final String getText() {
@@ -270,7 +377,7 @@ public sealed class Text implements Nameable permits Choice {
 
 	@Override
 	public String toString() {
-		return "Text{" + "name=" + name + ", nextId=" + nextId + '}';
+		return "Text{" + "name=" + id + ", nextId=" + nextId + '}';
 	}
 
 	public void reset() {

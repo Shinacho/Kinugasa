@@ -543,7 +543,7 @@ public class BattleSystem implements Drawable {
 				text += I18N.get(GameSystemI18NKeys.Xはレベルアップできる, a.getVisibleName()) + Text.getLineSep();
 			}
 		}
-		messageWindowSystem.getBattleResultW().setText(text);
+		messageWindowSystem.getBattleResultW().setTextDirect(text);
 		messageWindowSystem.getBattleResultW().allText();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
 
@@ -1262,7 +1262,7 @@ public class BattleSystem implements Drawable {
 							}
 						}
 					}
-					messageWindowSystem.getAfterMoveActionListW().setText(list);
+					messageWindowSystem.getAfterMoveActionListW().setTextDirect(list);
 					messageWindowSystem.getAfterMoveActionListW().allText();
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
 							BattleMessageWindowSystem.Mode.AFTERMOVE_ACTIONLIST,
@@ -1313,7 +1313,7 @@ public class BattleSystem implements Drawable {
 			if (GameSystem.isDebugMode()) {
 				GameLog.print(" targetSystem is empty");
 			}
-			messageWindowSystem.getActionResultW().setText(I18N.get(GameSystemI18NKeys.効果範囲内にターゲットがいない));
+			messageWindowSystem.getActionResultW().setTextDirect(I18N.get(GameSystemI18NKeys.効果範囲内にターゲットがいない));
 			messageWindowSystem.getActionResultW().allText();
 			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 			currentBAWaitTime = new FrameTimeCounter(60);
@@ -1322,7 +1322,7 @@ public class BattleSystem implements Drawable {
 		}
 		afterMove = false;
 
-		messageWindowSystem.getInfoW().setText(I18N.get(GameSystemI18NKeys.Xを, a.getVisibleName()));
+		messageWindowSystem.getInfoW().setTextDirect(I18N.get(GameSystemI18NKeys.Xを, a.getVisibleName()));
 		messageWindowSystem.getInfoW().setVisible(true);
 		setStage(Stage.プレイヤキャラターゲット選択中_コミット待ち);
 		return BSCommitCmdResult.ターゲット選択に入った;
@@ -1646,7 +1646,7 @@ public class BattleSystem implements Drawable {
 			if (GameSystem.isDebugMode()) {
 				GameLog.print(" targetSystem is empty");
 			}
-			messageWindowSystem.getActionResultW().setText(I18N.get(GameSystemI18NKeys.効果範囲内にターゲットがいない));
+			messageWindowSystem.getActionResultW().setTextDirect(I18N.get(GameSystemI18NKeys.効果範囲内にターゲットがいない));
 			messageWindowSystem.getActionResultW().allText();
 			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 			currentBAWaitTime = new FrameTimeCounter(60);
@@ -1675,7 +1675,7 @@ public class BattleSystem implements Drawable {
 	}
 
 	public TargetSelectCalcelResult cancelTargetSelect() {
-		messageWindowSystem.getInfoW().setText("");
+		messageWindowSystem.getInfoW().setTextDirect("");
 		messageWindowSystem.getInfoW().setVisible(false);
 		if (afterMove) {
 			//移動後攻撃からだったら移動後攻撃アクション選択に戻る
@@ -2682,7 +2682,7 @@ public class BattleSystem implements Drawable {
 				}
 				String v = (int) ((currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.残行動力).getValue()
 						/ currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.行動力).getValue()) * 100) + "%";
-				messageWindowSystem.getInfoW().setText(StatusKey.残行動力.getVisibleName() + ":" + v);
+				messageWindowSystem.getInfoW().setTextDirect(StatusKey.残行動力.getVisibleName() + ":" + v);
 				messageWindowSystem.getInfoW().allText();
 				String list = ActionStorage.getInstance().get(BattleConfig.ActionID.確定).getVisibleName() + Text.getLineSep();
 				int i = 1;
@@ -2695,7 +2695,7 @@ public class BattleSystem implements Drawable {
 						}
 					}
 				}
-				messageWindowSystem.getAfterMoveActionListW().setText(list);
+				messageWindowSystem.getAfterMoveActionListW().setTextDirect(list);
 				messageWindowSystem.getAfterMoveActionListW().allText();
 				targetSystem.setCurrentLocation();
 				break;
@@ -2710,7 +2710,7 @@ public class BattleSystem implements Drawable {
 				if (remMovePoint <= 0 || !currentCmd.getUser().getSprite().isMoving()) {
 					currentCmd.getUser().getSprite().unsetTarget();
 					setStage(Stage.EXECコール待機);
-					break;
+					return;
 				}
 				//アクションを抽選・・・このステージに入るときは必ずENEMYなのでキャスト失敗しない
 				Enemy user = (Enemy) currentCmd.getUser();
@@ -2747,7 +2747,7 @@ public class BattleSystem implements Drawable {
 				}
 				if (selected == null || tgt == null || tgt.isEmpty()) {
 					//実行可能な攻撃はない
-					break;
+					return;
 				}
 				//移動後攻撃実行
 				if (!selected.canDo(user.getStatus())) {
@@ -2755,6 +2755,7 @@ public class BattleSystem implements Drawable {
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 					currentBAWaitTime = new FrameTimeCounter(50);
 					setStage(Stage.待機中＿時間あり＿手番戻り);
+					return;
 				}
 				攻撃処理(selected, new ActionTarget(user, selected, tgt, false));
 				return;
@@ -2797,7 +2798,7 @@ public class BattleSystem implements Drawable {
 			setMsg(Arrays.asList(s.split("/")));
 			return;
 		}
-		messageWindowSystem.getActionResultW().setText(s);
+		messageWindowSystem.getActionResultW().setTextDirect(s);
 		messageWindowSystem.getActionResultW().allText();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 	}
@@ -2852,7 +2853,7 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		list = new ArrayList<>(list.stream().distinct().toList());
-		messageWindowSystem.getActionResultW().setText(String.join(Text.getLineSep(), list));
+		messageWindowSystem.getActionResultW().setTextDirect(String.join(Text.getLineSep(), list));
 		messageWindowSystem.getActionResultW().allText();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 	}

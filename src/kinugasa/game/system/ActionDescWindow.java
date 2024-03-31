@@ -81,9 +81,9 @@ public class ActionDescWindow extends PCStatusWindow {
 		//SSMWに文字列を設定
 
 		List<Text> t = new ArrayList<>();
-		t.add(new Text("<---" + I18N.get(GameSystemI18NKeys.Xの行動,
+		t.add(Text.of("<---" + I18N.get(GameSystemI18NKeys.Xの行動,
 				GameSystem.getInstance().getPCbyID(s.get(pcIdx).getId()).getVisibleName()) + "--->"));
-		t.add(new Text("----" + ActionType.攻撃.getVisibleName() + "----"));
+		t.add(Text.of("----" + ActionType.攻撃.getVisibleName() + "----"));
 		for (Action a : s.get(pcIdx).getActions()
 				.stream()
 				.filter(p -> p.isBattle())
@@ -136,9 +136,9 @@ public class ActionDescWindow extends PCStatusWindow {
 			}
 			sb.append(")");
 
-			t.addAll(Text.split(Text.noI18N(sb.toString())));
+			t.addAll(Text.split(Text.of(sb.toString())));
 		}
-		t.add(new Text("----" + ActionType.魔法.getVisibleName() + "----"));
+		t.add(Text.of("----" + ActionType.魔法.getVisibleName() + "----"));
 		for (Action a : s.get(pcIdx).getActions()
 				.stream()
 				.filter(p -> p.isBattle())
@@ -183,7 +183,7 @@ public class ActionDescWindow extends PCStatusWindow {
 			}
 			sb.append(")");
 
-			t.addAll(Text.split(Text.noI18N(sb.toString())));
+			t.addAll(Text.split(Text.of(sb.toString())));
 		}
 		mw.setText(t);
 	}

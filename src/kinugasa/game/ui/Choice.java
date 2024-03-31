@@ -17,8 +17,8 @@
 package kinugasa.game.ui;
 
 import java.util.List;
+import kinugasa.game.I18N;
 import kinugasa.resource.NameNotFoundException;
-import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.TimeCounter;
 
 /**
@@ -30,24 +30,27 @@ public final class Choice extends Text {
 
 	private List<Text> options;
 
-	public Choice(List<Text> options, String name, String text) {
-		super(name, text, TimeCounter.TRUE, Integer.MAX_VALUE);
-		this.options = options;
-	}
-
-	public Choice(List<Text> options, String name, String text, FrameTimeCounter tc, int visibleIdx) {
+	private Choice(List<Text> options, String name, String text, TimeCounter tc, int visibleIdx) {
 		super(name, text, tc, visibleIdx);
 		this.options = options;
 	}
-	private Choice(){}
-	
-	public static Choice noI18N(String id, String textI18Nd, List<Text> options){
-		Choice c = new Choice();
-		c.name = id;
-		c.text = textI18Nd;
+
+	public static Choice of(List<Text> options, String name, String text, TimeCounter tc, int visibleIdx) {
+		Choice c = new Choice(options, name, text, tc, visibleIdx);
 		c.options = options;
 		c.allText();
 		return c;
+	}
+
+	public static Choice of(List<Text> options, String name, String text) {
+		Choice c = new Choice(options, name, text, TimeCounter.TRUE, Integer.MAX_VALUE);
+		c.options = options;
+		c.allText();
+		return c;
+	}
+	
+	public void msgI18N(){
+		
 	}
 
 	public List<Text> getOptions() {
@@ -61,6 +64,11 @@ public final class Choice extends Text {
 			}
 		}
 		throw new NameNotFoundException(name + " is not found");
+	}
+
+	@Override
+	public String toString() {
+		return "Choice{" + "options=" + options + '}';
 	}
 
 }

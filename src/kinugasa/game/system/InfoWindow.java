@@ -16,14 +16,18 @@
  */
 package kinugasa.game.system;
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import kinugasa.game.GameTimeManager;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -40,24 +44,26 @@ public class InfoWindow extends BasicSprite {
 	}
 
 	public enum Mode {
-		お金,
+		所持金,
 		クエスト,
 		統計,
 		難易度
 	}
-	private Mode mode = Mode.お金;
+	private Mode mode = Mode.所持金;
 	private ScrollSelectableMessageWindow main;
+	private LinkedList<Text> toukeiData = new LinkedList<>();
+	private int sumS;
 
 	public void nextMode() {
 		mode = switch (mode) {
-			case お金 ->
+			case 所持金 ->
 				Mode.クエスト;
 			case クエスト ->
 				Mode.統計;
 			case 統計 ->
 				Mode.難易度;
 			case 難易度 ->
-				Mode.お金;
+				Mode.所持金;
 		};
 		main.reset();
 		updateText();
@@ -65,10 +71,10 @@ public class InfoWindow extends BasicSprite {
 
 	public void prevMode() {
 		mode = switch (mode) {
-			case お金 ->
+			case 所持金 ->
 				Mode.難易度;
 			case クエスト ->
-				Mode.お金;
+				Mode.所持金;
 			case 統計 ->
 				Mode.クエスト;
 			case 難易度 ->
@@ -90,27 +96,27 @@ public class InfoWindow extends BasicSprite {
 		List<Text> t = new ArrayList<>();
 
 		//line1
-		t.add(Text.noI18N("<---" + I18N.get(mode) + "--->"));
+		t.add(Text.of("<---" + I18N.get(mode) + "--->"));
 
 		//data
 		switch (mode) {
-			case お金:
+			case 所持金:
 				for (Money m : GameSystem.getInstance().getMoneySystem()) {
-					t.add(Text.noI18N(m.getVisibleText()));
+					t.add(Text.of(m.getVisibleText()));
 				}
 				break;
 			case クエスト:
 				//MAIN
-				t.add(Text.noI18N("--" + I18N.get(GameSystemI18NKeys.メインクエスト)));
+				t.add(Text.of("--" + I18N.get(GameSystemI18NKeys.メインクエスト)));
 				Set<Quest> q = CurrentQuest.getInstance().get();
 				for (Quest qs : q.stream().filter(p -> p.getType() == Quest.Type.メイン).toList()) {
-					t.add(Text.noI18N("  " + qs.getVisibleName() + Text.getLineSep() + "   　　　 " + qs.getDesc().replaceAll("/", "/   　　　 ")));
+					t.add(Text.of("  " + qs.getVisibleName() + Text.getLineSep() + "   　　　 " + qs.getDesc().replaceAll("/", "/   　　　 ")));
 				}
 
 				//SUB
-				t.add(Text.noI18N("--" + I18N.get(GameSystemI18NKeys.サブクエスト)));
+				t.add(Text.of("--" + I18N.get(GameSystemI18NKeys.サブクエスト)));
 				for (Quest qs : q.stream().filter(p -> p.getType() == Quest.Type.サブ).toList()) {
-					t.add(Text.noI18N("  " + qs.getVisibleName() + Text.getLineSep() + "  " + qs.getDesc().replaceAll("/", "/   　　　 ")));
+					t.add(Text.of("  " + qs.getVisibleName() + Text.getLineSep() + "  " + qs.getDesc().replaceAll("/", "/   　　　 ")));
 				}
 
 				break;
@@ -118,17 +124,43 @@ public class InfoWindow extends BasicSprite {
 				for (Counts.Value v : Counts.getInstance().selectAll().stream().sorted((c1, c2) -> {
 					return c1.getVisibleName().compareTo(c2.getVisibleName());
 				}).toList()) {
-					t.add(Text.noI18N("  " + v.getVisibleName() + " : " + v.num));
+					if (!v.getName().contains("時間")) {
+						t.add(Text.of("  " + v.getVisibleName() + " : " + v.num));
+					}
 				}
+				t.add(Text.empty());
+				Duration d = GameTimeManager.getInstance().get経過時間();
+				int h = (int) (d.getSeconds() / 3600);
+				int m = (int) ((d.getSeconds() % 3600) / 60);
+				int s = (int) (d.getSeconds() % 60);
+				t.add(Text.of("--" + I18N.get("総プレイ時間") + "：" + StringUtil.zeroUme(h + "", 3) + ":" + StringUtil.zeroUme(m + "", 2) + ":" + StringUtil.zeroUme(s + "", 2)));
+
+				{
+					if (Counts.getInstance().select("総プレイ時間") == null) {
+						sumS = 0;
+					} else {
+						sumS = (int) (Counts.getInstance().select("総プレイ時間").num);
+					}
+					int hh = (int) ((sumS + d.getSeconds()) / 3600);
+					int mm = (int) (((sumS + d.getSeconds()) % 3600) / 60);
+					int ss = (int) ((sumS + d.getSeconds()) % 60);
+					t.add(Text.of("--" + I18N.get("総プレイ時間") + "：" + StringUtil.zeroUme(hh + "", 3) + ":" + StringUtil.zeroUme(mm + "", 2) + ":" + StringUtil.zeroUme(ss + "", 2)));
+				}
+				toukeiData.clear();;
+				toukeiData.addAll(t);
+
+				総プレイ時間i18nd = I18N.get("総プレイ時間");
+				起動からの経過時間i18nd = I18N.get("起動からの経過時間");
+				//TODO：セーブデータの加算
 				break;
 			}
 			case 難易度: {
-				t.add(Text.noI18N("  " + GameSystem.getDifficulty().getNameI18Nd()));
+				t.add(Text.of("  " + GameSystem.getDifficulty().getNameI18Nd()));
 				for (String v : GameSystem.getDifficulty().getDescI18Nd().split("/")) {
-					t.add(Text.noI18N("    " + v));
+					t.add(Text.of("    " + v));
 				}
-				t.add(Text.noI18N(""));
-				t.add(new Text(GameSystemI18NKeys.難易度を変更するには));
+				t.add(Text.of(""));
+				t.add(Text.i18nd(GameSystemI18NKeys.難易度を変更するには));
 				break;
 			}
 			default:
@@ -136,9 +168,29 @@ public class InfoWindow extends BasicSprite {
 		}
 		main.setText(t);
 	}
+	private String 総プレイ時間i18nd, 起動からの経過時間i18nd;
 
 	@Override
 	public void update() {
+		if (mode == Mode.統計) {
+			toukeiData.removeLast();
+			toukeiData.removeLast();
+			Duration d = GameTimeManager.getInstance().get経過時間();
+			int h = (int) (d.getSeconds() / 3600);
+			int m = (int) ((d.getSeconds() % 3600) / 60);
+			int s = (int) (d.getSeconds() % 60);
+			toukeiData.add(Text.of("--" + 総プレイ時間i18nd + "：" + StringUtil.zeroUme(h + "", 3) + ":" + StringUtil.zeroUme(m + "", 2) + ":" + StringUtil.zeroUme(s + "", 2)));
+
+			{
+				int hh = (int) ((sumS + d.getSeconds()) / 3600);
+				int mm = (int) (((sumS + d.getSeconds()) % 3600) / 60);
+				int ss = (int) ((sumS + d.getSeconds()) % 60);
+				toukeiData.add(Text.of("--" + 起動からの経過時間i18nd + "：" + StringUtil.zeroUme(hh + "", 3) + ":" + StringUtil.zeroUme(mm + "", 2) + ":" + StringUtil.zeroUme(ss + "", 2)));
+			}
+			int selected = main.getSelectedIdx();
+			main.setText(toukeiData);
+			main.setSelectedIdx(selected);
+		}
 		main.update();
 	}
 

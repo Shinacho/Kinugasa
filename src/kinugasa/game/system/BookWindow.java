@@ -215,11 +215,11 @@ public class BookWindow extends BasicSprite {
 		switch (mode) {
 			case BOOK_AND_USER_SELECT:
 				List<Text> options = new ArrayList<>();
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.渡す)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.調べる)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.解体)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.捨てる)));
-				Choice c = new Choice(options, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, getSelectedBook().getVisibleName()));
+				options.add(Text.i18nd(GameSystemI18NKeys.渡す));
+				options.add(Text.i18nd(GameSystemI18NKeys.調べる));
+				options.add(Text.i18nd(GameSystemI18NKeys.解体));
+				options.add(Text.i18nd(GameSystemI18NKeys.捨てる));
+				Choice c = Choice.of(options, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, getSelectedBook().getVisibleName()));
 				choiceUse.setText(c);
 				choiceUse.allText();
 				choiceUse.setSelect(0);
@@ -232,8 +232,8 @@ public class BookWindow extends BasicSprite {
 					case PASS:
 						//パスターゲットに移動
 						List<Text> options2 = new ArrayList<>();
-						options2.addAll(list.stream().map(p -> Text.noI18N(GameSystem.getInstance().getPCbyID(p.getId()).getVisibleName())).collect(Collectors.toList()));
-						tgtSelect.setText(new Choice(options2, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの,
+						options2.addAll(list.stream().map(p -> Text.of(GameSystem.getInstance().getPCbyID(p.getId()).getVisibleName())).collect(Collectors.toList()));
+						tgtSelect.setText(Choice.of(options2, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの,
 								GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xを誰に渡す, b.getVisibleName())));
 						tgtSelect.allText();
@@ -260,7 +260,7 @@ public class BookWindow extends BasicSprite {
 							sb.append("   ").append(p.getEvent().getDescI18Nd()).append(Text.getLineSep());
 						}
 
-						msg.setText(sb.toString());
+						msg.setTextDirect(sb.toString());
 						msg.allText();
 						group.show(msg);
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -268,10 +268,10 @@ public class BookWindow extends BasicSprite {
 					case DISASSEMBLY:
 						//解体確認ウインドウを有効化
 						List<Text> options4 = new ArrayList<>();
-						options4.add(Text.noI18N(I18N.get(GameSystemI18NKeys.いいえ)));
-						options4.add(Text.noI18N(I18N.get(GameSystemI18NKeys.はい)));
+						options4.add(Text.i18nd(GameSystemI18NKeys.いいえ));
+						options4.add(Text.i18nd(GameSystemI18NKeys.はい));
 						dissassemblyComfirm.reset();
-						dissassemblyComfirm.setText(new Choice(options4, "DISSASSE_CONFIRM",
+						dissassemblyComfirm.setText(Choice.of(options4, "DISSASSE_CONFIRM",
 								I18N.get(GameSystemI18NKeys.Xの, GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xを本当に解体する, b.getVisibleName())));
 						dissassemblyComfirm.allText();
@@ -281,10 +281,10 @@ public class BookWindow extends BasicSprite {
 					case DROP:
 						//drop確認ウインドウを有効化
 						List<Text> options5 = new ArrayList<>();
-						options5.add(Text.noI18N(I18N.get(GameSystemI18NKeys.いいえ)));
-						options5.add(Text.noI18N(I18N.get(GameSystemI18NKeys.はい)));
+						options5.add(Text.i18nd(GameSystemI18NKeys.いいえ));
+						options5.add(Text.i18nd(GameSystemI18NKeys.はい));
 						dropConfirm.reset();
-						dropConfirm.setText(new Choice(options5, "DROP_CONFIRM",
+						dropConfirm.setText(Choice.of(options5, "DROP_CONFIRM",
 								I18N.get(GameSystemI18NKeys.Xの,
 										GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName()
 								) + I18N.get(GameSystemI18NKeys.Xを本当にすてる, b.getVisibleName())
@@ -370,13 +370,13 @@ public class BookWindow extends BasicSprite {
 					i.getVisibleName());
 			GameSystem.getInstance().getPartyStatus().forEach(p -> p.updateAction());
 			getSelectedPC().updateAction();
-			msg.setText(t);
+			msg.setTextDirect(t);
 			mainSelect = 0;
 		} else {
 			String t = I18N.get(GameSystemI18NKeys.XはXを持ち替えた,
 					GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
 					i.getVisibleName());
-			msg.setText(t);
+			msg.setTextDirect(t);
 			mainSelect = getSelectedPC().getBookBag().size() - 1;
 		}
 		msg.allText();
@@ -400,7 +400,7 @@ public class BookWindow extends BasicSprite {
 			sb.append(b.getVisibleName()).append(Text.getLineSep());
 			j++;
 		}
-		main.setText(sb.toString());
+		main.setTextDirect(sb.toString());
 		main.allText();
 		main.setVisible(true);
 	}
@@ -410,7 +410,7 @@ public class BookWindow extends BasicSprite {
 		Book i = getSelectedBook();
 		//1個しか持っていなかったら装備を外す
 		getSelectedPC().getBookBag().drop(i);
-		msg.setText(I18N.get(GameSystemI18NKeys.XはXを捨てた,
+		msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを捨てた,
 				GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
 				i.getVisibleName()));
 		msg.allText();
@@ -435,7 +435,7 @@ public class BookWindow extends BasicSprite {
 			s.append(I18N.get(GameSystemI18NKeys.XをX個入手した, e.getKey(), e.getValue() + ""));
 			s.append(Text.getLineSep());
 		}
-		msg.setText(s.toString());
+		msg.setTextDirect(s.toString());
 		msg.allText();
 		getSelectedPC().updateAction();
 		group.show(msg);
@@ -478,22 +478,10 @@ public class BookWindow extends BasicSprite {
 		return false;
 	}
 
-	private Status prevStatus = null;
-	private String cache = null;
-	private int prevMainSelect = 0;
-
 	@Override
 	public void update() {
 		//メインウインドウの内容更新
 		if (mode == Mode.BOOK_AND_USER_SELECT) {
-			if (getSelectedPC().equals(prevStatus) && prevMainSelect == mainSelect && cache != null) {
-				main.setText(cache);
-				main.allText();
-				main.setVisible(true);
-				return;
-			}
-			prevStatus = getSelectedPC();
-			prevMainSelect = mainSelect;
 			PersonalBag<Book> ib = getSelectedPC().getBookBag();
 			StringBuilder sb = new StringBuilder();
 			sb.append("<---");
@@ -518,7 +506,7 @@ public class BookWindow extends BasicSprite {
 			sb.append(Text.getLineSep());
 			sb.append(Text.getLineSep());
 			sb.append(I18N.get(GameSystemI18NKeys.あとX個持てる, getSelectedPC().getBookBag().remainingSize() + ""));
-			main.setText(cache = sb.toString());
+			main.setTextDirect(sb.toString());
 			main.allText();
 			main.setVisible(true);
 		}

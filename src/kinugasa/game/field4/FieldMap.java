@@ -1002,7 +1002,7 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 				: buffer;
 		float w = GameOption.getInstance().getWindowSize().width / GameOption.getInstance().getDrawSize() - (buffer * 2);
 		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
-		Text t = n == null ? new Text("") : textStorage.get(n.getTextID());
+		Text t = n == null ? Text.empty() : textStorage.get(n.getTextID());
 		if (n != null) {
 			n.to(playerCharacter.get(0).getCurrentDir().reverse());
 		}

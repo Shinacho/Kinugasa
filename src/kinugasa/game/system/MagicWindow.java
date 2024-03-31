@@ -174,9 +174,9 @@ public class MagicWindow extends BasicSprite {
 		switch (mode) {
 			case MAGIC_AND_USER_SELECT:
 				List<Text> options = new ArrayList<>();
-				options.add(new Text(I18N.get(GameSystemI18NKeys.使う)));
-				options.add(new Text(I18N.get(GameSystemI18NKeys.調べる)));
-				Choice c = new Choice(options, "IMAGIC_WINDOW_SUB",
+				options.add(Text.i18nd(GameSystemI18NKeys.使う));
+				options.add(Text.i18nd(GameSystemI18NKeys.調べる));
+				Choice c = Choice.of(options, "IMAGIC_WINDOW_SUB",
 						I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xを, a.getVisibleName()));
 				choiceUse.setText(c);
@@ -194,7 +194,7 @@ public class MagicWindow extends BasicSprite {
 							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
 							sb.append(I18N.get(GameSystemI18NKeys.しかしこの魔法はフィールドでは使えない));
-							msg.setText(Text.split(new Text(sb.toString())));
+							msg.setText(Text.split(Text.of(sb.toString())));
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
@@ -208,7 +208,7 @@ public class MagicWindow extends BasicSprite {
 								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
 								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toString()));
-								msg.setText(Text.split(new Text(sb.toString())));
+								msg.setText(Text.split(Text.of(sb.toString())));
 								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
@@ -245,7 +245,7 @@ public class MagicWindow extends BasicSprite {
 								//失敗
 								sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 							}
-							msg.setText(Text.split(new Text(sb.toString())));
+							msg.setText(Text.split(Text.of(sb.toString())));
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
@@ -266,7 +266,7 @@ public class MagicWindow extends BasicSprite {
 								sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 								sb.append(Text.getLineSep());
 								sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toList().toString()));
-								msg.setText(Text.split(new Text(sb.toString())));
+								msg.setText(Text.split(Text.of(sb.toString())));
 								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 								return;
@@ -285,7 +285,7 @@ public class MagicWindow extends BasicSprite {
 									sb.append(vv.msgI18Nd).append(Text.getLineSep());
 								}
 							}
-							msg.setText(Text.split(new Text(sb.toString())));
+							msg.setText(Text.split(Text.of(sb.toString())));
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_MUS;
 							return;
@@ -297,7 +297,7 @@ public class MagicWindow extends BasicSprite {
 							sb.append(I18N.get(GameSystemI18NKeys.XはXを詠唱した, getPC().getVisibleName(), a.getVisibleName()));
 							sb.append(Text.getLineSep());
 							sb.append(I18N.get(GameSystemI18NKeys.しかしXが足りない, s.keys.stream().map(p -> p.getVisibleName()).toList().toString()));
-							msg.setText(Text.split(new Text(sb.toString())));
+							msg.setText(Text.split(Text.of(sb.toString())));
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 							return;
@@ -305,8 +305,8 @@ public class MagicWindow extends BasicSprite {
 						//その他の場合はターゲット選択へ
 						List<Text> option1 = new ArrayList<>();
 						option1.addAll(GameSystem.getInstance().getPartyStatus().stream()
-								.map(p -> new Text(getPC(p.getId()).getVisibleName())).collect(Collectors.toList()));
-						tgtSelect.setText(new Choice(option1, "MAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの, a.getVisibleName())
+								.map(p -> Text.of(getPC(p.getId()).getVisibleName())).collect(Collectors.toList()));
+						tgtSelect.setText(Choice.of(option1, "MAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの, a.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xを誰に使う, getSelectedAction().getVisibleName())));
 						tgtSelect.allText();
 						group.show(tgtSelect);
@@ -378,7 +378,7 @@ public class MagicWindow extends BasicSprite {
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法はフィールドでは使えない)).append(Text.getLineSep());
 						}
-						msg.setText(Text.split(new Text(sb.toString())));
+						msg.setText(Text.split(Text.of(sb.toString())));
 						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 				}
@@ -423,7 +423,7 @@ public class MagicWindow extends BasicSprite {
 				sb.append(vv.msgI18Nd).append(Text.getLineSep());
 			}
 		}
-		msg.setText(Text.split(new Text(sb.toString())));
+		msg.setText(Text.split(Text.of(sb.toString())));
 	}
 
 	public Action getSelectedAction() {
@@ -441,18 +441,18 @@ public class MagicWindow extends BasicSprite {
 	}
 
 	private void updateText() {
-		Text line1 = Text.noI18N("<---" + I18N.get(GameSystemI18NKeys.Xの,
+		Text line1 = Text.of("<---" + I18N.get(GameSystemI18NKeys.Xの,
 				getPC().getVisibleName()) + I18N.get(GameSystemI18NKeys.魔術) + "--->");
 
 		List<Action> list = getSelectedPC().getActions().stream().filter(p -> p.getType() == ActionType.魔法).toList();
 		if (list.isEmpty()) {
-			Text line2 = new Text(GameSystemI18NKeys.使える魔術はない);
+			Text line2 = Text.i18nd(GameSystemI18NKeys.使える魔術はない);
 			main.setText(List.of(line1, line2));
 			return;
 		}
 		List<Text> l = new ArrayList<>();
 		l.add(line1);
-		l.addAll(list.stream().map(p -> new Text(p.getVisibleName() + "／" + p.getSummary())).collect(Collectors.toList()));
+		l.addAll(list.stream().map(p -> Text.of(p.getVisibleName() + "／" + p.getSummary())).collect(Collectors.toList()));
 		main.setText(l);
 	}
 
@@ -465,6 +465,8 @@ public class MagicWindow extends BasicSprite {
 	//1つ前の画面に戻る
 	public boolean close() {
 		msg.setText(List.of());
+		msg.reset();
+		choiceUse.reset();
 		//IUS表示中の場合は戻るは全消し
 		if (group.getWindows().stream().allMatch(p -> !p.isVisible())) {
 			mode = Mode.MAGIC_AND_USER_SELECT;

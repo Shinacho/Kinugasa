@@ -42,7 +42,7 @@ public class OrderSelectWindow extends BasicSprite {
 	private void init() {
 		List<Text> options = new ArrayList<>();
 		for (Status s : GameSystem.getInstance().getPartyStatus()) {
-			options.add(Text.noI18N(
+			options.add(Text.of(
 					GameSystem.getInstance().getPCbyID(s.getId()).getVisibleName()
 					+ " : "
 					+ I18N.get(s.getPartyLocation()
@@ -50,7 +50,7 @@ public class OrderSelectWindow extends BasicSprite {
 									? GameSystemI18NKeys.後列
 									: GameSystemI18NKeys.前列)));
 		}
-		window.setText(new Choice(options, "ORDER_SELECT_WINDOW", I18N.get(GameSystemI18NKeys.前列後列設定)));
+		window.setText(Choice.of(options, "ORDER_SELECT_WINDOW", I18N.get(GameSystemI18NKeys.前列後列設定)));
 		window.allText();
 	}
 	private MessageWindow window;
@@ -81,14 +81,14 @@ public class OrderSelectWindow extends BasicSprite {
 		int selectId = window.getSelect();
 		List<Text> options = new ArrayList<>();
 		for (Status s : GameSystem.getInstance().getPartyStatus()) {
-			options.add(Text.noI18N(
+			options.add(Text.of(
 					GameSystem.getInstance().getPCbyID(s.getId()).getVisibleName()
 					+ " : "
 					+ I18N.get(s.getPartyLocation() == PartyLocation.BACK
 							? GameSystemI18NKeys.後列
 							: GameSystemI18NKeys.前列)));
 		}
-		window.setText(new Choice(options, "ORDER_SELECT_WINDOW", I18N.get(GameSystemI18NKeys.前列後列設定)));
+		window.setText(Choice.of(options, "ORDER_SELECT_WINDOW", I18N.get(GameSystemI18NKeys.前列後列設定)));
 		window.allText();
 		window.setSelect(selectId);
 	}

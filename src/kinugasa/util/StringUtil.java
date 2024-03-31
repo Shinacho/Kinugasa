@@ -59,6 +59,9 @@ public final class StringUtil {
 	 * @return 右詰された文字列.<br>
 	 */
 	public static String zeroUme(String msg, int length) {
+		if (msg.length() >= length) {
+			return msg;
+		}
 		String res = "";
 		for (int i = 0; i < length - msg.length(); i++) {
 			res += "0";

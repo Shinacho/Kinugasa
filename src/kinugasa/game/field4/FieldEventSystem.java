@@ -188,11 +188,11 @@ public class FieldEventSystem implements Drawable {
 		float h = GameOption.getInstance().getWindowSize().height / GameOption.getInstance().getDrawSize() / 3;
 		List<Text> options = new ArrayList<>();
 		for (Actor pc : GameSystem.getInstance().getParty()) {
-			options.add(new Text(pc.getVisibleName() + " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().remainingSize() + "")));
+			options.add(Text.of(pc.getVisibleName() + " / " + I18N.get(GameSystemI18NKeys.あとX個持てる, pc.getStatus().getItemBag().remainingSize() + "")));
 		}
-		options.add(new Text(I18N.get(GameSystemI18NKeys.諦める)));
+		options.add(Text.i18nd(GameSystemI18NKeys.諦める));
 
-		Choice c = new Choice(options, "",
+		Choice c = Choice.of(options, "",
 				I18N.get(GameSystemI18NKeys.Xを手に入れた誰が持つ, item.getVisibleName()), new FrameTimeCounter(0), 0);
 		c.allText();
 

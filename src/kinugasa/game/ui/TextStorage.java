@@ -19,10 +19,10 @@ package kinugasa.game.ui;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Map;
 import java.util.stream.Collectors;
 import kinugasa.game.GameLog;
-import static kinugasa.game.I18N.get;
+import kinugasa.game.I18N;
 import kinugasa.game.field4.FieldEventParser;
 import kinugasa.game.system.GameSystem;
 import kinugasa.graphics.ImageUtil;
@@ -79,7 +79,7 @@ public class TextStorage extends Storage<Text> implements Nameable {
 				tcvalues = Arrays.asList(Integer.parseInt(tcs));
 			}
 			FrameTimeCounter ftc = new FrameTimeCounter(tcvalues);
-			Text t = new Text(id, value, ftc, 0);
+			Text t = Text.i18nd(id, value, ftc, 0);
 			t.setVisibleIdx(0);
 			if (e.getAttributes().contains("next")) {
 				t.setNextId(e.getAttributes().get("next").getValue());
@@ -106,7 +106,7 @@ public class TextStorage extends Storage<Text> implements Nameable {
 			for (XMLElement option : e.getElement("option")) {
 				String oid = option.getAttributes().get("id").getValue();
 				String ov = option.getValue();
-				Text t = new Text(oid, ov, TimeCounter.TRUE, Integer.MAX_VALUE);
+				Text t = Text.i18nd(oid, ov, TimeCounter.TRUE, Integer.MAX_VALUE);
 				if (option.getAttributes().contains("next")) {
 					t.setNextId(option.getAttributes().get("next").getValue());
 				}
@@ -119,7 +119,7 @@ public class TextStorage extends Storage<Text> implements Nameable {
 				tcvalues = Arrays.asList(Integer.parseInt(tcs));
 			}
 			FrameTimeCounter ftc = new FrameTimeCounter(tcvalues);
-			Choice c = new Choice(options, id, value, ftc, 0);
+			Choice c = Choice.of(options, id, I18N.get(value), ftc, 0);
 			if (e.hasAttribute("image")) {
 				c.setImage(ImageUtil.load(e.getAttributes().get("image").getValue()));
 			}

@@ -73,7 +73,7 @@ public class BattleStatusWindows extends BasicSprite {
 				j++;
 			}
 			//座標の計算
-			Text t = new Text(text);
+			Text t = Text.of(text);
 			t.allText();
 			MessageWindow window = new MessageWindow(x, y, w, h, t);
 			window.allText();
@@ -110,7 +110,7 @@ public class BattleStatusWindows extends BasicSprite {
 						+ (int) (vs.getValue()) + Text.getLineSep();
 				j++;
 			}
-			Text t = Text.noI18N(text);
+			Text t = Text.of(text);
 			t.allText();
 			mw.get(i).setText(t);
 			if (s.getStatus().hasAnyCondition(ConditionKey.解脱, ConditionKey.気絶, ConditionKey.損壊, ConditionKey.逃走した)) {

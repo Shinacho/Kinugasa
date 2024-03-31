@@ -31,7 +31,6 @@ import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
-import kinugasa.util.StringUtil;
 
 /**
  *
@@ -229,15 +228,15 @@ public class ItemWindow extends BasicSprite {
 		switch (mode) {
 			case ITEM_AND_USER_SELECT:
 				List<Text> options = new ArrayList<>();
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.調べる)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.使う)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.装備)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.左手に装備)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.両手持ちで装備)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.渡す)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.解体)));
-				options.add(Text.noI18N(I18N.get(GameSystemI18NKeys.捨てる)));
-				Choice c = new Choice(options, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを,
+				options.add(Text.i18nd(GameSystemI18NKeys.調べる));
+				options.add(Text.i18nd(GameSystemI18NKeys.使う));
+				options.add(Text.i18nd(GameSystemI18NKeys.装備));
+				options.add(Text.i18nd(GameSystemI18NKeys.左手に装備));
+				options.add(Text.i18nd(GameSystemI18NKeys.両手持ちで装備));
+				options.add(Text.i18nd(GameSystemI18NKeys.渡す));
+				options.add(Text.i18nd(GameSystemI18NKeys.解体));
+				options.add(Text.i18nd(GameSystemI18NKeys.捨てる));
+				Choice c = Choice.of(options, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを,
 						getSelectedItem().getVisibleName()));
 				choiceUse.setText(c);
 				choiceUse.allText();
@@ -252,7 +251,7 @@ public class ItemWindow extends BasicSprite {
 						//アイテムがフィールドで使えるなら対象者選択へ
 						if (!i.isField()) {
 							//フィールドでは使えません
-							msg.setText(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getVisibleName(), i.getVisibleName())
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを使用した, getSelectedPC().getVisibleName(), i.getVisibleName())
 									+ Text.getLineSep()
 									+ I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 							msg.allText();
@@ -299,7 +298,7 @@ public class ItemWindow extends BasicSprite {
 								//失敗
 								sb.append(I18N.get(GameSystemI18NKeys.しかし効果がなかった));
 							}
-							msg.setText(sb.toString());
+							msg.setTextDirect(sb.toString());
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 							return;
@@ -349,15 +348,15 @@ public class ItemWindow extends BasicSprite {
 									}
 								}
 							}
-							msg.setText(sb.toString());
+							msg.setTextDirect(sb.toString());
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 							return;
 						}
 						//その他の場合はターゲット選択へ
 						List<Text> options3 = new ArrayList<>();
-						options3.addAll(list.stream().map(p -> Text.noI18N(p.getVisibleName())).collect(Collectors.toList()));
-						tgtSelect.setText(new Choice(options3, "ITEM_WINDOW_SUB",
+						options3.addAll(list.stream().map(p -> Text.of(p.getVisibleName())).collect(Collectors.toList()));
+						tgtSelect.setText(Choice.of(options3, "ITEM_WINDOW_SUB",
 								I18N.get(GameSystemI18NKeys.Xを誰に使う, i.getVisibleName())));
 						tgtSelect.allText();
 						group.show(tgtSelect);
@@ -367,7 +366,7 @@ public class ItemWindow extends BasicSprite {
 						//装備解除不能属性がある場合は外せない
 						if (!i.canUnEqip()) {
 							//外せない
-							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -385,7 +384,7 @@ public class ItemWindow extends BasicSprite {
 								//現在のサイズがもともともサイズより大きい場合は外せない
 								if (currentSize > itemBagDefaultMax) {
 									//外せない
-									msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+									msg.setTextDirect(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 									msg.allText();
 									group.show(msg.getWindow());
 									mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -400,7 +399,7 @@ public class ItemWindow extends BasicSprite {
 								//現在のサイズがもともともサイズより大きい場合は外せない
 								if (currentSize > itemBagDefaultMax) {
 									//外せない
-									msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+									msg.setTextDirect(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 									msg.allText();
 									group.show(msg.getWindow());
 									mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -435,9 +434,9 @@ public class ItemWindow extends BasicSprite {
 							//アイテム所持数の再計算
 							getSelectedPC().updateBagSize();
 							if (cnd == null) {
-								msg.setText(I18N.get(GameSystemI18NKeys.Xを外した, i.getVisibleName()));
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを外した, i.getVisibleName()));
 							} else {
-								msg.setText(I18N.get(GameSystemI18NKeys.Xを外した, i.getVisibleName())
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを外した, i.getVisibleName())
 										+ Text.getLineSep() + cnd);
 							}
 							msg.allText();
@@ -475,16 +474,16 @@ public class ItemWindow extends BasicSprite {
 							getSelectedPC().updateBagSize();
 							if (cnd == null) {
 								if (ryoute) {
-									msg.setText(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName()));
+									msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName()));
 								} else {
-									msg.setText(I18N.get(GameSystemI18NKeys.Xを装備した, i.getVisibleName()));
+									msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを装備した, i.getVisibleName()));
 								}
 							} else {
 								if (ryoute) {
-									msg.setText(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName())
+									msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName())
 											+ Text.getLineSep() + cnd);
 								} else {
-									msg.setText(I18N.get(GameSystemI18NKeys.Xを装備した, i.getVisibleName())
+									msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを装備した, i.getVisibleName())
 											+ Text.getLineSep() + cnd);
 								}
 							}
@@ -493,7 +492,7 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							//装備できない
-							msg.setText(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xは装備できない, i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -503,7 +502,7 @@ public class ItemWindow extends BasicSprite {
 						//装備解除不能属性がある場合は外せない
 						if (!i.canUnEqip()) {
 							//外せない
-							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -511,7 +510,7 @@ public class ItemWindow extends BasicSprite {
 						}
 						//武器じゃなかったら装備できないを表示
 						if (!i.isWeapon()) {
-							msg.setText(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -520,7 +519,7 @@ public class ItemWindow extends BasicSprite {
 						//両手持ち武器の場合は左手に装備できない
 						if (Set.of(WeaponType.大剣, WeaponType.大杖, WeaponType.銃, WeaponType.弩, WeaponType.薙刀)
 								.contains(i.getWeaponType())) {
-							msg.setText(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -544,9 +543,9 @@ public class ItemWindow extends BasicSprite {
 							//アイテム所持数の再計算
 							getSelectedPC().updateBagSize();
 							if (cnd == null) {
-								msg.setText(I18N.get(GameSystemI18NKeys.Xを左手に装備した, i.getVisibleName()));
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを左手に装備した, i.getVisibleName()));
 							} else {
-								msg.setText(I18N.get(GameSystemI18NKeys.Xを左手に装備した, i.getVisibleName())
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを左手に装備した, i.getVisibleName())
 										+ Text.getLineSep() + cnd);
 							}
 							msg.allText();
@@ -554,7 +553,7 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							//装備できない
-							msg.setText(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xは左手に装備できない, i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -565,7 +564,7 @@ public class ItemWindow extends BasicSprite {
 						//装備解除不能属性がある場合は外せない
 						if (!i.canUnEqip()) {
 							//外せない
-							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -573,7 +572,7 @@ public class ItemWindow extends BasicSprite {
 						}
 						//武器じゃなかったら装備できないを表示
 						if (!i.isWeapon()) {
-							msg.setText(I18N.get(GameSystemI18NKeys.Xは両手には装備できない, i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xは両手には装備できない, i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -594,9 +593,9 @@ public class ItemWindow extends BasicSprite {
 							//アイテム所持数の再計算
 							getSelectedPC().updateBagSize();
 							if (cnd == null) {
-								msg.setText(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName()));
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName()));
 							} else {
-								msg.setText(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName())
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xを両手持ちで装備した, i.getVisibleName())
 										+ Text.getLineSep() + cnd);
 							}
 							msg.allText();
@@ -604,7 +603,7 @@ public class ItemWindow extends BasicSprite {
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							//装備できない
-							msg.setText(I18N.get(GameSystemI18NKeys.Xは両手には装備できない, i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.Xは両手には装備できない, i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -615,7 +614,7 @@ public class ItemWindow extends BasicSprite {
 						//装備解除不能属性がある場合は外せない
 						if (!i.canUnEqip()) {
 							//外せない
-							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -631,7 +630,7 @@ public class ItemWindow extends BasicSprite {
 							//現在のサイズがもともともサイズより大きい場合は外せない
 							if (currentSize > itemBagDefaultMax) {
 								//外せない
-								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 								msg.allText();
 								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -646,7 +645,7 @@ public class ItemWindow extends BasicSprite {
 							//現在のサイズがもともともサイズより大きい場合は外せない
 							if (currentSize > itemBagDefaultMax) {
 								//外せない
-								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 								msg.allText();
 								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -655,8 +654,8 @@ public class ItemWindow extends BasicSprite {
 						}
 						//パスターゲットに移動
 						List<Text> options2 = new ArrayList<>();
-						options2.addAll(list.stream().map(p -> Text.noI18N(p.getVisibleName())).collect(Collectors.toList()));
-						tgtSelect.setText(new Choice(options2, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを誰に渡す,
+						options2.addAll(list.stream().map(p -> Text.of(p.getVisibleName())).collect(Collectors.toList()));
+						tgtSelect.setText(Choice.of(options2, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを誰に渡す,
 								i.getVisibleName())));
 						tgtSelect.allText();
 						group.show(tgtSelect);
@@ -866,7 +865,7 @@ public class ItemWindow extends BasicSprite {
 							sb.append(Text.getLineSep());
 
 						}
-						msg.setText(sb.toString());
+						msg.setTextDirect(sb.toString());
 						msg.allText();
 						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -881,7 +880,7 @@ public class ItemWindow extends BasicSprite {
 							//現在のサイズがもともともサイズより大きい場合は外せない
 							if (currentSize > itemBagDefaultMax) {
 								//外せない
-								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 								msg.allText();
 								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -896,7 +895,7 @@ public class ItemWindow extends BasicSprite {
 							//現在のサイズがもともともサイズより大きい場合は外せない
 							if (currentSize > itemBagDefaultMax) {
 								//外せない
-								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 								msg.allText();
 								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -906,7 +905,7 @@ public class ItemWindow extends BasicSprite {
 						//装備解除不能属性がある場合は外せない
 						if (!i.canUnEqip()) {
 							//外せない
-							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -914,16 +913,16 @@ public class ItemWindow extends BasicSprite {
 						}
 						//drop確認ウインドウを有効化
 						if (!i.canSale()) {
-							msg.setText(I18N.get(GameSystemI18NKeys.このアイテムは捨てられない));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.このアイテムは捨てられない));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							List<Text> options4 = new ArrayList<>();
-							options4.add(Text.noI18N(I18N.get(GameSystemI18NKeys.いいえ)));
-							options4.add(Text.noI18N(I18N.get(GameSystemI18NKeys.はい)));
+							options4.add(Text.of(GameSystemI18NKeys.いいえ));
+							options4.add(Text.of(GameSystemI18NKeys.はい));
 							dropConfirm.reset();
-							dropConfirm.setText(new Choice(options4, "DROP_CONFIRM", I18N.get(GameSystemI18NKeys.Xを本当にすてる, i.getVisibleName())));
+							dropConfirm.setText(Choice.of(options4, "DROP_CONFIRM", I18N.get(GameSystemI18NKeys.Xを本当にすてる, i.getVisibleName())));
 							dropConfirm.allText();
 							group.show(dropConfirm);
 							mode = Mode.DROP_CONFIRM;
@@ -939,7 +938,7 @@ public class ItemWindow extends BasicSprite {
 							//現在のサイズがもともともサイズより大きい場合は外せない
 							if (currentSize > itemBagDefaultMax) {
 								//外せない
-								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 								msg.allText();
 								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -954,7 +953,7 @@ public class ItemWindow extends BasicSprite {
 							//現在のサイズがもともともサイズより大きい場合は外せない
 							if (currentSize > itemBagDefaultMax) {
 								//外せない
-								msg.setText(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
+								msg.setTextDirect(I18N.get(GameSystemI18NKeys.持ち物が多すぎてXを外せない, i.getVisibleName()));
 								msg.allText();
 								group.show(msg.getWindow());
 								mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -964,7 +963,7 @@ public class ItemWindow extends BasicSprite {
 						//装備解除不能属性がある場合は外せない
 						if (!i.canUnEqip()) {
 							//外せない
-							msg.setText(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを誰かに渡す気はないようだ, getSelectedPC().getVisibleName(), i.getVisibleName()));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -972,16 +971,16 @@ public class ItemWindow extends BasicSprite {
 						}
 						//解体できるアイテムか判定
 						if (!i.canSale() || !i.canDisasse()) {
-							msg.setText(I18N.get(GameSystemI18NKeys.このアイテムは解体できない));
+							msg.setTextDirect(I18N.get(GameSystemI18NKeys.このアイテムは解体できない));
 							msg.allText();
 							group.show(msg.getWindow());
 							mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						} else {
 							List<Text> options5 = new ArrayList<>();
-							options5.add(Text.noI18N(I18N.get(GameSystemI18NKeys.いいえ)));
-							options5.add(Text.noI18N(I18N.get(GameSystemI18NKeys.はい)));
+							options5.add(Text.of(GameSystemI18NKeys.いいえ));
+							options5.add(Text.of(GameSystemI18NKeys.はい));
 							disasseConfirm.reset();
-							disasseConfirm.setText(new Choice(options5, "DISASSE_CONFIRM", I18N.get(GameSystemI18NKeys.Xを本当に解体する, i.getVisibleName())));
+							disasseConfirm.setText(Choice.of(options5, "DISASSE_CONFIRM", I18N.get(GameSystemI18NKeys.Xを本当に解体する, i.getVisibleName())));
 							disasseConfirm.allText();
 							group.show(disasseConfirm);
 							mode = Mode.DISASSE_CONFIRM;
@@ -1009,7 +1008,7 @@ public class ItemWindow extends BasicSprite {
 						String m = I18N.get(GameSystemI18NKeys.Xはこれ以上物を持てない,
 								GameSystem.getInstance().getParty().get(tgtSelect.getSelect()).getVisibleName()
 						);
-						this.msg.setText(m);
+						this.msg.setTextDirect(m);
 						this.msg.allText();
 						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -1127,11 +1126,11 @@ public class ItemWindow extends BasicSprite {
 			sb.append(Text.getLineSep());
 		}
 
-		msg.setText(sb.toString());
+		msg.setTextDirect(sb.toString());
 		msg.allText();
 		group.show(msg.getWindow());
 
-		main.setText(getItemListText(getSelectedPC()));
+		main.setTextDirect(getItemListText(getSelectedPC()));
 		main.allText();
 		main.setVisible(true);
 		mainSelect = 0;
@@ -1155,18 +1154,18 @@ public class ItemWindow extends BasicSprite {
 		getSelectedPC().pass(i, tgt);
 		if (!getSelectedPC().equals(tgt)) {
 			String t = I18N.get(GameSystemI18NKeys.XはXにXを渡した, getSelectedPC().getVisibleName(), tgt.getVisibleName(), i.getVisibleName());
-			msg.setText(t);
+			msg.setTextDirect(t);
 			mainSelect = 0;
 			getSelectedPC().updateAction();
 		} else {
 			String t = I18N.get(GameSystemI18NKeys.XはXを持ち替えた, getSelectedPC().getVisibleName(), i.getVisibleName());
-			msg.setText(t);
+			msg.setTextDirect(t);
 			mainSelect = getSelectedPC().getItemBag().size() - 1;
 		}
 		msg.allText();
 		group.show(msg.getWindow());
 
-		main.setText(getItemListText(getSelectedPC()));
+		main.setTextDirect(getItemListText(getSelectedPC()));
 		main.allText();
 		main.setVisible(true);
 	}
@@ -1258,7 +1257,7 @@ public class ItemWindow extends BasicSprite {
 			getSelectedPC().unEqip(i.getSlot());
 		}
 		getSelectedPC().getItemBag().drop(i);
-		msg.setText(I18N.get(GameSystemI18NKeys.XはXを捨てた,
+		msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを捨てた,
 				GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
 				i.getVisibleName()));
 		msg.allText();
@@ -1306,7 +1305,7 @@ public class ItemWindow extends BasicSprite {
 				GameSystem.getInstance().getMaterialBag().add(e.getKey());
 			}
 		}
-		msg.setText(I18N.get(GameSystemI18NKeys.XはXを解体した,
+		msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを解体した,
 				GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
 				i.getVisibleName()) + sb.toString());
 		msg.allText();
@@ -1319,7 +1318,7 @@ public class ItemWindow extends BasicSprite {
 	public void update() {
 		//メインウインドウの内容更新
 		if (mode == Mode.ITEM_AND_USER_SELECT) {
-			main.setText(Text.noI18N(getItemListText(getSelectedPC())));
+			main.setText(Text.of(getItemListText(getSelectedPC())));
 			main.allText();
 			main.setVisible(true);
 			main.update();
@@ -1329,7 +1328,8 @@ public class ItemWindow extends BasicSprite {
 
 	//1つ前の画面に戻る
 	public boolean close() {
-		msg.setText(List.of());
+		msg.setTextDirect("");
+		choiceUse.setSelect(0);
 		//IUS表示中の場合は戻るは全消し
 		if (group.getWindows().stream().allMatch(p -> !p.isVisible())) {
 			mode = Mode.ITEM_AND_USER_SELECT;

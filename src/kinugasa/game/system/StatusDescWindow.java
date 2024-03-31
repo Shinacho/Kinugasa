@@ -166,7 +166,7 @@ public class StatusDescWindow extends PCStatusWindow {
 			}
 		}
 
-		main.setText(Text.split(Text.noI18N(sb.toString())));
+		main.setText(Text.split(Text.of(sb.toString())));
 	}
 
 	@Override
