@@ -112,9 +112,7 @@ public final class GameLoop implements Runnable {
 				}
 			}
 		} catch (Throwable ex) {
-			if (ex instanceof Exception) {
-				((Exception) ex).printStackTrace();
-			}
+			ex.printStackTrace();
 			Throwable t = ex;
 			while (t.getCause() != null) {
 				kinugasa.game.GameLog.print(t.getCause());

@@ -117,6 +117,7 @@ public class EnemySprite extends PCSprite {
 		EmptySprite sp = new EmptySprite(getLocation(), getSize());
 		sp.setVector(getVector().clone());
 		Point2D.Float prevCenter = null;
+		lp=0;
 		while (true) {
 			prevCenter = (Point2D.Float) sp.getCenter().clone();
 			sp.move();
