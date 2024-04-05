@@ -102,7 +102,7 @@ public class AfterMoveActionMessageWindow extends ScrollSelectableMessageWindow 
 			s.append(text + Text.getLineSep());
 		}
 		setText(Text.split(Text.of(s.toString())));
-		getWindow().allText();
+		getWindow().showAllNow();
 	}
 
 	public void nextAction() {

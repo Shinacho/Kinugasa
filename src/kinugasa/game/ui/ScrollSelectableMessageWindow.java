@@ -92,7 +92,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 	}
 
 	public void allText() {
-		window.allText();
+		window.showAllNow();
 	}
 
 	private void updateText() {
@@ -120,7 +120,7 @@ public class ScrollSelectableMessageWindow extends BasicSprite {
 			return;
 		}
 		window.setText(Text.of(sb.substring(0, sb.length() - 1)));
-		window.allText();
+		window.showAllNow();
 	}
 
 	public List<Text> getText() {

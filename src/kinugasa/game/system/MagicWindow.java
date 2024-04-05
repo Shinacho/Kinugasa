@@ -180,7 +180,7 @@ public class MagicWindow extends BasicSprite {
 						I18N.get(GameSystemI18NKeys.Xの, getSelectedPC().getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xを, a.getVisibleName()));
 				choiceUse.setText(c);
-				choiceUse.allText();
+				choiceUse.showAllNow();
 				choiceUse.setSelect(0);
 				group.show(choiceUse);
 				mode = Mode.CHOICE_USE;
@@ -308,7 +308,7 @@ public class MagicWindow extends BasicSprite {
 								.map(p -> Text.of(getPC(p.getId()).getVisibleName())).collect(Collectors.toList()));
 						tgtSelect.setText(Choice.of(option1, "MAGIC_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの, a.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xを誰に使う, getSelectedAction().getVisibleName())));
-						tgtSelect.allText();
+						tgtSelect.showAllNow();
 						group.show(tgtSelect);
 						mode = Mode.TARGET_SELECT;
 						break;

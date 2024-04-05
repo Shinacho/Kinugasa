@@ -97,13 +97,13 @@ public class BattleMessageWindowSystem implements Drawable {
 			@Override
 			public void setTextDirect(String text) {
 				super.setTextDirect(text);
-				allText();
+				showAllNow();
 			}
 
 			@Override
 			public void setText(Text text) {
 				super.setText(text);
-				allText();
+				showAllNow();
 			}
 
 		};
@@ -364,7 +364,7 @@ public class BattleMessageWindowSystem implements Drawable {
 			sb.append(Text.getLineSep());
 		}
 		itemDescW.setTextDirect(sb.toString());
-		itemDescW.allText();
+		itemDescW.showAllNow();
 	}
 
 	void statusDescWindowNextSelect() {

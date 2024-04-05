@@ -221,7 +221,7 @@ public class BookWindow extends BasicSprite {
 				options.add(Text.i18nd(GameSystemI18NKeys.捨てる));
 				Choice c = Choice.of(options, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを, getSelectedBook().getVisibleName()));
 				choiceUse.setText(c);
-				choiceUse.allText();
+				choiceUse.showAllNow();
 				choiceUse.setSelect(0);
 				group.show(choiceUse);
 				mode = Mode.CHOICE_USE;
@@ -236,7 +236,7 @@ public class BookWindow extends BasicSprite {
 						tgtSelect.setText(Choice.of(options2, "BOOK_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xの,
 								GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xを誰に渡す, b.getVisibleName())));
-						tgtSelect.allText();
+						tgtSelect.showAllNow();
 						group.show(tgtSelect);
 						mode = Mode.TARGET_SELECT;
 						break;
@@ -261,7 +261,7 @@ public class BookWindow extends BasicSprite {
 						}
 
 						msg.setTextDirect(sb.toString());
-						msg.allText();
+						msg.showAllNow();
 						group.show(msg);
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						break;
@@ -274,7 +274,7 @@ public class BookWindow extends BasicSprite {
 						dissassemblyComfirm.setText(Choice.of(options4, "DISSASSE_CONFIRM",
 								I18N.get(GameSystemI18NKeys.Xの, GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xを本当に解体する, b.getVisibleName())));
-						dissassemblyComfirm.allText();
+						dissassemblyComfirm.showAllNow();
 						group.show(dissassemblyComfirm);
 						mode = Mode.DISASSEMBLY_CONFIRM;
 						break;
@@ -289,7 +289,7 @@ public class BookWindow extends BasicSprite {
 										GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName()
 								) + I18N.get(GameSystemI18NKeys.Xを本当にすてる, b.getVisibleName())
 						));
-						dropConfirm.allText();
+						dropConfirm.showAllNow();
 						group.show(dropConfirm);
 						mode = Mode.DROP_CONFIRM;
 						break;
@@ -379,7 +379,7 @@ public class BookWindow extends BasicSprite {
 			msg.setTextDirect(t);
 			mainSelect = getSelectedPC().getBookBag().size() - 1;
 		}
-		msg.allText();
+		msg.showAllNow();
 		group.show(msg);
 
 		StringBuilder sb = new StringBuilder();
@@ -401,7 +401,7 @@ public class BookWindow extends BasicSprite {
 			j++;
 		}
 		main.setTextDirect(sb.toString());
-		main.allText();
+		main.showAllNow();
 		main.setVisible(true);
 	}
 
@@ -413,7 +413,7 @@ public class BookWindow extends BasicSprite {
 		msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを捨てた,
 				GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
 				i.getVisibleName()));
-		msg.allText();
+		msg.showAllNow();
 		getSelectedPC().updateAction();
 		group.show(msg);
 		mainSelect = 0;
@@ -436,7 +436,7 @@ public class BookWindow extends BasicSprite {
 			s.append(Text.getLineSep());
 		}
 		msg.setTextDirect(s.toString());
-		msg.allText();
+		msg.showAllNow();
 		getSelectedPC().updateAction();
 		group.show(msg);
 		mainSelect = 0;
@@ -507,7 +507,7 @@ public class BookWindow extends BasicSprite {
 			sb.append(Text.getLineSep());
 			sb.append(I18N.get(GameSystemI18NKeys.あとX個持てる, getSelectedPC().getBookBag().remainingSize() + ""));
 			main.setTextDirect(sb.toString());
-			main.allText();
+			main.showAllNow();
 			main.setVisible(true);
 		}
 	}

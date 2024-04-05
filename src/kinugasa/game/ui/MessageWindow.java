@@ -92,7 +92,7 @@ public class MessageWindow extends BasicSprite {
 		this.textStorage = textStorage;
 	}
 
-	public void allText() {
+	public void showAllNow() {
 		text.allText();
 	}
 

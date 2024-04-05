@@ -51,7 +51,7 @@ public class OrderSelectWindow extends BasicSprite {
 									: GameSystemI18NKeys.前列)));
 		}
 		window.setText(Choice.of(options, "ORDER_SELECT_WINDOW", I18N.get(GameSystemI18NKeys.前列後列設定)));
-		window.allText();
+		window.showAllNow();
 	}
 	private MessageWindow window;
 
@@ -89,7 +89,7 @@ public class OrderSelectWindow extends BasicSprite {
 							: GameSystemI18NKeys.前列)));
 		}
 		window.setText(Choice.of(options, "ORDER_SELECT_WINDOW", I18N.get(GameSystemI18NKeys.前列後列設定)));
-		window.allText();
+		window.showAllNow();
 		window.setSelect(selectId);
 	}
 

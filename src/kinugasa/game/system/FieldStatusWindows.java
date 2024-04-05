@@ -69,7 +69,7 @@ public class FieldStatusWindows extends BasicSprite {
 			Text t = Text.of(text);
 			t.allText();
 			MessageWindow window = new MessageWindow(x, y, w, h, t);
-			window.allText();
+			window.showAllNow();
 			window.setModel(new SimpleMessageWindowModel().setNextIcon(""));
 			mw.add(window);
 			y += h + 4;
@@ -111,7 +111,7 @@ public class FieldStatusWindows extends BasicSprite {
 			Text t = Text.of(text);
 			t.allText();
 			MessageWindow window = new MessageWindow(x, y, w, h, t);
-			window.allText();
+			window.showAllNow();
 			window.setModel(new SimpleMessageWindowModel().setNextIcon(""));
 			mw.add(window);
 			y += h + 4;

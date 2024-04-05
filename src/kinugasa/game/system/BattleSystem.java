@@ -544,7 +544,7 @@ public class BattleSystem implements Drawable {
 			}
 		}
 		messageWindowSystem.getBattleResultW().setTextDirect(text);
-		messageWindowSystem.getBattleResultW().allText();
+		messageWindowSystem.getBattleResultW().showAllNow();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.BATTLE_RESULT);
 
 		setStage(Stage.バトル終了済み);
@@ -1261,7 +1261,7 @@ public class BattleSystem implements Drawable {
 						}
 					}
 					messageWindowSystem.getAfterMoveActionListW().setTextDirect(list);
-					messageWindowSystem.getAfterMoveActionListW().allText();
+					messageWindowSystem.getAfterMoveActionListW().showAllNow();
 					messageWindowSystem.setVisible(BattleMessageWindowSystem.StatusVisible.ON,
 							BattleMessageWindowSystem.Mode.AFTERMOVE_ACTIONLIST,
 							BattleMessageWindowSystem.InfoVisible.ON);
@@ -1312,7 +1312,7 @@ public class BattleSystem implements Drawable {
 				GameLog.print(" targetSystem is empty");
 			}
 			messageWindowSystem.getActionResultW().setTextDirect(I18N.get(GameSystemI18NKeys.効果範囲内にターゲットがいない));
-			messageWindowSystem.getActionResultW().allText();
+			messageWindowSystem.getActionResultW().showAllNow();
 			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 			currentBAWaitTime = new FrameTimeCounter(60);
 			setStage(Stage.待機中＿時間あり＿手番戻り);
@@ -1645,7 +1645,7 @@ public class BattleSystem implements Drawable {
 				GameLog.print(" targetSystem is empty");
 			}
 			messageWindowSystem.getActionResultW().setTextDirect(I18N.get(GameSystemI18NKeys.効果範囲内にターゲットがいない));
-			messageWindowSystem.getActionResultW().allText();
+			messageWindowSystem.getActionResultW().showAllNow();
 			messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 			currentBAWaitTime = new FrameTimeCounter(60);
 			setStage(Stage.待機中＿時間あり＿手番戻り);
@@ -2013,7 +2013,8 @@ public class BattleSystem implements Drawable {
 				//MSGは派生を出さない（量が多いので）
 				//MSGがない（ビームエフェクトイベント等）は何も出さない
 				if (r.msgI18Nd != null && !r.msgI18Nd.isEmpty()) {
-					msg.add(r.msgI18Nd);
+					//自己効果は出さない。
+//					msg.add(r.msgI18Nd);
 				} else {
 					msg.add(I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, r.tgt.getVisibleName()));
 				}
@@ -2681,7 +2682,7 @@ public class BattleSystem implements Drawable {
 				String v = (int) ((currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.残行動力).getValue()
 						/ currentCmd.getUser().getStatus().getEffectedStatus().get(StatusKey.行動力).getValue()) * 100) + "%";
 				messageWindowSystem.getInfoW().setTextDirect(StatusKey.残行動力.getVisibleName() + ":" + v);
-				messageWindowSystem.getInfoW().allText();
+				messageWindowSystem.getInfoW().showAllNow();
 				String list = ActionStorage.getInstance().get(BattleConfig.ActionID.確定).getVisibleName() + Text.getLineSep();
 				int i = 1;
 				for (var vv : currentCmd.getUser().getStatus().get現状実行可能なアクション()) {
@@ -2694,7 +2695,7 @@ public class BattleSystem implements Drawable {
 					}
 				}
 				messageWindowSystem.getAfterMoveActionListW().setTextDirect(list);
-				messageWindowSystem.getAfterMoveActionListW().allText();
+				messageWindowSystem.getAfterMoveActionListW().showAllNow();
 				targetSystem.setCurrentLocation();
 				break;
 			}
@@ -2796,7 +2797,7 @@ public class BattleSystem implements Drawable {
 			return;
 		}
 		messageWindowSystem.getActionResultW().setTextDirect(s);
-		messageWindowSystem.getActionResultW().allText();
+		messageWindowSystem.getActionResultW().showAllNow();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 	}
 
@@ -2807,51 +2808,48 @@ public class BattleSystem implements Drawable {
 			GameLog.print(" setMsg:" + s.toString());
 		}
 		//8行以上ある場合は2列づつ出す。
-		boolean isOver8Line = s.size() >= 8;
+		List<String> msg = new ArrayList<>();
+		for (String m : s) {
+			if (m.isEmpty()) {
+				continue;
+			}
+			if (m.equals(Text.getLineSep())) {
+				continue;
+			}
+			msg.add(m.replaceAll(Text.getLineSep(), ""));
+		}
+		msg = msg.stream().distinct().toList();
+		boolean isOver8Line = msg.size() >= 8;
 
 		//リスト要素の展開
 		List<String> list = new ArrayList<>();
 		int i = 0, line = 0;
 		while (true) {
-			String st = s.get(i).trim();
-			while (st.contains(Text.getLineSep())) {
-				st = st.replaceAll(Text.getLineSep(), "");
-			}
-			if (Text.getLineSep().equals(st)) {
-				i++;
-				continue;
-			}
-			if (st == null || st.isEmpty()) {
-				i++;
-				continue;
-			}
-			if (st.endsWith(Text.getLineSep())) {
-				st = st.substring(0, st.length() - 1);
-			}
+			String st = msg.get(i).trim();
 			if (isOver8Line) {
-				list.add(s.get(i));
+				String l = msg.get(i);
 				i++;
-				if (i >= s.size()) {
+				if (i >= msg.size()) {
+					list.add(l);
 					break;
 				}
-				list.add("  ");
-				list.add(s.get(i));
+				l += "  " + msg.get(i);
+				list.add(l);
 				i++;
 			} else {
-				list.add(s.get(i));
+				list.add(msg.get(i));
 				i++;
 			}
 			line++;
 			if (line >= 7) {
 				break;
 			}
-			if (i >= s.size()) {
+			if (i >= msg.size()) {
 				break;
 			}
 		}
-		list = new ArrayList<>(list.stream().distinct().toList());
 		messageWindowSystem.getActionResultW().setTextDirect(String.join(Text.getLineSep(), list));
-		messageWindowSystem.getActionResultW().allText();
+		messageWindowSystem.getActionResultW().showAllNow();
 		messageWindowSystem.setVisible(BattleMessageWindowSystem.Mode.ACTION);
 	}
 

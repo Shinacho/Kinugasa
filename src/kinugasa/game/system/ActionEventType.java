@@ -309,35 +309,33 @@ public enum ActionEventType {
 							);
 
 					//r評価
-					StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
 					String msg = "";
+					if (r.isTgtIs回避) {
+						msg += " "+I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
+					}
+					if (r.isブロックされた) {
+						msg += " "+I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
+					}
+					if (r.反射された) {
+						msg += " "+I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
+					}
+					if (r.吸収された) {
+						msg += " "+I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
+					}
+					if (r.isクリティカル) {
+						msg += " "+I18N.get(GameSystemI18NKeys.クリティカルヒットした);
+					}
+					StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
 					if (v == null) {
-						I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
+						msg = I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
 					} else if (v.getValue() < 0) {
 						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()));
-						msg += Text.getLineSep();
 					} else {
 						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()));
-						msg += Text.getLineSep();
-					}
-					if (r.isTgtIs回避) {
-						msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
-					}
-					if (r.isブロックされた) {
-						msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
-					}
-					if (r.反射された) {
-						msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
-					}
-					if (r.吸収された) {
-						msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
-					}
-					if (r.isクリティカル) {
-						msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
 					}
 					addResult(ar, r.summary, user, tgt, e, msg, isUserEvent);
 					return;
@@ -612,12 +610,10 @@ public enum ActionEventType {
 						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()));
-//						msg += Text.getLineSep();
 					} else {
 						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
 								+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()));
-//						msg += Text.getLineSep();
 					}
 					addResult(ar, r.summary, user, tgt, e, msg, isUserEvent);
 					return;
@@ -2519,19 +2515,19 @@ public enum ActionEventType {
 			}
 			msg += Text.getLineSep();
 			if (dr.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (dr.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (dr.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (dr.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (dr.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -2637,19 +2633,19 @@ public enum ActionEventType {
 			}
 			msg += Text.getLineSep();
 			if (dr.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (dr.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (dr.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (dr.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (dr.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -2759,19 +2755,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -2877,19 +2873,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -2993,19 +2989,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -3112,19 +3108,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -3245,19 +3241,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -3358,7 +3354,7 @@ public enum ActionEventType {
 					v = -v;
 				}
 				ac.getStatus().getBaseStatus().get(StatusKey.正気度).add(val);
-				msg += I18N.get(GameSystemI18NKeys.XはXの正気度ダメージを受けた, ac.getVisibleName(), val) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.XはXの正気度ダメージを受けた, ac.getVisibleName(), val);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
@@ -3500,19 +3496,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -3621,19 +3617,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -3742,19 +3738,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -3863,19 +3859,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -3984,19 +3980,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -4104,19 +4100,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
@@ -4269,19 +4265,19 @@ public enum ActionEventType {
 						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
 			}
 			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
 			}
 			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
 			}
 			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
 			}
 			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName()) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
 			}
 			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした) + Text.getLineSep();
+				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 

@@ -152,7 +152,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 			}
 			List<Text> t = Text.split(Text.of(text));
 			setText(t);
-			super.getWindow().allText();
+			super.getWindow().showAllNow();
 			BattleSystem.getInstance().getTargetSystem().setCurrent((Action) null);
 			selected = null;
 			return;
@@ -234,7 +234,7 @@ public class BattleCommandMessageWindow extends ScrollSelectableMessageWindow im
 		setText(t);
 
 		super.getWindow()
-				.allText();
+				.showAllNow();
 	}
 
 	public void nextAction() {

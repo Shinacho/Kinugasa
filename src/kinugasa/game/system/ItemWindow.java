@@ -239,7 +239,7 @@ public class ItemWindow extends BasicSprite {
 				Choice c = Choice.of(options, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを,
 						getSelectedItem().getVisibleName()));
 				choiceUse.setText(c);
-				choiceUse.allText();
+				choiceUse.showAllNow();
 				choiceUse.setSelect(0);
 				group.show(choiceUse);
 				mode = Mode.CHOICE_USE;
@@ -358,7 +358,7 @@ public class ItemWindow extends BasicSprite {
 						options3.addAll(list.stream().map(p -> Text.of(p.getVisibleName())).collect(Collectors.toList()));
 						tgtSelect.setText(Choice.of(options3, "ITEM_WINDOW_SUB",
 								I18N.get(GameSystemI18NKeys.Xを誰に使う, i.getVisibleName())));
-						tgtSelect.allText();
+						tgtSelect.showAllNow();
 						group.show(tgtSelect);
 						mode = Mode.TARGET_SELECT;
 						break;
@@ -657,7 +657,7 @@ public class ItemWindow extends BasicSprite {
 						options2.addAll(list.stream().map(p -> Text.of(p.getVisibleName())).collect(Collectors.toList()));
 						tgtSelect.setText(Choice.of(options2, "ITEM_WINDOW_SUB", I18N.get(GameSystemI18NKeys.Xを誰に渡す,
 								i.getVisibleName())));
-						tgtSelect.allText();
+						tgtSelect.showAllNow();
 						group.show(tgtSelect);
 						mode = Mode.TARGET_SELECT;
 						break;
@@ -923,7 +923,7 @@ public class ItemWindow extends BasicSprite {
 							options4.add(Text.of(GameSystemI18NKeys.はい));
 							dropConfirm.reset();
 							dropConfirm.setText(Choice.of(options4, "DROP_CONFIRM", I18N.get(GameSystemI18NKeys.Xを本当にすてる, i.getVisibleName())));
-							dropConfirm.allText();
+							dropConfirm.showAllNow();
 							group.show(dropConfirm);
 							mode = Mode.DROP_CONFIRM;
 						}
@@ -981,7 +981,7 @@ public class ItemWindow extends BasicSprite {
 							options5.add(Text.of(GameSystemI18NKeys.はい));
 							disasseConfirm.reset();
 							disasseConfirm.setText(Choice.of(options5, "DISASSE_CONFIRM", I18N.get(GameSystemI18NKeys.Xを本当に解体する, i.getVisibleName())));
-							disasseConfirm.allText();
+							disasseConfirm.showAllNow();
 							group.show(disasseConfirm);
 							mode = Mode.DISASSE_CONFIRM;
 						}
@@ -1131,7 +1131,7 @@ public class ItemWindow extends BasicSprite {
 		group.show(msg.getWindow());
 
 		main.setTextDirect(getItemListText(getSelectedPC()));
-		main.allText();
+		main.showAllNow();
 		main.setVisible(true);
 		mainSelect = 0;
 
@@ -1166,7 +1166,7 @@ public class ItemWindow extends BasicSprite {
 		group.show(msg.getWindow());
 
 		main.setTextDirect(getItemListText(getSelectedPC()));
-		main.allText();
+		main.showAllNow();
 		main.setVisible(true);
 	}
 
@@ -1319,7 +1319,7 @@ public class ItemWindow extends BasicSprite {
 		//メインウインドウの内容更新
 		if (mode == Mode.ITEM_AND_USER_SELECT) {
 			main.setText(Text.of(getItemListText(getSelectedPC())));
-			main.allText();
+			main.showAllNow();
 			main.setVisible(true);
 			main.update();
 		}

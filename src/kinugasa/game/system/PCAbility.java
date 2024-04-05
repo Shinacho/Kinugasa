@@ -154,12 +154,14 @@ public enum PCAbility implements AbilityEffect {
 			return r;
 		}
 	},
-	天真爛漫やんちゃガール("行動力が１４％上がる") {
+	天真爛漫やんちゃガール("行動力と司馬屋さが１４％上がる") {
 		@Override
 		public StatusValueSet effectStatus(Status s, StatusValueSet v) {
 			StatusValueSet r = v.clone();
 			r.get(StatusKey.行動力).mulMax(1.14f);
 			r.get(StatusKey.行動力).mul(1.14f);
+			r.get(StatusKey.素早さ).mulMax(1.14f);
+			r.get(StatusKey.素早さ).mul(1.14f);
 			return r;
 		}
 
