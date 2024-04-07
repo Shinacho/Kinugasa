@@ -55,7 +55,7 @@ public class Book implements Nameable, Cloneable {
 		return action;
 	}
 
-	public List<BookPage> doDisasse() {
+	public List<BookPage> getPages() {
 		return action.getAllEvents().stream().map(p -> new BookPage(p)).collect(Collectors.toList());
 	}
 

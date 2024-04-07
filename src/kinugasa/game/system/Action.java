@@ -36,7 +36,6 @@ import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
 
 /**
- * イベントの数が攻撃回数です。
  *
  * @vesion 1.0.0 - 2023/10/14_11:41:31<br>
  * @author Shinacho<br>
@@ -113,10 +112,10 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		this.type = typ;
 	}
 
-	public List<ActionEvent.Actor保有条件> getAllTerms() {
+	public List<ActionEvent.実行可否条件> getAllUser保有条件() {
 		return Stream.of(mainEvents, userEvents)
 				.flatMap(p -> p.stream())
-				.map(p -> p.getTerms())
+				.map(p -> p.getUser保有条件())
 				.flatMap(p -> p.stream())
 				.distinct()
 				.collect(Collectors.toList());
@@ -171,16 +170,15 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	}
 
 	private void checkEvent(ActionEvent e) throws GameSystemException {
-
 		if (e.getEventType() == null) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントのタイプが空です) + " : " + this + " : " + e);
 		}
 		if (e.getP() <= 0) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントの発生確率が０です) + " : " + this + " : " + e);
 		}
-		if (!e.getTerms().isEmpty()) {
-			int size = e.getTerms().size();
-			if (size != e.getTerms().stream().distinct().count()) {
+		if (!e.getUser保有条件().isEmpty()) {
+			int size = e.getUser保有条件().size();
+			if (size != e.getUser保有条件().stream().distinct().count()) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントTermが重複しています) + " : " + this + " : " + e);
 			}
 		}
@@ -191,8 +189,8 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	@NoLoopCall("its heavy")
 	public WeaponType getWeaponType() {
 		for (ActionEvent e : getAllEvents()) {
-			for (ActionEvent.Actor保有条件 t : e.getTerms()) {
-				if (t.type == ActionEvent.Actor保有条件.Type.指定の武器タイプの武器を装備している) {
+			for (ActionEvent.実行可否条件 t : e.getUser保有条件()) {
+				if (t.type == ActionEvent.実行可否条件.Type.指定の武器タイプの武器を装備している) {
 					return WeaponType.valueOf(t.tgtName);
 				}
 			}
@@ -438,13 +436,7 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 				return false;
 			}
 		}
-		if (userEvents.isEmpty()) {
-			return true;
-		}
-		return userEvents.stream()
-				.map(p -> p.getTerms())
-				.flatMap(p -> p.stream())
-				.allMatch(p -> p.canDo(a));
+		return true;
 	}
 
 	public ActionResult exec(ActionTarget tgt) {

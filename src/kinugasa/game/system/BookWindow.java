@@ -17,6 +17,7 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import kinugasa.game.ui.MessageWindowGroup;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -256,8 +258,14 @@ public class BookWindow extends BasicSprite {
 						sb.append(Text.getLineSep());
 						//解体素材
 						sb.append(I18N.get(GameSystemI18NKeys.解体すると以下を入手する)).append(Text.getLineSep());
-						for (BookPage p : b.doDisasse()) {
-							sb.append("   ").append(p.getEvent().getDescI18Nd()).append(Text.getLineSep());
+						for (BookPage p : b.getPages()) {
+							List<String> msg = Arrays.asList(StringUtil.safeSplit(p.getDescI18Nd(), Text.getLineSep()));
+							msg = new ArrayList<>(msg);
+							msg = msg.stream().map(a -> a.replaceAll(" ", "")).toList();
+							msg.set(0, "・" + msg.get(0));
+							for (var v : msg) {
+								sb.append("    ・").append(v).append(Text.getLineSep());
+							}
 						}
 
 						msg.setTextDirect(sb.toString());
@@ -421,7 +429,7 @@ public class BookWindow extends BasicSprite {
 
 	private void commitDissasse() {
 		Book i = getSelectedBook();
-		List<BookPage> pages = i.doDisasse();
+		List<BookPage> pages = i.getPages();
 		getSelectedPC().getBookBag().drop(i);
 		GameSystem.getInstance().getPageBag().addAll(pages);
 		StringBuilder s = new StringBuilder();
@@ -430,7 +438,7 @@ public class BookWindow extends BasicSprite {
 				i.getVisibleName()));
 		s.append(Text.getLineSep());
 		Map<String, Long> count = pages.stream()
-				.map(p -> p.getEvent()).collect(Collectors.groupingBy(ActionEvent::getDescI18Nd, Collectors.counting()));
+				.map(p -> p.getEvent()).collect(Collectors.groupingBy(ActionEvent::getPageDescI18Nd, Collectors.counting()));
 		for (Map.Entry<String, Long> e : count.entrySet()) {
 			s.append(I18N.get(GameSystemI18NKeys.XをX個入手した, e.getKey(), e.getValue() + ""));
 			s.append(Text.getLineSep());

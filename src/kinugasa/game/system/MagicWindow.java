@@ -17,9 +17,9 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
 import kinugasa.game.ui.Choice;
@@ -29,6 +29,7 @@ import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -344,14 +345,58 @@ public class MagicWindow extends BasicSprite {
 							sb.append("---");
 							sb.append(I18N.get(GameSystemI18NKeys.対象効果));
 							sb.append(Text.getLineSep());
+							int i = 1;
 							for (ActionEvent e : a.getMainEvents()) {
-								sb.append("  ・").append(e.getEventType().getEventDescI18Nd(e)).append(Text.getLineSep());
+								boolean 起動条件表示した = false;
+								sb.append(StringUtil.toRight(i + "", 3)).append(")");
+								L1:
+								if (i >= 2) {
+									String 起動条件i18nd = e.get起動条件().getDescI18Nd(i - 1 + "");
+									if (起動条件i18nd.isEmpty()) {
+										break L1;
+									}
+									sb.append("・").append(起動条件i18nd).append(Text.getLineSep());
+									起動条件表示した = true;
+									List<String> subList = Arrays.stream(StringUtil.safeSplit(起動条件i18nd, Text.getLineSep())).toList();
+									if (subList.size() >= 2) {
+										for (String v : subList.subList(1, subList.size())) {
+											sb.append("    ・").append(起動条件i18nd).append(Text.getLineSep());
+										}
+									}
+								}
+								if (起動条件表示した) {
+									sb.append("    ");
+								}
+								sb.append(e.getEventType().getEventDescI18Nd(e).replaceAll(Text.getLineSep(), "   " + Text.getLineSep())).append(Text.getLineSep());
+								i++;
 							}
 							sb.append("---");
 							sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
 							sb.append(Text.getLineSep());
+							i = 1;
 							for (ActionEvent e : a.getUserEvents()) {
-								sb.append("  ・").append(e.getEventType().getEventDescI18Nd(e)).append(Text.getLineSep());
+								boolean 起動条件表示した = false;
+								sb.append(StringUtil.toRight(i + "", 3)).append(")");
+								L1:
+								if (i >= 2) {
+									String 起動条件i18nd = e.get起動条件().getDescI18Nd(i - 1 + "");
+									if (起動条件i18nd.isEmpty()) {
+										break L1;
+									}
+									sb.append("・").append(起動条件i18nd).append(Text.getLineSep());
+									起動条件表示した = true;
+									List<String> subList = Arrays.stream(StringUtil.safeSplit(起動条件i18nd, Text.getLineSep())).toList();
+									if (subList.size() >= 2) {
+										for (String v : subList.subList(1, subList.size())) {
+											sb.append("    ・").append(起動条件i18nd).append(Text.getLineSep());
+										}
+									}
+								}
+								if (起動条件表示した) {
+									sb.append("    ");
+								}
+								sb.append(e.getEventType().getEventDescI18Nd(e).replaceAll(Text.getLineSep(), "   " + Text.getLineSep())).append(Text.getLineSep());
+								i++;
 							}
 							//ターゲティング情報
 							sb.append("---").append(GameSystemI18NKeys.戦闘時ターゲット情報).append(Text.getLineSep());
@@ -366,14 +411,58 @@ public class MagicWindow extends BasicSprite {
 							sb.append("---");
 							sb.append(I18N.get(GameSystemI18NKeys.対象効果));
 							sb.append(Text.getLineSep());
+							int i = 1;
 							for (ActionEvent e : a.getMainEvents()) {
-								sb.append("  ・").append(e.getEventType().getEventDescI18Nd(e)).append(Text.getLineSep());
+								boolean 起動条件表示した = false;
+								sb.append(StringUtil.toRight(i + "", 3)).append(")");
+								L1:
+								if (i >= 2) {
+									String 起動条件i18nd = e.get起動条件().getDescI18Nd(i - 1 + "");
+									if (起動条件i18nd.isEmpty()) {
+										break L1;
+									}
+									sb.append("・").append(起動条件i18nd).append(Text.getLineSep());
+									起動条件表示した = true;
+									List<String> subList = Arrays.stream(StringUtil.safeSplit(起動条件i18nd, Text.getLineSep())).toList();
+									if (subList.size() >= 2) {
+										for (String v : subList.subList(1, subList.size())) {
+											sb.append("    ・").append(起動条件i18nd).append(Text.getLineSep());
+										}
+									}
+								}
+								if (起動条件表示した) {
+									sb.append("    ");
+								}
+								sb.append(e.getEventType().getEventDescI18Nd(e).replaceAll(Text.getLineSep(), "   " + Text.getLineSep())).append(Text.getLineSep());
+								i++;
 							}
 							sb.append("---");
 							sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
 							sb.append(Text.getLineSep());
+							i = 1;
 							for (ActionEvent e : a.getUserEvents()) {
-								sb.append("  ・").append(e.getEventType().getEventDescI18Nd(e)).append(Text.getLineSep());
+								boolean 起動条件表示した = false;
+								sb.append(StringUtil.toRight(i + "", 3)).append(")");
+								L1:
+								if (i >= 2) {
+									String 起動条件i18nd = e.get起動条件().getDescI18Nd(i - 1 + "");
+									if (起動条件i18nd.isEmpty()) {
+										break L1;
+									}
+									sb.append("・").append(起動条件i18nd).append(Text.getLineSep());
+									起動条件表示した = true;
+									List<String> subList = Arrays.stream(StringUtil.safeSplit(起動条件i18nd, Text.getLineSep())).toList();
+									if (subList.size() >= 2) {
+										for (String v : subList.subList(1, subList.size())) {
+											sb.append("    ・").append(起動条件i18nd).append(Text.getLineSep());
+										}
+									}
+								}
+								if (起動条件表示した) {
+									sb.append("    ");
+								}
+								sb.append(e.getEventType().getEventDescI18Nd(e).replaceAll(Text.getLineSep(), "   " + Text.getLineSep())).append(Text.getLineSep());
+								i++;
 							}
 						} else {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法はフィールドでは使えない)).append(Text.getLineSep());

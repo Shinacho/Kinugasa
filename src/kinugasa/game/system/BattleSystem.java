@@ -1983,10 +1983,7 @@ public class BattleSystem implements Drawable {
 		allActors().forEach(p -> p.getStatus().unsetDamageCalcPoint());
 		e.exec(currentActionTgt, actionResult, isUserEvent);
 
-		if (e.getEventType() == ActionEventType.このアクションの他のイベントをこのイベントのTGTからVALUE内の一人にも適用
-				|| e.getEventType() == ActionEventType.このアクションの他のイベントをこのイベントのTGTからVALUE内の全員にも適用
-				|| e.getEventType() == ActionEventType.このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの一人にも適用
-				|| e.getEventType() == ActionEventType.このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの全員にも適用) {
+		if (e.getEventType().is連鎖イベント()) {
 			イベントキュー消化();
 			return;
 		}

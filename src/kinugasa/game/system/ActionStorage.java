@@ -31,7 +31,6 @@ import kinugasa.graphics.Animation;
 import kinugasa.graphics.SpriteSheet;
 import kinugasa.object.AnimationSprite;
 import kinugasa.resource.NameNotFoundException;
-import kinugasa.resource.Nameable;
 import kinugasa.resource.db.DBConnection;
 import kinugasa.resource.db.DBStorage;
 import kinugasa.resource.db.DBValue;
@@ -90,6 +89,25 @@ public class ActionStorage extends DBStorage<Action> {
 
 	public static int getBookBagAddSize(String id) {
 		return BOOK_BAG_ITEM.get(id);
+	}
+
+	public enum InstanceType {
+		ACTION, ITEM
+	}
+
+	public InstanceType getInstanceType(String id) {
+		String sql = "select id from action where id = '" + id + "'";
+		KResultSet r = DBConnection.getInstance().execDirect(sql);
+		if (!r.isEmpty()) {
+			return InstanceType.ACTION;
+		}
+		sql = "select id from item where id = '" + id + "'";
+		r = DBConnection.getInstance().execDirect(sql);
+		if (!r.isEmpty()) {
+			return InstanceType.ITEM;
+		}
+		throw new NameNotFoundException("action/item is not found : " + id);
+
 	}
 
 	public void checkAll() throws GameSystemException {
@@ -662,20 +680,8 @@ public class ActionStorage extends DBStorage<Action> {
 			e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
 			e.setWaitTime(l.get(18).asInt());
 			//TERM
-			sql = "select "
-					+ "id,typ,tgtName,Val"
-					+ " from eventterm"
-					+ " where eventid = '" + e.getId() + "';";
-			KResultSet tr = DBConnection.getInstance().execDirect(sql);
-			List<ActionEvent.Actor保有条件> terms = new ArrayList<>();
-			for (List<DBValue> tl : tr) {
-				String id = tl.get(0).get();
-				ActionEvent.Actor保有条件.Type type = tl.get(1).of(ActionEvent.Actor保有条件.Type.class);
-				String tgtName = tl.get(2).get();
-				float val = tl.get(3).asFloat();
-				terms.add(new ActionEvent.Actor保有条件(id, type, val, tgtName));
-			}
-			e.setTerms(terms);
+			e.setUser保有条件(get実行可否条件("EventUserTerm", e.getId()));
+			e.setTgt適用条件(get実行可否条件("EventTgtTerm", e.getId()));
 			//ANIMATION
 			e.setUserAnimation(getAnimation(l.get(19).get()));
 			e.setTgtAnimation(getAnimation(l.get(20).get()));
@@ -719,20 +725,8 @@ public class ActionStorage extends DBStorage<Action> {
 			e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
 			e.setWaitTime(l.get(18).asInt());
 			//TERM
-			sql = "select "
-					+ "id,typ,tgtName,Val"
-					+ " from eventterm"
-					+ " where eventid = '" + e.getId() + "';";
-			KResultSet tr = DBConnection.getInstance().execDirect(sql);
-			List<ActionEvent.Actor保有条件> terms = new ArrayList<>();
-			for (List<DBValue> tl : tr) {
-				String id = tl.get(0).get();
-				ActionEvent.Actor保有条件.Type type = tl.get(1).of(ActionEvent.Actor保有条件.Type.class);
-				String tgtName = tl.get(2).get();
-				float val = tl.get(3).asFloat();
-				terms.add(new ActionEvent.Actor保有条件(id, type, val, tgtName));
-			}
-			e.setTerms(terms);
+			e.setUser保有条件(get実行可否条件("EventUserTerm", e.getId()));
+			e.setTgt適用条件(get実行可否条件("EventTgtTerm", e.getId()));
 			//ANIMATION
 			e.setUserAnimation(getAnimation(l.get(19).get()));
 			e.setTgtAnimation(getAnimation(l.get(20).get()));
@@ -741,6 +735,23 @@ public class ActionStorage extends DBStorage<Action> {
 			res.add(e);
 		}
 		return res;
+	}
+
+	private List<ActionEvent.実行可否条件> get実行可否条件(String tableName, String eventID) {
+		String sql = "select "
+				+ "id,typ,tgtName,Val"
+				+ " from " + tableName
+				+ " where eventid = '" + eventID + "';";
+		KResultSet tr = DBConnection.getInstance().execDirect(sql);
+		List<ActionEvent.実行可否条件> terms = new ArrayList<>();
+		for (List<DBValue> tl : tr) {
+			String id = tl.get(0).get();
+			ActionEvent.実行可否条件.Type type = tl.get(1).of(ActionEvent.実行可否条件.Type.class);
+			String tgtName = tl.get(2).get();
+			float val = tl.get(3).asFloat();
+			terms.add(new ActionEvent.実行可否条件(id, type, val, tgtName));
+		}
+		return terms;
 	}
 
 }

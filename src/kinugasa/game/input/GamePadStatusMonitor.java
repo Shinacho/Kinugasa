@@ -84,10 +84,10 @@ public class GamePadStatusMonitor extends BasicSprite {
 	private ButtonSprite RS = new ButtonSprite("LS", 164 - 9, 160, 36);
 	private ButtonSprite LS = new ButtonSprite("RS", 380 - 9, 260, 36);
 
-	private ButtonSprite L = new ButtonSprite("<", 194, 270, 20);
-	private ButtonSprite R = new ButtonSprite(">", 244, 270, 20);
-	private ButtonSprite U = new ButtonSprite("^", 218, 250, 20);
-	private ButtonSprite D = new ButtonSprite("v", 218, 290, 20);
+	private ButtonSprite L = new ButtonSprite("←", 194, 270, 20);
+	private ButtonSprite R = new ButtonSprite("→", 244, 270, 20);
+	private ButtonSprite U = new ButtonSprite("↑", 218, 250, 20);
+	private ButtonSprite D = new ButtonSprite("↓", 218, 290, 20);
 
 	private ButtonSprite BACK = new ButtonSprite("Ba", 238, 160, 36);
 	private ButtonSprite START = new ButtonSprite("St", 368, 160, 36);

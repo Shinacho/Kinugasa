@@ -51,6 +51,10 @@ public class BookPage implements Nameable {
 		return event;
 	}
 
+	public String getDescI18Nd() {
+		return event.getPageDescI18Nd();
+	}
+
 	public String getVisibleName() {
 		return event.getEventType().getPageDescI18Nd(event);
 	}

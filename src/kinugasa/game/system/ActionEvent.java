@@ -2,7 +2,7 @@
  * Copyright (C) 2023 Shinacho
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the user実行条件 of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
@@ -34,16 +34,32 @@ import kinugasa.util.Random;
 public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 
 	public enum 起動条件 {
-		条件なしで必ず起動,
-		前段がないか前段イベント全成功時のみ起動,
-		前段がないか前段イベント全失敗時のみ起動,
-		前段がないか直前のイベント成功時のみ起動,
-		前段がないか直前のイベント失敗時のみ起動,
-		前段がないか最初のイベントが成功時のみ起動,
-		前段がないか最初のイベントが失敗時のみ起動,
+		条件なしで必ず起動(""),
+		前段がないか前段イベント全成功時のみ起動("前段がないか前段イベント全成功時のみ起動"),
+		前段がないか前段イベント全失敗時のみ起動("前段がないか前段イベント全失敗時のみ起動"),
+		前段がないか直前のイベント成功時のみ起動("前段がないか直前のイベント成功時のみ起動"),
+		前段がないか直前のイベント失敗時のみ起動("前段がないか直前のイベント失敗時のみ起動"),
+		前段がないか最初のイベントが成功時のみ起動("前段がないか最初のイベントが成功時のみ起動"),
+		前段がないか最初のイベントが失敗時のみ起動("前段がないか最初のイベントが失敗時のみ起動"),;
+		private String i18nKey;
+
+		private 起動条件(String i18nKey) {
+			this.i18nKey = i18nKey;
+		}
+
+		public String getI18nKey() {
+			return i18nKey;
+		}
+
+		public String getDescI18Nd(String idx) {
+			if (i18nKey.isEmpty()) {
+				return "";
+			}
+			return I18N.get(i18nKey, idx);
+		}
 	}
 
-	public static class Actor保有条件 implements Nameable {
+	public static class 実行可否条件 implements Nameable {
 
 		public static enum Type {
 			指定の状態異常を持っている,
@@ -62,11 +78,15 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		public final float value;
 		public final String tgtName;
 
-		public Actor保有条件(String id, Type type, float value, String tgtName) {
+		public 実行可否条件(String id, Type type, float value, String tgtName) {
 			this.id = id;
 			this.type = type;
 			this.value = value;
 			this.tgtName = tgtName;
+		}
+
+		public String getVisibleTextI18Nd(Object... parm) {
+			return I18N.get(type.toString(),  parm);
 		}
 
 		public boolean canDo(Status a) {
@@ -157,7 +177,8 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	private String id;
 	private int sort;
 	private ActionEventType type;
-	private List<Actor保有条件> terms = new ArrayList<>();
+	private List<実行可否条件> user保有条件 = new ArrayList<>();
+	private List<実行可否条件> tgt適用条件 = new ArrayList<>();
 	private StatusKey tgtStatusKey;
 	private float p;
 	private ConditionKey tgtConditionKey;
@@ -343,7 +364,6 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			this.exec(tgt.getUser(), tgt.getAction(), tgt.getUser(), ar, true);
 		} else {
 			for (var v : tgt.getTgt()) {
-
 				this.exec(tgt.getUser(), tgt.getAction(), v, ar, false);
 			}
 		}
@@ -381,6 +401,14 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 				return;
 			}
 		}
+		if (!user保有条件.stream().allMatch(p -> p.canDo(user.getStatus()))) {
+			ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+			return;
+		}
+		if (!isUserEvent && !tgt適用条件.stream().allMatch(p -> p.canDo(tgt.getStatus()))) {
+			ar.setPerEvent(new ActionResult.PerEvent(this, ActionResultSummary.失敗＿不発, Map.of()));
+			return;
+		}
 		if (!Random.percent(p)) {
 			if (isUserEvent) {
 				ar.addUserEventResult(new ActionResult.UserEventResult(this, ActionResultSummary.失敗＿不発, tgt));
@@ -389,9 +417,8 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			}
 			return;
 		}
-
 		type.exec(user, a, isUserEvent ? user : tgt, this, ar, isUserEvent);
-
+		return;
 	}
 
 	public void set起動条件(起動条件 j) {
@@ -403,11 +430,8 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	}
 
 	//このイベントの情報を返す
-	public String getDescI18Nd() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(type.getPageDescI18Nd(this));
-
-		return sb.toString();
+	public String getPageDescI18Nd() {
+		return type.getPageDescI18Nd(this);
 	}
 
 	ActionEvent setWaitTime(int waitTime) {
@@ -430,11 +454,6 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 
 	ActionEvent setEventType(ActionEventType type) {
 		this.type = type;
-		return this;
-	}
-
-	ActionEvent setTerms(List<Actor保有条件> terms) {
-		this.terms = terms;
 		return this;
 	}
 
@@ -546,8 +565,22 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		return tgtId;
 	}
 
-	public List<Actor保有条件> getTerms() {
-		return terms;
+	public List<実行可否条件> getUser保有条件() {
+		return user保有条件;
+	}
+
+	ActionEvent setUser保有条件(List<実行可否条件> user保有条件) {
+		this.user保有条件 = user保有条件;
+		return this;
+	}
+
+	public List<実行可否条件> getTgt適用条件() {
+		return tgt適用条件;
+	}
+
+	ActionEvent setTgt適用条件(List<実行可否条件> tgt適用条件) {
+		this.tgt適用条件 = tgt適用条件;
+		return this;
 	}
 
 	public StatusKey getTgtStatusKey() {

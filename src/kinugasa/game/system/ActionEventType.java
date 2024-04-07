@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -36,8 +37,6 @@ import javax.swing.SpinnerNumberModel;
 import kinugasa.game.GameOption;
 import kinugasa.game.I18N;
 import kinugasa.game.PlayerConstants;
-import kinugasa.game.field4.EventTerm;
-import kinugasa.game.field4.EventTermType;
 import kinugasa.game.field4.FieldEventParser;
 import kinugasa.game.field4.FieldEventSystem;
 import kinugasa.game.field4.FieldMap;
@@ -74,146 +73,38 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					(int) (event.getP() * 100) + "%",
-					event.getAtkAttr() == null ? "無"
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無)
 					: event.getAtkAttr().getVisibleName(),
 					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
-			sb.append("    ");
-			sb.append(I18N.get(GameSystemI18NKeys.計算方法));
-			switch (event.getCalcMode()) {
-				case DC: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
-					sb.append("、");
-					sb.append(I18N.get(GameSystemI18NKeys.基礎値)).append(":").append(Math.abs((int) event.getValue()));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case ADD: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
-					sb.append("、");
-					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case MUL: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
-					sb.append("、");
-					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
-					sb.append("、");
-					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO_MAX: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO_ZERO: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				default: {
-					break;
-				}
-			}
+			sb.append(ActionUtil.get計算方法(event));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.Xダメージの術式, event.getTgtStatusKey().getVisibleName()));
 			sb.append(":");
 			if (event.getAtkAttr() != null) {
 				sb.append(event.getAtkAttr().getVisibleName());
 			}
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append(Math.abs((int) (event.getValue())));
+			sb.append(ActionUtil.getVisible値(event));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(I18N.get(GameSystemI18NKeys.計算方法));
-			switch (event.getCalcMode()) {
-				case DC: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case ADD: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case MUL: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO_MAX: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO_ZERO: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				default: {
-					break;
-				}
-			}
+			sb.append(ActionUtil.get計算方法(event));
 			return sb.toString();
 		}
 
@@ -240,33 +131,28 @@ public enum ActionEventType {
 
 			float value = e.getValue();
 			switch (e.getCalcMode()) {
-				case ADD: {
+				case ADD -> {
 					if (e.isNoLimit()) {
 						tgt.getStatus().getBaseStatus().get(tgtStatusKey).addMax(value);
 					}
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).add(value);
-					break;
 				}
-				case MUL: {
+				case MUL -> {
 					if (e.isNoLimit()) {
 						tgt.getStatus().getBaseStatus().get(tgtStatusKey).mulMax(value);
 					}
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).mul(value);
-					break;
 				}
-				case TO: {
+				case TO -> {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).setValue(value);
-					break;
 				}
-				case TO_MAX: {
+				case TO_MAX -> {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).toMax();
-					break;
 				}
-				case TO_ZERO: {
+				case TO_ZERO -> {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).toZero();
-					break;
 				}
-				case DC: {
+				case DC -> {
 					//攻撃タイプ調整
 					DamageCalcSystem.ActionType actionType
 							= switch (a.getType()) {
@@ -279,22 +165,8 @@ public enum ActionEventType {
 					};
 
 					//アイテムからDCS取得
-					StatusKey dcs = null;
-					if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-						Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-						if (i != null && i.getDcs() != null) {
-							dcs = i.getDcs();
-						}
-					}
-					if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-						Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-						if (i != null && i.getDcs() != null) {
-							dcs = i.getDcs();
-						}
-					}
-					if (dcs == null) {
-						dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-					}
+					StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
+
 					//ダメージ計算実行
 					DamageCalcSystem.Result r
 							= DamageCalcSystem.calcDamage(
@@ -309,57 +181,19 @@ public enum ActionEventType {
 							);
 
 					//r評価
-					String msg = "";
-					if (r.isTgtIs回避) {
-						msg += " "+I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-					}
-					if (r.isブロックされた) {
-						msg += " "+I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-					}
-					if (r.反射された) {
-						msg += " "+I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-					}
-					if (r.吸収された) {
-						msg += " "+I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-					}
-					if (r.isクリティカル) {
-						msg += " "+I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-					}
-					StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
-					if (v == null) {
-						msg = I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-					} else if (v.getValue() < 0) {
-						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-								+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
-								+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()));
-					} else {
-						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-								+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
-								+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()));
-					}
+					String msg = ActionUtil.createResultMsg(tgt, tgtStatusKey, r);
 					addResult(ar, r.summary, user, tgt, e, msg, isUserEvent);
 					return;
 				}
-				default:
+				default ->
 					throw new AssertionError("undefined calc mode");
 			}//switch
+
+			String msg = ActionUtil.createMsg(tgt, tgtStatusKey);
 			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
-			if (v != null) {
-				String msg = "";
-				if (v.getValue() < 0) {
-					msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-							+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
-							+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
-				} else {
-					msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-							+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
-							+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
-				}
-				addResult(ar, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
-			} else {
-				String msg = I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-				addResult(ar, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
-			}
+			addResult(ar,
+					v != null ? ActionResultSummary.成功 : ActionResultSummary.失敗＿不発,
+					user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -367,146 +201,38 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性の回復ダメージをXに与える,
-					(int) (event.getP() * 100) + "%",
-					event.getAtkAttr() == null ? "無"
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無)
 					: event.getAtkAttr().getVisibleName(),
 					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
-			sb.append("    ");
-			sb.append(I18N.get(GameSystemI18NKeys.計算方法));
-			switch (event.getCalcMode()) {
-				case DC: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
-					sb.append("、");
-					sb.append(I18N.get(GameSystemI18NKeys.基礎値)).append(":").append(Math.abs((int) event.getValue()));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case ADD: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
-					sb.append("、");
-					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case MUL: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
-					sb.append("、");
-					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
-					sb.append("、");
-					sb.append(I18N.get(GameSystemI18NKeys.値)).append(":").append(Math.abs((int) event.getValue()));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO_MAX: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO_ZERO: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				default: {
-					break;
-				}
-			}
+			sb.append(ActionUtil.get計算方法(event));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.X回復の術式, event.getTgtStatusKey().getVisibleName()));
 			sb.append(":");
 			if (event.getAtkAttr() != null) {
 				sb.append(event.getAtkAttr().getVisibleName());
 			}
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append(Math.abs((int) (event.getValue())));
+			sb.append(ActionUtil.getVisible値(event));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(I18N.get(GameSystemI18NKeys.計算方法));
-			switch (event.getCalcMode()) {
-				case DC: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.ダメージ計算));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case ADD: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.直接作用));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case MUL: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.乗算));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.値になる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO_MAX: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.最大値になる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				case TO_ZERO: {
-					sb.append(":").append(I18N.get(GameSystemI18NKeys.ゼロになる));
-					if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-						String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-						sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-					}
-					break;
-				}
-				default: {
-					break;
-				}
-			}
+			sb.append(ActionUtil.get計算方法(event));
 			return sb.toString();
 		}
 
@@ -533,33 +259,28 @@ public enum ActionEventType {
 
 			float value = e.getValue();
 			switch (e.getCalcMode()) {
-				case ADD: {
+				case ADD -> {
 					if (e.isNoLimit()) {
 						tgt.getStatus().getBaseStatus().get(tgtStatusKey).addMax(value);
 					}
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).add(value);
-					break;
 				}
-				case MUL: {
+				case MUL -> {
 					if (e.isNoLimit()) {
 						tgt.getStatus().getBaseStatus().get(tgtStatusKey).mulMax(value);
 					}
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).mul(value);
-					break;
 				}
-				case TO: {
+				case TO -> {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).setValue(value);
-					break;
 				}
-				case TO_MAX: {
+				case TO_MAX -> {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).toMax();
-					break;
 				}
-				case TO_ZERO: {
+				case TO_ZERO -> {
 					tgt.getStatus().getBaseStatus().get(tgtStatusKey).toZero();
-					break;
 				}
-				case DC: {
+				case DC -> {
 					//攻撃タイプ調整
 					DamageCalcSystem.ActionType actionType
 							= switch (a.getType()) {
@@ -572,22 +293,7 @@ public enum ActionEventType {
 					};
 
 					//アイテムからDCS取得
-					StatusKey dcs = null;
-					if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-						Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-						if (i != null && i.getDcs() != null) {
-							dcs = i.getDcs();
-						}
-					}
-					if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-						Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-						if (i != null && i.getDcs() != null) {
-							dcs = i.getDcs();
-						}
-					}
-					if (dcs == null) {
-						dcs = actionType == DamageCalcSystem.ActionType.物理回復 ? StatusKey.筋力 : StatusKey.精神;
-					}
+					StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 					//ダメージ計算実行
 					DamageCalcSystem.Result r
 							= DamageCalcSystem.calcDamage(
@@ -602,42 +308,18 @@ public enum ActionEventType {
 							);
 
 					//r評価
-					StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
-					String msg = "";
-					if (v == null) {
-						I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-					} else if (v.getValue() < 0) {
-						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-								+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
-								+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()));
-					} else {
-						msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-								+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
-								+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()));
-					}
+					String msg = ActionUtil.createResultMsg(tgt, tgtStatusKey, r);
 					addResult(ar, r.summary, user, tgt, e, msg, isUserEvent);
 					return;
 				}
-				default:
+				default ->
 					throw new AssertionError("undefined calc mode");
 			}//switch
+			String msg = ActionUtil.createMsg(tgt, tgtStatusKey);
 			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(tgtStatusKey);
-			if (v != null) {
-				String msg = "";
-				if (v.getValue() < 0) {
-					msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-							+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
-							+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
-				} else {
-					msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-							+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
-							+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
-				}
-				addResult(ar, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
-			} else {
-				String msg = I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-				addResult(ar, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
-			}
+			addResult(ar,
+					v != null ? ActionResultSummary.成功 : ActionResultSummary.失敗＿不発,
+					user, tgt, e, msg, isUserEvent);
 		}
 
 	},
@@ -645,21 +327,31 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.被耐性XをXの確率でX変更する, event.getTgtAttrIn().getVisibleName(), (int) (event.getP() * 100) + "%", event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.被耐性XをXの確率でX変更する, event.getTgtAttrIn().getVisibleName(),
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値Percent(event)));
+			sb.append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.この効果は宿に泊まると失われる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.被属性変化の術式));
 			sb.append(":");
 			sb.append(event.getTgtAttrIn().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue() * 100));
-			sb.append("%(");
+			sb.append(ActionUtil.getVisible値Percent(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -679,7 +371,7 @@ public enum ActionEventType {
 			tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).add(e.getValue());
 			String msg = I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 					+ I18N.get(GameSystemI18NKeys.被属性Xが, e.getTgtAttrIn().getVisibleName())
-					+ I18N.get(GameSystemI18NKeys.Xになった, (tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).getValue() * 100) + "%");
+					+ I18N.get(GameSystemI18NKeys.Xになった, (int) (tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).getValue() * 100f) + "%");
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
@@ -688,21 +380,31 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.与耐性XをXの確率でX変更する, event.getTgtAttrOut().getVisibleName(), (int) (event.getP() * 100) + "%", event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.与耐性XをXの確率でX変更する, event.getTgtAttrOut().getVisibleName(),
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値Percent(event)));
+			sb.append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.この効果は宿に泊まると失われる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.与属性変化の術式));
 			sb.append(":");
 			sb.append(event.getTgtAttrOut().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue() * 100));
-			sb.append("%(");
+			sb.append(ActionUtil.getVisible値Percent(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -722,7 +424,7 @@ public enum ActionEventType {
 			tgt.getStatus().getAttrIn().get(e.getTgtAttrOut()).add(e.getValue());
 			String msg = I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 					+ I18N.get(GameSystemI18NKeys.与属性Xが, e.getTgtAttrIn().getVisibleName())
-					+ I18N.get(GameSystemI18NKeys.Xになった, (tgt.getStatus().getAttrOut().get(e.getTgtAttrOut()).getValue() * 100) + "%");
+					+ I18N.get(GameSystemI18NKeys.Xになった, (int) (tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).getValue() * 100f) + "%");
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
@@ -730,21 +432,31 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.状態異常Xの耐性をXの確率でX変更する, event.getTgtCndRegist().getVisibleName(), (int) (event.getP() * 100) + "%", event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.状態異常Xの耐性をXの確率でX変更する,
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値Percent(event)));
+			sb.append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.この効果は宿に泊まると失われる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.状態異常耐性変化の術式));
 			sb.append(":");
 			sb.append(event.getTgtCndRegist().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue() * 100));
-			sb.append("%(");
+			sb.append(ActionUtil.getVisible値Percent(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -765,7 +477,7 @@ public enum ActionEventType {
 			tgt.getStatus().getConditionRegist().put(e.getTgtCndRegist(), v + e.getValue());
 			String msg = I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 					+ I18N.get(GameSystemI18NKeys.状態異常耐性Xが, e.getTgtCndRegist().getVisibleName())
-					+ I18N.get(GameSystemI18NKeys.Xになった, (tgt.getStatus().getConditionRegist().get(e.getTgtCndRegist()) * 100) + "%");
+					+ I18N.get(GameSystemI18NKeys.Xになった, (int) (tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).getValue() * 100f) + "%");
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
@@ -774,10 +486,17 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			if (event.getCndTime() != 0) {
-				sb.append(I18N.get(GameSystemI18NKeys.XをXの確率でXターン付与する, event.getTgtConditionKey().getVisibleName(), (int) (event.getP() * 100) + "%", event.getCndTime()));
+				sb.append(I18N.get(GameSystemI18NKeys.XをXの確率でXターン付与する,
+						event.getTgtConditionKey().getVisibleName(),
+						ActionUtil.getVisible確率(event), event.getCndTime()));
 			} else {
-				sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で付与する, event.getTgtConditionKey().getVisibleName(), (int) (event.getP() * 100) + "%"));
+				sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で付与する,
+						event.getTgtConditionKey().getVisibleName(), ActionUtil.getVisible確率(event)));
 			}
 			return sb.toString();
 		}
@@ -785,12 +504,16 @@ public enum ActionEventType {
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.状態異常付与の術式));
 			sb.append(":");
 			sb.append(event.getTgtConditionKey().getVisibleName());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -818,19 +541,29 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で解除する, event.getTgtConditionKey().getVisibleName(), (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で解除する,
+					event.getTgtConditionKey().getVisibleName(),
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.状態異常解除の術式));
 			sb.append(":");
 			sb.append(event.getTgtConditionKey().getVisibleName());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -853,20 +586,28 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で入手する, i.getVisibleName(), (int) (event.getP() * 100) + "%"));
+			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で入手する, i.getVisibleName(), ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.アイテム追加の術式));
 			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
 			sb.append(":").append(i.getVisibleName());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -877,7 +618,9 @@ public enum ActionEventType {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
 			}
 			try {
-				ActionStorage.getInstance().itemOf(e.getTgtID());
+				if (ActionStorage.getInstance().getInstanceType(e.getTgtID()) != ActionStorage.InstanceType.ITEM) {
+					throw new Exception();
+				}
 			} catch (Exception ex) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDがアイテムIDではありません) + " : " + this + " : " + e);
 			}
@@ -887,7 +630,7 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Item i = ActionStorage.getInstance().itemOf(e.getTgtID());
 			boolean suc = false;
-			String msg = "";
+			String msg;
 			if (e.isNoLimit() || tgt.getStatus().getItemBag().canAdd()) {
 				tgt.getStatus().getItemBag().add(i);
 				suc = true;
@@ -903,20 +646,28 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で失う, i.getVisibleName(), (int) (event.getP() * 100) + "%"));
+			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で失う, i.getVisibleName(), ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.アイテムロストの術式));
 			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
 			sb.append(":").append(i.getVisibleName());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -926,15 +677,17 @@ public enum ActionEventType {
 			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
 			}
+			try {
+				if (ActionStorage.getInstance().getInstanceType(e.getTgtID()) != ActionStorage.InstanceType.ITEM) {
+					throw new Exception();
+				}
+			} catch (Exception ex) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDがアイテムIDではありません) + " : " + this + " : " + e);
+			}
 		}
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			try {
-				ActionStorage.getInstance().itemOf(e.getTgtID());
-			} catch (Exception ex) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDがアイテムIDではありません) + " : " + this + " : " + e);
-			}
 			Item i = ActionStorage.getInstance().itemOf(e.getTgtID());
 			int prevSIze = tgt.getStatus().getItemBag().size();
 			tgt.getStatus().getItemBag().drop(i);
@@ -950,20 +703,29 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.戦闘に勝利したときXをXの確率で入手する, i.getVisibleName(), (int) (event.getP() * 100) + "%"));
+			sb.append(I18N.get(GameSystemI18NKeys.戦闘に勝利したときXをXの確率で入手する,
+					i.getVisibleName(), ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.ドロップアイテム追加の術式));
 			sb.append(":");
 			sb.append(ActionStorage.getInstance().itemOf(event.getTgtID()).getVisibleName());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -974,7 +736,9 @@ public enum ActionEventType {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
 			}
 			try {
-				ActionStorage.getInstance().itemOf(e.getTgtID());
+				if (ActionStorage.getInstance().getInstanceType(e.getTgtID()) != ActionStorage.InstanceType.ITEM) {
+					throw new Exception();
+				}
 			} catch (Exception ex) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDがアイテムIDではありません) + " : " + this + " : " + e);
 			}
@@ -984,8 +748,8 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Item i = ActionStorage.getInstance().itemOf(e.getTgtID());
 			//ドロップアイテムに追加
-			if (tgt instanceof Enemy) {
-				((Enemy) tgt).getDropItem().add(DropItem.itemOf(i, 1, 1f));
+			if (tgt instanceof Enemy enemy) {
+				enemy.getDropItem().add(DropItem.itemOf(i, 1, 1f));//pは判定されているので、確率は１
 				String msg = I18N.get(GameSystemI18NKeys.XはXを入手した, tgt.getVisibleName(), i.getVisibleName());
 				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 				return;
@@ -999,20 +763,28 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			Material m = MaterialStorage.getInstance().get(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.戦闘に勝利したときXをXの確率で入手する, m.getVisibleName(), (int) (event.getP() * 100) + "%"));
+			sb.append(I18N.get(GameSystemI18NKeys.戦闘に勝利したときXをXの確率で入手する, m.getVisibleName(), ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.ドロップマテリアル追加の術式));
 			sb.append(":");
 			sb.append(MaterialStorage.getInstance().get(event.getTgtID()).getVisibleName());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1034,7 +806,7 @@ public enum ActionEventType {
 			Material m = MaterialStorage.getInstance().get(e.getTgtID());
 			//ドロップマテリアルに追加
 			if (tgt instanceof Enemy) {
-				((Enemy) tgt).getDropItem().add(DropItem.materialOf(m, 1, 1f));
+				((Enemy) tgt).getDropItem().add(DropItem.materialOf(m, 1, 1f));//pは判定されているので、確率は１
 				String msg = I18N.get(GameSystemI18NKeys.XはXを入手した, tgt.getVisibleName(), m.getVisibleName());
 				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 				return;
@@ -1048,17 +820,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で自身の武器装備を解除して敵のドロップアイテムに追加する, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で自身の武器装備を解除して敵のドロップアイテムに追加する,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.武器投擲の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1069,7 +850,9 @@ public enum ActionEventType {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
 			}
 			try {
-				ActionStorage.getInstance().itemOf(e.getTgtID());
+				if (ActionStorage.getInstance().getInstanceType(e.getTgtID()) != ActionStorage.InstanceType.ITEM) {
+					throw new Exception();
+				}
 			} catch (Exception ex) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDがアイテムIDではありません) + " : " + this + " : " + e);
 			}
@@ -1105,7 +888,7 @@ public enum ActionEventType {
 				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 				return;
 			}
-			//対象者のスロットのアイテムがnullの場合は呼び出しエラー
+			//対象者のスロットのアイテムがnullの場合は投擲できないので呼び出しエラー
 			Item tgtItem = eqip.get(slot);
 			if (tgtItem == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.装備解除しようとしましたがユーザはすでに装備していませんTERMとの整合性を要確認) + " : " + this + " : " + e);
@@ -1132,8 +915,8 @@ public enum ActionEventType {
 			String msg = I18N.get(GameSystemI18NKeys.XはXを失った, user.getVisibleName(), tgtItem.getVisibleName());
 			msg += Text.getLineSep();
 			//ドロップアイテムに追加
-			if (tgt instanceof Enemy) {
-				((Enemy) tgt).getDropItem().add(DropItem.itemOf(tgtItem, 1, 1f));
+			if (tgt instanceof Enemy enemy) {
+				enemy.getDropItem().add(DropItem.itemOf(tgtItem, 1, 1f));
 				msg += I18N.get(GameSystemI18NKeys.XはXを入手した, tgt.getVisibleName(), tgtItem.getVisibleName());
 			} else {
 				//PCの場合アイテムバッグに追加、追加できなかったらロストする
@@ -1150,18 +933,27 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は直ちにX回行動できる, (int) (event.getP() * 100) + "%", (int) event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は直ちにX回行動できる,
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.即時追加行動の術式));
-			sb.append(":").append(I18N.get(GameSystemI18NKeys.X回, ((int) event.getValue()) + ""));
+			sb.append(":").append(I18N.get(GameSystemI18NKeys.X回, ActionUtil.getVisible値(event)));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1177,8 +969,8 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			int i = 0;
 			for (; i < (int) e.getValue(); i++) {
-				BattleCommand cmd = new BattleCommand(user);
-				if (user.isPlayer()) {
+				BattleCommand cmd = new BattleCommand(tgt);
+				if (tgt.isPlayer()) {
 					cmd.setUserOperation(true);
 				}
 				BattleSystem.getInstance().addCmdFirst(cmd);
@@ -1192,18 +984,27 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者はこのターンの最後にX回行動できる, (int) (event.getP() * 100) + "%", (int) event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者はこのターンの最後にX回行動できる,
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.遅延追加行動の術式));
-			sb.append(":").append(I18N.get(GameSystemI18NKeys.X回, ((int) event.getValue()) + ""));
+			sb.append(":").append(I18N.get(GameSystemI18NKeys.X回, ActionUtil.getVisible値(event)));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1219,8 +1020,8 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			int i = 0;
 			for (; i < (int) e.getValue(); i++) {
-				BattleCommand cmd = new BattleCommand(user);
-				if (user.isPlayer()) {
+				BattleCommand cmd = new BattleCommand(tgt);
+				if (tgt.isPlayer()) {
 					cmd.setUserOperation(true);
 				}
 				BattleSystem.getInstance().addCmdLast(cmd);
@@ -1233,19 +1034,29 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の同じチームの全員にも作用する, (int) (event.getP() * 100) + "%", (int) event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の同じチームの全員にも作用する,
+					ActionUtil.getVisible確率(event),
+					ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.放射の術式));
 			sb.append(":");
 			sb.append((int) event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1254,6 +1065,9 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if ((int) e.getValue() <= 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
+			if (a.getMainEvents().stream().filter(p -> p.getEventType().is連鎖イベント()).count() > 1) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.連鎖イベントは１種類しか設置できません) + " : " + this + " : " + e);
 			}
 		}
 
@@ -1269,15 +1083,18 @@ public enum ActionEventType {
 			if (newTgts.isEmpty()) {
 				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
 			}
 			for (Actor newTgt : newTgts) {
-				for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !e.equals(p)).toList()) {
+				for (ActionEvent ae : a.getMainEvents().stream()
+						.filter(p -> !p.getEventType().is連鎖イベント())
+						.toList()) {
 					if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
 						for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
-							ae.exec(user, a, newTgt, res, isUserEvent);
+							ae.exec(user, a, newTgt, res, false);
 						}
 					} else {
-						ae.exec(user, a, newTgt, res, isUserEvent);
+						ae.exec(user, a, newTgt, res, false);
 					}
 				}
 			}
@@ -1289,19 +1106,28 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の全員にも作用する, (int) (event.getP() * 100) + "%", (int) event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の全員にも作用する,
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.全体放射の術式));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.解放の術式));
 			sb.append(":");
 			sb.append((int) event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1310,6 +1136,9 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if ((int) e.getValue() <= 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
+			if (a.getMainEvents().stream().filter(p -> p.getEventType().is連鎖イベント()).count() > 1) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.連鎖イベントは１種類しか設置できません) + " : " + this + " : " + e);
 			}
 		}
 
@@ -1324,36 +1153,47 @@ public enum ActionEventType {
 				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
 			for (Actor newTgt : newTgts) {
-				for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !e.equals(p)).toList()) {
+				for (ActionEvent ae : a.getMainEvents().stream()
+						.filter(p -> !p.getEventType().is連鎖イベント())
+						.toList()) {
 					if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
 						for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
-							ae.exec(user, a, newTgt, res, isUserEvent);
+							ae.exec(user, a, newTgt, res, false);
 						}
 					} else {
-						ae.exec(user, a, newTgt, res, isUserEvent);
+						ae.exec(user, a, newTgt, res, false);
 					}
 				}
 			}
 			//このイベントの結果は入れなくていい。
 		}
 	},
-	このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの一人にも適用(false) {
+	このアクションの他のイベントをこのイベントのTGTからVALUE内のランダムな同じチームの一人にも適用(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の同じチームの一人にも作用する, (int) (event.getP() * 100) + "%", (int) event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の同じチームのランダムな一人にも作用する,
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.派生の術式));
 			sb.append(":");
 			sb.append((int) event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1362,6 +1202,9 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if ((int) e.getValue() <= 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
+			if (a.getMainEvents().stream().filter(p -> p.getEventType().is連鎖イベント()).count() > 1) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.連鎖イベントは１種類しか設置できません) + " : " + this + " : " + e);
 			}
 		}
 
@@ -1379,35 +1222,46 @@ public enum ActionEventType {
 				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
 			Actor newTgt = newTgts.get(0);
-			for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !e.equals(p)).toList()) {
+			for (ActionEvent ae : a.getMainEvents().stream()
+					.filter(p -> !p.getEventType().is連鎖イベント())
+					.toList()) {
 				if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
 					for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
-						ae.exec(user, a, newTgt, res, isUserEvent);
+						ae.exec(user, a, newTgt, res, false);
 					}
 				} else {
-					ae.exec(user, a, newTgt, res, isUserEvent);
+					ae.exec(user, a, newTgt, res, false);
 				}
 			}
 			//このイベントの結果は入れなくていい。
 		}
 	},
-	このアクションの他のイベントをこのイベントのTGTからVALUE内の一人にも適用(false) {
+	このアクションの他のイベントをこのイベントのTGTからVALUE内のランダムな一人にも適用(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の一人にも作用する, (int) (event.getP() * 100) + "%", (int) event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内のランダムな一人にも作用する,
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.伝搬の術式));
 			sb.append(":");
 			sb.append((int) event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1416,6 +1270,9 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if ((int) e.getValue() <= 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
+			if (a.getMainEvents().stream().filter(p -> p.getEventType().is連鎖イベント()).count() > 1) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.連鎖イベントは１種類しか設置できません) + " : " + this + " : " + e);
 			}
 		}
 
@@ -1430,13 +1287,163 @@ public enum ActionEventType {
 				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 			}
 			Actor newTgt = newTgts.get(0);
-			for (ActionEvent ae : a.getMainEvents().stream().filter(p -> !e.equals(p)).toList()) {
+			for (ActionEvent ae : a.getMainEvents().stream()
+					.filter(p -> !p.getEventType().is連鎖イベント())
+					.toList()) {
 				if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
 					for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
-						ae.exec(user, a, newTgt, res, isUserEvent);
+						ae.exec(user, a, newTgt, res, false);
 					}
 				} else {
-					ae.exec(user, a, newTgt, res, isUserEvent);
+					ae.exec(user, a, newTgt, res, false);
+				}
+			}
+			//このイベントの結果は入れなくていい。
+		}
+	},
+	このアクションの他のイベントをこのイベントのTGTからVALUE内の最も近い同じチームの一人にも適用(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の同じチームの最も近い一人にも作用する,
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.連鎖の術式));
+			sb.append(":");
+			sb.append((int) event.getValue());
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(event));
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if ((int) e.getValue() <= 0) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
+			if (a.getMainEvents().stream().filter(p -> p.getEventType().is連鎖イベント()).count() > 1) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.連鎖イベントは１種類しか設置できません) + " : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			List<Actor> newTgts = new ArrayList<>();
+			if (tgt.isPlayer()) {
+				newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allPartyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
+			} else {
+				newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allEnemyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
+			}
+			//newTgtsの最も近い対象を選出
+			int len = Integer.MAX_VALUE;
+			Actor newTgt = null;
+			for (var ac : newTgts) {
+				if (ac.getSprite().getCenter().distance(tgt.getSprite().getCenter()) < len) {
+					newTgt = ac;
+				}
+			}
+
+			if (newTgt == null) {
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+			}
+			for (ActionEvent ae : a.getMainEvents().stream()
+					.filter(p -> !p.getEventType().is連鎖イベント())
+					.toList()) {
+				if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
+					for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
+						ae.exec(user, a, newTgt, res, false);
+					}
+				} else {
+					ae.exec(user, a, newTgt, res, false);
+				}
+			}
+			//このイベントの結果は入れなくていい。
+		}
+	},
+	このアクションの他のイベントをこのイベントのTGTからVALUE内の最も近い一人にも適用(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の最も近い一人にも作用する,
+					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.伝達の術式));
+			sb.append(":");
+			sb.append((int) event.getValue());
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(event));
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if ((int) e.getValue() <= 0) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
+			if (a.getMainEvents().stream().filter(p -> p.getEventType().is連鎖イベント()).count() > 1) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.連鎖イベントは１種類しか設置できません) + " : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			List<Actor> newTgts = new ArrayList<>();
+			newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allPartyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
+			newTgts.addAll(BattleSystem.getInstance().getTargetSystem().allEnemyOf(tgt.getSprite().getCenter(), (int) e.getValue()));
+
+			//newTgtsの最も近い対象を選出
+			int len = Integer.MAX_VALUE;
+			Actor newTgt = null;
+			for (var ac : newTgts) {
+				if (ac.getSprite().getCenter().distance(tgt.getSprite().getCenter()) < len) {
+					newTgt = ac;
+				}
+			}
+
+			if (newTgt == null) {
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+			}
+			for (ActionEvent ae : a.getMainEvents().stream()
+					.filter(p -> !p.getEventType().is連鎖イベント())
+					.toList()) {
+				if (ae.getEventType().isATKCOUNT回数実行するイベント()) {
+					for (int i = 0; i < user.getStatus().getEffectedAtkCount(); i++) {
+						ae.exec(user, a, newTgt, res, false);
+					}
+				} else {
+					ae.exec(user, a, newTgt, res, false);
 				}
 			}
 			//このイベントの結果は入れなくていい。
@@ -1446,17 +1453,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.このターン対象者が未行動ならXの確率で対象者はこの行動のすぐあとに行動できる, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.このターン対象者が未行動ならXの確率で対象者はこの行動のすぐあとに行動できる,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.即時行動の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1489,17 +1505,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.このターン対象者が未行動ならXの確率で対象者はこのターンの最後に行動できる, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.このターン対象者が未行動ならXの確率で対象者はこのターンの最後に行動できる,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.遅延行動の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1531,17 +1556,25 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は魔法詠唱を中断する, (int) (event.getP() * 100) + "%", (int) event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は魔法詠唱を中断する, ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.詠唱中断の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1567,19 +1600,28 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			String v = event.getValue() < 0 ? "-" : "+";
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者の詠唱完了イベントをXターン移動する, (int) (event.getP() * 100) + "%", v + (int) event.getValue()));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者の詠唱完了イベントをXターン移動する,
+					ActionUtil.getVisible確率(event),
+					ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.詠唱時間変更の術式));
-			sb.append(":").append((int) event.getValue()).append(I18N.get(GameSystemI18NKeys.ターン));
+			sb.append(":").append(ActionUtil.getVisible値(event)).append(I18N.get(GameSystemI18NKeys.ターン));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1593,7 +1635,7 @@ public enum ActionEventType {
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			if (tgt.getStatus().hasCondition(ConditionKey.詠唱中)) {
+			if (!tgt.getStatus().hasCondition(ConditionKey.詠唱中)) {
 				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 				return;
@@ -1611,7 +1653,7 @@ public enum ActionEventType {
 					i++;
 				}
 				t++;
-				if (t > 999) {
+				if (t > 9999) {
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.BSの魔法詠唱中リストとACの詠唱中状態の整合性が取れていない) + " : " + this + " : " + e);
 				}
 			}
@@ -1624,7 +1666,7 @@ public enum ActionEventType {
 			}
 			ms.get(tgtTurn).add(s);
 			BattleSystem.getInstance().setMagics(ms);
-			String tr = ((int) e.getValue() > 0 ? "+" : "-") + (int) e.getValue();
+			String tr = ActionUtil.getVisible値(e);
 			String msg = I18N.get(GameSystemI18NKeys.Xの魔法詠唱はXターン移動した, tgt.getVisibleName(), tr);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
@@ -1633,17 +1675,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で自身のクローンを召喚する, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で自身のクローンを召喚する,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.術者クローニングの術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1657,13 +1708,14 @@ public enum ActionEventType {
 			String visibleName = "";
 			if (tgt instanceof Enemy) {
 				Enemy ee = Enemy.cloneOf(tgt);
+				ee.setSummoned(true);
 				BattleSystem.getInstance().getEnemies().add(ee);
-				visibleName = ee.getVisibleName();
+				visibleName = ee.getVisibleName() + I18N.get(GameSystemI18NKeys.のクローン);
 			} else {
 				Actor newA = new Actor(tgt.getId() + "_CLONE", tgt);
 				newA.setSummoned(true);
 				GameSystem.getInstance().getParty().add(newA);
-				visibleName = newA.getVisibleName();
+				visibleName = newA.getVisibleName() + I18N.get(GameSystemI18NKeys.のクローン);
 			}
 			String msg = I18N.get(GameSystemI18NKeys.分身Xが現れた, visibleName);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
@@ -1674,17 +1726,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者はそのターン行動できなくなる, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者はそのターン行動できなくなる,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.行動阻止の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1710,17 +1771,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でそのターンの行動順を反転させる, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でそのターンの行動順を反転させる,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.トリックルームの術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1742,18 +1812,28 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は中心からXの範囲内に転送される, (int) (event.getP() * 100) + "%", (int) event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は中心からXの範囲内に転送される,
+					ActionUtil.getVisible確率(event),
+					ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.集結の術式));
-			sb.append(":").append((int) event.getValue());
+			sb.append(":").append(ActionUtil.getVisible値(event));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1770,8 +1850,7 @@ public enum ActionEventType {
 			//中心位置の取得
 			Point2D.Float center = BattleSystem.getInstance().getBattleFieldSystem().getBattleFieldAllArea().getCenter();
 			do {
-				Point2D.Float p = Random.randomLocation(center, 64f);
-				tgt.getSprite().setLocationByCenter(p);
+				Point2D.Float p = Random.randomLocation(center, e.getValue());
 				if (!BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(p)) {
 					if (BattleSystem.getInstance().getBattleFieldSystem().inArea(p)) {
 						tgt.getSprite().setLocationByCenter(p);
@@ -1787,32 +1866,44 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は術者からXの範囲内に転送される, (int) (event.getP() * 100) + "%", (int) event.getValue() + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は術者からXの範囲内に転送される,
+					ActionUtil.getVisible確率(event),
+					ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.引き寄せの術式));
-			sb.append(":").append((int) event.getValue());
+			sb.append(":").append(ActionUtil.getVisible値(event));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
 
 		@Override
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getValue() <= 0) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
 		}
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Point2D.Float center = user.getSprite().getCenter();
 			do {
-				Point2D.Float p = Random.randomLocation(center, 64f);
-				tgt.getSprite().setLocationByCenter(p);
+				Point2D.Float p = Random.randomLocation(center, e.getValue());
 				if (!BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(p)) {
 					if (BattleSystem.getInstance().getBattleFieldSystem().inArea(p)) {
 						tgt.getSprite().setLocationByCenter(p);
@@ -1828,17 +1919,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者はすぐ逃げられる位置に転送される, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者はすぐ逃げられる位置に転送される,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.退避の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1868,18 +1968,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は一番近い敵対者のそばに転送される, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は一番近い敵対者のそばに転送される,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.接近の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
-			sb.append(")");
+			sb.append(ActionUtil.getVisible確率(event));
 			return sb.toString();
 		}
 
@@ -1905,8 +2013,7 @@ public enum ActionEventType {
 			assert newTgt != null : "tgt is null : " + this;
 			do {
 				Point2D.Float center = tgt.getSprite().getCenter();
-				Point2D.Float p = Random.randomLocation(center, 64f);
-				tgt.getSprite().setLocationByCenter(p);
+				Point2D.Float p = Random.randomLocation(center, tgt.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue() / 2);
 				if (!BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(p)) {
 					if (BattleSystem.getInstance().getBattleFieldSystem().inArea(p)) {
 						tgt.getSprite().setLocationByCenter(p);
@@ -1922,17 +2029,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者は対象者のそばに転送される, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者は対象者のそばに転送される,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.術者転送の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1945,8 +2061,7 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			do {
 				Point2D.Float center = tgt.getSprite().getCenter();
-				Point2D.Float p = Random.randomLocation(center, 64f);
-				tgt.getSprite().setLocationByCenter(p);
+				Point2D.Float p = Random.randomLocation(center, tgt.getStatus().getEffectedStatus().get(StatusKey.行動力).getValue() / 2);
 				if (!BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(p)) {
 					if (BattleSystem.getInstance().getBattleFieldSystem().inArea(p)) {
 						user.getSprite().setLocationByCenter(center);
@@ -1963,17 +2078,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者は対象者と位置が入れ替わる, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者は対象者と位置が入れ替わる,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.位置交換の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -1989,7 +2113,7 @@ public enum ActionEventType {
 			user.getSprite().setLocationByCenter(p);
 			String msg = I18N.get(GameSystemI18NKeys.Xは転送された, user.getVisibleName());
 			msg += Text.getLineSep();
-			msg = I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
+			msg += I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getVisibleName());
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
@@ -1997,17 +2121,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者は特定のアイテムを手に入れる, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者は候補からいずれかのアイテムを手に入れる,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.ランダムアイテムの術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2020,7 +2153,9 @@ public enum ActionEventType {
 			}
 			for (String id : ids) {
 				try {
-					ActionStorage.getInstance().itemOf(id);
+					if (ActionStorage.getInstance().getInstanceType(e.getTgtID()) != ActionStorage.InstanceType.ITEM) {
+						throw new Exception();
+					}
 				} catch (Exception ex) {
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDがアイテムIDではありません) + " : " + this + " : " + e);
 				}
@@ -2030,36 +2165,41 @@ public enum ActionEventType {
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			String id = Random.randomChoice(StringUtil.safeSplit(e.getTgtID(), ","));
-			if (user.getStatus().getItemBag().canAdd()) {
-				//追加
+			if (user.getStatus().getItemBag().canAdd() || e.isNoLimit()) {
 				user.getStatus().getItemBag().add(ActionStorage.getInstance().itemOf(id));
-			} else if (e.isNoLimit()) {
-				//追加
-				user.getStatus().getItemBag().add(ActionStorage.getInstance().itemOf(id));
-			} else {
-				String msg = I18N.get(GameSystemI18NKeys.Xはこれ以上物を持てない);
-				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				String msg = I18N.get(GameSystemI18NKeys.XはXを入手した);
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 				return;
 			}
-			String msg = I18N.get(GameSystemI18NKeys.XはXを入手した);
-			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+			String msg = I18N.get(GameSystemI18NKeys.Xはこれ以上物を持てない);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+			return;
 		}
 	},
 	逃走で戦闘終了(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で戦闘が終了し逃走扱いになる, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で戦闘が終了し逃走扱いになる,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.強制逃走の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2079,18 +2219,27 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXにワープする, (int) (event.getP() * 100) + "%", I18N.get(event.getTgtID())));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXにワープする,
+					ActionUtil.getVisible確率(event), I18N.get(event.getTgtID())));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.マップ間ワープの術式));
 			sb.append(":").append(I18N.get(event.getTgtID()));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2134,17 +2283,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で現在のマップのランダムな出入り口に移動する, (int) (event.getP() * 100) + "%", I18N.get(event.getTgtID())));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で現在のマップのランダムな出入り口に移動する,
+					ActionUtil.getVisible確率(event), I18N.get(event.getTgtID())));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.テレポートの術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2166,20 +2324,30 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			Actor ac = new Actor(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを召喚する, (int) (event.getP() * 100) + "%", ac.getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを召喚する,
+					ActionUtil.getVisible確率(event),
+					ac.getVisibleName()));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.友好的存在召喚の術式));
 			Actor ac = new Actor(event.getTgtID());
 			sb.append(":").append(ac.getVisibleName());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2195,7 +2363,7 @@ public enum ActionEventType {
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			String visibleName = "";
+			String visibleName;
 			if (user.isPlayer()) {
 				Actor ac = new Actor(e.getTgtID());
 				visibleName = ac.getVisibleName();
@@ -2216,20 +2384,30 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			Actor ac = new Actor(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを召喚する, (int) (event.getP() * 100) + "%", ac.getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを召喚する,
+					ActionUtil.getVisible確率(event),
+					ac.getVisibleName()));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.敵対的存在召喚の術式));
 			Actor ac = new Actor(event.getTgtID());
 			sb.append(":").append(ac.getVisibleName());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2245,7 +2423,7 @@ public enum ActionEventType {
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			String visibleName = "";
+			String visibleName;
 			if (user.isPlayer()) {
 				Enemy ac = new Enemy(e.getTgtID());
 				visibleName = ac.getVisibleName();
@@ -2266,17 +2444,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で現在のセーブデータを破壊しセーブせずにゲームを終了した場合はセーブデータをロストする, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で現在のセーブデータを破壊しセーブせずにゲームを終了した場合はセーブデータをロストする,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.現在記録抹消の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2295,18 +2482,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(" ");
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でゲームがセーブされずに終了する, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でゲームがセーブされずに終了する,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.次元崩壊の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2325,18 +2520,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(" ");
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で他のセーブデータを破壊する, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で他のセーブデータを破壊する,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.別次元破壊の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2354,18 +2557,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(" ");
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率ですべてのセーブデータを破壊する, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率ですべてのセーブデータを破壊する,
+					ActionUtil.getVisible確率(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.全空間破壊の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -2382,12 +2593,24 @@ public enum ActionEventType {
 	独自効果(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.この効果は特殊なもので分析ができない);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.この効果は特殊なもので分析ができない));
+			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.この効果は特殊なもので分析ができない);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.独自効果の術式)).append("ID:").append(event.getId());
+			return sb.toString();
 		}
 
 		@Override
@@ -2403,12 +2626,24 @@ public enum ActionEventType {
 	ビームエフェクト(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.術者から対象者へビームを発射する);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.術者から対象者へビームを照射する));
+			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.術者から対象者へビームを発射する);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.光線の術式));
+			return sb.toString();
 		}
 
 		@Override
@@ -2423,21 +2658,30 @@ public enum ActionEventType {
 	DC_ファイル選択からのハッシュ(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.起動するとファイル選択が開き選んだファイルに応じて属性とダメージが決まる);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.起動するとファイル選択が開き選んだファイルに応じて属性とダメージが決まる));
+			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.上位者の情報の術式);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.上位者の情報の術式));
+			return sb.toString();
 		}
 
 		@Override
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 		}
 
@@ -2454,6 +2698,9 @@ public enum ActionEventType {
 			File file = c.getSelectedFile();
 
 			float value = file.getName().hashCode() % 128;
+			if (value > 0) {
+				value = -value;
+			}
 			value = file.getName().hashCode() % 2 == 0 ? -value : +value;
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
 				throw new GameSystemException("damage calc is cant exec in field : " + this);
@@ -2470,29 +2717,16 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
+			//attr
+			AttributeKey attr = AttributeKey.values()[file.getName().hashCode() % AttributeKey.values().length];
 			//ダメージ計算実行
 			DamageCalcSystem.Result dr
 					= DamageCalcSystem.calcDamage(
 							new DamageCalcSystem.Param(
 									user,
 									tgt,
-									e.getAtkAttr(),
+									attr,
 									actionType,
 									value,
 									e.getTgtStatusKey(),
@@ -2500,35 +2734,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (v == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (v.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
-			}
-			msg += Text.getLineSep();
-			if (dr.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (dr.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (dr.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (dr.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (dr.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, e.getTgtStatusKey(), dr);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -2537,21 +2743,30 @@ public enum ActionEventType {
 	DC_ファイル選択からのサイズ(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.起動するとファイル選択が開き選んだファイルのサイズに応じて属性とダメージが決まる);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.起動するとファイル選択が開き選んだファイルのサイズに応じて属性とダメージが決まる));
+			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.上位者の巨大情報の術式);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.上位者の巨大情報の術式));
+			return sb.toString();
 		}
 
 		@Override
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 		}
 
@@ -2568,8 +2783,13 @@ public enum ActionEventType {
 			File file = c.getSelectedFile();
 
 			float value = 0;
+			AttributeKey attr = AttributeKey.神秘;
 			try {
 				value = Files.size(file.toPath()) / 1024f / 1024f;
+				if (value > 0) {
+					value = -value;
+				}
+				attr = AttributeKey.values()[(int) Files.size(file.toPath()) % AttributeKey.values().length];
 			} catch (IOException ex) {
 				value = -1;
 			}
@@ -2588,29 +2808,15 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
+
 			//ダメージ計算実行
 			DamageCalcSystem.Result dr
 					= DamageCalcSystem.calcDamage(
 							new DamageCalcSystem.Param(
 									user,
 									tgt,
-									e.getAtkAttr(),
+									attr,
 									actionType,
 									value,
 									e.getTgtStatusKey(),
@@ -2618,62 +2824,44 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue v = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (v == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (v.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
-			}
-			msg += Text.getLineSep();
-			if (dr.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (dr.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (dr.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (dr.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (dr.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, e.getTgtStatusKey(), dr);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
-
 		}
 	},
-	DC_倒した敵の数(false) {
+	DC_倒した敵の数が多い(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージは倒した敵の数が多いほど大きくなる));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージは倒した敵の数が多いほど大きくなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.勇者の絶望の術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージは倒した敵の数が多いほど大きくなる);
 			return sb.toString();
 		}
 
@@ -2681,9 +2869,6 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 		}
 
@@ -2696,6 +2881,9 @@ public enum ActionEventType {
 				return;
 			}
 			float value = v.num / 100f;
+			if (value > 0) {
+				value = -value;
+			}
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
 				throw new GameSystemException("damage calc is cant exec in field : " + this);
 			}
@@ -2711,22 +2899,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -2741,62 +2914,45 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
-
 		}
 
 	},
-	DC_ターン数が小さい(false) {
+	DC_倒した敵の数が少ない(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージはターン数が小さいほど大きくなる));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージは倒した敵の数が少ないほど大きくなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.速攻戦の術式));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.聖職者の術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージはターン数が小さいほど大きくなる);
 			return sb.toString();
 		}
 
@@ -2805,8 +2961,97 @@ public enum ActionEventType {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
 			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			Counts.Value v = Counts.getInstance().select(GameSystemI18NKeys.CountKey.倒した敵の数);
+			if (v == null) {
+				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
+			}
+			float value = 1000 - (v.num / 100f);
+			if (value > 0) {
+				value = -value;
+			}
+			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
+				throw new GameSystemException("damage calc is cant exec in field : " + this);
+			}
+			//攻撃タイプ調整
+			DamageCalcSystem.ActionType actionType
+					= switch (a.getType()) {
+				case 攻撃 ->
+					DamageCalcSystem.ActionType.物理攻撃;
+				case 魔法 ->
+					DamageCalcSystem.ActionType.魔法攻撃;
+				default ->
+					throw new AssertionError("damage calc cant exec : " + this);
+			};
+
+			//アイテムからDCS取得
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
+			//ダメージ計算実行
+			DamageCalcSystem.Result r
+					= DamageCalcSystem.calcDamage(
+							new DamageCalcSystem.Param(
+									user,
+									tgt,
+									e.getAtkAttr(),
+									actionType,
+									value,
+									e.getTgtStatusKey(),
+									dcs)
+					);
+
+			//r評価
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+
+	},
+	DC_ターン数が小さい(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
+			sb.append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージはターン数が小さいほど大きくなる));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.速攻戦の術式));
+			sb.append(":");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append((int) (event.getValue()));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(event));
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtStatusKey() == null) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
 			}
 		}
 
@@ -2829,22 +3074,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -2859,34 +3089,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -2895,25 +3098,37 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージはターン数が経過しているほど大きくなる));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージはターン数が経過しているほど大きくなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.遅滞戦術の術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
 			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージはターン数が経過しているほど大きくなる);
 			return sb.toString();
 		}
 
@@ -2921,9 +3136,6 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 		}
 
@@ -2945,22 +3157,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -2975,61 +3172,45 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
-
 		}
 	},
 	DC_CPUのコア数(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージは使用しているコンピュータのコア数により変化する));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージは使用しているコンピュータのコア数により変化する));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.上位者の脳の術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
 			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージは使用しているコンピュータのコア数により変化する);
 			return sb.toString();
 		}
 
@@ -3037,9 +3218,6 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 			if (e.getValue() == 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
@@ -3049,6 +3227,7 @@ public enum ActionEventType {
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float value = Runtime.getRuntime().availableProcessors() * e.getValue();
+			value = -value;
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
 				throw new GameSystemException("damage calc is cant exec in field : " + this);
 			}
@@ -3064,22 +3243,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -3094,34 +3258,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -3131,23 +3268,35 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
 			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージはアイテムをたくさん持っているほど大きくなる));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージはアイテムをたくさん持っているほど大きくなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.ヘビーボンバーの術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
 			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			sb.append(GameSystemI18NKeys.このダメージはアイテムをたくさん持っているほど大きくなる);
 			return sb.toString();
@@ -3155,11 +3304,11 @@ public enum ActionEventType {
 
 		@Override
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getValue() == 0) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 		}
 
@@ -3197,22 +3346,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -3227,36 +3361,8 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
-
 		}
 
 	},
@@ -3264,31 +3370,35 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXターン内の詠唱完了を反転させる, (int) (event.getP() * 100) + "%", ((int) event.getValue()) + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXターン内の詠唱完了を反転させる,
+					ActionUtil.getVisible確率(event),
+					(int) event.getValue()));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.詠唱時間逆転の術式));
 			sb.append(":").append((int) event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
 
 		@Override
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
-			if (e.getTgtStatusKey() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
-			}
-			if ((int) e.getValue() <= 1) {
+			if ((int) e.getValue() <= 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
 			}
 		}
@@ -3305,7 +3415,6 @@ public enum ActionEventType {
 				ms.put(tgtT1, list2);
 				ms.put(tgtT2, list1);
 			}
-
 			BattleSystem.getInstance().setMagics(ms);
 			String msg = I18N.get(GameSystemI18NKeys.Xターン内の魔法詠唱は反転された, (int) e.getValue());
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
@@ -3315,18 +3424,28 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で全員にXの正気度ダメージを与える, (int) (event.getP() * 100) + "%", ((int) event.getValue()) + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で全員にXの正気度ダメージを与える,
+					ActionUtil.getVisible確率(event),
+					(int) event.getValue()));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.正気度ダメージの術式));
-			sb.append(":").append((int) event.getValue());
+			sb.append(":").append(ActionUtil.getVisible値(event));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -3354,7 +3473,7 @@ public enum ActionEventType {
 					v = -v;
 				}
 				ac.getStatus().getBaseStatus().get(StatusKey.正気度).add(val);
-				msg += I18N.get(GameSystemI18NKeys.XはXの正気度ダメージを受けた, ac.getVisibleName(), val);
+				msg += I18N.get(GameSystemI18NKeys.XはXの正気度ダメージを受けた, ac.getVisibleName(), Math.abs(val)) + Text.getLineSep();
 			}
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
@@ -3363,12 +3482,30 @@ public enum ActionEventType {
 	WEBサイト起動(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.上位者の情報を閲覧する);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.上位者の情報を閲覧する,
+					ActionUtil.getVisible確率(event),
+					(int) event.getValue()));
+			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			return I18N.get(GameSystemI18NKeys.上位者の情報閲覧の術式);
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.上位者の情報閲覧の術式));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(event));
+			sb.append(")");
+			return sb.toString();
 		}
 
 		@Override
@@ -3388,6 +3525,7 @@ public enum ActionEventType {
 					Runtime.getRuntime().exec("open " + tgtId);
 				}
 				addResult(res, ActionResultSummary.成功, user, tgt, e, "", isUserEvent);
+				return;
 			} catch (IOException ex) {
 			}
 			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, "", isUserEvent);
@@ -3398,25 +3536,35 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージは自身の体力が減っているほど高くなる));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の体力が減っているほど高くなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.背水の陣の術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージは自身の体力が減っているほど高くなる);
 			return sb.toString();
 		}
 
@@ -3424,9 +3572,6 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 			if (e.getValue() == 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(max power) : " + this + " : " + e);
@@ -3452,22 +3597,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -3482,34 +3612,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -3519,25 +3622,35 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージは自身の魔力が減っているほど高くなる));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の魔力が減っているほど高くなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.精神限界の術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージは自身の魔力が減っているほど高くなる);
 			return sb.toString();
 		}
 
@@ -3545,9 +3658,6 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 			if (e.getValue() == 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(max power) : " + this + " : " + e);
@@ -3573,22 +3683,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -3603,34 +3698,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -3640,25 +3708,35 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が減っているほど高くなる));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が減っているほど高くなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.狂気の笑みの術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージは自身の正気度が減っているほど高くなる);
 			return sb.toString();
 		}
 
@@ -3666,9 +3744,6 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 			if (e.getValue() == 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(max power) : " + this + " : " + e);
@@ -3694,22 +3769,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -3724,34 +3784,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -3761,25 +3794,35 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージは自身の体力が最大値に近いほど高くなる));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の体力が最大値に近いほど高くなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.体力の余裕の術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージは自身の体力が最大値に近いほど高くなる);
 			return sb.toString();
 		}
 
@@ -3787,9 +3830,6 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 			if (e.getValue() == 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(max power) : " + this + " : " + e);
@@ -3815,22 +3855,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -3845,34 +3870,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -3882,25 +3880,35 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージは自身の魔力が最大値に近いほど高くなる));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の魔力が最大値に近いほど高くなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.魔力の余裕の術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージは自身の魔力が最大値に近いほど高くなる);
 			return sb.toString();
 		}
 
@@ -3908,9 +3916,6 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 			if (e.getValue() == 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(max power) : " + this + " : " + e);
@@ -3936,22 +3941,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -3966,34 +3956,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -4002,25 +3965,35 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える, (int) (event.getP() * 100) + "%", event.getAtkAttr().toString(), event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append("  ").append(I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が最大値に近いほど高くなる));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
+					ActionUtil.getVisible確率(event),
+					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
+					event.getTgtStatusKey().getVisibleName()));
+			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が最大値に近いほど高くなる));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.精神的余裕の術式));
 			sb.append(":");
-			sb.append(event.getAtkAttr().getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			if (event.getAtkAttr() != null) {
+				sb.append(event.getAtkAttr().getVisibleName());
+			}
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージは自身の正気度が最大値に近いほど高くなる);
 			return sb.toString();
 		}
 
@@ -4028,9 +4001,6 @@ public enum ActionEventType {
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtStatusKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTgtStatusKeyが必要です) + " : " + this + " : " + e);
-			}
-			if (e.getAtkAttr() == null) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはATK_ATTRが必要です) + " : " + this + " : " + e);
 			}
 			if (e.getValue() == 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(max power) : " + this + " : " + e);
@@ -4056,22 +4026,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -4086,34 +4041,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -4122,24 +4050,102 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			Action a = ActionStorage.getInstance().actionOf(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXをこのターンの最後にX回発動する, (int) (event.getP() * 100) + "%", a.getVisibleName(), ((int) event.getValue()) + ""));
-			sb.append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXをこのターンの最後にX回発動する,
+					ActionUtil.getVisible確率(event),
+					ActionStorage.getInstance().actionOf(event.getTgtID()).getVisibleName(),
+					ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.高速詠唱の術式));
 			sb.append(":");
 			Action a = ActionStorage.getInstance().actionOf(event.getTgtID());
-			sb.append(a.getVisibleName());
-			sb.append(event.getValue() < 0 ? "-" : "+");
-			sb.append((int) (event.getValue()));
-			sb.append("%(");
+			sb.append(ActionStorage.getInstance().actionOf(event.getTgtID()).getVisibleName());
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
+			}
+			try {
+				ActionStorage.getInstance().actionOf(e.getTgtID());
+			} catch (Exception ex) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDが誤っています) + "(id=actionID) : " + this + " : " + e);
+			}
+			if (e.getValue() <= 0) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			Action tgtA = ActionStorage.getInstance().actionOf(e.getTgtID());
+			for (int i = 0; i < (int) e.getValue(); i++) {
+				MagicSpell ms = new MagicSpell(user, tgtA, user.isPlayer());
+				BattleSystem.getInstance().addCmdLast(ms);
+			}
+			String msg = I18N.get(GameSystemI18NKeys.XはXをX回発動する準備をした,
+					user.getVisibleName(),
+					tgtA.getVisibleName(),
+					(int) e.getValue());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+
+	},
+	USERによる指定IDの魔法の詠唱完了をこのターンの最初にVALUE回数追加(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXをこのターンの最初にX回発動する));
+			sb.append(":");
+			Action a = ActionStorage.getInstance().actionOf(event.getTgtID());
+			sb.append(ActionStorage.getInstance().actionOf(event.getTgtID()).getVisibleName());
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(event));
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.多重発動の術式));
+			sb.append(":");
+			Action a = ActionStorage.getInstance().actionOf(event.getTgtID());
+			sb.append(ActionStorage.getInstance().actionOf(event.getTgtID()).getVisibleName());
+			sb.append(ActionUtil.getVisible値(event));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4178,18 +4184,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でランダムな属性のランダムなダメージをXに与える, (int) (event.getP() * 100) + "%", event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でランダムな属性のランダムなダメージをXに与える,
+					ActionUtil.getVisible確率(event), event.getTgtStatusKey().getVisibleName()));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.ランダムシードの術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4205,7 +4219,7 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			float val = Random.d100(1);
 			AttributeKey attr = Random.randomChoice(AttributeKey.values());
-
+			val = -val;
 			if (GameSystem.getInstance().getMode() == GameMode.FIELD) {
 				throw new GameSystemException("damage calc is cant exec in field : " + this);
 			}
@@ -4221,22 +4235,7 @@ public enum ActionEventType {
 			};
 
 			//アイテムからDCS取得
-			StatusKey dcs = null;
-			if (user.getStatus().getEqip().containsKey(EqipSlot.右手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.右手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (user.getStatus().getEqip().containsKey(EqipSlot.左手)) {
-				Item i = user.getStatus().getEqip().get(EqipSlot.左手);
-				if (i != null && i.getDcs() != null) {
-					dcs = i.getDcs();
-				}
-			}
-			if (dcs == null) {
-				dcs = actionType == DamageCalcSystem.ActionType.物理攻撃 ? StatusKey.筋力 : StatusKey.精神;
-			}
+			StatusKey dcs = ActionUtil.getDCS(a, user, actionType);
 			//ダメージ計算実行
 			DamageCalcSystem.Result r
 					= DamageCalcSystem.calcDamage(
@@ -4251,34 +4250,7 @@ public enum ActionEventType {
 					);
 
 			//r評価
-			StatusValue vv = tgt.getStatus().getDamageFromSavePoint().get(e.getTgtStatusKey());
-			String msg = "";
-			if (vv == null) {
-				I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());
-			} else if (vv.getValue() < 0) {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xに, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) vv.getValue()));
-			} else {
-				msg += I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xは, e.getTgtStatusKey().getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) vv.getValue()));
-			}
-			if (r.isTgtIs回避) {
-				msg += I18N.get(GameSystemI18NKeys.Xは回避した, tgt.getVisibleName());
-			}
-			if (r.isブロックされた) {
-				msg += I18N.get(GameSystemI18NKeys.Xはブロックした, tgt.getVisibleName());
-			}
-			if (r.反射された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは反射した, tgt.getVisibleName());
-			}
-			if (r.吸収された) {
-				msg += I18N.get(GameSystemI18NKeys.Xは吸収した, tgt.getVisibleName());
-			}
-			if (r.isクリティカル) {
-				msg += I18N.get(GameSystemI18NKeys.クリティカルヒットした);
-			}
+			String msg = ActionUtil.createResultMsg(tgt, dcs, r);
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 
 		}
@@ -4287,19 +4259,29 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備の攻撃回数をX上げる, (int) (event.getP() * 100) + "%", EqipSlot.valueOf(event.getTgtID()).getVisibleName(), ((int) event.getValue()) + ""));
-			sb.append(Text.getLineSep());
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備の攻撃回数をX増減する,
+					ActionUtil.getVisible確率(event),
+					EqipSlot.valueOf(event.getTgtID()).getVisibleName(),
+					ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.攻撃回数増加の術式));
-			sb.append(":").append(EqipSlot.valueOf(event.getTgtID()).getVisibleName()).append(":").append((int) event.getValue());
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.攻撃回数変化の術式));
+			sb.append(":").append(EqipSlot.valueOf(event.getTgtID()).getVisibleName()).append(":").append(ActionUtil.getVisible値(event));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4317,7 +4299,7 @@ public enum ActionEventType {
 			} catch (Exception ex) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDがSLOTではありません) + " : " + this + " : " + e);
 			}
-			if (e.getValue() <= 0) {
+			if ((int) e.getValue() == 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(n>0) : " + this + " : " + e);
 			}
 		}
@@ -4334,7 +4316,7 @@ public enum ActionEventType {
 				}
 				i.setAtkCount(i.getAtkCount() + (int) e.getValue());
 				String msg = I18N.get(GameSystemI18NKeys.XのXは攻撃回数が変動した, user.getVisibleName(), i.getVisibleName());
-				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 			}
 			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
@@ -4344,19 +4326,27 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備の価値をX倍にする, (int) (event.getP() * 100) + "%", EqipSlot.valueOf(event.getTgtID()).getVisibleName(), (event.getValue()) + ""));
-			sb.append(Text.getLineSep());
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備の価値をX倍にする,
+					ActionUtil.getVisible確率(event), EqipSlot.valueOf(event.getTgtID()).getVisibleName(), (event.getValue()) + ""));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.装備価値変更の術式));
 			sb.append(":").append(EqipSlot.valueOf(event.getTgtID()).getVisibleName()).append(":").append(event.getValue());
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4393,8 +4383,79 @@ public enum ActionEventType {
 				if (v < 0) {
 					v = 0;
 				}
+				i.setPrice(v);
 				String msg = I18N.get(GameSystemI18NKeys.XのXは価値が変動した, user.getVisibleName(), i.getVisibleName());
-				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+			}
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+		}
+
+	},
+	USERの指定スロットの装備品の価値にVALUEを追加する(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備の価値にXを加算する,
+					ActionUtil.getVisible確率(event), EqipSlot.valueOf(event.getTgtID()).getVisibleName(), ActionUtil.getVisible値(event)));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.装備価値加算の術式));
+			sb.append(":").append(EqipSlot.valueOf(event.getTgtID()).getVisibleName()).append(":").append(ActionUtil.getVisible値(event));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(event));
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
+			}
+			try {
+				EqipSlot slot = EqipSlot.valueOf(e.getTgtID());
+				if (slot == null) {
+					throw new Exception();
+				}
+			} catch (Exception ex) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDがSLOTではありません) + " : " + this + " : " + e);
+			}
+			if (e.getValue() <= 0) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + "(n>0) : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			EqipSlot slot = EqipSlot.valueOf(e.getTgtID());
+			if (user.getStatus().getEqip().keySet().contains(slot)) {
+				Item i = user.getStatus().getEqip().get(slot);
+				if (i == null) {
+					String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+					addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+					return;
+				}
+				int v = (int) (i.getPrice() + e.getValue());
+				if (v < 0) {
+					v = 0;
+				}
+				i.setPrice(v);
+				String msg = I18N.get(GameSystemI18NKeys.XのXは価値が変動した, user.getVisibleName(), i.getVisibleName());
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 			}
 			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
@@ -4405,26 +4466,27 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死させる, (int) (event.getP() * 100) + "%"));
-			if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-				String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-				sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
 			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死Xさせる,
+					ActionUtil.getVisible確率(event), event.getTgtConditionKey().getVisibleName()));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.即死の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-				String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-				sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-			}
 			return sb.toString();
 		}
 
@@ -4441,7 +4503,6 @@ public enum ActionEventType {
 					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはCNDTIMEが必要です) + " : " + this + " : " + e);
 				}
 			}
-
 		}
 
 		@Override
@@ -4459,7 +4520,7 @@ public enum ActionEventType {
 				}
 				case 気絶: {
 					tgt.getStatus().getBaseStatus().get(StatusKey.魔力).setValue(0);
-					tgt.getStatus().addWhen0Condition();
+					tgt.getStatus().addCondition(e.getTgtConditionKey(), e.getCndTime());
 					break;
 				}
 				default:
@@ -4474,27 +4535,27 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死させる, (int) (event.getP() * 100) + "%"));
-			if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-				String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-				sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
 			}
-			sb.append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死Xさせる,
+					ActionUtil.getVisible確率(event), event.getTgtConditionKey().getVisibleName()));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.即死の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
-			if (!event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).toList().isEmpty()) {
-				String s = event.getTerms().stream().filter(p -> p.type == ActionEvent.Actor保有条件.Type.指定の状態異常を持っている).map(p -> p.tgtName).toList().toString();
-				sb.append("(").append(s + I18N.get(GameSystemI18NKeys.時)).append(")");
-			}
 			return sb.toString();
 		}
 
@@ -4544,7 +4605,7 @@ public enum ActionEventType {
 						return;
 					}
 					tgt.getStatus().getBaseStatus().get(StatusKey.魔力).setValue(0);
-					tgt.getStatus().addWhen0Condition();
+					tgt.getStatus().addCondition(e.getTgtConditionKey(), e.getCndTime());
 					break;
 				}
 				default:
@@ -4559,18 +4620,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備を解除する, (int) (event.getP() * 100) + "%", EqipSlot.valueOf(event.getTgtID()).getVisibleName()));
-			sb.append(Text.getLineSep());
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備を解除する,
+					ActionUtil.getVisible確率(event), EqipSlot.valueOf(event.getTgtID()).getVisibleName()));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.パージの術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4596,7 +4665,8 @@ public enum ActionEventType {
 			if (tgt.getStatus().getEqip().keySet().contains(slot)) {
 				tgt.getStatus().getEqip().put(slot, null);
 				String msg = I18N.get(GameSystemI18NKeys.XはX装備を外した, user.getVisibleName(), slot.getVisibleName());
-				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+				return;
 			}
 			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
@@ -4607,19 +4677,22 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.指定したマップの指定した座標にワープする));
-			sb.append(Text.getLineSep());
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.転送の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
-			sb.append(")");
 			return sb.toString();
 		}
 
@@ -4648,7 +4721,7 @@ public enum ActionEventType {
 			List<Map> mapList = new ArrayList<>();
 			JComboBox comboBox = new JComboBox();
 			for (FieldMap m : FieldMapStorage.getInstance()) {
-				Map map = new Map(m.getName(), I18N.get(m.getName()));
+				Map map = new Map(m.getName(), m.getName() + ":" + I18N.get(m.getName()));
 				mapList.add(map);
 				comboBox.addItem(map);
 			}
@@ -4667,10 +4740,11 @@ public enum ActionEventType {
 			if (DialogOption.OK != Dialog.okOrCancel("teleport x,y", DialogIcon.QUESTION, p)) {
 				String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
 				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+				return;
 			}
 			FieldMap.getCurrentInstance().changeMap(Node.ofOutNode("AUTO_NODE_FROM_AE", tgtMap.id,
 					(Integer) x.getValue(), (Integer) y.getValue(), FourDirection.NORTH));
-			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, "", isUserEvent);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, I18N.get(GameSystemI18NKeys.Xは転送された, tgt.getStatus().getVisibleName()), isUserEvent);
 		}
 
 	},
@@ -4678,18 +4752,25 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ));
-			sb.append(Text.getLineSep());
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.ダミーの術式＿成功));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4708,6 +4789,10 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ));
 			sb.append(Text.getLineSep());
 			return sb.toString();
@@ -4716,10 +4801,14 @@ public enum ActionEventType {
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.ダミーの術式＿失敗));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4737,6 +4826,10 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ));
 			sb.append(Text.getLineSep());
 			return sb.toString();
@@ -4745,10 +4838,14 @@ public enum ActionEventType {
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.ダミーの術式＿メッセージ表示));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4762,7 +4859,7 @@ public enum ActionEventType {
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			addResult(res, ActionResultSummary.成功, user, tgt, e, e.getTgtID(), isUserEvent);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, I18N.get(e.getTgtID()), isUserEvent);
 		}
 
 	},
@@ -4770,18 +4867,25 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ));
-			sb.append(Text.getLineSep());
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.ダミーの術式＿メッセージ表示));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4811,7 +4915,7 @@ public enum ActionEventType {
 			if (!FlagStorage.getInstance().get(name).get().is(fs)) {
 				addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, "", isUserEvent);
 			}
-			addResult(res, ActionResultSummary.成功, user, tgt, e, val[2], isUserEvent);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, I18N.get(val[2]), isUserEvent);
 		}
 
 	},
@@ -4819,7 +4923,11 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死させる, (int) (event.getP() * 100) + "%"));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死Xさせる, ActionUtil.getVisible確率(event)));
 			sb.append(Text.getLineSep());
 			return sb.toString();
 		}
@@ -4827,10 +4935,14 @@ public enum ActionEventType {
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.即死の術式));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4868,8 +4980,8 @@ public enum ActionEventType {
 					break;
 				}
 				case 気絶: {
+					ac.getStatus().addCondition(e.getTgtConditionKey(), e.getCndTime());
 					ac.getStatus().getBaseStatus().get(StatusKey.魔力).setValue(0);
-					ac.getStatus().addWhen0Condition();
 					break;
 				}
 				default:
@@ -4885,18 +4997,26 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で最大Xの正気度ダメージを与える, (int) (event.getP() * 100) + "%", ((int) event.getValue()) + ""));
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で最大Xの正気度ダメージを与える, ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
+			}
 			sb.append(I18N.get(GameSystemI18NKeys.正気度ダメージの術式));
-			sb.append(":").append((int) event.getValue());
+			sb.append(":").append(ActionUtil.getVisible値(event));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
@@ -4915,123 +5035,48 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			Actor ac = GameSystem.getInstance().getPCbyID(e.getTgtID());
 			int val = Random.randomAbsInt((int) e.getValue()) + 1;
+			val = -val;
 			ac.getStatus().getBaseStatus().get(StatusKey.正気度).add(val);
-			String msg = I18N.get(GameSystemI18NKeys.XはXの正気度ダメージを受けた, ac.getVisibleName(), (int) e.getValue());
+			String msg = I18N.get(GameSystemI18NKeys.XはXの正気度ダメージを受けた, ac.getVisibleName(), Math.abs(val));
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
-	TGTノックバック_弱(false) {
+	TGTノックバック(false) {
 		@Override
 		public String getEventDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は最大48ノックバックする, (int) (event.getP() * 100) + "%"));
-			return sb.toString();
-		}
-
-		@Override
-		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.弱ノックバックの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
-			sb.append(")");
-			return sb.toString();
-		}
-
-		@Override
-		public void pack(ActionEvent e, Action a) throws GameSystemException {
-		}
-
-		@Override
-		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			KVector v = new KVector(user.getSprite().getCenter(), tgt.getSprite().getCenter());
-			v.setSpeed(1f);
-			KVector buf = tgt.getSprite().getVector();
-			tgt.getSprite().setVector(v);
-			for (int i = 0; i < 48; i++) {
-				Point2D.Float newC = tgt.getSprite().simulateMoveCenterLocation(v);
-				if (BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(newC)) {
-					break;
-				}
-				if (!BattleSystem.getInstance().getBattleFieldSystem().inArea(newC)) {
-					break;
-				}
-				tgt.getSprite().move();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
 			}
-			tgt.getSprite().setVector(buf);
-			String msg = I18N.get(GameSystemI18NKeys.Xはノックバックした, tgt.getVisibleName());
-			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
-		}
-
-	},
-	TGTノックバック_中(false) {
-		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は最大116ノックバックする, (int) (event.getP() * 100) + "%"));
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は最大Xノックバックする,
+					ActionUtil.getVisible確率(event),
+					ActionUtil.getVisible値(event)));
 			return sb.toString();
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.中ノックバックの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
-			sb.append(")");
-			return sb.toString();
-		}
-
-		@Override
-		public void pack(ActionEvent e, Action a) throws GameSystemException {
-		}
-
-		@Override
-		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			KVector v = new KVector(user.getSprite().getCenter(), tgt.getSprite().getCenter());
-			v.setSpeed(1f);
-			KVector buf = tgt.getSprite().getVector();
-			tgt.getSprite().setVector(v);
-			for (int i = 0; i < 116; i++) {
-				Point2D.Float newC = tgt.getSprite().simulateMoveCenterLocation(v);
-				if (BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(newC)) {
-					break;
-				}
-				if (!BattleSystem.getInstance().getBattleFieldSystem().inArea(newC)) {
-					break;
-				}
-				tgt.getSprite().move();
+			String s = ActionUtil.get起動条件(event);
+			if (!s.isEmpty()) {
+				sb.append(s).append(Text.getLineSep());
 			}
-			tgt.getSprite().setVector(buf);
-			String msg = I18N.get(GameSystemI18NKeys.Xはノックバックした, tgt.getVisibleName());
-			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
-		}
-
-	},
-	TGTノックバック_強(false) {
-		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は最大255ノックバックする, (int) (event.getP() * 100) + "%"));
-			return sb.toString();
-		}
-
-		@Override
-		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(I18N.get(GameSystemI18NKeys.強ノックバックの術式));
+			sb.append(I18N.get(GameSystemI18NKeys.ノックバックの術式));
+			sb.append(":").append(ActionUtil.getVisible値(event));
 			sb.append("(");
 			sb.append(GameSystemI18NKeys.確率);
-			sb.append((int) (event.getP() * 100)).append("%");
+			sb.append(ActionUtil.getVisible確率(event));
 			sb.append(")");
 			return sb.toString();
 		}
 
 		@Override
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if ((int) e.getValue() <= 0) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
+			}
 		}
 
 		@Override
@@ -5040,7 +5085,7 @@ public enum ActionEventType {
 			v.setSpeed(1f);
 			KVector buf = tgt.getSprite().getVector();
 			tgt.getSprite().setVector(v);
-			for (int i = 0; i < 255; i++) {
+			for (int i = 0; i < (int) e.getValue(); i++) {
 				Point2D.Float newC = tgt.getSprite().simulateMoveCenterLocation(v);
 				if (BattleSystem.getInstance().getBattleFieldSystem().hitObstacle(newC)) {
 					break;
@@ -5060,6 +5105,7 @@ public enum ActionEventType {
 		@Override
 		public String getEventDescI18Nd(ActionEvent e) {
 			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
 			sb.append(I18N.get(GameSystemI18NKeys.脚本Xを実行する, e.getTgtID()));
 			return sb.toString();
 		}
@@ -5067,6 +5113,7 @@ public enum ActionEventType {
 		@Override
 		public String getPageDescI18Nd(ActionEvent e) {
 			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
 			sb.append(I18N.get(GameSystemI18NKeys.脚本実行の術式));
 			sb.append("(");
 			sb.append(e.getTgtID());
@@ -5077,7 +5124,7 @@ public enum ActionEventType {
 		@Override
 		public void pack(ActionEvent e, Action a) throws GameSystemException {
 			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
-				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です));
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
 			}
 		}
 
@@ -5101,7 +5148,229 @@ public enum ActionEventType {
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 
-	};
+	},
+	統計情報変更(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で統計情報XにXを加算する,
+					ActionUtil.getVisible確率(e), I18N.get(e.getTgtID()), ActionUtil.getVisible値(e)));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.統計X改竄の術式));
+			sb.append(":");
+			sb.append(I18N.get(e.getTgtID()));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(e));
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			String id = e.getTgtID();
+			long val = Counts.getInstance().select(id).num + (int) e.getValue();
+			if (val < 0) {
+				val = 0;
+			}
+			Counts.getInstance().updateOrInsert(id, val);
+			String msg = I18N.get(GameSystemI18NKeys.統計情報XはXになった, I18N.get(id), val);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+
+	},
+	統計情報完全リセット(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で統計情報を完全にリセットする,
+					ActionUtil.getVisible確率(e), ActionUtil.getVisible値(e)));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.改竄の術式));
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(e));
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			for (var v : Counts.getInstance().selectAll()) {
+				String id = v.name;
+				Counts.getInstance().updateOrInsert(id, 0);
+			}
+			String msg = I18N.get(GameSystemI18NKeys.統計情報がリセットされた);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+
+	},
+	現在のマップIDと座標表示(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.現在のフィールドマップ情報を閲覧する));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.位置の術式));
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			String text = "MAP ID : " + FieldMap.getCurrentInstance().getName();
+			text += "\n";
+			text += "LOCATION : x=" + FieldMap.getCurrentInstance().getCurrentIdx().x + ", y=" + FieldMap.getCurrentInstance().getCurrentIdx().y;
+			Dialog.info("CURRENT MAP", text);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, "", isUserEvent);
+		}
+
+	},
+	難易度の変更(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で難易度をXに変更する,
+					ActionUtil.getVisible確率(e), Difficulty.valueOf(e.getTgtID()).getNameI18Nd()));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.世界設定変更の術式));
+			sb.append(":").append(Difficulty.valueOf(e.getTgtID()).getNameI18Nd());
+			sb.append("(");
+			sb.append(GameSystemI18NKeys.確率);
+			sb.append(ActionUtil.getVisible確率(e));
+			sb.append(")");
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTIDが必要です) + " : " + this + " : " + e);
+			}
+			try {
+				Difficulty d = Difficulty.valueOf(e.getTgtID());
+			} catch (Exception ex) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.TGTIDが難易度ではありません) + " : " + this + " : " + e);
+			}
+
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			Difficulty d = Difficulty.valueOf(e.getTgtID());
+			GameSystem.setDifficulty(d);
+			String msg = I18N.get(GameSystemI18NKeys.難易度がXになった, d.getNameI18Nd());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+	},
+	難易度の選択(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.難易度を選択して変更する));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.世界設定再選択の術式));
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			JComboBox<String> cmb = new JComboBox<>();
+			cmb.removeAllItems();
+			Arrays.stream(Difficulty.values()).map(p -> p.getNameI18Nd()).forEach(p -> cmb.addItem(p));
+			DialogOption r = Dialog.okOrCancel("SELECT DIFFICULTY", DialogIcon.QUESTION, cmb);
+			if (r == DialogOption.OK) {
+				String selected = cmb.getSelectedItem().toString();
+				GameSystem.setDifficulty(Difficulty.valueOf(selected));
+			}
+			String msg = I18N.get(GameSystemI18NKeys.難易度がXになった, GameSystem.getDifficulty().getNameI18Nd());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+	},
+	デバッグモードの変更(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.デバッグモードを切り替える));
+			return sb.toString();
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent e) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
+			sb.append(I18N.get(GameSystemI18NKeys.世界の裏側の術式));
+			return sb.toString();
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			GameSystem.setDebugMode(!GameSystem.isDebugMode());
+			String msg = I18N.get(GameSystemI18NKeys.デバッグモードがXになった, GameSystem.isDebugMode());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+	},;
 
 	public String getVisibleName() {
 		return I18N.get(toString());
@@ -5223,4 +5492,12 @@ public enum ActionEventType {
 		return new ActionResult.PerEvent(e, s, Map.of(tgt, r));
 	}
 
+	public boolean is連鎖イベント() {
+		return this == このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの全員にも適用
+				|| this == このアクションの他のイベントをこのイベントのTGTからVALUE内の全員にも適用
+				|| this == このアクションの他のイベントをこのイベントのTGTからVALUE内のランダムな同じチームの一人にも適用
+				|| this == このアクションの他のイベントをこのイベントのTGTからVALUE内のランダムな一人にも適用
+				|| this == このアクションの他のイベントをこのイベントのTGTからVALUE内の最も近い同じチームの一人にも適用
+				|| this == このアクションの他のイベントをこのイベントのTGTからVALUE内の最も近い一人にも適用;
+	}
 }
