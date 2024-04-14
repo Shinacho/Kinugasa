@@ -640,11 +640,14 @@ public final class Status extends Model implements Nameable {
 			return (int) (getEffectedStatus().get(StatusKey.行動力).getValue() / 2);
 		}
 		int r = a.getArea();
-		for (Item i : eqip.values()) {
-			if (i == null) {
-				continue;
+		if (a.getWeaponType() != null) {
+			//aが武器スキルでそのWTを装備していたらそのエリアを使用
+			//areaが設定されているのは武器だけなので他の装備品の効果をのせる必要はない。
+			for (Item i : eqip.values()) {
+				if(i.getWeaponType() != null && a.getWeaponType() == i.getWeaponType()){
+					return r + i.getEffectedArea();
+				}
 			}
-			r += i.getEffectedArea();
 		}
 		return r;
 	}
