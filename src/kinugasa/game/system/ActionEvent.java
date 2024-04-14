@@ -25,6 +25,7 @@ import kinugasa.object.AnimationSprite;
 import kinugasa.resource.Nameable;
 import kinugasa.resource.sound.Sound;
 import kinugasa.util.Random;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -33,8 +34,8 @@ import kinugasa.util.Random;
  */
 public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 
-	public enum 起動条件 {
-		条件なしで必ず起動(""),
+	public enum Event起動条件 {
+		条件なしで必ず起動("条件なしで必ず起動"),
 		前段がないか前段イベント全成功時のみ起動("前段がないか前段イベント全成功時のみ起動"),
 		前段がないか前段イベント全失敗時のみ起動("前段がないか前段イベント全失敗時のみ起動"),
 		前段がないか直前のイベント成功時のみ起動("前段がないか直前のイベント成功時のみ起動"),
@@ -43,7 +44,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		前段がないか最初のイベントが失敗時のみ起動("前段がないか最初のイベントが失敗時のみ起動"),;
 		private String i18nKey;
 
-		private 起動条件(String i18nKey) {
+		private Event起動条件(String i18nKey) {
 			this.i18nKey = i18nKey;
 		}
 
@@ -51,15 +52,12 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 			return i18nKey;
 		}
 
-		public String getDescI18Nd(String idx) {
-			if (i18nKey.isEmpty()) {
-				return "";
-			}
+		public String getTextI18Nd(String idx) {
 			return I18N.get(i18nKey, idx);
 		}
 	}
 
-	public static class 実行可否条件 implements Nameable {
+	public static class Actor起動条件 implements Nameable {
 
 		public static enum Type {
 			指定の状態異常を持っている,
@@ -78,26 +76,51 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		public final float value;
 		public final String tgtName;
 
-		public 実行可否条件(String id, Type type, float value, String tgtName) {
+		public Actor起動条件(String id, Type type, float value, String tgtName) {
 			this.id = id;
 			this.type = type;
 			this.value = value;
 			this.tgtName = tgtName;
 		}
 
-		public String getVisibleTextI18Nd(Object... parm) {
-			return I18N.get(type.toString(),  parm);
+		public String getTextI18Nd() {
+			switch (type) {
+				case 指定の状態異常を持っていない, 指定の状態異常を持っている -> {
+					return I18N.get(type.toString(), ConditionKey.valueOf(tgtName).getVisibleName());
+				}
+				case ACTORのIDが一致, 指定のアイテムのいずれかを持っている, 指定の名前のアイテムを持っている, 指定のアイテムを持っている, 武器を装備していない -> {
+					return I18N.get(type.toString());
+				}
+				case 指定の武器タイプの武器を装備している -> {
+					return I18N.get(type.toString(), WeaponType.valueOf(tgtName).getVisibleName());
+				}
+				case 指定のステータスの現在値が指定の値以上 -> {
+					if (StatusKey.valueOf(tgtName) == StatusKey.魔術使用可否) {
+						if ((int) value == 1) {
+							return I18N.get(GameSystemI18NKeys.魔術利用可能);
+						} else {
+							return I18N.get(GameSystemI18NKeys.魔術利用不可);
+						}
+					}
+					return I18N.get(type.toString(), StatusKey.valueOf(tgtName).getVisibleName(), (int) value);
+				}
+				case 指定のステータスの現在値が指定の割合以上 -> {
+					return I18N.get(type.toString(), StatusKey.valueOf(tgtName).getVisibleName(), (int) (value * 100f));
+				}
+				default ->
+					throw new AssertionError("undefined term type : " + type);
+			}
 		}
 
 		public boolean canDo(Status a) {
 			switch (type) {
-				case 指定の状態異常を持っている: {
+				case 指定の状態異常を持っている -> {
 					return a.getCurrentConditions().containsKey(ConditionKey.valueOf(tgtName));
 				}
-				case 指定の状態異常を持っていない: {
+				case 指定の状態異常を持っていない -> {
 					return !a.getCurrentConditions().containsKey(ConditionKey.valueOf(tgtName));
 				}
-				case 武器を装備していない: {
+				case 武器を装備していない -> {
 					boolean res = true;
 					if (a.getEqip().get(EqipSlot.右手) != null) {
 						res &= a.getEqip().get(EqipSlot.右手) == null;
@@ -107,7 +130,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 					}
 					return res;
 				}
-				case 指定の武器タイプの武器を装備している: {
+				case 指定の武器タイプの武器を装備している -> {
 					if (a.getEqip().get(EqipSlot.右手) != null) {
 						if (a.getEqip().get(EqipSlot.右手).getWeaponType() == WeaponType.valueOf(tgtName)) {
 							return true;
@@ -120,10 +143,10 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 					}
 					return false;
 				}
-				case 指定のアイテムを持っている: {
+				case 指定のアイテムを持っている -> {
 					return a.getItemBag().contains(tgtName);
 				}
-				case 指定のアイテムのいずれかを持っている: {
+				case 指定のアイテムのいずれかを持っている -> {
 					String[] ids = tgtName.contains(",") ? tgtName.split(",") : new String[]{tgtName};
 					for (String id : ids) {
 						if (a.getItemBag().contains(id)) {
@@ -132,19 +155,19 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 					}
 					return false;
 				}
-				case 指定の名前のアイテムを持っている: {
+				case 指定の名前のアイテムを持っている -> {
 					return a.getItemBag().getItems().stream().anyMatch(p -> p.getVisibleName().contains(tgtName));
 				}
-				case 指定のステータスの現在値が指定の割合以上: {
+				case 指定のステータスの現在値が指定の割合以上 -> {
 					return a.getEffectedStatus().get(StatusKey.valueOf(tgtName)).get割合() >= value;
 				}
-				case 指定のステータスの現在値が指定の値以上: {
+				case 指定のステータスの現在値が指定の値以上 -> {
 					return a.getEffectedStatus().get(StatusKey.valueOf(tgtName)).getValue() >= value;
 				}
-				case ACTORのIDが一致: {
+				case ACTORのIDが一致 -> {
 					return tgtName.equals(a.getId());
 				}
-				default:
+				default ->
 					throw new AssertionError("undefined term type : " + type);
 			}
 		}
@@ -174,26 +197,34 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		}
 	}
 
+	// base
 	private String id;
 	private int sort;
-	private ActionEventType type;
-	private List<実行可否条件> user保有条件 = new ArrayList<>();
-	private List<実行可否条件> tgt適用条件 = new ArrayList<>();
-	private StatusKey tgtStatusKey;
+	private String tgtId;
+	private float value;
+	//条件
 	private float p;
+	private ActionEventType type;
+	private List<Actor起動条件> user保有条件 = new ArrayList<>();
+	private List<Actor起動条件> tgt適用条件 = new ArrayList<>();
+	private Event起動条件 j;
+	//攻撃処理
+	private StatusKey tgtStatusKey;
+	private AttributeKey atkAttr;
+	private CalcMode calcMode;
+	//状態異常
 	private ConditionKey tgtConditionKey;
 	private int cndTime;
-	private AttributeKey atkAttr;
+	//ATTR操作
 	private AttributeKey tgtAttrKeyOut;
 	private AttributeKey tgtAttrKeyIn;
+	//CND_REGIST
 	private ConditionKey tgtCndRegist;
-	private String tgtId;
+	//アイテム
 	private boolean noLimit;
-	private float value;
-	private CalcMode calcMode;
+	//Effect
 	private Sound successSound;
 	private AnimationSprite tgtAnimation, otherAnimation, userAnimation;
-	private 起動条件 j;
 	private int waitTime = 1;
 
 	public ActionEvent(String id) {
@@ -421,17 +452,22 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		return;
 	}
 
-	public void set起動条件(起動条件 j) {
+	ActionEvent setEvent起動条件(Event起動条件 j) {
 		this.j = j;
+		return this;
 	}
 
-	public 起動条件 get起動条件() {
+	public Event起動条件 getEvent起動条件() {
 		return j;
 	}
 
 	//このイベントの情報を返す
 	public String getPageDescI18Nd() {
 		return type.getPageDescI18Nd(this);
+	}
+
+	public String getEventDescI18Nd(int thisIdx) {
+		return type.getEventDescI18Nd(this, thisIdx);
 	}
 
 	ActionEvent setWaitTime(int waitTime) {
@@ -545,7 +581,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		return cndTime;
 	}
 
-	public ConditionKey getTgtCndRegist() {
+	public ConditionKey getTgtCndRegistKey() {
 		return tgtCndRegist;
 	}
 
@@ -565,20 +601,52 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 		return tgtId;
 	}
 
-	public List<実行可否条件> getUser保有条件() {
+	public Item getTgtAsItem() {
+		return ActionStorage.getInstance().itemOf(tgtId);
+	}
+
+	public Material getTgtAsMaterial() {
+		return MaterialStorage.getInstance().select(tgtId);
+	}
+
+	public String getTgtAsMsgI18Nd() {
+		return I18N.get(tgtId);
+	}
+
+	public EqipSlot getTgtAsSlot() {
+		return EqipSlot.valueOf(tgtId);
+	}
+
+	public List<Item> getTgtAsItemList() {
+		return ActionStorage.getInstance().itemOf(StringUtil.safeSplit(tgtId, ","));
+	}
+
+	public Actor getTgtAsActor() {
+		return new Actor(tgtId);
+	}
+
+	public Action getTgtAsAction() {
+		return ActionStorage.getInstance().get(tgtId);
+	}
+
+	public Difficulty getTgtAsDifficulty() {
+		return Difficulty.valueOf(tgtId);
+	}
+
+	public List<Actor起動条件> getUser起動条件() {
 		return user保有条件;
 	}
 
-	ActionEvent setUser保有条件(List<実行可否条件> user保有条件) {
+	ActionEvent setUser起動条件(List<Actor起動条件> user保有条件) {
 		this.user保有条件 = user保有条件;
 		return this;
 	}
 
-	public List<実行可否条件> getTgt適用条件() {
+	public List<Actor起動条件> getTgt起動条件() {
 		return tgt適用条件;
 	}
 
-	ActionEvent setTgt適用条件(List<実行可否条件> tgt適用条件) {
+	ActionEvent setTgt起動条件(List<Actor起動条件> tgt適用条件) {
 		this.tgt適用条件 = tgt適用条件;
 		return this;
 	}

@@ -112,10 +112,10 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		this.type = typ;
 	}
 
-	public List<ActionEvent.実行可否条件> getAllUser保有条件() {
+	public List<ActionEvent.Actor起動条件> getAllUser保有条件() {
 		return Stream.of(mainEvents, userEvents)
 				.flatMap(p -> p.stream())
-				.map(p -> p.getUser保有条件())
+				.map(p -> p.getUser起動条件())
 				.flatMap(p -> p.stream())
 				.distinct()
 				.collect(Collectors.toList());
@@ -162,6 +162,23 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		for (ActionEvent e : mainEvents) {
 			checkEvent(e);
 		}
+
+		//1件名の起動条件の整合性チェック
+		if (!userEvents.isEmpty()) {
+			if (userEvents.get(0).getEvent起動条件() != null) {
+				if (userEvents.get(0).getEvent起動条件() != ActionEvent.Event起動条件.条件なしで必ず起動) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.最初のイベントに不適切なEvent起動条件が設定されています) + " : " + this);
+				}
+			}
+		}
+		if (!mainEvents.isEmpty()) {
+			if (mainEvents.get(0).getEvent起動条件() != null) {
+				if (mainEvents.get(0).getEvent起動条件() != ActionEvent.Event起動条件.条件なしで必ず起動) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.最初のイベントに不適切なEvent起動条件が設定されています) + " : " + this);
+				}
+			}
+		}
+
 		if (GameSystem.isDebugMode()) {
 			GameLog.print("action : " + this + " is loaded");
 		}
@@ -176,9 +193,9 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 		if (e.getP() <= 0) {
 			throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントの発生確率が０です) + " : " + this + " : " + e);
 		}
-		if (!e.getUser保有条件().isEmpty()) {
-			int size = e.getUser保有条件().size();
-			if (size != e.getUser保有条件().stream().distinct().count()) {
+		if (!e.getUser起動条件().isEmpty()) {
+			int size = e.getUser起動条件().size();
+			if (size != e.getUser起動条件().stream().distinct().count()) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.イベントTermが重複しています) + " : " + this + " : " + e);
 			}
 		}
@@ -189,8 +206,8 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	@NoLoopCall("its heavy")
 	public WeaponType getWeaponType() {
 		for (ActionEvent e : getAllEvents()) {
-			for (ActionEvent.実行可否条件 t : e.getUser保有条件()) {
-				if (t.type == ActionEvent.実行可否条件.Type.指定の武器タイプの武器を装備している) {
+			for (ActionEvent.Actor起動条件 t : e.getUser起動条件()) {
+				if (t.type == ActionEvent.Actor起動条件.Type.指定の武器タイプの武器を装備している) {
 					return WeaponType.valueOf(t.tgtName);
 				}
 			}

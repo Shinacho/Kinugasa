@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ public final class Status extends Model implements Nameable {
 
 	//ID
 	private String id;
+	private String visibleName;
 	//ステータス本体
 	private StatusValueSet status = new StatusValueSet();
 	private StatusValueSet prevStatus;
@@ -71,7 +73,91 @@ public final class Status extends Model implements Nameable {
 	//状態異常による各種確率
 	private ConditionFlags conditionFlags = new ConditionFlags();
 	//キャラの特性
-	private PCAbility ability;
+	private Ability ability;
+	//キャラ名の前に付ける異名
+	private String 異名;
+
+	private class Reset {
+
+		//ステータス本体
+		private StatusValueSet status;
+		//ATTR
+		private AttributeValueSet attrIn;
+		private AttributeValueSet attrOut;
+		//状態異常耐性
+		private ConditionRegist conditionRegist;
+		//状態異常による各種確率
+		private ConditionFlags conditionFlags;
+		//キャラの特性
+		private Ability ability;
+		//キャラ名の前に付ける異名
+		private String 異名;
+		//初期化しないステータスキー
+
+	}
+	private Reset reset;
+
+	public String get異名() {
+		return 異名;
+	}
+
+	public void set異名(String 異名) {
+		this.異名 = 異名;
+	}
+
+	private void setInit() {
+		reset = new Reset();
+		reset.status = this.status.clone();
+		reset.attrIn = this.attrIn.clone();
+		reset.attrOut = this.attrOut.clone();
+		reset.conditionRegist = this.conditionRegist.clone();
+		reset.conditionFlags = this.conditionFlags.clone();
+		reset.ability = this.ability;
+		reset.異名 = this.異名;
+	}
+
+	private static final Set<StatusKey> EXCEPT_STATUS_KEY = new HashSet<>();
+
+	{
+		EXCEPT_STATUS_KEY.add(StatusKey.レベル);
+		EXCEPT_STATUS_KEY.add(StatusKey.次のレベルの経験値);
+		EXCEPT_STATUS_KEY.add(StatusKey.保有経験値);
+		EXCEPT_STATUS_KEY.add(StatusKey.筋力);
+		EXCEPT_STATUS_KEY.add(StatusKey.器用さ);
+		EXCEPT_STATUS_KEY.add(StatusKey.素早さ);
+		EXCEPT_STATUS_KEY.add(StatusKey.精神);
+		EXCEPT_STATUS_KEY.add(StatusKey.信仰);
+		EXCEPT_STATUS_KEY.add(StatusKey.詠唱);
+	}
+
+	public void reset() {
+		assert reset != null : "reset is null";
+		//ステータス
+		List<StatusValue> remove = new ArrayList<>();
+		for (var v : this.status) {
+			if (!EXCEPT_STATUS_KEY.contains(v.getKey())) {
+				remove.add(v);
+			}
+		}
+		this.status.removeAll(remove);
+		for (var v : reset.status) {
+			if (!EXCEPT_STATUS_KEY.contains(v.getKey())) {
+				this.status.add(v);
+			}
+		}
+		//その他
+		this.attrIn = reset.attrIn.clone();
+		this.attrOut = reset.attrOut.clone();
+		this.conditionRegist = reset.conditionRegist.clone();
+		this.conditionFlags = reset.conditionFlags.clone();
+		this.ability = reset.ability;
+		this.異名 = reset.異名;
+
+		prevStatus = null;
+		currentCondition.clear();
+
+		updateAction();
+	}
 
 	@Override
 	public Status clone() {
@@ -82,6 +168,7 @@ public final class Status extends Model implements Nameable {
 		r.conditionFlags = this.conditionFlags.clone();
 		r.conditionRegist = this.conditionRegist.clone();
 		r.currentCondition = this.currentCondition.clone();
+		r.setInit();
 		return r;
 	}
 
@@ -97,13 +184,14 @@ public final class Status extends Model implements Nameable {
 		this.attrIn.init();
 		this.attrOut.init();
 		this.conditionRegist.init();
+		setInit();
 	}
 
-	public void setAbility(PCAbility ability) {
+	public void setAbility(Ability ability) {
 		this.ability = ability;
 	}
 
-	public PCAbility getAbility() {
+	public Ability getAbility() {
 		return ability;
 	}
 
@@ -128,7 +216,7 @@ public final class Status extends Model implements Nameable {
 		}
 		//優先度順に処理
 		if (key == ConditionKey.解脱) {
-			currentCondition.clear();
+			reset();
 			currentCondition.put(key, ManualTimeCounter.FALSE);
 			lastAddedConditin = key;
 			key.startEffect(getConditionFlags());
@@ -138,7 +226,7 @@ public final class Status extends Model implements Nameable {
 			return getVisibleName() + ConditionKey.解脱.getExecMsgI18Nd();
 		}
 		if (key == ConditionKey.損壊) {
-			currentCondition.clear();
+			reset();
 			currentCondition.put(key, ManualTimeCounter.FALSE);
 			lastAddedConditin = key;
 			key.startEffect(this.conditionFlags);
@@ -149,7 +237,7 @@ public final class Status extends Model implements Nameable {
 		}
 		if (key == ConditionKey.気絶) {
 			//気絶は再付与が行われる
-			currentCondition.clear();
+			reset();
 			currentCondition.put(key, t);
 			lastAddedConditin = key;
 			key.startEffect(this.conditionFlags);
@@ -163,10 +251,8 @@ public final class Status extends Model implements Nameable {
 		if (key == ConditionKey.眠り) {
 			for (Actor a : Stream.of(GameSystem.getInstance().getParty(), BattleSystem.getInstance().getEnemies()).flatMap(p -> p.stream()).toList()) {
 				if (a.getId().equals(id)) {
-					a.退避＿ステータスの初期化されない項目();
-					a.readFromXML();
-					a.復元＿ステータスの初期化されない項目();
-					a.getStatus().currentCondition.put(key, t);
+					reset();
+					currentCondition.put(key, t);
 					return getVisibleName() + key.getStartMsgI18Nd();
 				}
 			}
@@ -196,12 +282,11 @@ public final class Status extends Model implements Nameable {
 
 	@Nullable
 	public String getVisibleName() {
-		for (Actor a : Stream.of(GameSystem.getInstance().getParty(), BattleSystem.getInstance().getEnemies()).flatMap(p -> p.stream()).toList()) {
-			if (a.getId().equals(id)) {
-				return a.getVisibleName();
-			}
-		}
-		return null;
+		return visibleName;
+	}
+
+	final void setVisibleName(String visibleName) {
+		this.visibleName = visibleName;
 	}
 
 	@Nullable
@@ -595,8 +680,8 @@ public final class Status extends Model implements Nameable {
 			GameLog.print(getName() + " saved");
 		}
 	}
-	
-	public void unsetDamageCalcPoint(){
+
+	public void unsetDamageCalcPoint() {
 		prevStatus = null;
 	}
 
@@ -818,20 +903,20 @@ public final class Status extends Model implements Nameable {
 			throw new GameSystemException("tgt(" + id + ") cant have this item : " + i);
 		}
 		//thisがiを装備中の場合は外す
-		if(eqip.values().contains(i) && !this.equals(tgt)){
+		if (eqip.values().contains(i) && !this.equals(tgt)) {
 			eqip.put(i.getSlot(), null);
-			
+
 			//iが武器かつ両手持ち中の場合は逆手も外す
-			if(i.isWeapon() && (eqip.containsValue(ActionStorage.getInstance().両手持ち) || eqip.containsValue(ActionStorage.getInstance().両手持ち_弓))){
-				if(eqip.containsKey(EqipSlot.右手)){
+			if (i.isWeapon() && (eqip.containsValue(ActionStorage.getInstance().両手持ち) || eqip.containsValue(ActionStorage.getInstance().両手持ち_弓))) {
+				if (eqip.containsKey(EqipSlot.右手)) {
 					eqip.put(EqipSlot.右手, null);
 				}
-				if(eqip.containsKey(EqipSlot.左手)){
+				if (eqip.containsKey(EqipSlot.左手)) {
 					eqip.put(EqipSlot.左手, null);
 				}
 			}
 		}
-		
+
 		getItemBag().drop(i.getId());
 		tgt.getItemBag().add(i);
 	}
@@ -903,6 +988,7 @@ public final class Status extends Model implements Nameable {
 
 	@Override
 	public String toString() {
-		return "Status{" + "name=" + id + ", status=" + status + '}';
+		return "Status{" + "id=" + id + ", visibleName=" + visibleName + '}';
 	}
+
 }

@@ -77,6 +77,20 @@ public class ActionDescWindow extends PCStatusWindow {
 		return pcIdx;
 	}
 
+	private String getEvent(List<ActionEvent> ee) {
+		if (ee.isEmpty()) {
+			return "    " + I18N.get(GameSystemI18NKeys.なし) + Text.getLineSep();
+		}
+		StringBuilder sb = new StringBuilder();
+		int i = 1;
+		for (ActionEvent e : ee) {
+			sb.append("    (").append(i).append(")").append(Text.getLineSep());
+			sb.append(e.getEventDescI18Nd(i).replaceAll("  ", "      "));
+			i++;
+		}
+		return sb.toString();
+	}
+
 	private void updateText() {
 		//SSMWに文字列を設定
 
@@ -99,45 +113,17 @@ public class ActionDescWindow extends PCStatusWindow {
 				sb.append("    ");
 				sb.append(v).append(Text.getLineSep());
 			}
-			sb.append("    ");
-			sb.append("(")
-					.append(I18N.get(GameSystemI18NKeys.範囲))
-					.append(":")
-					.append(s.get(pcIdx).getAreaWithEqip(a));
-
-			if (a.getMainEvents().stream().map(p -> p.getAtkAttr())
-					.filter(p -> p != null)
-					.count() > 0) {
-				sb.append("、")
-						.append(I18N.get(GameSystemI18NKeys.属性))
-						.append(":");
-				sb.append(a.getMainEvents()
-						.stream()
-						.filter(p -> p.getAtkAttr() != null)
-						.map(p -> p.getAtkAttr().getVisibleName())
-						.distinct()
-						.collect(Collectors.toList()));
-			}
-
-			int i = 0;
-			if (!a.getMainEvents().isEmpty()) {
-				i = a.getMainEvents()
-						.stream()
-						.mapToInt(p -> (int) (p.getValue()))
-						.map(p -> Math.abs(p))
-						.sum();
-			}
-
-			if (i != 0) {
-				sb.append("、")
-						.append(I18N.get(GameSystemI18NKeys.基礎威力))
-						.append(":")
-						.append(i);
-			}
-			sb.append(")");
-
+			sb.append("   -");
+			sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
+			sb.append(Text.getLineSep());
+			sb.append(getEvent(a.getUserEvents()));
+			sb.append("   -");
+			sb.append(I18N.get(GameSystemI18NKeys.対象効果));
+			sb.append(Text.getLineSep());
+			sb.append(getEvent(a.getMainEvents()));
 			t.addAll(Text.split(Text.of(sb.toString())));
 		}
+		t.add(Text.LINE_SEP);
 		t.add(Text.of("----" + ActionType.魔法.getVisibleName() + "----"));
 		for (Action a : s.get(pcIdx).getActions()
 				.stream()
@@ -147,42 +133,19 @@ public class ActionDescWindow extends PCStatusWindow {
 				.collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("  ・").append(a.getVisibleName());
-			sb.append("(")
-					.append(I18N.get(GameSystemI18NKeys.範囲))
-					.append(":")
-					.append(s.get(pcIdx).getAreaWithEqip(a));
-
-			if (a.getMainEvents().stream().map(p -> p.getAtkAttr())
-					.filter(p -> p != null)
-					.count() > 0) {
-				sb.append("、")
-						.append(I18N.get(GameSystemI18NKeys.属性))
-						.append(":");
-				sb.append(a.getMainEvents()
-						.stream()
-						.filter(p -> p.getAtkAttr() != null)
-						.map(p -> p.getAtkAttr().getVisibleName())
-						.distinct()
-						.collect(Collectors.toList()));
+			String[] desc = StringUtil.safeSplit(a.getDesc(), Text.getLineSep());
+			for (var v : desc) {
+				sb.append("    ");
+				sb.append(v).append(Text.getLineSep());
 			}
-
-			int i = 0;
-			if (!a.getMainEvents().isEmpty()) {
-				i = a.getMainEvents()
-						.stream()
-						.mapToInt(p -> (int) (p.getValue()))
-						.map(p -> Math.abs(p))
-						.sum();
-			}
-
-			if (i != 0) {
-				sb.append("、")
-						.append(I18N.get(GameSystemI18NKeys.基礎威力))
-						.append(":")
-						.append(i);
-			}
-			sb.append(")");
-
+			sb.append("   -");
+			sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
+			sb.append(Text.getLineSep());
+			sb.append(getEvent(a.getUserEvents()));
+			sb.append("   -");
+			sb.append(I18N.get(GameSystemI18NKeys.対象効果));
+			sb.append(Text.getLineSep());
+			sb.append(getEvent(a.getMainEvents()));
 			t.addAll(Text.split(Text.of(sb.toString())));
 		}
 		mw.setText(t);

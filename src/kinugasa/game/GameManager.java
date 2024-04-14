@@ -297,6 +297,10 @@ public abstract class GameManager {
 			//現状処理なし
 			GamePadConnection.free();
 		}
+		if (GameSystem.isDebugMode()) {
+			GameLog.print("--not found i18n keys");
+			I18N.getNotFoundKeySet().forEach(GameLog::print);
+		}
 		LockUtil.deleteLockFile();
 		GameLog.close();
 		TempFileStorage.getInstance().deleteAll();

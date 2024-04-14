@@ -16,7 +16,7 @@
  */
 package kinugasa.game.system;
 
-import kinugasa.game.I18N;
+import kinugasa.game.CopyCtor;
 import static kinugasa.game.system.ActionEventType.ATTR_IN;
 import static kinugasa.game.system.ActionEventType.ATTR_OUT;
 import static kinugasa.game.system.ActionEventType.CND_REGIST;
@@ -26,7 +26,6 @@ import static kinugasa.game.system.ActionEventType.ステータス回復;
 import static kinugasa.game.system.ActionEventType.ステータス攻撃;
 import static kinugasa.game.system.ActionEventType.状態異常付与;
 import static kinugasa.game.system.ActionEventType.状態異常解除;
-import static kinugasa.game.system.ActionEventType.独自効果;
 import kinugasa.resource.Nameable;
 
 /**
@@ -36,10 +35,15 @@ import kinugasa.resource.Nameable;
  */
 public class BookPage implements Nameable {
 
-	private ActionEvent event;
+	private String eventID;
 
+	@CopyCtor
 	public BookPage(ActionEvent e) {
-		this.event = e;
+		this(e.getId());
+	}
+
+	public BookPage(String id) {
+		this.eventID = id;
 	}
 
 	@Override
@@ -48,18 +52,15 @@ public class BookPage implements Nameable {
 	}
 
 	public ActionEvent getEvent() {
-		return event;
+		return ActionStorage.getInstance().eventOf(eventID).setEvent起動条件(ActionEvent.Event起動条件.条件なしで必ず起動);
 	}
 
 	public String getDescI18Nd() {
-		return event.getPageDescI18Nd();
-	}
-
-	public String getVisibleName() {
-		return event.getEventType().getPageDescI18Nd(event);
+		return getEvent().getPageDescI18Nd();
 	}
 
 	public int getPrice() {
+		ActionEvent event = getEvent();
 		int val = 1250;
 		switch (event.getEventType()) {
 			case ATTR_IN:
@@ -94,7 +95,7 @@ public class BookPage implements Nameable {
 
 	@Override
 	public String toString() {
-		return "BookPage{" + "event=" + event + '}';
+		return "BookPage{" + "eventID=" + eventID + '}';
 	}
 
 }

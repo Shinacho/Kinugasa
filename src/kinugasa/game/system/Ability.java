@@ -23,7 +23,7 @@ import kinugasa.game.I18N;
  * @vesion 1.0.0 - 2023/10/29_18:57:02<br>
  * @author Shinacho<br>
  */
-public enum PCAbility implements AbilityEffect {
+public enum Ability implements AbilityEffect {
 
 	毒舌なる若き風魔導士("風の与属性が２２％上昇する") {
 		@Override
@@ -237,7 +237,7 @@ public enum PCAbility implements AbilityEffect {
 	};
 	private String desc;
 
-	private PCAbility(String desc) {
+	private Ability(String desc) {
 		this.desc = desc;
 	}
 
@@ -254,10 +254,10 @@ public enum PCAbility implements AbilityEffect {
 	}
 
 	public static void main(String... args) {
-		for (var v : PCAbility.values()) {
+		for (var v : Ability.values()) {
 			System.out.println("\"" + v + '"' + "," + '"' + v + '"');
 		}
-		for (var v : PCAbility.values()) {
+		for (var v : Ability.values()) {
 			System.out.println("\"" + v.desc + '"' + "," + '"' + v.desc + '"');
 		}
 	}

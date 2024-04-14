@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.JComboBox;
@@ -71,41 +72,28 @@ import kinugasa.util.StringUtil;
 public enum ActionEventType {
 	ステータス攻撃(true) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無)
-					: event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append(ActionUtil.get計算方法(event));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える,
+					event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.ON,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xダメージの術式, event.getTgtStatusKey().getVisibleName()));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			sb.append(ActionUtil.get計算方法(event));
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.Xダメージの術式,
+					event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.ON);
 		}
 
 		@Override
@@ -199,41 +187,28 @@ public enum ActionEventType {
 	},
 	ステータス回復(true) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性の回復ダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無)
-					: event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append(ActionUtil.get計算方法(event));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xを回復する,
+					event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.ON,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.X回復の術式, event.getTgtStatusKey().getVisibleName()));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			sb.append(ActionUtil.get計算方法(event));
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.X回復の術式,
+					event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.ON);
 		}
 
 		@Override
@@ -325,35 +300,30 @@ public enum ActionEventType {
 	},
 	ATTR_IN(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.被耐性XをXの確率でX変更する, event.getTgtAttrIn().getVisibleName(),
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値Percent(event)));
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.この効果は宿に泊まると失われる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.被耐性Xを変更する,
+					event.getTgtAttrIn().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ATTRIN,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.被属性変化の術式));
-			sb.append(":");
-			sb.append(event.getTgtAttrIn().getVisibleName());
-			sb.append(ActionUtil.getVisible値Percent(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.被耐性変化の術式,
+					event.getTgtAttrIn().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ATTRIN,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる));
 		}
 
 		@Override
@@ -370,7 +340,7 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).add(e.getValue());
 			String msg = I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-					+ I18N.get(GameSystemI18NKeys.被属性Xが, e.getTgtAttrIn().getVisibleName())
+					+ I18N.get(GameSystemI18NKeys.被耐性Xが, e.getTgtAttrIn().getVisibleName())
 					+ I18N.get(GameSystemI18NKeys.Xになった, (int) (tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).getValue() * 100f) + "%");
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
@@ -378,35 +348,30 @@ public enum ActionEventType {
 	},
 	ATTR_OUT(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.与耐性XをXの確率でX変更する, event.getTgtAttrOut().getVisibleName(),
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値Percent(event)));
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.この効果は宿に泊まると失われる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.与耐性Xを変更する,
+					event.getTgtAttrOut().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ATTROUT,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.与属性変化の術式));
-			sb.append(":");
-			sb.append(event.getTgtAttrOut().getVisibleName());
-			sb.append(ActionUtil.getVisible値Percent(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.与耐性変化の術式,
+					event.getTgtAttrOut().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ATTROUT,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる));
 		}
 
 		@Override
@@ -423,42 +388,37 @@ public enum ActionEventType {
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
 			tgt.getStatus().getAttrIn().get(e.getTgtAttrOut()).add(e.getValue());
 			String msg = I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-					+ I18N.get(GameSystemI18NKeys.与属性Xが, e.getTgtAttrIn().getVisibleName())
+					+ I18N.get(GameSystemI18NKeys.与耐性Xが, e.getTgtAttrIn().getVisibleName())
 					+ I18N.get(GameSystemI18NKeys.Xになった, (int) (tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).getValue() * 100f) + "%");
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
 	},
 	CND_REGIST(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.状態異常Xの耐性をXの確率でX変更する,
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値Percent(event)));
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.この効果は宿に泊まると失われる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.X耐性を変更する,
+					event.getTgtCndRegistKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CNDREG,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.状態異常耐性変化の術式));
-			sb.append(":");
-			sb.append(event.getTgtCndRegist().getVisibleName());
-			sb.append(ActionUtil.getVisible値Percent(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.状態耐性変化の術式,
+					event.getTgtCndRegistKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CNDREG,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる));
 		}
 
 		@Override
@@ -466,17 +426,17 @@ public enum ActionEventType {
 			if (e.getValue() == 0) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはVALUEが必要です) + " : " + this + " : " + e);
 			}
-			if (e.getTgtCndRegist() == null) {
+			if (e.getTgtCndRegistKey() == null) {
 				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはCNDREGISTが必要です) + " : " + this + " : " + e);
 			}
 		}
 
 		@Override
 		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
-			float v = tgt.getStatus().getConditionRegist().get(e.getTgtCndRegist());
-			tgt.getStatus().getConditionRegist().put(e.getTgtCndRegist(), v + e.getValue());
+			float v = tgt.getStatus().getConditionRegist().get(e.getTgtCndRegistKey());
+			tgt.getStatus().getConditionRegist().put(e.getTgtCndRegistKey(), v + e.getValue());
 			String msg = I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
-					+ I18N.get(GameSystemI18NKeys.状態異常耐性Xが, e.getTgtCndRegist().getVisibleName())
+					+ I18N.get(GameSystemI18NKeys.状態異常耐性Xが, e.getTgtCndRegistKey().getVisibleName())
 					+ I18N.get(GameSystemI18NKeys.Xになった, (int) (tgt.getStatus().getAttrIn().get(e.getTgtAttrIn()).getValue() * 100f) + "%");
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
@@ -484,38 +444,31 @@ public enum ActionEventType {
 	},
 	状態異常付与(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			if (event.getCndTime() != 0) {
-				sb.append(I18N.get(GameSystemI18NKeys.XをXの確率でXターン付与する,
-						event.getTgtConditionKey().getVisibleName(),
-						ActionUtil.getVisible確率(event), event.getCndTime()));
-			} else {
-				sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で付与する,
-						event.getTgtConditionKey().getVisibleName(), ActionUtil.getVisible確率(event)));
-			}
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = event.getCndTime() == 0
+					? I18N.get(GameSystemI18NKeys.Xを付与する, event.getTgtConditionKey().getVisibleName())
+					: I18N.get(GameSystemI18NKeys.XをXターン付与する, event.getTgtConditionKey().getVisibleName(), event.getCndTime());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.状態異常付与の術式));
-			sb.append(":");
-			sb.append(event.getTgtConditionKey().getVisibleName());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.状態付与の術式,
+					event.getTgtConditionKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる));
 		}
 
 		@Override
@@ -537,35 +490,88 @@ public enum ActionEventType {
 		}
 
 	},
-	状態異常解除(false) {
+	耐性参照状態異常付与(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で解除する,
-					event.getTgtConditionKey().getVisibleName(),
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = event.getCndTime() == 0
+					? I18N.get(GameSystemI18NKeys.Xを付与する, event.getTgtConditionKey().getVisibleName())
+					: I18N.get(GameSystemI18NKeys.XをXターン付与する, event.getTgtConditionKey().getVisibleName(), event.getCndTime());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる),
+					I18N.get(GameSystemI18NKeys.対象の耐性が参照される));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
+			String msg = I18N.get(GameSystemI18NKeys.状態付与の術式,
+					event.getTgtConditionKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.意識を失うとこの効果はなくなる),
+					I18N.get(GameSystemI18NKeys.対象の耐性が参照される));
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+			if (e.getTgtConditionKey() == null) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはTGTCNDKEYが必要です) + " : " + this + " : " + e);
 			}
-			sb.append(I18N.get(GameSystemI18NKeys.状態異常解除の術式));
-			sb.append(":");
-			sb.append(event.getTgtConditionKey().getVisibleName());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			if (e.getCndTime() == 0) {
+				if (e.getTgtConditionKey() != ConditionKey.解脱 && e.getTgtConditionKey() != ConditionKey.損壊) {
+					throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはCNDTIMEが必要です) + " : " + this + " : " + e);
+				}
+			}
+			if (!e.getTgtConditionKey().isRegistOn()) {
+				throw new GameSystemException(I18N.get(GameSystemI18NKeys.ErrorMsg.このイベントにはREGISTがあるTGTCNDKEYが必要です) + " : " + this + " : " + e);
+			}
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			//p判定は行われている。
+			if (Random.percent(tgt.getStatus().getEffectedConditionRegist().get(e.getTgtConditionKey()))) {
+				String msg = tgt.getStatus().addCondition(e.getTgtConditionKey(), e.getCndTime());
+				addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+				return;
+			}
+			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
+		}
+
+	},
+	状態異常解除(false) {
+		@Override
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xを解除する, event.getTgtConditionKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.状態解除の術式,
+					event.getTgtConditionKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -584,32 +590,27 @@ public enum ActionEventType {
 	},
 	アイテム追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で入手する, i.getVisibleName(), ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xを入手する,
+					event.getTgtAsItem().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ITEM,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.アイテム追加の術式));
-			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
-			sb.append(":").append(i.getVisibleName());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.アイテム追加の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ITEM,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -644,32 +645,27 @@ public enum ActionEventType {
 	},
 	アイテムロスト(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.XをXの確率で失う, i.getVisibleName(), ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xを失う,
+					event.getTgtAsItem().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ITEM,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.アイテムロストの術式));
-			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
-			sb.append(":").append(i.getVisibleName());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.アイテムロストの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ITEM,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -701,33 +697,27 @@ public enum ActionEventType {
 	},
 	ドロップアイテム追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			Item i = ActionStorage.getInstance().itemOf(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.戦闘に勝利したときXをXの確率で入手する,
-					i.getVisibleName(), ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.戦闘に勝利したときXを入手する,
+					event.getTgtAsItem().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ITEM,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ドロップアイテム追加の術式));
-			sb.append(":");
-			sb.append(ActionStorage.getInstance().itemOf(event.getTgtID()).getVisibleName());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ドロップアイテム追加の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ITEM,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -755,38 +745,33 @@ public enum ActionEventType {
 				return;
 			}
 			String msg = I18N.get(GameSystemI18NKeys.しかしうまくきまらなかった);
-			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+			addResult(res, ActionResultSummary.失敗＿不発, user, tgt, e, msg, isUserEvent);
 		}
 
 	},
 	ドロップマテリアル追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			Material m = MaterialStorage.getInstance().get(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.戦闘に勝利したときXをXの確率で入手する, m.getVisibleName(), ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.戦闘に勝利したときXを入手する,
+					event.getTgtAsMaterial().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_MATERIAL,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ドロップマテリアル追加の術式));
-			sb.append(":");
-			sb.append(MaterialStorage.getInstance().get(event.getTgtID()).getVisibleName());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ドロップマテリアル追加の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_MATERIAL,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -816,32 +801,29 @@ public enum ActionEventType {
 		}
 
 	},
-	ユーザの武器をドロップしてドロップアイテムに追加(false) {
+	ユーザの武器をドロップしてTGTのドロップアイテムに追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で自身の武器装備を解除して敵のドロップアイテムに追加する,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.使用者のXを外し戦闘に勝利したとき入手する,
+					event.getTgtAsSlot().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_SLOT,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.武器投擲の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.解除の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_SLOT,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -931,31 +913,27 @@ public enum ActionEventType {
 	},
 	TGTの行動をVALUE回数この直後に追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は直ちにX回行動できる,
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者は直ちにX回行動できる,
+					(int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.即時追加行動の術式));
-			sb.append(":").append(I18N.get(GameSystemI18NKeys.X回, ActionUtil.getVisible値(event)));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.即時追加行動の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -982,31 +960,27 @@ public enum ActionEventType {
 	},
 	TGTの行動をVALUE回数ターン最後に追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者はこのターンの最後にX回行動できる,
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者は直ちにX回行動できる,
+					(int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.遅延追加行動の術式));
-			sb.append(":").append(I18N.get(GameSystemI18NKeys.X回, ActionUtil.getVisible値(event)));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.即時追加行動の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1032,33 +1006,27 @@ public enum ActionEventType {
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの全員にも適用(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の同じチームの全員にも作用する,
-					ActionUtil.getVisible確率(event),
-					ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.ターゲットからXの距離内の同じチームの全員にも作用する,
+					(int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.放射の術式));
-			sb.append(":");
-			sb.append((int) event.getValue());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.放射の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1104,32 +1072,27 @@ public enum ActionEventType {
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内の全員にも適用(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の全員にも作用する,
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.ターゲットからXの距離内の全員にも作用する,
+					(int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.解放の術式));
-			sb.append(":");
-			sb.append((int) event.getValue());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.解放の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1170,32 +1133,27 @@ public enum ActionEventType {
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内のランダムな同じチームの一人にも適用(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の同じチームのランダムな一人にも作用する,
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.ターゲットからXの距離内の同じチームのランダムな一人にも作用する,
+					(int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.派生の術式));
-			sb.append(":");
-			sb.append((int) event.getValue());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.派生の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1238,32 +1196,27 @@ public enum ActionEventType {
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内のランダムな一人にも適用(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内のランダムな一人にも作用する,
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.ターゲットからXの距離内のランダムな一人にも作用する,
+					(int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.伝搬の術式));
-			sb.append(":");
-			sb.append((int) event.getValue());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.伝搬の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1303,32 +1256,27 @@ public enum ActionEventType {
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内の最も近い同じチームの一人にも適用(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の同じチームの最も近い一人にも作用する,
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.ターゲットからXの距離内の同じチームの最も近い一人にも作用する,
+					(int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.連鎖の術式));
-			sb.append(":");
-			sb.append((int) event.getValue());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.連鎖の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1378,32 +1326,27 @@ public enum ActionEventType {
 	},
 	このアクションの他のイベントをこのイベントのTGTからVALUE内の最も近い一人にも適用(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でターゲットからXの距離内の最も近い一人にも作用する,
-					ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.ターゲットからXの距離内の最も近い一人にも作用する,
+					(int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.伝達の術式));
-			sb.append(":");
-			sb.append((int) event.getValue());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.伝達の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1451,30 +1394,26 @@ public enum ActionEventType {
 	},
 	このターンのTGTの行動を未行動ならこの直後に移動(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.このターン対象者が未行動ならXの確率で対象者はこの行動のすぐあとに行動できる,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.このターン対象者が未行動なら対象者はこの行動のすぐあとに行動できる);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.即時行動の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.即時行動の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1503,30 +1442,26 @@ public enum ActionEventType {
 	},
 	このターンのTGTの行動を未行動ならターン最後に移動(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.このターン対象者が未行動ならXの確率で対象者はこのターンの最後に行動できる,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.このターン対象者が未行動なら対象者はこのターンの最後に行動できる);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.遅延行動の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.遅延行動の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1554,29 +1489,26 @@ public enum ActionEventType {
 	},
 	TGTの魔法詠唱を中断(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は魔法詠唱を中断する, ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者は魔法詠唱を中断する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.詠唱中断の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.詠唱中断の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1598,32 +1530,28 @@ public enum ActionEventType {
 	},
 	TGTの魔法詠唱完了をVALUEターン分ずらす(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者の詠唱完了イベントをXターン移動する,
-					ActionUtil.getVisible確率(event),
-					ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者の詠唱完了イベントをXターン移動する,
+					ActionUtil.getVisible値(event));
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.詠唱時間変更の術式));
-			sb.append(":").append(ActionUtil.getVisible値(event)).append(I18N.get(GameSystemI18NKeys.ターン));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.詠唱時間変更の術式,
+					ActionUtil.getVisible値(event));
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1673,30 +1601,26 @@ public enum ActionEventType {
 	},
 	USERのクローンをパーティーまたはENEMYに追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で自身のクローンを召喚する,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象のクローンを召喚する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.術者クローニングの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.クローニングの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1724,30 +1648,26 @@ public enum ActionEventType {
 	},
 	このターンのTGTの行動を破棄(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者はそのターン行動できなくなる,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者はそのターン行動できなくなる);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.行動阻止の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.行動阻止の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1769,30 +1689,26 @@ public enum ActionEventType {
 	},
 	このターンの行動順を反転させる(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でそのターンの行動順を反転させる,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.そのターンの行動順を反転させる);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.トリックルームの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.トリックルームの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1810,32 +1726,26 @@ public enum ActionEventType {
 	},
 	TGTを中心位置からVALUEの場所に転送(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は中心からXの範囲内に転送される,
-					ActionUtil.getVisible確率(event),
-					ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者は中心からXの範囲内に転送される, (int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.集結の術式));
-			sb.append(":").append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.集結の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1864,32 +1774,26 @@ public enum ActionEventType {
 	},
 	TGTを術者の近くに転送(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は術者からXの範囲内に転送される,
-					ActionUtil.getVisible確率(event),
-					ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者は術者からXの範囲内に転送される, (int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.引き寄せの術式));
-			sb.append(":").append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.引き寄せの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1917,30 +1821,26 @@ public enum ActionEventType {
 	},
 	TGTを逃げられる位置に転送(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者はすぐ逃げられる位置に転送される,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者はすぐ逃げられる位置に転送される);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.退避の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.退避の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -1966,29 +1866,26 @@ public enum ActionEventType {
 	},
 	TGTを一番近い敵対者の至近距離に転送(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は一番近い敵対者のそばに転送される,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者は一番近い敵対者のそばに転送される);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.接近の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.接近の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2027,30 +1924,26 @@ public enum ActionEventType {
 	},
 	USERをTGTの至近距離に転送(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者は対象者のそばに転送される,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.術者は対象者のそばに転送される);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.術者転送の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.術者転送の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2076,30 +1969,26 @@ public enum ActionEventType {
 	},
 	USERとTGTの位置を交換(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者は対象者と位置が入れ替わる,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.術者は対象者と位置が入れ替わる);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.位置交換の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.位置交換の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2119,30 +2008,26 @@ public enum ActionEventType {
 	},
 	TGTIDのCSVにあるアイテムのいずれかをUSERに追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者は候補からいずれかのアイテムを手に入れる,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.術者は候補からいずれかのアイテムを手に入れる);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ランダムアイテムの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ランダムアイテムの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2178,30 +2063,26 @@ public enum ActionEventType {
 	},
 	逃走で戦闘終了(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で戦闘が終了し逃走扱いになる,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.戦闘が終了し逃走扱いになる);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.強制逃走の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.強制逃走の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2217,31 +2098,26 @@ public enum ActionEventType {
 	},
 	TGTIDのマップIDの座標に転送(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXにワープする,
-					ActionUtil.getVisible確率(event), I18N.get(event.getTgtID())));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにワープする, event.getTgtAsMsgI18Nd());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_I18N,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.マップ間ワープの術式));
-			sb.append(":").append(I18N.get(event.getTgtID()));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.マップ間ワープの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_I18N,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2281,30 +2157,26 @@ public enum ActionEventType {
 	},
 	カレントマップのランダムな出口ノードに転送(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で現在のマップのランダムな出入り口に移動する,
-					ActionUtil.getVisible確率(event), I18N.get(event.getTgtID())));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.現在のマップのランダムな出入り口に移動する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.テレポートの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.テレポートの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2322,34 +2194,26 @@ public enum ActionEventType {
 	},
 	友好的な存在の召喚(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			Actor ac = new Actor(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを召喚する,
-					ActionUtil.getVisible確率(event),
-					ac.getVisibleName()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xを召喚する, event.getTgtAsActor().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ACTOR,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.友好的存在召喚の術式));
-			Actor ac = new Actor(event.getTgtID());
-			sb.append(":").append(ac.getVisibleName());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.友好的存在召喚の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ACTOR,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2382,34 +2246,26 @@ public enum ActionEventType {
 	},
 	敵対的な存在の召喚(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			Actor ac = new Actor(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXを召喚する,
-					ActionUtil.getVisible確率(event),
-					ac.getVisibleName()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xを召喚する, event.getTgtAsActor().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ACTOR,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.敵対的存在召喚の術式));
-			Actor ac = new Actor(event.getTgtID());
-			sb.append(":").append(ac.getVisibleName());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.敵対的存在召喚の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ACTOR,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2442,30 +2298,26 @@ public enum ActionEventType {
 	},
 	カレントセーブデータロスト(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で現在のセーブデータを破壊しセーブせずにゲームを終了した場合はセーブデータをロストする,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.現在のセーブデータを破壊しセーブせずにゲームを終了した場合はセーブデータをロストする);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.現在記録抹消の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.現在記録抹消の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2480,30 +2332,26 @@ public enum ActionEventType {
 	},
 	ゲームクラッシュ(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でゲームがセーブされずに終了する,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.ゲームがセーブされずに終了する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.次元崩壊の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.次元崩壊の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2518,30 +2366,26 @@ public enum ActionEventType {
 	},
 	カレント以外のセーブデータを１つロスト(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で他のセーブデータを破壊する,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.他のセーブデータを破壊する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.別次元破壊の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.別次元破壊の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2555,30 +2399,26 @@ public enum ActionEventType {
 	},
 	セーブデータ全ロスト(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率ですべてのセーブデータを破壊する,
-					ActionUtil.getVisible確率(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.すべてのセーブデータを破壊する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.全空間破壊の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.全空間破壊の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2592,25 +2432,26 @@ public enum ActionEventType {
 	},
 	独自効果(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.この効果は特殊なもので分析ができない));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.この効果は特殊なもので分析ができない);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.独自効果の術式)).append("ID:").append(event.getId());
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.独自効果の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2625,25 +2466,26 @@ public enum ActionEventType {
 	},
 	ビームエフェクト(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.術者から対象者へビームを照射する));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.術者から対象者へビームを照射する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.OFF,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.光線の術式));
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.光線の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.OFF,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -2657,25 +2499,28 @@ public enum ActionEventType {
 	},
 	DC_ファイル選択からのハッシュ(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.起動するとファイル選択が開き選んだファイルに応じて属性とダメージが決まる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える, event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは選択したファイルによって変動する));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.上位者の情報の術式));
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.上位者の情報の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは選択したファイルによって変動する));
 		}
 
 		@Override
@@ -2742,25 +2587,28 @@ public enum ActionEventType {
 	},
 	DC_ファイル選択からのサイズ(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.起動するとファイル選択が開き選んだファイルのサイズに応じて属性とダメージが決まる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える, event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは選択したファイルのサイズによって変動する));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.上位者の巨大情報の術式));
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.上位者の巨大情報の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは選択したファイルのサイズによって変動する));
 		}
 
 		@Override
@@ -2830,39 +2678,28 @@ public enum ActionEventType {
 	},
 	DC_倒した敵の数が多い(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージは倒した敵の数が多いほど大きくなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える, event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは倒した敵の数が多いほど大きくなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.勇者の絶望の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.勇者の絶望の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは倒した敵の数が多いほど大きくなる));
 		}
 
 		@Override
@@ -2921,39 +2758,28 @@ public enum ActionEventType {
 	},
 	DC_倒した敵の数が少ない(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージは倒した敵の数が少ないほど大きくなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える, event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは倒した敵の数が少ないほど大きくなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.聖職者の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.慈悲深き聖者の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは倒した敵の数が少ないほど大きくなる));
 		}
 
 		@Override
@@ -3012,40 +2838,28 @@ public enum ActionEventType {
 	},
 	DC_ターン数が小さい(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージはターン数が小さいほど大きくなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える, event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージはターン数が小さいほど大きくなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.速攻戦の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append((int) (event.getValue()));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.速攻戦の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージはターン数が小さいほど大きくなる));
 		}
 
 		@Override
@@ -3096,40 +2910,28 @@ public enum ActionEventType {
 	},
 	DC_ターン数が大きい(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージはターン数が経過しているほど大きくなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える, event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージはターン数が経過しているほど大きくなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.遅滞戦術の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append((int) (event.getValue()));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.速攻戦の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージはターン数が経過しているほど大きくなる));
 		}
 
 		@Override
@@ -3178,40 +2980,28 @@ public enum ActionEventType {
 	},
 	DC_CPUのコア数(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージは使用しているコンピュータのコア数により変化する));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える, event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは使用しているコンピュータのコア数により変化する));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.上位者の脳の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append((int) (event.getValue()));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.上位者の脳の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは使用しているコンピュータのコア数により変化する));
 		}
 
 		@Override
@@ -3266,40 +3056,28 @@ public enum ActionEventType {
 	},
 	DC_USERの持っているアイテムの重さ(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージはアイテムをたくさん持っているほど大きくなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える, event.getTgtStatusKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージはアイテムをたくさん持っているほど大きくなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ヘビーボンバーの術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append((int) (event.getValue()));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			sb.append(GameSystemI18NKeys.このダメージはアイテムをたくさん持っているほど大きくなる);
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ヘビーボンバーの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージはアイテムをたくさん持っているほど大きくなる));
 		}
 
 		@Override
@@ -3368,32 +3146,26 @@ public enum ActionEventType {
 	},
 	詠唱完了イベントをVALUEターン内で反転(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXターン内の詠唱完了を反転させる,
-					ActionUtil.getVisible確率(event),
-					(int) event.getValue()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xターン内の詠唱完了を反転させる, (int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.詠唱時間逆転の術式));
-			sb.append(":").append((int) event.getValue());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.詠唱時間逆転の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -3422,32 +3194,26 @@ public enum ActionEventType {
 	},
 	自身以外の全員の正気度にダメージ(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で全員にXの正気度ダメージを与える,
-					ActionUtil.getVisible確率(event),
-					(int) event.getValue()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.全員にXの正気度ダメージを与える, (int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.正気度ダメージの術式));
-			sb.append(":").append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.正気度ダメージの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -3481,31 +3247,26 @@ public enum ActionEventType {
 	},
 	WEBサイト起動(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.上位者の情報を閲覧する,
-					ActionUtil.getVisible確率(event),
-					(int) event.getValue()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.上位者の情報を閲覧する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.上位者の情報閲覧の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.上位者の情報閲覧の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -3534,38 +3295,28 @@ public enum ActionEventType {
 	},
 	DC_減っている体力(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の体力が減っているほど高くなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の体力が減っているほど高くなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.背水の陣の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.背水の陣の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の体力が減っているほど高くなる));
 		}
 
 		@Override
@@ -3620,38 +3371,28 @@ public enum ActionEventType {
 	},
 	DC_減っている魔力(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の魔力が減っているほど高くなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の魔力が減っているほど高くなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.精神限界の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.精神限界の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の体力が減っているほど高くなる));
 		}
 
 		@Override
@@ -3706,38 +3447,28 @@ public enum ActionEventType {
 	},
 	DC_減っている正気度(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が減っているほど高くなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が減っているほど高くなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.狂気の笑みの術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.狂気の笑みの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が減っているほど高くなる));
 		}
 
 		@Override
@@ -3792,38 +3523,28 @@ public enum ActionEventType {
 	},
 	DC_残っている体力(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の体力が最大値に近いほど高くなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の体力が最大値に近いほど高くなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.体力の余裕の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.体力の余裕の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の体力が最大値に近いほど高くなる));
 		}
 
 		@Override
@@ -3878,38 +3599,28 @@ public enum ActionEventType {
 	},
 	DC_残っている魔力(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の魔力が最大値に近いほど高くなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の魔力が最大値に近いほど高くなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.魔力の余裕の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.魔力の余裕の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の魔力が最大値に近いほど高くなる));
 		}
 
 		@Override
@@ -3963,38 +3674,28 @@ public enum ActionEventType {
 	},
 	DC_残っている正気度(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でX属性のダメージをXに与える,
-					ActionUtil.getVisible確率(event),
-					event.getAtkAttr() == null ? I18N.get(GameSystemI18NKeys.無) : event.getAtkAttr().getVisibleName(),
-					event.getTgtStatusKey().getVisibleName()));
-			sb.append(I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が最大値に近いほど高くなる));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が最大値に近いほど高くなる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.精神的余裕の術式));
-			sb.append(":");
-			if (event.getAtkAttr() != null) {
-				sb.append(event.getAtkAttr().getVisibleName());
-			}
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.精神的余裕の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.ON,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このダメージは自身の正気度が最大値に近いほど高くなる));
 		}
 
 		@Override
@@ -4048,37 +3749,27 @@ public enum ActionEventType {
 	},
 	USERによる指定IDの魔法の詠唱完了をこのターンの最後にVALUE回数追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			Action a = ActionStorage.getInstance().actionOf(event.getTgtID());
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXをこのターンの最後にX回発動する,
-					ActionUtil.getVisible確率(event),
-					ActionStorage.getInstance().actionOf(event.getTgtID()).getVisibleName(),
-					ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xをこのターンの最後にX回発動する,
+					event.getTgtAsAction().getVisibleName(), (int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ACTION,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.高速詠唱の術式));
-			sb.append(":");
-			Action a = ActionStorage.getInstance().actionOf(event.getTgtID());
-			sb.append(ActionStorage.getInstance().actionOf(event.getTgtID()).getVisibleName());
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.高速詠唱の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ACTION,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4113,41 +3804,27 @@ public enum ActionEventType {
 	},
 	USERによる指定IDの魔法の詠唱完了をこのターンの最初にVALUE回数追加(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でXをこのターンの最初にX回発動する));
-			sb.append(":");
-			Action a = ActionStorage.getInstance().actionOf(event.getTgtID());
-			sb.append(ActionStorage.getInstance().actionOf(event.getTgtID()).getVisibleName());
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xをこのターンの最初にX回発動する,
+					event.getTgtAsAction().getVisibleName(), (int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ACTION,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.多重発動の術式));
-			sb.append(":");
-			Action a = ActionStorage.getInstance().actionOf(event.getTgtID());
-			sb.append(ActionStorage.getInstance().actionOf(event.getTgtID()).getVisibleName());
-			sb.append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.多重発動の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ACTION,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4182,30 +3859,29 @@ public enum ActionEventType {
 	},
 	DC_ランダム属性のランダムダメージ(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率でランダムな属性のランダムなダメージをXに与える,
-					ActionUtil.getVisible確率(event), event.getTgtStatusKey().getVisibleName()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.Xにダメージを与える,
+					event.getTgtAsAction().getVisibleName(), (int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.このイベントはランダムな属性とダメージになる));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ランダムシードの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ランダムシードの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.このイベントはランダムな属性とダメージになる));
 		}
 
 		@Override
@@ -4257,33 +3933,27 @@ public enum ActionEventType {
 	},
 	USERの指定スロットの装備品の攻撃回数をVALUE上げる(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備の攻撃回数をX増減する,
-					ActionUtil.getVisible確率(event),
-					EqipSlot.valueOf(event.getTgtID()).getVisibleName(),
-					ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.術者のX装備の攻撃回数をX増減する,
+					event.getTgtAsSlot().getVisibleName(), ActionUtil.getVisible値(event));
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.攻撃回数変化の術式));
-			sb.append(":").append(EqipSlot.valueOf(event.getTgtID()).getVisibleName()).append(":").append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.攻撃回数変化の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4324,31 +3994,27 @@ public enum ActionEventType {
 	},
 	USERの指定スロットの装備品の価値をVALUE倍にする(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備の価値をX倍にする,
-					ActionUtil.getVisible確率(event), EqipSlot.valueOf(event.getTgtID()).getVisibleName(), (event.getValue()) + ""));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.術者のX装備の価値をXにする,
+					event.getTgtAsSlot().getVisibleName(), ActionUtil.getVisible値Percent(event));
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_PERCENT,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.装備価値変更の術式));
-			sb.append(":").append(EqipSlot.valueOf(event.getTgtID()).getVisibleName()).append(":").append(event.getValue());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.装備価値変更の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_PERCENT,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4394,31 +4060,27 @@ public enum ActionEventType {
 	},
 	USERの指定スロットの装備品の価値にVALUEを追加する(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備の価値にXを加算する,
-					ActionUtil.getVisible確率(event), EqipSlot.valueOf(event.getTgtID()).getVisibleName(), ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.術者のX装備の価値にXを加算する,
+					event.getTgtAsSlot().getVisibleName(), ActionUtil.getVisible値(event));
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.装備価値加算の術式));
-			sb.append(":").append(EqipSlot.valueOf(event.getTgtID()).getVisibleName()).append(":").append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.装備価値加算の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4464,30 +4126,27 @@ public enum ActionEventType {
 	},
 	TGTを即死させる(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死Xさせる,
-					ActionUtil.getVisible確率(event), event.getTgtConditionKey().getVisibleName()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象を即死Xさせる,
+					event.getTgtConditionKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.即死の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.即死の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4533,30 +4192,29 @@ public enum ActionEventType {
 	},
 	TGTを即死させる_耐性参照(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死Xさせる,
-					ActionUtil.getVisible確率(event), event.getTgtConditionKey().getVisibleName()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象を即死Xさせる,
+					event.getTgtConditionKey().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx,
+					I18N.get(GameSystemI18NKeys.耐性が参照される));
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.即死の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.即死の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					I18N.get(GameSystemI18NKeys.耐性が参照される));
 		}
 
 		@Override
@@ -4618,30 +4276,27 @@ public enum ActionEventType {
 	},
 	指定スロットの装備解除(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で術者のX装備を解除する,
-					ActionUtil.getVisible確率(event), EqipSlot.valueOf(event.getTgtID()).getVisibleName()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.術者のX装備を解除する,
+					event.getTgtAsSlot().getVisibleName());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_SLOT,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.パージの術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.パージの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_SLOT,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4675,25 +4330,26 @@ public enum ActionEventType {
 	},
 	マップIDと座標を入力させて移動する(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.指定したマップの指定した座標にワープする));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.指定したマップの指定した座標にワープする);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.転送の術式));
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.転送の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4750,29 +4406,26 @@ public enum ActionEventType {
 	},
 	ダミー＿成功(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ダミーの術式＿成功));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ダミーの術式＿成功);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4787,30 +4440,26 @@ public enum ActionEventType {
 	},
 	ダミー＿失敗(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ));
-			sb.append(Text.getLineSep());
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ダミーの術式＿失敗));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ダミーの術式＿失敗);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4824,30 +4473,26 @@ public enum ActionEventType {
 	},
 	メッセージ表示(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ));
-			sb.append(Text.getLineSep());
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ダミーの術式＿メッセージ表示));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ダミーの術式＿メッセージ表示);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4865,29 +4510,26 @@ public enum ActionEventType {
 	},
 	フラグ参照メッセージ表示(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ダミーの術式＿メッセージ表示));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ダミーの術式＿メッセージ表示);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4921,30 +4563,26 @@ public enum ActionEventType {
 	},
 	指定IDのPCがいれば即死させる(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象を即死Xさせる, ActionUtil.getVisible確率(event)));
-			sb.append(Text.getLineSep());
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.特定のキャラを即死Xさせる);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.即死の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.特定人物即死の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_CND,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -4993,32 +4631,27 @@ public enum ActionEventType {
 
 	},
 	指定IDのPCがいれば正気度ダメージ(false) {
-
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で最大Xの正気度ダメージを与える, ActionUtil.getVisible確率(event), ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.特定のキャラに正気度ダメージを与える);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.正気度ダメージの術式));
-			sb.append(":").append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.特定人物正気度ダメージの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -5044,32 +4677,27 @@ public enum ActionEventType {
 	},
 	TGTノックバック(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で対象者は最大Xノックバックする,
-					ActionUtil.getVisible確率(event),
-					ActionUtil.getVisible値(event)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象者は最大Xノックバックする,
+					(int) event.getValue() + "");
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
 		public String getPageDescI18Nd(ActionEvent event) {
-			StringBuilder sb = new StringBuilder();
-			String s = ActionUtil.get起動条件(event);
-			if (!s.isEmpty()) {
-				sb.append(s).append(Text.getLineSep());
-			}
-			sb.append(I18N.get(GameSystemI18NKeys.ノックバックの術式));
-			sb.append(":").append(ActionUtil.getVisible値(event));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(event));
-			sb.append(")");
-			return sb.toString();
+			String msg = I18N.get(GameSystemI18NKeys.ノックバックの術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -5103,22 +4731,27 @@ public enum ActionEventType {
 	},
 	脚本の実行(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.脚本Xを実行する, e.getTgtID()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.脚本Xを実行する,
+					event.getTgtID());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
-		public String getPageDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.脚本実行の術式));
-			sb.append("(");
-			sb.append(e.getTgtID());
-			sb.append(")");
-			return sb.toString();
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.脚本実行の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_ID,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -5151,26 +4784,27 @@ public enum ActionEventType {
 	},
 	統計情報変更(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で統計情報XにXを加算する,
-					ActionUtil.getVisible確率(e), I18N.get(e.getTgtID()), ActionUtil.getVisible値(e)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.統計情報XにXを加算する,
+					event.getTgtAsMsgI18Nd(), ActionUtil.getVisible値(event));
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
-		public String getPageDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.統計X改竄の術式));
-			sb.append(":");
-			sb.append(I18N.get(e.getTgtID()));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(e));
-			sb.append(")");
-			return sb.toString();
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.統計X改竄の術式, event.getTgtAsMsgI18Nd());
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -5195,24 +4829,26 @@ public enum ActionEventType {
 	},
 	統計情報完全リセット(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で統計情報を完全にリセットする,
-					ActionUtil.getVisible確率(e), ActionUtil.getVisible値(e)));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.統計情報を完全にリセットする);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
-		public String getPageDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.改竄の術式));
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(e));
-			sb.append(")");
-			return sb.toString();
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.改竄の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -5235,19 +4871,26 @@ public enum ActionEventType {
 	},
 	現在のマップIDと座標表示(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.現在のフィールドマップ情報を閲覧する));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.現在のフィールドマップ情報を閲覧する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
-		public String getPageDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.位置の術式));
-			return sb.toString();
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.位置の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -5266,25 +4909,27 @@ public enum ActionEventType {
 	},
 	難易度の変更(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.Xの確率で難易度をXに変更する,
-					ActionUtil.getVisible確率(e), Difficulty.valueOf(e.getTgtID()).getNameI18Nd()));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.難易度をXに変更する,
+					event.getTgtAsDifficulty().getNameI18Nd());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_DIFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
-		public String getPageDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.世界設定変更の術式));
-			sb.append(":").append(Difficulty.valueOf(e.getTgtID()).getNameI18Nd());
-			sb.append("(");
-			sb.append(GameSystemI18NKeys.確率);
-			sb.append(ActionUtil.getVisible確率(e));
-			sb.append(")");
-			return sb.toString();
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.世界設定変更の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_DIFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -5310,19 +4955,26 @@ public enum ActionEventType {
 	},
 	難易度の選択(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.難易度を選択して変更する));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.難易度を選択して変更する);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
-		public String getPageDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.世界設定再選択の術式));
-			return sb.toString();
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.世界設定再選択の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -5345,19 +4997,26 @@ public enum ActionEventType {
 	},
 	デバッグモードの変更(false) {
 		@Override
-		public String getEventDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.デバッグモードを切り替える));
-			return sb.toString();
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.デバッグモードを切り替える);
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
 		}
 
 		@Override
-		public String getPageDescI18Nd(ActionEvent e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(ActionUtil.get起動条件(e)).append(Text.getLineSep());
-			sb.append(I18N.get(GameSystemI18NKeys.世界の裏側の術式));
-			return sb.toString();
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.世界の裏側の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.OFF,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
 		}
 
 		@Override
@@ -5370,13 +5029,87 @@ public enum ActionEventType {
 			String msg = I18N.get(GameSystemI18NKeys.デバッグモードがXになった, GameSystem.isDebugMode());
 			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
 		}
-	},;
+	},
+	キャラアビリティの変更(false) {
+		//寝ると解除される
+		@Override
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象の特性をXに変える, event.getTgtAsMsgI18Nd());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_I18N,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.特性変更の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_I18N,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			Ability ab = Ability.valueOf(e.getTgtID());
+			tgt.getStatus().setAbility(ab);
+			String msg = I18N.get(GameSystemI18NKeys.XはXになった, tgt.getVisibleName(), ab.getVisibleName());
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+	},
+	異名の変更(false) {
+		//寝ると解除される
+		@Override
+		public String getEventDescI18Nd(ActionEvent event, int thisIdx) {
+			String msg = I18N.get(GameSystemI18NKeys.対象の異名をXに変える, event.getTgtAsMsgI18Nd());
+			return ActionUtil.getVisibleDescI18Nd(event,
+					msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_I18N,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF,
+					ActionUtil.E起動条件Visibility.ON,
+					thisIdx);
+		}
+
+		@Override
+		public String getPageDescI18Nd(ActionEvent event) {
+			String msg = I18N.get(GameSystemI18NKeys.異名変更の術式);
+			return ActionUtil.getVisibleDescI18Nd(event, msg,
+					ActionUtil.属性Visibility.OFF,
+					ActionUtil.値Visibility.ON_I18N,
+					ActionUtil.確率Visibility.ON,
+					ActionUtil.計算方法Visibility.OFF);
+		}
+
+		@Override
+		public void pack(ActionEvent e, Action a) throws GameSystemException {
+		}
+
+		@Override
+		public void exec(Actor user, Action a, Actor tgt, ActionEvent e, ActionResult res, boolean isUserEvent) {
+			String v = e.getTgtAsMsgI18Nd();
+			tgt.getStatus().set異名(v);
+			String msg = I18N.get(GameSystemI18NKeys.XはXになった, tgt.getVisibleName(), v);
+			addResult(res, ActionResultSummary.成功, user, tgt, e, msg, isUserEvent);
+		}
+	};
 
 	public String getVisibleName() {
 		return I18N.get(toString());
 	}
 
-	public abstract String getEventDescI18Nd(ActionEvent e);
+	public abstract String getEventDescI18Nd(ActionEvent e, int thisIdx);
 
 	public abstract String getPageDescI18Nd(ActionEvent e);
 
@@ -5493,6 +5226,7 @@ public enum ActionEventType {
 	}
 
 	public boolean is連鎖イベント() {
+
 		return this == このアクションの他のイベントをこのイベントのTGTからVALUE内の同じチームの全員にも適用
 				|| this == このアクションの他のイベントをこのイベントのTGTからVALUE内の全員にも適用
 				|| this == このアクションの他のイベントをこのイベントのTGTからVALUE内のランダムな同じチームの一人にも適用

@@ -16,6 +16,7 @@
  */
 package kinugasa.game;
 
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,6 +24,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import kinugasa.game.input.InputState;
 import kinugasa.game.system.GameSystem;
+import kinugasa.game.ui.Dialog;
 
 /**
  * ゲームの進行を行うスレッドの実装です.
@@ -112,6 +114,8 @@ public final class GameLoop implements Runnable {
 				}
 			}
 		} catch (Throwable ex) {
+			Toolkit.getDefaultToolkit().beep();
+			Dialog.error("!", ex.toString());
 			ex.printStackTrace();
 			Throwable t = ex;
 			while (t.getCause() != null) {

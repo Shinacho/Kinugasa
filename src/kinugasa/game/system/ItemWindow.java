@@ -232,7 +232,7 @@ public class ItemWindow extends BasicSprite {
 				options.add(Text.i18nd(GameSystemI18NKeys.使う));
 				options.add(Text.i18nd(GameSystemI18NKeys.装備));
 				options.add(Text.i18nd(GameSystemI18NKeys.左手に装備));
-				options.add(Text.i18nd(GameSystemI18NKeys.両手持ちで装備));
+				options.add(Text.i18nd(GameSystemI18NKeys.両手に装備));
 				options.add(Text.i18nd(GameSystemI18NKeys.渡す));
 				options.add(Text.i18nd(GameSystemI18NKeys.解体));
 				options.add(Text.i18nd(GameSystemI18NKeys.捨てる));

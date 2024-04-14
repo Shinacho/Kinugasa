@@ -567,9 +567,7 @@ public enum FieldEventType {
 	INIT_STATUS {
 		@Override
 		UserOperationRequire exec(FieldEvent e) {
-			GameSystem.getInstance().getPCbyID(e.getTargetName()).退避＿ステータスの初期化されない項目();
-			GameSystem.getInstance().getPCbyID(e.getTargetName()).readFromXML();
-			GameSystem.getInstance().getPCbyID(e.getTargetName()).復元＿ステータスの初期化されない項目();
+			GameSystem.getInstance().getPCbyID(e.getTargetName()).getStatus().reset();
 			return UserOperationRequire.CONTINUE;
 		}
 	},
@@ -683,7 +681,7 @@ public enum FieldEventType {
 			return UserOperationRequire.CONTINUE;
 		}
 	},
-	PC_SPRITE_SET_VISIBLE_BY_ID{
+	PC_SPRITE_SET_VISIBLE_BY_ID {
 		@Override
 		UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException {
 			String id = e.getTargetName();
@@ -691,7 +689,7 @@ public enum FieldEventType {
 			GameSystem.getInstance().getPCbyID(id).getSprite().setVisible(f);
 			return UserOperationRequire.CONTINUE;
 		}
-		
+
 	};
 
 	abstract UserOperationRequire exec(FieldEvent e) throws FieldEventScriptException;

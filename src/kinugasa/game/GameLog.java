@@ -74,7 +74,7 @@ public final class GameLog {
 	}
 
 	public static void print(String string) {
-		out(string.toString());
+		out(string);
 	}
 
 	public static void print(Object string) {

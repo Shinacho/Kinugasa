@@ -263,7 +263,7 @@ public class EnemySprite extends PCSprite {
 		if (nameVisible) {
 			g2.setColor(Color.RED);
 			g2.setFont(FontModel.DEFAULT.clone().setFontStyle(Font.PLAIN).setFontSize(12).getFont());
-			g2.drawString(me.getVisibleName(), getX() - me.getStatus().getVisibleName().length() * 3, getY() - 4);
+			g2.drawString(me.getVisibleName(), getX() - me.getVisibleName().length() * 3, getY() - 4);
 		}
 		/*
 		g2.setColor(SHADOW);

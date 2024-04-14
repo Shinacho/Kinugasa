@@ -41,6 +41,11 @@ public class Dialog {
 		return DialogOption.of(r);
 	}
 
+	public static DialogOption error(String title, String msg) {
+		int r = JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+		return DialogOption.of(r);
+	}
+
 	public static class InputResult {
 
 		public InputResult(String value, DialogOption result) {
@@ -73,8 +78,8 @@ public class Dialog {
 		int r = JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.YES_NO_OPTION, icon.getOption());
 		return DialogOption.of(r);
 	}
-	
-	public static DialogOption okOrCancel(String title, DialogIcon icon, Object msg){
+
+	public static DialogOption okOrCancel(String title, DialogIcon icon, Object msg) {
 		int r = JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.DEFAULT_OPTION, icon.getOption());
 		return DialogOption.of(r);
 	}

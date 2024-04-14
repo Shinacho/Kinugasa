@@ -258,14 +258,11 @@ public class BookWindow extends BasicSprite {
 						sb.append(Text.getLineSep());
 						//解体素材
 						sb.append(I18N.get(GameSystemI18NKeys.解体すると以下を入手する)).append(Text.getLineSep());
+						int i = 1;
 						for (BookPage p : b.getPages()) {
-							List<String> msg = Arrays.asList(StringUtil.safeSplit(p.getDescI18Nd(), Text.getLineSep()));
-							msg = new ArrayList<>(msg);
-							msg = msg.stream().map(a -> a.replaceAll(" ", "")).toList();
-							msg.set(0, "・" + msg.get(0));
-							for (var v : msg) {
-								sb.append("    ・").append(v).append(Text.getLineSep());
-							}
+							sb.append("  (").append(i).append(")").append(Text.getLineSep());
+							sb.append(p.getEvent().getPageDescI18Nd());
+							i++;
 						}
 
 						msg.setTextDirect(sb.toString());

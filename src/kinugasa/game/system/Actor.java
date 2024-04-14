@@ -73,8 +73,6 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 	private String iniStatusFile;
 	private BufferedImage faceImage;
 	private boolean isSummoned = false;//召喚された人フラグ
-	private StatusValueSet vs;
-	private String visibleName退避;
 
 	public Actor(String id, Actor a) {
 		this(id, a.visibleName, a.status.getRace(), a.sprite);
@@ -137,6 +135,7 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 	//注意：ファイルには反映されない
 	public void setVisibleName(String name) {
 		this.visibleName = name;
+		this.status.setVisibleName(visibleName);
 	}
 
 	public void readFromXML() throws GameSystemException {
@@ -149,49 +148,12 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 	private PersonalBag<Book> bookBag;
 	private PersonalBag<Item> itemBag;
 
-	public void 退避＿ステータスの初期化されない項目() {
-		vs = this.status.getBaseStatus().clone();
-		List<StatusKey> list = new ArrayList<>();
-		list.add(StatusKey.レベル);
-		list.add(StatusKey.次のレベルの経験値);
-		list.add(StatusKey.保有経験値);
-		list.add(StatusKey.筋力);
-		list.add(StatusKey.器用さ);
-		list.add(StatusKey.素早さ);
-		list.add(StatusKey.精神);
-		list.add(StatusKey.信仰);
-		list.add(StatusKey.詠唱);
-		for (StatusKey k : list) {
-			this.status.getBaseStatus().remove(k.getName());
-		}
-		visibleName退避 = visibleName;
-		bookBag = getStatus().getBookBag().clone();
-		itemBag = getStatus().getItemBag().clone();
-	}
-
-	public void 復元＿ステータスの初期化されない項目() {
-		vs = this.status.getBaseStatus().clone();
-		List<StatusKey> list = new ArrayList<>();
-		list.add(StatusKey.レベル);
-		list.add(StatusKey.次のレベルの経験値);
-		list.add(StatusKey.保有経験値);
-		list.add(StatusKey.筋力);
-		list.add(StatusKey.器用さ);
-		list.add(StatusKey.素早さ);
-		list.add(StatusKey.精神);
-		list.add(StatusKey.信仰);
-		list.add(StatusKey.詠唱);
-		for (StatusKey k : list) {
-			this.status.getBaseStatus().remove(k.getName());
-			this.status.getBaseStatus().add(vs.get(k));
-		}
-		visibleName = visibleName退避;
-		getStatus().setItemBag(itemBag);
-		getStatus().setBookBag(bookBag);
-	}
-
 	public void setIniStatusFile(String iniStatusFile) {
 		this.iniStatusFile = iniStatusFile;
+	}
+
+	protected final void setId(String id) {
+		this.id = id;
 	}
 
 	@Override
@@ -209,9 +171,14 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 			this.id = id;
 			this.visibleName = visibleName;
 			this.status = new Status(id, r);
+			this.status.setVisibleName(visibleName);
+			if (root.getAttributes().contains("preName")) {
+				String preName = root.getAttributes().get("preName").getValue();
+				status.set異名(preName);
+			}
 			//アビリティ
 			if (root.hasAttribute("ability")) {
-				PCAbility ca = root.getAttributes().get("ability").of(PCAbility.class);
+				Ability ca = root.getAttributes().get("ability").of(Ability.class);
 				this.status.setAbility(ca);
 			}
 			//スプライトシート
@@ -325,6 +292,9 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 	}
 
 	public String getVisibleName() {
+		if (getStatus().get異名() != null && !getStatus().get異名().isEmpty()) {
+			return "<" + getStatus().get異名() + ">" + visibleName;
+		}
 		return visibleName;
 	}
 

@@ -129,7 +129,7 @@ public class BeamEffectEvents {
 			this.key = key;
 			setP(1f);
 			setEventType(ActionEventType.ビームエフェクト);
-			set起動条件(起動条件.前段がないか直前のイベント成功時のみ起動);
+			setEvent起動条件(Event起動条件.前段がないか直前のイベント成功時のみ起動);
 		}
 
 		public Key getKey() {

@@ -86,6 +86,8 @@ public sealed class Text implements Nameable permits Choice {
 	private List<FieldEvent> events;
 	private BufferedImage image;
 
+	public static final Text LINE_SEP = Text.of(lineSep);
+
 	public static void setLineSep(String lineSep) {
 		Text.lineSep = lineSep;
 	}
@@ -96,9 +98,9 @@ public sealed class Text implements Nameable permits Choice {
 
 	protected Text() {
 	}
-	
-	private void setReplace(){
-		for(var v : replaceMap.entrySet()){
+
+	private void setReplace() {
+		for (var v : replaceMap.entrySet()) {
 			text = text.replaceAll(v.getKey(), v.getValue());
 		}
 	}

@@ -653,40 +653,11 @@ public class ActionStorage extends DBStorage<Action> {
 			//光線イベントの判定
 			if (BeamEffectEvents.getInstance().has(l.get(3).get())) {
 				ActionEvent e = BeamEffectEvents.getInstance().of(l.get(3).of(BeamEffectEvents.Key.class));
-				e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
+				e.setEvent起動条件(l.get(17).of(ActionEvent.Event起動条件.class));
 				res.add(e);
 				continue;
 			}
-
-			ActionEvent e = new ActionEvent(l.get(1).get());
-			e.setSort(l.get(2).asInt());
-			e.setEventType(l.get(3).of(ActionEventType.class));
-			e.setTgtStatusKey(l.get(4).orNull(StatusKey.class));
-			e.setP(l.get(5).asFloat());
-			e.setTgtConditionKey(l.get(6).orNull(ConditionKey.class));
-			e.setCndTime(l.get(7).asInt());
-			e.setAtkAttr(l.get(8).orNull(AttributeKey.class));
-			e.setTgtAttrKeyin(l.get(9).orNull(AttributeKey.class));
-			e.setTgtAttrKeyOut(l.get(10).orNull(AttributeKey.class));
-			e.setCndRegist(l.get(11).orNull(ConditionKey.class));
-			e.setTgtID(l.get(12).get());
-			e.setNoLimit(l.get(13).asBoolean());
-			e.setValue(l.get(14).asFloat());
-			e.setCalcMode(l.get(15).orNull(ActionEvent.CalcMode.class));
-			String soundID = l.get(16).get();
-			if (soundID != null) {
-				e.setSuccessSound(SoundStorage.getInstance().get(soundID));
-			}
-			e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
-			e.setWaitTime(l.get(18).asInt());
-			//TERM
-			e.setUser保有条件(get実行可否条件("EventUserTerm", e.getId()));
-			e.setTgt適用条件(get実行可否条件("EventTgtTerm", e.getId()));
-			//ANIMATION
-			e.setUserAnimation(getAnimation(l.get(19).get()));
-			e.setTgtAnimation(getAnimation(l.get(20).get()));
-			e.setOtherAnimation(getAnimation(l.get(21).get()));
-			//
+			ActionEvent e = createEvent(l);
 			res.add(e);
 		}
 		return res;
@@ -703,55 +674,87 @@ public class ActionStorage extends DBStorage<Action> {
 		}
 		List<ActionEvent> res = new ArrayList<>();
 		for (List<DBValue> l : r) {
-			ActionEvent e = new ActionEvent(l.get(1).get());
-			e.setSort(l.get(2).asInt());
-			e.setEventType(l.get(3).of(ActionEventType.class));
-			e.setTgtStatusKey(l.get(4).orNull(StatusKey.class));
-			e.setP(l.get(5).asFloat());
-			e.setTgtConditionKey(l.get(6).orNull(ConditionKey.class));
-			e.setCndTime(l.get(7).asInt());
-			e.setAtkAttr(l.get(8).orNull(AttributeKey.class));
-			e.setTgtAttrKeyin(l.get(9).orNull(AttributeKey.class));
-			e.setTgtAttrKeyOut(l.get(10).orNull(AttributeKey.class));
-			e.setCndRegist(l.get(11).orNull(ConditionKey.class));
-			e.setTgtID(l.get(12).get());
-			e.setNoLimit(l.get(13).asBoolean());
-			e.setValue(l.get(14).asFloat());
-			e.setCalcMode(l.get(15).orNull(ActionEvent.CalcMode.class));
-			String soundID = l.get(16).get();
-			if (soundID != null) {
-				e.setSuccessSound(SoundStorage.getInstance().get(soundID));
-			}
-			e.set起動条件(l.get(17).of(ActionEvent.起動条件.class));
-			e.setWaitTime(l.get(18).asInt());
-			//TERM
-			e.setUser保有条件(get実行可否条件("EventUserTerm", e.getId()));
-			e.setTgt適用条件(get実行可否条件("EventTgtTerm", e.getId()));
-			//ANIMATION
-			e.setUserAnimation(getAnimation(l.get(19).get()));
-			e.setTgtAnimation(getAnimation(l.get(20).get()));
-			e.setOtherAnimation(getAnimation(l.get(21).get()));
-			//
+			ActionEvent e = createEvent(l);
 			res.add(e);
 		}
 		return res;
 	}
 
-	private List<ActionEvent.実行可否条件> get実行可否条件(String tableName, String eventID) {
+	public ActionEvent eventOf(String eventId) {
+		String sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,P,"
+				+ "CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION,WAITTIME,userAnimationId,tgtAnimationId,otherAnimationId"
+				+ " from action_userEvent ue left join actionEvent e on ue.eventId = e.id"
+				+ " where e.id = '" + eventId + "';";
+		KResultSet r = DBConnection.getInstance().execDirect(sql);
+		if (r.isEmpty()) {
+			sql = "select ACTIONID,EVENTID,SORT,EVENTTYPE,STATUSKEYNAME,"
+					+ "P,CONDITIONKEY,CNDTIME,ATKATTR,ATTRIN,ATTROUT,CNDREGIST,TGTID,NOLIMIT,VAL,CALCMODE,SOUNDID,TRIGGEROPTION,WAITTIME,userAnimationId,tgtAnimationId,otherAnimationId"
+					+ " from action_mainEvent me left join actionEvent e on me.eventId = e.id"
+					+ " where e.id = '" + eventId + "';";
+			r = DBConnection.getInstance().execDirect(sql);
+			if (r.isEmpty()) {
+				throw new NameNotFoundException("event not found : " + eventId);
+			}
+		}
+		return createEvent(r.row(0));
+	}
+
+	private ActionEvent createEvent(List<DBValue> l) {
+		ActionEvent e = new ActionEvent(l.get(1).get());
+		e.setSort(l.get(2).asInt());
+		e.setEventType(l.get(3).of(ActionEventType.class));
+		e.setTgtStatusKey(l.get(4).orNull(StatusKey.class));
+		e.setP(l.get(5).asFloat());
+		e.setTgtConditionKey(l.get(6).orNull(ConditionKey.class));
+		e.setCndTime(l.get(7).asInt());
+		e.setAtkAttr(l.get(8).orNull(AttributeKey.class));
+		e.setTgtAttrKeyin(l.get(9).orNull(AttributeKey.class));
+		e.setTgtAttrKeyOut(l.get(10).orNull(AttributeKey.class));
+		e.setCndRegist(l.get(11).orNull(ConditionKey.class));
+		e.setTgtID(l.get(12).get());
+		e.setNoLimit(l.get(13).asBoolean());
+		e.setValue(l.get(14).asFloat());
+		e.setCalcMode(l.get(15).orNull(ActionEvent.CalcMode.class));
+		String soundID = l.get(16).get();
+		if (soundID != null) {
+			e.setSuccessSound(SoundStorage.getInstance().get(soundID));
+		}
+		e.setEvent起動条件(l.get(17).of(ActionEvent.Event起動条件.class));
+		e.setWaitTime(l.get(18).asInt());
+		//TERM
+		e.setUser起動条件(getActor起動条件("EventUserTerm", e.getId()));
+		e.setTgt起動条件(getActor起動条件("EventTgtTerm", e.getId()));
+		//ANIMATION
+		e.setUserAnimation(getAnimation(l.get(19).get()));
+		e.setTgtAnimation(getAnimation(l.get(20).get()));
+		e.setOtherAnimation(getAnimation(l.get(21).get()));
+		//
+		return e;
+	}
+
+	private List<ActionEvent.Actor起動条件> getActor起動条件(String tableName, String eventID) {
 		String sql = "select "
 				+ "id,typ,tgtName,Val"
 				+ " from " + tableName
 				+ " where eventid = '" + eventID + "';";
 		KResultSet tr = DBConnection.getInstance().execDirect(sql);
-		List<ActionEvent.実行可否条件> terms = new ArrayList<>();
+		List<ActionEvent.Actor起動条件> terms = new ArrayList<>();
 		for (List<DBValue> tl : tr) {
 			String id = tl.get(0).get();
-			ActionEvent.実行可否条件.Type type = tl.get(1).of(ActionEvent.実行可否条件.Type.class);
+			ActionEvent.Actor起動条件.Type type = tl.get(1).of(ActionEvent.Actor起動条件.Type.class);
 			String tgtName = tl.get(2).get();
 			float val = tl.get(3).asFloat();
-			terms.add(new ActionEvent.実行可否条件(id, type, val, tgtName));
+			terms.add(new ActionEvent.Actor起動条件(id, type, val, tgtName));
 		}
 		return terms;
+	}
+
+	public List<Item> itemOf(String... ids) {
+		List<Item> res = new ArrayList<>();
+		for (var v : ids) {
+			res.add(itemOf(v));
+		}
+		return res;
 	}
 
 }
