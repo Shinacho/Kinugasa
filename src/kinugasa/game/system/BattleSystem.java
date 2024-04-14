@@ -248,9 +248,25 @@ public class BattleSystem implements Drawable {
 	private FrameTimeCounter effectTime;
 	//エフェクト実行前に生きていた人、エフェクトによって死んだか判定する
 	private List<Actor> 前エフェクト生存者リスト = new ArrayList<>();
+
 	//イベントキュー
-	private final LinkedList<ActionEvent> eventQueue = new LinkedList<>();
-	private final LinkedList<Boolean> eventIsUserEvent = new LinkedList<>();
+	private static class QueueInstance {
+
+		ActionEvent e;
+		boolean isUserEvent;
+
+		public QueueInstance(ActionEvent e, boolean isUserEvent) {
+			this.e = e;
+			this.isUserEvent = isUserEvent;
+		}
+
+		@Override
+		public String toString() {
+			return "QueueInstance{" + "e=" + e + ", isUserEvent=" + isUserEvent + '}';
+		}
+
+	}
+	private final LinkedList<QueueInstance> eventQueue = new LinkedList<>();
 	//現在の結果
 	private ActionResult actionResult;
 	//イベントキューのターゲット
@@ -359,7 +375,6 @@ public class BattleSystem implements Drawable {
 		this.actionResult = null;
 		this.end = false;
 		this.effect = null;
-		this.eventIsUserEvent.clear();
 		this.magics.clear();
 		this.前エフェクト生存者リスト.clear();
 		this.prevEventResult = null;
@@ -1870,7 +1885,6 @@ public class BattleSystem implements Drawable {
 		}
 		actionResult = new ActionResult(a, tgt);
 		eventQueue.clear();
-		eventIsUserEvent.clear();
 		//カレントのターゲットを保存
 		currentActionTgt = tgt;
 
@@ -1879,27 +1893,22 @@ public class BattleSystem implements Drawable {
 			if (v.getEventType().isTgtID回実行イベント()) {
 				int n = Integer.parseInt(v.getTgtID());
 				for (int i = 0; i < n; i++) {
-					eventIsUserEvent.add(true);
-					eventQueue.add(v);
+					eventQueue.add(new QueueInstance(v, true));
 				}
 			} else {
-				eventIsUserEvent.add(true);
-				eventQueue.add(v);
+				eventQueue.add(new QueueInstance(v, true));
 			}
 		}
 		for (var v : a.getMainEvents()) {
 			if (v.getEventType().isTgtID回実行イベント()) {
 				int n = Integer.parseInt(v.getTgtID());
 				for (int i = 0; i < n; i++) {
-					eventIsUserEvent.add(false);
-					eventQueue.add(v);
+					eventQueue.add(new QueueInstance(v, false));
 				}
 			} else {
-				eventIsUserEvent.add(false);
-				eventQueue.add(v);
+				eventQueue.add(new QueueInstance(v, false));
 			}
 		}
-		assert eventIsUserEvent.size() == eventQueue.size() : "BS:queue size is miss match";
 		//消化へ
 		イベントキュー消化();
 	}
@@ -1907,7 +1916,6 @@ public class BattleSystem implements Drawable {
 	private List<ActionResult.EventActorResult> prevEventResult;
 
 	private void イベントキュー消化() {
-		assert eventIsUserEvent.size() == eventQueue.size() : "BS:queue size is miss match";
 		if (GameSystem.isDebugMode()) {
 			GameLog.print("BS currentQ : " + eventQueue);
 			GameLog.print("BS effect : " + effect);
@@ -1970,7 +1978,6 @@ public class BattleSystem implements Drawable {
 				prevEventResult.clear();
 			}
 			eventQueue.clear();
-			eventIsUserEvent.clear();
 			前エフェクト生存者リスト.clear();
 			currentActionTgt = null;
 			currentBAWaitTime = null;
@@ -1992,18 +1999,16 @@ public class BattleSystem implements Drawable {
 				prevEventResult = new ArrayList<>(prevEventResult);
 				prevEventResult.clear();
 			}
-			eventIsUserEvent.clear();
 			前エフェクト生存者リスト.clear();
 			currentActionTgt = null;
 			currentBAWaitTime = null;
 			return;
 		}
 		//イベントの1件目を実行
-		ActionEvent e = eventQueue.getFirst();
+		QueueInstance q = eventQueue.getFirst();
 		eventQueue.removeFirst();
-		//ユーザイベントかどうか
-		boolean isUserEvent = eventIsUserEvent.getFirst();
-		eventIsUserEvent.removeFirst();
+		ActionEvent e = q.e;
+		boolean isUserEvent = q.isUserEvent;
 		//実行
 		allActors().forEach(p -> p.getStatus().unsetDamageCalcPoint());
 		e.exec(currentActionTgt, actionResult, isUserEvent);
@@ -2266,7 +2271,7 @@ public class BattleSystem implements Drawable {
 					a.getSprite().getY() + 12,
 					Math.abs(damage),
 					Color.RED);
-			delayAnimations.add(new 遅延起動Animation(ds, new FrameTimeCounter(40)));
+			delayAnimations.add(new 遅延起動Animation(ds, new FrameTimeCounter(20)));
 
 		}
 
@@ -2423,7 +2428,7 @@ public class BattleSystem implements Drawable {
 					res.tgt.getSprite().getY() - Random.randomAbsInt(9),
 					Math.abs(res.tgtDamageHp),
 					Color.WHITE);
-			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(40));
+			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(20));
 			delayAnimations.add(a);
 		}
 		if (res.tgtDamageMp != 0) {
@@ -2432,7 +2437,7 @@ public class BattleSystem implements Drawable {
 					res.tgt.getSprite().getY(),
 					Math.abs(res.tgtDamageMp),
 					Color.YELLOW);
-			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(40));
+			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(20));
 			delayAnimations.add(a);
 		}
 		if (res.tgtDamageSAN != 0) {
@@ -2441,7 +2446,7 @@ public class BattleSystem implements Drawable {
 					res.tgt.getSprite().getY() + Random.randomAbsInt(9),
 					Math.abs(res.tgtDamageSAN),
 					Color.RED);
-			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(40));
+			遅延起動Animation a = new 遅延起動Animation(ds, new FrameTimeCounter(20));
 			delayAnimations.add(a);
 		}
 	}
@@ -2894,13 +2899,14 @@ public class BattleSystem implements Drawable {
 		castingSprites.values().forEach(p -> p.draw(g));
 		//キャスト時間
 		Graphics2D g2 = g.create();
-		g2.setFont(FontModel.DEFAULT.clone().setFontSize(12).getFont());
+		g2.setFont(FontModel.DEFAULT.clone().setFontSize(8).getFont());
 		g2.setColor(Color.BLACK);
 		for (var a : castingSprites.keySet()) {
 			Point2D.Float location = a.getSprite().getLocation();
-			location.x += 64;
-			location.y -= 12;
-			int time = a.getStatus().getCurrentConditions().get(ConditionKey.詠唱中).getCurrentTime();
+			location.x += 52;
+			location.y -= 8;
+			int time = a.getStatus().hasCondition(ConditionKey.詠唱中)
+					? a.getStatus().getCurrentConditions().get(ConditionKey.詠唱中).getCurrentTime() : 0;
 			g2.drawString(time + "", (int) location.x, (int) location.y);
 		}
 		g2.dispose();

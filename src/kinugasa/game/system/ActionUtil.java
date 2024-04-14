@@ -238,7 +238,6 @@ public final class ActionUtil {
 	}
 
 	static String createResultMsg(Actor tgt, StatusKey tgtStatusKey, DamageCalcSystem.Result r) {
-
 		//r評価
 		String msg = "";
 		if (r.isTgtIs回避) {
@@ -284,11 +283,11 @@ public final class ActionUtil {
 			if (v.getValue() < 0) {
 				return I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xに, tgtStatusKey.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.Xのダメージ, (int) v.getValue());
+						+ I18N.get(GameSystemI18NKeys.Xのダメージ, Math.abs((int) v.getValue()));
 			} else {
 				return I18N.get(GameSystemI18NKeys.Xの, tgt.getVisibleName())
 						+ I18N.get(GameSystemI18NKeys.Xは, tgtStatusKey.getVisibleName())
-						+ I18N.get(GameSystemI18NKeys.X回復した, (int) v.getValue());
+						+ I18N.get(GameSystemI18NKeys.X回復した, Math.abs((int) v.getValue()));
 			}
 		}
 		return I18N.get(GameSystemI18NKeys.しかしXには効果がなかった, tgt.getVisibleName());

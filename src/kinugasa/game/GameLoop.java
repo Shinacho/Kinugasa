@@ -114,20 +114,41 @@ public final class GameLoop implements Runnable {
 				}
 			}
 		} catch (Throwable ex) {
+			//例外情報の収集と表示
 			Toolkit.getDefaultToolkit().beep();
-			ex.printStackTrace();
-			Throwable t = ex;
-			String s = t.toString() + "\n";
-			while (t.getCause() != null) {
-				kinugasa.game.GameLog.print(t.getCause());
-				t = t.getCause();
-				s += t.toString() + "\n";
-			}
-			GameLog.print(ex);
-			Dialog.error("!", s);
+			String v = getExceptionMsg(ex);
+			GameLog.print(v);
+			Dialog.error("Sorry!!! the game was crashed!!!", v);
 			LockUtil.deleteAllLockFile();
 			System.exit(1);
 		}
+	}
+
+	private String getExceptionMsg(Throwable t) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("!> Sorry!!! the game was crashed!!!").append("\n");
+		sb.append("--------------catch:").append(t.toString()).append("\n");
+		//Cause
+		Throwable tt = t;
+		sb.append("--------------Cause:").append("\n");
+		while (tt.getCause() != null) {
+			sb.append(" ").append(tt.getCause()).append("\n");
+			tt = tt.getCause();
+		}
+		//Suppressed
+		sb.append("--------------Suppressed:").append("\n");
+		for (var v : t.getSuppressed()) {
+			sb.append(" ").append(v).append("\n");
+		}
+		//msg
+		sb.append("--------------Msg:").append("\n");
+		sb.append(t.getMessage()).append("\n");
+		//StackTrace
+		sb.append("--------------StackTrace:").append("\n");
+		for (var v : t.getStackTrace()) {
+			sb.append(" ").append(v).append("\n");
+		}
+		return sb.toString();
 	}
 
 	/**
