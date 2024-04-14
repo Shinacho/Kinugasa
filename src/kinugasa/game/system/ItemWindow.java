@@ -665,7 +665,7 @@ public class ItemWindow extends BasicSprite {
 						//CHECKモードでは価値、キーアイテム属性、スロット、攻撃力、DCSを表示すること！
 						//アイテムの詳細をサブに表示
 						StringBuilder sb = new StringBuilder();
-						sb.append(i.getVisibleName()).append(Text.getLineSep());
+						sb.append("◆").append(i.getVisibleName()).append(Text.getLineSep());
 
 						//DESC
 						String desc = i.getDesc();

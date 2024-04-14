@@ -279,6 +279,13 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	}
 
 	public String getVisibleName() {
+		if (GameSystem.isDebugMode()) {
+			return "*" + this.id + " " + I18N.get(visibleName);
+		}
+		return I18N.get(visibleName);
+	}
+
+	protected String getVisibleNameNOID() {
 		return I18N.get(visibleName);
 	}
 
@@ -450,6 +457,11 @@ public class Action implements Nameable, Comparable<Action>, Cloneable {
 	public boolean canDo(Status a) {
 		if (!userEvents.isEmpty()) {
 			if (!checkResource(a).keys.isEmpty()) {
+				return false;
+			}
+		}
+		for (var e : userEvents) {
+			if (!e.getUser起動条件().stream().allMatch(p -> p.canDo(a))) {
 				return false;
 			}
 		}

@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
 import kinugasa.game.I18N;
-import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
-import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.util.StringUtil;
 
@@ -84,8 +82,9 @@ public class ActionDescWindow extends PCStatusWindow {
 		StringBuilder sb = new StringBuilder();
 		int i = 1;
 		for (ActionEvent e : ee) {
-			sb.append("    (").append(i).append(")").append(Text.getLineSep());
-			sb.append(e.getEventDescI18Nd(i).replaceAll("  ", "      "));
+			sb.append("    (").append(i).append(")");
+			sb.append(Text.getLineSep());
+			sb.append(e.getEventDescI18Nd(i).replaceAll("  ", "       "));
 			i++;
 		}
 		return sb.toString();
@@ -105,48 +104,86 @@ public class ActionDescWindow extends PCStatusWindow {
 				.sorted()
 				.collect(Collectors.toList())) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("  ・").append(a.getVisibleName());
-			//魔法は魔法ウインドウで見れるので表示しない
+			sb.append("◆").append(a.getVisibleName());
+			if (GameSystem.isDebugMode()) {
+				sb.append(" ID:").append(a.getId());
+			}
 			sb.append(Text.getLineSep());
 			String[] desc = StringUtil.safeSplit(a.getDesc(), Text.getLineSep());
 			for (var v : desc) {
 				sb.append("    ");
 				sb.append(v).append(Text.getLineSep());
 			}
-			sb.append("   -");
+			//AREA				
+			if (a.getArea() != 0) {
+				sb.append("  ・");
+				sb.append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(a.getArea());
+				sb.append(Text.getLineSep());
+			}
+			//ターゲティング情報
+			sb.append("  ・").append(a.getTgtType().getVisibleName()).append(Text.getLineSep());
+			sb.append("  ・").append(a.getDeadTgt().getVisibleName()).append(Text.getLineSep());
+
+			//魔法は魔法ウインドウで見れるので表示しない
+			sb.append("  ・");
 			sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
 			sb.append(Text.getLineSep());
 			sb.append(getEvent(a.getUserEvents()));
-			sb.append("   -");
+			sb.append("  ・");
 			sb.append(I18N.get(GameSystemI18NKeys.対象効果));
 			sb.append(Text.getLineSep());
 			sb.append(getEvent(a.getMainEvents()));
+			sb.append(Text.getLineSep());
+			sb.append(Text.getLineSep());
 			t.addAll(Text.split(Text.of(sb.toString())));
 		}
 		t.add(Text.LINE_SEP);
 		t.add(Text.of("----" + ActionType.魔法.getVisibleName() + "----"));
-		for (Action a : s.get(pcIdx).getActions()
+		if (s.get(pcIdx).getActions()
 				.stream()
 				.filter(p -> p.isBattle())
-				.filter(p -> p.getType() == ActionType.魔法)
-				.sorted()
-				.collect(Collectors.toList())) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("  ・").append(a.getVisibleName());
-			String[] desc = StringUtil.safeSplit(a.getDesc(), Text.getLineSep());
-			for (var v : desc) {
-				sb.append("    ");
-				sb.append(v).append(Text.getLineSep());
+				.filter(p -> p.getType() == ActionType.魔法).count() == 0) {
+			t.add(Text.of(I18N.get(GameSystemI18NKeys.なし)));
+		} else {
+			for (Action a : s.get(pcIdx).getActions()
+					.stream()
+					.filter(p -> p.isBattle())
+					.filter(p -> p.getType() == ActionType.魔法)
+					.sorted()
+					.collect(Collectors.toList())) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("◆").append(a.getVisibleName());
+				if (GameSystem.isDebugMode()) {
+					sb.append(" ID:").append(a.getId());
+				}
+				sb.append(Text.getLineSep());
+				String[] desc = StringUtil.safeSplit(a.getDesc(), Text.getLineSep());
+				for (var v : desc) {
+					sb.append("    ");
+					sb.append(v).append(Text.getLineSep());
+				}
+				//AREA
+				if (a.getArea() != 0) {
+					sb.append("  ・");
+					sb.append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(a.getArea());
+					sb.append(Text.getLineSep());
+				}
+				//ターゲティング情報
+				sb.append("  ・").append(a.getTgtType().getVisibleName()).append(Text.getLineSep());
+				sb.append("  ・").append(a.getDeadTgt().getVisibleName()).append(Text.getLineSep());
+
+				sb.append("  ・");
+				sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
+				sb.append(Text.getLineSep());
+				sb.append(getEvent(a.getUserEvents()));
+				sb.append("  ・");
+				sb.append(I18N.get(GameSystemI18NKeys.対象効果));
+				sb.append(Text.getLineSep());
+				sb.append(getEvent(a.getMainEvents()));
+				sb.append(Text.getLineSep());
+				sb.append(Text.getLineSep());
+				t.addAll(Text.split(Text.of(sb.toString())));
 			}
-			sb.append("   -");
-			sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
-			sb.append(Text.getLineSep());
-			sb.append(getEvent(a.getUserEvents()));
-			sb.append("   -");
-			sb.append(I18N.get(GameSystemI18NKeys.対象効果));
-			sb.append(Text.getLineSep());
-			sb.append(getEvent(a.getMainEvents()));
-			t.addAll(Text.split(Text.of(sb.toString())));
 		}
 		mw.setText(t);
 	}

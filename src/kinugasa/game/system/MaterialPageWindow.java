@@ -17,6 +17,7 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
+import kinugasa.util.StringUtil;
 
 /**
  *
@@ -55,22 +57,24 @@ public class MaterialPageWindow extends BasicSprite {
 			case 素材:
 				Map<Material, Integer> map1 = GameSystem.getInstance().getMaterialBag().getMap();
 				for (Map.Entry<Material, Integer> e : map1.entrySet()) {
-					list.add(e.getKey().getName() + "、" + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getVisibleName())
+					String v = "◆" + e.getKey().getVisibleName() + "、" + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getPrice())
 							+ ", "
-							+ "×" + e.getValue());
+							+ "×" + e.getValue();
+					list.addAll(Arrays.asList(StringUtil.safeSplit(v, Text.getLineSep())));
 				}
+				Collections.sort(list);
 				break;
 			case 術式:
 				Map<BookPage, Integer> map2 = GameSystem.getInstance().getPageBag().getMap();
 				for (Map.Entry<BookPage, Integer> e : map2.entrySet()) {
-					list.add(e.getKey().getDescI18Nd() + Text.getLineSep() + "  " + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getPrice())
+					String v = "◆" + e.getKey().getDescI18Nd() + "  " + (I18N.get(GameSystemI18NKeys.価値) + ":" + e.getKey().getPrice())
 							+ ", "
 							+ "x"
-							+ e.getValue());
+							+ e.getValue();
+					list.addAll(Arrays.asList(StringUtil.safeSplit(v, Text.getLineSep())));
 				}
 				break;
 		}
-		Collections.sort(list);
 		if (list.isEmpty()) {
 			list.add(I18N.get(GameSystemI18NKeys.何も持っていない));
 		}

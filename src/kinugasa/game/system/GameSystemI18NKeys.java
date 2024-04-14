@@ -172,7 +172,10 @@ public class GameSystemI18NKeys {
 	public static final String いいえ = "いいえ";
 	public static final String 話す = "話す";
 	public static final String 調べる = "調べる";
+	
+	public static final String X回発動する = "X回発動する";
 
+	public static final String 効果 = "効果";
 	public static final String 混乱している = "混乱している";
 
 	public static final String 確認 = "確認";
@@ -296,7 +299,6 @@ public class GameSystemI18NKeys {
 	public static final String ゼロになる = "ゼロになる";
 	public static final String フィールド効果 = "フィールド効果";
 	public static final String この魔法はフィールドでは使えない = "この魔法はフィールドでは使えない";
-	public static final String 戦闘時ターゲット情報 = "戦闘時ターゲット情報";
 	public static final String ターゲット = "ターゲット";
 	public static final String ターゲット選択可否 = "ターゲット選択可否";
 	public static final String 死亡者ターゲット = "死亡者ターゲット";
@@ -311,6 +313,8 @@ public class GameSystemI18NKeys {
 	public static final String アイテム追加の術式 = "アイテム追加の術式";
 	public static final String X回復の術式 = "X回復の術式";
 	public static final String Xダメージの術式 = "Xダメージの術式";
+	public static final String X回復X回の術式 = "X回復X回の術式";
+	public static final String XダメージX回の術式 = "XダメージX回の術式";
 	public static final String 状態付与の術式 = "状態付与の術式";
 	public static final String 状態解除の術式 = "状態解除の術式";
 	public static final String どうする = "どうする";

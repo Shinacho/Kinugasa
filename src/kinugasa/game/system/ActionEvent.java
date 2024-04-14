@@ -202,6 +202,7 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	private int sort;
 	private String tgtId;
 	private float value;
+	private boolean noLimit;
 	//条件
 	private float p;
 	private ActionEventType type;
@@ -220,8 +221,6 @@ public class ActionEvent implements Nameable, Comparable<ActionEvent> {
 	private AttributeKey tgtAttrKeyIn;
 	//CND_REGIST
 	private ConditionKey tgtCndRegist;
-	//アイテム
-	private boolean noLimit;
 	//Effect
 	private Sound successSound;
 	private AnimationSprite tgtAnimation, otherAnimation, userAnimation;

@@ -17,8 +17,6 @@
 package kinugasa.game.system;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import kinugasa.game.GameLog;
 import kinugasa.game.I18N;
@@ -144,9 +142,6 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 		}
 		readFromXML(iniStatusFile);
 	}
-
-	private PersonalBag<Book> bookBag;
-	private PersonalBag<Item> itemBag;
 
 	public void setIniStatusFile(String iniStatusFile) {
 		this.iniStatusFile = iniStatusFile;
@@ -292,10 +287,15 @@ public sealed class Actor implements Nameable, XMLFileSupport, Comparable<Actor>
 	}
 
 	public String getVisibleName() {
+		String r = "";
 		if (getStatus().get異名() != null && !getStatus().get異名().isEmpty()) {
-			return "<" + getStatus().get異名() + ">" + visibleName;
+			r += "<" + getStatus().get異名() + ">";
 		}
-		return visibleName;
+		r += visibleName;
+		if (GameSystem.isDebugMode()) {
+			r += " *" + getId();
+		}
+		return r;
 	}
 
 	public final String getId() {

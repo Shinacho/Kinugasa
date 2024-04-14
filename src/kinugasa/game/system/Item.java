@@ -112,8 +112,8 @@ public class Item extends Action implements Cloneable {
 		super.pack();
 		return this;
 	}
-	
-	public boolean isEqip(){
+
+	public boolean isEqip() {
 		return slot != null;
 	}
 
@@ -240,7 +240,7 @@ public class Item extends Action implements Cloneable {
 
 	@Override
 	public String getVisibleName() {
-		String r = super.getVisibleName();
+		String r = super.getVisibleNameNOID();
 		if (style != null) {
 			r = style.getVisibleName() + " " + r;
 		}
@@ -249,6 +249,9 @@ public class Item extends Action implements Cloneable {
 		}
 		if (hasEnchant()) {
 			r += " [" + enchant.getVisibleName() + "]";
+		}
+		if (GameSystem.isDebugMode()) {
+			r += " *" + super.getId();
 		}
 		return r;
 	}
@@ -685,7 +688,7 @@ public class Item extends Action implements Cloneable {
 
 	@Override
 	public String toString() {
-		return "Item{" + "id=" + getId() + " / " + getVisibleName() + '}';
+		return "Item{" + "id=" + super.getId() + " / " + getVisibleName() + '}';
 	}
 
 	public int getEffectedExp(int f) {

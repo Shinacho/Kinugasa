@@ -17,6 +17,7 @@
 package kinugasa.game.system;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,11 +47,11 @@ import kinugasa.util.FrameTimeCounter;
 import kinugasa.util.Random;
 import kinugasa.game.NotNull;
 import kinugasa.game.Nullable;
-import kinugasa.game.field4.VehicleStorage;
 import static kinugasa.game.system.Action.死亡者ターゲティング.気絶損壊解脱者を選択可能;
 import static kinugasa.game.system.ConditionKey.損壊;
 import static kinugasa.game.system.ConditionKey.気絶;
 import static kinugasa.game.system.ConditionKey.解脱;
+import kinugasa.game.ui.FontModel;
 import kinugasa.graphics.Animation;
 import kinugasa.graphics.GraphicsUtil;
 import kinugasa.object.AnimationSprite;
@@ -678,9 +679,6 @@ public class BattleSystem implements Drawable {
 			magics.remove(turn);
 		}
 
-//		//アクション更新
-//		GameSystem.getInstance().getParty().forEach(p -> p.getStatus().updateAction());
-//		enemies.forEach(p -> p.getStatus().updateAction());	
 		//コマンドがパーティーだけの場合、戦闘終了
 		if (commandsOfThisTurn.stream().allMatch(p -> p.getUser().isPlayer())) {
 			setEndStatus(BattleResult.勝利_敵全滅);
@@ -714,7 +712,6 @@ public class BattleSystem implements Drawable {
 					.setMax(v.getUser().getStatus().getEffectedStatus().get(StatusKey.行動力).getValue());
 		}
 		//バトルコマンドの順を表示
-		updateOrder();
 		setStage(Stage.EXECコール待機);
 	}
 
@@ -797,6 +794,14 @@ public class BattleSystem implements Drawable {
 				return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
 			}
 		}
+		//詠唱中の場合はスキップ
+		if (user.getStatus().hasCondition(ConditionKey.詠唱中)) {
+			setMsg(user.getVisibleName() + ConditionKey.詠唱中.getExecMsgI18Nd());
+			currentBAWaitTime = new FrameTimeCounter(50);
+			setStage(Stage.待機中＿時間あり＿手番送り);
+			return BSExecResult.STAGEが待機中の間待機しその後EXECを再度コールせよ;
+		}
+		//その他の行動不能
 		ConditionKey 停止理由 = null;
 		for (ConditionKey k : List.of(ConditionKey.眠り, ConditionKey.麻痺)) {
 			if (user.getStatus().hasCondition(k)) {
@@ -1072,7 +1077,9 @@ public class BattleSystem implements Drawable {
 		if (BattleConfig.Sounds.魔法詠唱開始 != null) {
 			BattleConfig.Sounds.魔法詠唱開始.load().stopAndPlay();
 		}
-		s.getUser().getStatus().addCondition(ConditionKey.詠唱中, t + 1);
+		//詠唱時間
+		int time = t - turn;
+		s.getUser().getStatus().addCondition(ConditionKey.詠唱中, time);
 		if (magics.containsKey(t)) {
 			magics.get(t).add(s);
 		} else {
@@ -1869,13 +1876,30 @@ public class BattleSystem implements Drawable {
 
 		//aを分解してキューに入れる。
 		for (var v : a.getUserEvents()) {
-			eventQueue.add(v);
-			eventIsUserEvent.add(true);
+			if (v.getEventType().isTgtID回実行イベント()) {
+				int n = Integer.parseInt(v.getTgtID());
+				for (int i = 0; i < n; i++) {
+					eventIsUserEvent.add(true);
+					eventQueue.add(v);
+				}
+			} else {
+				eventIsUserEvent.add(true);
+				eventQueue.add(v);
+			}
 		}
 		for (var v : a.getMainEvents()) {
-			eventQueue.add(v);
-			eventIsUserEvent.add(false);
+			if (v.getEventType().isTgtID回実行イベント()) {
+				int n = Integer.parseInt(v.getTgtID());
+				for (int i = 0; i < n; i++) {
+					eventIsUserEvent.add(false);
+					eventQueue.add(v);
+				}
+			} else {
+				eventIsUserEvent.add(false);
+				eventQueue.add(v);
+			}
 		}
+		assert eventIsUserEvent.size() == eventQueue.size() : "BS:queue size is miss match";
 		//消化へ
 		イベントキュー消化();
 	}
@@ -1883,6 +1907,7 @@ public class BattleSystem implements Drawable {
 	private List<ActionResult.EventActorResult> prevEventResult;
 
 	private void イベントキュー消化() {
+		assert eventIsUserEvent.size() == eventQueue.size() : "BS:queue size is miss match";
 		if (GameSystem.isDebugMode()) {
 			GameLog.print("BS currentQ : " + eventQueue);
 			GameLog.print("BS effect : " + effect);
@@ -2865,7 +2890,21 @@ public class BattleSystem implements Drawable {
 	public void draw(GraphicsContext g) {
 		battleFieldSystem.draw(g);
 
+		//キャストアニメ
 		castingSprites.values().forEach(p -> p.draw(g));
+		//キャスト時間
+		Graphics2D g2 = g.create();
+		g2.setFont(FontModel.DEFAULT.clone().setFontSize(12).getFont());
+		g2.setColor(Color.BLACK);
+		for (var a : castingSprites.keySet()) {
+			Point2D.Float location = a.getSprite().getLocation();
+			location.x += 64;
+			location.y -= 12;
+			int time = a.getStatus().getCurrentConditions().get(ConditionKey.詠唱中).getCurrentTime();
+			g2.drawString(time + "", (int) location.x, (int) location.y);
+		}
+		g2.dispose();
+
 		enemies.forEach(p -> p.getSprite().draw(g));
 		GameSystem.getInstance().getPartySprite().forEach(p -> p.draw(g));
 

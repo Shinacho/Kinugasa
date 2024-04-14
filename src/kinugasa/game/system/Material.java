@@ -41,6 +41,9 @@ public class Material implements Nameable {
 	}
 
 	public String getVisibleName() {
+		if (GameSystem.isDebugMode()) {
+			return visibleName + " *" + id;
+		}
 		return visibleName;
 	}
 

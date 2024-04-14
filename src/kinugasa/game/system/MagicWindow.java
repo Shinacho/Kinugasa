@@ -17,7 +17,6 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kinugasa.game.GraphicsContext;
@@ -29,7 +28,6 @@ import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
-import kinugasa.util.StringUtil;
 
 /**
  *
@@ -315,7 +313,7 @@ public class MagicWindow extends BasicSprite {
 						break;
 					case CHECK:
 						StringBuilder sb = new StringBuilder();
-						sb.append(a.getVisibleName()).append(Text.getLineSep());
+						sb.append("◆").append(a.getVisibleName()).append(Text.getLineSep());
 						//DESC
 						String desc = a.getDesc();
 						if (desc.contains(Text.getLineSep())) {
@@ -330,28 +328,26 @@ public class MagicWindow extends BasicSprite {
 						}
 						//イベント詳細
 						sb.append(Text.getLineSep());
-						sb.append("-").append(I18N.get(GameSystemI18NKeys.戦闘効果)).append(Text.getLineSep());
+						sb.append(I18N.get(GameSystemI18NKeys.戦闘効果)).append(Text.getLineSep());
 						if (a.isBattle()) {
 							//SPELL_TIME
-							sb.append("  ");
-							sb.append(I18N.get(GameSystemI18NKeys.詠唱時間))
+							sb.append("  ・").append(I18N.get(GameSystemI18NKeys.詠唱時間))
 									.append(":").append(a.getCastTime()).append(I18N.get(GameSystemI18NKeys.ターン));
 							sb.append(Text.getLineSep());
 							//AREA
-							sb.append("  ");
+							sb.append("  ・");
 							sb.append(I18N.get(GameSystemI18NKeys.範囲)).append(":").append(a.getArea());
 							sb.append(Text.getLineSep());
 
 							//ターゲティング情報
-							sb.append("---").append(GameSystemI18NKeys.戦闘時ターゲット情報).append(Text.getLineSep());
-							sb.append("  ").append(a.getTgtType().getVisibleName()).append(Text.getLineSep());
-							sb.append("  ").append(a.getDeadTgt().getVisibleName()).append(Text.getLineSep());
+							sb.append("  ・").append(a.getTgtType().getVisibleName()).append(Text.getLineSep());
+							sb.append("  ・").append(a.getDeadTgt().getVisibleName()).append(Text.getLineSep());
 
-							sb.append("---");
+							sb.append("  ・");
 							sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
 							sb.append(Text.getLineSep());
 							sb.append(getEvent(a.getUserEvents()));
-							sb.append("---");
+							sb.append("  ・");
 							sb.append(I18N.get(GameSystemI18NKeys.対象効果));
 							sb.append(Text.getLineSep());
 							sb.append(getEvent(a.getMainEvents()));
@@ -359,13 +355,13 @@ public class MagicWindow extends BasicSprite {
 							sb.append("  ").append(I18N.get(GameSystemI18NKeys.この魔法は戦闘中使えない)).append(Text.getLineSep());
 						}
 						sb.append(Text.getLineSep());
-						sb.append("-").append(I18N.get(GameSystemI18NKeys.フィールド効果)).append(Text.getLineSep());
+						sb.append(I18N.get(GameSystemI18NKeys.フィールド効果)).append(Text.getLineSep());
 						if (a.isField()) {
-							sb.append("---");
+							sb.append("  ・");
 							sb.append(I18N.get(GameSystemI18NKeys.自身への効果));
 							sb.append(getEvent(a.getUserEvents()));
 							sb.append(Text.getLineSep());
-							sb.append("---");
+							sb.append("  ・");
 							sb.append(I18N.get(GameSystemI18NKeys.対象効果));
 							sb.append(Text.getLineSep());
 							sb.append(getEvent(a.getMainEvents()));
@@ -402,8 +398,9 @@ public class MagicWindow extends BasicSprite {
 		StringBuilder sb = new StringBuilder();
 		int i = 1;
 		for (ActionEvent e : ee) {
-			sb.append("  (").append(i).append(")").append(Text.getLineSep());
-			sb.append(e.getEventDescI18Nd(i).replaceAll("  ", "    "));
+			sb.append("   (").append(i).append(")");
+			sb.append(Text.getLineSep());
+			sb.append(e.getEventDescI18Nd(i).replaceAll("  ", "     "));
 			i++;
 		}
 		return sb.toString();

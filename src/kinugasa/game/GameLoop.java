@@ -115,14 +115,17 @@ public final class GameLoop implements Runnable {
 			}
 		} catch (Throwable ex) {
 			Toolkit.getDefaultToolkit().beep();
-			Dialog.error("!", ex.toString());
 			ex.printStackTrace();
 			Throwable t = ex;
+			String s = t.toString() + "\n";
 			while (t.getCause() != null) {
 				kinugasa.game.GameLog.print(t.getCause());
 				t = t.getCause();
+				s += t.toString() + "\n";
 			}
 			GameLog.print(ex);
+			Dialog.error("!", s);
+			LockUtil.deleteAllLockFile();
 			System.exit(1);
 		}
 	}

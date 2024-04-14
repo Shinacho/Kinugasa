@@ -17,7 +17,6 @@
 package kinugasa.game.system;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,10 +25,10 @@ import kinugasa.game.I18N;
 import kinugasa.game.ui.Choice;
 import kinugasa.game.ui.MessageWindow;
 import kinugasa.game.ui.MessageWindowGroup;
+import kinugasa.game.ui.ScrollSelectableMessageWindow;
 import kinugasa.game.ui.SimpleMessageWindowModel;
 import kinugasa.game.ui.Text;
 import kinugasa.object.BasicSprite;
-import kinugasa.util.StringUtil;
 
 /**
  *
@@ -40,7 +39,8 @@ public class BookWindow extends BasicSprite {
 
 	private List<Status> list;
 	private MessageWindow main;
-	private MessageWindow choiceUse, dropConfirm, tgtSelect, dissassemblyComfirm, msg;//msgはボタン操作で即閉じる
+	private MessageWindow choiceUse, dropConfirm, tgtSelect, dissassemblyComfirm;
+	private ScrollSelectableMessageWindow msg;//msgはボタン操作で即閉じる
 	private MessageWindowGroup group;
 
 	public BookWindow(float x, float y, float w, float h) {
@@ -58,10 +58,10 @@ public class BookWindow extends BasicSprite {
 		dissassemblyComfirm.setVisible(false);
 		tgtSelect = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel().setNextIcon(""));
 		tgtSelect.setVisible(false);
-		msg = new MessageWindow(x, y, w, h, new SimpleMessageWindowModel());
+		msg = new ScrollSelectableMessageWindow((int) x, (int) y, (int) w, (int) h, 23, false);
 		msg.setVisible(false);
 
-		group = new MessageWindowGroup(choiceUse, dropConfirm, dissassemblyComfirm, tgtSelect, msg);
+		group = new MessageWindowGroup(choiceUse, dropConfirm, dissassemblyComfirm, tgtSelect, msg.getWindow());
 		mainSelect = 0;
 		update();
 	}
@@ -76,7 +76,7 @@ public class BookWindow extends BasicSprite {
 		 */
 		CHOICE_USE,
 		/**
-		 * MSG表示し、終了待ち。終了したらITEM＿AND＿USER＿SELECTに入る。
+		 * MSG表示し、終了待ち。
 		 */
 		WAIT_MSG_CLOSE_TO_IUS,
 		WAIT_MSG_CLOSE_TO_CU,
@@ -114,9 +114,11 @@ public class BookWindow extends BasicSprite {
 			case DISASSEMBLY_CONFIRM:
 				dissassemblyComfirm.nextSelect();
 				break;
-			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
+				msg.nextSelect();
+				break;
+			case TARGET_SELECT:
 				//処理なし
 				return;
 		}
@@ -139,9 +141,11 @@ public class BookWindow extends BasicSprite {
 			case DISASSEMBLY_CONFIRM:
 				dissassemblyComfirm.prevSelect();
 				break;
-			case TARGET_SELECT:
 			case WAIT_MSG_CLOSE_TO_IUS:
 			case WAIT_MSG_CLOSE_TO_CU:
+				msg.prevSelect();
+				break;
+			case TARGET_SELECT:
 				//処理なし
 				return;
 		}
@@ -246,7 +250,7 @@ public class BookWindow extends BasicSprite {
 						//CHECKモードでは価値、キーアイテム属性、スロット、攻撃力、DCSを表示すること！
 						//アイテムの詳細をサブに表示
 						StringBuilder sb = new StringBuilder();
-						sb.append(b.getVisibleName()).append(Text.getLineSep());
+						sb.append("◆").append(b.getVisibleName()).append(Text.getLineSep());
 
 						//DESC
 						String desc = b.getAction().getVisibleName() + I18N.get(GameSystemI18NKeys.の魔法が使えるようになる);
@@ -260,14 +264,15 @@ public class BookWindow extends BasicSprite {
 						sb.append(I18N.get(GameSystemI18NKeys.解体すると以下を入手する)).append(Text.getLineSep());
 						int i = 1;
 						for (BookPage p : b.getPages()) {
-							sb.append("  (").append(i).append(")").append(Text.getLineSep());
+							sb.append("  (").append(i).append(")");
+							sb.append(Text.getLineSep());
 							sb.append(p.getEvent().getPageDescI18Nd());
 							i++;
 						}
 
 						msg.setTextDirect(sb.toString());
-						msg.showAllNow();
-						group.show(msg);
+						msg.getWindow().showAllNow();
+						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
 						break;
 					case DISASSEMBLY:
@@ -308,7 +313,7 @@ public class BookWindow extends BasicSprite {
 					int size = getSelectedPC().getBookBag().size();
 					commitPass();
 					boolean self = size == getSelectedPC().getBookBag().size();
-					group.show(msg);
+					group.show(msg.getWindow());
 					//自分自身に渡した場合CUへ、そうでない場合はIUSに戻る
 					if (self) {
 						mode = Mode.WAIT_MSG_CLOSE_TO_CU;
@@ -330,7 +335,7 @@ public class BookWindow extends BasicSprite {
 						//はい
 						//dropしてアイテム選択に戻る
 						commitDrop();
-						group.show(msg);
+						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 						break;
 				}
@@ -348,7 +353,7 @@ public class BookWindow extends BasicSprite {
 						//はい
 						//dropしてアイテム選択に戻る
 						commitDissasse();
-						group.show(msg);
+						group.show(msg.getWindow());
 						mode = Mode.WAIT_MSG_CLOSE_TO_IUS;
 						break;
 				}
@@ -384,8 +389,8 @@ public class BookWindow extends BasicSprite {
 			msg.setTextDirect(t);
 			mainSelect = getSelectedPC().getBookBag().size() - 1;
 		}
-		msg.showAllNow();
-		group.show(msg);
+		msg.getWindow().showAllNow();
+		group.show(msg.getWindow());
 
 		StringBuilder sb = new StringBuilder();
 		PersonalBag<Book> ib = getSelectedPC().getBookBag();
@@ -418,9 +423,9 @@ public class BookWindow extends BasicSprite {
 		msg.setTextDirect(I18N.get(GameSystemI18NKeys.XはXを捨てた,
 				GameSystem.getInstance().getPCbyID(getSelectedPC().getId()).getVisibleName(),
 				i.getVisibleName()));
-		msg.showAllNow();
+		msg.getWindow().showAllNow();
 		getSelectedPC().updateAction();
-		group.show(msg);
+		group.show(msg.getWindow());
 		mainSelect = 0;
 	}
 
@@ -441,9 +446,9 @@ public class BookWindow extends BasicSprite {
 			s.append(Text.getLineSep());
 		}
 		msg.setTextDirect(s.toString());
-		msg.showAllNow();
+		msg.getWindow().showAllNow();
 		getSelectedPC().updateAction();
-		group.show(msg);
+		group.show(msg.getWindow());
 		mainSelect = 0;
 	}
 
@@ -485,6 +490,7 @@ public class BookWindow extends BasicSprite {
 
 	@Override
 	public void update() {
+		msg.update();
 		//メインウインドウの内容更新
 		if (mode == Mode.BOOK_AND_USER_SELECT) {
 			PersonalBag<Book> ib = getSelectedPC().getBookBag();

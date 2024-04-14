@@ -135,8 +135,23 @@ public final class Enemy extends Actor {
 		return dropItem;
 	}
 
+	private String nameNo;
+
+	public void setNameNo(String nameNo) {
+		this.nameNo = nameNo;
+	}
+
+	public String getNameNo() {
+		return nameNo;
+	}
+
 	public String getVisibleNameNoNumber() {
-		return getVisibleName().substring(0, getVisibleName().length() - 1);
+		return super.getVisibleName();
+	}
+
+	@Override
+	public String getVisibleName() {
+		return super.getVisibleName() + nameNo;
 	}
 
 	@Override

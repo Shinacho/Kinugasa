@@ -58,7 +58,7 @@ public class EnemyBlueprint {
 		Enemy e = new Enemy(fileName);//newするとloadされる
 		String no = getEnemyNo(e.getId());
 		e.setId(e.getId() + no);
-		e.setVisibleName(e.getVisibleName() + no);
+		e.setNameNo(no);
 		return e;
 	}
 

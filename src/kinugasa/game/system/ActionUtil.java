@@ -16,25 +16,7 @@
  */
 package kinugasa.game.system;
 
-import java.util.ArrayList;
-import java.util.List;
 import kinugasa.game.I18N;
-import static kinugasa.game.system.ActionEvent.CalcMode.ADD;
-import static kinugasa.game.system.ActionEvent.CalcMode.DC;
-import static kinugasa.game.system.ActionEvent.CalcMode.MUL;
-import static kinugasa.game.system.ActionEvent.CalcMode.TO;
-import static kinugasa.game.system.ActionEvent.CalcMode.TO_MAX;
-import static kinugasa.game.system.ActionEvent.CalcMode.TO_ZERO;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.ACTORのIDが一致;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.指定のアイテムのいずれかを持っている;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.指定のアイテムを持っている;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.指定のステータスの現在値が指定の値以上;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.指定のステータスの現在値が指定の割合以上;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.指定の名前のアイテムを持っている;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.指定の武器タイプの武器を装備している;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.指定の状態異常を持っていない;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.指定の状態異常を持っている;
-import static kinugasa.game.system.ActionEvent.Actor起動条件.Type.武器を装備していない;
 import kinugasa.game.ui.Text;
 
 /**
@@ -58,21 +40,21 @@ public final class ActionUtil {
 	}
 
 	public enum 値Visibility {
-		ON,
-		ON_PERCENT,
+		VALUE,
+		PERCENT,
 		OFF,
-		ON_ATTRIN,
-		ON_ATTROUT,
-		ON_CND,
-		ON_CNDREG,
-		ON_ITEM,
-		ON_MATERIAL,
-		ON_SLOT,
-		ON_I18N,
-		ON_ACTOR,
-		ON_ID,
-		ON_ACTION,
-		ON_DIFF,
+		ATTRIN,
+		ATTROUT,
+		CND,
+		CNDREG,
+		ITEM,
+		MATERIAL,
+		SLOT,
+		MSG_I18Nd,
+		ACTOR,
+		ID_OR_TGTID,
+		ACTION,
+		DIFFICULTY,
 	}
 
 	public enum 属性Visibility {
@@ -120,7 +102,14 @@ public final class ActionUtil {
 		 */
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("  ").append(mainMsg).append(Text.getLineSep());
+		if (GameSystem.isDebugMode()) {
+			sb.append("  *").append(e.getId());
+			sb.append(Text.getLineSep());
+		}
+		if (mainMsg != null && !mainMsg.isEmpty() && !I18N.get(GameSystemI18NKeys.このイベントは処理の都合で入っているようだ).equals(mainMsg)) {
+			sb.append("  ").append(mainMsg);
+			sb.append(Text.getLineSep());
+		}
 
 		String nigyoume = "";
 		if (zv == 属性Visibility.ON) {
@@ -133,33 +122,40 @@ public final class ActionUtil {
 		switch (av) {
 			case OFF -> {
 			}
-			case ON ->
+			case VALUE ->
 				nigyoume += I18N.get(GameSystemI18NKeys.値) + ":" + getVisible値(e) + ", ";
-			case ON_PERCENT ->
+			case PERCENT ->
 				nigyoume += I18N.get(GameSystemI18NKeys.値) + ":" + getVisible値Percent(e) + ", ";
-			case ON_ATTRIN ->
+			case ATTRIN ->
 				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":[" + e.getTgtAttrIn().getVisibleName() + "], ";
-			case ON_ATTROUT ->
+			case ATTROUT ->
 				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":[" + e.getTgtAttrOut().getVisibleName() + "], ";
-			case ON_CND ->
-				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":[" + e.getTgtConditionKey().getVisibleName() + "], ";
-			case ON_CNDREG ->
+			case CND ->
+				nigyoume += I18N.get(GameSystemI18NKeys.効果) + ":[" + e.getTgtConditionKey().getVisibleName() + "], ";
+			case CNDREG ->
 				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":[" + e.getTgtCndRegistKey().getVisibleName() + "], ";
-			case ON_ITEM ->
+			case ITEM ->
 				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":" + e.getTgtAsItem().getVisibleName() + ", ";
-			case ON_MATERIAL ->
+			case MATERIAL ->
 				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":" + e.getTgtAsMaterial().getVisibleName() + ", ";
-			case ON_SLOT ->
+			case SLOT ->
 				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":" + e.getTgtAsSlot().getVisibleName() + ", ";
-			case ON_I18N ->
+			case MSG_I18Nd ->
 				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":" + I18N.get(e.getTgtID()) + ", ";
-			case ON_ACTOR ->
+			case ACTOR ->
 				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":" + e.getTgtAsActor().getVisibleName() + ", ";
-			case ON_ID ->
-				nigyoume += "ID" + ":" + e.getTgtID() + ", ";
-			case ON_ACTION ->
+			case ID_OR_TGTID -> {
+				if (GameSystem.isDebugMode()) {
+					if (e.getTgtID() == null || e.getTgtID().isEmpty()) {
+						nigyoume += "ID" + ":" + e.getId() + ", ";
+					} else {
+						nigyoume += "ID" + ":" + e.getTgtID() + ", ";
+					}
+				}
+			}
+			case ACTION ->
 				nigyoume += I18N.get(GameSystemI18NKeys.対象) + ":" + e.getTgtAsAction().getVisibleName() + ", ";
-			case ON_DIFF ->
+			case DIFFICULTY ->
 				nigyoume += I18N.get(GameSystemI18NKeys.値) + ":" + e.getTgtAsDifficulty().getNameI18Nd() + ", ";
 			default ->
 				throw new AssertionError("undefined value visibility : " + av);
@@ -172,6 +168,7 @@ public final class ActionUtil {
 				nigyoume += I18N.get(GameSystemI18NKeys.計算方法) + ":" + e.getCalcMode().getVisibleName() + ", ";
 			}
 		}
+
 		if (!nigyoume.isEmpty()) {
 			nigyoume = nigyoume.substring(0, nigyoume.lastIndexOf(", "));
 			sb.append("  ・").append(nigyoume).append(Text.getLineSep());
@@ -180,7 +177,7 @@ public final class ActionUtil {
 			if (e.getEvent起動条件() != null) {
 				if (e.getEvent起動条件() != ActionEvent.Event起動条件.条件なしで必ず起動) {
 					sb.append("  ・").append(I18N.get(GameSystemI18NKeys.条件)).append(":");
-					sb.append("{").append(e.getEvent起動条件().getTextI18Nd(thisIdx + "")).append("}").append(Text.getLineSep());
+					sb.append("{").append(e.getEvent起動条件().getTextI18Nd(thisIdx - 1 + "")).append("}").append(Text.getLineSep());
 				}
 			}
 		}
@@ -207,6 +204,9 @@ public final class ActionUtil {
 
 	static String getVisible値Percent(ActionEvent event) {
 		String r = event.getValue() < 0 ? "-" : "+";
+		if (event.getValue() < 0.1f) {
+			return r + Math.abs(event.getValue() * 100f);
+		}
 		return r + Math.abs((int) (event.getValue() * 100f));
 	}
 
