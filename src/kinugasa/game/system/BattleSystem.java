@@ -818,11 +818,14 @@ public class BattleSystem implements Drawable {
 		}
 		//その他の行動不能
 		ConditionKey 停止理由 = null;
-		for (ConditionKey k : List.of(ConditionKey.眠り, ConditionKey.麻痺)) {
-			if (user.getStatus().hasCondition(k)) {
-				停止理由 = k;
-			}
+		if(Random.percent(user.getStatus().getConditionFlags().getP().停止)){
+			停止理由 = user.getStatus().getConditionFlags().get停止理由();
 		}
+//		for (ConditionKey k : List.of(ConditionKey.眠り, ConditionKey.麻痺)) {
+//			if (user.getStatus().hasCondition(k)) {
+//				停止理由 = k;
+//			}
+//		}
 		if (停止理由 != null) {
 			user.getStatus().removeCondition(ConditionKey.詠唱中);
 			castingSprites.remove(user);

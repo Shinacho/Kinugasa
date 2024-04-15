@@ -79,7 +79,7 @@ public enum ConditionKey implements ConditionEffect {
 			f.set気絶中(false);
 			f.getP().停止 -= 1f;
 		}
-	},//数ターンで治る。戦闘終了時も治る
+	},
 	木化(true, "体が木になっている", "は足が木になった", "", "") {
 		@Override
 		public StatusValueSet getStatusValue(StatusValueSet v) {
@@ -112,6 +112,58 @@ public enum ConditionKey implements ConditionEffect {
 			return r;
 		}
 	},//魔法防御が上がる
+	消滅(true, "消滅している", "は消滅した", "", "") {
+		@Override
+		public void startEffect(ConditionFlags f) {
+			f.set停止理由(this);
+			f.getP().停止 += 1f;
+		}
+
+		@Override
+		public void endEffect(ConditionFlags f) {
+			f.set停止理由(null);
+			f.getP().停止 -= 1f;
+		}
+	},//行動できない
+	灰燼(true, "灰になっている", "は灰になった", "", "") {
+		@Override
+		public void startEffect(ConditionFlags f) {
+			f.set停止理由(this);
+			f.getP().停止 += 1f;
+		}
+
+		@Override
+		public void endEffect(ConditionFlags f) {
+			f.set停止理由(null);
+			f.getP().停止 -= 1f;
+		}
+	},//行動できない
+	発狂(true, "発狂している", "は発狂した", "", "") {
+		@Override
+		public void startEffect(ConditionFlags f) {
+			f.set停止理由(this);
+			f.getP().停止 += 1f;
+		}
+
+		@Override
+		public void endEffect(ConditionFlags f) {
+			f.set停止理由(null);
+			f.getP().停止 -= 1f;
+		}
+	},//行動できない
+	スタン(true, "スタンしている", "はスタンした", "", "") {
+		@Override
+		public void startEffect(ConditionFlags f) {
+			f.set停止理由(this);
+			f.getP().停止 += 1f;
+		}
+
+		@Override
+		public void endEffect(ConditionFlags f) {
+			f.set停止理由(null);
+			f.getP().停止 -= 1f;
+		}
+	},//行動できない
 	眠り(true, "眠っている", "は眠った", "", "") {
 		@Override
 		public void startEffect(ConditionFlags f) {

@@ -146,6 +146,8 @@ public class FieldMap implements Drawable, Nameable, Disposable {
 	//
 	private float mg;
 	private ManualTimeCounter encountCounter;
+	//マップネームラベルの追加処理
+	
 
 	public static Map<String, List<NPCSprite>> getAddedNPC() {
 		return addedNPC;

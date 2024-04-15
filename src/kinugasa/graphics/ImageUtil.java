@@ -31,6 +31,7 @@ import java.awt.image.RasterFormatException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,8 +68,8 @@ public final class ImageUtil {
 	/**
 	 * ロードした画像をキャッシュするためのマップです.
 	 */
-	private static final HashMap<String, SoftReference<BufferedImage>> IMAGE_CACHE
-			= new HashMap<String, SoftReference<BufferedImage>>(32);
+	private static final HashMap<String, WeakReference<BufferedImage>> IMAGE_CACHE
+			= new HashMap<>(32);
 
 	/**
 	 * メインスクリーンのデバイス設定を取得します。<br>
@@ -142,7 +143,7 @@ public final class ImageUtil {
 	 */
 	public static BufferedImage load(String filePath) throws FileNotFoundException, ContentsIOException {
 		StopWatch watch = new StopWatch().start();
-		SoftReference<BufferedImage> cacheRef = IMAGE_CACHE.get(filePath);
+		WeakReference<BufferedImage> cacheRef = IMAGE_CACHE.get(filePath);
 		//キャッシュあり&GC未実行
 		if (cacheRef != null && cacheRef.get() != null) {
 			if (GameSystem.isDebugMode()) {
@@ -174,10 +175,11 @@ public final class ImageUtil {
 			throw new ContentsIOException("image is null");
 		}
 		//互換画像に置換
-		int[] pix = getPixel(dst);
 		BufferedImage newImage = newImage(dst.getWidth(), dst.getHeight());
-		setPixel(newImage, pix);
-		IMAGE_CACHE.put(filePath, new SoftReference<BufferedImage>(newImage));
+		Graphics2D g2 = createGraphics2D(newImage, RenderingQuality.QUALITY);
+		g2.drawImage(dst, 0, 0, null);
+		g2.dispose();
+		IMAGE_CACHE.put(filePath, new WeakReference<>(newImage));
 		watch.stop();
 		if (GameSystem.isDebugMode()) {
 			GameLog.print("ImageUtil loaded filePath=[" + filePath + "](" + watch.getTime() + " ms)");
@@ -449,23 +451,6 @@ public final class ImageUtil {
 				}
 			}
 		}.start();
-	}
-
-	public static BufferedImage concatX(BufferedImage... images) {
-		int h = images[0].getHeight();
-		int w = 0;
-		for (var v : images) {
-			w += v.getWidth();
-		}
-		BufferedImage res = newImage(w, h);
-		Graphics2D g2 = createGraphics2D(res, RenderingQuality.QUALITY);
-		int x = 0;
-		for (var v : images) {
-			g2.drawImage(v, x, 0, null);
-			x += v.getWidth();
-		}
-		g2.dispose();
-		return res;
 	}
 
 	/**
@@ -1046,11 +1031,7 @@ public final class ImageUtil {
 		}
 		int newWidth = (int) (src.getWidth() * scale);
 		int newHeight = (int) (src.getHeight() * scale);
-		BufferedImage dst = newImage(newWidth, newHeight);
-		Graphics2D g2 = createGraphics2D(dst, RenderingQuality.QUALITY);
-		g2.drawImage(src, 0, 0, newWidth, newHeight, null);
-		g2.dispose();
-		return dst;
+		return resize(src, newWidth, newHeight);
 	}
 
 	public static BufferedImage resize(BufferedImage src, float wScale, float hScale) {
@@ -1062,6 +1043,18 @@ public final class ImageUtil {
 		}
 		int newWidth = (int) (src.getWidth() * wScale);
 		int newHeight = (int) (src.getHeight() * hScale);
+		return resize(src, newWidth, newHeight);
+	}
+
+	public static BufferedImage resize(BufferedImage src, int w, int h) {
+		if (w == 0 || h == 0) {
+			throw new IllegalArgumentException("IU scale is 0. Check the parameter");
+		}
+		if (src.getWidth() == w && src.getHeight() == h) {
+			return copy(src);
+		}
+		int newWidth = w;
+		int newHeight = h;
 		BufferedImage dst = newImage(newWidth, newHeight);
 		Graphics2D g2 = createGraphics2D(dst, RenderingQuality.QUALITY);
 		g2.drawImage(src, 0, 0, newWidth, newHeight, null);

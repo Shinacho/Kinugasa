@@ -26,9 +26,7 @@ import kinugasa.game.ui.SimpleTextLabelModel;
 import kinugasa.game.ui.TextLabelModel;
 import kinugasa.game.ui.TextLabelSprite;
 import kinugasa.graphics.FadeCounter;
-import kinugasa.graphics.GraphicsUtil;
 import kinugasa.object.BasicSprite;
-import kinugasa.object.Sprite;
 
 /**
  *

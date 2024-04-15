@@ -239,6 +239,9 @@ public class GameOption {
 	}
 
 	public GameOption(String name) {
+		if(INSTANCE != null ){
+			throw new IllegalStateException("GameOption is already exist, use getInstance()");
+		}
 		this.title = name;
 		setWindowLocation(new Point(0, 0));
 		setWindowSize(new Dimension(640, 480));

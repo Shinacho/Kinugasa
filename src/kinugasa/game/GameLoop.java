@@ -16,15 +16,17 @@
  */
 package kinugasa.game;
 
+import static java.awt.SystemColor.text;
 import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import kinugasa.game.input.InputState;
 import kinugasa.game.system.GameSystem;
 import kinugasa.game.ui.Dialog;
+import kinugasa.game.ui.DialogIcon;
+import kinugasa.game.ui.DialogOption;
 
 /**
  * ゲームの進行を行うスレッドの実装です.
@@ -118,7 +120,13 @@ public final class GameLoop implements Runnable {
 			Toolkit.getDefaultToolkit().beep();
 			String v = getExceptionMsg(ex);
 			GameLog.print(v);
-			Dialog.error("Sorry!!! the game was crashed!!!", v);
+			Dialog.error("Sorry", v);
+			if (Dialog.yesOrNo("Sorrt", DialogIcon.QUESTION, "copy to clipboard?") == DialogOption.YES) {
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				StringSelection selection = new StringSelection(v);
+				clipboard.setContents(selection, null);
+				Dialog.info("Sorry", "We apologize for the inconvenience and thank you for your cooperation.");
+			}
 			LockUtil.deleteAllLockFile();
 			System.exit(1);
 		}
@@ -126,7 +134,8 @@ public final class GameLoop implements Runnable {
 
 	private String getExceptionMsg(Throwable t) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("!> Sorry!!! the game was crashed!!!").append("\n");
+		sb.append("!> Sorry, the game was crashed!").append("\n");
+		sb.append("Please report a this capture or log file and it may be corrected\n");
 		sb.append("--------------catch:").append(t.toString()).append("\n");
 		//Cause
 		Throwable tt = t;
